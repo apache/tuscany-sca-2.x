@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 
 /**
@@ -26,16 +28,11 @@ import junit.framework.TestCase;
 public class IncompatibleInterfacesExceptionTestCase extends TestCase {
 
     public void testInstantiation() throws Exception {
-        IncompatibleInterfacesException e = new IncompatibleInterfacesException("message",
-            "source name",
-            "ref name",
-            "target name",
-            "service name");
-        assertEquals("message", e.getMessage());
-        assertEquals("source name", e.getSourceName());
-        assertEquals("ref name", e.getReferenceName());
-        assertEquals("target name", e.getTargetName());
-        assertEquals("service name", e.getTargetServiceName());
-
+        URI sourceUri = URI.create("source");
+        URI targetUri = URI.create("target");
+        IncompatibleInterfacesException e = new IncompatibleInterfacesException(sourceUri, targetUri);
+        assertNotNull(e.getMessage());
+        assertEquals("source", e.getSourceUri().toString());
+        assertEquals("target", e.getTargetUri().toString());
     }
 }

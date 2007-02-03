@@ -18,30 +18,28 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a component.
- * <p>A component is a configured instance of an implementation. The services provided and consumed
- * and the available configuration properties are defined by the implementation (represented by
- * its componentType).</p>
- * <p>Every component has a name which uniquely identifies it within the scope of the composite
- * that contains it; the name must be different from the names of all other components, services and references
- * immediately contained in the composite (directly or through an &lt;include&gt; element).</p>
- * <p>A component may define a {@link PropertyValue} that overrides the default value of a {@link Property}
- * defined in the componentType.</p>
- * <p>It may also define a {@link ReferenceTarget} for a {@link ReferenceDefinition} defined in the componentType.
- * The ReferenceTarget must resolve to another component or a reference in the enclosing composite.</p>
- * <p>Components may specify an initialization level that will determine the order in which it will be eagerly
- * initialized relative to other components from the enclosing composite that are in the same scope. This can be
- * used to define a startup sequence for components that are otherwise independent. Any initialization required
- * to resolve references between components will override this initialization order.</p>
+ * Represents a component. <p>A component is a configured instance of an implementation. The services provided and
+ * consumed and the available configuration properties are defined by the implementation (represented by its
+ * componentType).</p> <p>Every component has a name which uniquely identifies it within the scope of the composite that
+ * contains it; the name must be different from the names of all other components, services and references immediately
+ * contained in the composite (directly or through an &lt;include&gt; element).</p> <p>A component may define a {@link
+ * PropertyValue} that overrides the default value of a {@link Property} defined in the componentType.</p> <p>It may
+ * also define a {@link ReferenceTarget} for a {@link ReferenceDefinition} defined in the componentType. The
+ * ReferenceTarget must resolve to another component or a reference in the enclosing composite.</p> <p>Components may
+ * specify an initialization level that will determine the order in which it will be eagerly initialized relative to
+ * other components from the enclosing composite that are in the same scope. This can be used to define a startup
+ * sequence for components that are otherwise independent. Any initialization required to resolve references between
+ * components will override this initialization order.</p>
  *
  * @version $Rev$ $Date$
  */
 public class ComponentDefinition<I extends Implementation<?>> extends ModelObject {
-    private String name;
+    private URI name;
     private Integer initLevel;
     private final I implementation;
     private final Map<String, ReferenceTarget> referenceTargets = new HashMap<String, ReferenceTarget>();
@@ -53,7 +51,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      * @param name           the name of this component
      * @param implementation the implementation of this component
      */
-    public ComponentDefinition(String name, I implementation) {
+    public ComponentDefinition(URI name, I implementation) {
         this.name = name;
         this.implementation = implementation;
     }
@@ -81,7 +79,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @return the name of this component
      */
-    public String getName() {
+    public URI getName() {
         return name;
     }
 
@@ -90,7 +88,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @param name the name of this component
      */
-    public void setName(String name) {
+    public void setName(URI name) {
         this.name = name;
     }
 
@@ -104,9 +102,8 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
     }
 
     /**
-     * Sets the initialization level of this component.
-     * If set to null then the level from the componentType is used.
-     * If set to zero or a negative value then the component will not be eagerly initialized.
+     * Sets the initialization level of this component. If set to null then the level from the componentType is used. If
+     * set to zero or a negative value then the component will not be eagerly initialized.
      *
      * @param initLevel the initialization level of this component
      */
@@ -124,13 +121,13 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
     }
 
     /**
-     * Add a reference target configuration to this component.
-     * Any existing configuration for the reference named in the target is replaced.
+     * Add a reference target configuration to this component. Any existing configuration for the reference named in the
+     * target is replaced.
      *
      * @param target the target to add
      */
     public void add(ReferenceTarget target) {
-        referenceTargets.put(target.getReferenceName(), target);
+        referenceTargets.put(target.getReferenceName().getFragment(), target);
     }
 
     /**
@@ -143,8 +140,8 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
     }
 
     /**
-     * Add a property value configuration to this component.
-     * Any existing configuration for the property names in the property value is replaced.
+     * Add a property value configuration to this component. Any existing configuration for the property names in the
+     * property value is replaced.
      *
      * @param value the property value to add
      */

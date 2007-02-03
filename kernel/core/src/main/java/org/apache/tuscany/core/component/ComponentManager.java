@@ -6,41 +6,40 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.core.component.event;
+package org.apache.tuscany.core.component;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import java.net.URI;
+
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**
- * Propagated when a composite stops
+ * Responsible for tracking and managing the component tree for a runtime instance
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public class CompositeStop extends AbstractEvent implements CompositeEvent {
-
-    private CompositeComponent component;
+public interface ComponentManager extends RuntimeEventListener {
 
     /**
-     * Creates a composite stop event
-     *
-     * @param source    the source of the event
-     * @param component the composite component associated the composite being stopped
+     * Registers a component which will be managed by the runtime
+     * @param component   the component 
+     * @throws ComponentRegistrationException
      */
-    public CompositeStop(Object source, CompositeComponent component) {
-        super(source);
-        this.component = component;
-    }
+    void register(Component component) throws ComponentRegistrationException;
 
-    public CompositeComponent getComposite() {
-        return component;
-    }
+    void unregister(Component component) throws ComponentRegistrationException;
+
+    Component getComponent(URI name);
+
 }

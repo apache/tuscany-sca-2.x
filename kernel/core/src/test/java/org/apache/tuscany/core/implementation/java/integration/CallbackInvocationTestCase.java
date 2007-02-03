@@ -89,14 +89,14 @@ public class CallbackInvocationTestCase extends TestCase {
         expectLastCall().andReturn(fooComponent).anyTimes();
         replay(parent);
 
-        ComponentDefinition<JavaImplementation> sourceDefinition = createSource("fooClient");
+        ComponentDefinition<JavaImplementation> sourceDefinition = createSource(URI.create("fooClient"));
         JavaAtomicComponent clientComponent =
             (JavaAtomicComponent) builder.build(parent, sourceDefinition, context);
         clientComponent.setScopeContainer(container);
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
-        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
+        Connector connector = new ConnectorImpl(new JDKWireService(), null, null, scheduler, workContext);
 
         connector.connect(clientComponent);
         FooClient client = (FooClient) clientComponent.getTargetInstance();
@@ -122,14 +122,14 @@ public class CallbackInvocationTestCase extends TestCase {
         expectLastCall().andReturn(fooComponent).anyTimes();
         replay(parent);
 
-        ComponentDefinition<JavaImplementation> sourceDefinition = createPlainSource("fooPlainClient");
+        ComponentDefinition<JavaImplementation> sourceDefinition = createPlainSource(URI.create("fooPlainClient"));
         JavaAtomicComponent clientComponent =
             (JavaAtomicComponent) builder.build(parent, sourceDefinition, context);
         clientComponent.setScopeContainer(container);
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
-        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
+        Connector connector = new ConnectorImpl(new JDKWireService(), null, null, scheduler, workContext);
 
         connector.connect(clientComponent);
         FooPlainClient client = (FooPlainClient) clientComponent.getTargetInstance();
@@ -158,8 +158,8 @@ public class CallbackInvocationTestCase extends TestCase {
         expectLastCall().andReturn(fooComponent).anyTimes();
         replay(parent);
 
-        ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource("fooCleint1");
-        ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource("fooCleint2");
+        ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource(URI.create("fooCleint1"));
+        ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource(URI.create("fooCleint2"));
         JavaAtomicComponent clientComponent1 =
             (JavaAtomicComponent) builder.build(parent, sourceDefinition1, context);
         clientComponent1.setScopeContainer(container);
@@ -171,7 +171,7 @@ public class CallbackInvocationTestCase extends TestCase {
         wireService.createWires(clientComponent2, sourceDefinition2);
         container.register(clientComponent2);
 
-        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
+        Connector connector = new ConnectorImpl(new JDKWireService(), null, null, scheduler, workContext);
         connector.connect(clientComponent1);
         connector.connect(clientComponent2);
         FooClient client1 = (FooClient) clientComponent1.getTargetInstance();
@@ -195,16 +195,16 @@ public class CallbackInvocationTestCase extends TestCase {
         ServiceContract<?> contract = registry.introspect(Foo.class);
         contract.setCallbackClass(FooCallback.class);
         contract.setCallbackName("callback");
-        JavaMappedService mappedService = new JavaMappedService("Foo", contract, false, "callback", method);
+        JavaMappedService mappedService = new JavaMappedService(URI.create("Foo"), contract, false, "callback", method);
         type.getServices().put("Foo", mappedService);
 
         JavaImplementation impl = new JavaImplementation(FooImpl.class, type);
         impl.setComponentType(type);
         impl.setImplementationClass(FooImpl.class);
-        return new ComponentDefinition<JavaImplementation>("foo", impl);
+        return new ComponentDefinition<JavaImplementation>(URI.create("foo"), impl);
     }
 
-    private ComponentDefinition<JavaImplementation> createSource(String name)
+    private ComponentDefinition<JavaImplementation> createSource(URI name)
         throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
         ConstructorDefinition<FooClient> ctorDef =
             new ConstructorDefinition<FooClient>(FooClient.class.getConstructor());
@@ -217,10 +217,10 @@ public class CallbackInvocationTestCase extends TestCase {
         ServiceContract<?> contract = registry.introspect(Foo.class);
         contract.setCallbackClass(FooCallback.class);
         contract.setCallbackName("callback");
-        JavaMappedReference mappedReference = new JavaMappedReference("foo", contract, method);
+        JavaMappedReference mappedReference = new JavaMappedReference(URI.create(name + "#" + "foo"), contract, method);
         type.getReferences().put("foo", mappedReference);
         ReferenceTarget refTarget = new ReferenceTarget();
-        refTarget.setReferenceName("foo");
+        refTarget.setReferenceName(URI.create(name + "#" + "foo"));
         refTarget.getTargets().add(new URI("foo"));
         JavaImplementation impl = new JavaImplementation(FooClient.class, type);
         impl.setComponentType(type);
@@ -230,7 +230,7 @@ public class CallbackInvocationTestCase extends TestCase {
         return def;
     }
 
-    private ComponentDefinition<JavaImplementation> createPlainSource(String name)
+    private ComponentDefinition<JavaImplementation> createPlainSource(URI name)
         throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
         ConstructorDefinition<FooPlainClient> ctorDef =
             new ConstructorDefinition<FooPlainClient>(FooPlainClient.class.getConstructor());
@@ -243,10 +243,10 @@ public class CallbackInvocationTestCase extends TestCase {
         ServiceContract<?> contract = registry.introspect(Foo.class);
         contract.setCallbackClass(FooCallback.class);
         contract.setCallbackName("callback");
-        JavaMappedReference mappedReference = new JavaMappedReference("foo", contract, method);
+        JavaMappedReference mappedReference = new JavaMappedReference(URI.create(name + "#" + "foo"), contract, method);
         type.getReferences().put("foo", mappedReference);
         ReferenceTarget refTarget = new ReferenceTarget();
-        refTarget.setReferenceName("foo");
+        refTarget.setReferenceName(URI.create(name + "#" + "foo"));
         refTarget.getTargets().add(new URI("foo"));
         JavaImplementation impl = new JavaImplementation(FooPlainClient.class, type);
         ComponentDefinition<JavaImplementation> def = new ComponentDefinition<JavaImplementation>(name, impl);

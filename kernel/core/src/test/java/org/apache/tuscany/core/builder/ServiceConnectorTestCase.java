@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -55,7 +57,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     public void testConnectServiceToAtomicComponent() throws Exception {
         configureAtomicTarget();
-        Service sourceService = new ServiceImpl("foo", parent, contract);
+        Service sourceService = new ServiceImpl(URI.create("foo"), parent, contract);
         sourceService.addServiceBinding(sourceServiceBinding);
         connector.connect(sourceService);
         Interceptor interceptor = inboundChain.getHeadInterceptor();
@@ -67,7 +69,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     public void testConnectServiceToChildCompositeService() throws Exception {
         configureChildCompositeServiceTarget();
-        Service sourceService = new ServiceImpl("foo", parent, contract);
+        Service sourceService = new ServiceImpl(URI.create("foo"), parent, contract);
         sourceService.addServiceBinding(sourceServiceBinding);
         connector.connect(sourceService);
         Interceptor interceptor = inboundChain.getHeadInterceptor();
@@ -79,7 +81,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     public void testConnectServiceToReference() throws Exception {
         configureReferenceTarget();
-        Service sourceService = new ServiceImpl("foo", parent, contract);
+        Service sourceService = new ServiceImpl(URI.create("foo"), parent, contract);
         sourceService.addServiceBinding(sourceServiceBinding);
         connector.connect(sourceService);
         Interceptor interceptor = inboundChain.getHeadInterceptor();
@@ -104,7 +106,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         outboundWire.setTargetName(TARGET_SERVICE_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
 
-        sourceServiceBinding = new MockServiceBinding();
+        sourceServiceBinding = new MockServiceBinding(URI.create("foo"));
         sourceServiceBinding.setInboundWire(inboundWire);
         sourceServiceBinding.setOutboundWire(outboundWire);
         inboundWire.setContainer(sourceServiceBinding);
@@ -130,7 +132,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(atomicTarget);
 
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.expect(parent.getChild(TARGET)).andReturn(atomicTarget);
+        EasyMock.expect(parent.getChild(TARGET.toString())).andReturn(atomicTarget);
         EasyMock.replay(parent);
     }
 
@@ -151,7 +153,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(compositeTarget);
 
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.expect(parent.getChild(TARGET)).andReturn(compositeTarget);
+        EasyMock.expect(parent.getChild(TARGET.toString())).andReturn(compositeTarget);
         EasyMock.replay(parent);
     }
 
@@ -164,7 +166,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         binding.getOutboundWire().getInvocationChains().get(operation).addInterceptor(new InvokerInterceptor());
         connector.connect(binding.getInboundWire(), binding.getOutboundWire(), true);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.expect(parent.getChild(TARGET)).andReturn(referenceTarget);
+        EasyMock.expect(parent.getChild(TARGET.toString())).andReturn(referenceTarget);
         EasyMock.replay(parent);
     }
 

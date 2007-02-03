@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.builder.WiringException;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Denotes a general error connecting two wires
@@ -33,26 +33,8 @@ public class WireConnectException extends WiringException {
         super(message);
     }
 
-    public WireConnectException(String message,
-                                   String sourceName,
-                                   String referenceName,
-                                   String targetName,
-                                   String serviceName,
-                                   Throwable throwable) {
-        super(message, throwable);
-        setSourceName(sourceName);
-        setReferenceName(referenceName);
-        setTargetName(targetName);
-        setTargetServiceName(serviceName);
-    }
-
-
-    public WireConnectException(String message, OutboundWire source, InboundWire target, Throwable throwable) {
-        super(message, throwable);
-        setSourceName(source.getContainer().getName());
-        setReferenceName(source.getReferenceName());
-        setTargetName(target.getContainer().getName());
-        setTargetServiceName(target.getServiceName());
+    public WireConnectException(String message, URI sourceUri, URI targetUri, Throwable throwable) {
+        super(message, sourceUri, targetUri, throwable);
     }
 
 }

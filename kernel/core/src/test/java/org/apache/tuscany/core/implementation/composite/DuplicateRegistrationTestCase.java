@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -39,7 +40,7 @@ import org.easymock.EasyMock;
 public class DuplicateRegistrationTestCase extends TestCase {
 
     public void testDuplicateRegistration() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -72,7 +73,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
     public void testDuplicateNameSystemService() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Source.class);
-        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();

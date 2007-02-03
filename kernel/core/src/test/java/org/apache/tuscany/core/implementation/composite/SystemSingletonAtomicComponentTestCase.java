@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.TargetException;
 
@@ -33,7 +34,7 @@ public class SystemSingletonAtomicComponentTestCase extends TestCase {
     public void testGetInstance() throws TargetException {
         FooImpl foo = new FooImpl();
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>("foo", null, Foo.class, foo);
+            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), null, Foo.class, foo);
         assertEquals(foo, component.getTargetInstance());
     }
 
@@ -43,7 +44,7 @@ public class SystemSingletonAtomicComponentTestCase extends TestCase {
         services.add(Foo.class);
         services.add(Bar.class);
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>("foo", null, services, foo);
+            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), null, services, foo);
         assertEquals(foo, component.getTargetInstance());
     }
 

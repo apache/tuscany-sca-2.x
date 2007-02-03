@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to an system atomic component
      */
     public void testSystemAtomicAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, true);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
@@ -71,7 +72,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to an system atomic component
      */
     public void testAtomicAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -101,7 +102,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to a system service
      */
     public void testSystemServiceAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, true);
         parent.start();
 
         ServiceBinding serviceBinding = EasyMock.createMock(ServiceBinding.class);
@@ -133,7 +134,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to a service
      */
     public void testServiceAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, true);
         parent.start();
 
         ServiceBinding serviceBinding = EasyMock.createMock(ServiceBinding.class);
@@ -166,7 +167,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to a system reference
      */
     public void testSystemReferenceAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, true);
         parent.start();
 
         ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
@@ -176,7 +177,7 @@ public class AutowireTestCase extends TestCase {
         EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
         EasyMock.replay(binding);
 
-        Reference reference = new ReferenceImpl("foo", null, wire.getServiceContract(), true);
+        Reference reference = new ReferenceImpl(URI.create("foo"), null, wire.getServiceContract(), true);
         reference.addReferenceBinding(binding);
         parent.register(reference);
 
@@ -191,7 +192,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to a reference
      */
     public void testReferenceAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, true);
         parent.start();
 
         ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
@@ -201,7 +202,7 @@ public class AutowireTestCase extends TestCase {
         EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
         EasyMock.replay(binding);
 
-        Reference reference = new ReferenceImpl("foo", null, wire.getServiceContract(), false);
+        Reference reference = new ReferenceImpl(URI.create("foo"), null, wire.getServiceContract(), false);
         reference.addReferenceBinding(binding);
         parent.register(reference);
 

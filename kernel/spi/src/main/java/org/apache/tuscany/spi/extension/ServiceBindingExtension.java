@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -42,7 +44,7 @@ public abstract class ServiceBindingExtension extends AbstractSCAObject implemen
     protected OutboundWire outboundWire;
     protected ServiceContract<?> bindingServiceContract;
 
-    public ServiceBindingExtension(String name, CompositeComponent parent) throws CoreRuntimeException {
+    public ServiceBindingExtension(URI name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
     }
 

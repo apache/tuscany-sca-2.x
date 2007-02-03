@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.reflect.Member;
+import java.net.URI;
 
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -42,22 +43,17 @@ public class JavaMappedService extends ServiceDefinition {
         this.serviceInterface = serviceInterface;
     }
 
-    public JavaMappedService(String name, ServiceContract contract, boolean remotable) {
+    public JavaMappedService(URI name, ServiceContract contract, boolean remotable) {
         super(name, contract, remotable);
     }
 
-    public JavaMappedService(String name,
+    public JavaMappedService(URI name,
                              ServiceContract contract,
                              boolean remotable,
                              String callbackRefName,
                              Member callbackMember) {
         super(name, contract, remotable, callbackRefName);
         this.callbackMember = callbackMember;
-    }
-
-    public JavaMappedService(String name, ServiceContract contract, Class<?> serviceInterface, boolean remotable) {
-        super(name, contract, remotable);
-        this.serviceInterface = serviceInterface;
     }
 
     /**

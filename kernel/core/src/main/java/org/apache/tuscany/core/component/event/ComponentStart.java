@@ -18,16 +18,30 @@
  */
 package org.apache.tuscany.core.component.event;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.event.Event;
+import java.net.URI;
 
 /**
- * Implemented by runtime events associated with a composite, e.g. lifecycle events
+ * Propagated when a composite starts
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface CompositeEvent extends Event {
+public class ComponentStart extends AbstractEvent implements ComponentEvent {
 
-    CompositeComponent getComposite();
+    private URI uri;
+
+    /**
+     * Creates a component stop event
+     *
+     * @param source       the source of the event
+     * @param componentURI the uri of the component being stopped
+     */
+    public ComponentStart(Object source, URI componentURI) {
+        super(source);
+        this.uri = componentURI;
+    }
+
+    public URI getComponentUri() {
+        return uri;
+    }
 
 }

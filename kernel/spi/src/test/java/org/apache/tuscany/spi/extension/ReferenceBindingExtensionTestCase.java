@@ -1,5 +1,6 @@
 package org.apache.tuscany.spi.extension;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.Reference;
@@ -52,7 +53,7 @@ public class ReferenceBindingExtensionTestCase extends TestCase {
 
     private static class MockBindingExtension extends ReferenceBindingExtension {
         public MockBindingExtension() {
-            super(null, null);
+            super(URI.create("_foo"), null);
         }
 
         public QName getBindingType() {

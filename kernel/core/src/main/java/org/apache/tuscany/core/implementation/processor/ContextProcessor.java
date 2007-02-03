@@ -21,8 +21,8 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.osoa.sca.RequestContext;
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -48,12 +48,12 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  * @version $Rev$ $Date$
  */
 public class ContextProcessor extends ImplementationProcessorExtension {
-    private WireService wireService;
+    //private WireService wireService;
     private WorkContext workContext;
 
     @Autowire
     public void setWireService(WireService wireService) {
-        this.wireService = wireService;
+        //this.wireService = wireService;
     }
 
     @Autowire

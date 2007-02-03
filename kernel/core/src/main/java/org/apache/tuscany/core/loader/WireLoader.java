@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamReader;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Constructor;
 
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -49,7 +50,7 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
     private static final QName SOURCE_URI = new QName(XML_NAMESPACE_1_0, "source.uri");
     private static final QName TARGET_URI = new QName(XML_NAMESPACE_1_0, "target.uri");
 
-    @Constructor({"registry"})
+    @Constructor
     public WireLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
@@ -74,14 +75,24 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
                         if (reader.getName().equals(SOURCE_URI)) {
                             uriString = reader.getElementText();
                             if (uriString != null && uriString.trim().length() > 0) {
-                                sourceURI = new URI(uriString);
+                                QualifiedName name = new QualifiedName(uriString);
+                                if (name.getPortName() == null) {
+                                    sourceURI = new URI(uriString);
+                                } else {
+                                    sourceURI = new URI(name.getPartName() + "#" + name.getPortName());
+                                }
                             } else {
                                 throw new InvalidWireException("Wire source not defined");
                             }
                         } else if (reader.getName().equals(TARGET_URI)) {
                             uriString = reader.getElementText();
                             if (uriString != null && uriString.trim().length() > 0) {
-                                targetURI = new URI(uriString);
+                                QualifiedName name = new QualifiedName(uriString);
+                                if (name.getPortName() == null) {
+                                    targetURI = new URI(uriString);
+                                } else {
+                                    targetURI = new URI(name.getPartName() + "#" + name.getPortName());
+                                }
                             } else {
                                 throw new InvalidWireException("Wire target not defined");
                             }

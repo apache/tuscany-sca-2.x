@@ -1,9 +1,11 @@
 package org.apache.tuscany.core.implementation.system.builder;
 
+import java.net.URI;
+
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
@@ -48,7 +50,7 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
         impl.setImplementationClass(SystemComponentBuilderResourceTestCase.Foo.class);
         impl.setComponentType(type);
         ComponentDefinition<SystemImplementation> definition =
-            new ComponentDefinition<SystemImplementation>("foo", impl);
+            new ComponentDefinition<SystemImplementation>(URI.create("foo"), impl);
 
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getTargetService()).andReturn("result");

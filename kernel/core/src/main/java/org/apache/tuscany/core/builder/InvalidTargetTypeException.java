@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.builder.WiringException;
 
 /**
@@ -27,15 +29,7 @@ import org.apache.tuscany.spi.builder.WiringException;
  */
 public class InvalidTargetTypeException extends WiringException {
 
-    public InvalidTargetTypeException(String message,
-                                      String sourceName,
-                                      String referenceName,
-                                      String targetName,
-                                      String serviceName) {
-        super(message);
-        setSourceName(sourceName);
-        setReferenceName(referenceName);
-        setTargetName(targetName);
-        setTargetServiceName(serviceName);
+    public InvalidTargetTypeException(String message, URI sourceUri, URI targetUri) {
+        super(message, sourceUri, targetUri);
     }
 }

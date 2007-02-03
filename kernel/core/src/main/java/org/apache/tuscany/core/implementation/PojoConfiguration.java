@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation;
 
 import java.lang.reflect.Member;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  * @version $Rev$ $Date$
  */
 public class PojoConfiguration {
-    private String name;
+    private URI name;
     private CompositeComponent parent;
     //private ScopeContainer scopeContainer;
     private PojoObjectFactory<?> instanceFactory;
@@ -62,11 +63,11 @@ public class PojoConfiguration {
     private long maxAge = -1;
     private Class implementationClass;
 
-    public String getName() {
+    public URI getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(URI name) {
         this.name = name;
     }
 

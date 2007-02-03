@@ -60,7 +60,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
             (ServiceContract<?>) EasyMock.anyObject(), EasyMock.eq(false));
         expectLastCall().anyTimes();
         replay(wireService);
-        ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null);
+        ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null, null);
         connector.connect(iwire, owire, false);
         verify(registry);
     }
@@ -94,7 +94,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
             (ServiceContract<?>) EasyMock.anyObject(), EasyMock.eq(false));
         expectLastCall().anyTimes();
         replay(wireService);
-        ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null);
+        ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null, null);
 
         connector.connect(owire, iwire, false);
         verify(registry);

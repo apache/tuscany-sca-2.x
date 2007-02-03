@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
@@ -144,7 +143,6 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
 
     protected void resolveWires(CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
         throws InvalidWireException {
-        QualifiedName sourceName;
         ComponentDefinition componentDefinition;
         ServiceDefinition serviceDefinition;
         List<WireDefinition> wireDefns = composite.getDeclaredWires();
@@ -153,25 +151,29 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
             // validate the target before finding the source
             validateTarget(targetUri, composite);
 
-            sourceName = new QualifiedName(wire.getSource().getPath());
-            serviceDefinition = composite.getDeclaredServices().get(sourceName.getPartName());
+            String sourceName = wire.getSource().getPath(); //new QualifiedName(wire.getSource().getPath());
+            serviceDefinition = composite.getDeclaredServices().get(sourceName);
             if (serviceDefinition != null) {
                 serviceDefinition.setTarget(wire.getTarget());
             } else {
-                componentDefinition = composite.getDeclaredComponents().get(sourceName.getPartName());
+                componentDefinition = composite.getDeclaredComponents().get(sourceName);
                 if (componentDefinition != null) {
-                    ReferenceTarget referenceTarget = createReferenceTarget(sourceName.getPortName(),
+                    if (wire.getSource().getFragment() == null) {
+                        throw new InvalidWireException("Source reference not specified", sourceName);
+                    }
+                    URI referenceName = URI.create(wire.getSource().getFragment());
+                    ReferenceTarget referenceTarget = createReferenceTarget(referenceName,
                         targetUri,
                         componentDefinition);
                     componentDefinition.add(referenceTarget);
                 } else {
-                    throw new InvalidWireException("Source not found", sourceName.toString());
+                    throw new InvalidWireException("Source not found", sourceName);
                 }
             }
         }
     }
 
-    private ReferenceTarget createReferenceTarget(String componentReferenceName,
+    private ReferenceTarget createReferenceTarget(URI componentReferenceName,
                                                   URI target,
                                                   ComponentDefinition componentDefn) throws InvalidWireException {
         ComponentType componentType = componentDefn.getImplementation().getComponentType();
@@ -182,7 +184,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
             } else {
                 Map references = componentType.getReferences();
                 ReferenceDefinition definition = (ReferenceDefinition) references.values().iterator().next();
-                componentReferenceName = definition.getName();
+                componentReferenceName = definition.getUri();
             }
         }
 
@@ -198,7 +200,8 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         // check if all of the composite services have been wired
         for (ServiceDefinition svcDefn : composite.getDeclaredServices().values()) {
             if (svcDefn.getTarget() == null) {
-                throw new InvalidServiceException("Composite service not wired to a target", svcDefn.getName());
+                String identifier = svcDefn.getUri().toString();
+                throw new InvalidServiceException("Composite service not wired to a target", identifier);
             }
         }
     }
@@ -206,26 +209,26 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     private void validateTarget(URI target,
                                 CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
         throws InvalidWireException {
-        QualifiedName targetName = new QualifiedName(target.getPath());
         // if target is not a reference of the composite
-        if (composite.getReferences().get(targetName.getPartName()) == null) {
-            ComponentDefinition<?> targetDefinition = composite.getDeclaredComponents().get(targetName.getPartName());
+        String targetName = target.getPath();
+        if (composite.getReferences().get(targetName) == null) {
+            ComponentDefinition<?> targetDefinition = composite.getDeclaredComponents().get(targetName);
             // if a target component exists in this composite
             if (targetDefinition != null) {
                 Implementation<?> implementation = targetDefinition.getImplementation();
                 ComponentType<?, ?, ?> componentType = implementation.getComponentType();
                 Map<String, ? extends ServiceDefinition> services = componentType.getServices();
-                if (targetName.getPortName() == null) {
+                if (target.getFragment() == null) {
                     if (services.size() > 1 || services.isEmpty()) {
-                        throw new InvalidWireException("Ambiguous target", targetName.toString());
+                        throw new InvalidWireException("Ambiguous target", target.toString());
                     }
                 } else {
-                    if (services.get(targetName.getPortName()) == null) {
-                        throw new InvalidWireException("Invalid target service", targetName.toString());
+                    if (services.get(target.getFragment()) == null) {
+                        throw new InvalidWireException("Invalid target service", target.toString());
                     }
                 }
             } else {
-                throw new InvalidWireException("Target not found", targetName.toString());
+                throw new InvalidWireException("Target not found", target.toString());
             }
         }
     }

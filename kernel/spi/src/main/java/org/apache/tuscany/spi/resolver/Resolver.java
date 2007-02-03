@@ -30,8 +30,9 @@ public interface Resolver<T extends ModelObject> {
     /**
      * Processes a model object, resolving resources referenced by it
      *
-     * @param object the model object to process
+     * @param registry the resolver registry to callback when processing sub-elements
+     * @param object   the model object to process
      * @throws ResolutionException
      */
-    void resolve(T object) throws ResolutionException;
+    void resolve(ResolverRegistry registry, T object) throws ResolutionException;
 }

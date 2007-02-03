@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -38,7 +40,7 @@ public abstract class ReferenceBindingExtension extends AbstractSCAObject implem
     protected OutboundWire outboundWire;
     protected ServiceContract<?> bindingServiceContract;
 
-    protected ReferenceBindingExtension(String name, CompositeComponent parent) {
+    protected ReferenceBindingExtension(URI name, CompositeComponent parent) {
         super(name, parent);
     }
 

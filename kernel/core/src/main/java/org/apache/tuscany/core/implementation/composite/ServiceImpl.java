@@ -41,11 +41,11 @@ public class ServiceImpl extends AbstractSCAObject implements Service {
     private boolean system;
     private URI targetUri;
 
-    public ServiceImpl(String name, CompositeComponent parent, ServiceContract<?> contract) {
+    public ServiceImpl(URI name, CompositeComponent parent, ServiceContract<?> contract) {
         this(name, parent, contract, null, false);
     }
 
-    public ServiceImpl(String name,
+    public ServiceImpl(URI name,
                        CompositeComponent parent,
                        ServiceContract<?> contract,
                        URI targetUri,

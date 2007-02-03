@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.bootstrap;
 
+import java.net.URI;
+
 /**
  * Class that defines the names of well known component
  *
@@ -27,22 +29,22 @@ public final class ComponentNames {
     /**
      * The name of the component that forms the root of the runtime tree.
      */
-    public static final String TUSCANY_RUNTIME = "tuscany.runtime";
+    public static final URI TUSCANY_RUNTIME = URI.create("tuscany.runtime");
 
     /**
      * The name of the component that is the root of the application composite tree.
      */
-    public static final String TUSCANY_APPLICATION_ROOT = "tuscany.root.application";
+    public static final URI TUSCANY_APPLICATION_ROOT = URI.create("tuscany.root.application");
 
     /**
      * The name of the component that is the root of the system composite tree.
      */
-    public static final String TUSCANY_SYSTEM_ROOT = "tuscany.root.system";
+    public static final URI TUSCANY_SYSTEM_ROOT = URI.create("tuscany.root.system");
 
     /**
      * The name of the top-level component in the system composite tree.
      */
-    public static final String TUSCANY_SYSTEM = "tuscany.system";
+    public static final URI TUSCANY_SYSTEM = URI.create("tuscany.system");
 
     /**
      * The name of the component that contains the deployer.

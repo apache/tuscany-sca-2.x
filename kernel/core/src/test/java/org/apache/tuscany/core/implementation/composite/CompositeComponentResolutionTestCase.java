@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -38,7 +39,7 @@ import org.easymock.EasyMock;
 public class CompositeComponentResolutionTestCase extends TestCase {
 
     public void testSystemComponentResolution() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, true);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
@@ -56,7 +57,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
     }
 
     public void testComponentResolution() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);

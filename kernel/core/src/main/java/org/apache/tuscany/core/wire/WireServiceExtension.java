@@ -72,7 +72,7 @@ public abstract class WireServiceExtension implements WireService {
         InboundWire wire = new InboundWireImpl();
         ServiceContract<?> contract = service.getServiceContract();
         wire.setServiceContract(contract);
-        wire.setServiceName(service.getName());
+        wire.setUri(service.getUri());
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             // TODO handle policy
@@ -97,7 +97,7 @@ public abstract class WireServiceExtension implements WireService {
         // create outgoing reference wires
         for (ReferenceTarget referenceTarget : definition.getReferenceTargets().values()) {
             Map<String, ? extends ReferenceDefinition> references = componentType.getReferences();
-            ReferenceDefinition mappedReference = references.get(referenceTarget.getReferenceName());
+            ReferenceDefinition mappedReference = references.get(referenceTarget.getReferenceName().getFragment());
             assert mappedReference != null;
             List<OutboundWire> wires = createWire(referenceTarget, mappedReference);
             Multiplicity multiplicity = mappedReference.getMultiplicity();
@@ -121,13 +121,14 @@ public abstract class WireServiceExtension implements WireService {
         InboundWire inboundWire = new InboundWireImpl(referenceBinding.getBindingType());
         inboundWire.setServiceContract(contract);
         inboundWire.setContainer(referenceBinding);
+        inboundWire.setUri(referenceBinding.getUri());
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             inboundWire.addInvocationChain(operation, chain);
         }
         OutboundWire outboundWire = new OutboundWireImpl(referenceBinding.getBindingType());
         outboundWire.setTargetName(targetName);
-
+        outboundWire.setUri(referenceBinding.getUri());
         // [rfeng] Check if the Reference has the binding contract
         ServiceContract<?> bindingContract = referenceBinding.getBindingServiceContract();
         if (bindingContract == null) {
@@ -171,6 +172,7 @@ public abstract class WireServiceExtension implements WireService {
         }
         inboundWire.setServiceContract(bindingContract);
         inboundWire.setContainer(serviceBinding);
+        inboundWire.setUri(serviceBinding.getUri());
         for (Operation<?> operation : bindingContract.getOperations().values()) {
             InboundInvocationChain inboundChain = createInboundChain(operation);
             inboundChain.addInterceptor(new SynchronousBridgingInterceptor());
@@ -179,6 +181,7 @@ public abstract class WireServiceExtension implements WireService {
 
         OutboundWire outboundWire = new OutboundWireImpl(serviceBinding.getBindingType());
         outboundWire.setServiceContract(contract);
+        outboundWire.setUri(serviceBinding.getUri());
         outboundWire.setTargetName(new QualifiedName(targetName));
         outboundWire.setContainer(serviceBinding);
 
@@ -273,7 +276,7 @@ public abstract class WireServiceExtension implements WireService {
             OutboundWire wire = new OutboundWireImpl();
             wire.setAutowire(true);
             wire.setServiceContract(contract);
-            wire.setReferenceName(target.getReferenceName());
+            wire.setUri(target.getReferenceName());
             for (Operation<?> operation : contract.getOperations().values()) {
                 // TODO handle policy
                 OutboundInvocationChain chain = createOutboundChain(operation);
@@ -295,7 +298,7 @@ public abstract class WireServiceExtension implements WireService {
                 QualifiedName qName = new QualifiedName(uri.toString());
                 wire.setTargetName(qName);
                 wire.setServiceContract(contract);
-                wire.setReferenceName(target.getReferenceName());
+                wire.setUri(target.getReferenceName());
                 for (Operation<?> operation : contract.getOperations().values()) {
                     // TODO handle policy
                     OutboundInvocationChain chain = createOutboundChain(operation);

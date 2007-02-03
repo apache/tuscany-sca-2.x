@@ -22,6 +22,7 @@ package org.apache.tuscany.core.databinding.impl;
 import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -158,7 +159,7 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
     private class FooComponent extends AtomicComponentExtension {
 
         public FooComponent() {
-            super(null, null, null, null, null, null, 0);
+            super(URI.create("foo"), null, null, null, null, null, 0);
         }
 
         public Object createInstance() throws ObjectCreationException {

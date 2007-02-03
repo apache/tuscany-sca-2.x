@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.loader;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -31,6 +33,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
@@ -68,7 +71,11 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         Multiplicity multiplicity = StaxUtil.multiplicity(multiplicityVal, Multiplicity.ONE_ONE);
         ReferenceDefinition referenceDefinition = new ReferenceDefinition();
         referenceDefinition.setMultiplicity(multiplicity);
-        referenceDefinition.setName(name);
+        try {
+            referenceDefinition.setUri(new URI(parent.getUri().toString() + "#" + name));
+        } catch (URISyntaxException e) {
+            throw new IllegalSCDLNameException(e);
+        }
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:

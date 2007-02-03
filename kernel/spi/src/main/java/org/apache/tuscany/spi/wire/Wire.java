@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.wire;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.SCAObject;
@@ -32,6 +33,25 @@ import org.apache.tuscany.spi.model.ServiceContract;
 public interface Wire {
     QName LOCAL_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/binding/1.0", "binding.local");
 
+    /**
+     * Returns the wire URI
+     *
+     * @return the wire URI
+     */
+    URI getUri();
+
+    /**
+     * Sets the wire URI
+     *
+     * @param uri the uri
+     */
+    void setUri(URI uri);
+
+    /**
+     * Returns the wire binding type
+     *
+     * @return the wire binding type
+     */
     QName getBindingType();
 
     /**
@@ -52,11 +72,6 @@ public interface Wire {
      * @param contract the contract associated with the wire
      */
     void setServiceContract(ServiceContract contract);
-
-    /**
-     * Adds an interface type generated proxies implement
-     */
-    void addInterface(Class<?> claz);
 
     /**
      * Returns true if its invocation chains may be bypassed

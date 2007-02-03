@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -44,8 +45,9 @@ public class OutboundWireImpl implements OutboundWire {
     private Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
     private Map<Operation<?>, InboundInvocationChain> callbackTargetChains =
         new HashMap<Operation<?>, InboundInvocationChain>();
-    private String referenceName;
+    private URI uri;
     private QualifiedName targetName;
+    private URI target;
     private InboundWire targetWire;
     private SCAObject container;
     private boolean autowire;
@@ -74,24 +76,12 @@ public class OutboundWireImpl implements OutboundWire {
         return bindingType;
     }
 
-    public Object getTargetService() throws TargetResolutionException {
-        if (targetWire == null) {
-            return null;
-        }
-        // optimized, no interceptors or handlers on either end
-        return targetWire.getTargetService();
-    }
-
     public ServiceContract getServiceContract() {
         return serviceContract;
     }
 
     public void setServiceContract(ServiceContract serviceContract) {
         this.serviceContract = serviceContract;
-    }
-
-    public void addInterface(Class<?> claz) {
-        throw new UnsupportedOperationException("Additional proxy interfaces not yet supported");
     }
 
     public void setCallbackInterface(Class<?> interfaze) {
@@ -108,6 +98,58 @@ public class OutboundWireImpl implements OutboundWire {
 
     public Class[] getImplementedCallbackInterfaces() {
         return callbackInterfaces;
+    }
+
+    public URI getUri() {
+        return uri;
+    }
+
+    public void setUri(URI referenceUri) {
+        this.uri = referenceUri;
+    }
+
+    public QualifiedName getTargetName() {
+        return targetName;
+    }
+
+    public void setTargetName(QualifiedName targetName) {
+        this.targetName = targetName;
+    }
+
+    public URI getTargetUri() {
+        return target;
+    }
+
+    public void setTargetUri(URI target) {
+        this.target = target;
+    }
+
+    public boolean isAutowire() {
+        return autowire;
+    }
+
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
+    }
+
+    public boolean isOptimizable() {
+        return optimizable;
+    }
+
+    public SCAObject getContainer() {
+        return container;
+    }
+
+    public void setContainer(SCAObject container) {
+        this.container = container;
+    }
+
+    public Object getTargetService() throws TargetResolutionException {
+        if (targetWire == null) {
+            return null;
+        }
+        // optimized, no interceptors or handlers on either end
+        return targetWire.getTargetService();
     }
 
     public void setTargetWire(InboundWire wire) {
@@ -138,39 +180,4 @@ public class OutboundWireImpl implements OutboundWire {
         callbackTargetChains.put(operation, chain);
     }
 
-    public String getReferenceName() {
-        return referenceName;
-    }
-
-    public void setReferenceName(String referenceName) {
-        this.referenceName = referenceName;
-    }
-
-    public QualifiedName getTargetName() {
-        return targetName;
-    }
-
-    public void setTargetName(QualifiedName targetName) {
-        this.targetName = targetName;
-    }
-
-    public boolean isAutowire() {
-        return autowire;
-    }
-
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
-    }
-
-    public boolean isOptimizable() {
-        return optimizable;
-    }
-
-    public SCAObject getContainer() {
-        return container;
-    }
-
-    public void setContainer(SCAObject container) {
-        this.container = container;
-    }
 }

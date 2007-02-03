@@ -29,7 +29,7 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public class ServiceDefinition extends ModelObject {
-    private String name;
+    private URI uri;
     private ServiceContract serviceContract;
     private boolean remotable;
     private String callbackRefName;
@@ -40,16 +40,16 @@ public class ServiceDefinition extends ModelObject {
         bindings = new ArrayList<BindingDefinition>();
     }
 
-    public ServiceDefinition(String name, ServiceContract serviceContract, boolean remotable) {
+    public ServiceDefinition(URI uri, ServiceContract serviceContract, boolean remotable) {
         bindings = new ArrayList<BindingDefinition>();
-        this.name = name;
+        this.uri = uri;
         this.serviceContract = serviceContract;
         this.remotable = remotable;
     }
 
-    public ServiceDefinition(String name, ServiceContract serviceContract, boolean remotable, String callbackRefName) {
+    public ServiceDefinition(URI uri, ServiceContract serviceContract, boolean remotable, String callbackRefName) {
         bindings = new ArrayList<BindingDefinition>();
-        this.name = name;
+        this.uri = uri;
         this.serviceContract = serviceContract;
         this.remotable = remotable;
         this.callbackRefName = callbackRefName;
@@ -60,17 +60,17 @@ public class ServiceDefinition extends ModelObject {
      *
      * @return the service name
      */
-    public String getName() {
-        return name;
+    public URI getUri() {
+        return uri;
     }
 
     /**
      * Sets the service name
      *
-     * @param name the service name
+     * @param uri the service name
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setUri(URI uri) {
+        this.uri = uri;
     }
 
     /**

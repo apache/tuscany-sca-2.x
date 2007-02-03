@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -317,7 +318,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         contract = new ServiceContract<Object>(Object.class) {
 
         };
-        composite = new CompositeComponentExtension("foo", null, null, null) {
+        composite = new CompositeComponentExtension(new URI("foo"), null, null, null) {
 
             public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
                 throws TargetInvokerCreationException {

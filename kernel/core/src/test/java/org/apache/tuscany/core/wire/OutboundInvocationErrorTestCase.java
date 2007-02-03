@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URI;
 
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
@@ -39,7 +40,6 @@ import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
  * @version $Rev$ $Date$
  */
 public class OutboundInvocationErrorTestCase extends TestCase {
-
     private Method checkedMethod;
     private Method runtimeMethod;
     private JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
@@ -64,6 +64,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         ServiceContract<?> contract = registry.introspect(TestBean.class);
         wire.setServiceContract(contract);
+        wire.setUri(URI.create("#Wire"));
         Operation operation = contract.getOperations().get("checkedException");
         wire.addInvocationChain(operation, createChain(checkedMethod, operation));
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(TestBean.class, wire, null);
@@ -81,6 +82,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         ServiceContract<?> contract = registry.introspect(TestBean.class);
         wire.setServiceContract(contract);
+        wire.setUri(URI.create("#Wire"));
         Operation operation = contract.getOperations().get("runtimeException");
         OutboundInvocationChain chain = createChain(runtimeMethod, operation);
         wire.addInvocationChain(operation, chain);

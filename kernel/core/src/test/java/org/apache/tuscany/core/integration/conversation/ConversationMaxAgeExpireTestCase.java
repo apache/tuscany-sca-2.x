@@ -20,6 +20,7 @@ package org.apache.tuscany.core.integration.conversation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.Scope;
@@ -108,7 +109,7 @@ public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCa
 
     private JavaAtomicComponent createMaxIdleTimeAtomicComponent() throws Exception {
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setName("target");
+        configuration.setName(new URI("target"));
         configuration.setMaxAge(50);
         Constructor<Object> ctor = Object.class.getConstructor();
         configuration.setInstanceFactory(new ConversationMaxAgeExpireTestCase.MockPojoFactory(ctor));

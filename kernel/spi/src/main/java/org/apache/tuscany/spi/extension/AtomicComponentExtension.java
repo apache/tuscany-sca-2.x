@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -63,7 +64,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     private final long maxAge;
     private boolean allowsPassByReference;
 
-    protected AtomicComponentExtension(String name,
+    protected AtomicComponentExtension(URI name,
                                        CompositeComponent parent,
                                        WireService wireService,
                                        WorkContext workContext,
@@ -74,7 +75,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     }
 
-    protected AtomicComponentExtension(String name,
+    protected AtomicComponentExtension(URI name,
                                        CompositeComponent parent,
                                        WireService wireService,
                                        WorkContext workContext,
@@ -146,7 +147,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     }
 
     public void addInboundWire(InboundWire wire) {
-        serviceWires.put(wire.getServiceName(), wire);
+        serviceWires.put(wire.getUri().getFragment(), wire);
         onServiceWire(wire);
     }
 
@@ -168,7 +169,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     public void addOutboundWire(OutboundWire wire) {
         List<OutboundWire> list = new ArrayList<OutboundWire>();
         list.add(wire);
-        referenceWires.put(wire.getReferenceName(), list);
+        referenceWires.put(wire.getUri().getFragment(), list);
         onReferenceWire(wire);
     }
 
@@ -178,7 +179,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     public void addOutboundWires(List<OutboundWire> wires) {
         assert wires != null && wires.size() > 0;
-        referenceWires.put(wires.get(0).getReferenceName(), wires);
+        referenceWires.put(wires.get(0).getUri().getFragment(), wires);
         onReferenceWires(wires);
     }
 
@@ -201,7 +202,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         for (InboundWire inboundWire : getInboundWires()) {
             for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
                 Operation<?> operation = chain.getOperation();
-                String serviceName = inboundWire.getServiceName();
+                String serviceName = inboundWire.getUri().getFragment();
                 TargetInvoker invoker;
                 try {
                     invoker = createTargetInvoker(serviceName, operation, null);

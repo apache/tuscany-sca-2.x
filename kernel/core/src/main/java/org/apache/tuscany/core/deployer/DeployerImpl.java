@@ -43,7 +43,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
 import org.apache.tuscany.api.annotation.Monitor;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 
 /**
@@ -53,9 +53,9 @@ import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
  */
 public class DeployerImpl implements Deployer {
     protected XMLInputFactory xmlFactory;
-    private Loader loader;
     protected Builder builder;
     protected ScopeContainerMonitor monitor;
+    private Loader loader;
 
     public DeployerImpl(XMLInputFactory xmlFactory, Loader loader, Builder builder) {
         this.xmlFactory = xmlFactory;
@@ -91,7 +91,7 @@ public class DeployerImpl implements Deployer {
         try {
             load(parent, componentDefinition, deploymentContext);
         } catch (LoaderException e) {
-            e.addContextName(componentDefinition.getName());
+            e.addContextName(componentDefinition.getName().toString());
             throw e;
         }
         Component component = (Component) build(parent, componentDefinition, deploymentContext);
@@ -99,7 +99,7 @@ public class DeployerImpl implements Deployer {
         RuntimeEventListener listener = new RuntimeEventListener() {
             public void onEvent(Event event) {
                 scopeContainer.onEvent(event);
-                if (event instanceof CompositeStop) {
+                if (event instanceof ComponentStop) {
                     scopeContainer.stop();
                 }
             }

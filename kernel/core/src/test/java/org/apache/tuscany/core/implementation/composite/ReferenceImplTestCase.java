@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 
@@ -34,7 +36,7 @@ public class ReferenceImplTestCase extends TestCase {
         binding.setReference(EasyMock.isA(Reference.class));
         binding.start();
         EasyMock.replay(binding);
-        Reference reference = new ReferenceImpl(null, null, null);
+        Reference reference = new ReferenceImpl(URI.create("ref"), null, null);
         reference.addReferenceBinding(binding);
         reference.start();
         EasyMock.verify(binding);
@@ -46,7 +48,7 @@ public class ReferenceImplTestCase extends TestCase {
         binding.setReference(EasyMock.isA(Reference.class));
         binding.stop();
         EasyMock.replay(binding);
-        Reference reference = new ReferenceImpl(null, null, null);
+        Reference reference = new ReferenceImpl(URI.create("ref"), null, null);
         reference.addReferenceBinding(binding);
         reference.stop();
         EasyMock.verify(binding);
@@ -54,7 +56,7 @@ public class ReferenceImplTestCase extends TestCase {
     }
 
     public void testIsSystem() {
-        Reference service = new ReferenceImpl(null, null, null, true);
+        Reference service = new ReferenceImpl(URI.create("ref"), null, null, true);
         assertTrue(service.isSystem());
     }
 

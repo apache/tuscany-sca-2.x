@@ -24,8 +24,8 @@ import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.easymock.EasyMock;
 
 /**
@@ -46,7 +46,7 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.expect(component.getInitLevel()).andReturn(1);
         EasyMock.replay(component);
         scope.register(component);
-        scope.onEvent(new CompositeStart(this, null));
+        scope.onEvent(new ComponentStart(this, null));
         EasyMock.verify(monitor);
     }
 
@@ -66,8 +66,8 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.expectLastCall().andThrow(new TargetDestructionException("", ""));
         EasyMock.replay(component);
         scope.register(component);
-        scope.onEvent(new CompositeStart(this, null));
-        scope.onEvent(new CompositeStop(this, null));
+        scope.onEvent(new ComponentStart(this, null));
+        scope.onEvent(new ComponentStop(this, null));
         EasyMock.verify(monitor);
     }
 

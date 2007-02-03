@@ -32,7 +32,12 @@ public class InvalidReferenceException extends LoaderException {
         super(message, identifier);
     }
 
+    public InvalidReferenceException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+    }
+
     public InvalidReferenceException(Throwable cause) {
         super(cause);
     }
+
 }

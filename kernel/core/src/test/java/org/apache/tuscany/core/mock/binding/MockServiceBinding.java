@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.mock.binding;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
@@ -40,8 +41,8 @@ public class MockServiceBinding extends AbstractSCAObject implements ServiceBind
     private ServiceContract<?> bindingServiceContract;
 
 
-    public MockServiceBinding() {
-        super("foo", null);
+    public MockServiceBinding(URI uri) {
+        super(uri, null);
     }
 
     public QName getBindingType() {

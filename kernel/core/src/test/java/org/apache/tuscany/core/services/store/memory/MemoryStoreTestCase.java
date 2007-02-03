@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.services.store.memory;
 
+import java.net.URI;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -110,7 +111,8 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(component.getUri()).andReturn(URI.create("component"));
         EasyMock.replay(component);
         String id = UUID.randomUUID().toString();
         Object value = new Object();

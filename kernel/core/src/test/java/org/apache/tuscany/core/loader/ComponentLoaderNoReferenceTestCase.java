@@ -1,5 +1,6 @@
 package org.apache.tuscany.core.loader;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -27,19 +28,20 @@ import static org.easymock.EasyMock.isNull;
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentLoaderReferenceTestCase extends TestCase {
+public class ComponentLoaderNoReferenceTestCase extends TestCase {
     private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
     private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
     private static final String NAME = "testComponent";
     private ComponentLoader loader;
     private XMLStreamReader reader;
+    private CompositeComponent parent;
 
     /**
      * Verifies an error is thrown when an attempt to configure a non-existent reference in SCDL is made
      */
     public void testNoReferenceOnComponentType() throws LoaderException, XMLStreamException {
         try {
-            loader.load(null, null, reader, null);
+            loader.load(parent, null, reader, null);
             fail();
         } catch (UndefinedReferenceException e) {
             // expected
@@ -69,16 +71,18 @@ public class ComponentLoaderReferenceTestCase extends TestCase {
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
         LoaderRegistry mockRegistry = EasyMock.createMock(LoaderRegistry.class);
-        mockRegistry.loadComponentType((CompositeComponent) isNull(),
+        mockRegistry.loadComponentType(EasyMock.isA(CompositeComponent.class),
             EasyMock.isA(Implementation.class),
             (DeploymentContext) isNull());
-        EasyMock.expect(mockRegistry.load((CompositeComponent) isNull(),
+        EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
             (ModelObject) isNull(),
             EasyMock.isA(XMLStreamReader.class),
             (DeploymentContext) isNull())).andReturn(impl);
         EasyMock.replay(mockRegistry);
         loader = new ComponentLoader(mockRegistry, null);
-
+        parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getUri()).andReturn(URI.create("foo"));
+        EasyMock.replay(parent);
     }
 
 }

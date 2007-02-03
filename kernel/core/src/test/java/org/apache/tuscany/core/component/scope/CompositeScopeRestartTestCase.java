@@ -19,12 +19,13 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Constructor;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -49,24 +50,24 @@ public class CompositeScopeRestartTestCase extends TestCase {
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
-        configuration.setName("InitDestroy");
+        configuration.setName(new URI("InitDestroy"));
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scope);
         component.start();
 
-        scope.onEvent(new CompositeStart(this, null));
+        scope.onEvent(new ComponentStart(this, null));
         Object instance = component.getTargetInstance();
         assertSame(instance, component.getTargetInstance());
 
-        scope.onEvent(new CompositeStop(this, null));
+        scope.onEvent(new ComponentStop(this, null));
         scope.stop();
         component.stop();
 
         scope.start();
-        scope.onEvent(new CompositeStart(this, null));
+        scope.onEvent(new ComponentStart(this, null));
         component.start();
         assertNotSame(instance, component.getTargetInstance());
-        scope.onEvent(new CompositeStop(this, null));
+        scope.onEvent(new ComponentStop(this, null));
         scope.stop();
         component.stop();
     }

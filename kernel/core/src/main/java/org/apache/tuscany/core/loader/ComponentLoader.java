@@ -18,30 +18,30 @@
  */
 package org.apache.tuscany.core.loader;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
-import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
+import org.w3c.dom.Document;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 import org.apache.tuscany.spi.loader.InvalidReferenceException;
 import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -70,8 +70,10 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.util.stax.StaxUtil;
-import org.osoa.sca.annotations.Constructor;
-import org.w3c.dom.Document;
+
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
+import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
 
 /**
  * Loads a component definition from an XML-based assembly file
@@ -112,8 +114,14 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             Implementation<?> impl = loadImplementation(parent, reader, deploymentContext);
             registry.loadComponentType(parent, impl, deploymentContext);
 
+            URI uri;
+            try {
+                uri = new URI(parent.getUri().toString() + "/" + name);
+            } catch (URISyntaxException e) {
+                throw new IllegalSCDLNameException(e);
+            }
             ComponentDefinition<Implementation<?>> componentDefinition =
-                new ComponentDefinition<Implementation<?>>(name, impl);
+                new ComponentDefinition<Implementation<?>>(uri, impl);
 
             if (initLevel != null) {
                 if (initLevel.length() == 0) {
@@ -153,7 +161,9 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                             for (ReferenceDefinition ref : type.getReferences().values()) {
                                 if (ref.isAutowire()) {
                                     ReferenceTarget referenceTarget = new ReferenceTarget();
-                                    referenceTarget.setReferenceName(ref.getName());
+                                    String compName = componentDefinition.getName().toString();
+                                    URI refName = URI.create(compName + ref.getUri().toString());
+                                    referenceTarget.setReferenceName(refName);
                                     componentDefinition.add(referenceTarget);
                                 }
                             }
@@ -224,12 +234,21 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String name = reader.getAttributeValue(null, "name");
         String text = reader.getElementText();
         String target = text != null ? text.trim() : null;
-
-
         if (name == null) {
             throw new InvalidReferenceException("No name specified");
         } else if (target == null) {
             throw new InvalidReferenceException("No target specified", name);
+        }
+        URI targetURI;
+        QualifiedName qName = new QualifiedName(target);
+        try {
+            if (qName.getPortName() == null) {
+                targetURI = new URI(qName.getPartName());
+            } else {
+                targetURI = new URI(qName.getPartName() + "#" + qName.getPartName());
+            }
+        } catch (URISyntaxException e) {
+            throw new InvalidReferenceException("Illegal URI", name, e);
         }
         Implementation<?> impl = componentDefinition.getImplementation();
         ComponentType<?, ?, ?> componentType = impl.getComponentType();
@@ -240,34 +259,26 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             ReferenceDefinition definition = componentType.getReferences().get(name);
             if (definition.getBindings().isEmpty()) {
                 // TODO JFM allow selection of a default binding
-                try {
-                    LocalBindingDefinition binding = new LocalBindingDefinition(new URI(target));
-                    definition.addBinding(binding);
-                } catch (URISyntaxException e) {
-                    throw new InvalidReferenceException(e);
-                }
+                LocalBindingDefinition binding = new LocalBindingDefinition(targetURI);
+                definition.addBinding(binding);
             } else {
                 for (BindingDefinition binding : definition.getBindings()) {
-                    try {
-                        // FIXME this is bad - clarify in the spec how URIs are overriden
-                        binding.setTargetUri(new URI(target));
-                    } catch (URISyntaxException e) {
-                        throw new LoaderException(e);
-                    }
+                    // FIXME this is bad - clarify in the spec how URIs are overriden
+                    binding.setTargetUri(targetURI);
                 }
             }
         } else {
             ReferenceTarget referenceTarget = componentDefinition.getReferenceTargets().get(name);
             if (referenceTarget == null) {
                 referenceTarget = new ReferenceTarget();
-                referenceTarget.setReferenceName(name);
+                try {
+                    referenceTarget.setReferenceName(new URI(componentDefinition.getName() + "#" + name));
+                } catch (URISyntaxException e) {
+                    throw new IllegalSCDLNameException(e);
+                }
                 componentDefinition.add(referenceTarget);
             }
-            try {
-                referenceTarget.addTarget(new URI(target));
-            } catch (URISyntaxException e) {
-                throw new InvalidReferenceException(e);
-            }
+            referenceTarget.addTarget(targetURI);
         }
     }
 
@@ -310,7 +321,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             if (referenceDef.isAutowire() || !referenceDef.isRequired()) {
                 continue;
             }
-            String name = referenceDef.getName();
+            String name = referenceDef.getUri().getFragment();
             ReferenceTarget target = definition.getReferenceTargets().get(name);
             if (target == null) {
                 throw new MissingReferenceException(name);

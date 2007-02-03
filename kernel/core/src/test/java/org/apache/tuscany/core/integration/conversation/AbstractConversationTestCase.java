@@ -48,7 +48,7 @@ public abstract class AbstractConversationTestCase extends TestCase {
     protected void createRuntime() {
         workContext = new WorkContextImpl();
         WirePostProcessorRegistry processorRegistry = new WirePostProcessorRegistryImpl();
-        connector = new ConnectorImpl(null, processorRegistry, null, workContext);
+        connector = new ConnectorImpl(null, processorRegistry, null, null, workContext);
         store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
         container = new ConversationalScopeContainer(store, workContext, null);
 

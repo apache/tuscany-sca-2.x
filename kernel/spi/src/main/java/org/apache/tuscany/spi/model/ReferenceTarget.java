@@ -28,14 +28,14 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public class ReferenceTarget extends ModelObject {
-    private String referenceName;
+    private URI referenceName;
     private List<URI> targets = new ArrayList<URI>();
 
-    public String getReferenceName() {
+    public URI getReferenceName() {
         return referenceName;
     }
 
-    public void setReferenceName(String referenceName) {
+    public void setReferenceName(URI referenceName) {
         this.referenceName = referenceName;
     }
 

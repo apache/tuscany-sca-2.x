@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -54,7 +56,8 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         type.setImplementationScope(Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);
         JavaImplementation impl = new JavaImplementation(Foo.class, type);
-        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>("foo", impl);
+        URI uri = URI.create("foo");
+        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(uri, impl);
         InboundWire resourceWire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(resourceWire.getTargetService()).andReturn("result");
         EasyMock.replay(resourceWire);

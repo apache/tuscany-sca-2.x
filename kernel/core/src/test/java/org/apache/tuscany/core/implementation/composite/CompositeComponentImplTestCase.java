@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -34,15 +35,10 @@ import org.easymock.EasyMock;
  */
 public class CompositeComponentImplTestCase extends TestCase {
 
-    public void testSetUri() throws Exception {
-        CompositeComponentImpl component = new CompositeComponentImpl("foo", "foo/bar", null, null, null);
-        assertEquals("foo/bar", component.getURI());
-    }
-
     public void testRegisterSystemService() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
@@ -58,7 +54,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     public void testRegister() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
@@ -77,7 +73,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     public void testSystemServiceApplicationNamespaceIsolation() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
@@ -98,7 +94,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     public void testSystemServiceLifecycle() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.start();
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
@@ -116,7 +112,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     public void testComponentLifecycle() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.start();
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
@@ -134,7 +130,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     public void testSystemAutowire() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.start();
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
@@ -155,7 +151,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     public void testAutowire() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.start();
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();

@@ -21,6 +21,7 @@ package org.apache.tuscany.spi.extension;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import javax.xml.namespace.QName;
 
@@ -78,7 +79,7 @@ public class ReferenceTestCase extends TestCase {
 
     private class TestReferenceBinding extends ReferenceBindingExtension {
         public TestReferenceBinding() {
-            super(null, null);
+            super(URI.create("_foo"), null);
         }
 
         public QName getBindingType() {

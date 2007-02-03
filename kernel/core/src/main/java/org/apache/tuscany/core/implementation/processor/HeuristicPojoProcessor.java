@@ -94,7 +94,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
                 } catch (InvalidServiceContractException e) {
                     throw new ProcessingException(e);
                 }
-                type.getServices().put(service.getName(), service);
+                type.getServices().put(service.getUri().getFragment(), service);
             } else if (interfaces.size() == 1) {
                 JavaMappedService service;
                 try {
@@ -102,7 +102,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
                 } catch (InvalidServiceContractException e) {
                     throw new ProcessingException(e);
                 }
-                type.getServices().put(service.getName(), service);
+                type.getServices().put(service.getUri().getFragment(), service);
             }
         }
         Set<Method> methods = getAllUniquePublicProtectedMethods(clazz);
@@ -250,12 +250,12 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
             for (int i = 0; i < params.length; i++) {
                 Class param = params[i];
                 implService.processParam(param,
-                                         constructor.getGenericParameterTypes()[i],
-                                         annotations[i],
-                                         new String[0],
-                                         i,
-                                         type,
-                                         paramNames);
+                    constructor.getGenericParameterTypes()[i],
+                    annotations[i],
+                    new String[0],
+                    i,
+                    type,
+                    paramNames);
             }
         } else {
             if (!implService.areUnique(params)) {
@@ -354,7 +354,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
                     throw new AmbiguousConstructorException("Ambiguous property or reference for constructor type",
                         type.getName());
                 }
-                name = reference.getName();
+                name = reference.getUri().getFragment();
                 // do not break since ambiguities must be checked, i.e. more than one prop or ref of the same type
             }
         }
@@ -489,7 +489,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
                 } catch (InvalidServiceContractException e) {
                     throw new ProcessingException(e);
                 }
-                type.getServices().put(service.getName(), service);
+                type.getServices().put(service.getUri().getFragment(), service);
             }
         }
     }

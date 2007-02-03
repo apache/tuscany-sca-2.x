@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Field;
+import java.net.URI;
 
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -59,7 +60,8 @@ public class JavaComponentBuilderConversationIDTestCase extends TestCase {
         type.setConstructorDefinition(ctorDef);
         
         JavaImplementation impl = new JavaImplementation(Foo.class, type);
-        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>("foo", impl);
+        URI uri = URI.create("foo");
+        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(uri, impl);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, null);
         Foo foo = (Foo) component.createInstance();

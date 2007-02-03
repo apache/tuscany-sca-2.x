@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -28,7 +30,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public abstract class SystemAtomicComponentExtension extends AtomicComponentExtension {
 
-    public SystemAtomicComponentExtension(String name,
+    public SystemAtomicComponentExtension(URI name,
                                           CompositeComponent parent,
                                           int initLevel) {
         super(name, parent, null, null, null, null, initLevel);

@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
@@ -165,10 +166,10 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         JavaMappedReference ref = new JavaMappedReference();
-        ref.setName("reference");
+        ref.setUri(URI.create("#reference"));
         type.add(ref);
         JavaMappedReference ref2 = new JavaMappedReference();
-        ref2.setName("reference2");
+        ref2.setUri(URI.create("#reference2"));
         type.add(ref2);
         JavaMappedProperty<?> prop1 = new JavaMappedProperty();
         prop1.setName("string1");

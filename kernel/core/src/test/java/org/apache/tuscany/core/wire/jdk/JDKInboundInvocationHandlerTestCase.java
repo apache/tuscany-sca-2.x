@@ -21,6 +21,7 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,6 +110,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         InboundWireImpl wire = new InboundWireImpl();
         wire.setServiceContract(new ServiceContract<Foo>(Foo.class) {
         });
+        wire.setUri(URI.create("foo#bar"));
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(SimpleTarget.class, wire, workContext);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
@@ -120,6 +122,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         InboundWireImpl wire = new InboundWireImpl();
         wire.setServiceContract(new ServiceContract<Foo>(Foo.class) {
         });
+        wire.setUri(URI.create("foo#bar"));
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(SimpleTarget.class, wire, workContext);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
@@ -152,6 +155,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         wire.addInvocationChains(chains);
         wire.setServiceContract(new ServiceContract<SimpleTarget>(SimpleTarget.class) {
         });
+        wire.setUri(URI.create("foo#bar"));
         return wire;
     }
 

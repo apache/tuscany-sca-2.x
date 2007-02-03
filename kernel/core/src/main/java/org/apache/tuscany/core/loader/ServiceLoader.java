@@ -29,11 +29,12 @@ import javax.xml.stream.XMLStreamReader;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Constructor;
 
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.InvalidReferenceException;
+import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
@@ -66,9 +67,13 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                                   DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
-        String target = null;
+        URI targetUri = null;
         ServiceDefinition def = new ServiceDefinition();
-        def.setName(name);
+        try {
+            def.setUri(new URI(parent.getUri().toString() + "#" + name));
+        } catch (URISyntaxException e) {
+            throw new IllegalSCDLNameException(e);
+        }
         while (true) {
             int i = reader.next();
             switch (i) {
@@ -76,7 +81,17 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                     // there is a reference already using this qname which doesn't seem appropriate.
                     if (REFERENCE.equals(reader.getName())) {
                         String text = reader.getElementText();
-                        target = text != null ? text.trim() : null;
+                        String target = text != null ? text.trim() : null;
+                        QualifiedName qName = new QualifiedName(target);
+                        try {
+                            if (qName.getPortName() == null) {
+                                targetUri = new URI(target);
+                            } else {
+                                targetUri = new URI(qName.getPartName() + "#" + qName.getPortName());
+                            }
+                        } catch (URISyntaxException e) {
+                            throw new IllegalSCDLNameException(e);
+                        }
                     } else {
                         ModelObject o = registry.load(parent, null, reader, deploymentContext);
                         if (o instanceof ServiceContract) {
@@ -90,12 +105,8 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                     break;
                 case END_ELEMENT:
                     if (SERVICE.equals(reader.getName())) {
-                        if (target != null) {
-                            try {
-                                def.setTarget(new URI(target));
-                            } catch (URISyntaxException e) {
-                                throw new InvalidReferenceException(target, name);
-                            }
+                        if (targetUri != null) {
+                            def.setTarget(targetUri);
                         }
                         return def;
                     }

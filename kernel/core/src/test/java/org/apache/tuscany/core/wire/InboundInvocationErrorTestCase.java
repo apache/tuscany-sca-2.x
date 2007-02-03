@@ -23,6 +23,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -88,6 +89,7 @@ public class InboundInvocationErrorTestCase extends TestCase {
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         chains.put(operation, createChain(checkedMethod, checkedOperation));
         InboundWire wire = new InboundWireImpl();
+        wire.setUri(URI.create("#wire"));
         wire.addInvocationChains(chains);
         wire.setServiceContract(new ServiceContract<TestBean>(TestBean.class) {
         });
@@ -112,6 +114,7 @@ public class InboundInvocationErrorTestCase extends TestCase {
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         chains.put(operation, createChain(runtimeMethod, runtimeOperation));
         InboundWire wire = new InboundWireImpl();
+        wire.setUri(URI.create("#wire"));
         wire.addInvocationChains(chains);
         wire.setServiceContract(new ServiceContract<TestBean>(TestBean.class) {
         });

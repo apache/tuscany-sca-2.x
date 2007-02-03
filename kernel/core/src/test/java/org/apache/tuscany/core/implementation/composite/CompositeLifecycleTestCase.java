@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -36,7 +37,7 @@ import org.easymock.EasyMock;
 public class CompositeLifecycleTestCase extends TestCase {
 
     public void testLifecycle() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("foo", null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         composite.start();
         assertNull(composite.getChild("nothtere"));
         composite.stop();
@@ -61,7 +62,7 @@ public class CompositeLifecycleTestCase extends TestCase {
 
         EasyMock.replay(component);
 
-        CompositeComponent composite = new CompositeComponentImpl("foo", null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         composite.start();
         composite.register(component);
 
@@ -89,7 +90,7 @@ public class CompositeLifecycleTestCase extends TestCase {
 
         EasyMock.replay(component);
 
-        CompositeComponent composite = new CompositeComponentImpl("foo", null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         composite.start();
         composite.register(component);
 
@@ -102,8 +103,8 @@ public class CompositeLifecycleTestCase extends TestCase {
     }
 
     public void testChildStoppedBeforeParent() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
-        CompositeComponent child = new CompositeComponentImpl("child", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
+        CompositeComponent child = new CompositeComponentImpl(URI.create("child"), null, null, null);
         parent.register(child);
         parent.start();
         child.stop();

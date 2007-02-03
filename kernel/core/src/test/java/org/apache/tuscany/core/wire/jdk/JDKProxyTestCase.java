@@ -21,6 +21,7 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -38,7 +39,8 @@ public class JDKProxyTestCase extends TestCase {
     private Map<Operation<?>, InboundInvocationChain> chains;
 
     public void testCreateProxy() {
-        EasyMock.expect(inboundWire.getServiceName()).andReturn("service");
+        URI uri = URI.create("#service");
+        EasyMock.expect(inboundWire.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(inboundWire.getInvocationChains()).andReturn(chains);
         EasyMock.replay(inboundWire);
         TestInterface intf = wireService.createProxy(TestInterface.class, inboundWire);

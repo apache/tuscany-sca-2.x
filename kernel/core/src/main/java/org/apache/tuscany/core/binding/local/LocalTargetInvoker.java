@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.binding.local;
 
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
@@ -40,7 +41,9 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
         assert operation != null;
         chain = outboundWire.getInvocationChains().get(operation);
         assert chain != null;
-        fromAddress = (outboundWire.getContainer() == null) ? null : outboundWire.getContainer().getName();
+        if (outboundWire.getUri() != null) {
+            fromAddress = UriHelper.getBaseName(outboundWire.getUri());
+        }
         contractHasCallback = outboundWire.getServiceContract().getCallbackClass() != null;
     }
 

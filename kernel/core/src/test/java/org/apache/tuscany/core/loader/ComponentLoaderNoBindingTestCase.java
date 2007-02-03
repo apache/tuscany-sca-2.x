@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.loader;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -47,32 +48,38 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
     private XMLStreamReader reader;
     private ServiceDefinition service;
     private ReferenceDefinition reference;
+    private CompositeComponent parent;
 
     public void testNoServiceBinding() throws Exception {
-        loader.load(null, null, reader, null);
+        loader.load(parent, null, reader, null);
         assert service.getBindings().isEmpty();
     }
 
     public void testNoReferenceBinding() throws Exception {
-        loader.load(null, null, reader, null);
+        loader.load(parent, null, reader, null);
         assert reference.getBindings().isEmpty();
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getUri()).andReturn(URI.create("parent"));
+        EasyMock.replay(parent);
         service = new ServiceDefinition();
+        service.setUri(URI.create("service"));
         reference = new ReferenceDefinition();
+        reference.setUri(URI.create("#ref"));
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         type.add(service);
         type.add(reference);
         JavaImplementation impl = new JavaImplementation(null, type);
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
-        EasyMock.expect(registry.load((CompositeComponent) EasyMock.isNull(),
+        EasyMock.expect(registry.load(EasyMock.isA(CompositeComponent.class),
             (ModelObject) EasyMock.isNull(),
             EasyMock.isA(XMLStreamReader.class),
             (DeploymentContext) EasyMock.isNull())).andReturn(impl);
-        registry.loadComponentType((CompositeComponent) EasyMock.isNull(),
+        registry.loadComponentType(EasyMock.isA(CompositeComponent.class),
             EasyMock.isA(Implementation.class),
             (DeploymentContext) EasyMock.isNull());
         EasyMock.replay(registry);

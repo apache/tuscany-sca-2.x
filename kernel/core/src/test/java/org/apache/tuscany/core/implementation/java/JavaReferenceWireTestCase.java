@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -56,7 +57,8 @@ public class JavaReferenceWireTestCase extends TestCase {
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         wire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, OutboundInvocationChain>()).atLeastOnce();
-        EasyMock.expect(wire.getReferenceName()).andReturn("target").atLeastOnce();
+        URI uri = URI.create("#target");
+        EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
         WireService service = EasyMock.createMock(WireService.class);
@@ -71,7 +73,7 @@ public class JavaReferenceWireTestCase extends TestCase {
             }).atLeastOnce();
         EasyMock.replay(service);
         configuration.setWireService(service);
-        configuration.setName("source");
+        configuration.setName(new URI("source"));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(scope);
         component.addOutboundWire(wire);

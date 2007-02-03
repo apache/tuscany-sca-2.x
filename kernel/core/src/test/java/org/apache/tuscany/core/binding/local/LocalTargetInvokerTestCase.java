@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.Message;
@@ -73,11 +73,8 @@ public class LocalTargetInvokerTestCase extends TestCase {
         EasyMock.replay(chain);
         Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
         chains.put(operation, chain);
-        SCAObject container = EasyMock.createMock(SCAObject.class);
-        EasyMock.expect(container.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.replay(container);
-        OutboundWire wire = EasyMock.createNiceMock(OutboundWire.class);
-        EasyMock.expect(wire.getContainer()).andReturn(container).atLeastOnce();
+        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(wire.getUri()).andReturn(URI.create("foo")).atLeastOnce();
         wire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(chains);
         EasyMock.expect(wire.getServiceContract()).andReturn(contract);

@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.composite;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -39,11 +40,11 @@ public class ReferenceImpl extends AbstractSCAObject implements Reference {
     private List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
     private boolean system;
 
-    public ReferenceImpl(String name, CompositeComponent parent, ServiceContract<?> contract) {
+    public ReferenceImpl(URI name, CompositeComponent parent, ServiceContract<?> contract) {
         this(name, parent, contract, false);
     }
 
-    public ReferenceImpl(String name,
+    public ReferenceImpl(URI name,
                          CompositeComponent parent,
                          ServiceContract<?> contract,
                          boolean system) {

@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -33,8 +34,8 @@ import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -45,7 +46,6 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class SystemComponentBuilderTestCase extends TestCase {
-
     CompositeComponent parent;
     DeploymentContext deploymentContext;
     SystemComponentBuilder builder = new SystemComponentBuilder();
@@ -71,13 +71,14 @@ public class SystemComponentBuilderTestCase extends TestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(FooImpl.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
+        definition.setName(URI.create("component"));
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
         component.setScopeContainer(container);
         component.start();
-        container.onEvent(new CompositeStart(this, null));
+        container.onEvent(new ComponentStart(this, null));
         FooImpl foo = (FooImpl) component.getTargetInstance();
         assertTrue(foo.initialized);
-        container.onEvent(new CompositeStop(this, null));
+        container.onEvent(new ComponentStop(this, null));
         assertTrue(foo.destroyed);
     }
 
@@ -107,6 +108,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(FooImpl.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
+        definition.setName(URI.create("component"));
         PropertyValue<String> propVal = new PropertyValue<String>();
         propVal.setName("prop");
         propVal.setValueFactory(new SingletonObjectFactory<String>("value"));
@@ -116,7 +118,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         component.start();
         FooImpl foo = (FooImpl) component.getTargetInstance();
         assertEquals("value", foo.prop);
-        container.onEvent(new CompositeStop(this, null));
+        container.onEvent(new ComponentStop(this, null));
     }
 
     protected void setUp() throws Exception {

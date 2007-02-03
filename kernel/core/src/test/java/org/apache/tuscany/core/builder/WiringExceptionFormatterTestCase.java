@@ -20,6 +20,7 @@ package org.apache.tuscany.core.builder;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
 
 import org.apache.tuscany.spi.builder.WiringException;
 
@@ -34,31 +35,23 @@ public class WiringExceptionFormatterTestCase extends TestCase {
     WiringExceptionFormatter formatter = new WiringExceptionFormatter(EasyMock.createNiceMock(FormatterRegistry.class));
 
     public void testFormat() throws Exception {
-        WiringException e = new MockWiringException("message",
-            "identifier",
-            "source name",
-            "ref name",
-            "target name",
-            "service name");
+        WiringException e =
+            new MockWiringException("message", "identifier", URI.create("source"), URI.create("target"));
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
         formatter.write(pw, e);
         String buffer = writer.toString();
         assertTrue(buffer.indexOf("message") >= 0);
         assertTrue(buffer.indexOf("identifier") >= 0);
-        assertTrue(buffer.indexOf("source name") >= 0);
-        assertTrue(buffer.indexOf("ref name") >= 0);
-        assertTrue(buffer.indexOf("target name") >= 0);
-        assertTrue(buffer.indexOf("service name") >= 0);
+        assertTrue(buffer.indexOf("source") >= 0);
+        assertTrue(buffer.indexOf("target") >= 0);
     }
 
 
     public void testFormatNulls() throws Exception {
         WiringException e = new MockWiringException("message",
             "identifier",
-            "source name",
             null,
-            "target name",
             null);
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
@@ -66,23 +59,12 @@ public class WiringExceptionFormatterTestCase extends TestCase {
         String buffer = writer.toString();
         assertTrue(buffer.indexOf("message") >= 0);
         assertTrue(buffer.indexOf("identifier") >= 0);
-        assertTrue(buffer.indexOf("source name") >= 0);
-        assertTrue(buffer.indexOf("target name") >= 0);
     }
 
     private class MockWiringException extends WiringException {
 
-        public MockWiringException(String message, String
-            identifier,
-                                   String sourceName,
-                                   String referenceName,
-                                   String targetName,
-                                   String serviceName) {
-            super(message, identifier);
-            setSourceName(sourceName);
-            setReferenceName(referenceName);
-            setTargetName(targetName);
-            setTargetServiceName(serviceName);
+        public MockWiringException(String message, String identifier, URI source, URI reference) {
+            super(message, identifier, source, reference);
         }
     }
 }

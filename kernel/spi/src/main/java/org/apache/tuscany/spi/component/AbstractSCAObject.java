@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.event.TrueFilter;
+import org.apache.tuscany.spi.util.UriHelper;
 
 /**
  * Functionality common to all <code>SCAObject<code> implementations
@@ -40,12 +42,14 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
 
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     protected final CompositeComponent parent;
+    protected final URI uri;
     private final String name;
     private final Map<Object, Object> extensions = new HashMap<Object, Object>();
-    private String canonicalName;
 
-    public AbstractSCAObject(String name, CompositeComponent parent) {
-        this.name = name;
+    public AbstractSCAObject(URI uri, CompositeComponent parent) {
+        assert uri != null;
+        this.uri = uri;
+        this.name = UriHelper.getBaseName(uri);
         this.parent = parent;
     }
 
@@ -53,15 +57,8 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
         return name;
     }
 
-    public String getCanonicalName() {
-        if (canonicalName == null) {
-            StringBuffer b = new StringBuffer(name);
-            if (parent != null) {
-                b.insert(0, parent.getCanonicalName() + "/");
-            }
-            canonicalName = b.toString();
-        }
-        return canonicalName;
+    public URI getUri() {
+        return uri;
     }
 
     public CompositeComponent getParent() {

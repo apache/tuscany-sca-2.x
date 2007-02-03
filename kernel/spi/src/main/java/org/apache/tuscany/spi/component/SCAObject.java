@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.net.URI;
 import java.util.Map;
 
 import org.apache.tuscany.spi.Lifecycle;
@@ -32,14 +33,16 @@ import org.apache.tuscany.spi.model.Scope;
 public interface SCAObject extends EventPublisher, Lifecycle {
 
     /**
+     * Returns the artifact URI
+     *
+     * @return the artifact URI
+     */
+    URI getUri();
+
+    /**
      * Returns the artifact name
      */
     String getName();
-
-    /**
-     * Returns the canonical artifact name
-     */
-    String getCanonicalName();
 
     /**
      * Returns the parent composite, or null if the artifact does not have one

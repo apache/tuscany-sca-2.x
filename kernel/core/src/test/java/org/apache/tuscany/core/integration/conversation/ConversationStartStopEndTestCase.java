@@ -20,6 +20,7 @@ package org.apache.tuscany.core.integration.conversation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.Scope;
@@ -109,7 +110,7 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
 
     private JavaAtomicComponent createAtomicComponent() throws Exception {
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setName("target");
+        configuration.setName(new URI("target"));
         configuration.setInstanceFactory(new MockPojoFactory(Object.class.getConstructor()));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(container);

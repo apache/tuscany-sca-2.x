@@ -47,6 +47,7 @@ import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
@@ -67,12 +68,14 @@ public class CompositeBuilderTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
+        URI uri = URI.create("foo");
+        CompositeComponent parent = new CompositeComponentImpl(uri, null, null, null);
 
         CompositeBuilder builder = new CompositeBuilder();
         WireService wireService = new JDKWireService();
         builder.setWireService(wireService);
-        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(null, wireService);
+        ComponentManagerImpl mgr = new ComponentManagerImpl();
+        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(null, wireService, mgr);
         JavaComponentBuilder jBuilder = new JavaComponentBuilder();
         jBuilder.setWireService(wireService);
         builderRegistry.register(JavaImplementation.class, jBuilder);
@@ -101,7 +104,10 @@ public class CompositeBuilderTestCase extends TestCase {
         CompositeImplementation outerImpl = new CompositeImplementation();
         outerImpl.setComponentType(outerType);
 
-        return new ComponentDefinition<CompositeImplementation>(outerImpl);
+        ComponentDefinition def = new ComponentDefinition<CompositeImplementation>(outerImpl);
+        URI uri = URI.create("top");
+        def.setName(uri);
+        return def;
     }
 
     private ComponentDefinition<CompositeImplementation> createSourceComponentDef() throws Exception {
@@ -110,13 +116,13 @@ public class CompositeBuilderTestCase extends TestCase {
             new CompositeComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
         innerType.add(createInnerSourceComponentDef());
         ReferenceDefinition reference = new ReferenceDefinition();
-        reference.setName("TargetComponentRef");
+        reference.setUri(URI.create("#TargetComponentRef"));
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         JavaServiceContract targetContract = registry.introspect(Target.class);
         reference.setServiceContract(targetContract);
         innerType.add(reference);
         ServiceDefinition service = new ServiceDefinition();
-        service.setName("InnerSourceService");
+        service.setUri(URI.create("#InnerSourceService"));
         JavaServiceContract sourceContract = registry.introspect(Source.class);
         service.setServiceContract(sourceContract);
         service.setTarget(new URI("InnerSourceComponent"));
@@ -125,10 +131,11 @@ public class CompositeBuilderTestCase extends TestCase {
         CompositeImplementation innerImpl = new CompositeImplementation();
         innerImpl.setComponentType(innerType);
 
+        URI uri = URI.create("SourceComponent");
         ComponentDefinition<CompositeImplementation> sourceComponentDefinition =
-            new ComponentDefinition<CompositeImplementation>("SourceComponent", innerImpl);
+            new ComponentDefinition<CompositeImplementation>(uri, innerImpl);
         ReferenceTarget refTarget = new ReferenceTarget();
-        refTarget.setReferenceName("TargetComponentRef");
+        refTarget.setReferenceName(URI.create("#TargetComponentRef"));
         refTarget.addTarget(new URI("TargetComponent"));
         sourceComponentDefinition.add(refTarget);
 
@@ -141,7 +148,7 @@ public class CompositeBuilderTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         sourceType.setImplementationScope(Scope.COMPOSITE);
         JavaMappedReference reference = new JavaMappedReference();
-        reference.setName("targetReference");
+        reference.setUri(URI.create("#targetReference"));
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> targetContract = registry.introspect(Target.class);
         targetContract.setCallbackClass(OtherTarget.class);
@@ -153,17 +160,18 @@ public class CompositeBuilderTestCase extends TestCase {
         ServiceContract<?> sourceContract = registry.introspect(Source.class);
 
         JavaMappedService sourceServiceDefinition = new JavaMappedService();
-        sourceServiceDefinition.setName("Source");
+        sourceServiceDefinition.setUri(URI.create("#Source"));
         sourceServiceDefinition.setServiceContract(sourceContract);
 
         sourceType.add(sourceServiceDefinition);
         sourceType.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(SourceImpl.class.getConstructor()));
         JavaImplementation sourceImpl = new JavaImplementation(SourceImpl.class, sourceType);
+        URI uri = URI.create("InnerSourceComponent");
         ComponentDefinition<JavaImplementation> innerSourceComponentDefinition =
-            new ComponentDefinition<JavaImplementation>("InnerSourceComponent", sourceImpl);
+            new ComponentDefinition<JavaImplementation>(uri, sourceImpl);
         ReferenceTarget refTarget = new ReferenceTarget();
-        refTarget.setReferenceName("targetReference");
-        refTarget.addTarget(new URI("TargetComponentRef"));
+        refTarget.setReferenceName(URI.create("#targetReference"));
+        refTarget.addTarget(new URI("#TargetComponentRef"));
         innerSourceComponentDefinition.add(refTarget);
 
         return innerSourceComponentDefinition;
@@ -181,14 +189,15 @@ public class CompositeBuilderTestCase extends TestCase {
         targetContract.setCallbackName("OtherTarget");
 
         JavaMappedService serviceDefinition = new JavaMappedService();
-        serviceDefinition.setName("Target");
+        serviceDefinition.setUri(URI.create("Target"));
         serviceDefinition.setServiceContract(targetContract);
         serviceDefinition.setCallbackReferenceName("otherTarget");
 
         targetType.add(serviceDefinition);
         targetType.setConstructorDefinition(new ConstructorDefinition<TargetImpl>(TargetImpl.class.getConstructor()));
         JavaImplementation targetImpl = new JavaImplementation(TargetImpl.class, targetType);
-        return new ComponentDefinition<JavaImplementation>("TargetComponent", targetImpl);
+        URI uri = URI.create("TargetComponent");
+        return new ComponentDefinition<JavaImplementation>(uri, targetImpl);
     }
 
     protected void setUp() throws Exception {

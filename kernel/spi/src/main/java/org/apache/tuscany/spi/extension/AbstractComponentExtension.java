@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.extension;
 
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Component;
@@ -32,9 +33,6 @@ import org.apache.tuscany.spi.model.PropertyValue;
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
     protected ScopeContainer scopeContainer;
 
-    /**
-     * Default property values.
-     */
     private Map<String, PropertyValue<?>> defaultPropertyValues;
 
     /**
@@ -43,7 +41,7 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
      * @param name   Name of the component.
      * @param parent Parent of the component.
      */
-    public AbstractComponentExtension(String name, CompositeComponent parent) {
+    public AbstractComponentExtension(URI name, CompositeComponent parent) {
         super(name, parent);
     }
 

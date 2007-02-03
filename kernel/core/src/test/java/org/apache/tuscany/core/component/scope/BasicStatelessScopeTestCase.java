@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
@@ -112,7 +115,11 @@ public class BasicStatelessScopeTestCase extends TestCase {
     private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(factory);
-        configuration.setName("foo");
+        try {
+            configuration.setName(new URI("foo"));
+        } catch (URISyntaxException e) {
+            // will not happen
+        }
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scopeContainer);
         return component;

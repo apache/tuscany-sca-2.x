@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
@@ -36,7 +37,7 @@ import org.apache.tuscany.spi.wire.Wire;
  */
 public class LocalReferenceBinding extends ReferenceBindingExtension {
 
-    public LocalReferenceBinding(String name, CompositeComponent parent) throws CoreRuntimeException {
+    public LocalReferenceBinding(URI name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
     }
 
