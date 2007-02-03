@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
+
 import java.net.URL;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 
@@ -55,7 +54,7 @@ public class AbstractExtensionDeployer {
         this.parent = parent;
     }
 
-    protected void deployExtension(File file) throws IllegalSCDLNameException {
+    protected void deployExtension(File file) {
         // extension name is file name less any extension
         String name = file.getName();
         int dot = name.lastIndexOf('.');
@@ -73,7 +72,7 @@ public class AbstractExtensionDeployer {
         deployExtension(name, url);
     }
 
-    protected void deployExtension(String name, URL url) throws IllegalSCDLNameException {
+    protected void deployExtension(String name, URL url) {
         // FIXME for now, assume this class's ClassLoader is the Tuscany system classloader
         // FIXME we should really use the one associated with the parent composite
         CompositeClassLoader extensionCL = new CompositeClassLoader(getClass().getClassLoader());
@@ -99,12 +98,7 @@ public class AbstractExtensionDeployer {
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
         implementation.setScdlLocation(scdlLocation);
         implementation.setClassLoader(extensionCL);
-        URI uri;
-        try {
-            uri = new URI(parent.getUri().toString() + "/" + name);
-        } catch (URISyntaxException e) {
-            throw new IllegalSCDLNameException(e);
-        }
+        URI uri = parent.getUri().resolve(name);
         ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(uri, implementation);
 
