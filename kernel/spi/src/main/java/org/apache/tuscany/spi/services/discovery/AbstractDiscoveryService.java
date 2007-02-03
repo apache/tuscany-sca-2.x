@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -120,6 +121,17 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
      */
     public final ResponseListener getResponseListener(QName messageType) {
         return responseListenerMap.get(messageType);
+    }
+    
+    /**
+     * Broadcasts the messages to all runtimes in the domain.
+     * 
+     * @param content Message content.
+     * @return The message id. 
+     * @throws DiscoveryException In case of discovery errors.
+     */
+    public int broadcastMessage(XMLStreamReader content) throws DiscoveryException {
+        return sendMessage(null, content);
     }
     
     /**

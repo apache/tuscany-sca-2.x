@@ -45,6 +45,15 @@ public interface DiscoveryService {
     int sendMessage(String runtimeId, XMLStreamReader content) throws DiscoveryException;
     
     /**
+     * Broadcasts the messages to all runtimes in the domain.
+     * 
+     * @param content Message content.
+     * @return The message id. 
+     * @throws DiscoveryException In case of discovery errors.
+     */
+    int broadcastMessage(XMLStreamReader content) throws DiscoveryException;
+    
+    /**
      * Registers a request listener for async messages. Request listeners handle 
      * unslolicited async messages sent by recipients.
      * 
