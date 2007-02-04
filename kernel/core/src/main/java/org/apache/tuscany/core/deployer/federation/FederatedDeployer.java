@@ -19,22 +19,18 @@
 package org.apache.tuscany.core.deployer.federation;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.builder.PhysicalComponentBuilder;
-import org.apache.tuscany.spi.builder.PhysicalComponentBuilderRegistry;
+import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.marshaller.MarshalException;
-import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
-import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 /**
  * Federated deployer that deploys components in response to asynchronous 
@@ -43,10 +39,7 @@ import org.apache.tuscany.spi.util.stax.StaxUtil;
  * @version $Revision$ $Date$
  *
  */
-public class FederatedDeployer implements RequestListener {
-    
-    /** QName of the message. */
-    private static final QName MESSAGE_TYPE = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
+public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition, C extends Component> implements RequestListener {
     
     /** Marshaller registry. */
     private ModelMarshallerRegistry marshallerRegistry;
@@ -66,20 +59,13 @@ public class FederatedDeployer implements RequestListener {
         
         try {
             
-            final QName qualifiedName = StaxUtil.getDocumentElementQName(content);
-            
-            final ModelMarshaller<PhysicalComponentDefinition> marshaller = marshallerRegistry.getMarshaller(qualifiedName);
-            final PhysicalComponentDefinition definition = marshaller.unmarshall(content);
-            
-            final PhysicalComponentBuilder builder = builderRegistry.getBuilder(definition.getClass());
-            final Component component = builder.build(definition);
+            final PCD definition = unmarshallDefinition(content);            
+            final C component = buildComponent(definition);
             
             component.prepare();
             component.start();
             
         } catch (MarshalException ex) {
-            return null;
-        } catch (XMLStreamException ex) {
             return null;
         } catch (BuilderException ex) {
             return null;
@@ -96,7 +82,8 @@ public class FederatedDeployer implements RequestListener {
      */
     @Autowire
     public void setDiscoveryService(DiscoveryService discoveryService) {
-        discoveryService.registerRequestListener(MESSAGE_TYPE, this);
+        QName messageType = getQualifiedName();
+        discoveryService.registerRequestListener(messageType, this);
     }
     
     /**
@@ -116,5 +103,44 @@ public class FederatedDeployer implements RequestListener {
     public void setBuilderRegistry(PhysicalComponentBuilderRegistry builderRegistry) {
         this.builderRegistry = builderRegistry;
     }
+    
+    /**
+     * Gets the builder registry.
+     * @return Return the builder registry.
+     */
+    protected PhysicalComponentBuilderRegistry getBuilderRegistry() {
+        return builderRegistry;
+    }
+    
+    /**
+     * Gets the marshaller registry.
+     * @return Return the marshaller registry.
+     */
+    protected ModelMarshallerRegistry getMarshallerRegistry() {
+        return marshallerRegistry;
+    }
+    
+    /**
+     * Returns the qualified name of the root element of the marshalled component 
+     * definition this deployer is interested in. 
+     * @return The qualified name of the document element.
+     */
+    protected abstract QName getQualifiedName();
+    
+    /**
+     * Unmarshalls the XML stream to a component definition.
+     * @param content XML content stream.
+     * @return Physical component definition.
+     * @throws MarshalException If unable to marshall the component definition.
+     */
+    protected abstract PCD unmarshallDefinition(XMLStreamReader content) throws MarshalException;
+    
+    /**
+     * Builds the component from the physical component definition.
+     * @param componentDefinition Component definition.
+     * @return Component instance.
+     * @throws BuilderException If unable to build the component.
+     */
+    protected abstract C buildComponent(PCD componentDefinition) throws BuilderException;
 
 }

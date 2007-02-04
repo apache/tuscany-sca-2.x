@@ -50,14 +50,4 @@ public interface ModelMarshallerRegistry {
      */
     <PCD extends PhysicalComponentDefinition> ModelMarshaller<PCD> getMarshaller(Class<PCD> modelClass);
 
-
-    /**
-     * Gets a marshaller for unmarshalling XML with the specified qualified name.
-     * 
-     * @param <PCD> Physical component definition.
-     * @param qualifiedName Qualified name of the document element of the marshaleld data.
-     * @return Marshaller capable for unmarshalling the document type.
-     */
-    <PCD extends PhysicalComponentDefinition> ModelMarshaller<PCD> getMarshaller(QName qualifiedName);
-    
 }

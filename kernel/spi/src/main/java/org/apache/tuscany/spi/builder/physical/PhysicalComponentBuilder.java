@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.builder;
+package org.apache.tuscany.spi.builder.physical;
 
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
@@ -27,7 +28,7 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  * @version $Rev$ $Date$
  *
  */
-public interface PhysicalComponentBuilder<PCD extends PhysicalComponentDefinition> {
+public interface PhysicalComponentBuilder<PCD extends PhysicalComponentDefinition, C extends Component> {
 
     /**
      * Builds a component from its physical component definition.
@@ -36,6 +37,6 @@ public interface PhysicalComponentBuilder<PCD extends PhysicalComponentDefinitio
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */
-    Component build(PCD componentDefinition) throws BuilderException;
+    C build(PCD componentDefinition) throws BuilderException;
 
 }
