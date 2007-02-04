@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaFederatedDeployer extends FederatedDeployer<JavaPhysicalComponentDefinition, JavaAtomicComponent> {
+public class JavaComponentDeployer extends FederatedDeployer<JavaPhysicalComponentDefinition, JavaAtomicComponent> {
 
     /** QName of the serialized Java physical component definition.. */
     private static final QName MESSAGE_TYPE =
