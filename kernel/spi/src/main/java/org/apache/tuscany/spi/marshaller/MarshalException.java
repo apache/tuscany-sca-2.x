@@ -24,13 +24,13 @@ import org.apache.tuscany.api.TuscanyException;
  * Super class for all marshalling/unmarshalling exceptions.
  * 
  * @version $Rev$ $Date$
- *
  */
 @SuppressWarnings("serial")
 public class MarshalException extends TuscanyException {
 
     /**
      * Initializes the exception message.
+     * 
      * @param message Message for the exception.
      */
     public MarshalException(String message) {
@@ -39,6 +39,7 @@ public class MarshalException extends TuscanyException {
 
     /**
      * Initializes the root cause.
+     * 
      * @param cause Root cause for the exception.
      */
     public MarshalException(Throwable cause) {

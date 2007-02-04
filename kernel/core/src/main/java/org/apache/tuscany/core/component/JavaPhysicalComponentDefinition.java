@@ -27,10 +27,10 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  *
  */
 public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition {
-    
+
     // The byte code for the instance factory
     private byte[] instanceFactoryByteCode;
-    
+
     /**
      * Gets the byte code for the instance factory.
      * @return Byte code for the instance factory.
@@ -38,7 +38,7 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
     public byte[] getInstanceFactoryByteCode() {
         return instanceFactoryByteCode;
     }
-    
+
     /**
      * Sets the byte code for the instance factory.
      * @param instanceFactoryByteCode Byte code for the instance factory.

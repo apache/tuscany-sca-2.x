@@ -36,7 +36,7 @@ public interface PhysicalComponentBuilderRegistry {
      * @param builder Builder for the physical component definition.
      */
     <PCD extends PhysicalComponentDefinition, C extends Component> void register(Class<PCD> definitionClass,
-                                                            PhysicalComponentBuilder<PCD, C> builder);
+                                                                                 PhysicalComponentBuilder<PCD, C> builder);
 
     /**
      * Gets a builder for the specified physical component builder.
