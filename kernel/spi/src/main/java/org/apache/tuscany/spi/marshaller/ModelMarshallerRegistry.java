@@ -38,14 +38,15 @@ public interface ModelMarshallerRegistry {
      * @param marshaller Marshaller responsible for marshalling.
      */
     <PCD extends PhysicalComponentDefinition> void registerMarshaller(Class<PCD> modelClass,
-                                                            QName qualifiedName,
-                                                            ModelMarshaller<PCD> marshaller);
-    
+                                                                      QName qualifiedName,
+                                                                      ModelMarshaller<PCD> marshaller);
+
     /**
      * Gets a marshaller for marshalling the registered type.
      * 
      * @param <PCD> Physical component definition.
-     * @param modelClass Type of the physical model definition that needs to be marshalled.
+     * @param modelClass Type of the physical model definition that needs to be
+     *            marshalled.
      * @return Marshaller capable for marshalling the specified type.
      */
     <PCD extends PhysicalComponentDefinition> ModelMarshaller<PCD> getMarshaller(Class<PCD> modelClass);

@@ -34,15 +34,16 @@ import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
  * Federated deployer responsible for deploying Java components.
  * 
  * @version $Rev$ $Date$
- *
  */
 public class JavaFederatedDeployer extends FederatedDeployer<JavaPhysicalComponentDefinition, JavaAtomicComponent> {
-    
+
     /** QName of the serialized Java physical component definition.. */
-    private static final QName MESSAGE_TYPE = new QName("http://tuscany.apache.org/xmlns/1.0-SNAPSHOT", "component-java");
+    private static final QName MESSAGE_TYPE =
+        new QName("http://tuscany.apache.org/xmlns/1.0-SNAPSHOT", "component-java");
 
     /**
      * Unmarshalls the XML stream to a component definition.
+     * 
      * @param content XML content stream.
      * @return Physical component definition.
      * @throws MarshalException If unable to marshall the component definition.
@@ -51,33 +52,38 @@ public class JavaFederatedDeployer extends FederatedDeployer<JavaPhysicalCompone
     protected QName getQualifiedName() {
         return MESSAGE_TYPE;
     }
-    
+
     /**
      * Builds the component from the physical component definition.
+     * 
      * @param componentDefinition Component definition.
      * @return Component instance.
      * @throws BuilderException If unable to build the component.
      */
     @Override
-    protected JavaAtomicComponent buildComponent(JavaPhysicalComponentDefinition componentDefinition) throws BuilderException {
-        
+    protected JavaAtomicComponent buildComponent(JavaPhysicalComponentDefinition componentDefinition)
+        throws BuilderException {
+
         PhysicalComponentBuilderRegistry builderRegistry = getBuilderRegistry();
-        PhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaAtomicComponent> builder = builderRegistry.getBuilder(JavaPhysicalComponentDefinition.class);
+        PhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaAtomicComponent> builder =
+            builderRegistry.getBuilder(JavaPhysicalComponentDefinition.class);
         return builder.build(componentDefinition);
-        
+
     }
 
     /**
-     * Returns the qualified name interested in by this deployer. 
+     * Returns the qualified name interested in by this deployer.
+     * 
      * @return The qualified name of the document element.
      */
     @Override
     protected JavaPhysicalComponentDefinition unmarshallDefinition(XMLStreamReader content) throws MarshalException {
-        
+
         ModelMarshallerRegistry marshallerRegistry = getMarshallerRegistry();
-        ModelMarshaller<JavaPhysicalComponentDefinition> marshaller = marshallerRegistry.getMarshaller(JavaPhysicalComponentDefinition.class);
+        ModelMarshaller<JavaPhysicalComponentDefinition> marshaller =
+            marshallerRegistry.getMarshaller(JavaPhysicalComponentDefinition.class);
         return marshaller.unmarshall(content);
-        
+
     }
 
 }

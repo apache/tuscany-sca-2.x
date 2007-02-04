@@ -26,14 +26,14 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  * Interface for building components from physical component definitions.
  * 
  * @version $Rev$ $Date$
- *
  */
 public interface PhysicalComponentBuilder<PCD extends PhysicalComponentDefinition, C extends Component> {
 
     /**
      * Builds a component from its physical component definition.
      * 
-     * @param componentDefinition Physical component definition of the component to be built.
+     * @param componentDefinition Physical component definition of the component
+     *            to be built.
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */

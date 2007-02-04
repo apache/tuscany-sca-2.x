@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  *
  */
 public interface ModelMarshaller<PCD extends PhysicalComponentDefinition> {
-    
+
     /**
      * Marshalls the physical component definition to the specified stream writer.
      * 
@@ -39,7 +39,7 @@ public interface ModelMarshaller<PCD extends PhysicalComponentDefinition> {
      * @throws MarshalException In case of any marshalling error.
      */
     void marshall(PCD modelObject, XMLStreamWriter writer) throws MarshalException;
-    
+
     /**
      * Unmarshalls an XML stream to a model object.
      * 
