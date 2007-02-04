@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.builder;
+package org.apache.tuscany.spi.builder.physical;
 
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -34,8 +35,8 @@ public interface PhysicalComponentBuilderRegistry {
      * @param definitionClass Class of the physical component definition.
      * @param builder Builder for the physical component definition.
      */
-    <PCD extends PhysicalComponentDefinition> void register(Class<PCD> definitionClass,
-                                                            PhysicalComponentBuilder<PCD> builder);
+    <PCD extends PhysicalComponentDefinition, C extends Component> void register(Class<PCD> definitionClass,
+                                                            PhysicalComponentBuilder<PCD, C> builder);
 
     /**
      * Gets a builder for the specified physical component builder.
@@ -44,6 +45,6 @@ public interface PhysicalComponentBuilderRegistry {
      * @param definitionClass Class of the physical component definition.
      * @return Builder for the physical component definition.
      */
-    PhysicalComponentBuilder getBuilder(Class definitionClass);
+    <PCD extends PhysicalComponentDefinition, C extends Component> PhysicalComponentBuilder<PCD, C> getBuilder(Class<PCD> definitionClass);
 
 }
