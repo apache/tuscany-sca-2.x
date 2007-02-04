@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.PhysicalComponentBuilder;
@@ -44,7 +43,7 @@ import org.apache.tuscany.spi.util.stax.StaxUtil;
  * @version $Revision$ $Date$
  *
  */
-public class FederatedDeployer extends DeployerImpl implements RequestListener {
+public class FederatedDeployer implements RequestListener {
     
     /** QName of the message. */
     private static final QName MESSAGE_TYPE = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
