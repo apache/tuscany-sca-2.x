@@ -260,6 +260,21 @@ public abstract class StaxUtil {
 
     }
 
+    /**
+     * Returns the qualified name of the document element. This will 
+     * move the reader to the first element in the tree.
+     *
+     * @param reader XML reader that needs to be checked.
+     * @return Qualified name of the document element.
+     * @throws XMLStreamException In case of an xml stream error.
+     */
+    public static QName getDocumentElementQName(XMLStreamReader reader) throws XMLStreamException {
+
+        reader.next();
+        return reader.getName();
+
+    }
+
     /*
      * Renders end element markup.
      */

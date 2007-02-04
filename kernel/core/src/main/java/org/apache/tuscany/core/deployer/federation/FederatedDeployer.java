@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -30,7 +29,6 @@ import org.apache.tuscany.spi.builder.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.PrepareException;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
@@ -67,22 +65,18 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
     @SuppressWarnings("unchecked")
     public XMLStreamReader onRequest(XMLStreamReader content) {
         
-        final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
-        scopeContainer.start();
-        
         try {
             
-            // TODO This should be changed
-            final String xml = StaxUtil.serialize(content);
-            final QName qualifiedName = StaxUtil.getDocumentElementQName(xml);
-            final XMLStreamReader newReader = StaxUtil.createReader(xml);
+            final QName qualifiedName = StaxUtil.getDocumentElementQName(content);
             
             final ModelMarshaller<PhysicalComponentDefinition> marshaller = marshallerRegistry.getMarshaller(qualifiedName);
-            final PhysicalComponentDefinition definition = marshaller.unmarshall(newReader);
+            final PhysicalComponentDefinition definition = marshaller.unmarshall(content);
             
             final PhysicalComponentBuilder builder = builderRegistry.getBuilder(definition.getClass());
             final Component component = builder.build(definition);
+            
             component.prepare();
+            component.start();
             
         } catch (MarshalException ex) {
             return null;
