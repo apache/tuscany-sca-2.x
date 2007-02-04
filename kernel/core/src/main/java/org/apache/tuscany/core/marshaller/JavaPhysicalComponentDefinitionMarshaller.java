@@ -24,9 +24,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
-import org.apache.tuscany.spi.model.ComponentDefinition;
 
 /**
  * Marshaller used for marshalling and unmarshalling component definition.
@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
  * @version $Rev$ $Date$
  *
  */
-public class ComponentDefinitionMarshaller implements ModelMarshaller<ComponentDefinition<?>> {
+public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshaller<JavaPhysicalComponentDefinition> {
 
     /**
      * Marshalls the component definition object to the specified stream writer.
@@ -43,30 +43,28 @@ public class ComponentDefinitionMarshaller implements ModelMarshaller<ComponentD
      * @param writer Stream writer to which the infoset is serialized.
      * @throws MarshalException In case of any marshalling error.
      */
-    public void marshall(ComponentDefinition<?> modelObject, XMLStreamWriter writer) throws MarshalException {
-        
+    public void marshall(JavaPhysicalComponentDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
+
         try {
             writer.writeStartDocument();
             writer.writeEndDocument();
         } catch (XMLStreamException ex) {
             throw new MarshalException(ex);
         }
-        
+
     }
 
     /**
      * Unmarshalls the component definition object from an XML stream.
      * 
      * @param reader XML stream from where the marshalled XML is read.
-     * @param upconvert Whether to upconvert the object is the current runtime
-     * supports a higher version of the model object.
      * @return Hydrated component definition object.
      * @throws MarshalException In case of any unmarshalling error.
      */
-    public ComponentDefinition<?> unmarshall(XMLStreamReader reader, boolean upconvert) throws MarshalException {
+    public JavaPhysicalComponentDefinition unmarshall(XMLStreamReader reader) throws MarshalException {
         try {
             while (true) {
-                ComponentDefinition<?> definition = null;
+                JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
                 switch (reader.next()) {
                     case END_DOCUMENT:
                         return definition;

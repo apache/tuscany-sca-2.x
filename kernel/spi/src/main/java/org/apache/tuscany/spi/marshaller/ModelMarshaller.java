@@ -21,34 +21,32 @@ package org.apache.tuscany.spi.marshaller;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Interface for marshalling/unmarshalling internal model objects.
+ * Interface for marshalling/unmarshalling internal physical component definitions.
  * 
  * @version $Rev$ $Date$
  *
  */
-public interface ModelMarshaller<MD extends ModelObject> {
+public interface ModelMarshaller<PCD extends PhysicalComponentDefinition> {
     
     /**
-     * Marshalls the model object to the specified stream writer.
+     * Marshalls the physical component definition to the specified stream writer.
      * 
-     * @param modelObject Model object to be serialized.
+     * @param modelObject Physical component definition to be serialized.
      * @param writer Stream writer to which the infoset is serialized.
      * @throws MarshalException In case of any marshalling error.
      */
-    void marshall(MD modelObject, XMLStreamWriter writer) throws MarshalException;
+    void marshall(PCD modelObject, XMLStreamWriter writer) throws MarshalException;
     
     /**
      * Unmarshalls an XML stream to a model object.
      * 
      * @param reader XML stream from where the marshalled XML is read.
-     * @param upconvert Whether to upconvert the object is the current runtime
-     * supports a higher version of the model object.
-     * @return Hydrated model object.
+     * @return Physical component definition.
      * @throws MarshalException In case of any unmarshalling error.
      */
-    MD unmarshall(XMLStreamReader reader, boolean upconvert) throws MarshalException;
+    PCD unmarshall(XMLStreamReader reader) throws MarshalException;
 
 }

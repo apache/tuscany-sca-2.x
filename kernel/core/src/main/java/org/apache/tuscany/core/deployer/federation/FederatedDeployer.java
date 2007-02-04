@@ -19,23 +19,25 @@
 package org.apache.tuscany.core.deployer.federation;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.DeployerImpl;
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.PhysicalComponentBuilder;
+import org.apache.tuscany.spi.builder.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
-import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
+import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
+import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 /**
  * Federated deployer that deploys components in response to asynchronous 
@@ -49,8 +51,11 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
     /** QName of the message. */
     private static final QName MESSAGE_TYPE = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
     
-    /** Marshaller. */
-    private ModelMarshaller<ComponentDefinition<?>> marshaller;
+    /** Marshaller registry. */
+    private ModelMarshallerRegistry marshallerRegistry;
+    
+    /** Physical component builder registry. */
+    private PhysicalComponentBuilderRegistry builderRegistry;
     
     /**
      * Deploys the component.
@@ -59,25 +64,29 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
      * 
      * TODO Handle response messages.
      */
+    @SuppressWarnings("unchecked")
     public XMLStreamReader onRequest(XMLStreamReader content) {
-        
-        // TODO get this from somewhere
-        final CompositeComponent parent = null;
         
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
         
-        final DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
-
         try {
             
-            final ComponentDefinition<?> definition = marshaller.unmarshall(content, false);
-            final Component component =  (Component) builder.build(parent, definition, deploymentContext);
+            // TODO This should be changed
+            final String xml = StaxUtil.serialize(content);
+            final QName qualifiedName = StaxUtil.getDocumentElementQName(xml);
+            final XMLStreamReader newReader = StaxUtil.createReader(xml);
             
+            final ModelMarshaller<PhysicalComponentDefinition> marshaller = marshallerRegistry.getMarshaller(qualifiedName);
+            final PhysicalComponentDefinition definition = marshaller.unmarshall(newReader);
+            
+            final PhysicalComponentBuilder builder = builderRegistry.getBuilder(definition.getClass());
+            final Component component = builder.build(definition);
             component.prepare();
-            component.start();
             
         } catch (MarshalException ex) {
+            return null;
+        } catch (XMLStreamException ex) {
             return null;
         } catch (BuilderException ex) {
             return null;
@@ -98,12 +107,21 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
     }
     
     /**
-     * Injects the model marshaller.
-     * @param marshaller Marshaller.
+     * Injects the model marshaller registry.
+     * @param marshallerRegistry Marshaller registry.
      */
     @Autowire
-    public void setMarshaller(ModelMarshaller<ComponentDefinition<?>> marshaller) {
-        this.marshaller = marshaller;
+    public void setMarshallerRegistry(ModelMarshallerRegistry marshallerRegistry) {
+        this.marshallerRegistry = marshallerRegistry;
+    }
+    
+    /**
+     * Injects the builder registry.
+     * @param builderRegistry Builder registry.
+     */
+    @Autowire
+    public void setBuilderRegistry(PhysicalComponentBuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
     }
 
 }

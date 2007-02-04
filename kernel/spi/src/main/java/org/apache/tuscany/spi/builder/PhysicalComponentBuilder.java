@@ -16,26 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.component.scope;
+package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Provides lifecycle management for an implementation instance associated with an {@link
- * org.apache.tuscany.spi.component.AtomicComponent} for use by the atomic component's associated {@link
- * org.apache.tuscany.spi.component.ScopeContainer}
- *
+ * Interface for building components from physical component definitions.
+ * 
  * @version $Rev$ $Date$
+ *
  */
-public interface InstanceWrapper<T> {
+public interface PhysicalComponentBuilder<PCD extends PhysicalComponentDefinition> {
 
-    T getInstance();
-
-    boolean isStarted();
-
-    void start() throws TargetInitializationException;
-
-    void stop() throws TargetDestructionException;
+    /**
+     * Builds a component from its physical component definition.
+     * 
+     * @param componentDefinition Physical component definition of the component to be built.
+     * @return A component instance that is ready to go live.
+     * @throws BuilderException If unable to build the component.
+     */
+    Component build(PCD componentDefinition) throws BuilderException;
 
 }
