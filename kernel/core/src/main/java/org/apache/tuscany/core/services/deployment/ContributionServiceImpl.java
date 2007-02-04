@@ -43,6 +43,10 @@ public class ContributionServiceImpl implements ContributionService, Contributio
         registry.put(processor.getContentType(), processor);
     }
 
+    public void unregister(String contentType) {
+        registry.remove(contentType);
+    }
+
     public URI contribute(URL contribution) throws DeploymentException, IOException {
         if (contribution == null) {
             throw new IllegalArgumentException("contribution is null");
@@ -85,6 +89,20 @@ public class ContributionServiceImpl implements ContributionService, Contributio
             throw new UnsupportedContentTypeException(contentType, source.toString());
         }
         
+        return null;
+    }
+
+    public void remove(URI contribution) throws DeploymentException {
+        // TODO Auto-generated method stub
+    }
+
+    public <T> T resolve(URI contribution, Class<T> definitionType, String namespace, String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public URL resolve(URI contribution, String namespace, URI uri, URI baseURI) {
+        // TODO Auto-generated method stub
         return null;
     }
 }

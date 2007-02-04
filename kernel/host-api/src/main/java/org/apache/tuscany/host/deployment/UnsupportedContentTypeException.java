@@ -25,6 +25,7 @@ package org.apache.tuscany.host.deployment;
  * @version $Rev$ $Date$
  */
 public class UnsupportedContentTypeException extends DeploymentException {
+    private static final long serialVersionUID = -1831797280021355672L;
 
     /**
      * Constructor specifying the Content-Type value that is not supported.
