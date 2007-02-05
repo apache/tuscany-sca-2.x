@@ -16,16 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.marshaller;
+package org.apache.tuscany.core.marshaller;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.tuscany.spi.marshaller.ModelMarshaller;
+import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * A registry for physical component definition marshallers.
+ * Default map-based implementation of the model marshaller registry. 
+ * 
+ * TODO may be we can factor out all the registries into a parameterized one.
  * 
  * @version $Rev$ $Date$
  */
-public interface ModelMarshallerRegistry {
+public class DefaultModelMarshallerRegistry<P extends PhysicalComponentDefinition> implements ModelMarshallerRegistry {
+
+    // Internal cache
+    private Map<Class<? extends PhysicalComponentDefinition>, ModelMarshaller<? extends PhysicalComponentDefinition>> registry =
+        new ConcurrentHashMap<Class<? extends PhysicalComponentDefinition>, ModelMarshaller<? extends PhysicalComponentDefinition>>();
 
     /**
      * Registers a physical component definition marshaller.
@@ -34,8 +45,10 @@ public interface ModelMarshallerRegistry {
      * @param modelClass Physical component definition class.
      * @param marshaller Marshaller responsible for marshalling.
      */
-    <PCD extends PhysicalComponentDefinition> void registerMarshaller(Class<PCD> modelClass,
-                                                                      ModelMarshaller<PCD> marshaller);
+    public <PCD extends PhysicalComponentDefinition> void registerMarshaller(Class<PCD> modelClass,
+                                                                             ModelMarshaller<PCD> marshaller) {
+        registry.put(modelClass, marshaller);
+    }
 
     /**
      * Gets a marshaller for marshalling the registered type.
@@ -45,6 +58,9 @@ public interface ModelMarshallerRegistry {
      *            marshalled.
      * @return Marshaller capable for marshalling the specified type.
      */
-    <PCD extends PhysicalComponentDefinition> ModelMarshaller<PCD> getMarshaller(Class<PCD> modelClass);
+    @SuppressWarnings("unchecked")
+    public <PCD extends PhysicalComponentDefinition> ModelMarshaller<PCD> getMarshaller(Class<PCD> modelClass) {
+        return (ModelMarshaller<PCD>)registry.get(modelClass);
+    }
 
 }
