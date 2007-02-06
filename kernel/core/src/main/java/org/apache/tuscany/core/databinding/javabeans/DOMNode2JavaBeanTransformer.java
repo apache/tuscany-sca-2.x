@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.databinding.javabeans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.Transformer;
@@ -25,36 +28,50 @@ import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
 import org.osoa.sca.annotations.Service;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Transformer to convert data from DOM Node to JavaBean
  */
 @Service(Transformer.class)
-public class DOMNode2JavaBean extends TransformerExtension<Node, Object> implements PullTransformer<Node, Object> {
-
-    protected XMLTypeMapperExtension<Node> mapper;
+public class DOMNode2JavaBeanTransformer extends XML2JavaBeanTransformer<Node> {
     
-    public DOMNode2JavaBean() {
-        this.mapper = new XMLTypeMapperExtension<Node>();
-    }
-    
-    public Object transform(Node source, TransformationContext context) {
-        TypeInfo xmlType = (TypeInfo)context.getSourceDataType().getMetadata(TypeInfo.class.getName());
-        if (xmlType == null) {
-            ElementInfo element =
-                (ElementInfo)context.getSourceDataType().getMetadata(ElementInfo.class.getName());
-            xmlType = (TypeInfo)element.getType();
+    @Override
+    public List<Node> getChildElements(Node parent) throws XML2JavaMapperException {
+        NodeList nodeList = parent.getChildNodes();
+        ArrayList<Node> nodeArrayList = new ArrayList<Node>(nodeList.getLength());
+        for (int count = 0 ; count < nodeList.getLength() ; ++count) {
+            nodeArrayList.add(nodeList.item(count));
         }
         
-        return mapper.toJavaObject(xmlType, source, context);
+        return nodeArrayList;
     }
-    
+
+    @Override
+    public String getElementName(Node element) throws XML2JavaMapperException {
+        return element.getNodeName();
+    }
+
+    @Override
+    public String getText(Node element) throws XML2JavaMapperException {
+        if (element instanceof Document) {
+            element = ((Document) element).getDocumentElement();
+        }
+        return element.getTextContent();
+    }
+
+    @Override
+    public boolean isTextElement(Node element) throws XML2JavaMapperException {
+        if (element.getNodeType() == 3) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public Class getSourceType() {
         return Node.class;
-    }
-    
-    public Class getTargetType() {
-        return Object.class;
     }
 }

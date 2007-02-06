@@ -88,7 +88,7 @@
     </component>
 
     <component name="transformer.DOMNode2JavaBean">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.javabeans.DOMNode2JavaBean" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.javabeans.DOMNode2JavaBeanTransformer" />
     </component>
 
     <component name="transformer.Node2OutputStream">
@@ -108,7 +108,7 @@
     </component>
 
     <component name="transformer.JavaBean2DOMNode">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.javabeans.JavaBean2DOMNode" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.javabeans.JavaBean2DOMNodeTransformer" />
     </component>
 
     <component name="transformer.Reader2Node">

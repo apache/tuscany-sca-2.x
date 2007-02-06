@@ -18,35 +18,56 @@
  */
 package org.apache.tuscany.core.databinding.javabeans;
 
+import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.Transformer;
+import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
  * Transformer to convert data from a JavaBean object to DOM Node
  */
 @Service(Transformer.class)
-public class JavaBean2DOMNode extends TransformerExtension<Object, Node> implements
-        PullTransformer<Object, Node> {
+public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
 
-    protected XMLTypeMapperExtension<Node> mapper;
-
-    public JavaBean2DOMNode() {
-        this.mapper = new XMLTypeMapperExtension<Node>();
+    public static final String COLON = ":";
+    private Document factory;
+    
+    public JavaBean2DOMNodeTransformer() {
+        super();
+        try {
+            factory = DOMHelper.newDocument(); 
+        } catch (ParserConfigurationException e) {
+            throw new Java2XMLMapperException(e);
+        }
+    }
+    
+    @Override
+    public void appendChild(Node parentElement, Node childElement) throws Java2XMLMapperException {
+        parentElement.appendChild(childElement);
     }
 
-    public Node transform(Object source, TransformationContext context) {
-        return mapper.toDOMNode(source, context);
+    @Override
+    public Node createElement(QName qName) throws Java2XMLMapperException {
+        String qualifedName = 
+                (qName.getPrefix() == null ||  qName.getPrefix().length() <= 0) ? qName.getLocalPart() : 
+                    qName.getPrefix() + COLON + qName.getLocalPart();
+        return factory.createElementNS(qName.getNamespaceURI(), qualifedName);
+    }
+
+    @Override
+    public Node createText(String textData) throws Java2XMLMapperException {
+        return factory.createTextNode(textData);
     }
 
     public Class getTargetType() {
         return Node.class;
     }
 
-    public Class getSourceType() {
-        return Object.class;
-    }
 }
