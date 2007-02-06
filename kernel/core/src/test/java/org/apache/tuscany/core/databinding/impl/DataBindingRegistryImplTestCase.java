@@ -77,10 +77,11 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         registry.unregister(name);
         DataBinding db4 = registry.getDataBinding(name);
         Assert.assertNull(db4);
-
+        
+       
         dt = registry.introspectType(ContentHandler.class);
-        Assert.assertNull(dt);
-
+        Assert.assertNotNull(dt);
+        Assert.assertEquals("java.lang.Object", dt.getDataBinding());
     }
 
 }

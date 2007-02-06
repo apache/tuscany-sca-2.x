@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
 
+import org.apache.tuscany.core.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.model.DataType;
@@ -56,25 +57,34 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
     }
 
     public DataType introspectType(Class<?> javaType) {
-        DataType dataType;
+        DataType dataType = null;
         for (DataBinding binding : bindings.values()) {
-            dataType = binding.introspect(javaType);
+            //don't introspect for JavaBeansDatabinding as all javatypes will anyways match to its basetype 
+            //which is java.lang.Object.  Default to this only if no databinding results
+            if (!binding.getName().equals(JavaBeansDataBinding.NAME)) {
+                dataType = binding.introspect(javaType);
+            }
+            
             if (dataType != null) {
                 return dataType;
             }
         }
-        return null;
+        return new DataType<Class>(JavaBeansDataBinding.NAME, Object.class, javaType);
     }
 
     public DataType introspectType(Object value) {
-        DataType dataType;
+        DataType dataType = null;
         for (DataBinding binding : bindings.values()) {
-            dataType = binding.introspect(value);
+            //don't introspect for JavaBeansDatabinding as all javatypes will anyways match to its basetype 
+            //which is java.lang.Object.  Default to this only if no databinding results
+            if (!binding.getName().equals(JavaBeansDataBinding.NAME)) {
+                dataType = binding.introspect(value);
+            }
             if (dataType != null) {
                 return dataType;
             }
         }
-        return null;
+        return new DataType<Class>(JavaBeansDataBinding.NAME, Object.class, value.getClass());
     }
 
 }

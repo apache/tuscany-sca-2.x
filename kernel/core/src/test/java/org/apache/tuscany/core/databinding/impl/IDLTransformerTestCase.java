@@ -25,10 +25,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.databinding.javabeans.DOMNode2JavaBeanTransformer;
+import org.apache.tuscany.core.databinding.javabeans.JavaBean2DOMNodeTransformer;
 import org.apache.tuscany.core.databinding.xml.DOMDataBinding;
-import org.apache.tuscany.core.databinding.javabeans.DOMNode2JavaBean;
 import org.apache.tuscany.core.databinding.xml.Node2String;
-import org.apache.tuscany.core.databinding.javabeans.JavaBean2DOMNode;
 import org.apache.tuscany.core.databinding.xml.String2Node;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.TransformationContext;
@@ -36,8 +36,8 @@ import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
-import org.apache.tuscany.spi.model.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.WrapperInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -163,8 +163,8 @@ public class IDLTransformerTestCase extends TestCase {
         TransformerRegistryImpl tr = new TransformerRegistryImpl();
         tr.registerTransformer(new String2Node());
         tr.registerTransformer(new Node2String());
-        tr.registerTransformer(new DOMNode2JavaBean());
-        tr.registerTransformer(new JavaBean2DOMNode());
+        tr.registerTransformer(new DOMNode2JavaBeanTransformer());
+        tr.registerTransformer(new JavaBean2DOMNodeTransformer());
         m.setTransformerRegistry(tr);
         DataBindingRegistry dataBindingRegistry = new DataBindingRegistryImpl();
         dataBindingRegistry.register(new DOMDataBinding());

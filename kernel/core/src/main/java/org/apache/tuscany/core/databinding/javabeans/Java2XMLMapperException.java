@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.core.databinding.javabeans;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
@@ -28,12 +30,40 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
 public class Java2XMLMapperException extends TuscanyRuntimeException {
     private static final long serialVersionUID = 6811924384399578686L;
 
+    private QName xmlElementName;
+    private String javaFieldName;
+    private Class javaType;
+    
     public Java2XMLMapperException(String message) {
         super(message);
     }
 
     public Java2XMLMapperException(Throwable cause) {
         super(cause);
+    }
+
+    public String getJavaFieldName() {
+        return javaFieldName;
+    }
+
+    public void setJavaFieldName(String javaFieldName) {
+        this.javaFieldName = javaFieldName;
+    }
+
+    public Class getJavaType() {
+        return javaType;
+    }
+
+    public void setJavaType(Class javaType) {
+        this.javaType = javaType;
+    }
+
+    public QName getXmlElementName() {
+        return xmlElementName;
+    }
+
+    public void setXmlElementName(QName xmlElementName) {
+        this.xmlElementName = xmlElementName;
     }
 
 }
