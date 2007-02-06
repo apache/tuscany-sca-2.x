@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
@@ -79,8 +80,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
             writer.writeStartElement(INSTANCE_FACTORY_BYTE_CODE.getLocalPart());
             
             byte[] byteCode = modelObject.getInstanceFactoryByteCode();
-            // TODO Change this with base64 encode
-            String encodedByteCode = new String(byteCode);
+            String encodedByteCode = new String(Base64.encodeBase64(byteCode));
             writer.writeCharacters(encodedByteCode);
             
             writer.writeEndElement();
@@ -102,6 +102,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
      * @throws MarshalException In case of any unmarshalling error.
      */
     public JavaPhysicalComponentDefinition unmarshall(XMLStreamReader reader) throws MarshalException {
+        
         try {
             JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
             for(int i = reader.next(); i != END_DOCUMENT;i = reader.next()) {
@@ -127,6 +128,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
         } catch (URISyntaxException ex) {
             throw new MarshalException(ex);
         }
+        
     }
 
     /*
@@ -134,8 +136,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
      */
     private void setInstanceFactoryByteCode(XMLStreamReader reader, JavaPhysicalComponentDefinition definition) throws XMLStreamException {
         final String byteCode = reader.getElementText();
-        // TODO change this to base 64 decode byte code
-        final byte[] decodedByteCode = byteCode.getBytes();
+        final byte[] decodedByteCode = Base64.decodeBase64(byteCode.getBytes());
         definition.setInstanceFactoryByteCode(decodedByteCode);
     }
 
