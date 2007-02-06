@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
+import org.apache.tuscany.core.marshaller.JavaPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
@@ -37,10 +38,6 @@ import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
  */
 public class JavaComponentDeployer extends FederatedDeployer<JavaPhysicalComponentDefinition, JavaAtomicComponent> {
 
-    /** QName of the serialized Java physical component definition.. */
-    private static final QName MESSAGE_TYPE =
-        new QName("http://tuscany.apache.org/xmlns/1.0-SNAPSHOT", "component-java");
-
     /**
      * Unmarshalls the XML stream to a component definition.
      * 
@@ -50,7 +47,7 @@ public class JavaComponentDeployer extends FederatedDeployer<JavaPhysicalCompone
      */
     @Override
     protected QName getQualifiedName() {
-        return MESSAGE_TYPE;
+        return JavaPhysicalComponentDefinitionMarshaller.MESSAGE_TYPE;
     }
 
     /**

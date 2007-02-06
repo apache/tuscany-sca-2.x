@@ -19,7 +19,12 @@
 package org.apache.tuscany.core.marshaller;
 
 import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -29,12 +34,29 @@ import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 
 /**
- * Marshaller used for marshalling and unmarshalling component definition.
+ * Marshaller used for marshalling and unmarshalling component definition. Marshalled 
+ * physical Java component definitions are of the form,
+ * 
+ * <code>
+ *   <ns:componentJava componentId="uri" xmlns:ns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+ *     <instanceFactoryByteCode>Base 64 Encoded byte code</instanceFactoryByteCode>
+ *   </ns:component-java>
+ * </code>
  * 
  * @version $Rev$ $Date$
  *
  */
 public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshaller<JavaPhysicalComponentDefinition> {
+
+    /** QName of the serialized Java physical component definition.. */
+    public static final QName MESSAGE_TYPE =
+        new QName("http://tuscany.apache.org/xmlns/1.0-SNAPSHOT", "componentJava");
+
+    /** URI attribute. */
+    public static final String COMPONENT_ID = "componentId";
+
+    /** Instance factory byte code. */
+    public static final QName INSTANCE_FACTORY_BYTE_CODE = new QName(null, "instanceFactoryByteCode");
 
     /**
      * Marshalls the component definition object to the specified stream writer.
@@ -44,14 +66,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
      * @throws MarshalException In case of any marshalling error.
      */
     public void marshall(JavaPhysicalComponentDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
-
-        try {
-            writer.writeStartDocument();
-            writer.writeEndDocument();
-        } catch (XMLStreamException ex) {
-            throw new MarshalException(ex);
-        }
-
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -63,16 +78,48 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
      */
     public JavaPhysicalComponentDefinition unmarshall(XMLStreamReader reader) throws MarshalException {
         try {
-            while (true) {
-                JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
-                switch (reader.next()) {
-                    case END_DOCUMENT:
-                        return definition;
+            JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
+            for(int i = reader.next(); i != END_DOCUMENT;i = reader.next()) {
+                switch (i) {
+                    case START_ELEMENT:
+                        if (reader.getName().equals(MESSAGE_TYPE)) {
+                            setComponentId(reader, definition);
+                        } else if (reader.getName().equals(INSTANCE_FACTORY_BYTE_CODE)) {
+                            setInstanceFactoryByteCode(reader, definition);
+                        }
+                        break;
                 }
             }
+            
+            if(definition.getComponentId() == null || definition.getInstanceFactoryByteCode() == null) {
+                throw new MarshalException("Invalid component definition");
+            }
+            
+            return definition;
+            
         } catch (XMLStreamException ex) {
             throw new MarshalException(ex);
+        } catch (URISyntaxException ex) {
+            throw new MarshalException(ex);
         }
+    }
+
+    /*
+     * Set the instance factory byte code.
+     */
+    private void setInstanceFactoryByteCode(XMLStreamReader reader, JavaPhysicalComponentDefinition definition) throws XMLStreamException {
+        final String byteCode = reader.getElementText();
+        // TODO change this to base 64 decode byte code
+        final byte[] decodedByteCode = byteCode.getBytes();
+        definition.setInstanceFactoryByteCode(decodedByteCode);
+    }
+
+    /*
+     * Sets the component id.
+     */
+    private void setComponentId(XMLStreamReader reader, JavaPhysicalComponentDefinition definition) throws URISyntaxException {
+        final String uri = reader.getAttributeValue(null, COMPONENT_ID);
+        definition.setComponentId(new URI(uri));
     }
 
 }
