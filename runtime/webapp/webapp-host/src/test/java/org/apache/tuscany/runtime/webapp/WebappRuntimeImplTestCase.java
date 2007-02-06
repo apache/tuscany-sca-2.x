@@ -54,6 +54,7 @@ public class WebappRuntimeImplTestCase extends TestCase {
         verify(context);
     }
 
+/*
     public void testLazyHttpSessionId() throws Exception {
         expect(context.getResourcePaths("/WEB-INF/tuscany/extensions/")).andReturn(null);
         replay(context);
@@ -81,6 +82,7 @@ public class WebappRuntimeImplTestCase extends TestCase {
         workContext.getIdentifier(Scope.SESSION);
         verify(request);
     }
+*/
 
     protected void setUp() throws Exception {
         super.setUp();

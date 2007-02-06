@@ -27,15 +27,11 @@ import org.apache.tuscany.core.component.event.HttpRequestEnded;
 import org.apache.tuscany.core.component.event.HttpRequestStart;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.core.component.event.RequestEnd;
-import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.EventPublisher;
 
 /**
@@ -66,10 +62,10 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         this.servletContext = servletContext;
     }
 
-    protected void registerSystemComponents() throws InitializationException {
-        super.registerSystemComponents();
+    protected void registerSystemComponents(CompositeComponent systemComponent) throws InitializationException {
+        super.registerSystemComponents(systemComponent);
         try {
-            getSystemComponent().registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
+            systemComponent.registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
                                                     WebappRuntimeInfo.class,
                                                     (WebappRuntimeInfo) getRuntimeInfo());
         } catch (ComponentRegistrationException e) {
@@ -77,6 +73,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         }
     }
 
+/*
     public void initialize() throws InitializationException {
         super.initialize();
 
@@ -91,7 +88,6 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
                 throw new TuscanyInitException("Could not find application SCDL");
             }
             getRuntime().getRootComponent().start();
-/*
             application = deployApplicationScdl(getDeployer(),
                                                 getRuntime().getRootComponent(),
                                                 getApplicationName(),
@@ -112,11 +108,11 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             }
             context = new CompositeContextImpl(current, getWireService());
             servletContext.setAttribute(Constants.CONTEXT_ATTRIBUTE, context);
-*/
         } catch (Exception e) {
             throw new ServletLauncherInitException(e);
         }
     }
+*/
 
     public void destroy() {
         if (application != null) {
