@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.idl.TypeInfo;
 /**
  * Type Mapper between XML schema simple data types and java objects
  */
-public interface SimpleTypeMapper<T> {
+public interface SimpleTypeMapper {
     /**
      * Parse the XML lexical representation into a java object 
      * @param simpleType The XSD simple type
@@ -32,7 +32,7 @@ public interface SimpleTypeMapper<T> {
      * @param context The context of the transformation
      * @return A java object for the XML value
      */
-    Object toJavaObject(TypeInfo simpleType, T value, TransformationContext context);
+    Object toJavaObject(TypeInfo simpleType, String value, TransformationContext context);
     /**
      * Create the XML lexical representation for a java object
      * @param simpleType The XSD simple type

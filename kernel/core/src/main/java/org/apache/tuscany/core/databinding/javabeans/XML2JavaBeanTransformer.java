@@ -45,10 +45,10 @@ public abstract class XML2JavaBeanTransformer<T> extends TransformerExtension<T,
 
     public static final String SET = "set";
 
-    protected SimpleTypeMapperExtension<T> mapper;
+    protected SimpleTypeMapperExtension mapper;
 
     public XML2JavaBeanTransformer() {
-        this.mapper = new SimpleTypeMapperExtension<T>();
+        this.mapper = new SimpleTypeMapperExtension();
     }
 
     public Object transform(T source, TransformationContext context) {
@@ -66,7 +66,7 @@ public abstract class XML2JavaBeanTransformer<T> extends TransformerExtension<T,
 
     public Object toJavaObject(TypeInfo xmlType, T xmlElement, TransformationContext context) {
         if (xmlType.isSimpleType()) {
-            return mapper.toSimpleJavaObject(xmlType, getText(xmlElement), context);
+            return mapper.toJavaObject(xmlType, getText(xmlElement), context);
         } else {
             Class<?> javaType = (Class<?>) context.getTargetDataType().getLogical();
             return createJavaObject(xmlElement, javaType, context);
@@ -78,7 +78,7 @@ public abstract class XML2JavaBeanTransformer<T> extends TransformerExtension<T,
         throws XML2JavaMapperException {
         List<T> childElements = getChildElements(element);
         if (childElements.size() == 1 && isTextElement(childElements.get(0))) {
-            return (L) mapper.toSimpleJavaObject(mapper.getXMLType(javaType),
+            return (L) mapper.toJavaObject(mapper.getXMLType(javaType),
                                                  getText(childElements.get(0)),
                                                  context);
         } else {

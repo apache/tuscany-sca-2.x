@@ -36,6 +36,7 @@ import org.osoa.sca.annotations.Service;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
+import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.model.DataType;
 
@@ -169,6 +170,10 @@ public abstract class DataBindingExtension implements DataBinding {
 
         };
         return ois;
+    }
+
+    public SimpleTypeMapper getSimpleTypeMapper() {
+        return new SimpleTypeMapperExtension();
     }
 
 }

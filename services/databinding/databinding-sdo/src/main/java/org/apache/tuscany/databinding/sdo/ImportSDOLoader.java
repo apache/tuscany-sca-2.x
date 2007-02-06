@@ -20,6 +20,8 @@ package org.apache.tuscany.databinding.sdo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 
@@ -81,13 +83,14 @@ public class ImportSDOLoader extends LoaderExtension {
             helperContext = SDOUtil.createHelperContext();
         }
 
-        importFactory(reader, deploymentContext);
+        importFactory(reader, deploymentContext, helperContext);
         importWSDL(reader, deploymentContext, helperContext);
         LoaderUtil.skipToEndElement(reader);
         return new SDOType(helperContext);
     }
 
-    private void importFactory(XMLStreamReader reader, DeploymentContext deploymentContext) throws LoaderException {
+    private void importFactory(XMLStreamReader reader, DeploymentContext deploymentContext, HelperContext helperContext)
+        throws LoaderException {
         String factoryName = reader.getAttributeValue(null, "factory");
         if (factoryName != null) {
             ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
@@ -105,6 +108,13 @@ public class ImportSDOLoader extends LoaderExtension {
                 Thread.currentThread().setContextClassLoader(oldCL);
             }
         }
+    }
+    
+    private static void register(Class<?> factoryClass, HelperContext helperContext) throws Exception {
+        Field field = factoryClass.getField("INSTANCE");
+        Object instance = field.get(null);
+        Method regMethod = factoryClass.getMethod("register", new Class[] {HelperContext.class});
+        regMethod.invoke(instance, helperContext);
     }
 
     private void importWSDL(XMLStreamReader reader, DeploymentContext deploymentContext, HelperContext helperContext)
