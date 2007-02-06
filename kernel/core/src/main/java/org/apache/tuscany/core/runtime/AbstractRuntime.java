@@ -22,6 +22,8 @@ import java.net.URL;
 import java.net.URI;
 import javax.xml.stream.XMLInputFactory;
 
+import org.osoa.sca.ComponentContext;
+
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
@@ -218,6 +220,10 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         }
     }
 
+
+    public ComponentContext getComponentContext(URI componentId) {
+        throw new UnsupportedOperationException();
+    }
 
     protected Bootstrapper createBootstrapper() {
         TuscanyManagementService tms = (TuscanyManagementService) getManagementService();

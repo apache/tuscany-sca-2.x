@@ -19,6 +19,9 @@
 package org.apache.tuscany.host.runtime;
 
 import java.net.URL;
+import java.net.URI;
+
+import org.osoa.sca.ComponentContext;
 
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
@@ -112,4 +115,12 @@ public interface TuscanyRuntime {
      * @throws ShutdownException if there is an error destroying the runtime
      */
     void destroy() throws ShutdownException;
+
+    /**
+     * Returns the ComponentContext for the designated component.
+     *
+     * @param componentId the id of the component whose context should be returned
+     * @return the ComponentContext for the designated component
+     */
+    ComponentContext getComponentContext(URI componentId);
 }
