@@ -48,12 +48,12 @@ public abstract class JavaBean2XMLTransformer<T> extends TransformerExtension<Ob
     public static final String PERIOD = ".";
     public static final String FWD_SLASH = "/";
     public static final String HTTP = "http://";
-    public static int prefix_count = 1;
+    private static int prefixCount = 1;
     
-    protected SimpleTypeMapperExtension<T> mapper;
+    protected SimpleTypeMapperExtension mapper;
 
     public JavaBean2XMLTransformer() {
-        this.mapper = new SimpleTypeMapperExtension<T>();
+        this.mapper = new SimpleTypeMapperExtension();
     }
 
     public T transform(Object source, TransformationContext context) {
@@ -204,16 +204,6 @@ public abstract class JavaBean2XMLTransformer<T> extends TransformerExtension<Ob
         }
     }
     
-    private QName resolveQualifiedElementName(Class javaType) {
-        if (javaType.isArray()) {
-            return new QName(HTTP + javaType.getComponentType().getPackage().getName().replace(PERIOD, FWD_SLASH),
-                             javaType.getComponentType().getSimpleName(), getNexPrefix());
-        } else {
-            return new QName(HTTP + javaType.getPackage().getName().replace(PERIOD, FWD_SLASH),
-                             javaType.getSimpleName(), getNexPrefix());
-        }
-    }
-    
     private String resolveFieldFromMethod(String methodName) {
         StringBuffer fieldName = new StringBuffer();
         fieldName.append(Character.toLowerCase(methodName.charAt(GET.length())));
@@ -222,7 +212,7 @@ public abstract class JavaBean2XMLTransformer<T> extends TransformerExtension<Ob
     }
     
     public String getNexPrefix() {
-        return PREFIX + prefix_count++;
+        return PREFIX + prefixCount++;
     }
     
     public abstract T createElement(QName qName) throws Java2XMLMapperException;

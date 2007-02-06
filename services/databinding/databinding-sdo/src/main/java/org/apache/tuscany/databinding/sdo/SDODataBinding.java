@@ -21,6 +21,7 @@ package org.apache.tuscany.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 import org.apache.tuscany.spi.model.DataType;
@@ -31,7 +32,7 @@ import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XSDHelper;
 
 /**
- * 
+ * SDO Databinding 
  */
 public class SDODataBinding extends DataBindingExtension {
     private WrapperHandler<Object> wrapperHandler;
@@ -60,6 +61,10 @@ public class SDODataBinding extends DataBindingExtension {
     @Override
     public WrapperHandler getWrapperHandler() {
         return wrapperHandler;
+    }
+    
+    public SimpleTypeMapper getSimpleTypeMapper() {
+        return new SDOSimpleTypeMapper();
     }
 
 }

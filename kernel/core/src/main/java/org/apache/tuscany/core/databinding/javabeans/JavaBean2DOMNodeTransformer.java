@@ -21,11 +21,8 @@ package org.apache.tuscany.core.databinding.javabeans;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -55,9 +52,9 @@ public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
 
     @Override
     public Node createElement(QName qName) throws Java2XMLMapperException {
-        String qualifedName = 
-                (qName.getPrefix() == null ||  qName.getPrefix().length() <= 0) ? qName.getLocalPart() : 
-                    qName.getPrefix() + COLON + qName.getLocalPart();
+        String qualifedName =
+            (qName.getPrefix() == null || qName.getPrefix().length() <= 0) ? qName.getLocalPart()
+                : qName.getPrefix() + COLON + qName.getLocalPart();
         return factory.createElementNS(qName.getNamespaceURI(), qualifedName);
     }
 

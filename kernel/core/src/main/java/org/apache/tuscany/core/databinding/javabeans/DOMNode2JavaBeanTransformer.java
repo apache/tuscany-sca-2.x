@@ -21,12 +21,7 @@ package org.apache.tuscany.core.databinding.javabeans;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.apache.tuscany.spi.idl.ElementInfo;
-import org.apache.tuscany.spi.idl.TypeInfo;
 import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -41,11 +36,11 @@ public class DOMNode2JavaBeanTransformer extends XML2JavaBeanTransformer<Node> {
     @Override
     public List<Node> getChildElements(Node parent) throws XML2JavaMapperException {
         NodeList nodeList = parent.getChildNodes();
-        ArrayList<Node> nodeArrayList = new ArrayList<Node>(nodeList.getLength());
-        for (int count = 0 ; count < nodeList.getLength() ; ++count) {
+        List<Node> nodeArrayList = new ArrayList<Node>(nodeList.getLength());
+        for (int count = 0; count < nodeList.getLength(); ++count) {
             nodeArrayList.add(nodeList.item(count));
         }
-        
+
         return nodeArrayList;
     }
 
@@ -64,11 +59,7 @@ public class DOMNode2JavaBeanTransformer extends XML2JavaBeanTransformer<Node> {
 
     @Override
     public boolean isTextElement(Node element) throws XML2JavaMapperException {
-        if (element.getNodeType() == 3) {
-            return true;
-        } else {
-            return false;
-        }
+        return element.getNodeType() == Node.TEXT_NODE;
     }
 
     public Class getSourceType() {

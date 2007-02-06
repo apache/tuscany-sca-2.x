@@ -35,11 +35,11 @@ public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension
     protected SimpleTypeMapper mapper;
 
     public SimpleType2JavaTransformer() {
-        this.mapper = new SimpleTypeMapperExtension<Node>();
+        this.mapper = new SimpleTypeMapperExtension();
     }
 
     public SimpleType2JavaTransformer(SimpleTypeMapper mapper) {
-        this.mapper = (mapper != null) ? mapper : new SimpleTypeMapperExtension<Node>();
+        this.mapper = (mapper != null) ? mapper : new SimpleTypeMapperExtension();
     }
 
     public Object transform(T source, TransformationContext context) {
@@ -50,7 +50,7 @@ public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension
             simpleType = (TypeInfo)element.getType();
         }
         
-        return mapper.toJavaObject(simpleType, source, context);
+        return mapper.toJavaObject(simpleType, getText(source), context);
     }
 
     public Class getTargetType() {

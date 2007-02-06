@@ -55,9 +55,15 @@ public interface DataBinding {
     WrapperHandler getWrapperHandler();
 
     /**
-     * make a copy of the input object
+     * Make a copy of the object for "pass-by-value" semantics
      * @param source object to copy 
      * @return copy of the object passed in as argument
      */
     Object copy(Object object);
+    
+    /**
+     * Get the type mapper for simple types
+     * @return The databinding-specific simple type mapper
+     */
+    SimpleTypeMapper getSimpleTypeMapper();
 }

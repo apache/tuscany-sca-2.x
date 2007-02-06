@@ -48,6 +48,18 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
         SAMPLE_VALUES.put("duration", new String[] {"P8M3DT7H33M2S", "P5Y2M10DT15H"});
         SAMPLE_VALUES.put("float", new String[] {"3.1415292", "INF", "NaN"});
         SAMPLE_VALUES.put("gDay", "---11");
+        /*
+         * The value space of xsd:gMonth is the period of one calendar month recurring 
+         * each calendar year (such as the month of April). Its lexical space should 
+         * follow the ISO 8601 syntax for such periods (i.e., -- MM) with an optional 
+         * time zone.
+         * Tip: There's a typo in the W3C XML Schema Recommendation, in which the format 
+         * is defined as -- MM -- --. Even though an erratum should be published to 
+         * bring the W3C XML Schema inline with ISO 8601, most current schema processors 
+         * expect the (bogus) -- MM -- -- format.
+         * 
+         * The test might be broken in JDK 1.6
+         */
         SAMPLE_VALUES.put("gMonth", "--02--");
         SAMPLE_VALUES.put("gMonthDay", "--02-14");
         SAMPLE_VALUES.put("gYear", "1999");
@@ -96,14 +108,14 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
             Object value = SAMPLE_VALUES.get(name);
             if (value instanceof String[]) {
                 for (String s : (String[])value) {
-                    Object obj = extension.toSimpleJavaObject(simpleType, s, context);
+                    Object obj = extension.toJavaObject(simpleType, s, context);
                     String str = extension.toXMLLiteral(simpleType, obj, context);
                     assertNotNull(str);
                     // assertTrue("[" + name + "] " + s + " " + str,
                     // str.contains((String) s));
                 }
             } else if (value instanceof String) {
-                Object obj = extension.toSimpleJavaObject(simpleType, (String)value, context);
+                Object obj = extension.toJavaObject(simpleType, (String)value, context);
                 String str = extension.toXMLLiteral(simpleType, obj, context);
                 assertNotNull(str);
                 // assertTrue("[" + name + "] " + value + " " + str,
