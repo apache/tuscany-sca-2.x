@@ -22,15 +22,16 @@ import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * @version $Rev$ $Date$
  */
 public class StandaloneRuntimeImpl extends AbstractRuntime {
-    protected void registerSystemComponents() throws InitializationException {
-        super.registerSystemComponents();
+    protected void registerSystemComponents(CompositeComponent systemComponent) throws InitializationException {
+        super.registerSystemComponents(systemComponent);
         try {
-            getSystemComponent().registerJavaObject(StandaloneRuntimeInfo.COMPONENT_NAME,
+            systemComponent.registerJavaObject(StandaloneRuntimeInfo.COMPONENT_NAME,
                                                     StandaloneRuntimeInfo.class,
                                                     (StandaloneRuntimeInfo) getRuntimeInfo());
         } catch (ComponentRegistrationException e) {
