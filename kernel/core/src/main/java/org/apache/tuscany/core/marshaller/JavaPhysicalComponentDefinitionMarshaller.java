@@ -105,7 +105,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
         
         try {
             JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
-            for(int i = reader.next(); i != END_DOCUMENT;i = reader.next()) {
+            for (int i = reader.next(); i != END_DOCUMENT; i = reader.next()) {
                 switch (i) {
                     case START_ELEMENT:
                         if (reader.getName().equals(MESSAGE_TYPE)) {
@@ -117,7 +117,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
                 }
             }
             
-            if(definition.getComponentId() == null || definition.getInstanceFactoryByteCode() == null) {
+            if (definition.getComponentId() == null || definition.getInstanceFactoryByteCode() == null) {
                 throw new MarshalException("Invalid component definition");
             }
             
@@ -134,7 +134,8 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
     /*
      * Set the instance factory byte code.
      */
-    private void setInstanceFactoryByteCode(XMLStreamReader reader, JavaPhysicalComponentDefinition definition) throws XMLStreamException {
+    private void setInstanceFactoryByteCode(XMLStreamReader reader, JavaPhysicalComponentDefinition definition)
+        throws XMLStreamException {
         final String byteCode = reader.getElementText();
         final byte[] decodedByteCode = Base64.decodeBase64(byteCode.getBytes());
         definition.setInstanceFactoryByteCode(decodedByteCode);
@@ -143,7 +144,8 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
     /*
      * Sets the component id.
      */
-    private void setComponentId(XMLStreamReader reader, JavaPhysicalComponentDefinition definition) throws URISyntaxException {
+    private void setComponentId(XMLStreamReader reader, JavaPhysicalComponentDefinition definition)
+        throws URISyntaxException {
         final String uri = reader.getAttributeValue(null, COMPONENT_ID);
         definition.setComponentId(new URI(uri));
     }

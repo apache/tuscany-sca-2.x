@@ -35,8 +35,10 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 public class DefaultModelMarshallerRegistry<P extends PhysicalComponentDefinition> implements ModelMarshallerRegistry {
 
     // Internal cache
-    private Map<Class<? extends PhysicalComponentDefinition>, ModelMarshaller<? extends PhysicalComponentDefinition>> registry =
-        new ConcurrentHashMap<Class<? extends PhysicalComponentDefinition>, ModelMarshaller<? extends PhysicalComponentDefinition>>();
+    private Map<Class<? extends PhysicalComponentDefinition>, 
+        ModelMarshaller<? extends PhysicalComponentDefinition>> registry =
+        new ConcurrentHashMap<Class<? extends PhysicalComponentDefinition>, 
+        ModelMarshaller<? extends PhysicalComponentDefinition>>();
 
     /**
      * Registers a physical component definition marshaller.
