@@ -25,6 +25,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.util.stax.StaxUtil;
@@ -47,9 +48,12 @@ public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase 
 
     public void testUnmarshall() throws Exception {
         
+        byte[] test = "TEST".getBytes();
+        String encodedBytes = new String(Base64.encodeBase64(test));
+        
         String xml = 
             "<componentJava componentId=\"uri\" xmlns=\"http://tuscany.apache.org/xmlns/1.0-SNAPSHOT\">" +
-            "  <instanceFactoryByteCode>Base 64 Encoded byte code</instanceFactoryByteCode>" +
+            "  <instanceFactoryByteCode>" + encodedBytes + "</instanceFactoryByteCode>" +
             "</componentJava>";
         XMLStreamReader reader = StaxUtil.createReader(xml);
         
@@ -57,7 +61,7 @@ public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase 
         JavaPhysicalComponentDefinition definition = marshaller.unmarshall(reader);
         
         assertEquals(new URI("uri"), definition.getComponentId());
-        assertEquals("Base 64 Encoded byte code", new String(definition.getInstanceFactoryByteCode()));
+        assertEquals("TEST", new String(definition.getInstanceFactoryByteCode()));
         
     }
 
@@ -67,7 +71,7 @@ public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase 
         
         JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
         definition.setComponentId(new URI("uri"));
-        definition.setInstanceFactoryByteCode("Base 64 Encoded byte code".getBytes());
+        definition.setInstanceFactoryByteCode("TEST".getBytes());
         
         XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "UTF-8");
         
@@ -80,7 +84,7 @@ public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase 
         definition = marshaller.unmarshall(reader);
         
         assertEquals(new URI("uri"), definition.getComponentId());
-        assertEquals("Base 64 Encoded byte code", new String(definition.getInstanceFactoryByteCode()));
+        assertEquals("TEST", new String(definition.getInstanceFactoryByteCode()));
         
         
     }
