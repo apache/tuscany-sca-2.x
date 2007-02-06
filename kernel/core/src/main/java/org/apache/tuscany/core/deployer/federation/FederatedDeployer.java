@@ -55,7 +55,6 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
      * 
      * TODO Handle response messages.
      */
-    @SuppressWarnings("unchecked")
     public XMLStreamReader onRequest(XMLStreamReader content) {
 
         try {
