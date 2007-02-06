@@ -18,9 +18,12 @@
  */
 package org.apache.tuscany.core.marshaller;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
@@ -45,9 +48,9 @@ public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase 
     public void testUnmarshall() throws Exception {
         
         String xml = 
-            "<ns:componentJava componentId=\"uri\" xmlns:ns=\"http://tuscany.apache.org/xmlns/1.0-SNAPSHOT\">" +
+            "<componentJava componentId=\"uri\" xmlns=\"http://tuscany.apache.org/xmlns/1.0-SNAPSHOT\">" +
             "  <instanceFactoryByteCode>Base 64 Encoded byte code</instanceFactoryByteCode>" +
-            "</ns:componentJava>";
+            "</componentJava>";
         XMLStreamReader reader = StaxUtil.createReader(xml);
         
         ModelMarshaller<JavaPhysicalComponentDefinition> marshaller = new JavaPhysicalComponentDefinitionMarshaller();
@@ -55,6 +58,30 @@ public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase 
         
         assertEquals(new URI("uri"), definition.getComponentId());
         assertEquals("Base 64 Encoded byte code", new String(definition.getInstanceFactoryByteCode()));
+        
+    }
+
+    public void testMarshall() throws Exception {
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
+        definition.setComponentId(new URI("uri"));
+        definition.setInstanceFactoryByteCode("Base 64 Encoded byte code".getBytes());
+        
+        XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "UTF-8");
+        
+        
+        ModelMarshaller<JavaPhysicalComponentDefinition> marshaller = new JavaPhysicalComponentDefinitionMarshaller();
+        marshaller.marshall(definition, writer);
+        
+        String xml = new String(out.toByteArray());
+        XMLStreamReader reader = StaxUtil.createReader(xml);        
+        definition = marshaller.unmarshall(reader);
+        
+        assertEquals(new URI("uri"), definition.getComponentId());
+        assertEquals("Base 64 Encoded byte code", new String(definition.getInstanceFactoryByteCode()));
+        
         
     }
 

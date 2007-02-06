@@ -38,9 +38,9 @@ import org.apache.tuscany.spi.marshaller.ModelMarshaller;
  * physical Java component definitions are of the form,
  * 
  * <code>
- *   <ns:componentJava componentId="uri" xmlns:ns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+ *   <componentJava componentId="uri" xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
  *     <instanceFactoryByteCode>Base 64 Encoded byte code</instanceFactoryByteCode>
- *   </ns:component-java>
+ *   </component-java>
  * </code>
  * 
  * @version $Rev$ $Date$
@@ -56,7 +56,8 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
     public static final String COMPONENT_ID = "componentId";
 
     /** Instance factory byte code. */
-    public static final QName INSTANCE_FACTORY_BYTE_CODE = new QName(null, "instanceFactoryByteCode");
+    public static final QName INSTANCE_FACTORY_BYTE_CODE = 
+        new QName("http://tuscany.apache.org/xmlns/1.0-SNAPSHOT", "instanceFactoryByteCode");
 
     /**
      * Marshalls the component definition object to the specified stream writer.
@@ -66,7 +67,31 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
      * @throws MarshalException In case of any marshalling error.
      */
     public void marshall(JavaPhysicalComponentDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
-        throw new UnsupportedOperationException("Not implemented");
+        
+        try {
+            
+            writer.setDefaultNamespace(MESSAGE_TYPE.getNamespaceURI());
+            
+            writer.writeStartDocument();
+            writer.writeStartElement(MESSAGE_TYPE.getLocalPart());
+            writer.writeNamespace(null, MESSAGE_TYPE.getNamespaceURI());
+            writer.writeAttribute(COMPONENT_ID, modelObject.getComponentId().toASCIIString());
+            writer.writeStartElement(INSTANCE_FACTORY_BYTE_CODE.getLocalPart());
+            
+            byte[] byteCode = modelObject.getInstanceFactoryByteCode();
+            // TODO Change this with base64 encode
+            String encodedByteCode = new String(byteCode);
+            writer.writeCharacters(encodedByteCode);
+            
+            writer.writeEndElement();
+            writer.writeEndElement();
+            writer.writeEndDocument();
+            
+            writer.flush();
+            
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
     }
 
     /**
