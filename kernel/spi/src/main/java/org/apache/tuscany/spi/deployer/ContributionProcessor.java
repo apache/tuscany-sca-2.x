@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.net.URI;
 
 import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.spi.contribution.Contribution;
+import org.apache.tuscany.spi.model.Contribution;
 
 /**
  * Interface for services that can process contributions.
