@@ -20,13 +20,15 @@ package org.apache.tuscany.spi.model.physical;
 
 import java.net.URI;
 
+import org.apache.tuscany.spi.model.ModelObject;
+
 /**
  * Represents a physical component model.
  * 
  * @version $Rev$ $Date$
  *
  */
-public abstract class PhysicalComponentDefinition {
+public abstract class PhysicalComponentDefinition extends ModelObject {
     private URI componentId;
 
     /**
