@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.builder.physical;
+package org.apache.tuscany.core.implementation.java;
 
 import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
-import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 
