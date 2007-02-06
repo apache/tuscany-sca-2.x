@@ -25,6 +25,8 @@ import java.util.Map;
 
 /**
  * Representation of a deployed artifact
+ * 
+ * @version $Rev$ $Date$
  */
 public class DeployedArtifact extends ModelObject {
     protected Contribution contribution;

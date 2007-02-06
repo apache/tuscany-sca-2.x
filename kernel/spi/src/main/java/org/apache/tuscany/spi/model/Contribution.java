@@ -27,6 +27,8 @@ import javax.xml.namespace.QName;
 
 /**
  * The representation of a deployed contribution
+ *
+ * @version $Rev$ $Date$
  */
 public class Contribution extends ModelObject {
     public static final String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";

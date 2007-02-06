@@ -23,6 +23,8 @@ import java.net.URI;
 
 /**
  * The representation of an import for the contribution
+ * 
+ * @version $Rev$ $Date$
  */
 public class ContributionImport extends ModelObject {
     private String namespace; // The namespace to be imported
