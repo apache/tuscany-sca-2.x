@@ -18,16 +18,56 @@
  */
 package org.apache.tuscany.spi.deployer;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+
+import org.apache.tuscany.host.deployment.DeploymentException;
+import org.apache.tuscany.spi.contribution.Contribution;
+
 /**
  * Interface for services that can process contributions.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public interface ContributionProcessor {
     /**
      * Returns the content type that this implementation can handle.
-     *
+     * 
      * @return the content type that this implementation can handle
      */
     String getContentType();
+
+    /**
+     * Process a contribution or an artifact in the contribution from the input
+     * stream. The processor might add artifacts or model objects to the
+     * contribution object.
+     * 
+     * @param contribution The contribution model that will be used to hold the
+     *            results from the processing
+     * @param inputStream The input stream for the contribution. The stream will
+     *            not be closed but the read position after the call is
+     *            undefined
+     * @param source The URI for the contribution/artifact
+     * @throws DeploymentException if there was a problem with the contribution
+     * @throws IOException if there was a problem reading the stream
+     */
+    void processContent(Contribution contribution, URI source, InputStream inputStream) throws DeploymentException,
+        IOException;
+
+    /**
+     * Process a contribution from another model object. It will be used for the
+     * case that one artifact has other inline artifacts, for example, the WSDL
+     * with inline schemas. The schema contribution processor should be able to
+     * load the schema model from the WSDL definition.
+     * 
+     * @param contribution The contribution model that will be used to hold the
+     *            results from the processing
+     * @param source The URI for the contribution/artifact
+     * @param modelObject A model object for further processing by the processor
+     * @throws DeploymentException
+     * @throws IOException
+     */
+    void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
+        IOException;
 }
