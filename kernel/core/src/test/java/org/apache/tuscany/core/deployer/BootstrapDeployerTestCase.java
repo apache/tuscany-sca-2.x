@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.deployer;
 
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
@@ -44,16 +44,16 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.core.component.ComponentManager;
-import org.apache.tuscany.core.component.ComponentManagerImpl;
+import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import org.easymock.EasyMock;
 
 /**
  * Verifies the default boostrap deployer
@@ -69,7 +69,7 @@ public class BootstrapDeployerTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testBoot1Load() throws LoaderException {
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
-        URI uri = URI.create("parent");
+        URI uri = URI.create("scasystem://parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(parent);
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
@@ -87,7 +87,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals(2, services.size()); // included counts
         ServiceDefinition serviceDefinition = services.get("service");
         assertNotNull(serviceDefinition);
-        assertEquals("parent#service", serviceDefinition.getUri().toString());
+        assertEquals("scasystem://parent#service", serviceDefinition.getUri().toString());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
         Collection<BindingDefinition> bindings = serviceDefinition.getBindings();
         assertTrue(bindings.isEmpty());
@@ -120,12 +120,12 @@ public class BootstrapDeployerTestCase extends TestCase {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
-        URI uri = URI.create("parent");
+        URI uri = URI.create("scasystem://parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         parent.register(isA(SCAObject.class));
         replay(parent);
         // load the boot1 file using the bootstrap deployer
-        componentDefinition.setName(new URI("simple"));
+        componentDefinition.setUri(URI.create("simple"));
         Component component = deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
         verify(parent);
@@ -135,34 +135,19 @@ public class BootstrapDeployerTestCase extends TestCase {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot2.scdl");
         implementation.setScdlLocation(scdl);
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
-        URI uri = URI.create("parent");
+        URI uri = URI.create(ComponentNames.TUSCANY_SYSTEM_ROOT + "/parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         parent.register(isA(SCAObject.class));
         replay(parent);
 
         // load the boot2 file using the bootstrap deployer
-        componentDefinition.setName(new URI("newDeployer"));
+        componentDefinition.setUri(URI.create("newDeployer"));
         CompositeComponent component = (CompositeComponent) deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
         verify(parent);
         component.start();
-        SCAObject newDeployer = component.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
+        SCAObject newDeployer = component.getChild(ComponentNames.TUSCANY_DEPLOYER);
         assertNotNull(newDeployer);
-        SCAObject wireService = component.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
-        assertNotNull(wireService);
-
-/*      // FIXME
-        // load the boot2 file using the newly loaded deployer
-        parent.reset();
-        parent.expects(once()).method("register").withAnyArguments();
-        componentDefinition.setName("newDeployer2");
-        component = newDeployer.deploy((CompositeComponent) parent.proxy(), componentDefinition);
-        assertNotNull(component);
-        parent.verify();
-        component.start();
-        Deployer newDeployer2 = (Deployer) component.getServiceInstance("deployer");
-        assertNotNull(newDeployer2);
-*/
     }
 
     protected void setUp() throws Exception {

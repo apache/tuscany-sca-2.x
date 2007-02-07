@@ -19,13 +19,11 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URI;
-
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.Scope;
@@ -66,8 +64,6 @@ public class ReferenceTestCase extends TestCase {
         chains.put(operation, chain);
         expectLastCall().andReturn(chains);
         OutboundWire outboundWire = createMock(OutboundWire.class);
-        outboundWire.getTargetName();
-        expectLastCall().andReturn(new QualifiedName("foo/bar"));
         replay(chain);
         replay(wire);
         replay(outboundWire);

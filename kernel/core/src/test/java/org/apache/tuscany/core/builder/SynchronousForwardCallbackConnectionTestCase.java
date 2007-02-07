@@ -19,11 +19,12 @@
 package org.apache.tuscany.core.builder;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -40,6 +41,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
@@ -57,11 +60,13 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
     private Operation<Type> callbackOperation;
     private ServiceContract<Type> contract;
     private ConnectorImpl connector;
+    private ComponentManager componentManager;
 
     public void testSyncForwardAndCallbackAtomicToAtomic() throws Exception {
+        URI targetUri = URI.create("target");
+        URI targetUriFragment = URI.create("target#service");
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(target.isSystem()).andReturn(false).anyTimes();
-        EasyMock.expect(target.getName()).andReturn("target").anyTimes();
+        EasyMock.expect(target.getUri()).andReturn(targetUri).anyTimes();
         EasyMock.expect(target.createTargetInvoker(EasyMock.eq("service"),
             EasyMock.isA(Operation.class),
             EasyMock.isA(InboundWire.class))).andReturn(EasyMock.createNiceMock(TargetInvoker.class));
@@ -70,15 +75,17 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(target);
         inboundWire.setServiceContract(contract);
+        inboundWire.setUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);
+        componentManager.register(target);
 
         AtomicComponent source = createSource();
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setContainer(source);
         outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(new QualifiedName("target/service"));
+        outboundWire.setTargetUri(targetUriFragment);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         outboundWire.addInvocationChain(operation, outboundChain);
 
@@ -100,7 +107,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
         msg = new MessageImpl();
         msg.setBody("callback");
         Map<Operation<?>, OutboundInvocationChain> callbackChains =
-            inboundWire.getSourceCallbackInvocationChains("source");
+            inboundWire.getSourceCallbackInvocationChains(URI.create("source"));
         OutboundInvocationChain callbackInvocationChain = callbackChains.get(callbackOperation);
         ret = callbackInvocationChain.getHeadInterceptor().invoke(msg);
         assertEquals("callback", ret.getBody());
@@ -110,8 +117,8 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
     }
 
     public void testSyncForwardAndCallbackAtomicToReferenceBinding() throws Exception {
+        URI targetUriFragment = URI.create("target#service");
         ReferenceBinding target = EasyMock.createMock(ReferenceBinding.class);
-        EasyMock.expect(target.isSystem()).andReturn(false).anyTimes();
         EasyMock.expect(target.createTargetInvoker(EasyMock.isA(ServiceContract.class),
             EasyMock.isA(Operation.class))).andReturn(EasyMock.createNiceMock(TargetInvoker.class));
         EasyMock.replay(target);
@@ -122,14 +129,17 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);
+        inboundWire.setUri(targetUriFragment);
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getTargetWire(EasyMock.eq("service"))).andReturn(inboundWire);
 
         AtomicComponent source = createSource();
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setContainer(source);
         outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(new QualifiedName("target/service"));
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         outboundWire.addInvocationChain(operation, outboundChain);
+        outboundWire.setTargetUri(targetUriFragment);
 
         InboundInvocationChain callbackInboundChain = new InboundInvocationChainImpl(callbackOperation);
         callbackInboundChain.addInterceptor(new MockInterceptor());
@@ -148,25 +158,25 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
         msg = new MessageImpl();
         msg.setBody("callback");
         Map<Operation<?>, OutboundInvocationChain> callbackChains =
-            inboundWire.getSourceCallbackInvocationChains("source");
+            inboundWire.getSourceCallbackInvocationChains(URI.create("source"));
         OutboundInvocationChain callbackInvocationChain = callbackChains.get(callbackOperation);
         ret = callbackInvocationChain.getHeadInterceptor().invoke(msg);
         assertEquals("callback", ret.getBody());
 
-        EasyMock.verify(target);
         EasyMock.verify(source);
     }
 
     public void testSyncForwardAndCallbackReferenceBindingToServiceBinding() throws Exception {
+        URI targetUriFragment = URI.create("target#service");
         ReferenceBinding source = EasyMock.createMock(ReferenceBinding.class);
-        EasyMock.expect(source.isSystem()).andReturn(false).anyTimes();
-        EasyMock.expect(source.getName()).andReturn("source").atLeastOnce();
+        URI uri = URI.create("source");
+        EasyMock.expect(source.getUri()).andReturn(uri).atLeastOnce();
+
         EasyMock.expect(source.createTargetInvoker(EasyMock.isA(ServiceContract.class),
             EasyMock.isA(Operation.class))).andReturn(EasyMock.createNiceMock(TargetInvoker.class));
         EasyMock.replay(source);
 
         ServiceBinding target = EasyMock.createMock(ServiceBinding.class);
-        EasyMock.expect(target.isSystem()).andReturn(false).anyTimes();
         EasyMock.expect(target.createTargetInvoker(EasyMock.isA(ServiceContract.class),
             EasyMock.isA(Operation.class))).andReturn(EasyMock.createNiceMock(TargetInvoker.class));
         EasyMock.replay(target);
@@ -174,14 +184,18 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(target);
         inboundWire.setServiceContract(contract);
+        inboundWire.setUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);
 
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getTargetWire(EasyMock.eq("service"))).andReturn(inboundWire);
+
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setContainer(source);
         outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(new QualifiedName("target/service"));
+        outboundWire.setTargetUri(targetUriFragment);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         outboundWire.addInvocationChain(operation, outboundChain);
 
@@ -202,7 +216,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
         msg = new MessageImpl();
         msg.setBody("callback");
         Map<Operation<?>, OutboundInvocationChain> callbackChains =
-            inboundWire.getSourceCallbackInvocationChains("source");
+            inboundWire.getSourceCallbackInvocationChains(URI.create("source"));
         OutboundInvocationChain callbackInvocationChain = callbackChains.get(callbackOperation);
         ret = callbackInvocationChain.getHeadInterceptor().invoke(msg);
         assertEquals("callback", ret.getBody());
@@ -214,7 +228,8 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         WireService wireService = new JDKWireService(null, null);
-        connector = new ConnectorImpl(wireService, null, null, null, null);
+        componentManager = new ComponentManagerImpl();
+        connector = new ConnectorImpl(wireService, null, componentManager, null, null);
         operation = new Operation<Type>("bar", null, null, null);
         callbackOperation = new Operation<Type>("callback", null, null, null);
         contract = new JavaServiceContract();
@@ -225,8 +240,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
 
     private AtomicComponent createSource() throws Exception {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(false).anyTimes();
+        EasyMock.expect(component.getUri()).andReturn(URI.create("source")).atLeastOnce();
         EasyMock.expect(component.createTargetInvoker(EasyMock.eq("callback"),
             EasyMock.isA(Operation.class),
             (InboundWire) EasyMock.isNull())).andReturn(EasyMock.createNiceMock(TargetInvoker.class));

@@ -54,10 +54,4 @@ public class ReferenceImplTestCase extends TestCase {
         EasyMock.verify(binding);
 
     }
-
-    public void testIsSystem() {
-        Reference service = new ReferenceImpl(URI.create("ref"), null, null, true);
-        assertTrue(service.isSystem());
-    }
-
 }

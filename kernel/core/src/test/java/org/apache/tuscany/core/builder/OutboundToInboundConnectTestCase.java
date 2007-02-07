@@ -55,7 +55,7 @@ import static org.easymock.EasyMock.verify;
 public class OutboundToInboundConnectTestCase extends TestCase {
 
     public void testNoInterceptorsNoHandlers() throws Exception {
-        ConnectorImpl connector = new ConnectorImpl();
+        ConnectorImpl connector = new ConnectorImpl(null);
         InboundInvocationChain inboundChain = setupTarget(null);
         OutboundInvocationChain outboundChain = setupSource(null);
         String[] val = new String[]{"foo"};
@@ -73,7 +73,7 @@ public class OutboundToInboundConnectTestCase extends TestCase {
      * Verifies an invocation with a single source interceptor
      */
     public void testSourceInterceptor() throws Exception {
-        ConnectorImpl connector = new ConnectorImpl();
+        ConnectorImpl connector = new ConnectorImpl(null);
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         interceptors.add(interceptor);
@@ -96,7 +96,7 @@ public class OutboundToInboundConnectTestCase extends TestCase {
      * Verifies an invocation with a single target interceptor
      */
     public void testTargetInterceptor() throws Exception {
-        ConnectorImpl connector = new ConnectorImpl();
+        ConnectorImpl connector = new ConnectorImpl(null);
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         interceptors.add(interceptor);
@@ -119,7 +119,7 @@ public class OutboundToInboundConnectTestCase extends TestCase {
      * Verifies an invocation with a source and target interceptor
      */
     public void testSourceTargetInterceptor() throws Exception {
-        ConnectorImpl connector = new ConnectorImpl();
+        ConnectorImpl connector = new ConnectorImpl(null);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         List<Interceptor> sourceInterceptors = new ArrayList<Interceptor>();
         sourceInterceptors.add(sourceInterceptor);

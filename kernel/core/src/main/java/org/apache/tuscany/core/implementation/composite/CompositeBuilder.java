@@ -40,7 +40,7 @@ public class CompositeBuilder extends AbstractCompositeBuilder<CompositeImplemen
                            DeploymentContext deploymentContext) throws BuilderException {
         CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
-        URI name = componentDefinition.getName();
+        URI name = componentDefinition.getUri();
         CompositeComponentImpl component = new CompositeComponentImpl(name, parent, connector, null);
 
         return build(parent, component, componentType, deploymentContext);

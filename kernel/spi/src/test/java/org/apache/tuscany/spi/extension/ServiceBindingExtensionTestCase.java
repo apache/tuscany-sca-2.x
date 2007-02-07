@@ -21,17 +21,15 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ServiceBindingExtensionTestCase extends TestCase {
-    private URI uri;   
+    private URI uri;
 
     public void testScope() throws Exception {
         ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
@@ -50,42 +48,6 @@ public class ServiceBindingExtensionTestCase extends TestCase {
         };
         binding.prepare();
     }
-
-    public void testIsSystemNoParent() throws Exception {
-        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
-            public QName getBindingType() {
-                return null;
-            }
-        };
-        assertFalse(binding.isSystem());
-    }
-
-    public void testIsSystem() throws Exception {
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.isSystem()).andReturn(true);
-        EasyMock.replay(service);
-        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
-            public QName getBindingType() {
-                return null;
-            }
-        };
-        binding.setService(service);
-        assertTrue(binding.isSystem());
-    }
-
-    public void testIsNotSystem() throws Exception {
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.isSystem()).andReturn(false);
-        EasyMock.replay(service);
-        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
-            public QName getBindingType() {
-                return null;
-            }
-        };
-        binding.setService(service);
-        assertFalse(binding.isSystem());
-    }
-
 
     protected void setUp() throws Exception {
         super.setUp();

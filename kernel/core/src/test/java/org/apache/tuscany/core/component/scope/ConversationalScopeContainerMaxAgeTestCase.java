@@ -51,7 +51,6 @@ public class ConversationalScopeContainerMaxAgeTestCase extends TestCase {
         ConversationalScopeContainerMaxAgeTestCase.Foo foo = new ConversationalScopeContainerMaxAgeTestCase.Foo();
         context = new WorkContextImpl();
         component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.expect(component.getMaxAge()).andReturn(600000L).atLeastOnce();
         EasyMock.replay(component);

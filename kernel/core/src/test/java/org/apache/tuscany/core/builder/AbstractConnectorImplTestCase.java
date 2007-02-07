@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
@@ -53,6 +52,8 @@ import org.apache.tuscany.spi.wire.WireService;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
 import org.apache.tuscany.core.binding.local.LocalServiceBinding;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 import org.apache.tuscany.core.mock.binding.MockServiceBinding;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
@@ -69,19 +70,20 @@ import org.easymock.EasyMock;
  */
 public abstract class AbstractConnectorImplTestCase extends TestCase {
     protected static final URI TARGET = URI.create("target");
-    protected static final QualifiedName TARGET_NAME = new QualifiedName("target");
-    protected static final String TARGET_SERVICE = "FooService";
-    protected static final QualifiedName TARGET_SERVICE_NAME = new QualifiedName("target/FooService");
+    protected static final String TARGET_FRAGMENT = "Foo";
+    protected static final URI TARGET_NAME = URI.create("target#Foo");
     protected static final String RESPONSE = "response";
 
     protected ConnectorImpl connector;
+    protected ComponentManager componentManager;
     protected ServiceContract contract;
     protected Operation<Type> operation;
 
     protected void setUp() throws Exception {
         super.setUp();
         WireService wireService = new JDKWireService(null, null);
-        connector = new ConnectorImpl(wireService, null, null, null, null);
+        componentManager = new ComponentManagerImpl();
+        connector = new ConnectorImpl(wireService, null, componentManager, null, null);
         contract = new JavaServiceContract(Foo.class);
         operation = new Operation<Type>("bar", null, null, null);
     }
@@ -90,6 +92,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new InvokerInterceptor());
         InboundWire targetWire = new InboundWireImpl();
+        targetWire.setUri(TARGET);
         targetWire.setServiceContract(contract);
         targetWire.addInvocationChain(operation, chain);
 
@@ -100,10 +103,9 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         EasyMock.expect(target.getUri()).andReturn(TARGET).anyTimes();
         EasyMock.expect(target.isOptimizable()).andReturn(false).anyTimes();
         EasyMock.expect(target.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
-        EasyMock.expect(target.isSystem()).andReturn(false).atLeastOnce();
-        target.getInboundWire(EasyMock.eq(TARGET_SERVICE));
+        target.getTargetWire(EasyMock.eq(TARGET_FRAGMENT));
         EasyMock.expectLastCall().andReturn(targetWire).atLeastOnce();
-        target.createTargetInvoker(EasyMock.eq(TARGET_SERVICE), EasyMock.eq(operation), EasyMock.eq(targetWire));
+        target.createTargetInvoker(EasyMock.eq(TARGET_FRAGMENT), EasyMock.eq(operation), EasyMock.eq(targetWire));
         EasyMock.expectLastCall().andReturn(mockInvoker);
         EasyMock.replay(target);
         targetWire.setContainer(target);
@@ -115,22 +117,21 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
 
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setTargetName(TARGET_SERVICE_NAME);
+        outboundWire.setTargetUri(TARGET_NAME);
         outboundWire.setServiceContract(contract);
         outboundWire.addInvocationChain(operation, outboundChain);
 
         Map<String, List<OutboundWire>> outboundWires = new HashMap<String, List<OutboundWire>>();
         List<OutboundWire> list = new ArrayList<OutboundWire>();
         list.add(outboundWire);
-        outboundWires.put(TARGET_SERVICE, list);
+        outboundWires.put(TARGET_FRAGMENT, list);
 
         // create the source
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(source.isSystem()).andReturn(false).atLeastOnce();
-        EasyMock.expect(source.getScope()).andReturn(Scope.COMPOSITE);
+        EasyMock.expect(source.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         EasyMock.expect(source.getParent()).andReturn(parent).atLeastOnce();
         EasyMock.expect(source.getOutboundWires()).andReturn(outboundWires).atLeastOnce();
-        EasyMock.expect(source.getName()).andReturn("source").atLeastOnce();
+        EasyMock.expect(source.getUri()).andReturn(URI.create("source")).atLeastOnce();
         source.getInboundWires();
         EasyMock.expectLastCall().andReturn(Collections.emptyList());
         EasyMock.replay(source);
@@ -179,6 +180,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundInvocationChain targetInboundChain = new InboundInvocationChainImpl(operation);
         targetInboundChain.addInterceptor(new SynchronousBridgingInterceptor());
         InboundWire localServiceInboundWire = new InboundWireImpl();
+        localServiceInboundWire.setUri(TARGET);
         localServiceInboundWire.setServiceContract(contract);
         localServiceInboundWire.addInvocationChain(operation, targetInboundChain);
         localServiceInboundWire.setContainer(serviceBinding);
@@ -200,27 +202,26 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         return service;
     }
 
-    protected ReferenceBinding createLocalReferenceBinding(QualifiedName target)
+    protected ReferenceBinding createLocalReferenceBinding(URI uri, URI target)
         throws TargetInvokerCreationException {
-        ReferenceBinding referenceBinding = new LocalReferenceBinding(URI.create("local"), null);
+        ReferenceBinding referenceBinding = new LocalReferenceBinding(uri, null);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire referenceInboundWire = new InboundWireImpl();
         referenceInboundWire.setServiceContract(contract);
         referenceInboundWire.setContainer(referenceBinding);
         referenceInboundWire.addInvocationChain(operation, inboundChain);
-
+        referenceInboundWire.setUri(uri);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound chains always contains at least one interceptor
         outboundChain.addInterceptor(new SynchronousBridgingInterceptor());
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(target);
+        outboundWire.setTargetUri(target);
         outboundWire.addInvocationChain(operation, outboundChain);
         outboundWire.setContainer(referenceBinding);
-
+        outboundWire.setUri(uri);
         referenceBinding.setInboundWire(referenceInboundWire);
         referenceBinding.setOutboundWire(outboundWire);
-
         return referenceBinding;
     }
 

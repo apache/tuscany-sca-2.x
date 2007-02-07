@@ -18,17 +18,14 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.TestUtils;
-import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.easymock.EasyMock;
 
 /**
@@ -36,79 +33,20 @@ import org.easymock.EasyMock;
  */
 public class CompositeLifecycleTestCase extends TestCase {
 
-    public void testLifecycle() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("foo"), null, null, null);
-        composite.start();
-        assertNull(composite.getChild("nothtere"));
-        composite.stop();
-        composite.start();
-        assertNull(composite.getChild("nothtere"));
-        composite.stop();
-    }
-
-    public void testSystemRestart() throws Exception {
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(Source.class);
-        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        component.start();
-        component.stop();
-        EasyMock.expectLastCall().times(2);
-        EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
-
-        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
-        TestUtils.populateInboundWires(component, wires);
-        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
-
-        EasyMock.replay(component);
-
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("foo"), null, null, null);
-        composite.start();
-        composite.register(component);
-
-        assertTrue(composite.getSystemChild("source") instanceof AtomicComponent);
-        composite.stop();
-        composite.start();
-        assertTrue(composite.getSystemChild("source") instanceof AtomicComponent);
-        composite.stop();
-        EasyMock.verify(component);
-    }
-
     public void testRestart() throws Exception {
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(Source.class);
-        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        component.start();
-        component.stop();
-        EasyMock.expectLastCall().times(2);
-        EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
-
-        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
-        TestUtils.populateInboundWires(component, wires);
-        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
-
-        EasyMock.replay(component);
-
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
+        listener.onEvent(EasyMock.isA(ComponentStart.class));
+        listener.onEvent(EasyMock.isA(ComponentStop.class));
+        listener.onEvent(EasyMock.isA(ComponentStart.class));
+        listener.onEvent(EasyMock.isA(ComponentStop.class));
+        EasyMock.replay(listener);
         CompositeComponent composite = new CompositeComponentImpl(URI.create("foo"), null, null, null);
+        composite.addListener(listener);
         composite.start();
-        composite.register(component);
-
-        assertTrue(composite.getChild("source") instanceof AtomicComponent);
         composite.stop();
         composite.start();
-        assertTrue(composite.getChild("source") instanceof AtomicComponent);
         composite.stop();
-        EasyMock.verify(component);
-    }
-
-    public void testChildStoppedBeforeParent() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
-        CompositeComponent child = new CompositeComponentImpl(URI.create("child"), null, null, null);
-        parent.register(child);
-        parent.start();
-        child.stop();
-        parent.stop();
+        EasyMock.verify(listener);
     }
 
     protected void setUp() throws Exception {

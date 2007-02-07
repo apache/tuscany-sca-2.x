@@ -19,10 +19,10 @@
 package org.apache.tuscany.core.builder;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -41,6 +41,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
@@ -59,11 +61,14 @@ public class NonBlockingForwardNonBlockingCallbackConnectionTestCase extends Tes
     private Operation<Type> callbackOperation;
     private ServiceContract<Type> contract;
     private ConnectorImpl connector;
+    private ComponentManager componentManager;
 
     public void testNonBlockingForwardAndNonBlockingCallbackAtomicToAtomic() throws Exception {
+        URI targetUri = URI.create("target");
+        URI targetUriFragment = URI.create("target#service");
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(target.isSystem()).andReturn(false).anyTimes();
-        EasyMock.expect(target.getName()).andReturn("target").anyTimes();
+        //EasyMock.expect(target.isSystem()).andReturn(false).anyTimes();
+        EasyMock.expect(target.getUri()).andReturn(targetUri).anyTimes();
         EasyMock.expect(target.createTargetInvoker(EasyMock.eq("service"),
             EasyMock.isA(Operation.class),
             EasyMock.isA(InboundWire.class))).andReturn(EasyMock.createNiceMock(TargetInvoker.class));
@@ -72,15 +77,17 @@ public class NonBlockingForwardNonBlockingCallbackConnectionTestCase extends Tes
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(target);
         inboundWire.setServiceContract(contract);
+        inboundWire.setUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new NonBlockingForwardNonBlockingCallbackConnectionTestCase.MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);
+        componentManager.register(target);
 
         AtomicComponent source = createSource();
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setContainer(source);
         outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(new QualifiedName("target/service"));
+        outboundWire.setTargetUri(targetUriFragment);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         outboundWire.addInvocationChain(operation, outboundChain);
 
@@ -103,7 +110,7 @@ public class NonBlockingForwardNonBlockingCallbackConnectionTestCase extends Tes
         msg = new MessageImpl();
         msg.setBody("callback");
         Map<Operation<?>, OutboundInvocationChain> callbackChains =
-            inboundWire.getSourceCallbackInvocationChains("source");
+            inboundWire.getSourceCallbackInvocationChains(URI.create("source"));
         OutboundInvocationChain callbackInvocationChain = callbackChains.get(callbackOperation);
         ret = callbackInvocationChain.getHeadInterceptor().invoke(msg);
         assertEquals(null, ret.getBody());
@@ -117,7 +124,8 @@ public class NonBlockingForwardNonBlockingCallbackConnectionTestCase extends Tes
         WorkContext context = new WorkContextImpl();
         WireService wireService = new JDKWireService(null, null);
         WorkScheduler scheduler = new MockWorkScheduler();
-        connector = new ConnectorImpl(wireService, null, null, scheduler, context);
+        componentManager = new ComponentManagerImpl();
+        connector = new ConnectorImpl(wireService, null, componentManager, scheduler, context);
         operation = new Operation<Type>("bar", null, null, null);
         operation.setNonBlocking(true);
         callbackOperation = new Operation<Type>("callback", null, null, null);
@@ -130,8 +138,7 @@ public class NonBlockingForwardNonBlockingCallbackConnectionTestCase extends Tes
 
     private AtomicComponent createSource() throws Exception {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(false).anyTimes();
+        EasyMock.expect(component.getUri()).andReturn(URI.create("source")).atLeastOnce();
         EasyMock.expect(component.createTargetInvoker(EasyMock.eq("callback"),
             EasyMock.isA(Operation.class),
             (InboundWire) EasyMock.isNull())).andReturn(EasyMock.createNiceMock(TargetInvoker.class));

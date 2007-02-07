@@ -2,7 +2,6 @@ package org.apache.tuscany.core.implementation.composite;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -29,12 +28,12 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
                                     DeploymentContext deploymentContext) throws BuilderException {
 
         for (ComponentDefinition<? extends Implementation<?>> definition : componentType.getComponents().values()) {
-            try {
-                Component child = builderRegistry.build(component, definition, deploymentContext);
-                component.register(child);
-            } catch (ComponentRegistrationException e) {
-                throw new BuilderInstantiationException("Error registering component", e);
-            }
+//            try {
+            builderRegistry.build(component, definition, deploymentContext);
+            //component.register(child);
+//            } catch (ComponentRegistrationException e) {
+//                throw new BuilderInstantiationException("Error registering component", e);
+//            }
         }
         for (ServiceDefinition definition : componentType.getServices().values()) {
             try {

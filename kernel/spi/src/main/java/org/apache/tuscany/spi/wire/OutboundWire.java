@@ -21,7 +21,6 @@ package org.apache.tuscany.spi.wire;
 import java.net.URI;
 import java.util.Map;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.model.Operation;
 
 /**
@@ -32,16 +31,6 @@ import org.apache.tuscany.spi.model.Operation;
  * @version $$Rev$$ $$Date$$
  */
 public interface OutboundWire extends Wire {
-
-    /**
-     * Returns the name of the target
-     */
-    QualifiedName getTargetName();
-
-    /**
-     * Sets the name of the target
-     */
-    void setTargetName(QualifiedName name);
 
     /**
      * Returns the URI of the wire target
@@ -57,8 +46,14 @@ public interface OutboundWire extends Wire {
      */
     void setTargetUri(URI uri);
 
+    /**
+     * @deprecated
+     */
     boolean isAutowire();
 
+    /**
+     * @deprecated
+     */
     void setAutowire(boolean val);
 
     /**

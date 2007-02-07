@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.net.URI;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
@@ -39,6 +40,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
 import org.apache.tuscany.spi.wire.OutboundChainHolder;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -70,7 +72,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
      */
     private transient Map<Method, OutboundChainHolder> chains;
     private transient WorkContext workContext;
-    private transient Object fromAddress;
+    private transient URI fromAddress;
     private transient boolean wireContainerIsAtomicComponent;
     private transient boolean contractHasCallback;
     private transient boolean callbackIsImplemented;
@@ -175,7 +177,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         return invoke(null, method, args);
     }
 
-    protected Object getFromAddress() {
+    protected URI getFromAddress() {
         return contractHasCallback ? fromAddress : null;
     }
 
@@ -200,7 +202,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         }
         List<OutboundWire> wires = owner.getOutboundWires().get(referenceName);
         if (wires == null) {
-            throw new ReactivationException("Reference wire not found", referenceName, owner.getName());
+            throw new ReactivationException("Reference wire not found", referenceName, owner.getUri().toString());
         }
         // TODO handle multiplicity
         OutboundWire wire = wires.get(0);
@@ -215,8 +217,9 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         throws NoMethodForOperationException {
         ServiceContract contract = wire.getServiceContract();
         this.referenceName = wire.getUri().getFragment();
-        SCAObject wireContainer = wire.getContainer();
-        this.fromAddress = (wireContainer == null) ? null : wireContainer.getName();
+        // TODO JFM remove getContainer
+        SCAObject scaObject = wire.getContainer();
+        this.fromAddress =  UriHelper.getDefragmentedName(wire.getUri());
         this.contractIsConversational = contract.getInteractionScope().equals(CONVERSATIONAL);
         this.contractIsRemotable = contract.isRemotable();
         this.contractHasCallback = contract.getCallbackClass() != null;
@@ -226,10 +229,10 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             this.callbackClassName = null;
         }
         // FIXME JFM this should be done during the callback and not be dependent on PojoAtomicComponent
-        this.wireContainerIsAtomicComponent = wireContainer instanceof PojoAtomicComponent;
+        this.wireContainerIsAtomicComponent = scaObject instanceof PojoAtomicComponent;
         if (wireContainerIsAtomicComponent && contractHasCallback) {
             this.callbackIsImplemented =
-                ((PojoAtomicComponent) wireContainer).implementsCallback(contract.getCallbackClass());
+                ((PojoAtomicComponent) scaObject).implementsCallback(contract.getCallbackClass());
         } else {
             this.callbackIsImplemented = false;
         }

@@ -51,6 +51,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         JavaImplementation impl = new JavaImplementation();
         impl.setComponentType(type);
         ComponentDefinition<?> definition = new ComponentDefinition<JavaImplementation>(impl);
+        definition.setUri(URI.create("component"));
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getElementText()).andReturn("target");
@@ -59,7 +60,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
         assertEquals(1, target.getTargets().size());
         URI uri = target.getTargets().get(0);
-        assertEquals("target", uri.getPath());
+        assertEquals("component/target", uri.toString());
         assertNull(uri.getFragment());
         EasyMock.verify(reader);
     }
@@ -73,16 +74,16 @@ public class ComponentLoaderRefTestCase extends TestCase {
         JavaImplementation impl = new JavaImplementation();
         impl.setComponentType(type);
         ComponentDefinition<?> definition = new ComponentDefinition<JavaImplementation>(impl);
+        definition.setUri(URI.create("component"));
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
-        EasyMock.expect(reader.getElementText()).andReturn("target#fragment");
+        EasyMock.expect(reader.getElementText()).andReturn("target/fragment");
         EasyMock.replay(reader);
         loader.loadReference(reader, null, definition);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
         assertEquals(1, target.getTargets().size());
         URI uri = target.getTargets().get(0);
-        assertEquals("target", uri.getPath());
-        assertEquals("fragment", uri.getFragment());
+        assertEquals("component/target#fragment", uri.toString());
         EasyMock.verify(reader);
     }
 

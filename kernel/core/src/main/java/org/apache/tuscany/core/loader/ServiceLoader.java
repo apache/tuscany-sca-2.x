@@ -85,9 +85,10 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                         QualifiedName qName = new QualifiedName(target);
                         try {
                             if (qName.getPortName() == null) {
-                                targetUri = new URI(target);
+                                targetUri = new URI(parent.getUri() + "/" + target);
                             } else {
-                                targetUri = new URI(qName.getPartName() + "#" + qName.getPortName());
+                                targetUri =
+                                    new URI(parent.getUri() + "/" + qName.getPartName() + "#" + qName.getPortName());
                             }
                         } catch (URISyntaxException e) {
                             throw new IllegalSCDLNameException(e);

@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -39,20 +39,18 @@ import org.easymock.EasyMock;
 public class CompositeComponentResolutionTestCase extends TestCase {
 
     public void testSystemComponentResolution() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
+        EasyMock.expect(component.getUri()).andReturn(URI.create("source")).atLeastOnce();
         List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component);
         parent.register(component);
-        assertNull(parent.getChild("source"));
-        assertTrue(parent.getSystemChild("source") instanceof AtomicComponent);
+        assertTrue(parent.getChild("source") instanceof AtomicComponent);
         EasyMock.verify(component);
     }
 
@@ -62,14 +60,12 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(component.getUri()).andReturn(URI.create("source")).atLeastOnce();
         List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component);
         parent.register(component);
-        assertNull(parent.getSystemChild("source"));
         assertTrue(parent.getChild("source") instanceof AtomicComponent);
         EasyMock.verify(component);
     }

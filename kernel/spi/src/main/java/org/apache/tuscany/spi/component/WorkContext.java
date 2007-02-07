@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.component;
 
 import java.util.LinkedList;
+import java.net.URI;
 
 /**
  * Implementations track information associated with a request as it is processed by the runtime
@@ -51,12 +52,12 @@ public interface WorkContext {
     /**
      * Returns the current chain of SCAObject addresses
      */
-    LinkedList<Object> getCurrentCallbackRoutingChain();
+    LinkedList<URI> getCurrentCallbackRoutingChain();
 
     /**
      * Sets the current stack of SCAObject addresses
      */
-    void setCurrentCallbackRoutingChain(LinkedList<Object> callbackRoutingChain);
+    void setCurrentCallbackRoutingChain(LinkedList<URI> callbackRoutingChain);
 
     /**
      * Returns the composite where a remote request came in

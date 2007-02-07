@@ -46,8 +46,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
@@ -64,13 +64,16 @@ import org.easymock.EasyMock;
  * @version $$Rev$$ $$Date$$
  */
 public class CompositeBuilderTestCase extends TestCase {
+    private static final URI TOP_COMPONENT = URI.create("Top");
+    private static final URI PARENT_COMPONENT = URI.create("Top/Parent");
+    private static final URI SOURCE_COMPONENT = URI.create("Top/Parent/SourceComponent");
+    private static final URI TARGET_COMPONENT = URI.create("Top/Parent/TargetComponent");
+    private static final URI INNER_SOURCE_COMPONENT = URI.create("Top/Parent/SourceComponent/InnerSourceComponent");
+
     private DeploymentContext deploymentContext;
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        URI uri = URI.create("foo");
-        CompositeComponent parent = new CompositeComponentImpl(uri, null, null, null);
-
         CompositeBuilder builder = new CompositeBuilder();
         WireService wireService = new JDKWireService();
         builder.setWireService(wireService);
@@ -82,20 +85,30 @@ public class CompositeBuilderTestCase extends TestCase {
         builderRegistry.register(CompositeImplementation.class, builder);
         builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
         builder.setBuilderRegistry(builderRegistry);
+
+        CompositeComponent parent = new CompositeComponentImpl(PARENT_COMPONENT, null, null, null);
+        mgr.register(parent);
         CompositeComponent component =
             (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);
-
+        mgr.register(component); // manually register this
         component.start();
-        CompositeComponent sourceComponent = (CompositeComponent) component.getChild("SourceComponent");
+        CompositeComponent sourceComponent = (CompositeComponent) mgr.getComponent(SOURCE_COMPONENT);
         assertTrue(sourceComponent.getChild("InnerSourceService") instanceof Service);
-        AtomicComponent innerSourceComponent = (AtomicComponent) sourceComponent.getChild("InnerSourceComponent");
+        AtomicComponent innerSourceComponent = (AtomicComponent) mgr.getComponent(INNER_SOURCE_COMPONENT);
         Source innerSourceInstance = (Source) deploymentContext.getCompositeScope().getInstance(innerSourceComponent);
         assertNotNull(innerSourceInstance);
         component.stop();
     }
 
-    private ComponentDefinition createTopComponentDef() throws Exception {
+    protected void setUp() throws Exception {
+        super.setUp();
+        ScopeContainerMonitor monitor = EasyMock.createNiceMock(ScopeContainerMonitor.class);
+        CompositeScopeContainer container = new CompositeScopeContainer(monitor);
+        container.start();
+        deploymentContext = new RootDeploymentContext(null, null, container, null);
+    }
 
+    private ComponentDefinition createTopComponentDef() throws Exception {
         CompositeComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> outerType =
             new CompositeComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         outerType.add(createSourceComponentDef());
@@ -105,8 +118,7 @@ public class CompositeBuilderTestCase extends TestCase {
         outerImpl.setComponentType(outerType);
 
         ComponentDefinition def = new ComponentDefinition<CompositeImplementation>(outerImpl);
-        URI uri = URI.create("top");
-        def.setName(uri);
+        def.setUri(TOP_COMPONENT);
         return def;
     }
 
@@ -125,18 +137,17 @@ public class CompositeBuilderTestCase extends TestCase {
         service.setUri(URI.create("#InnerSourceService"));
         JavaServiceContract sourceContract = registry.introspect(Source.class);
         service.setServiceContract(sourceContract);
-        service.setTarget(new URI("InnerSourceComponent"));
+        service.setTarget(INNER_SOURCE_COMPONENT);
         innerType.add(service);
 
         CompositeImplementation innerImpl = new CompositeImplementation();
         innerImpl.setComponentType(innerType);
 
-        URI uri = URI.create("SourceComponent");
         ComponentDefinition<CompositeImplementation> sourceComponentDefinition =
-            new ComponentDefinition<CompositeImplementation>(uri, innerImpl);
+            new ComponentDefinition<CompositeImplementation>(SOURCE_COMPONENT, innerImpl);
         ReferenceTarget refTarget = new ReferenceTarget();
         refTarget.setReferenceName(URI.create("#TargetComponentRef"));
-        refTarget.addTarget(new URI("TargetComponent"));
+        refTarget.addTarget(TARGET_COMPONENT);
         sourceComponentDefinition.add(refTarget);
 
         return sourceComponentDefinition;
@@ -166,9 +177,8 @@ public class CompositeBuilderTestCase extends TestCase {
         sourceType.add(sourceServiceDefinition);
         sourceType.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(SourceImpl.class.getConstructor()));
         JavaImplementation sourceImpl = new JavaImplementation(SourceImpl.class, sourceType);
-        URI uri = URI.create("InnerSourceComponent");
         ComponentDefinition<JavaImplementation> innerSourceComponentDefinition =
-            new ComponentDefinition<JavaImplementation>(uri, sourceImpl);
+            new ComponentDefinition<JavaImplementation>(INNER_SOURCE_COMPONENT, sourceImpl);
         ReferenceTarget refTarget = new ReferenceTarget();
         refTarget.setReferenceName(URI.create("#targetReference"));
         refTarget.addTarget(new URI("#TargetComponentRef"));
@@ -178,7 +188,6 @@ public class CompositeBuilderTestCase extends TestCase {
     }
 
     private ComponentDefinition<JavaImplementation> createTargetComponentDef() throws Exception {
-
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> targetType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         targetType.setImplementationScope(Scope.COMPOSITE);
@@ -196,16 +205,8 @@ public class CompositeBuilderTestCase extends TestCase {
         targetType.add(serviceDefinition);
         targetType.setConstructorDefinition(new ConstructorDefinition<TargetImpl>(TargetImpl.class.getConstructor()));
         JavaImplementation targetImpl = new JavaImplementation(TargetImpl.class, targetType);
-        URI uri = URI.create("TargetComponent");
-        return new ComponentDefinition<JavaImplementation>(uri, targetImpl);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        ScopeContainerMonitor monitor = EasyMock.createNiceMock(ScopeContainerMonitor.class);
-        CompositeScopeContainer container = new CompositeScopeContainer(monitor);
-        container.start();
-        deploymentContext = new RootDeploymentContext(null, null, container, null);
+        //URI uri = URI.create("TargetComponent");
+        return new ComponentDefinition<JavaImplementation>(TARGET_COMPONENT, targetImpl);
     }
 
 }

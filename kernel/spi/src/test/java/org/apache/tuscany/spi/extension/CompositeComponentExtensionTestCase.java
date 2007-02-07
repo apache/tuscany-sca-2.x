@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -58,8 +58,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
         EasyMock.replay(binding);
         Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(service.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
         service.getServiceBindings();
         List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
         bindings.add(binding);
@@ -78,8 +77,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
         EasyMock.replay(binding);
         Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(service.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
         service.getServiceBindings();
         List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
         bindings.add(binding);
@@ -89,37 +87,15 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         assertNull(composite.getInboundWire("service"));
     }
 
-    public void testDefaultSystemInboundWire() throws Exception {
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
-        EasyMock.expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING).atLeastOnce();
-        EasyMock.replay(wire);
-        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
-        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
-        EasyMock.replay(binding);
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(true).atLeastOnce();
-        service.getServiceBindings();
-        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
-        bindings.add(binding);
-        EasyMock.expectLastCall().andReturn(bindings).atLeastOnce();
-        EasyMock.replay(service);
-        composite.register(service);
-        assertEquals(wire, composite.getInboundSystemWire(null));
-    }
-
     public void testMoreThanOneServiceGetDefault() throws Exception {
         Service service1 = EasyMock.createMock(Service.class);
-        EasyMock.expect(service1.getName()).andReturn("service1").atLeastOnce();
-        EasyMock.expect(service1.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(service1.getUri()).andReturn(URI.create("service1")).atLeastOnce();
         service1.getServiceBindings();
         EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(service1);
 
         Service service2 = EasyMock.createMock(Service.class);
-        EasyMock.expect(service2.getName()).andReturn("service2").atLeastOnce();
-        EasyMock.expect(service2.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(service2.getUri()).andReturn(URI.create("service2")).atLeastOnce();
         service2.getServiceBindings();
         EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(service2);
@@ -127,7 +103,6 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         composite.register(service1);
         composite.register(service2);
         assertNull(composite.getInboundWire(null));
-        assertNull(composite.getInboundSystemWire(null));
     }
 
     public void testInboundWire() throws Exception {
@@ -143,8 +118,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         EasyMock.replay(binding);
 
         Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(service.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
         List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
         bindings.add(binding);
         service.getServiceBindings();
@@ -167,8 +141,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         EasyMock.replay(binding);
 
         Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(service.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
         List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
         bindings.add(binding);
         service.getServiceBindings();
@@ -191,8 +164,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         EasyMock.replay(binding);
 
         Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(service.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
         List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
         bindings.add(binding);
         service.getServiceBindings();
@@ -222,8 +194,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         EasyMock.expect(binding.getOutboundWire()).andReturn(outboundWire).atLeastOnce();
         EasyMock.replay(binding);
         Reference reference = EasyMock.createMock(Reference.class);
-        EasyMock.expect(reference.getName()).andReturn("reference").atLeastOnce();
-        EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(reference.getUri()).andReturn(URI.create("composite#reference")).atLeastOnce();
         List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
         bindings.add(binding);
         EasyMock.expect(reference.getReferenceBindings()).andReturn(bindings).atLeastOnce();
@@ -254,8 +225,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         EasyMock.expect(binding.getOutboundWire()).andReturn(outboundWire).atLeastOnce();
         EasyMock.replay(binding);
         Reference reference = EasyMock.createMock(Reference.class);
-        EasyMock.expect(reference.getName()).andReturn("reference").atLeastOnce();
-        EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(reference.getUri()).andReturn(URI.create("composite#reference")).atLeastOnce();
         List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
         bindings.add(binding);
         EasyMock.expect(reference.getReferenceBindings()).andReturn(bindings).atLeastOnce();
@@ -263,54 +233,6 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         composite.register(reference);
         Map<String, List<OutboundWire>> wires = composite.getOutboundWires();
         assertEquals(0, wires.get("reference").size());
-    }
-
-    public void testInboundSystemWire() throws Exception {
-        ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
-        };
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING);
-        wire.getServiceContract();
-        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
-        EasyMock.replay(wire);
-        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
-        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
-        EasyMock.replay(binding);
-
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(true).atLeastOnce();
-        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
-        bindings.add(binding);
-        service.getServiceBindings();
-        EasyMock.expectLastCall().andReturn(bindings).atLeastOnce();
-        EasyMock.replay(service);
-        composite.register(service);
-        assertNotNull(composite.getInboundSystemWire("service"));
-    }
-
-    public void testInboundSystemWires() throws Exception {
-        ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
-        };
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING);
-        wire.getServiceContract();
-        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
-        EasyMock.replay(wire);
-        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
-        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
-        EasyMock.replay(binding);
-
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(true).atLeastOnce();
-        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
-        bindings.add(binding);
-        service.getServiceBindings();
-        EasyMock.expectLastCall().andReturn(bindings).atLeastOnce();
-        EasyMock.replay(service);
-        composite.register(service);
-        assertEquals(wire, composite.getInboundSystemWires().iterator().next());
     }
 
     protected void setUp() throws Exception {

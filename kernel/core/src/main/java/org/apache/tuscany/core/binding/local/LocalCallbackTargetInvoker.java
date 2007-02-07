@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.binding.local;
 
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -54,7 +55,7 @@ public class LocalCallbackTargetInvoker extends AbstractLocalTargetInvoker {
     }
 
     private Message invoke(Operation operation, Message msg) throws Throwable {
-        Object targetAddress = msg.popFromAddress();
+        URI targetAddress = msg.popFromAddress();
         if (targetAddress == null) {
             throw new AssertionError("Popped a null from address from message");
         }

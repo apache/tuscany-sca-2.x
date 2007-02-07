@@ -51,7 +51,6 @@ public class ConversationalScopeContainerMaxIdleTimeTestCase extends TestCase {
         Foo foo = new Foo();
         context = new WorkContextImpl();
         component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(component.getMaxIdleTime()).andReturn(600000L).atLeastOnce();
         EasyMock.replay(component);
         store = EasyMock.createMock(Store.class);

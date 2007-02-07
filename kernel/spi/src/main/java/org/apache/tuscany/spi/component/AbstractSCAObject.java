@@ -30,7 +30,6 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.event.TrueFilter;
-import org.apache.tuscany.spi.util.UriHelper;
 
 /**
  * Functionality common to all <code>SCAObject<code> implementations
@@ -43,18 +42,12 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     protected final CompositeComponent parent;
     protected final URI uri;
-    private final String name;
     private final Map<Object, Object> extensions = new HashMap<Object, Object>();
 
     public AbstractSCAObject(URI uri, CompositeComponent parent) {
         assert uri != null;
         this.uri = uri;
-        this.name = UriHelper.getBaseName(uri);
         this.parent = parent;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public URI getUri() {
@@ -118,14 +111,11 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
     }
 
     public String toString() {
-        return "[" + name + "] in state [" + super.toString() + ']';
+        return "[" + uri.toString() + "] in state [" + super.toString() + ']';
     }
 
     public Map<Object, Object> getExtensions() {
         return extensions;
     }
 
-    public boolean isSystem() {
-        return false;
-    }
 }

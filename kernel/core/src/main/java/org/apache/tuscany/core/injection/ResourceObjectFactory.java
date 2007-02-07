@@ -96,7 +96,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
             T instance = null;
             if (mappedName == null) {
                 try {
-                    InboundWire wire = parent.resolveSystemAutowire(type);
+                    InboundWire wire = parent.resolveAutowire(type);
                     if (wire != null) {
                         instance = (T) wire.getTargetService();
                     }
@@ -113,7 +113,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
                 }
                 return instance;
             } else {
-                SCAObject child = parent.getSystemChild(mappedName);
+                SCAObject child = parent.getChild(mappedName);
                 if (child instanceof AtomicComponent) {
                     try {
                         AtomicComponent component = (AtomicComponent) child;

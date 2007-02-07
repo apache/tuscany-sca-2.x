@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -155,11 +154,11 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             componentManager.register(component);
             return component;
         } catch (BuilderException e) {
-            e.addContextName(componentDefinition.getName().toString());
+            e.addContextName(componentDefinition.getUri().toString());
             throw e;
         } catch (ComponentRegistrationException e) {
             BuilderInstantiationException bie = new BuilderInstantiationException("Error registering component", e);
-            bie.addContextName(componentDefinition.getName().toString());
+            bie.addContextName(componentDefinition.getUri().toString());
             throw bie;
         }
     }
@@ -178,7 +177,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                 serviceDefinition.addBinding(new LocalBindingDefinition());
             }
         }
-        boolean system = parent.isSystem();
         URI targetUri = serviceDefinition.getTarget();
         URI serviceUri;
         try {
@@ -186,7 +184,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         } catch (URISyntaxException e) {
             throw new BuilderConfigException(e);
         }
-        Service service = new ServiceImpl(serviceUri, parent, serviceContract, targetUri, system);
+        Service service = new ServiceImpl(serviceUri, parent, serviceContract, targetUri);
         for (BindingDefinition definition : serviceDefinition.getBindings()) {
             Class<?> bindingClass = definition.getClass();
             // noinspection SuspiciousMethodCalls
@@ -201,9 +199,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                 if (uri == null) {
                     throw new MissingWireTargetException("Service uri not specified");
                 }
-                String path = uri.getPath();
+                //String path = uri.getPath();
                 ServiceContract<?> contract = serviceDefinition.getServiceContract();
-                wireService.createWires(binding, contract, path);
+                wireService.createWires(binding, contract, uri.toString());
             }
             service.addServiceBinding(binding);
         }
@@ -241,11 +239,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             if (wireService != null) {
                 URI targetUri = bindingDefinition.getTargetUri();
                 // it is possible for a binding to not have a URI
-                QualifiedName targetName = null;
-                if (targetUri != null) {
-                    targetName = new QualifiedName(targetUri.getPath());
-                }
-                wireService.createWires(binding, contract, targetName);
+                wireService.createWires(binding, contract, targetUri);
 
             }
             reference.addReferenceBinding(binding);

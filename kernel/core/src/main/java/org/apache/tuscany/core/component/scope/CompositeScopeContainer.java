@@ -153,7 +153,7 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
                 try {
                     ctx = new InstanceWrapperImpl(component, component.createInstance());
                 } catch (ObjectCreationException e) {
-                    e.addContextName(component.getName());
+                    e.addContextName(component.getUri().toString());
                     throw e;
                 }
                 ctx.start();

@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.wire;
 
 import java.util.LinkedList;
+import java.net.URI;
 
 /**
  * Represents a request, response, or exception flowing through a wire
@@ -50,22 +51,22 @@ public interface Message {
     /**
      * Returns the latest 'address' of the SCAObject where this message originated
      */
-    Object popFromAddress();
+    URI popFromAddress();
 
     /**
      * Adds the latest 'address' of the SCAObject where this message originated
      */
-    void pushFromAddress(Object fromAddress);
+    void pushFromAddress(URI fromAddress);
 
     /**
      * Returns the chain of SCAObject addresses
      */
-    LinkedList<Object> getCallbackRoutingChain();
+    LinkedList<URI> getCallbackRoutingChain();
 
     /**
      * Sets the chain of SCAObject addresses
      */
-    void setCallbackRoutingChain(LinkedList<Object> fromAddresses);
+    void setCallbackRoutingChain(LinkedList<URI> fromAddresses);
 
     /**
      * Returns the id of the message

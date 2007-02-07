@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.util.Map;
 import java.net.URI;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 
@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.component.CompositeComponent;
  * @version $Rev$ $Date$
  */
 public class CompositeComponentImpl extends AbstractCompositeComponent {
-    private boolean systemComposite;
 
     /**
      * Constructor specifying property values
@@ -52,21 +51,14 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
     /**
      * Constructor specifying if the composite is a system composite
      *
-     * @param name            the name of this Component
-     * @param parent          this component's parent
-     * @param connector       the connector to use for wires
-     * @param systemComposite true if the composite is a system composite
+     * @param name      the name of this Component
+     * @param parent    this component's parent
+     * @param connector the connector to use for wires
      */
     public CompositeComponentImpl(URI name,
                                   CompositeComponent parent,
-                                  Connector connector,
-                                  boolean systemComposite) {
+                                  Connector connector) {
         super(name, parent, connector, null);
-        this.systemComposite = systemComposite;
-    }
-
-    public boolean isSystem() {
-        return systemComposite;
     }
 
 }

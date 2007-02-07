@@ -74,14 +74,15 @@ public class LocalTargetInvokerTestCase extends TestCase {
         Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
         chains.put(operation, chain);
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(wire.getUri()).andReturn(URI.create("foo")).atLeastOnce();
+        URI uri = URI.create("foo");
+        EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();
         wire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(chains);
         EasyMock.expect(wire.getServiceContract()).andReturn(contract);
         EasyMock.replay(wire);
         TargetInvoker invoker = new LocalTargetInvoker(operation, wire);
         Message msg = EasyMock.createMock(Message.class);
-        msg.pushFromAddress(EasyMock.eq("foo"));
+        msg.pushFromAddress(EasyMock.eq(uri));
         EasyMock.replay(msg);
         invoker.invoke(msg);
         EasyMock.verify(msg);

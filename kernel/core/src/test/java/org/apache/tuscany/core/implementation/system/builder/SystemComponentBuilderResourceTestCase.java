@@ -26,7 +26,7 @@ import org.easymock.EasyMock;
  */
 public class SystemComponentBuilderResourceTestCase extends TestCase {
 
-    @SuppressWarnings("uncjecked")
+    @SuppressWarnings("unchecked")
     public void testResourceInjection() throws Exception {
         ScopeContainer container = EasyMock.createNiceMock(ScopeContainer.class);
         DeploymentContext ctx = EasyMock.createNiceMock(DeploymentContext.class);
@@ -57,7 +57,7 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
         EasyMock.replay(wire);
 
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemAutowire(String.class)).andReturn(wire);
+        EasyMock.expect(parent.resolveAutowire(String.class)).andReturn(wire);
         EasyMock.replay(parent);
         AtomicComponent component = builder.build(parent, definition, ctx);
         SystemComponentBuilderResourceTestCase.Foo foo =

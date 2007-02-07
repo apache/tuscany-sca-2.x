@@ -114,7 +114,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
             }
             return ctx.getInstance();
         }
-        throw new TargetNotFoundException(component.getName());
+        throw new TargetNotFoundException(component.getUri().toString());
     }
 
     public void persistNew(AtomicComponent component, String id, Object instance, long expiration)

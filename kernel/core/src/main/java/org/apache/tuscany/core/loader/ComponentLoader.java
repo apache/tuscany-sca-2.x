@@ -161,7 +161,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                             for (ReferenceDefinition ref : type.getReferences().values()) {
                                 if (ref.isAutowire()) {
                                     ReferenceTarget referenceTarget = new ReferenceTarget();
-                                    String compName = componentDefinition.getName().toString();
+                                    String compName = componentDefinition.getUri().toString();
                                     URI refName = URI.create(compName + ref.getUri().toString());
                                     referenceTarget.setReferenceName(refName);
                                     componentDefinition.add(referenceTarget);
@@ -243,9 +243,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         QualifiedName qName = new QualifiedName(target);
         try {
             if (qName.getPortName() == null) {
-                targetURI = new URI(qName.getPartName());
+                targetURI = new URI(componentDefinition.getUri() + "/" + qName.getPartName());
             } else {
-                targetURI = new URI(qName.getPartName() + "#" + qName.getPartName());
+                targetURI =
+                    new URI(componentDefinition.getUri() + "/" + qName.getPartName() + "#" + qName.getPortName());
             }
         } catch (URISyntaxException e) {
             throw new InvalidReferenceException("Illegal URI", name, e);
@@ -272,7 +273,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             if (referenceTarget == null) {
                 referenceTarget = new ReferenceTarget();
                 try {
-                    referenceTarget.setReferenceName(new URI(componentDefinition.getName() + "#" + name));
+                    referenceTarget.setReferenceName(new URI(componentDefinition.getUri() + "#" + name));
                 } catch (URISyntaxException e) {
                     throw new IllegalSCDLNameException(e);
                 }

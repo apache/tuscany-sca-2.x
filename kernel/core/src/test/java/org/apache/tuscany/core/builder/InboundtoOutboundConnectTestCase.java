@@ -155,7 +155,7 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        connector = new ConnectorImpl();
+        connector = new ConnectorImpl(null);
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract;
         try {

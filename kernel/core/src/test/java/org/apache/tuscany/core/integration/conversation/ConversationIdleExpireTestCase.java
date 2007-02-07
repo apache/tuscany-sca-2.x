@@ -26,7 +26,6 @@ import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -86,13 +85,12 @@ public class ConversationIdleExpireTestCase extends AbstractConversationTestCase
         target = createMaxIdleTimeAtomicComponent();
         // create source component mock
         JavaAtomicComponent source = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(source.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(source.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(source.getUri()).andReturn(URI.create("source")).atLeastOnce();
         EasyMock.replay(source);
 
         owire = MockFactory.createOutboundWire("foo", Foo.class);
         owire.setContainer(source);
-        owire.setTargetName(new QualifiedName("foo/bar"));
+        owire.setTargetUri(URI.create("foo#bar"));
         InboundWire iwire = MockFactory.createInboundWire("foo", Foo.class);
         iwire.setContainer(target);
         connector.connect(owire, iwire, false);

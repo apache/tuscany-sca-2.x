@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -59,7 +60,7 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
                 workContext.setCurrentCorrelationId(messageId);
             }
             if (wire != null) {
-                LinkedList<Object> callbackRoutingChain = msg.getCallbackRoutingChain();
+                LinkedList<URI> callbackRoutingChain = msg.getCallbackRoutingChain();
                 if (callbackRoutingChain != null) {
                     workContext.setCurrentCallbackRoutingChain(callbackRoutingChain);
                 }

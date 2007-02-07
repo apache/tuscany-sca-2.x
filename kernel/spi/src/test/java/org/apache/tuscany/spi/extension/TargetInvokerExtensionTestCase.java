@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -36,7 +37,7 @@ public class TargetInvokerExtensionTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testNonBlockingDispatch() {
-        Object from = new Object();
+        URI from = URI.create("foo");
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.replay(wire);
         WorkContext context;

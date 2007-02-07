@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
@@ -45,6 +43,8 @@ import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
 
 /**
  * Base class for wire service extensions
@@ -117,7 +117,7 @@ public abstract class WireServiceExtension implements WireService {
         }
     }
 
-    public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, QualifiedName targetName) {
+    public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, URI target) {
         InboundWire inboundWire = new InboundWireImpl(referenceBinding.getBindingType());
         inboundWire.setServiceContract(contract);
         inboundWire.setContainer(referenceBinding);
@@ -127,8 +127,8 @@ public abstract class WireServiceExtension implements WireService {
             inboundWire.addInvocationChain(operation, chain);
         }
         OutboundWire outboundWire = new OutboundWireImpl(referenceBinding.getBindingType());
-        outboundWire.setTargetName(targetName);
         outboundWire.setUri(referenceBinding.getUri());
+        outboundWire.setTargetUri(target);
         // [rfeng] Check if the Reference has the binding contract
         ServiceContract<?> bindingContract = referenceBinding.getBindingServiceContract();
         if (bindingContract == null) {
@@ -142,7 +142,7 @@ public abstract class WireServiceExtension implements WireService {
                 // Not ideal but the local binding case is special as its inbound and outbound wires are connected
                 // before the outbound wire is connected to the reference target. This requires the binding outbound
                 // chain to have an interceptor to connect to from the binding inbound chain. This outbound
-                // interceptor will then be bridged to the head target interceptor 
+                // interceptor will then be bridged to the head target interceptor
                 chain.addInterceptor(new SynchronousBridgingInterceptor());
             } else {
                 chain.addInterceptor(new InvokerInterceptor());
@@ -182,8 +182,8 @@ public abstract class WireServiceExtension implements WireService {
         OutboundWire outboundWire = new OutboundWireImpl(serviceBinding.getBindingType());
         outboundWire.setServiceContract(contract);
         outboundWire.setUri(serviceBinding.getUri());
-        outboundWire.setTargetName(new QualifiedName(targetName));
         outboundWire.setContainer(serviceBinding);
+        outboundWire.setTargetUri(URI.create(targetName));
 
         for (Operation<?> operation : contract.getOperations().values()) {
             OutboundInvocationChain outboundChain = createOutboundChain(operation);
@@ -295,10 +295,9 @@ public abstract class WireServiceExtension implements WireService {
         } else {
             for (URI uri : target.getTargets()) {
                 OutboundWire wire = new OutboundWireImpl();
-                QualifiedName qName = new QualifiedName(uri.toString());
-                wire.setTargetName(qName);
                 wire.setServiceContract(contract);
                 wire.setUri(target.getReferenceName());
+                wire.setTargetUri(uri);
                 for (Operation<?> operation : contract.getOperations().values()) {
                     // TODO handle policy
                     OutboundInvocationChain chain = createOutboundChain(operation);

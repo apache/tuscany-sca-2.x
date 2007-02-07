@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.wire;
 
 import java.util.LinkedList;
+import java.net.URI;
 
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -116,27 +117,27 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
             return null;
         }
 
-        public Object getFromAddress() {
+        public URI getFromAddress() {
             return null;
         }
 
-        public void setFromAddress(Object fromAddress) {
+        public void setFromAddress(URI fromAddress) {
             throw new UnsupportedOperationException();
         }
 
-        public Object popFromAddress() {
+        public URI popFromAddress() {
             return null;
         }
 
-        public void pushFromAddress(Object fromAddress) {
+        public void pushFromAddress(URI fromAddress) {
             throw new UnsupportedOperationException();
         }
 
-        public LinkedList<Object> getCallbackRoutingChain() {
+        public LinkedList<URI> getCallbackRoutingChain() {
             return null;
         }
 
-        public void setCallbackRoutingChain(LinkedList<Object> fromAddresses) {
+        public void setCallbackRoutingChain(LinkedList<URI> fromAddresses) {
             throw new UnsupportedOperationException();
         }
 

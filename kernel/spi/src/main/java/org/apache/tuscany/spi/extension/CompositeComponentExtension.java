@@ -47,6 +47,7 @@ import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
+import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.Wire;
@@ -64,15 +65,9 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     protected final Map<String, Document> propertyValues;
     protected final Connector connector;
 
-    protected final Map<String, SCAObject> systemChildren = new ConcurrentHashMap<String, SCAObject>();
-    protected final List<Service> systemServices = new ArrayList<Service>();
-    protected final List<Reference> systemReferenceBindings = new ArrayList<Reference>();
-
     // autowire mappings
     protected final Map<Class, InboundWire> autowireInternal = new ConcurrentHashMap<Class, InboundWire>();
     protected final Map<Class, InboundWire> autowireExternal = new ConcurrentHashMap<Class, InboundWire>();
-    protected final Map<Class, InboundWire> systemAutowireInternal = new ConcurrentHashMap<Class, InboundWire>();
-    protected final Map<Class, InboundWire> systemAutowireExternal = new ConcurrentHashMap<Class, InboundWire>();
 
     /**
      * Management service to use.
@@ -125,57 +120,41 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         return children.get(name);
     }
 
-    public SCAObject getSystemChild(String name) {
-        assert name != null;
-        return systemChildren.get(name);
-    }
-
     public void register(SCAObject child) throws ComponentRegistrationException {
         assert child instanceof Service || child instanceof Reference || child instanceof Component;
-        if (child.isSystem()) {
-            if (systemChildren.get(child.getName()) != null) {
-                throw new DuplicateNameException("A system child is already registered with the name", child.getName());
-            }
-            systemChildren.put(child.getName(), child);
+        String name;
+        // TODO JFM should just use fragment when only refs and services are registered
+        if (child.getUri().getFragment() != null) {
+            name = child.getUri().getFragment();
         } else {
-            if (children.get(child.getName()) != null) {
-                throw new DuplicateNameException("A child is already registered with the name", child.getName());
-            }
-            children.put(child.getName(), child);
+            name = UriHelper.getBaseName(child.getUri());
         }
+        if (children.get(name) != null) {
+            String uri = child.getUri().toString();
+            throw new DuplicateNameException("A child is already registered with the name", uri);
+        }
+        children.put(name, child);
         if (child instanceof Service) {
             Service service = (Service) child;
             synchronized (services) {
-                if (service.isSystem()) {
-                    systemServices.add(service);
-                } else {
-                    services.add(service);
-                }
+                services.add(service);
             }
             registerAutowire(service);
         } else if (child instanceof Reference) {
             Reference reference = (Reference) child;
             synchronized (references) {
-                if (reference.isSystem()) {
-                    systemReferenceBindings.add(reference);
-                } else {
-                    references.add(reference);
-                }
+                references.add(reference);
             }
             registerAutowire(reference);
         } else if (child instanceof AtomicComponent) {
             AtomicComponent atomic = (AtomicComponent) child;
             registerAutowire(atomic);
             if (managementService != null) {
-                managementService.registerComponent(atomic.getName(), atomic);
+                managementService.registerComponent(atomic.getUri().toString(), atomic);
             }
         } else if (child instanceof CompositeComponent) {
             CompositeComponent component = (CompositeComponent) child;
-            if (lifecycleState == RUNNING && component.getLifecycleState() == UNINITIALIZED) {
-                component.start();
-            }
             registerAutowire(component);
-            addListener(component);
         }
     }
 
@@ -184,7 +163,7 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
             Map<String, List<OutboundWire>> map = new HashMap<String, List<OutboundWire>>();
             for (Reference reference : references) {
                 List<OutboundWire> wires = new ArrayList<OutboundWire>();
-                map.put(reference.getName(), wires);
+                map.put(reference.getUri().getFragment(), wires);
                 for (ReferenceBinding binding : reference.getReferenceBindings()) {
                     OutboundWire wire = binding.getOutboundWire();
                     if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
@@ -219,25 +198,44 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         return null;
     }
 
-    public InboundWire getInboundSystemWire(String serviceName) {
-        Service service;
-        if (serviceName == null) {
-            if (systemServices.size() != 1) {
-                return null;
+    public InboundWire getTargetWire(String targetName) {
+        SCAObject object = null;
+        if (targetName == null) {
+            if (services.size() == 1) {
+                object = services.get(0);
+            } else if (references.size() == 1) {
+                object = references.get(0);
             }
-            service = systemServices.get(0);
         } else {
-            SCAObject object = systemChildren.get(serviceName);
-            if (!(object instanceof Service)) {
+            object = children.get(targetName);
+        }
+        if (object instanceof Service) {
+            Service service = (Service) object;
+            List<ServiceBinding> bindings = service.getServiceBindings();
+            if (bindings.isEmpty()) {
                 return null;
             }
-            service = (Service) object;
-        }
-        for (ServiceBinding binding : service.getServiceBindings()) {
-            InboundWire wire = binding.getInboundWire();
-            if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
-                return wire;
+            for (ServiceBinding binding : bindings) {
+                InboundWire wire = binding.getInboundWire();
+                if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
+                    return wire;
+                }
             }
+            // for now, pick the first one
+            return bindings.get(0).getInboundWire();
+        } else if (object instanceof Reference) {
+            Reference reference = (Reference) object;
+            List<ReferenceBinding> bindings = reference.getReferenceBindings();
+            if (bindings.isEmpty()) {
+                return null;
+            }
+            for (ReferenceBinding binding : bindings) {
+                InboundWire wire = binding.getInboundWire();
+                if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
+                    return wire;
+                }
+            }
+            return bindings.get(0).getInboundWire();
         }
         return null;
     }
@@ -246,21 +244,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         synchronized (services) {
             List<InboundWire> map = new ArrayList<InboundWire>();
             for (Service service : services) {
-                for (ServiceBinding binding : service.getServiceBindings()) {
-                    InboundWire wire = binding.getInboundWire();
-                    if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
-                        map.add(wire);
-                    }
-                }
-            }
-            return map;
-        }
-    }
-
-    public Collection<InboundWire> getInboundSystemWires() {
-        synchronized (systemServices) {
-            List<InboundWire> map = new ArrayList<InboundWire>();
-            for (Service service : systemServices) {
                 for (ServiceBinding binding : service.getServiceBindings()) {
                     InboundWire wire = binding.getInboundWire();
                     if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
@@ -285,19 +268,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         return null;
     }
 
-    public InboundWire resolveSystemAutowire(Class<?> instanceInterface) throws TargetResolutionException {
-        // FIXME JNB make this faster and thread safe
-        for (Map.Entry<Class, InboundWire> service : systemAutowireInternal.entrySet()) {
-            if (instanceInterface.isAssignableFrom(service.getKey())) {
-                return service.getValue();
-            }
-        }
-        if (getParent() != null) {
-            return getParent().resolveSystemAutowire(instanceInterface);
-        }
-        return null;
-    }
-
     public InboundWire resolveExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException {
         // FIXME JNB make this faster and thread safe
         for (Map.Entry<Class, InboundWire> service : autowireExternal.entrySet()) {
@@ -311,29 +281,9 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         return null;
     }
 
-    public InboundWire resolveSystemExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException {
-        // FIXME JNB make this faster and thread safe
-        for (Map.Entry<Class, InboundWire> service : systemAutowireExternal.entrySet()) {
-            if (instanceInterface.isAssignableFrom(service.getKey())) {
-                return service.getValue();
-            }
-        }
-        if (getParent() != null) {
-            return getParent().resolveAutowire(instanceInterface);
-        }
-        return null;
-    }
-
     public void prepare() throws PrepareException {
         // Connect services and references first so that their wires are linked first
         List<SCAObject> childList = new ArrayList<SCAObject>();
-        for (SCAObject child : systemChildren.values()) {
-            if (child instanceof Component) {
-                childList.add(child);
-            } else {
-                childList.add(0, child);
-            }
-        }
         // connect system artifacts
         for (SCAObject child : childList) {
             // connect all children
@@ -341,10 +291,8 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
             try {
                 connector.connect(child);
                 child.prepare();
-            } catch (PrepareException e) {
-                e.addContextName(getName());
             } catch (WiringException e) {
-                throw new PrepareException("Error preparing composite", getName(), e);
+                throw new PrepareException("Error preparing composite", getUri().toString(), e);
             }
         }
 
@@ -363,11 +311,8 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
             try {
                 connector.connect(child);
                 child.prepare();
-            } catch (PrepareException e) {
-                e.addContextName(getName());
-                throw e;
             } catch (WiringException e) {
-                throw new PrepareException("Error preparing composite", getName(), e);
+                throw new PrepareException("Error preparing composite", getUri().toString(), e);
             }
         }
     }
@@ -377,62 +322,36 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
             // The ServiceContract is not from Java
             return;
         }
-        if (service.isSystem()) {
-            if (systemAutowireExternal.containsKey(interfaze)) {
-                return;
-            }
-            // TODO autowire should allow multiple interfaces
-            List<ServiceBinding> bindings = service.getServiceBindings();
-            if (bindings.size() == 0) {
-                return;
-            }
-            // pick the first binding until autowire allows multiple interfaces
-            InboundWire wire = bindings.get(0).getInboundWire();
-            if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-                throw new InvalidAutowireInterface("Matching inbound wire not found for interface",
-                    interfaze.getName());
-            }
-            systemAutowireExternal.put(interfaze, wire);
-        } else {
-            if (autowireExternal.containsKey(interfaze)) {
-                return;
-            }
-            // TODO autowire should allow multiple interfaces
-            List<ServiceBinding> bindings = service.getServiceBindings();
-            if (bindings.size() == 0) {
-                return;
-            }
-            // pick the first binding until autowire allows multiple interfaces
-            InboundWire wire = bindings.get(0).getInboundWire();
-            if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-                String iName = interfaze.getName();
-                throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
-            }
-            autowireExternal.put(interfaze, wire);
+        if (autowireExternal.containsKey(interfaze)) {
+            return;
         }
+        // TODO autowire should allow multiple interfaces
+        List<ServiceBinding> bindings = service.getServiceBindings();
+        if (bindings.size() == 0) {
+            return;
+        }
+        // pick the first binding until autowire allows multiple interfaces
+        InboundWire wire = bindings.get(0).getInboundWire();
+        if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
+            String iName = interfaze.getName();
+            throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
+        }
+        autowireExternal.put(interfaze, wire);
     }
 
-    protected void registerAutowireInternal(Class<?> interfaze, InboundWire wire, boolean system)
-        throws InvalidAutowireInterface {
+    protected void registerAutowireInternal(Class<?> interfaze, InboundWire wire) throws InvalidAutowireInterface {
         if (interfaze == null) {
             // The ServiceContract is not from Java
             return;
         }
-        if (system) {
-            if (systemAutowireInternal.containsKey(interfaze)) {
-                return;
-            }
-            systemAutowireInternal.put(interfaze, wire);
-        } else {
-            if (autowireInternal.containsKey(interfaze)) {
-                return;
-            }
-            if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-                String iName = interfaze.getName();
-                throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
-            }
-            autowireInternal.put(interfaze, wire);
+        if (autowireInternal.containsKey(interfaze)) {
+            return;
         }
+        if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
+            String iName = interfaze.getName();
+            throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
+        }
+        autowireInternal.put(interfaze, wire);
     }
 
     protected void registerAutowireInternal(Class<?> interfaze, Reference reference) throws InvalidAutowireInterface {
@@ -440,37 +359,20 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
             // The ServiceContract is not from Java
             return;
         }
-        if (reference.isSystem()) {
-            if (systemAutowireInternal.containsKey(interfaze)) {
-                return;
-            }
-            List<ReferenceBinding> bindings = reference.getReferenceBindings();
-            if (bindings.size() == 0) {
-                return;
-            }
-            // pick the first binding until autowire allows multiple interfaces
-            InboundWire wire = bindings.get(0).getInboundWire();
-            if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-                throw new InvalidAutowireInterface("Matching inbound wire not found for interface",
-                    interfaze.getName());
-            }
-            systemAutowireInternal.put(interfaze, wire);
-        } else {
-            if (autowireInternal.containsKey(interfaze)) {
-                return;
-            }
-            List<ReferenceBinding> bindings = reference.getReferenceBindings();
-            if (bindings.size() == 0) {
-                return;
-            }
-            // pick the first binding until autowire allows multiple interfaces
-            InboundWire wire = bindings.get(0).getInboundWire();
-            if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-                String iName = interfaze.getName();
-                throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
-            }
-            autowireInternal.put(interfaze, wire);
+        if (autowireInternal.containsKey(interfaze)) {
+            return;
         }
+        List<ReferenceBinding> bindings = reference.getReferenceBindings();
+        if (bindings.size() == 0) {
+            return;
+        }
+        // pick the first binding until autowire allows multiple interfaces
+        InboundWire wire = bindings.get(0).getInboundWire();
+        if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
+            String iName = interfaze.getName();
+            throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
+        }
+        autowireInternal.put(interfaze, wire);
     }
 
     protected void registerAutowireInternal(Class<?> interfaze, AtomicComponent component)
@@ -479,48 +381,24 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
             // The ServiceContract is not from Java
             return;
         }
-        if (component.isSystem()) {
-            if (systemAutowireInternal.containsKey(interfaze) || component.getInboundWires().size() == 0) {
-                return;
-            }
-            for (InboundWire wire : component.getInboundWires()) {
-                Class<?> clazz = wire.getServiceContract().getInterfaceClass();
-                if (clazz.isAssignableFrom(interfaze)) {
-                    systemAutowireInternal.put(interfaze, wire);
-                    return;
-                }
-            }
-            throw new InvalidAutowireInterface("Matching inbound wire not found for interface", interfaze.getName());
-        } else {
-            if (autowireInternal.containsKey(interfaze) || component.getInboundWires().size() == 0) {
-                return;
-            }
-            for (InboundWire wire : component.getInboundWires()) {
-                if (interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-                    autowireInternal.put(interfaze, wire);
-                    return;
-                }
-            }
-            throw new InvalidAutowireInterface("Matching inbound wire not found for interface", interfaze.getName());
+        if (autowireInternal.containsKey(interfaze) || component.getInboundWires().size() == 0) {
+            return;
         }
+        for (InboundWire wire : component.getInboundWires()) {
+            if (interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
+                autowireInternal.put(interfaze, wire);
+                return;
+            }
+        }
+        throw new InvalidAutowireInterface("Matching inbound wire not found for interface", interfaze.getName());
     }
 
     protected void registerAutowire(CompositeComponent component) throws InvalidAutowireInterface {
-        if (component.isSystem()) {
-            // the composite is under the system hierarchy so only register its system services
-            Collection<InboundWire> wires = component.getInboundSystemWires();
-            for (InboundWire wire : wires) {
-                Class<?> clazz = wire.getServiceContract().getInterfaceClass();
-                registerAutowireInternal(clazz, wire, true);
-            }
-
-        } else {
-            // the composite is under the application hierarchy so only register its non-system services
-            Collection<InboundWire> wires = component.getInboundWires();
-            for (InboundWire wire : wires) {
-                Class<?> clazz = wire.getServiceContract().getInterfaceClass();
-                registerAutowireInternal(clazz, wire, false);
-            }
+        // the composite is under the application hierarchy so only register its non-system services
+        Collection<InboundWire> wires = component.getInboundWires();
+        for (InboundWire wire : wires) {
+            Class<?> clazz = wire.getServiceContract().getInterfaceClass();
+            registerAutowireInternal(clazz, wire);
         }
     }
 

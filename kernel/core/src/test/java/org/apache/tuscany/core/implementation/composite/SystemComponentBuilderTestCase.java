@@ -71,7 +71,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(FooImpl.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
-        definition.setName(URI.create("component"));
+        definition.setUri(URI.create("component"));
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
         component.setScopeContainer(container);
         component.start();
@@ -108,7 +108,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(FooImpl.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
-        definition.setName(URI.create("component"));
+        definition.setUri(URI.create("component"));
         PropertyValue<String> propVal = new PropertyValue<String>();
         propVal.setName("prop");
         propVal.setValueFactory(new SingletonObjectFactory<String>("value"));

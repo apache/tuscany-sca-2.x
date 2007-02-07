@@ -21,6 +21,7 @@ package org.apache.tuscany.core.binding.local;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -55,7 +56,7 @@ public class LocalCallbackTargetInvokerTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        Object targetAddress = new Object();
+        URI targetAddress = URI.create("from");
         message = new MessageImpl();
         message.pushFromAddress(targetAddress);
         message.setBody("foo");

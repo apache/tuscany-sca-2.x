@@ -23,6 +23,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -78,15 +79,15 @@ public class WorkContextImpl implements WorkContext {
     }
 
     @SuppressWarnings("unchecked")
-    public LinkedList<Object> getCurrentCallbackRoutingChain() {
+    public LinkedList<URI> getCurrentCallbackRoutingChain() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (LinkedList<Object>) map.get(CALLBACK_ROUTING_CHAIN);
+        return (LinkedList<URI>) map.get(CALLBACK_ROUTING_CHAIN);
     }
 
-    public void setCurrentCallbackRoutingChain(LinkedList<Object> callbackRoutingChain) {
+    public void setCurrentCallbackRoutingChain(LinkedList<URI> callbackRoutingChain) {
         Map<Object, Object> map = getWorkContextMap();
         map.put(CALLBACK_ROUTING_CHAIN, callbackRoutingChain);
     }

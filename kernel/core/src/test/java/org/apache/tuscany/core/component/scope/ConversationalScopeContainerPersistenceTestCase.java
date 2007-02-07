@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.util.UUID;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -98,7 +99,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(component.getUri()).andReturn(URI.create("foo")).atLeastOnce();
         EasyMock.replay(component);
         container.register(component);
         Foo foo = new Foo();
@@ -140,7 +141,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         String id2 = UUID.randomUUID().toString();
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(component.getUri()).andReturn(URI.create("foo")).atLeastOnce();
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         component.addListener(EasyMock.eq(container));
         EasyMock.replay(component);

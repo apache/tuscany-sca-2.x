@@ -80,12 +80,6 @@ public class AbstractSCAObjectTestCase extends TestCase {
         assertNotNull(object.toString());
     }
 
-    public void testGetName() throws Exception {
-        SCAObject object = new TestSCAObject(new URI("foo"), null);
-        assertEquals(new URI("foo"), object.getName());
-    }
-
-
     public void testToPrepare() throws Exception {
         SCAObject object = new TestSCAObject(new URI("foo"), null);
         object.prepare();

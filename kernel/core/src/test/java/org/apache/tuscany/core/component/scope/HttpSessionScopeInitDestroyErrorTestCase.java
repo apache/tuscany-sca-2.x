@@ -46,7 +46,6 @@ public class HttpSessionScopeInitDestroyErrorTestCase extends TestCase {
         scope.start();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.isA(RuntimeEventListener.class));
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(component.createInstance()).andReturn(new Object());
         EasyMock.expect(component.isEagerInit()).andReturn(true);
         component.init(EasyMock.isA(Object.class));

@@ -38,7 +38,7 @@ public class JavaObjectRegistrationTestCase extends TestCase {
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         composite.registerJavaObject("foo", MockComponent.class, instance);
-        SCAObject child = composite.getSystemChild("foo");
+        SCAObject child = composite.getChild("foo");
         assertTrue(child instanceof AtomicComponent);
         MockComponent resolvedInstance = (MockComponent) ((AtomicComponent) child).getTargetInstance();
         assertSame(instance, resolvedInstance);
@@ -55,17 +55,10 @@ public class JavaObjectRegistrationTestCase extends TestCase {
         }
     }
 
-    public void testSystemAutowireToObject() throws Exception {
+    public void testAutowireToObject() throws Exception {
         MockComponent instance = new MockComponent();
         composite.registerJavaObject("foo", MockComponent.class, instance);
-        assertSame(instance, composite.resolveSystemAutowire(MockComponent.class).getTargetService());
-        assertNull(composite.resolveSystemExternalAutowire(MockComponent.class));
-    }
-
-    public void testApplicationAutowireToObject() throws Exception {
-        MockComponent instance = new MockComponent();
-        composite.registerJavaObject("foo", MockComponent.class, instance);
-        assertNull(composite.resolveAutowire(MockComponent.class));
+        assertNotNull(composite.resolveAutowire(MockComponent.class));
         assertNull(composite.resolveExternalAutowire(MockComponent.class));
     }
 

@@ -72,9 +72,4 @@ public abstract class ReferenceBindingExtension extends AbstractSCAObject implem
         return bindingServiceContract;
     }
 
-    @Override
-    public boolean isSystem() {
-        return reference != null && reference.isSystem();
-    }
-
 }

@@ -57,8 +57,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     public void testReferencesServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(service.getUri()).andReturn(URI.create("#service")).atLeastOnce();
         service.getServiceBindings();
         EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(service);
@@ -90,13 +89,10 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
     private Reference getReference(String name) throws InvalidServiceContractException {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
-        EasyMock.expect(binding.isSystem()).andReturn(false).atLeastOnce();
         InboundWire wire = TestUtils.createInboundWire(Bar.class);
         wire.setContainer(binding);
         EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
-
-        binding.getName();
-        expectLastCall().andReturn(name).anyTimes();
+        EasyMock.expect(binding.getUri()).andReturn(URI.create("#reference")).atLeastOnce();
         replay(binding);
 
         Reference reference = new ReferenceImpl(URI.create(name), null, wire.getServiceContract());
@@ -107,8 +103,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
         component.getInboundWires();
         EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(component);

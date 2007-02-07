@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,12 +27,13 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
@@ -46,8 +48,8 @@ import static org.easymock.EasyMock.verify;
 public class ConnectorPostProcessTestCase extends TestCase {
 
     public void testInboundToOutboundPostProcessCalled() throws Exception {
-        OutboundWire owire = createNiceMock(OutboundWire.class);
-        replay(owire);
+        OutboundWire owire = new OutboundWireImpl();
+        owire.setUri(URI.create("target"));
         InboundWire iwire = createNiceMock(InboundWire.class);
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         expect(iwire.getInvocationChains()).andReturn(chains);
@@ -66,36 +68,33 @@ public class ConnectorPostProcessTestCase extends TestCase {
     }
 
     public void testOutboundToInboundPostProcessCalled() throws Exception {
-        AtomicComponent source = createNiceMock(AtomicComponent.class);
-        expect(source.getName()).andReturn("Component");
+        AtomicComponent source = createMock(AtomicComponent.class);
+        expect(source.getUri()).andReturn(URI.create("source"));
         replay(source);
 
-        AtomicComponent target = createNiceMock(AtomicComponent.class);
-        expect(target.getName()).andReturn("Component");
+        AtomicComponent target = createMock(AtomicComponent.class);
+        expect(target.getUri()).andReturn(URI.create("target"));
         replay(target);
 
-        OutboundWire owire = createNiceMock(OutboundWire.class);
-        EasyMock.expect(owire.getContainer()).andReturn(source);
+        OutboundWire owire = new OutboundWireImpl();
+        owire.setContainer(source);
+        owire.setTargetUri(URI.create("target"));
 
-        Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
-        expect(owire.getInvocationChains()).andReturn(chains);
-        Map<Operation<?>, InboundInvocationChain> ichains = new HashMap<Operation<?>, InboundInvocationChain>();
-        expect(owire.getTargetCallbackInvocationChains()).andReturn(ichains);
-        replay(owire);
-        InboundWire iwire = createNiceMock(InboundWire.class);
-        expect(iwire.getSourceCallbackInvocationChains("Component")).andReturn(chains);
-        EasyMock.expect(iwire.getContainer()).andReturn(target);
-        replay(iwire);
+        InboundWire iwire = new InboundWireImpl();
+        iwire.setContainer(target);
+        iwire.setUri(URI.create("target"));
+
         WirePostProcessorRegistry registry = createMock(WirePostProcessorRegistry.class);
         registry.process(EasyMock.eq(owire), EasyMock.eq(iwire));
         replay(registry);
+
         WireService wireService = createMock(WireService.class);
         wireService.checkCompatibility((ServiceContract<?>) EasyMock.anyObject(),
             (ServiceContract<?>) EasyMock.anyObject(), EasyMock.eq(false));
         expectLastCall().anyTimes();
         replay(wireService);
-        ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null, null);
 
+        ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null, null);
         connector.connect(owire, iwire, false);
         verify(registry);
     }

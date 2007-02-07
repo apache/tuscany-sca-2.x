@@ -18,16 +18,13 @@
  */
 package org.apache.tuscany.core.implementation.java.integration;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-import java.net.URI;
-import java.net.URISyntaxException;
 
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -45,6 +42,8 @@ import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.ComponentStart;
 import org.apache.tuscany.core.component.event.ComponentStop;
@@ -177,11 +176,11 @@ public class OutboundWireToJavaTestCase extends TestCase {
         scope.stop();
     }
 
-    private OutboundWire getWire(ScopeContainer scope) throws NoSuchMethodException,
-                                                              InvalidServiceContractException, WiringException,
-                                                              URISyntaxException {
-        ConnectorImpl connector = new ConnectorImpl();
+    private OutboundWire getWire(ScopeContainer scope) throws Exception {
+        ComponentManager componentManager = new ComponentManagerImpl();
+        ConnectorImpl connector = new ConnectorImpl(null, null, componentManager, null, null);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.replay(parent);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.setParent(parent);
@@ -190,10 +189,11 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
         JavaAtomicComponent source = new JavaAtomicComponent(configuration);
         source.setScopeContainer(scope);
-        OutboundWire outboundWire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
+        OutboundWire outboundWire = createOutboundWire("target#Target", Target.class);
         outboundWire.setContainer(source);
         source.addOutboundWire(outboundWire);
         configuration.setName(new URI("target"));
+        componentManager.register(source);
         JavaAtomicComponent target = new JavaAtomicComponent(configuration);
         target.setScopeContainer(scope);
         InboundWire targetWire = MockFactory.createInboundWire("Target", Target.class);
@@ -201,24 +201,22 @@ public class OutboundWireToJavaTestCase extends TestCase {
         target.addInboundWire(targetWire);
         InboundWire inboundWire = target.getInboundWire("Target");
         inboundWire.setContainer(target);
+        componentManager.register(target);
 
-        EasyMock.expect(parent.getChild("target")).andReturn(target);
-        EasyMock.replay(parent);
 
         connector.connect(source);
         target.start();
         return outboundWire;
     }
 
-    private static <T> OutboundWire createOutboundWire(QualifiedName targetName, Class<T> interfaze)
+    private static <T> OutboundWire createOutboundWire(String targetName, Class<T> interfaze)
         throws InvalidServiceContractException {
         OutboundWire wire = new OutboundWireImpl();
         JavaServiceContract contract = new JavaServiceContract(interfaze);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         wire.setServiceContract(contract);
-        wire.setTargetName(targetName);
         wire.addInvocationChains(createInvocationChains(interfaze));
-        wire.setTargetUri(URI.create(targetName.getPartName() + "#" + targetName.getPortName()));
+        wire.setTargetUri(URI.create(targetName));
         wire.setUri(URI.create("component#ref"));
         return wire;
     }

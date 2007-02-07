@@ -38,21 +38,18 @@ import org.apache.tuscany.spi.model.ServiceContract;
 public class ServiceImpl extends AbstractSCAObject implements Service {
     private ServiceContract<?> serviceContract;
     private List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
-    private boolean system;
     private URI targetUri;
 
     public ServiceImpl(URI name, CompositeComponent parent, ServiceContract<?> contract) {
-        this(name, parent, contract, null, false);
+        this(name, parent, contract, null);
     }
 
     public ServiceImpl(URI name,
                        CompositeComponent parent,
                        ServiceContract<?> contract,
-                       URI targetUri,
-                       boolean system) {
+                       URI targetUri) {
         super(name, parent);
         this.serviceContract = contract;
-        this.system = system;
         this.targetUri = targetUri;
     }
 
@@ -91,8 +88,4 @@ public class ServiceImpl extends AbstractSCAObject implements Service {
         }
     }
 
-    @Override
-    public boolean isSystem() {
-        return system;
-    }
 }

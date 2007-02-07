@@ -79,6 +79,14 @@ public interface Component extends SCAObject {
     InboundWire getInboundWire(String serviceName);
 
     /**
+     * Returns the inbound wire associated with the given target name or null if not found.  Targets can be services or
+     * references in the case of composites.
+     *
+     * @return the wire associated with the given service name or null if not found.
+     */
+    InboundWire getTargetWire(String targetName);
+
+    /**
      * Returns a map of inbound wires.
      *
      * @return a map of inbound wires.

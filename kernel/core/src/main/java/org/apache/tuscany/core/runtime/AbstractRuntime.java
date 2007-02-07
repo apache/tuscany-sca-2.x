@@ -210,7 +210,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
 /*
     protected Deployer locateDeployer() throws InitializationException {
-        SCAObject deployerComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
+        SCAObject deployerComponent = tuscanySystem.getChild(ComponentNames.TUSCANY_DEPLOYER);
         if (!(deployerComponent instanceof AtomicComponent)) {
             throw new InitializationException("Deployer must be an atomic component");
         }
@@ -224,7 +224,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
 /*
     protected WireService locateWireService() throws InitializationException {
-        SCAObject wireServiceComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
+        SCAObject wireServiceComponent = tuscanySystem.getChild(ComponentNames.TUSCANY_WIRE_SERVICE);
         if (!(wireServiceComponent instanceof AtomicComponent)) {
             throw new InitializationException("WireService must be an atomic component");
         }
