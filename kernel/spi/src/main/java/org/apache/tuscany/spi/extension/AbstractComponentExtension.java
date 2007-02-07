@@ -21,6 +21,11 @@ package org.apache.tuscany.spi.extension;
 import java.util.Map;
 import java.net.URI;
 
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.CallableReference;
+import org.osoa.sca.ServiceReference;
+import org.osoa.sca.RequestContext;
+
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -31,6 +36,8 @@ import org.apache.tuscany.spi.model.PropertyValue;
  * @version Provides support for property accessors.
  */
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
+    private final ComponentContext context;
+
     protected ScopeContainer scopeContainer;
 
     private Map<String, PropertyValue<?>> defaultPropertyValues;
@@ -43,6 +50,7 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
      */
     public AbstractComponentExtension(URI name, CompositeComponent parent) {
         super(name, parent);
+        this.context = new ComponentContextImpl();
     }
 
     public void setScopeContainer(ScopeContainer scopeContainer) {
@@ -59,5 +67,44 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
 
     public boolean isOptimizable() {
         return false;
+    }
+
+    public ComponentContext getComponentContext() {
+        return context;
+    }
+
+    private class ComponentContextImpl implements ComponentContext {
+
+        public String getURI() {
+            return AbstractComponentExtension.this.getUri().toString();
+        }
+
+        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> B getService(Class<B> businessInterface, String referenceName) {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> B getProperty(Class<B> type, String propertyName) {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, String serviceName) {
+            throw new UnsupportedOperationException();
+        }
+
+        public RequestContext getRequestContext() {
+            throw new UnsupportedOperationException();
+        }
     }
 }
