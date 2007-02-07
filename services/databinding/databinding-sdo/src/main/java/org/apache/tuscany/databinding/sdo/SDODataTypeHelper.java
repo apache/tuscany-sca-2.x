@@ -23,13 +23,14 @@ import org.apache.tuscany.databinding.sdo.ImportSDOLoader.SDOType;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import commonj.sdo.helper.HelperContext;
 
 /**
- * Helper class to get TypeHelper from the transformation context
+ * Helper class to get TypeHelper from the context
  */
-public class SDODataTypeHelper {
+public final class SDODataTypeHelper {
     private SDODataTypeHelper() {
     }
 
@@ -50,5 +51,22 @@ public class SDODataTypeHelper {
         } else {
             return helperContext;
         }
+    }
+    
+    public static HelperContext getHelperContext(DeploymentContext deploymentContext) {
+        HelperContext helperContext = null;
+        if (deploymentContext != null && deploymentContext.getParent() != null) {
+            helperContext = (HelperContext)deploymentContext.getParent().getExtension(HelperContext.class.getName());
+            if (helperContext == null) {
+                helperContext = SDOUtil.createHelperContext();
+                deploymentContext.getParent().putExtension(HelperContext.class.getName(), helperContext);
+            }
+        }
+
+        if (helperContext == null) {
+            helperContext = SDOUtil.createHelperContext();
+        }
+        
+        return helperContext;
     }
 }

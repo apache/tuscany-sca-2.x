@@ -35,6 +35,7 @@ import org.osoa.sca.annotations.EagerInit;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XSDHelper;
 import org.osoa.sca.annotations.Init;
@@ -60,10 +61,13 @@ public class DataObjectLoader implements StAXElementLoader<ModelObject> {
         this.propertyQName = propertyQName;
     }
 
-    public ModelObject load(CompositeComponent parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ModelObject load(CompositeComponent parent,
+                            ModelObject object,
+                            XMLStreamReader reader,
+                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert propertyQName.equals(reader.getName());
-        // TODO: We need a way to get TypeHelper from deploymentContext
-        TypeHelper typeHelper = TypeHelper.INSTANCE;
+        HelperContext helperContext = SDODataTypeHelper.getHelperContext(deploymentContext);
+        TypeHelper typeHelper = helperContext.getTypeHelper();
         XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
         DataObject dataObject = streamHelper.loadObject(reader);
         // TODO: Is it required that the object always extends from ModelObject?
