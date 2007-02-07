@@ -51,25 +51,14 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
+    private static final URI SOURCE = URI.create("source");
     private CompositeComponent parent;
     private InboundInvocationChain inboundChain;
     private ServiceBinding sourceServiceBinding;
 
     public void testConnectServiceToAtomicComponent() throws Exception {
         configureAtomicTarget();
-        Service sourceService = new ServiceImpl(URI.create("foo"), parent, contract);
-        sourceService.addServiceBinding(sourceServiceBinding);
-        connector.connect(sourceService);
-        Interceptor interceptor = inboundChain.getHeadInterceptor();
-        MessageImpl msg = new MessageImpl();
-        msg.setTargetInvoker(new MockInvoker());
-        Message resp = interceptor.invoke(msg);
-        assertEquals(RESPONSE, resp.getBody());
-    }
-
-    public void testConnectServiceToChildCompositeService() throws Exception {
-        configureChildCompositeServiceTarget();
-        Service sourceService = new ServiceImpl(URI.create("foo"), parent, contract);
+        Service sourceService = new ServiceImpl(SOURCE, parent, contract);
         sourceService.addServiceBinding(sourceServiceBinding);
         connector.connect(sourceService);
         Interceptor interceptor = inboundChain.getHeadInterceptor();
@@ -81,7 +70,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     public void testConnectServiceToReference() throws Exception {
         configureReferenceTarget();
-        Service sourceService = new ServiceImpl(URI.create("foo"), parent, contract);
+        Service sourceService = new ServiceImpl(URI.create("source"), parent, contract);
         sourceService.addServiceBinding(sourceServiceBinding);
         connector.connect(sourceService);
         Interceptor interceptor = inboundChain.getHeadInterceptor();
@@ -97,21 +86,21 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
         inboundWire.addInvocationChain(operation, inboundChain);
-
+        inboundWire.setUri(SOURCE);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound chains always contains at least one interceptor
         outboundChain.addInterceptor(new SynchronousBridgingInterceptor());
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(TARGET_SERVICE_NAME);
+        outboundWire.setTargetUri(TARGET_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
+        outboundWire.setUri(SOURCE);
 
-        sourceServiceBinding = new MockServiceBinding(URI.create("foo"));
+        sourceServiceBinding = new MockServiceBinding(SOURCE);
         sourceServiceBinding.setInboundWire(inboundWire);
         sourceServiceBinding.setOutboundWire(outboundWire);
         inboundWire.setContainer(sourceServiceBinding);
         outboundWire.setContainer(sourceServiceBinding);
-
     }
 
     private void configureAtomicTarget() throws Exception {
@@ -120,9 +109,11 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
         inboundWire.addInvocationChain(operation, inboundChain);
-
+        inboundWire.setUri(TARGET);
         AtomicComponent atomicTarget = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(atomicTarget.getInboundWire(EasyMock.isA(String.class))).andReturn(inboundWire).atLeastOnce();
+        EasyMock.expect(atomicTarget.getTargetWire(EasyMock.isA(String.class))).andReturn(inboundWire).atLeastOnce();
+        EasyMock.expect(atomicTarget.getUri()).andReturn(TARGET);
+        EasyMock.expect(atomicTarget.isOptimizable()).andReturn(true);
         EasyMock.expect(atomicTarget.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.expect(atomicTarget.createTargetInvoker(EasyMock.isA(String.class),
             EasyMock.isA(Operation.class),
@@ -134,40 +125,21 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         parent = EasyMock.createNiceMock(CompositeComponent.class);
         EasyMock.expect(parent.getChild(TARGET.toString())).andReturn(atomicTarget);
         EasyMock.replay(parent);
+        componentManager.register(atomicTarget);
     }
-
-    private void configureChildCompositeServiceTarget() throws Exception {
-        InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
-        inboundChain.addInterceptor(new InvokerInterceptor());
-        InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setServiceContract(contract);
-        inboundWire.addInvocationChain(operation, inboundChain);
-
-        CompositeComponent compositeTarget = EasyMock.createMock(CompositeComponent.class);
-        Service service = createLocalService(compositeTarget);
-        ServiceBinding binding = service.getServiceBindings().get(0);
-        EasyMock.expect(compositeTarget.getInboundWire(TARGET_SERVICE)).andReturn(binding.getInboundWire());
-        EasyMock.expect(compositeTarget.getScope()).andReturn(Scope.SYSTEM).anyTimes();
-        EasyMock.replay(compositeTarget);
-
-        inboundWire.setContainer(compositeTarget);
-
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.expect(parent.getChild(TARGET.toString())).andReturn(compositeTarget);
-        EasyMock.replay(parent);
-    }
-
 
     private void configureReferenceTarget() throws Exception {
-        ReferenceBinding binding = createLocalReferenceBinding(TARGET_NAME);
+        ReferenceBinding binding = createLocalReferenceBinding(TARGET, URI.create("OtherTarget"));
         Reference referenceTarget = new ReferenceImpl(TARGET, parent, contract);
         referenceTarget.addReferenceBinding(binding);
         // put a terminating interceptor on the outbound wire of the reference for testing an invocation
         binding.getOutboundWire().getInvocationChains().get(operation).addInterceptor(new InvokerInterceptor());
         connector.connect(binding.getInboundWire(), binding.getOutboundWire(), true);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.expect(parent.getChild(TARGET.toString())).andReturn(referenceTarget);
+        EasyMock.expect(parent.getUri()).andReturn(TARGET);
+        EasyMock.expect(parent.getTargetWire(TARGET_FRAGMENT)).andReturn(binding.getInboundWire());
         EasyMock.replay(parent);
+        componentManager.register(parent);
     }
 
 }

@@ -40,8 +40,4 @@ public abstract class SystemAtomicComponentExtension extends AtomicComponentExte
         throw new UnsupportedOperationException();
     }
 
-    public boolean isSystem() {
-        return true;
-    }
-
 }

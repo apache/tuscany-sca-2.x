@@ -46,6 +46,8 @@ import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -72,6 +74,8 @@ public class CallbackInvocationTestCase extends TestCase {
     private WireService wireService;
     private WorkScheduler scheduler;
     private WorkContext workContext;
+    private ComponentManager componentManager;
+    private Connector connector;
 
     /**
      * Verifies callback wires are built and callback invocations are handled properly
@@ -83,10 +87,8 @@ public class CallbackInvocationTestCase extends TestCase {
         fooComponent.setScopeContainer(container);
         wireService.createWires(fooComponent, targetDefinition);
         container.register(fooComponent);
-
+        componentManager.register(fooComponent);
         CompositeComponent parent = createMock(CompositeComponent.class);
-        parent.getChild(isA(String.class));
-        expectLastCall().andReturn(fooComponent).anyTimes();
         replay(parent);
 
         ComponentDefinition<JavaImplementation> sourceDefinition = createSource(URI.create("fooClient"));
@@ -95,8 +97,7 @@ public class CallbackInvocationTestCase extends TestCase {
         clientComponent.setScopeContainer(container);
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
-
-        Connector connector = new ConnectorImpl(new JDKWireService(), null, null, scheduler, workContext);
+        componentManager.register(clientComponent);
 
         connector.connect(clientComponent);
         FooClient client = (FooClient) clientComponent.getTargetInstance();
@@ -116,6 +117,7 @@ public class CallbackInvocationTestCase extends TestCase {
         fooComponent.setScopeContainer(container);
         wireService.createWires(fooComponent, targetDefinition);
         container.register(fooComponent);
+        componentManager.register(fooComponent);
 
         CompositeComponent parent = createMock(CompositeComponent.class);
         parent.getChild(isA(String.class));
@@ -128,8 +130,7 @@ public class CallbackInvocationTestCase extends TestCase {
         clientComponent.setScopeContainer(container);
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
-
-        Connector connector = new ConnectorImpl(new JDKWireService(), null, null, scheduler, workContext);
+        componentManager.register(clientComponent);
 
         connector.connect(clientComponent);
         FooPlainClient client = (FooPlainClient) clientComponent.getTargetInstance();
@@ -152,6 +153,7 @@ public class CallbackInvocationTestCase extends TestCase {
         fooComponent.setScopeContainer(container);
         wireService.createWires(fooComponent, targetDefinition);
         container.register(fooComponent);
+        componentManager.register(fooComponent);
 
         CompositeComponent parent = createMock(CompositeComponent.class);
         parent.getChild(isA(String.class));
@@ -165,13 +167,14 @@ public class CallbackInvocationTestCase extends TestCase {
         clientComponent1.setScopeContainer(container);
         wireService.createWires(clientComponent1, sourceDefinition1);
         container.register(clientComponent1);
+        componentManager.register(clientComponent1);
         JavaAtomicComponent clientComponent2 =
             (JavaAtomicComponent) builder.build(parent, sourceDefinition2, context);
         clientComponent2.setScopeContainer(container);
         wireService.createWires(clientComponent2, sourceDefinition2);
         container.register(clientComponent2);
+        componentManager.register(clientComponent2);
 
-        Connector connector = new ConnectorImpl(new JDKWireService(), null, null, scheduler, workContext);
         connector.connect(clientComponent1);
         connector.connect(clientComponent2);
         FooClient client1 = (FooClient) clientComponent1.getTargetInstance();
@@ -360,6 +363,8 @@ public class CallbackInvocationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        componentManager = new ComponentManagerImpl();
+        connector = new ConnectorImpl(new JDKWireService(), null, componentManager, scheduler, workContext);
         wireService = new JDKWireService();
         container = new CompositeScopeContainer(null);
         container.start();

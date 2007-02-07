@@ -39,9 +39,6 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompositeImplementation> {
     private TuscanyManagementService managementService;
 
-    public SystemCompositeBuilder() {
-    }
-
     public SystemCompositeBuilder(BuilderRegistry builderRegistry,
                                   Connector connector,
                                   TuscanyManagementService managementService) {
@@ -55,8 +52,8 @@ public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompo
                                     DeploymentContext deploymentContext) throws BuilderException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
-        URI name = componentDefinition.getName();
-        CompositeComponent component = new CompositeComponentImpl(name, parent, connector, true);
+        URI name = componentDefinition.getUri();
+        CompositeComponent component = new CompositeComponentImpl(name, parent, connector);
         component.setManagementService(managementService);
         build(parent, component, componentType, deploymentContext);
         return component;

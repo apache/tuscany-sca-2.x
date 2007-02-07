@@ -55,7 +55,7 @@ public class ResourceInjectionTestCase extends TestCase {
         EasyMock.replay(wire);
 
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(wire);
+        EasyMock.expect(parent.resolveAutowire(EasyMock.eq(String.class))).andReturn(wire);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, parent, null);
         component.addResourceFactory("bar", factory);
@@ -83,7 +83,7 @@ public class ResourceInjectionTestCase extends TestCase {
         EasyMock.replay(wire);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
 
-        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(wire);
+        EasyMock.expect(parent.resolveAutowire(EasyMock.eq(String.class))).andReturn(wire);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, parent, null);
         component.addResourceFactory("bar", factory);

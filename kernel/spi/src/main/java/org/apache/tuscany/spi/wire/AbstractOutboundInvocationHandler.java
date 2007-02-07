@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.net.URI;
 
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
@@ -38,7 +39,7 @@ public abstract class AbstractOutboundInvocationHandler {
                             TargetInvoker invoker,
                             Object[] args,
                             Object correlationId,
-                            LinkedList<Object> callbackRoutingChain)
+                            LinkedList<URI> callbackRoutingChain)
         throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         if (headInterceptor == null) {
@@ -57,7 +58,7 @@ public abstract class AbstractOutboundInvocationHandler {
         } else {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
-            Object fromAddress = getFromAddress();
+            URI fromAddress = getFromAddress();
             if (fromAddress != null && callbackRoutingChain != null) {
                 throw new AssertionError("Can't use both a from address and callback routing chain");
             }
@@ -97,7 +98,7 @@ public abstract class AbstractOutboundInvocationHandler {
         }
     }
 
-    protected Object getFromAddress() {
+    protected URI getFromAddress() {
         // Default to null, only needed in outbound (forward) direction
         return null;
     }

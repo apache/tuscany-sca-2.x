@@ -19,9 +19,9 @@
 package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Map;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
@@ -118,7 +118,7 @@ public interface WireService {
      * @param targetName       the qualified target name or null if the reference referes to a target outside the SCA
      *                         domain
      */
-    void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, QualifiedName targetName);
+    void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, URI targetName);
 
     /**
      * Creates and injects wires for a service binding

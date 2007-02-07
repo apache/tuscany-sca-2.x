@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -60,7 +59,7 @@ public final class MockFactory {
 
     private static final WireService WIRE_SERVICE = new JDKWireService(new WorkContextImpl(), null);
     private static final JavaInterfaceProcessorRegistry REGISTRY = new JavaInterfaceProcessorRegistryImpl();
-    private static final ConnectorImpl CONNECTOR = new ConnectorImpl();
+    private static final ConnectorImpl CONNECTOR = new ConnectorImpl(null);
 
     private MockFactory() {
     }
@@ -132,7 +131,7 @@ public final class MockFactory {
         OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
         sourceComponent.addOutboundWire(outboundWire);
         outboundWire.setContainer(sourceComponent);
-        outboundWire.setTargetName(new QualifiedName(targetName + "/" + serviceName));
+        outboundWire.setTargetUri(URI.create(targetName + "#" + serviceName));
         targetScope.register(targetComponent);
         sourceScope.register(sourceComponent);
         CONNECTOR.connect(outboundWire, inboundWire, false);
@@ -185,7 +184,7 @@ public final class MockFactory {
         sourceComponent.setScopeContainer(sourceScope);
         OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, null);
         outboundWire.setContainer(sourceComponent);
-        outboundWire.setTargetName(new QualifiedName(targetName + "/" + serviceName));
+        outboundWire.setTargetUri(URI.create(targetName + "#" + serviceName));
         List<OutboundWire> factories = new ArrayList<OutboundWire>();
         factories.add(outboundWire);
         sourceComponent.addOutboundWires(factories);

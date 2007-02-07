@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.MalformedNameException;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
@@ -97,12 +96,12 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
                 throw new IllegalStateException("Composite not in UNINITIALIZED state");
             }
 
-            for (SCAObject child : systemChildren.values()) {
-                child.start();
-            }
-            for (SCAObject child : children.values()) {
-                child.start();
-            }
+//            for (SCAObject child : systemChildren.values()) {
+//                child.start();
+//            }
+//            for (SCAObject child : children.values()) {
+//                child.start();
+//            }
             initializeLatch.countDown();
             initialized = true;
             lifecycleState = INITIALIZED;
@@ -115,12 +114,6 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
             return;
         }
 
-        for (SCAObject child : children.values()) {
-            child.stop();
-        }
-        for (SCAObject child : systemChildren.values()) {
-            child.stop();
-        }
         publish(new ComponentStop(this, getUri()));
         // need to block a start until reset is complete
         initializeLatch = new CountDownLatch(2);

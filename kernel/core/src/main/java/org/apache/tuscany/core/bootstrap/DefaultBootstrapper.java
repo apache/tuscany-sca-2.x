@@ -130,7 +130,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     public RuntimeComponent createRuntime() {
         DefaultRuntime runtime = new DefaultRuntime();
         CompositeComponent systemComponent =
-            new CompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM_ROOT, runtime, null, true);
+            new CompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM_ROOT, runtime, null);
         runtime.setSystemComponent(systemComponent);
         CompositeComponent rootComponent =
             new CompositeComponentImpl(ComponentNames.TUSCANY_APPLICATION_ROOT, runtime, null, null);
@@ -232,7 +232,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @return a new Connector
      */
     public Connector createConnector() {
-        return new ConnectorImpl();
+        return new ConnectorImpl(componentManager);
     }
 
     /**

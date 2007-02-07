@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
@@ -41,7 +43,7 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
         scope.start();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(component.getUri()).andReturn(URI.create("foo")).atLeastOnce();
         EasyMock.expect(component.createInstance()).andThrow(new ObjectCreationException(""));
         EasyMock.expect(component.getInitLevel()).andReturn(1);
         EasyMock.replay(component);
@@ -58,7 +60,6 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
         scope.start();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(component.createInstance()).andReturn(new Object());
         EasyMock.expect(component.getInitLevel()).andReturn(1);
         component.init(EasyMock.isA(Object.class));

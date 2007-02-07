@@ -117,7 +117,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         for (Class<?> clazz : constr.getParameterTypes()) {
             configuration.addConstructorParamType(clazz);
         }
-        configuration.setName(definition.getName());
+        configuration.setName(definition.getUri());
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         // handle properties
         Map<String, PropertyValue<?>> propertyValues = definition.getPropertyValues();

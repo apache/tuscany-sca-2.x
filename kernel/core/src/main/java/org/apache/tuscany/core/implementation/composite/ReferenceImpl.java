@@ -38,19 +38,12 @@ import org.apache.tuscany.spi.model.ServiceContract;
 public class ReferenceImpl extends AbstractSCAObject implements Reference {
     private ServiceContract<?> serviceContract;
     private List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
-    private boolean system;
-
-    public ReferenceImpl(URI name, CompositeComponent parent, ServiceContract<?> contract) {
-        this(name, parent, contract, false);
-    }
 
     public ReferenceImpl(URI name,
                          CompositeComponent parent,
-                         ServiceContract<?> contract,
-                         boolean system) {
+                         ServiceContract<?> contract) {
         super(name, parent);
         this.serviceContract = contract;
-        this.system = system;
     }
 
     public Scope getScope() {
@@ -84,8 +77,4 @@ public class ReferenceImpl extends AbstractSCAObject implements Reference {
         }
     }
 
-    @Override
-    public boolean isSystem() {
-        return system;
-    }
 }

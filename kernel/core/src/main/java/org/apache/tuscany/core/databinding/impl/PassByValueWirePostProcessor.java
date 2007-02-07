@@ -80,7 +80,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
                 targetOperation = entry.getKey();
                 sourceOperation =
                     getSourceOperation(source.getInvocationChains().keySet(), targetOperation.getName());
-                
+
 
                 if (null != sourceOperation) {
                     argsDataBindings = resolveArgsDataBindings(targetOperation);
@@ -110,12 +110,12 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
             && !allowsPassByReference
             && callbackOperations != null
             && !callbackOperations.isEmpty()) {
-            Object targetAddress = source.getContainer().getName();
+            //URI targetAddress = UriHelper.getBaseName(source.getUri());
             Map<Operation<?>, InboundInvocationChain> callbackChains = source.getTargetCallbackInvocationChains();
             for (Map.Entry<Operation<?>, InboundInvocationChain> entry : callbackChains.entrySet()) {
                 targetOperation = entry.getKey();
                 sourceOperation =
-                    getSourceOperation(target.getSourceCallbackInvocationChains(targetAddress).keySet(),
+                    getSourceOperation(target.getSourceCallbackInvocationChains(source.getUri()).keySet(),
                         targetOperation.getName());
 
                 argsDataBindings = resolveArgsDataBindings(targetOperation);
@@ -128,7 +128,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
 
                 entry.getValue().addInterceptor(0, passByValueInterceptor);
                 tailInterceptor =
-                    target.getSourceCallbackInvocationChains(targetAddress).get(sourceOperation)
+                    target.getSourceCallbackInvocationChains(source.getUri()).get(sourceOperation)
                         .getTailInterceptor();
                 if (tailInterceptor != null) {
                     tailInterceptor.setNext(passByValueInterceptor);

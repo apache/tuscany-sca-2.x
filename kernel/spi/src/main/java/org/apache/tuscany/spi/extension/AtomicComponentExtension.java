@@ -162,6 +162,10 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         }
     }
 
+    public InboundWire getTargetWire(String targetName) {
+        return getInboundWire(targetName);
+    }
+
     public Collection<InboundWire> getInboundWires() {
         return Collections.unmodifiableCollection(serviceWires.values());
     }

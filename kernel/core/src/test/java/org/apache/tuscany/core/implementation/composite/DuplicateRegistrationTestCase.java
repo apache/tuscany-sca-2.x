@@ -46,8 +46,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         AtomicComponent component1 = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component1.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component1.isSystem()).andReturn(true).atLeastOnce();
+        EasyMock.expect(component1.getUri()).andReturn(URI.create("source")).atLeastOnce();
         component1.stop();
         List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component1, wires);
@@ -55,8 +54,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
         EasyMock.replay(component1);
 
         AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component2.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();
+        EasyMock.expect(component2.getUri()).andReturn(URI.create("source")).atLeastOnce();
         component2.stop();
         EasyMock.replay(component2);
 
@@ -75,16 +73,14 @@ public class DuplicateRegistrationTestCase extends TestCase {
         services.add(Source.class);
         CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
+        EasyMock.expect(component.getUri()).andReturn(URI.create("bar")).atLeastOnce();
         List<InboundWire> wires = TestUtils.createInboundWires(services);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component);
         parent.register(component);
         AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component2.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();
+        EasyMock.expect(component2.getUri()).andReturn(URI.create("bar")).atLeastOnce();
         EasyMock.replay(component2);
         try {
             parent.register(component2);

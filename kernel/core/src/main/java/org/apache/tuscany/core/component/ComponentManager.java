@@ -25,7 +25,9 @@ import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**
- * Responsible for tracking and managing the component tree for a runtime instance
+ * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components
+ * deployed to the current runtime and hence may be sparse in comparison to the assembly component hierarchy for the SCA
+ * domain as parents and children may be distributed to different runtimes.
  *
  * @version $Rev$ $Date$
  */
@@ -33,13 +35,26 @@ public interface ComponentManager extends RuntimeEventListener {
 
     /**
      * Registers a component which will be managed by the runtime
-     * @param component   the component 
+     *
+     * @param component the component
      * @throws ComponentRegistrationException
      */
     void register(Component component) throws ComponentRegistrationException;
 
+    /**
+     * Deregisters a component
+     *
+     * @param component the component to deregister
+     * @throws ComponentRegistrationException
+     */
     void unregister(Component component) throws ComponentRegistrationException;
 
-    Component getComponent(URI name);
+    /**
+     * Returns the component with the given URI
+     *
+     * @param uri the component URI
+     * @return the component or null if not found
+     */
+    Component getComponent(URI uri);
 
 }

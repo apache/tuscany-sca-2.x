@@ -121,7 +121,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                 }
                 return instance;
             } else {
-                throw new TargetNotFoundException(component.getName());
+                throw new TargetNotFoundException(component.getUri().toString());
             }
         } catch (StoreReadException e) {
             throw new TargetResolutionException("Error retrieving target instance", e);

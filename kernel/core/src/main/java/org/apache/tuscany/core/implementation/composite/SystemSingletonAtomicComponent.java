@@ -130,6 +130,11 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         return inboundWires.get(serviceName);
     }
 
+
+    public InboundWire getTargetWire(String targetName) {
+        return getInboundWire(targetName);
+    }
+
     public void addOutboundWire(OutboundWire wire) {
         throw new UnsupportedOperationException();
     }
@@ -145,10 +150,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         return null;
-    }
-
-    public boolean isSystem() {
-        return true;
     }
 
     private void initWire(Class<?> interfaze) {

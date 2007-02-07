@@ -57,7 +57,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         EasyMock.replay(mockReader);
         ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, null);
         assertNotNull(serviceDefinition);
-        assertEquals("target", serviceDefinition.getTarget().getPath());
+        assertEquals("parent/target", serviceDefinition.getTarget().getPath());
         assertNull(serviceDefinition.getTarget().getFragment());
     }
 
@@ -67,14 +67,13 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         EasyMock.expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(REFERENCE);
-        EasyMock.expect(mockReader.getElementText()).andReturn("target#fragment");
+        EasyMock.expect(mockReader.getElementText()).andReturn("target/fragment");
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.replay(mockReader);
         ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, null);
         assertNotNull(serviceDefinition);
-        assertEquals("target", serviceDefinition.getTarget().getPath());
-        assertEquals("fragment", serviceDefinition.getTarget().getFragment());
+        assertEquals("parent/target#fragment", serviceDefinition.getTarget().toString());
     }
 
 
@@ -85,7 +84,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         loader = new ServiceLoader(mockRegistry);
         parent = EasyMock.createMock(CompositeComponent.class);
         URI uri = URI.create(PARENT_NAME);
-        EasyMock.expect(parent.getUri()).andReturn(uri);
+        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(parent);
     }
 }

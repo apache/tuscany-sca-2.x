@@ -45,8 +45,8 @@ public class InboundWireImpl implements InboundWire {
     private OutboundWire targetWire;
     private String callbackReferenceName;
     private Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-    private Map<Object, Map<Operation<?>, OutboundInvocationChain>> callbackSourceChainMaps =
-        new HashMap<Object, Map<Operation<?>, OutboundInvocationChain>>();
+    private Map<URI, Map<Operation<?>, OutboundInvocationChain>> callbackSourceChainMaps =
+        new HashMap<URI, Map<Operation<?>, OutboundInvocationChain>>();
     private SCAObject container;
     private AtomicComponent targetComponent;
     private boolean optimizable;
@@ -110,16 +110,16 @@ public class InboundWireImpl implements InboundWire {
         chains.put(operation, chain);
     }
 
-    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains(Object targetAddr) {
+    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains(URI targetAddr) {
         return callbackSourceChainMaps.get(targetAddr);
     }
 
-    public void addSourceCallbackInvocationChains(Object targetAddr,
+    public void addSourceCallbackInvocationChains(URI targetAddr,
                                                   Map<Operation<?>, OutboundInvocationChain> chains) {
         callbackSourceChainMaps.put(targetAddr, chains);
     }
 
-    public void addSourceCallbackInvocationChain(Object targetAddr,
+    public void addSourceCallbackInvocationChain(URI targetAddr,
                                                  Operation operation,
                                                  OutboundInvocationChain chain) {
         Map<Operation<?>, OutboundInvocationChain> chains = callbackSourceChainMaps.get(targetAddr);

@@ -40,12 +40,8 @@ public interface SCAObject extends EventPublisher, Lifecycle {
     URI getUri();
 
     /**
-     * Returns the artifact name
-     */
-    String getName();
-
-    /**
      * Returns the parent composite, or null if the artifact does not have one
+     * @deprecated
      */
     CompositeComponent getParent();
 
@@ -53,13 +49,6 @@ public interface SCAObject extends EventPublisher, Lifecycle {
      * Returns the artifact scope
      */
     Scope getScope();
-
-    /**
-     * Returns true if the artifact is a system artifact
-     *
-     * @return true if the artifact is a system artifact
-     */
-    boolean isSystem();
 
     /**
      * The extensions map contains other runtime context such as type systems for various databindings

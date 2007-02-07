@@ -87,11 +87,13 @@ public interface Wire {
 
     /**
      * Returns the SCAObject that contains this wire
+     * @deprecated 
      */
     SCAObject getContainer();
 
     /**
      * Sets the name of the SCAObject that contains this wire
+     * @deprecated
      */
     void setContainer(SCAObject container);
 }

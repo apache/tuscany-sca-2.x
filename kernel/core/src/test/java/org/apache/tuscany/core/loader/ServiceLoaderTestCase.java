@@ -163,7 +163,7 @@ public class ServiceLoaderTestCase extends TestCase {
         deploymentContext = new RootDeploymentContext(null, null, null, null);
         parent = EasyMock.createMock(CompositeComponent.class);
         URI uri = URI.create(PARENT_NAME);
-        EasyMock.expect(parent.getUri()).andReturn(uri);
+        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(parent);
     }
 }

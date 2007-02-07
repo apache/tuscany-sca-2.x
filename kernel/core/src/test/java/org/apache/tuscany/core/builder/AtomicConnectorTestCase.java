@@ -18,15 +18,14 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
@@ -35,6 +34,7 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
+import org.apache.tuscany.core.mock.binding.MockServiceBinding;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
@@ -48,37 +48,33 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
 
     public void testConnectSynchronousServiceWiresToAtomicTarget() throws Exception {
         AtomicComponent target = createAtomicTarget();
-
+        componentManager.register(target);
         // create the parent composite
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.getChild("target")).andReturn(target);
-        EasyMock.replay(parent);
 
+        URI sourceUri = URI.create("source");
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire inboundWire = new InboundWireImpl();
+        inboundWire.setUri(sourceUri);
         inboundWire.addInvocationChain(operation, inboundChain);
         inboundWire.setServiceContract(contract);
 
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setTargetName(TARGET_SERVICE_NAME);
+        outboundWire.setUri(sourceUri);
+        outboundWire.setTargetUri(TARGET_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
         outboundWire.setServiceContract(contract);
 
         // create the binding
-        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
-        EasyMock.expect(binding.getName()).andReturn("source");
-        binding.setService(EasyMock.isA(Service.class));
-        EasyMock.expect(binding.isSystem()).andReturn(false).atLeastOnce();
-        EasyMock.expect(binding.getInboundWire()).andReturn(inboundWire).atLeastOnce();
-        EasyMock.expect(binding.getOutboundWire()).andReturn(outboundWire);
-        EasyMock.expect(binding.getScope()).andReturn(Scope.SYSTEM);
-        EasyMock.replay(binding);
-
+        ServiceBinding binding = new MockServiceBinding(sourceUri);
+        binding.setOutboundWire(outboundWire);
+        binding.setInboundWire(inboundWire);
         outboundWire.setContainer(binding);
         inboundWire.setContainer(binding);
 
-        Service service = new ServiceImpl(URI.create("foo"), parent, null);
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.replay(parent);
+        Service service = new ServiceImpl(sourceUri, parent, null);
         service.addServiceBinding(binding);
 
         connector.connect(service);
@@ -86,15 +82,6 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         msg.setTargetInvoker(inboundChain.getTargetInvoker());
         Message resp = inboundChain.getHeadInterceptor().invoke(msg);
         assertEquals(RESPONSE, resp.getBody());
-        EasyMock.verify(binding);
-    }
-
-    public void testConnectNonBlockingServiceWiresToAtomicTarget() throws Exception {
-        // JFM FIXME
-    }
-
-    public void testConnectCallbackServiceWiresToAtomicTarget() throws Exception {
-        // JFM FIXME
     }
 
     /**
@@ -103,16 +90,16 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
     public void testConnectAtomicComponentToAtomicComponentSyncWire() throws Exception {
 
         AtomicComponent target = createAtomicTarget();
+        componentManager.register(target);
         // create the parent composite
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.getChild("target")).andReturn(target);
         EasyMock.replay(parent);
         AtomicComponent source = createAtomicSource(parent);
         connector.connect(source);
 
         MessageImpl msg = new MessageImpl();
         Map<String, List<OutboundWire>> wires = source.getOutboundWires();
-        OutboundWire wire = wires.get(TARGET_SERVICE).get(0);
+        OutboundWire wire = wires.get(TARGET_FRAGMENT).get(0);
         OutboundInvocationChain chain = wire.getInvocationChains().get(operation);
         msg.setTargetInvoker(chain.getTargetInvoker());
         Message resp = chain.getHeadInterceptor().invoke(msg);

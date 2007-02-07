@@ -18,12 +18,11 @@
  */
 package org.apache.tuscany.core.wire;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
@@ -46,7 +45,6 @@ public class OutboundWireImpl implements OutboundWire {
     private Map<Operation<?>, InboundInvocationChain> callbackTargetChains =
         new HashMap<Operation<?>, InboundInvocationChain>();
     private URI uri;
-    private QualifiedName targetName;
     private URI target;
     private InboundWire targetWire;
     private SCAObject container;
@@ -106,14 +104,6 @@ public class OutboundWireImpl implements OutboundWire {
 
     public void setUri(URI referenceUri) {
         this.uri = referenceUri;
-    }
-
-    public QualifiedName getTargetName() {
-        return targetName;
-    }
-
-    public void setTargetName(QualifiedName targetName) {
-        this.targetName = targetName;
     }
 
     public URI getTargetUri() {

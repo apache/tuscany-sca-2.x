@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.wire;
 
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
 
@@ -49,17 +50,17 @@ public interface InboundWire extends Wire {
      * Returns the callback invocation configuration for each operation on a service specified by a reference or a
      * target service.
      */
-    Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains(Object targetAddr);
+    Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains(URI targetAddr);
 
     /**
      * Adds the collection of callback invocation chains keyed by operation for a given target addr
      */
-    void addSourceCallbackInvocationChains(Object targetAddr, Map<Operation<?>, OutboundInvocationChain> chains);
+    void addSourceCallbackInvocationChains(URI targetAddr, Map<Operation<?>, OutboundInvocationChain> chains);
 
     /**
      * Adds the callback invocation chain associated with the given operation for a given target addr
      */
-    void addSourceCallbackInvocationChain(Object targetAddr, Operation<?> operation, OutboundInvocationChain chain);
+    void addSourceCallbackInvocationChain(URI targetAddr, Operation<?> operation, OutboundInvocationChain chain);
 
     /**
      * Returns the name of the callback associated with the service of the wire

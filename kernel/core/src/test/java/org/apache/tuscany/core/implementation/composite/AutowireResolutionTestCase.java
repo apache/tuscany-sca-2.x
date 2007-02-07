@@ -42,7 +42,7 @@ public class AutowireResolutionTestCase extends TestCase {
         CompositeComponent parent = createMock(CompositeComponent.class);
         replay(parent);
         CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
-        assertEquals("test", component.getName());
+        assertEquals("test", component.getUri().toString());
         assertSame(parent, component.getParent());
         verify(parent);
     }
@@ -57,26 +57,13 @@ public class AutowireResolutionTestCase extends TestCase {
         verify(parent);
     }
 
-    public void testSystemResolvedByAutowire() throws Exception {
-        CompositeComponent parent = createMock(CompositeComponent.class);
-        InboundWire wire = TestUtils.createInboundWire(Foo.class, parent);
-        EasyMock.expect(parent.resolveSystemAutowire(eq(Foo.class))).andReturn(wire);
-        replay(parent);
-        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
-        assertSame(wire, component.resolveSystemAutowire(Foo.class));
-        verify(parent);
-    }
-
-    /**
-     * Verify parent resolution strategy for application serviceBindings
-     */
     public void testNamespaceIsolationAutowire() throws Exception {
         Foo foo = new Foo() {
         };
         CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         parent.registerJavaObject("foo", Foo.class, foo);
         CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
-        assertNull(component.resolveAutowire(Foo.class));
+        assertNotNull(component.resolveAutowire(Foo.class));
     }
 
     protected void setUp() throws Exception {

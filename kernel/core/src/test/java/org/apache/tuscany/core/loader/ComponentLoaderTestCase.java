@@ -94,7 +94,7 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.replay(mockRegistry);
         DeploymentContext ctx = EasyMock.createNiceMock(DeploymentContext.class);
         ComponentDefinition component = loader.load(parent, null, mockReader, ctx);
-        assertEquals(FULL_NAME, component.getName().toString());
+        assertEquals(FULL_NAME, component.getUri().toString());
         assertNull(component.getInitLevel());
     }
 
@@ -127,7 +127,7 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.replay(mockRegistry);
         DeploymentContext ctx = EasyMock.createNiceMock(DeploymentContext.class);
         ComponentDefinition component = loader.load(parent, null, mockReader, ctx);
-        assertEquals(FULL_NAME, component.getName().toString());
+        assertEquals(FULL_NAME, component.getUri().toString());
         assertEquals(Integer.valueOf(20), component.getInitLevel());
     }
 

@@ -62,7 +62,7 @@ public class SystemBuilderPropertyTestCase extends TestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(Foo.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
-        definition.setName(URI.create("component"));
+        definition.setUri(URI.create("component"));
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
         Foo foo = (Foo) component.createInstance();
         assertEquals("foo", foo.getTest());

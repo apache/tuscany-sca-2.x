@@ -104,7 +104,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
             try {
                 initInvoker.invokeEvent(instance);
             } catch (ObjectCallbackException e) {
-                throw new TargetInitializationException("Error initializing component instance", getName(), e);
+                String uri = getUri().toString();
+                throw new TargetInitializationException("Error initializing component instance", uri, e);
             }
         }
     }
@@ -114,7 +115,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
             try {
                 destroyInvoker.invokeEvent(instance);
             } catch (ObjectCallbackException e) {
-                throw new TargetDestructionException("Error destroying component instance", getName(), e);
+                throw new TargetDestructionException("Error destroying component instance", getUri().toString(), e);
             }
         }
     }

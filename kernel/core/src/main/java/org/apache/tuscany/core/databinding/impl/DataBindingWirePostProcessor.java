@@ -22,6 +22,8 @@ package org.apache.tuscany.core.databinding.impl;
 import java.util.Map;
 import java.util.Set;
 
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -33,7 +35,6 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
-import org.osoa.sca.annotations.Constructor;
 
 /**
  * This processor is responsible to add an interceptor to invocation chain if the source and target operations have
@@ -78,9 +79,9 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         if (callbackOperations == null || callbackOperations.isEmpty()) {
             return;
         }
-        Object targetAddress = source.getContainer().getName();
+        //Object targetAddress = UriHelper.getBaseName(source.getUri());
         Map<Operation<?>, OutboundInvocationChain> callbackChains =
-            target.getSourceCallbackInvocationChains(targetAddress);
+            target.getSourceCallbackInvocationChains(source.getUri());
         if (callbackChains == null) {
             // callback chains could be null
             return;

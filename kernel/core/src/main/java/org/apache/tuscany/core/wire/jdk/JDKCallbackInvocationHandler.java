@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Map;
+import java.net.URI;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
@@ -84,11 +85,11 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         }
         Object correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
-        LinkedList<Object> callbackRoutingChain = (LinkedList<Object>) context.getCurrentCallbackRoutingChain().clone();
+        LinkedList<URI> callbackRoutingChain = (LinkedList<URI>) context.getCurrentCallbackRoutingChain().clone();
         if (callbackRoutingChain == null) {
             throw new AssertionError("Missing stack of from addresses");
         }
-        Object targetAddress = callbackRoutingChain.removeFirst();
+        URI targetAddress = callbackRoutingChain.removeFirst();
         if (targetAddress == null) {
             throw new AssertionError("Popped a null from address from stack");
         }

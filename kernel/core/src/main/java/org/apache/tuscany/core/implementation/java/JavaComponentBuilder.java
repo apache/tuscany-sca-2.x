@@ -123,7 +123,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             configuration.addConstructorParamType(clazz);
         }
         configuration.setMonitor(monitor);
-        configuration.setName(definition.getName());
+        configuration.setName(definition.getUri());
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
 
         // handle properties

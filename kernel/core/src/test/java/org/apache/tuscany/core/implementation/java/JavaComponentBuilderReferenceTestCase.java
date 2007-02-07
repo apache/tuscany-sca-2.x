@@ -80,7 +80,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         sourceType.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));
         JavaImplementation sourceImpl = new JavaImplementation(SourceImpl.class, sourceType);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(sourceImpl);
-        definition.setName(URI.create("component"));
+        definition.setUri(URI.create("component"));
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setWireService(wireService);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -110,7 +109,6 @@ public class WireServiceExtensionTestCase extends TestCase {
 
         OutboundWire wire = wireService.createWire(target, definition).get(0);
         assertEquals("#refName", wire.getUri().toString());
-        assertEquals("bar", wire.getTargetName().toString());
         assertFalse(wire.isAutowire());
         assertEquals(1, wire.getInvocationChains().size());
         assertEquals(contract, wire.getServiceContract());
@@ -188,9 +186,7 @@ public class WireServiceExtensionTestCase extends TestCase {
     public void testCreateReferenceBindingWire() throws Exception {
         URI uri = new URI("foo");
         ReferenceBinding binding = new MockReferenceBinding(uri);
-        QualifiedName qName = new QualifiedName("target");
-
-        wireService.createWires(binding, contract, qName);
+        wireService.createWires(binding, contract, URI.create("target"));
 
         InboundWire inboundWire = binding.getInboundWire();
         assertEquals(1, inboundWire.getInvocationChains().size());
@@ -199,7 +195,6 @@ public class WireServiceExtensionTestCase extends TestCase {
         assertEquals(binding, inboundWire.getContainer());
 
         OutboundWire outboundWire = binding.getOutboundWire();
-        assertEquals("target", outboundWire.getTargetName().toString());
         assertEquals(1, outboundWire.getInvocationChains().size());
         assertEquals(contract, outboundWire.getServiceContract());
         assertEquals(binding, outboundWire.getContainer());
@@ -217,7 +212,6 @@ public class WireServiceExtensionTestCase extends TestCase {
         assertEquals(binding, inboundWire.getContainer());
         assertEquals(uri, inboundWire.getUri());
         OutboundWire outboundWire = binding.getOutboundWire();
-        assertEquals("target", outboundWire.getTargetName().toString());
         assertEquals(1, outboundWire.getInvocationChains().size());
         assertEquals(contract, outboundWire.getServiceContract());
         assertEquals(binding, outboundWire.getContainer());

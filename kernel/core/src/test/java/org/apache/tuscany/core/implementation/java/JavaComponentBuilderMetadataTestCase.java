@@ -108,7 +108,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         type.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));
         JavaImplementation sourceImpl = new JavaImplementation(SourceImpl.class, type);
         definition = new ComponentDefinition<JavaImplementation>(sourceImpl);
-        definition.setName(URI.create("component"));
+        definition.setUri(URI.create("component"));
     }
 
 }

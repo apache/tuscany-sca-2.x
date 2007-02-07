@@ -20,7 +20,6 @@ package org.apache.tuscany.core.builder;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -104,7 +103,7 @@ public class BuilderRegistryTestCase extends TestCase {
     public void testReferenceBindingBuilderDispatch() throws Exception {
         WireService wireService = EasyMock.createMock(WireService.class);
         wireService.createWires(EasyMock.isA(ReferenceBinding.class),
-            (ServiceContract) EasyMock.isNull(), (QualifiedName) EasyMock.isNull()
+            (ServiceContract) EasyMock.isNull(), (URI) EasyMock.isNull()
         );
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(wireService);

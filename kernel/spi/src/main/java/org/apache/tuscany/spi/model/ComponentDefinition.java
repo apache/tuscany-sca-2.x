@@ -39,7 +39,7 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public class ComponentDefinition<I extends Implementation<?>> extends ModelObject {
-    private URI name;
+    private URI uri;
     private Integer initLevel;
     private final I implementation;
     private final Map<String, ReferenceTarget> referenceTargets = new HashMap<String, ReferenceTarget>();
@@ -48,11 +48,11 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
     /**
      * Constructor specifying the component's name and implementation.
      *
-     * @param name           the name of this component
+     * @param uri           the name of this component
      * @param implementation the implementation of this component
      */
-    public ComponentDefinition(URI name, I implementation) {
-        this.name = name;
+    public ComponentDefinition(URI uri, I implementation) {
+        this.uri = uri;
         this.implementation = implementation;
     }
 
@@ -79,17 +79,17 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @return the name of this component
      */
-    public URI getName() {
-        return name;
+    public URI getUri() {
+        return uri;
     }
 
     /**
      * Sets the name of this component.
      *
-     * @param name the name of this component
+     * @param uri the name of this component
      */
-    public void setName(URI name) {
-        this.name = name;
+    public void setUri(URI uri) {
+        this.uri = uri;
     }
 
     /**

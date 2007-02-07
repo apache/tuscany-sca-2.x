@@ -55,9 +55,4 @@ public class ServiceImplTestCase extends TestCase {
 
     }
 
-    public void testIsSystem() {
-        Service service = new ServiceImpl(URI.create("foo#bar"), null, null, null, true);
-        assertTrue(service.isSystem());
-    }
-
 }

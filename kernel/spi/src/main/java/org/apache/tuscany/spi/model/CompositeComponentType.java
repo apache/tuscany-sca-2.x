@@ -163,7 +163,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
 
     public void add(ComponentDefinition<? extends Implementation<?>> componentDefinition) {
-        components.put(UriHelper.getBaseName(componentDefinition.getName()), componentDefinition);
+        components.put(UriHelper.getBaseName(componentDefinition.getUri()), componentDefinition);
     }
 
     public Map<String, Include> getIncludes() {

@@ -91,7 +91,7 @@ public class DeployerImpl implements Deployer {
         try {
             load(parent, componentDefinition, deploymentContext);
         } catch (LoaderException e) {
-            e.addContextName(componentDefinition.getName().toString());
+            e.addContextName(componentDefinition.getUri().toString());
             throw e;
         }
         Component component = (Component) build(parent, componentDefinition, deploymentContext);

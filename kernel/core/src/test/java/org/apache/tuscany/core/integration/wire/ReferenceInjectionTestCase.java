@@ -32,22 +32,26 @@ import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.integration.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
-import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.TargetImpl;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class ReferenceInjectionTestCase extends TestCase {
-
     private Map<String, Member> members;
 
     public void testProxiedReferenceInjection() throws Exception {
         ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
-        Map<String, AtomicComponent> components =
-            MockFactory.createWiredComponents("source", SourceImpl.class, scope,
-                members, "target", Target.class, TargetImpl.class, scope);
+        Map<String, AtomicComponent> components = MockFactory.createWiredComponents("source",
+            SourceImpl.class,
+            scope,
+            members,
+            "target",
+            Target.class,
+            TargetImpl.class,
+            scope);
         AtomicComponent sourceComponent = components.get("source");
         Source source = (Source) sourceComponent.getTargetInstance();
         Target target = source.getTarget();

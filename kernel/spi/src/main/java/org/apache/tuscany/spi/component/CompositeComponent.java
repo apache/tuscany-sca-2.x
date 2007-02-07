@@ -19,7 +19,6 @@
 package org.apache.tuscany.spi.component;
 
 import java.util.List;
-import java.util.Collection;
 
 import org.w3c.dom.Document;
 
@@ -60,22 +59,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     void register(SCAObject object) throws ComponentRegistrationException;
 
     /**
-     * Returns the internal system wire associated with the given service name or null if not found
-     *
-     * @param serviceName the service name
-     * @return the system wire or null if not found
-     */
-    InboundWire getInboundSystemWire(String serviceName);
-
-    /**
-     * Returns a map of inbound system wires.
-     *
-     * @return a map of inbound system wires.
-     */
-    Collection<InboundWire> getInboundSystemWires();
-
-
-    /**
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
      * create the initial configuration components.
      *
@@ -105,11 +88,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     SCAObject getChild(String name);
 
     /**
-     * Returns the system child associated with a given name
-     */
-    SCAObject getSystemChild(String name);
-
-    /**
      * Invoked by child components to return an wire to a target based on matching type. Resolved targets may be
      * serviceBindings or components in the parent or its ancestors, or references in a sibling component
      *
@@ -118,16 +96,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * @throws TargetResolutionException
      */
     InboundWire resolveAutowire(Class<?> instanceInterface) throws TargetResolutionException;
-
-    /**
-     * Invoked by system child components to return a wire to a system target based on matching type. Resolved targets
-     * may be system serviceBindings or components in the parent or its ancestors, or references in a sibling component
-     *
-     * @param instanceInterface the type of service being requested
-     * @return a reference to the requested service or null if one is not be found
-     * @throws TargetResolutionException
-     */
-    InboundWire resolveSystemAutowire(Class<?> instanceInterface) throws TargetResolutionException;
 
     /**
      * Invoked by a parent component to return an wire to a target in a child based on matching type. Resolved targets
@@ -140,17 +108,5 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * @throws TargetResolutionException
      */
     InboundWire resolveExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException;
-
-    /**
-     * Invoked by a parent component to return a wire to a system target in a child based on matching type. Resolved
-     * targets must be system serviceBindings. For example, given a parent P and two siblings, A and B, A would request
-     * an autowire by invoking {@link #resolveAutowire(Class<?>)} on P, which in turn could invoke the present method on
-     * B in order to resolve a target.
-     *
-     * @param instanceInterface the type of service being requested
-     * @return a reference to the requested service or null if one is not be found
-     * @throws TargetResolutionException
-     */
-    InboundWire resolveSystemExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException;
 
 }

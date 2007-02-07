@@ -63,7 +63,7 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         EasyMock.replay(resourceWire);
 
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemAutowire(String.class)).andReturn(resourceWire);
+        EasyMock.expect(parent.resolveAutowire(String.class)).andReturn(resourceWire);
         EasyMock.replay(parent);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, null);
         Foo foo = (Foo) component.createInstance();

@@ -21,6 +21,7 @@ package org.apache.tuscany.core.databinding.impl;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.databinding.Mediator;
@@ -68,7 +69,6 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         SCAObject container = EasyMock.createMock(SCAObject.class);
-        EasyMock.expect(container.getName()).andReturn("foo");
         EasyMock.replay(container);
 
         Mediator mediator = new MediatorImpl();
@@ -98,12 +98,15 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.expect(outboundWire.getContainer()).andReturn(container).anyTimes();
         EasyMock.expect(outboundWire.getTargetCallbackInvocationChains()).andReturn(inboundChains).anyTimes();
+        URI uri = URI.create("foo");
+        EasyMock.expect(outboundWire.getUri()).andReturn(uri).anyTimes();
+
         EasyMock.replay(outboundWire);
 
         inboundWire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(inboundWire.getInvocationChains()).andReturn(inboundChains);
         EasyMock.expect(inboundWire.getContainer()).andReturn(container).anyTimes();
-        EasyMock.expect(inboundWire.getSourceCallbackInvocationChains(EasyMock.eq("foo"))).andReturn(outboundChains)
+        EasyMock.expect(inboundWire.getSourceCallbackInvocationChains(EasyMock.eq(uri))).andReturn(outboundChains)
             .anyTimes();
         EasyMock.replay(inboundWire);
 

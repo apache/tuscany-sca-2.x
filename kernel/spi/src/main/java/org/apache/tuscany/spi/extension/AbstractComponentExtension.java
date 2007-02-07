@@ -36,10 +36,8 @@ import org.apache.tuscany.spi.model.PropertyValue;
  * @version Provides support for property accessors.
  */
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
-    private final ComponentContext context;
-
     protected ScopeContainer scopeContainer;
-
+    private final ComponentContext context;
     private Map<String, PropertyValue<?>> defaultPropertyValues;
 
     /**

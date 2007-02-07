@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
@@ -34,7 +36,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
     private OutboundInvocationChain chain;
-    private Object fromAddress;
+    private URI fromAddress;
     private boolean contractHasCallback;
 
     public LocalTargetInvoker(Operation operation, OutboundWire outboundWire) {
@@ -42,7 +44,7 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
         chain = outboundWire.getInvocationChains().get(operation);
         assert chain != null;
         if (outboundWire.getUri() != null) {
-            fromAddress = UriHelper.getBaseName(outboundWire.getUri());
+            fromAddress = URI.create(UriHelper.getBaseName(outboundWire.getUri()));
         }
         contractHasCallback = outboundWire.getServiceContract().getCallbackClass() != null;
     }
