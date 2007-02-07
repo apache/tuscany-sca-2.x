@@ -32,16 +32,28 @@ import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XSDHelper;
 
 /**
- * SDO Databinding 
+ * SDO Databinding
+ * 
+ * @version $Reve$ $Date$
  */
 public class SDODataBinding extends DataBindingExtension {
     private WrapperHandler<Object> wrapperHandler;
     
+    public SDODataBinding() {
+        super(DataObject.class);
+        wrapperHandler = new SDOWrapperHandler();
+    }
+
     @Override
     public DataType introspect(Class<?> javaType) {
-        if (javaType == DataObject.class) {
+        if (javaType == null) {
+            return null;
+        }
+        if (DataObject.class.isAssignableFrom(javaType)) {
+            // Dynamic SDO
             return new DataType<QName>(getName(), javaType, null);
         }
+        // FIXME: We need to access HelperContext
         Type type = TypeHelper.INSTANCE.getType(javaType);
         if (type == null || type.isDataType()) {
             return null;
@@ -51,11 +63,6 @@ public class SDODataBinding extends DataBindingExtension {
         QName xmlType = new QName(namespace, name);
         DataType<QName> dataType = new DataType<QName>(getName(), javaType, xmlType);
         return dataType;
-    }
-
-    public SDODataBinding() {
-        super(DataObject.class);
-        wrapperHandler = new SDOWrapperHandler();
     }
 
     @Override
