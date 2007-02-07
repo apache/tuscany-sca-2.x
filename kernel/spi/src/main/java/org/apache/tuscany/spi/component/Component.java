@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.osoa.sca.ComponentContext;
+
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -34,6 +36,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $$Rev$$ $$Date$$
  */
 public interface Component extends SCAObject {
+
+    /**
+     * Returns the SCA ComponentContext for this component.
+     * @return the SCA ComponentContext for this component
+     */
+    ComponentContext getComponentContext();
 
     /**
      * Sets the scope container associated with the component
@@ -96,5 +104,4 @@ public interface Component extends SCAObject {
      */
     TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
         throws TargetInvokerCreationException;
-
 }

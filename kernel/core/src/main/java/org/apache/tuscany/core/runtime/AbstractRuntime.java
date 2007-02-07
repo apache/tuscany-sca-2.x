@@ -41,6 +41,7 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -138,10 +139,6 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         this.managementService = managementService;
     }
 
-    protected XMLInputFactory getXMLFactory() {
-        return xmlFactory;
-    }
-
     public void initialize() throws InitializationException {
         Bootstrapper bootstrapper = createBootstrapper();
         runtime = bootstrapper.createRuntime();
@@ -191,7 +188,8 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
 
     public ComponentContext getComponentContext(URI componentId) {
-        throw new UnsupportedOperationException();
+        Component component = componentManager.getComponent(componentId);
+        return component.getComponentContext();
     }
 
     protected Bootstrapper createBootstrapper() {
