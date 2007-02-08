@@ -104,11 +104,6 @@ public class ConnectorImpl implements Connector {
     public void connect(InboundWire sourceWire, OutboundWire targetWire, boolean optimizable)
         throws WiringException {
         Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
-//        if (SCAObject.SYSTEM_SCHEME.equals(targetWire.getUri().getScheme())) {
-//            sourceWire.setTargetWire(targetWire);
-//            // system services do not need to have their chains processed, return
-//            return;
-//        }
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
             // match invocation chains
             OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getOperation());
@@ -330,30 +325,6 @@ public class ConnectorImpl implements Connector {
         }
         // invocations from inbound to outbound chains are always synchronous as they occur in services and references
         sourceChain.addInterceptor(new SynchronousBridgingInterceptor(head));
-    }
-
-    /**
-     * Connects an outbound wire to its target in a composite.
-     *
-     * @param sourceWire the source wire to connect
-     * @throws WiringException
-     */
-    protected void connect(SCAObject source, OutboundWire sourceWire, SCAObject target) throws WiringException {
-        if (target instanceof Component) {
-            connect(source, sourceWire, (Component) target);
-        } else if (target instanceof Reference) {
-            connect(source, sourceWire, (Reference) target);
-        } else if (target instanceof Service) {
-            connect(source, sourceWire, (Service) target);
-        } else if (target == null) {
-            URI sourceName = sourceWire.getUri();
-            URI targetName = sourceWire.getTargetUri();
-            throw new TargetServiceNotFoundException("Target service not found", sourceName, targetName);
-        } else {
-            URI sourceName = sourceWire.getUri();
-            URI targetName = sourceWire.getTargetUri();
-            throw new InvalidTargetTypeException("Invalid target type", sourceName, targetName);
-        }
     }
 
     protected void connect(SCAObject source, OutboundWire sourceWire, Reference target) throws WiringException {

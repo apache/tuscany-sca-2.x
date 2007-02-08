@@ -68,7 +68,7 @@ public interface TuscanyRuntime {
 
     /**
      * Sets the info this runtime should make available to service components. The instance supplied here should be
-     * registered in the system composite with the name {@link RuntimeInfo#COMPONENT_NAME "RuntimeInfo"}.
+     * registered in the system composite with the name {@link RuntimeInfo#COMPONENT_URI "RuntimeInfo"}.
      *
      * @param runtimeInfo the information this runtime should make available to service components
      */

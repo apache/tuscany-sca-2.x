@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.component;
 
-import java.util.List;
-
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -57,30 +55,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * @throws ComponentRegistrationException
      */
     void register(SCAObject object) throws ComponentRegistrationException;
-
-    /**
-     * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
-     * create the initial configuration components.
-     *
-     * @param name     the name of the resulting component
-     * @param service  the service interface the component should expose
-     * @param instance the Object that will become the component's implementation
-     * @throws ComponentRegistrationException
-     */
-    <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
-        throws ComponentRegistrationException;
-
-    /**
-     * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
-     * create the initial configuration components.
-     *
-     * @param name     the name of the resulting component
-     * @param services the service interfaces the component should expose
-     * @param instance the Object that will become the component's implementation
-     * @throws ComponentRegistrationException
-     */
-    <S, I extends S> void registerJavaObject(String name, List<Class<?>> services, I instance)
-        throws ComponentRegistrationException;
 
     /**
      * Returns the child associated with a given name

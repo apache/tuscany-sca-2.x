@@ -101,16 +101,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         publish(event);
     }
 
-    public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
-        throws ComponentRegistrationException {
-        throw new UnsupportedOperationException();
-    }
-
-    public <S, I extends S> void registerJavaObject(String name, List<Class<?>> services, I instance)
-        throws ComponentRegistrationException {
-        throw new UnsupportedOperationException();
-    }
-
     public Document getPropertyValue(String name) {
         return propertyValues.get(name);
     }

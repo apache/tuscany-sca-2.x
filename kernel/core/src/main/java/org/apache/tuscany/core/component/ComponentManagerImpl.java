@@ -35,6 +35,7 @@ import org.apache.tuscany.spi.util.UriHelper;
 
 import org.apache.tuscany.core.component.event.ComponentStart;
 import org.apache.tuscany.core.component.event.ComponentStop;
+import org.apache.tuscany.core.implementation.composite.SystemSingletonAtomicComponent;
 
 /**
  * Default implementation of the component manager
@@ -73,9 +74,6 @@ public class ComponentManagerImpl implements ComponentManager {
         synchronized (children) {
             children.add(uri);
         }
-//        if (!parentToChildren.containsKey(uri)) {
-//            parentToChildren.put(uri, new ArrayList<URI>());
-//        }
         if (managementService != null && component instanceof AtomicComponent) {
             // FIXME shouldn't it take the canonical name and also not distinguish atomic components?
             managementService.registerComponent(component.getUri().toString(), component);
@@ -83,6 +81,16 @@ public class ComponentManagerImpl implements ComponentManager {
         if (component instanceof CompositeComponent) {
             component.addListener(this);
         }
+    }
+
+    public <S, I extends S> void registerJavaObject(URI uri, Class<S> service, I instance)
+        throws ComponentRegistrationException {
+        register(new SystemSingletonAtomicComponent<S, I>(uri, null, service, instance));
+    }
+
+    public <S, I extends S> void registerJavaObject(URI uri, List<Class<?>> services, I instance)
+        throws ComponentRegistrationException {
+        register(new SystemSingletonAtomicComponent<S, I>(uri, null, services, instance));
     }
 
     public void unregister(Component component) throws ComponentRegistrationException {

@@ -52,8 +52,6 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
 
     public void testConnectTargetNotFound() throws Exception {
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        parent.getChild(EasyMock.isA(String.class));
-        EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(parent);
         try {
             AtomicComponent source = createAtomicSource(parent);

@@ -57,15 +57,6 @@ public class AutowireResolutionTestCase extends TestCase {
         verify(parent);
     }
 
-    public void testNamespaceIsolationAutowire() throws Exception {
-        Foo foo = new Foo() {
-        };
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
-        parent.registerJavaObject("foo", Foo.class, foo);
-        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
-        assertNotNull(component.resolveAutowire(Foo.class));
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
     }

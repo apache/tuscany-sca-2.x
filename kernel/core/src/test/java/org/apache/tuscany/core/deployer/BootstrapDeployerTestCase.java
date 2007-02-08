@@ -119,8 +119,8 @@ public class BootstrapDeployerTestCase extends TestCase {
     public void testBoot1Deployment() throws Exception {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
-        CompositeComponent parent = createNiceMock(CompositeComponent.class);
-        URI uri = URI.create("scasystem://parent");
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        URI uri = URI.create("sca://parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         parent.register(isA(SCAObject.class));
         replay(parent);
@@ -146,8 +146,6 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertNotNull(component);
         verify(parent);
         component.start();
-        SCAObject newDeployer = component.getChild(ComponentNames.TUSCANY_DEPLOYER);
-        assertNotNull(newDeployer);
     }
 
     protected void setUp() throws Exception {

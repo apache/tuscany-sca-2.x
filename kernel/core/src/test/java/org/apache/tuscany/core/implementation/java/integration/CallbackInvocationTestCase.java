@@ -120,8 +120,6 @@ public class CallbackInvocationTestCase extends TestCase {
         componentManager.register(fooComponent);
 
         CompositeComponent parent = createMock(CompositeComponent.class);
-        parent.getChild(isA(String.class));
-        expectLastCall().andReturn(fooComponent).anyTimes();
         replay(parent);
 
         ComponentDefinition<JavaImplementation> sourceDefinition = createPlainSource(URI.create("fooPlainClient"));
@@ -156,8 +154,6 @@ public class CallbackInvocationTestCase extends TestCase {
         componentManager.register(fooComponent);
 
         CompositeComponent parent = createMock(CompositeComponent.class);
-        parent.getChild(isA(String.class));
-        expectLastCall().andReturn(fooComponent).anyTimes();
         replay(parent);
 
         ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource(URI.create("fooCleint1"));
