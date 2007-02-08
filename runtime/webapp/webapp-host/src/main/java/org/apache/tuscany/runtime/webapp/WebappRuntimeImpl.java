@@ -62,10 +62,10 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         this.servletContext = servletContext;
     }
 
-    protected void registerSystemComponents(CompositeComponent systemComponent) throws InitializationException {
-        super.registerSystemComponents(systemComponent);
+    protected void registerSystemComponents() throws InitializationException {
+        super.registerSystemComponents();
         try {
-            systemComponent.registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
+            getComponentManager().registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
                                                     WebappRuntimeInfo.class,
                                                     (WebappRuntimeInfo) getRuntimeInfo());
         } catch (ComponentRegistrationException e) {
