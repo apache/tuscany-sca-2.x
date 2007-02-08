@@ -20,6 +20,8 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
 
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
@@ -28,6 +30,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
@@ -39,9 +42,10 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompositeImplementation> {
     private TuscanyManagementService managementService;
 
-    public SystemCompositeBuilder(BuilderRegistry builderRegistry,
-                                  Connector connector,
-                                  TuscanyManagementService managementService) {
+    @Constructor
+    public SystemCompositeBuilder(@Autowire BuilderRegistry builderRegistry,
+                                  @Autowire Connector connector,
+                                  @Autowire TuscanyManagementService managementService) {
         this.builderRegistry = builderRegistry;
         this.connector = connector;
         this.managementService = managementService;
