@@ -64,7 +64,7 @@
         <dependencySet>
             <includes>
                 <include>org.apache.tuscany.sca.runtime.standalone:standalone-api</include>
-                <include>org.osoa:sca-api-r0.95</include>
+                <include>org.osoa:sca-api-r1.0</include>
                 <include>org.apache.tuscany.sca.kernel:tuscany-api</include>
                 <include>org.apache.tuscany.sca.kernel:tuscany-host-api</include>
                 <!-- servlet api need to be loaded for axis  -->
