@@ -19,6 +19,7 @@
 package org.apache.tuscany.service.management.jmx.instrument;
 
 import java.util.Map;
+import java.net.URI;
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
@@ -48,7 +49,7 @@ public class InstrumentedComponent implements DynamicMBean {
     /**
      * Name of the component.
      */
-    private String componentName;
+    private URI componentId;
 
     /**
      * Initializes the property values.
@@ -58,7 +59,7 @@ public class InstrumentedComponent implements DynamicMBean {
     @SuppressWarnings("unchecked")
     public InstrumentedComponent(final Component component) {
         this.properties = component.getDefaultPropertyValues();
-        this.componentName = component.getName();
+        this.componentId = component.getUri();
     }
 
     /**
@@ -106,7 +107,7 @@ public class InstrumentedComponent implements DynamicMBean {
                 new MBeanAttributeInfo(propertyValue.getName(), String.class.getName(), null, true, false, false);
         }
 
-        return new MBeanInfo(componentName, null, attributes, constructors, operations, notifications);
+        return new MBeanInfo(componentId.toString(), null, attributes, constructors, operations, notifications);
 
     }
 
