@@ -123,7 +123,6 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(atomicTarget);
 
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.expect(parent.getChild(TARGET.toString())).andReturn(atomicTarget);
         EasyMock.replay(parent);
         componentManager.register(atomicTarget);
     }

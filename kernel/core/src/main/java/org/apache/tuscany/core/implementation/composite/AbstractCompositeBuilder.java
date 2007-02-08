@@ -28,12 +28,9 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
                                     DeploymentContext deploymentContext) throws BuilderException {
 
         for (ComponentDefinition<? extends Implementation<?>> definition : componentType.getComponents().values()) {
-//            try {
             builderRegistry.build(component, definition, deploymentContext);
+            // JFM TODO
             //component.register(child);
-//            } catch (ComponentRegistrationException e) {
-//                throw new BuilderInstantiationException("Error registering component", e);
-//            }
         }
         for (ServiceDefinition definition : componentType.getServices().values()) {
             try {

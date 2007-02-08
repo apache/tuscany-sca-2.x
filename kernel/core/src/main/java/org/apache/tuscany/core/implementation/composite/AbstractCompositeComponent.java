@@ -19,8 +19,6 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -28,9 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.MalformedNameException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
@@ -68,40 +64,11 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
         super(name, parent, connector, propertyValues);
     }
 
-    public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
-        throws ComponentRegistrationException {
-        URI uri;
-        try {
-            uri = new URI(name);
-        } catch (URISyntaxException e) {
-            throw new MalformedNameException(e);
-        }
-        register(new SystemSingletonAtomicComponent<S, I>(uri, this, service, instance));
-    }
-
-    public <S, I extends S> void registerJavaObject(String name, List<Class<?>> services, I instance)
-        throws ComponentRegistrationException {
-        URI uri;
-        try {
-            uri = new URI(name);
-        } catch (URISyntaxException e) {
-            throw new MalformedNameException(e);
-        }
-        register(new SystemSingletonAtomicComponent<S, I>(uri, this, services, instance));
-    }
-
     public void start() {
         synchronized (lock) {
             if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
                 throw new IllegalStateException("Composite not in UNINITIALIZED state");
             }
-
-//            for (SCAObject child : systemChildren.values()) {
-//                child.start();
-//            }
-//            for (SCAObject child : children.values()) {
-//                child.start();
-//            }
             initializeLatch.countDown();
             initialized = true;
             lifecycleState = INITIALIZED;

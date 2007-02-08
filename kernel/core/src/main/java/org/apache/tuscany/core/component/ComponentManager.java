@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.component;
 
 import java.net.URI;
+import java.util.List;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
@@ -48,6 +49,30 @@ public interface ComponentManager extends RuntimeEventListener {
      * @throws ComponentRegistrationException
      */
     void unregister(Component component) throws ComponentRegistrationException;
+
+    /**
+     * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
+     * create the initial configuration components.
+     *
+     * @param uri     the uri of the resulting component
+     * @param service  the service interface the component should expose
+     * @param instance the Object that will become the component's implementation
+     * @throws ComponentRegistrationException
+     */
+    <S, I extends S> void registerJavaObject(URI uri, Class<S> service, I instance)
+        throws ComponentRegistrationException;
+
+    /**
+     * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
+     * create the initial configuration components.
+     *
+     * @param uri     the name of the resulting component
+     * @param services the service interfaces the component should expose
+     * @param instance the Object that will become the component's implementation
+     * @throws ComponentRegistrationException
+     */
+    <S, I extends S> void registerJavaObject(URI uri, List<Class<?>> services, I instance)
+        throws ComponentRegistrationException;
 
     /**
      * Returns the component with the given URI

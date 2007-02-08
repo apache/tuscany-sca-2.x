@@ -24,6 +24,18 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.ComponentContext;
 
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.services.management.TuscanyManagementService;
+
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.component.ComponentManager;
@@ -35,17 +47,6 @@ import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
 /**
  * @version $Rev$ $Date$
@@ -157,10 +158,10 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         // deploy the system scdl
         try {
             tuscanySystem = deploySystemScdl(bootstrapper.createDeployer(),
-                                             systemComponent,
-                                             ComponentNames.TUSCANY_SYSTEM,
-                                             getSystemScdl(),
-                                             getClass().getClassLoader());
+                systemComponent,
+                ComponentNames.TUSCANY_SYSTEM,
+                getSystemScdl(),
+                getClass().getClassLoader());
         } catch (LoaderException e) {
             throw new InitializationException(e);
         } catch (BuilderException e) {
@@ -200,41 +201,15 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     protected void registerSystemComponents(CompositeComponent systemComponent) throws InitializationException {
         try {
-            systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
-            systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, getMonitorFactory());
-            systemComponent.registerJavaObject("ComponentManager", ComponentManager.class, componentManager);
+            componentManager.registerJavaObject(RuntimeInfo.COMPONENT_URI, RuntimeInfo.class, runtimeInfo);
+            URI uri = URI.create("MonitorFactory");
+            componentManager.registerJavaObject(uri, MonitorFactory.class, getMonitorFactory());
+            //JFM TODO need autowire to deal with returning a component manager 
+            //systemComponent.registerJavaObject("ComponentManager", ComponentManager.class, componentManager);
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
     }
-
-/*
-    protected Deployer locateDeployer() throws InitializationException {
-        SCAObject deployerComponent = tuscanySystem.getChild(ComponentNames.TUSCANY_DEPLOYER);
-        if (!(deployerComponent instanceof AtomicComponent)) {
-            throw new InitializationException("Deployer must be an atomic component");
-        }
-        try {
-            return (Deployer) ((AtomicComponent) deployerComponent).getTargetInstance();
-        } catch (TargetResolutionException e) {
-            throw new InitializationException(e);
-        }
-    }
-*/
-
-/*
-    protected WireService locateWireService() throws InitializationException {
-        SCAObject wireServiceComponent = tuscanySystem.getChild(ComponentNames.TUSCANY_WIRE_SERVICE);
-        if (!(wireServiceComponent instanceof AtomicComponent)) {
-            throw new InitializationException("WireService must be an atomic component");
-        }
-        try {
-            return (WireService) ((AtomicComponent) wireServiceComponent).getTargetInstance();
-        } catch (TargetResolutionException e) {
-            throw new InitializationException(e);
-        }
-    }
-*/
 
     protected CompositeComponent deploySystemScdl(Deployer deployer,
                                                   CompositeComponent parent,
