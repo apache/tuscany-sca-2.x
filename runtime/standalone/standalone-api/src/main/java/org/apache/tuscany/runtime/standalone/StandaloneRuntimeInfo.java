@@ -19,6 +19,7 @@
 package org.apache.tuscany.runtime.standalone;
 
 import java.io.File;
+import java.net.URI;
 
 import org.apache.tuscany.host.RuntimeInfo;
 
@@ -26,7 +27,7 @@ import org.apache.tuscany.host.RuntimeInfo;
  * @version $Rev$ $Date$
  */
 public interface StandaloneRuntimeInfo extends RuntimeInfo {
-    static String COMPONENT_NAME = "StandaloneRuntimeInfo";
+    static URI COMPONENT_NAME = URI.create("StandaloneRuntimeInfo");
 
     /**
      * Return the directory where the standalone distribution was installed.
