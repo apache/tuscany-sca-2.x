@@ -28,6 +28,7 @@ import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.VoidService;
+import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 
 /**
  * Service that extends the runtime by loading composites located in a directory.
@@ -46,7 +47,7 @@ public class DirectoryScanExtender extends AbstractExtensionDeployer implements 
     }
 
     @Init
-    public void init() {
+    public void init() throws IllegalSCDLNameException {
         assert runtimeInfo != null;
         File extensionDir = new File(runtimeInfo.getInstallDirectory(), path);
         if (!extensionDir.isDirectory()) {
