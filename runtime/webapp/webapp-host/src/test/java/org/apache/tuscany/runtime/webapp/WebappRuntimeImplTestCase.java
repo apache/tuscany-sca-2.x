@@ -48,7 +48,6 @@ public class WebappRuntimeImplTestCase extends TestCase {
      * Verifies the web app host is configured properly to perform a basic boot
      */
     public void testBootWithDefaults() throws Exception {
-        expect(context.getResourcePaths("/WEB-INF/tuscany/extensions/")).andReturn(null);
         replay(context);
         runtime.initialize();
         verify(context);

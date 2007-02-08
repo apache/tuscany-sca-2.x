@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
+import java.net.URI;
 import javax.servlet.ServletContext;
 
 import org.apache.tuscany.host.RuntimeInfo;
@@ -26,7 +27,8 @@ import org.apache.tuscany.host.RuntimeInfo;
  * @version $Rev$ $Date$
  */
 public interface WebappRuntimeInfo extends RuntimeInfo {
-    String COMPONENT_NAME = "WebappRuntimeInfo";
+    URI COMPONENT_NAME = URI.create("WebappRuntimeInfo");
+    
     /**
      * Returns the ServletContext associated with this webapp runtime.
      *
