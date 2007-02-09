@@ -30,7 +30,11 @@ import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 
 /**
- * Launcher for launcher runtime environment that invokes a jar's Main class.
+ * Main class for launcher runtime environment.
+ * <code>
+ * usage: java [jvm-options] -jar launcher.jar <componentURI>
+ * </code>
+ * where the componentURI identifies a component in the assembly that should be called.
  *
  * @version $Rev$ $Date$
  */
