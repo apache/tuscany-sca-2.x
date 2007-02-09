@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.component;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -30,6 +32,14 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
 
     // The byte code for the instance factory
     private byte[] instanceFactoryByteCode;
+    
+    /**
+     * Initializes the component id.
+     * @param componentId The component id.
+     */
+    public JavaPhysicalComponentDefinition(final URI componentId) {
+        super(componentId);
+    }
 
     /**
      * Gets the byte code for the instance factory.
@@ -44,7 +54,12 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
      * @param instanceFactoryByteCode Byte code for the instance factory.
      */
     public void setInstanceFactoryByteCode(byte[] instanceFactoryByteCode) {
+        
+        if(instanceFactoryByteCode == null) {
+            throw new IllegalArgumentException("Instance factory byte code is null");
+        }
         this.instanceFactoryByteCode = instanceFactoryByteCode;
+        
     }
 
 }
