@@ -69,8 +69,7 @@ public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase 
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
-        JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
-        definition.setComponentId(new URI("uri"));
+        JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition(new URI("uri"));
         definition.setInstanceFactoryByteCode("TEST".getBytes());
         
         XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "UTF-8");

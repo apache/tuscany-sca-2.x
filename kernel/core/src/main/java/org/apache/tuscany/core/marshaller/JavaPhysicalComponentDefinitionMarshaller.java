@@ -104,12 +104,15 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
     public JavaPhysicalComponentDefinition unmarshall(XMLStreamReader reader) throws MarshalException {
         
         try {
-            JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
+            
+            JavaPhysicalComponentDefinition definition = null;
+            
             for (int i = reader.next(); i != END_DOCUMENT; i = reader.next()) {
                 switch (i) {
                     case START_ELEMENT:
                         if (reader.getName().equals(MESSAGE_TYPE)) {
-                            setComponentId(reader, definition);
+                            final URI componentId = getComponentId(reader);
+                            definition = new JavaPhysicalComponentDefinition(componentId);
                         } else if (reader.getName().equals(INSTANCE_FACTORY_BYTE_CODE)) {
                             setInstanceFactoryByteCode(reader, definition);
                         }
@@ -117,7 +120,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
                 }
             }
             
-            if (definition.getComponentId() == null || definition.getInstanceFactoryByteCode() == null) {
+            if (definition == null || definition.getInstanceFactoryByteCode() == null) {
                 throw new MarshalException("Invalid component definition");
             }
             
@@ -142,12 +145,12 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
     }
 
     /*
-     * Sets the component id.
+     * Gets the component id.
      */
-    private void setComponentId(XMLStreamReader reader, JavaPhysicalComponentDefinition definition)
+    private URI getComponentId(XMLStreamReader reader)
         throws URISyntaxException {
         final String uri = reader.getAttributeValue(null, COMPONENT_ID);
-        definition.setComponentId(new URI(uri));
+        return new URI(uri);
     }
 
 }
