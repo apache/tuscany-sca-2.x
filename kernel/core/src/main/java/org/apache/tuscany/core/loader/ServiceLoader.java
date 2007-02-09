@@ -84,11 +84,15 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                         String target = text != null ? text.trim() : null;
                         QualifiedName qName = new QualifiedName(target);
                         try {
+                            StringBuilder buf = new StringBuilder();
+                            for (String path : deploymentContext.getPathNames()) {
+                                buf.append(path).append("/");
+                            }
                             if (qName.getPortName() == null) {
-                                targetUri = new URI(parent.getUri() + "/" + target);
+                                targetUri = new URI(buf + target);
                             } else {
                                 targetUri =
-                                    new URI(parent.getUri() + "/" + qName.getPartName() + "#" + qName.getPortName());
+                                    new URI(buf + qName.getPartName() + "#" + qName.getPortName());
                             }
                         } catch (URISyntaxException e) {
                             throw new IllegalSCDLNameException(e);

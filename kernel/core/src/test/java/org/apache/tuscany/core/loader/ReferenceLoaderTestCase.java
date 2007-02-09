@@ -19,6 +19,8 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -32,6 +34,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -54,6 +57,7 @@ public class ReferenceLoaderTestCase extends TestCase {
     private XMLStreamReader mockReader;
     private LoaderRegistry mockRegistry;
     private CompositeComponent parent;
+    private DeploymentContext ctx;
 
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
         String name = "referenceDefinition";
@@ -63,7 +67,7 @@ public class ReferenceLoaderTestCase extends TestCase {
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(REFERENCE).anyTimes();
         EasyMock.replay(mockReader);
-        ReferenceDefinition referenceDefinition = loader.load(parent, null, mockReader, null);
+        ReferenceDefinition referenceDefinition = loader.load(parent, null, mockReader, ctx);
         assertNotNull(referenceDefinition);
         assertEquals(PARENT_NAME + "#" + name, referenceDefinition.getUri().toString());
     }
@@ -78,7 +82,7 @@ public class ReferenceLoaderTestCase extends TestCase {
         EasyMock.replay(mockReader);
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        ReferenceDefinition referenceDefinition = loader.load(parent, type, mockReader, null);
+        ReferenceDefinition referenceDefinition = loader.load(parent, type, mockReader, ctx);
         assertTrue(ReferenceDefinition.class.equals(referenceDefinition.getClass()));
     }
 
@@ -94,10 +98,14 @@ public class ReferenceLoaderTestCase extends TestCase {
 
         BindingDefinition binding = new BindingDefinition() {
         };
-        EasyMock.expect(mockRegistry.load(parent, null, mockReader, null)).andReturn(binding).times(2);
+        EasyMock.expect(mockRegistry.load(EasyMock.eq(parent),
+            (ModelObject) EasyMock.isNull(),
+            EasyMock.eq(mockReader),
+            EasyMock.isA(DeploymentContext.class)))
+            .andReturn(binding).times(2);
         EasyMock.replay(mockRegistry);
 
-        ReferenceDefinition referenceDefinition = loader.load(parent, null, mockReader, null);
+        ReferenceDefinition referenceDefinition = loader.load(parent, null, mockReader, ctx);
         assertEquals(2, referenceDefinition.getBindings().size());
     }
 
@@ -127,8 +135,14 @@ public class ReferenceLoaderTestCase extends TestCase {
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ReferenceLoader(mockRegistry);
         deploymentContext = new RootDeploymentContext(null, null, null, null);
+        deploymentContext.getPathNames().add("parent");
         parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(parent.getUri()).andReturn(URI.create(PARENT_NAME));
         EasyMock.replay(parent);
+        ctx = EasyMock.createMock(DeploymentContext.class);
+        List<String> names = new ArrayList<String>();
+        names.add("parent");
+        EasyMock.expect(ctx.getPathNames()).andReturn(names).atLeastOnce();
+        EasyMock.replay(ctx);
     }
 }

@@ -88,7 +88,8 @@ public class DeployerImpl implements Deployer {
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
-        try {
+        deploymentContext.getPathNames().add(componentDefinition.getUri().toString());
+         try {
             load(parent, componentDefinition, deploymentContext);
         } catch (LoaderException e) {
             e.addContextName(componentDefinition.getUri().toString());

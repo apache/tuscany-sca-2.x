@@ -53,8 +53,9 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
         ClassLoader cl = new CompositeClassLoader(implementation.getClassLoader());
-        deploymentContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation);
-        CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, deploymentContext);
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation);
+        childContext.getPathNames().addAll(deploymentContext.getPathNames());
+        CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, childContext);
         implementation.setComponentType(componentType);
     }
 

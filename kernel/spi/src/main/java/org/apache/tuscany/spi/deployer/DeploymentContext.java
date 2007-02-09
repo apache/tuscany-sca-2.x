@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.deployer;
 
 import java.net.URL;
+import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -31,8 +32,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
  */
 public interface DeploymentContext {
     /**
-     * Returns the parent of this deployment context.
-     * Will be null for the context created at the root of a deployment.
+     * Returns the parent of this deployment context. Will be null for the context created at the root of a deployment.
      *
      * @return the parent of this deployment context; may be null
      */
@@ -66,6 +66,7 @@ public interface DeploymentContext {
      */
     URL getScdlLocation();
 
+
     /**
      * Return the extension property with the supplied name.
      *
@@ -77,8 +78,16 @@ public interface DeploymentContext {
     /**
      * Set the value of an extension property.
      *
-     * @param name the name of the property
+     * @param name  the name of the property
      * @param value the property value; if null then the extension property is removed
      */
     void putExtension(String name, Object value);
+
+    /**
+     * Returns and ordered list of path names representing the current component hierarchy as an assembly is loaded
+     *
+     * @return the ordered list of path names representing the current component hierarchy
+     */
+    public List<String> getPathNames();
+
 }
