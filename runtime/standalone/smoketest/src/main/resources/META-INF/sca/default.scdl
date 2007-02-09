@@ -18,5 +18,16 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="SmoketestComposite">
+
+    <component name="Main">
+        <tuscany:launched class="org.apache.tuscany.sca.runtime.standalone.smoketest.Launched"/>
+        <reference name="hello" target="Hello"/>
+    </component>
+
+    <component name="Hello">
+        <implementation.java class="org.apache.tuscany.sca.runtime.standalone.smoketest.HelloServiceImpl"/>
+        <property name="greeting">Hello World</property>
+    </component>
 </composite>

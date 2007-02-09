@@ -30,6 +30,8 @@ import java.net.URLClassLoader;
 import java.util.Properties;
 import java.util.jar.JarFile;
 
+import org.apache.tuscany.host.runtime.TuscanyRuntime;
+
 /**
  * Utility class for installation directory related operations.
  *
@@ -253,5 +255,49 @@ public final class DirectoryHelper {
             // toURI should have escaped this
             throw new AssertionError();
         }
+    }
+
+    public static StandaloneRuntimeInfo createRuntimeInfo(String defaultProfile, Class<?> markerClass) throws IOException {
+        // get profile to use, defaulting to "launcher"
+        String profile = System.getProperty("tuscany.profile", defaultProfile);
+
+        File installDir = getInstallDirectory(markerClass);
+        File profileDir = getProfileDirectory(installDir, profile);
+
+        // load properties for this runtime
+        File propFile = new File(profileDir, "etc/runtime.properties");
+        Properties props = loadProperties(propFile, System.getProperties());
+
+        // online unless the offline property is set
+        boolean online = !Boolean.parseBoolean(props.getProperty("offline", "false"));
+
+        return new StandaloneRuntimeInfoImpl(null, profile, installDir, profileDir, null, online, props);
+
+    }
+
+    public static TuscanyRuntime createRuntime(StandaloneRuntimeInfo runtimeInfo) throws Exception {
+        File installDir = runtimeInfo.getInstallDirectory();
+        File profileDir = runtimeInfo.getProfileDirectory();
+        URL profileURL = toURL(profileDir);
+        ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
+
+        // create the classloader for booting the runtime
+        String bootPath = runtimeInfo.getProperty("tuscany.bootDir", null);
+        File bootDir = getBootDirectory(installDir, profileDir, bootPath);
+        ClassLoader bootClassLoader = createClassLoader(hostClassLoader, bootDir);
+
+        // locate the system SCDL
+        URL systemSCDL = new URL(profileURL, runtimeInfo.getProperty("tuscany.systemSCDL", "system.scdl"));
+
+        // locate the implementation
+        String className = runtimeInfo.getProperty("tuscany.runtimeClass",
+                                                   "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
+        Class<?> implClass = Class.forName(className, true, bootClassLoader);
+
+        TuscanyRuntime runtime = (TuscanyRuntime) implClass.newInstance();
+        runtime.setHostClassLoader(hostClassLoader);
+        runtime.setSystemScdl(systemSCDL);
+        runtime.setRuntimeInfo(runtimeInfo);
+        return runtime;
     }
 }
