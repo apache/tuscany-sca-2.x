@@ -69,7 +69,7 @@ public class BootstrapDeployerTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testBoot1Load() throws LoaderException {
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
-        URI uri = URI.create("scasystem://parent");
+        URI uri = URI.create("sca://parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(parent);
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
@@ -87,7 +87,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals(2, services.size()); // included counts
         ServiceDefinition serviceDefinition = services.get("service");
         assertNotNull(serviceDefinition);
-        assertEquals("scasystem://parent#service", serviceDefinition.getUri().toString());
+        assertEquals("sca://parent#service", serviceDefinition.getUri().toString());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
         Collection<BindingDefinition> bindings = serviceDefinition.getBindings();
         assertTrue(bindings.isEmpty());
@@ -125,7 +125,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         parent.register(isA(SCAObject.class));
         replay(parent);
         // load the boot1 file using the bootstrap deployer
-        componentDefinition.setUri(URI.create("simple"));
+        componentDefinition.setUri(URI.create("sca://parent/simple"));
         Component component = deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
         verify(parent);

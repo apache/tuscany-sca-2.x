@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URL;
+import java.util.Collections;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
@@ -43,6 +44,7 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -88,6 +90,8 @@ public class IncludeLoaderTestCase extends TestCase {
 
         expect(context.getScdlLocation()).andReturn(base);
         expect(context.getClassLoader()).andReturn(cl);
+        context.getPathNames();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).anyTimes();
 
         expect(registry.load((CompositeComponent) isNull(),
             (ModelObject) isNull(),
@@ -113,6 +117,8 @@ public class IncludeLoaderTestCase extends TestCase {
 
         expect(context.getScdlLocation()).andReturn(base);
         expect(context.getClassLoader()).andReturn(cl);
+        context.getPathNames();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).anyTimes();
 
         expect(registry.load((CompositeComponent) isNull(),
             (ModelObject) isNull(),
@@ -141,6 +147,8 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(reader.next()).andReturn(END_ELEMENT);
 
         expect(context.getClassLoader()).andReturn(cl);
+        context.getPathNames();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).anyTimes();
 
         expect(registry.load((CompositeComponent) isNull(),
             (ModelObject) isNull(),

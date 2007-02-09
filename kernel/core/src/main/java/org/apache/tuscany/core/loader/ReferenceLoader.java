@@ -20,6 +20,7 @@ package org.apache.tuscany.core.loader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -72,7 +73,15 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         ReferenceDefinition referenceDefinition = new ReferenceDefinition();
         referenceDefinition.setMultiplicity(multiplicity);
         try {
-            referenceDefinition.setUri(new URI(parent.getUri().toString() + "#" + name));
+            StringBuilder buf = new StringBuilder();
+            List<String> names = deploymentContext.getPathNames();
+            for (int i = 0; i < names.size() - 1; i++) {
+                buf.append("/");
+            }
+            if (names.size() > 0) {
+                buf.append(names.get(names.size() - 1));
+            }
+            referenceDefinition.setUri(new URI(buf + "#" + name));
         } catch (URISyntaxException e) {
             throw new IllegalSCDLNameException(e);
         }

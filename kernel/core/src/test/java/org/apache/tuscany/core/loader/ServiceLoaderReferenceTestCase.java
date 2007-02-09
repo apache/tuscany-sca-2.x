@@ -19,6 +19,8 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -27,6 +29,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.Version;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -44,6 +47,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
     private ServiceLoader loader;
     private XMLStreamReader mockReader;
     private CompositeComponent parent;
+    private DeploymentContext ctx;
 
     public void testReferenceNoFragment() throws LoaderException, XMLStreamException {
         String name = "serviceDefinition";
@@ -55,7 +59,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.replay(mockReader);
-        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, null);
+        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, ctx);
         assertNotNull(serviceDefinition);
         assertEquals("parent/target", serviceDefinition.getTarget().getPath());
         assertNull(serviceDefinition.getTarget().getFragment());
@@ -71,7 +75,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.replay(mockReader);
-        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, null);
+        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, ctx);
         assertNotNull(serviceDefinition);
         assertEquals("parent/target#fragment", serviceDefinition.getTarget().toString());
     }
@@ -86,5 +90,10 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         URI uri = URI.create(PARENT_NAME);
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(parent);
+        ctx = EasyMock.createMock(DeploymentContext.class);
+        List<String> names = new ArrayList<String>();
+        names.add("parent");
+        EasyMock.expect(ctx.getPathNames()).andReturn(names).atLeastOnce();
+        EasyMock.replay(ctx);
     }
 }

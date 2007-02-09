@@ -19,6 +19,9 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -92,7 +95,12 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
-        DeploymentContext ctx = EasyMock.createNiceMock(DeploymentContext.class);
+        DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
+        ctx.getPathNames();
+        List<String> names = new ArrayList<String>();
+        names.add("foo");
+        EasyMock.expectLastCall().andReturn(names).anyTimes();
+        EasyMock.replay(ctx);
         ComponentDefinition component = loader.load(parent, null, mockReader, ctx);
         assertEquals(FULL_NAME, component.getUri().toString());
         assertNull(component.getInitLevel());
@@ -125,7 +133,12 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
-        DeploymentContext ctx = EasyMock.createNiceMock(DeploymentContext.class);
+        DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
+        ctx.getPathNames();
+        List<String> names = new ArrayList<String>();
+        names.add("foo");
+        EasyMock.expectLastCall().andReturn(names).anyTimes();
+        EasyMock.replay(ctx);
         ComponentDefinition component = loader.load(parent, null, mockReader, ctx);
         assertEquals(FULL_NAME, component.getUri().toString());
         assertEquals(Integer.valueOf(20), component.getInitLevel());
@@ -173,7 +186,12 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         try {
-            DeploymentContext ctx = EasyMock.createNiceMock(DeploymentContext.class);
+            DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
+            ctx.getPathNames();
+            List<String> names = new ArrayList<String>();
+            names.add("foo");
+            EasyMock.expectLastCall().andReturn(names).anyTimes();
+            EasyMock.replay(ctx);
             loader.load(parent, null, mockReader, ctx);
             fail();
         } catch (UnrecognizedElementException e) {

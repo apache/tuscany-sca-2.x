@@ -112,11 +112,17 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
         try {
             Implementation<?> impl = loadImplementation(parent, reader, deploymentContext);
+            deploymentContext.getPathNames().add(name);
             registry.loadComponentType(parent, impl, deploymentContext);
+            deploymentContext.getPathNames().remove(deploymentContext.getPathNames().size() - 1);
 
             URI uri;
             try {
-                uri = new URI(parent.getUri().toString() + "/" + name);
+                StringBuilder buf = new StringBuilder();
+                for (String path : deploymentContext.getPathNames()) {
+                    buf.append(path).append("/");
+                }
+                uri = new URI(buf + name);
             } catch (URISyntaxException e) {
                 throw new IllegalSCDLNameException(e);
             }

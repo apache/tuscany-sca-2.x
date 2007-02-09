@@ -1,6 +1,8 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -35,13 +37,14 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
     private ComponentLoader loader;
     private XMLStreamReader reader;
     private CompositeComponent parent;
+    private DeploymentContext ctx;
 
     /**
      * Verifies an error is thrown when an attempt to configure a non-existent reference in SCDL is made
      */
     public void testNoReferenceOnComponentType() throws LoaderException, XMLStreamException {
         try {
-            loader.load(parent, null, reader, null);
+            loader.load(parent, null, reader, ctx);
             fail();
         } catch (UndefinedReferenceException e) {
             // expected
@@ -73,16 +76,20 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
         LoaderRegistry mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         mockRegistry.loadComponentType(EasyMock.isA(CompositeComponent.class),
             EasyMock.isA(Implementation.class),
-            (DeploymentContext) isNull());
+            EasyMock.isA(DeploymentContext.class));
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
             (ModelObject) isNull(),
             EasyMock.isA(XMLStreamReader.class),
-            (DeploymentContext) isNull())).andReturn(impl);
+             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         loader = new ComponentLoader(mockRegistry, null);
         parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(parent.getUri()).andReturn(URI.create("foo"));
         EasyMock.replay(parent);
+        ctx = EasyMock.createMock(DeploymentContext.class);
+        List<String> names = new ArrayList<String>();
+        EasyMock.expect(ctx.getPathNames()).andReturn(names).atLeastOnce();
+        EasyMock.replay(ctx);
     }
 
 }

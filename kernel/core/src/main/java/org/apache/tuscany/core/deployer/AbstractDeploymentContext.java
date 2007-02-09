@@ -19,7 +19,9 @@
 package org.apache.tuscany.core.deployer;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -33,6 +35,7 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
     private final ClassLoader classLoader;
     private final URL scdlLocation;
     private final Map<String, Object> properties = new HashMap<String, Object>();
+    private List<String> pathNames = new ArrayList<String>();
 
     protected AbstractDeploymentContext(ClassLoader classLoader, URL scdlLocation) {
         this.classLoader = classLoader;
@@ -45,6 +48,10 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
 
     public URL getScdlLocation() {
         return scdlLocation;
+    }
+
+    public List<String> getPathNames() {
+        return pathNames;
     }
 
     public Object getExtension(String name) {

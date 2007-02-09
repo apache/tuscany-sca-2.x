@@ -87,6 +87,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         }
 
         DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url);
+        childContext.getPathNames().addAll(deploymentContext.getPathNames());
         CompositeComponentType composite;
         try {
             composite = loadFromSidefile(parent, url, childContext);
