@@ -16,16 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.launcher;
+package org.apache.tuscany.sca.runtime.standalone.smoketest;
+
+import java.util.concurrent.Callable;
 
 /**
- * Exception indicating that application's main method is missing or invalid
- * (for example it may not be static).
- *  
  * @version $Rev$ $Date$
  */
-public class InvalidMainException extends LaunchException {
-    public InvalidMainException(String message) {
-        super(message);
+public class Launched implements Callable<Integer> {
+    private final HelloService hello;
+
+    public Launched(HelloService hello) {
+        this.hello = hello;
+    }
+
+    public Integer call() throws Exception {
+        if ("Hello World".equals(hello.getGreeting())) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 }

@@ -21,12 +21,14 @@ package org.apache.tuscany.sca.runtime.standalone.smoketest;
 /**
  * @version $Rev$ $Date$
  */
-public class Main {
-    public static void main(String[] args) {
-        if (args.length == 0) {
-            System.out.println("No Args");
-            System.exit(0);
-        }
-        System.exit(10);
+public class HelloServiceImpl implements HelloService {
+    private final String greeting;
+
+    public HelloServiceImpl(String greeting) {
+        this.greeting = greeting;
+    }
+
+    public String getGreeting() {
+        return greeting;
     }
 }

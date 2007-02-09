@@ -45,11 +45,6 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <finalName>smoketest</finalName>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.apache.tuscany.sca.runtime.standalone.smoketest.Main</mainClass>
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
             <plugin>

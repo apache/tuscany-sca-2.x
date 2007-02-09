@@ -16,26 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.launcher;
+package org.apache.tuscany.sca.runtime.standalone.smoketest;
 
 /**
- * Exception indicating that there was a problem launching an application.
- *  
  * @version $Rev$ $Date$
  */
-public abstract class LaunchException extends Exception {
-    public LaunchException() {
-    }
-
-    public LaunchException(String message) {
-        super(message);
-    }
-
-    public LaunchException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public LaunchException(Throwable cause) {
-        super(cause);
-    }
+public interface HelloService {
+    String getGreeting();
 }
