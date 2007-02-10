@@ -18,9 +18,12 @@
  */
 package org.apache.tuscany.core.resolver;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 
 /**
@@ -40,4 +43,12 @@ public interface AutowireResolver {
      */
     void resolve(ComponentDefinition<Implementation<CompositeComponentType<?, ?, ?>>> parentDefinition,
                  ComponentDefinition<? extends Implementation<?>> definition) throws ResolutionException;
+
+    /**
+     * Adds the uri of a primordial system service that can be an autowire target
+     *
+     * @param contract the service contract of the system service
+     * @param uri      the component uri
+     */
+    void addPrimordialUri(ServiceContract contract, URI uri);
 }

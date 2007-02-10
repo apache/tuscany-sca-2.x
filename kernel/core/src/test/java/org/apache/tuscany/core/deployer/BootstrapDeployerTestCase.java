@@ -49,6 +49,7 @@ import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.isA;
@@ -151,8 +152,11 @@ public class BootstrapDeployerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-        ComponentManager manager = new ComponentManagerImpl();
-        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory, manager, null);
+        DefaultAutowireResolver resolver = new DefaultAutowireResolver();
+        ComponentManager manager = new ComponentManagerImpl(null, resolver);
+        manager.registerJavaObject(URI.create("ComponentManager"), ComponentManager.class, manager);
+        NullMonitorFactory monitorFactory = new NullMonitorFactory();
+        Bootstrapper bootstrapper = new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, null);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
         deploymentContext = new RootDeploymentContext(null, xmlFactory, null, null);
         implementation = new SystemCompositeImplementation();

@@ -30,12 +30,14 @@ import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.apache.tuscany.spi.util.UriHelper;
 
 import org.apache.tuscany.core.component.event.ComponentStart;
 import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.implementation.composite.SystemSingletonAtomicComponent;
+import org.apache.tuscany.core.resolver.AutowireResolver;
 
 /**
  * Default implementation of the component manager
@@ -44,6 +46,7 @@ import org.apache.tuscany.core.implementation.composite.SystemSingletonAtomicCom
  */
 public class ComponentManagerImpl implements ComponentManager {
     private TuscanyManagementService managementService;
+    private AutowireResolver resolver;
     private Map<URI, Component> components;
     private Map<URI, List<URI>> parentToChildren;
 
@@ -52,9 +55,10 @@ public class ComponentManagerImpl implements ComponentManager {
         parentToChildren = new ConcurrentHashMap<URI, List<URI>>();
     }
 
-    public ComponentManagerImpl(TuscanyManagementService managementService) {
+    public ComponentManagerImpl(TuscanyManagementService managementService, AutowireResolver resolver) {
         this();
         this.managementService = managementService;
+        this.resolver = resolver;
     }
 
     public void register(Component component) throws ComponentRegistrationException {
@@ -85,12 +89,26 @@ public class ComponentManagerImpl implements ComponentManager {
 
     public <S, I extends S> void registerJavaObject(URI uri, Class<S> service, I instance)
         throws ComponentRegistrationException {
-        register(new SystemSingletonAtomicComponent<S, I>(uri, null, service, instance));
+        SystemSingletonAtomicComponent<S, I> component =
+            new SystemSingletonAtomicComponent<S, I>(uri, null, service, instance);
+        register(component);
+        if (resolver != null) {
+            for (ServiceContract contract : component.getServiceContracts()) {
+                resolver.addPrimordialUri(contract, uri);
+            }
+        }
     }
 
     public <S, I extends S> void registerJavaObject(URI uri, List<Class<?>> services, I instance)
         throws ComponentRegistrationException {
-        register(new SystemSingletonAtomicComponent<S, I>(uri, null, services, instance));
+        SystemSingletonAtomicComponent<S, I> component =
+            new SystemSingletonAtomicComponent<S, I>(uri, null, services, instance);
+        register(component);
+        if (resolver != null) {
+            for (ServiceContract contract : component.getServiceContracts()) {
+                resolver.addPrimordialUri(contract, uri);
+            }
+        }
     }
 
     public void unregister(Component component) throws ComponentRegistrationException {

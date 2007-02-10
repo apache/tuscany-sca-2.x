@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.resolver.ResolutionException;
 
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
@@ -115,6 +116,9 @@ public class AbstractExtensionDeployer {
                 // FIXME JFM handle the exception
                 e.printStackTrace();
             } catch (ComponentException e) {
+                // FIXME handle the exception
+                e.printStackTrace();
+            } catch (ResolutionException e) {
                 // FIXME handle the exception
                 e.printStackTrace();
             }

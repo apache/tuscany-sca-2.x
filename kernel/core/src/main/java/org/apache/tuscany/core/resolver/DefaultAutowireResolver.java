@@ -19,6 +19,8 @@
 package org.apache.tuscany.core.resolver;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -36,6 +38,8 @@ import org.apache.tuscany.spi.resolver.ResolutionException;
  * @version $Rev$ $Date$
  */
 public class DefaultAutowireResolver implements AutowireResolver {
+    private Map<ServiceContract, URI> primordialAutowire = new HashMap<ServiceContract, URI>();
+
 
     @SuppressWarnings({"unchecked"})
     public void resolve(ComponentDefinition<Implementation<CompositeComponentType<?, ?, ?>>> parentDefinition,
@@ -75,6 +79,10 @@ public class DefaultAutowireResolver implements AutowireResolver {
             }
 
         }
+    }
+
+    public void addPrimordialUri(ServiceContract contract, URI uri) {
+        primordialAutowire.put(contract, uri);
     }
 
     /**
@@ -117,12 +125,25 @@ public class DefaultAutowireResolver implements AutowireResolver {
         }
         if (targetUri == null) {
             if (candidateUri == null) {
-                String refName = target.getReferenceName().toString();
-                throw new AutowireTargetNotFoundException("No matching target found", refName);
+                candidateUri = resolvePrimordial(requiredContract);
+                if (candidateUri == null) {
+                    String refName = target.getReferenceName().toString();
+                    throw new AutowireTargetNotFoundException("No matching target found", refName);
+                }
             }
             target.addTarget(candidateUri);
         } else {
             target.addTarget(targetUri);
         }
+    }
+
+    private URI resolvePrimordial(ServiceContract contract) {
+        Class<?> requiredClass = contract.getInterfaceClass();
+        for (Map.Entry<ServiceContract, URI> entry : primordialAutowire.entrySet()) {
+            if (requiredClass.isAssignableFrom(contract.getInterfaceClass())) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 }
