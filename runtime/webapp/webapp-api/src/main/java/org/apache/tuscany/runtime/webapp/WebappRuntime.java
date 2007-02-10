@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
+import java.net.URI;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionListener;
@@ -48,6 +49,13 @@ public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
      * @param servletContext the ServletContext associated with this runtime
      */
     void setServletContext(ServletContext servletContext);
+
+    /**
+     * Bind the parameters, references and context for a component to the ServletContext.
+     *
+     * @param componentId the id of the component to bind
+     */
+    void bindComponent(URI componentId);
 
     /**
      * Returns the request injector for the runtime

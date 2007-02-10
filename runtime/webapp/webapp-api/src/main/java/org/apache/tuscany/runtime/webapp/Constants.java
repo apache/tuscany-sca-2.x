@@ -8,6 +8,16 @@ package org.apache.tuscany.runtime.webapp;
 public final class Constants {
 
     /**
+     * Name of the servlet context-param that should contain the component id for the webapp.
+     */
+    static final String COMPONENT_PARAM = "tuscany.component";
+
+    /**
+     * Servlet context-param name for setting if the runtime is online.
+     */
+    static final String ONLINE_PARAM = "tuscany.online";
+
+    /**
      * Name of the parameter that defines the name of webapp resource containing bootstrap jars.
      */
     static final String BOOTDIR_PARAM = "tuscany.bootDir";
@@ -48,20 +58,9 @@ public final class Constants {
     static final String APPLICATION_SCDL_PATH_DEFAULT = "/WEB-INF/default.scdl";
 
     /**
-     * Servlet context-param name for setting if the runtime is online.
-     */
-    static final String ONLINE_PARAM = "tuscany.online";
-
-    /**
      * Context attribute to which the Tuscany runtime for this servlet context is stored.
      */
     static final String RUNTIME_ATTRIBUTE = "tuscany.runtime";
-
-    /**
-     * Context attribute for storing the CompositeContext that should be bound to the thread.`
-     */
-    @Deprecated
-    static final String CONTEXT_ATTRIBUTE = "tuscany.context";
 
     /**
      * Servlet context-param name for the path to the composite to set as the webb app composite
