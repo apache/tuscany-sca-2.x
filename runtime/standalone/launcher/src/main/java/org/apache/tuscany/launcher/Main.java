@@ -21,6 +21,7 @@ package org.apache.tuscany.launcher;
 import java.net.URI;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
+import java.text.MessageFormat;
 
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
@@ -48,6 +49,7 @@ public class Main {
     public static void main(String[] args) throws Throwable {
         if (args.length == 0) {
             usage();
+            throw new AssertionError();
         }
 
         StandaloneRuntimeInfo runtimeInfo = DirectoryHelper.createRuntimeInfo("launcher", Main.class);
@@ -57,6 +59,10 @@ public class Main {
             URI applicationURI = new URI(args[0]);
             String serviceName = applicationURI.getFragment();
             ComponentContext context = runtime.getComponentContext(applicationURI);
+            if (context == null) {
+                noComponent(applicationURI);
+                throw new AssertionError();
+            }
             ServiceReference<Callable> service;
             if (serviceName == null) {
                 service = context.createSelfReference(Callable.class);
@@ -72,8 +78,18 @@ public class Main {
     }
 
     private static void usage() {
-        ResourceBundle bundle = ResourceBundle.getBundle(Main.class.getName());
-        System.err.println(bundle.getString("org.apache.tuscany.launcher.Usage"));
+        System.err.println(getMessage("org.apache.tuscany.launcher.Usage"));
         System.exit(1);
+    }
+
+    private static void noComponent(URI applicationURI) {
+        System.err.println(getMessage("org.apache.tuscany.launcher.NoComponent", applicationURI));
+        System.exit(2);
+    }
+
+    private static String getMessage(String id, Object... params) {
+        ResourceBundle bundle = ResourceBundle.getBundle(Main.class.getName());
+        String message = bundle.getString(id);
+        return MessageFormat.format(message, params);
     }
 }

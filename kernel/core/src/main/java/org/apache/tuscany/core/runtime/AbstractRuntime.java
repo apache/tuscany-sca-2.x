@@ -190,6 +190,9 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     public ComponentContext getComponentContext(URI componentId) {
         Component component = componentManager.getComponent(componentId);
+        if (component == null) {
+            return null;
+        }
         return component.getComponentContext();
     }
 
