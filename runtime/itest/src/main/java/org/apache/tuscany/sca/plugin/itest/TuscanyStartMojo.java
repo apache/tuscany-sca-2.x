@@ -187,6 +187,7 @@ public class TuscanyStartMojo extends AbstractMojo {
         }
     }
 
+/*
     public ClassLoader createApplicationClassLoader(ClassLoader parent) {
         URL[] urls = new URL[testClassPath.size()];
         int idx = 0;
@@ -204,4 +205,5 @@ public class TuscanyStartMojo extends AbstractMojo {
         }
         return new URLClassLoader(urls, parent);
     }
+*/
 }
