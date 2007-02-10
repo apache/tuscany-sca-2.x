@@ -29,7 +29,7 @@
     <groupId>org.apache.tuscany.sca.runtime</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <name>Tuscany SCA Runtime Hosts</name>
+    <name>Apache Tuscany SCA Runtime Environments</name>
 
     <modules>
         <module>services</module>

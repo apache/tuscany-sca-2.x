@@ -27,7 +27,7 @@
     <groupId>org.apache.tuscany.sca.runtime.services.management</groupId>
     <artifactId>management</artifactId>
     <packaging>pom</packaging>
-    <name>Tuscany SCA Management Services</name>
+    <name>Apache Tuscany SCA Management Services</name>
 
     <modules>
         <module>jmx</module>

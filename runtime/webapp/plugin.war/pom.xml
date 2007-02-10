@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-war-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Tuscany War Plugin</name>
+    <name>Apache Tuscany War Plugin</name>
 
     <dependencies>
         <dependency>

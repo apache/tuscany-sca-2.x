@@ -27,7 +27,7 @@
     <groupId>org.apache.tuscany.sca.runtime.services.discovery</groupId>
     <artifactId>discovery</artifactId>
     <packaging>pom</packaging>
-    <name>Tuscany SCA Discovery Services</name>
+    <name>Apache Tuscany SCA Discovery Services</name>
 
     <modules>
         <module>installjxta</module>
