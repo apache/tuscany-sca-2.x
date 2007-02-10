@@ -18,6 +18,11 @@ public final class Constants {
     static final String ONLINE_PARAM = "tuscany.online";
 
     /**
+     * Name of the context attribute that contains the ComponentContext.
+     */
+    static final String CONTEXT_ATTRIBUTE = "tuscany.context";
+
+    /**
      * Name of the parameter that defines the name of webapp resource containing bootstrap jars.
      */
     static final String BOOTDIR_PARAM = "tuscany.bootDir";

@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 
+import org.osoa.sca.ComponentContext;
+
 import org.apache.tuscany.core.component.event.HttpRequestEnded;
 import org.apache.tuscany.core.component.event.HttpRequestStart;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
@@ -31,6 +33,8 @@ import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
+import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.event.EventPublisher;
@@ -67,8 +71,8 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         super.registerSystemComponents();
         try {
             getComponentManager().registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
-                                                    WebappRuntimeInfo.class,
-                                                    (WebappRuntimeInfo) getRuntimeInfo());
+                                                     WebappRuntimeInfo.class,
+                                                     (WebappRuntimeInfo) getRuntimeInfo());
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
@@ -124,6 +128,12 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
     }
 
     public void bindComponent(URI componentId) {
+        Component component = getComponentManager().getComponent(componentId);
+        if (component == null) {
+            throw new TuscanyInitException("No component found with id " + componentId, componentId.toString());
+        }
+        ComponentContext componentContext = component.getComponentContext();
+        servletContext.setAttribute(CONTEXT_ATTRIBUTE, componentContext);
     }
 
     public ServletRequestInjector getRequestInjector() {
