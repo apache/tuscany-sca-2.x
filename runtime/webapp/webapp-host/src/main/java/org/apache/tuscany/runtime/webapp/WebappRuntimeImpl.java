@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
+import java.net.URI;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -120,6 +121,9 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             application = null;
         }
         super.destroy();
+    }
+
+    public void bindComponent(URI componentId) {
     }
 
     public ServletRequestInjector getRequestInjector() {

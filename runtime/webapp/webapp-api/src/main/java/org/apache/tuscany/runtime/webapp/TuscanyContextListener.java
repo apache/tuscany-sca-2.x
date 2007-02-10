@@ -18,14 +18,15 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
 import org.apache.tuscany.host.runtime.ShutdownException;
+import static org.apache.tuscany.runtime.webapp.Constants.COMPONENT_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.ONLINE_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 
@@ -56,34 +57,26 @@ public class TuscanyContextListener implements ServletContextListener {
         try {
             ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader bootClassLoader = utils.getBootClassLoader(webappClassLoader);
-            WebappRuntime runtime = utils.getRuntime(bootClassLoader);
             boolean online = Boolean.valueOf(utils.getInitParameter(ONLINE_PARAM, "true"));
+            URI componentId = new URI(servletContext.getInitParameter(COMPONENT_PARAM));
             WebappRuntimeInfo info = new WebappRuntimeInfoImpl(servletContext,
-                servletContext.getResource("/WEB-INF/tuscany/"),
-                online);
+                                                               servletContext.getResource("/WEB-INF/tuscany/"),
+                                                               online);
             URL systemScdl = utils.getSystemScdl(bootClassLoader);
-            URL applicationScdl = utils.getApplicationScdl(webappClassLoader);
-            String name = utils.getApplicationName();
 
+            WebappRuntime runtime = utils.getRuntime(bootClassLoader);
             runtime.setServletContext(servletContext);
             runtime.setRuntimeInfo(info);
             runtime.setHostClassLoader(webappClassLoader);
             runtime.setSystemScdl(systemScdl);
-/*
-            runtime.setApplicationName(name);
-            runtime.setApplicationScdl(applicationScdl);
-*/
             runtime.initialize();
-
             servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);
+
+            runtime.bindComponent(componentId);
         } catch (TuscanyRuntimeException e) {
             servletContext.log(e.getMessage(), e);
             e.printStackTrace();
             throw e;
-        } catch (MalformedURLException e) {
-            servletContext.log(e.getMessage(), e);
-            e.printStackTrace();
-            throw new TuscanyInitException(e);
         } catch (Throwable e) {
             servletContext.log(e.getMessage(), e);
             e.printStackTrace();
@@ -105,7 +98,7 @@ public class TuscanyContextListener implements ServletContextListener {
         try {
             runtime.destroy();
         } catch (ShutdownException e) {
-            servletContext.log("Error destorying runtume", e);
+            servletContext.log("Error destroying runtume", e);
         }
     }
 
