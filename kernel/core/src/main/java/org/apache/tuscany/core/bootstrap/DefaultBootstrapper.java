@@ -79,6 +79,7 @@ import org.apache.tuscany.core.loader.PropertyLoader;
 import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.property.PropertyObjectFactoryImpl;
+import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.apache.tuscany.host.MonitorFactory;
 
@@ -93,23 +94,27 @@ public class DefaultBootstrapper implements Bootstrapper {
     private final XMLInputFactory xmlFactory;
     private final ComponentManager componentManager;
     private final TuscanyManagementService managementService;
+    private AutowireResolver resolver;
 
     /**
      * Create a default bootstrapper.
      *
      * @param monitorFactory    the MonitorFactory to be used to create monitors for the primordial components
      * @param xmlFactory        the XMLInputFactory to be used by the components to load XML artifacts
-     * @param componentManager  the component manager for the runtime isntance
+     * @param componentManager  the component manager for the runtime instance
+     * @param resolver          the autowire resolver for the runtime instance
      * @param managementService management service used by the runtime.
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
                                XMLInputFactory xmlFactory,
                                ComponentManager componentManager,
+                               AutowireResolver resolver,
                                TuscanyManagementService managementService) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = xmlFactory;
         this.componentManager = componentManager;
         this.managementService = managementService;
+        this.resolver = resolver;
     }
 
     /**
@@ -149,7 +154,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new PropertyObjectFactoryImpl(), introspector);
-        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder);
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, resolver);
         deployer.setMonitor(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
         return deployer;
     }
@@ -233,6 +238,11 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     public Connector createConnector() {
         return new ConnectorImpl(componentManager);
+    }
+
+
+    public AutowireResolver getAutowireResolver() {
+        return resolver;
     }
 
     /**

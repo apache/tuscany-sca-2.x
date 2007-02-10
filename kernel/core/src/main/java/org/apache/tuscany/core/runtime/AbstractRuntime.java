@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
@@ -42,6 +43,8 @@ import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.core.resolver.AutowireResolver;
+import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
@@ -52,6 +55,14 @@ import org.apache.tuscany.host.runtime.TuscanyRuntime;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractRuntime implements TuscanyRuntime {
+    private static final URI MONITOR_URI =
+        URI.create(ComponentNames.TUSCANY_SYSTEM_ROOT.toString() + "/MonitorFactory");
+    private static final URI COMPONENT_MGR_URI =
+        URI.create(ComponentNames.TUSCANY_SYSTEM_ROOT.toString() + "/ComponentManager");
+
+    private static final URI AUTOWIRE_RESOLVER_URI =
+        URI.create(ComponentNames.TUSCANY_SYSTEM_ROOT.toString() + "/AutowireResolver");
+
     private final XMLInputFactory xmlFactory;
     private URL systemScdl;
     private String applicationName;
@@ -66,6 +77,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
     private RuntimeComponent runtime;
     private CompositeComponent systemComponent;
     private CompositeComponent tuscanySystem;
+    private AutowireResolver resolver;
 
     protected AbstractRuntime() {
         this(new NullMonitorFactory());
@@ -168,6 +180,8 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
             throw new InitializationException(e);
         } catch (ComponentException e) {
             throw new InitializationException(e);
+        } catch (ResolutionException e) {
+            throw new InitializationException(e);
         }
         tuscanySystem.start();
     }
@@ -198,17 +212,18 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     protected Bootstrapper createBootstrapper() {
         TuscanyManagementService tms = (TuscanyManagementService) getManagementService();
-        componentManager = new ComponentManagerImpl(tms);
-        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, tms);
+        resolver = new DefaultAutowireResolver();
+        componentManager = new ComponentManagerImpl(tms, resolver);
+        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, tms);
     }
 
     protected void registerSystemComponents() throws InitializationException {
         try {
             componentManager.registerJavaObject(RuntimeInfo.COMPONENT_URI, RuntimeInfo.class, runtimeInfo);
-            URI uri = URI.create("MonitorFactory");
-            componentManager.registerJavaObject(uri, MonitorFactory.class, getMonitorFactory());
-            //JFM TODO need autowire to deal with returning a component manager 
-            //systemComponent.registerJavaObject("ComponentManager", ComponentManager.class, componentManager);
+            componentManager.registerJavaObject(MONITOR_URI, MonitorFactory.class, getMonitorFactory());
+            // register the component manager with itself so it can be autowired
+            componentManager.registerJavaObject(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
+            componentManager.registerJavaObject(AUTOWIRE_RESOLVER_URI, AutowireResolver.class, resolver);
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
@@ -219,7 +234,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
                                                   URI name,
                                                   URL systemScdl,
                                                   ClassLoader systemClassLoader)
-        throws LoaderException, BuilderException, ComponentException {
+        throws LoaderException, BuilderException, ComponentException, ResolutionException {
 
         SystemCompositeImplementation impl = new SystemCompositeImplementation();
         impl.setScdlLocation(systemScdl);

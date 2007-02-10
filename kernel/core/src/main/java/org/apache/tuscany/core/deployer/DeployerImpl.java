@@ -41,10 +41,12 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.resolver.ResolutionException;
 
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
+import org.apache.tuscany.core.resolver.AutowireResolver;
 
 /**
  * Default implementation of Deployer.
@@ -52,15 +54,17 @@ import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
  * @version $Rev$ $Date$
  */
 public class DeployerImpl implements Deployer {
-    protected XMLInputFactory xmlFactory;
-    protected Builder builder;
-    protected ScopeContainerMonitor monitor;
+    private XMLInputFactory xmlFactory;
+    private Builder builder;
+    private ScopeContainerMonitor monitor;
     private Loader loader;
+    private AutowireResolver resolver;
 
-    public DeployerImpl(XMLInputFactory xmlFactory, Loader loader, Builder builder) {
+    public DeployerImpl(XMLInputFactory xmlFactory, Loader loader, Builder builder, AutowireResolver resolver) {
         this.xmlFactory = xmlFactory;
         this.loader = loader;
         this.builder = builder;
+        this.resolver = resolver;
     }
 
     public DeployerImpl() {
@@ -82,19 +86,26 @@ public class DeployerImpl implements Deployer {
         this.monitor = monitor;
     }
 
+    @Autowire
+    public void setResolver(AutowireResolver resolver) {
+        this.resolver = resolver;
+    }
+
     public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                           ComponentDefinition<I> componentDefinition)
-        throws LoaderException, BuilderException, PrepareException {
+        throws LoaderException, BuilderException, PrepareException, ResolutionException {
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
         deploymentContext.getPathNames().add(componentDefinition.getUri().toString());
-         try {
+        try {
             load(parent, componentDefinition, deploymentContext);
         } catch (LoaderException e) {
             e.addContextName(componentDefinition.getUri().toString());
             throw e;
         }
+        // resolve autowires
+        resolver.resolve(null, componentDefinition);
         Component component = (Component) build(parent, componentDefinition, deploymentContext);
         // create a listener so the scope container is shutdown when the top-level composite stops
         RuntimeEventListener listener = new RuntimeEventListener() {

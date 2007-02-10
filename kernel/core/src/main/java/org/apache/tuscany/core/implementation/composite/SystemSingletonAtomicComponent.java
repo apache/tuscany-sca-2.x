@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import org.apache.tuscany.spi.extension.AbstractComponentExtension;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -53,6 +55,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     private T instance;
     private Map<String, InboundWire> inboundWires;
     private WireService wireService = new JDKWireService();
+    private List<ServiceContract> serviceContracts = new ArrayList<ServiceContract>();
 
     public SystemSingletonAtomicComponent(URI name, CompositeComponent parent, Class<S> interfaze, T instance) {
         super(name, parent);
@@ -152,6 +155,10 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         return null;
     }
 
+    public List<ServiceContract> getServiceContracts() {
+        return serviceContracts;
+    }
+
     private void initWire(Class<?> interfaze) {
         JavaServiceContract serviceContract = new JavaServiceContract(interfaze);
         // create a relative URI
@@ -160,6 +167,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         InboundWire wire = wireService.createWire(def);
         wire.setContainer(this);
         inboundWires.put(wire.getUri().getFragment(), wire);
+        serviceContracts.add(serviceContract);
     }
 
 }

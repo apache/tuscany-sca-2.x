@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.resolver.ResolutionException;
 
 /**
  * Interface that can be used to deploy SCA bundles to a runtime.
@@ -44,5 +45,5 @@ public interface Deployer {
      */
     <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                    ComponentDefinition<I> componentDefinition)
-        throws LoaderException, BuilderException, ComponentException;
+        throws LoaderException, BuilderException, ComponentException, ResolutionException;
 }

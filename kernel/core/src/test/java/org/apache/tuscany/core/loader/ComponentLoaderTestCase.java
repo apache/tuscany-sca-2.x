@@ -19,9 +19,8 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;

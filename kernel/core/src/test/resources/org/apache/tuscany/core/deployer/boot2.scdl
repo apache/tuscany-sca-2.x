@@ -26,7 +26,7 @@
            name="boot2">
 
     <!-- expose Deployer API as a service -->
-    <service name="deployer" >
+    <service name="deployer">
         <interface.java interface="org.apache.tuscany.spi.deployer.Deployer"/>
         <reference>deployerImpl</reference>
     </service>
@@ -36,9 +36,23 @@
         <system:implementation.system class="org.apache.tuscany.core.deployer.DeployerImpl"/>
     </component>
 
+    <!-- Component that provides the Autowire resolver service -->
+    <component name="autowireResolver">
+        <system:implementation.system class="org.apache.tuscany.core.resolver.DefaultAutowireResolver"/>
+    </component>
+
     <!-- Work management -->
     <component name="workContext">
         <system:implementation.system class="org.apache.tuscany.core.component.WorkContextImpl"/>
+    </component>
+
+    <component name="workScheduler">
+        <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler"/>
+    </component>
+
+    <component name="workManager">
+        <system:implementation.system
+            class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
     </component>
 
     <!-- Scope infrastructure -->
@@ -66,11 +80,15 @@
         <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl"/>
     </component>
 
+    <component name="wirePostProcess">
+        <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
+    </component>
+
     <!-- Resource host registry -->
     <component name="resourceHostRegistry">
         <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
     </component>
-    
+
     <!-- Foundation element loader implementations -->
     <component name="elementLoader.component">
         <system:implementation.system class="org.apache.tuscany.core.loader.ComponentLoader"/>
@@ -92,7 +110,7 @@
     </component>
 
     <component name="wireService">
-            <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireService"/>
+        <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireService"/>
     </component>
 
     <!-- Composite implementation type -->
@@ -111,17 +129,17 @@
 
     <!-- DataBinding registry -->
     <component name="databinding.registry">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingRegistryImpl" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingRegistryImpl"/>
     </component>
 
     <!-- DataBinding registry -->
     <component name="databinding.mediator">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.MediatorImpl" />
-    </component>    
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.MediatorImpl"/>
+    </component>
 
     <!-- Transformer registry -->
     <component name="databinding.transformerRegistry" initLevel="90">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl"/>
     </component>
 
     <component name="propertyFactory">
