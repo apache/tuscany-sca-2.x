@@ -28,7 +28,7 @@ import org.apache.tuscany.host.RuntimeInfo;
  * @version $Rev$ $Date$
  */
 public class MavenRuntimeInfo implements RuntimeInfo {
-    public static final String COMPONENT_NAME = "MavenRuntimeInfo";
+    public static final URI COMPONENT_NAME = URI.create("MavenRuntimeInfo");
     
     public File getInstallDirectory() {
         throw new UnsupportedOperationException();
