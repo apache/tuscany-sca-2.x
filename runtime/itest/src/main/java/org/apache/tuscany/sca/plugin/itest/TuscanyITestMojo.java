@@ -82,7 +82,8 @@ public class TuscanyITestMojo extends AbstractMojo {
     }
 
     public boolean runSurefire() throws MojoExecutionException {
-        ClassLoader testsClassLoader = TuscanyStartMojo.foo.get();
+        // FIXME get classloader for tests
+        ClassLoader testsClassLoader = null;
         try {
             Properties status = new Properties();
             boolean success = run(testsClassLoader, status);
