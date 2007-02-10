@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.util;
+package org.apache.tuscany.core.services.classloading;
 
 import java.beans.Introspector;
 import java.io.IOException;
