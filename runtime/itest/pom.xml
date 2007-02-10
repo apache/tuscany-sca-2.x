@@ -19,7 +19,7 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.plugins</groupId>
+        <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>

@@ -35,6 +35,7 @@
         <module>services</module>
         <module>standalone</module>
         <module>webapp</module>
+        <module>itest</module>
     </modules>
 
 </project>
