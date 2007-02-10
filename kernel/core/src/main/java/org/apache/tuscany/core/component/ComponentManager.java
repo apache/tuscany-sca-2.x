@@ -54,7 +54,7 @@ public interface ComponentManager extends RuntimeEventListener {
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
      * create the initial configuration components.
      *
-     * @param uri     the uri of the resulting component
+     * @param uri      the uri of the resulting component
      * @param service  the service interface the component should expose
      * @param instance the Object that will become the component's implementation
      * @throws ComponentRegistrationException
@@ -66,7 +66,7 @@ public interface ComponentManager extends RuntimeEventListener {
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
      * create the initial configuration components.
      *
-     * @param uri     the name of the resulting component
+     * @param uri      the name of the resulting component
      * @param services the service interfaces the component should expose
      * @param instance the Object that will become the component's implementation
      * @throws ComponentRegistrationException

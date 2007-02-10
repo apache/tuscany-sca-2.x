@@ -55,9 +55,7 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
      * @param parent    this component's parent
      * @param connector the connector to use for wires
      */
-    public CompositeComponentImpl(URI name,
-                                  CompositeComponent parent,
-                                  Connector connector) {
+    public CompositeComponentImpl(URI name, CompositeComponent parent, Connector connector) {
         super(name, parent, connector, null);
     }
 
