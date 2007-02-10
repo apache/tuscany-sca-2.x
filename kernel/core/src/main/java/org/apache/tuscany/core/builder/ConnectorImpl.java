@@ -382,9 +382,7 @@ public class ConnectorImpl implements Connector {
         connect(sourceWire, targetWire, optimizable);
     }
 
-    protected void autowire(OutboundWire outboundWire, CompositeComponent parent)
-        throws WiringException {
-        // JFM FIXME test coverage for this method
+    protected void autowire(OutboundWire outboundWire, CompositeComponent parent) throws WiringException {
         InboundWire targetWire;
         try {
             Class interfaze = outboundWire.getServiceContract().getInterfaceClass();
