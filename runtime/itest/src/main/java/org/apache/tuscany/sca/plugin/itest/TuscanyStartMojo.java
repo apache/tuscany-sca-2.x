@@ -19,29 +19,20 @@
 package org.apache.tuscany.sca.plugin.itest;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URI;
-import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-import org.apache.maven.artifact.metadata.ResolutionGroup;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+
 import org.apache.tuscany.host.runtime.InitializationException;
 
 /**
@@ -50,113 +41,6 @@ import org.apache.tuscany.host.runtime.InitializationException;
  * @phase pre-integration-test
  */
 public class TuscanyStartMojo extends AbstractMojo {
-
-    public class MavenEmbeddedArtifactRepository implements org.apache.tuscany.spi.services.artifact.ArtifactRepository {
-        public static final String COMPONENT_NAME = "MavenEmbeddedArtifactRepository";
-
-        public void resolve(org.apache.tuscany.spi.services.artifact.Artifact artifact) {
-            resolveTransitively(artifact);
-        }
-
-        public void resolve(Collection artifacts) {
-            for (Object a : artifacts) {
-                resolve((Artifact)a);
-            }
-        }
-
-        /**
-         * Resolves the dependencies transitively.
-         * 
-         * @param rootArtifact Artifact whose dependencies need to be resolved.
-         */
-        public boolean resolveTransitively(org.apache.tuscany.spi.services.artifact.Artifact rootArtifact) {
-
-            org.apache.maven.artifact.Artifact mavenRootArtifact =
-                artifactFactory.createArtifact(rootArtifact.getGroup(), rootArtifact.getName(), rootArtifact
-                    .getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
-
-            try {
-
-                if (resolve(mavenRootArtifact)) {
-                    rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
-                    if (resolveDependencies(rootArtifact, mavenRootArtifact)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            } catch (MalformedURLException ex) {
-                throw new IllegalArgumentException(ex);
-            }
-
-        }
-
-        /*
-         * Resolves the artifact.
-         */
-        private boolean resolve(org.apache.maven.artifact.Artifact mavenRootArtifact) {
-
-            try {
-                resolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
-                return true;
-            } catch (ArtifactResolutionException ex) {
-                return false;
-            } catch (ArtifactNotFoundException ex) {
-                return false;
-            }
-
-        }
-
-        /*
-         * Resolves transitive dependencies.
-         */
-        private boolean resolveDependencies(org.apache.tuscany.spi.services.artifact.Artifact rootArtifact,
-                                            org.apache.maven.artifact.Artifact mavenRootArtifact) {
-
-            try {
-
-                ResolutionGroup resolutionGroup = null;
-                ArtifactResolutionResult result = null;
-
-                resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
-                result =
-                    resolver.resolveTransitively(resolutionGroup.getArtifacts(),
-                                                 mavenRootArtifact,
-                                                 remoteRepositories,
-                                                 localRepository,
-                                                 metadataSource);
-
-                // Add the artifacts to the deployment unit
-                for (Object obj : result.getArtifacts()) {
-                    org.apache.maven.artifact.Artifact depArtifact = (org.apache.maven.artifact.Artifact)obj;
-                    org.apache.tuscany.spi.services.artifact.Artifact artifact =
-                        new org.apache.tuscany.spi.services.artifact.Artifact();
-                    artifact.setName(depArtifact.getArtifactId());
-                    artifact.setGroup(depArtifact.getGroupId());
-                    artifact.setType(depArtifact.getType());
-                    artifact.setClassifier(depArtifact.getClassifier());
-                    artifact.setUrl(depArtifact.getFile().toURL());
-                    artifact.setVersion(depArtifact.getVersion());
-                    rootArtifact.addDependency(artifact);
-                }
-
-            } catch (ArtifactMetadataRetrievalException ex) {
-                return false;
-            } catch (MalformedURLException ex) {
-                throw new IllegalArgumentException(ex);
-            } catch (ArtifactResolutionException ex) {
-                return false;
-            } catch (ArtifactNotFoundException ex) {
-                return false;
-            }
-
-            return true;
-
-        }
-
-    }
 
     /**
      * @parameter
@@ -177,14 +61,14 @@ public class TuscanyStartMojo extends AbstractMojo {
 
     /**
      * Extensions
-     * 
+     *
      * @parameter
      */
     private Dependency[] extensions = new Dependency[0];
 
     /**
      * Used to look up Artifacts in the remote repository.
-     * 
+     *
      * @parameter expression="${component.org.apache.maven.artifact.resolver.ArtifactResolver}"
      * @required
      * @readonly
@@ -193,7 +77,7 @@ public class TuscanyStartMojo extends AbstractMojo {
 
     /**
      * Used to look up Artifacts in the remote repository.
-     * 
+     *
      * @parameter expression="${component.org.apache.maven.artifact.metadata.ArtifactMetadataSource}"
      * @required
      * @readonly
@@ -202,7 +86,7 @@ public class TuscanyStartMojo extends AbstractMojo {
 
     /**
      * Location of the local repository.
-     * 
+     *
      * @parameter expression="${localRepository}"
      * @readonly
      * @required
@@ -211,7 +95,7 @@ public class TuscanyStartMojo extends AbstractMojo {
 
     /**
      * List of Remote Repositories used by the resolver
-     * 
+     *
      * @parameter expression="${project.remoteArtifactRepositories}"
      * @readonly
      * @required
@@ -220,14 +104,12 @@ public class TuscanyStartMojo extends AbstractMojo {
 
     /**
      * Used to look up Artifacts in the remote repository.
-     * 
+     *
      * @parameter expression="${component.org.apache.maven.artifact.factory.ArtifactFactory}"
      * @required
      * @readonly
      */
     private ArtifactFactory artifactFactory;
-
-    static ThreadLocal<ClassLoader> foo = new ThreadLocal<ClassLoader>();
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Starting Tuscany...");
@@ -238,9 +120,18 @@ public class TuscanyStartMojo extends AbstractMojo {
         }
 
         MavenRuntimeInfo runtimeInfo = new MavenRuntimeInfo();
+        MavenEmbeddedArtifactRepository artifactRepository = new MavenEmbeddedArtifactRepository(artifactFactory,
+                                                                                                 resolver,
+                                                                                                 metadataSource,
+                                                                                                 localRepository,
+                                                                                                 remoteRepositories);
         MavenEmbeddedRuntime runtime = new MavenEmbeddedRuntime();
-        runtime.setArtifactRepository(new MavenEmbeddedArtifactRepository());
+        runtime.setRuntimeInfo(runtimeInfo);
+        runtime.setSystemScdl(systemScdl);
+        runtime.setHostClassLoader(hostClassLoader);
+        runtime.setArtifactRepository(artifactRepository);
 
+/*
         for (Dependency d : extensions) {
             try {
                 Artifact artifact = d.getArtifact(artifactFactory);
@@ -252,10 +143,9 @@ public class TuscanyStartMojo extends AbstractMojo {
                 throw new MojoExecutionException("Fail to resolve an extension", e);
             }
         }
+*/
 
-        runtime.setSystemScdl(systemScdl);
-        runtime.setHostClassLoader(hostClassLoader);
-
+/*
         ClassLoader applicationClassLoader = createApplicationClassLoader(hostClassLoader);
         if (applicationScdl == null) {
             Enumeration resources;
@@ -289,21 +179,19 @@ public class TuscanyStartMojo extends AbstractMojo {
         runtime.setApplicationName("application");
         runtime.setApplicationScdl(applicationScdl);
         runtime.setApplicationClassLoader(applicationClassLoader);
-        runtime.setRuntimeInfo(runtimeInfo);
+*/
         try {
             runtime.initialize();
         } catch (InitializationException e) {
             throw new MojoExecutionException("Error initializing", e);
         }
-
-        foo.set(applicationClassLoader);
     }
 
     public ClassLoader createApplicationClassLoader(ClassLoader parent) {
         URL[] urls = new URL[testClassPath.size()];
         int idx = 0;
         for (Iterator i = testClassPath.iterator(); i.hasNext();) {
-            File pathElement = new File((String)i.next());
+            File pathElement = new File((String) i.next());
             try {
                 URL url = pathElement.toURI().toURL();
                 getLog().debug("Adding application URL: " + url);

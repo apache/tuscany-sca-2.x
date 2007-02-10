@@ -18,31 +18,16 @@
  */
 package org.apache.tuscany.sca.plugin.itest;
 
-import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.sca.plugin.itest.TuscanyStartMojo.MavenEmbeddedArtifactRepository;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
 /**
  * @version $Rev$ $Date$
  */
 public class MavenEmbeddedRuntime extends AbstractRuntime {
-    private CompositeComponent application;
-
     private ArtifactRepository artifactRepository;
-    // leave untyped b/c of QDox error
-    private Map extensions = new HashMap();
-
-    public void addExtension(String extensionName, URL extentionSCDL) {
-        extensions.put(extensionName, extentionSCDL);
-    }
 
     protected void registerSystemComponents() throws InitializationException {
         super.registerSystemComponents();
@@ -51,71 +36,12 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
                                                      MavenRuntimeInfo.class,
                                                      (MavenRuntimeInfo) getRuntimeInfo());
 
-            getComponentManager().registerJavaObject(URI.create(MavenEmbeddedArtifactRepository.COMPONENT_NAME),
+            getComponentManager().registerJavaObject(MavenEmbeddedArtifactRepository.COMPONENT_NAME,
                                                      ArtifactRepository.class,
                                                      artifactRepository);
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
-    }
-
-    public void initialize() throws InitializationException {
-        super.initialize();
-
-/*
-        try {
-            for (Object extensionName : extensions.keySet()) {
-                deployExtension(getTuscanySystem(), getDeployer(), (String) extensionName, (URL) extensions.get(extensionName));
-            }
-
-            application = deployApplicationScdl(getDeployer(),
-                getRuntime().getRootComponent(),
-                getApplicationName(),
-                getApplicationScdl(),
-                getApplicationClassLoader());
-            application.start();
-
-            context = new CompositeContextImpl(application, getWireService());
-        } catch (LoaderException e) {
-            throw new InitializationException(e);
-        } catch (BuilderException e) {
-            throw new InitializationException(e);
-        } catch (TargetResolutionException e) {
-            throw new InitializationException(e);
-        } catch (ComponentException e) {
-            throw new InitializationException(e);
-        }
-*/
-    }
-
-    /*
-        protected void deployExtension(CompositeComponent composite, Deployer deployer, String extensionName, URL url)
-            throws LoaderException, BuilderException, ComponentException {
-            SystemCompositeImplementation implementation = new SystemCompositeImplementation();
-            URL scdlLocation;
-            try {
-                scdlLocation = new URL("jar:" + url.toExternalForm() + "!/META-INF/sca/default.scdl");
-            } catch (MalformedURLException e) {
-                throw new IllegalArgumentException(e);
-            }
-
-            implementation.setScdlLocation(scdlLocation);
-            implementation.setClassLoader(new CompositeClassLoader(new URL[]{url}, getClass().getClassLoader()));
-
-            ComponentDefinition<SystemCompositeImplementation> definition =
-                new ComponentDefinition<SystemCompositeImplementation>(extensionName, implementation);
-
-            Component component = deployer.deploy(composite, definition);
-            component.start();
-        }
-
-    */
-    public void destroy() {
-        if (application != null) {
-            application.stop();
-            application = null;
-        }
-        super.destroy();
     }
 
     public void setArtifactRepository(ArtifactRepository artifactRepository) {
