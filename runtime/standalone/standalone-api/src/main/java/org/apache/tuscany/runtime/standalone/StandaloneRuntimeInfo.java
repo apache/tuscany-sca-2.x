@@ -27,7 +27,8 @@ import org.apache.tuscany.host.RuntimeInfo;
  * @version $Rev$ $Date$
  */
 public interface StandaloneRuntimeInfo extends RuntimeInfo {
-    static URI COMPONENT_NAME = URI.create("StandaloneRuntimeInfo");
+
+    URI STANDALONE_COMPONENT_URI = URI.create("sca://StandaloneRuntimeInfo");
 
     /**
      * Return the directory where the standalone distribution was installed.
