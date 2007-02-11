@@ -21,6 +21,7 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,6 @@ import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
@@ -108,6 +108,15 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     public SCAObject getChild(String name) {
         assert name != null;
         return children.get(name);
+    }
+
+
+    public List<Service> getServices() {
+        return Collections.unmodifiableList(services);
+    }
+
+    public List<Reference> getReferences() {
+        return Collections.unmodifiableList(references);
     }
 
     public void register(SCAObject child) throws ComponentRegistrationException {
@@ -272,38 +281,11 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     }
 
     public void prepare() throws PrepareException {
-        // Connect services and references first so that their wires are linked first
-        List<SCAObject> childList = new ArrayList<SCAObject>();
-        // connect system artifacts
-        for (SCAObject child : childList) {
-            // connect all children
-            // TODO for composite wires, should delegate down
-            try {
-                connector.connect(child);
-                child.prepare();
-            } catch (WiringException e) {
-                throw new PrepareException("Error preparing composite", getUri().toString(), e);
-            }
+        for (Service service : services) {
+            service.prepare();
         }
-
-        // connect application artifacts
-        childList.clear();
-        for (SCAObject child : children.values()) {
-            if (child instanceof Component) {
-                childList.add(child);
-            } else {
-                childList.add(0, child);
-            }
-        }
-        for (SCAObject child : childList) {
-            // connect all children
-            // TODO for composite wires, should delegate down
-            try {
-                connector.connect(child);
-                child.prepare();
-            } catch (WiringException e) {
-                throw new PrepareException("Error preparing composite", getUri().toString(), e);
-            }
+        for (Reference reference : references) {
+            reference.prepare();
         }
     }
 

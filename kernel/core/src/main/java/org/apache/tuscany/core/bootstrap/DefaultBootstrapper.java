@@ -41,7 +41,6 @@ import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.binding.local.LocalBindingLoader;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeObjectFactory;
@@ -94,7 +93,8 @@ public class DefaultBootstrapper implements Bootstrapper {
     private final XMLInputFactory xmlFactory;
     private final ComponentManager componentManager;
     private final TuscanyManagementService managementService;
-    private AutowireResolver resolver;
+    private final AutowireResolver resolver;
+    private final Connector connector;
 
     /**
      * Create a default bootstrapper.
@@ -103,18 +103,21 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @param xmlFactory        the XMLInputFactory to be used by the components to load XML artifacts
      * @param componentManager  the component manager for the runtime instance
      * @param resolver          the autowire resolver for the runtime instance
+     * @param connector         the connector for the runtime instance
      * @param managementService management service used by the runtime.
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
                                XMLInputFactory xmlFactory,
                                ComponentManager componentManager,
                                AutowireResolver resolver,
+                               Connector connector,
                                TuscanyManagementService managementService) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = xmlFactory;
         this.componentManager = componentManager;
         this.managementService = managementService;
         this.resolver = resolver;
+        this.connector = connector;
     }
 
     /**
@@ -154,7 +157,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new PropertyObjectFactoryImpl(), introspector);
-        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, resolver);
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, resolver, componentManager, connector);
         deployer.setMonitor(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
         return deployer;
     }
@@ -236,8 +239,8 @@ public class DefaultBootstrapper implements Bootstrapper {
      *
      * @return a new Connector
      */
-    public Connector createConnector() {
-        return new ConnectorImpl(componentManager);
+    public Connector getConnector() {
+        return connector;
     }
 
 
@@ -267,7 +270,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         BuilderRegistryImpl builderRegistry =
             new BuilderRegistryImpl(scopeRegistry, new JDKWireService(), componentManager);
         SystemCompositeBuilder builder =
-            new SystemCompositeBuilder(builderRegistry, createConnector(), managementService);
+            new SystemCompositeBuilder(builderRegistry, getConnector(), managementService);
         builderRegistry.register(SystemCompositeImplementation.class, builder);
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
         builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());

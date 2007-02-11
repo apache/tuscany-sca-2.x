@@ -26,11 +26,8 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
                                     CompositeComponent component,
                                     CompositeComponentType<?, ?, ?> componentType,
                                     DeploymentContext deploymentContext) throws BuilderException {
-
         for (ComponentDefinition<? extends Implementation<?>> definition : componentType.getComponents().values()) {
             builderRegistry.build(component, definition, deploymentContext);
-            // JFM TODO
-            //component.register(child);
         }
         for (ServiceDefinition definition : componentType.getServices().values()) {
             try {
@@ -42,13 +39,14 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
         }
         for (ReferenceDefinition definition : componentType.getReferences().values()) {
             try {
-                Reference child = builderRegistry.build(component, definition, deploymentContext);
-                component.register(child);
+                Reference reference = builderRegistry.build(component, definition, deploymentContext);
+                component.register(reference);
             } catch (ComponentRegistrationException e) {
                 throw new BuilderInstantiationException("Error registering reference", e);
             }
         }
         component.getExtensions().putAll(componentType.getExtensions());
+        // connect services and references before components
         return component;
     }
 

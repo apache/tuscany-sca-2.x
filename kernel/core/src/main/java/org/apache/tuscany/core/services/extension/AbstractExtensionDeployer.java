@@ -19,24 +19,12 @@
 package org.apache.tuscany.core.services.extension;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-
 import java.net.URL;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.resolver.ResolutionException;
-
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
  * @version $Rev$ $Date$
@@ -50,10 +38,11 @@ public class AbstractExtensionDeployer {
         this.deployer = deployer;
     }
 
-    @Autowire
-    public void setParent(CompositeComponent parent) {
-        this.parent = parent;
-    }
+// JFM cannot autowire parents - need to come up with a better approach
+//    @Autowire
+//    public void setParent(CompositeComponent parent) {
+//        this.parent = parent;
+//    }
 
     protected void deployExtension(File file) {
         // extension name is file name less any extension
@@ -74,57 +63,58 @@ public class AbstractExtensionDeployer {
     }
 
     protected void deployExtension(String name, URL url) {
-        // FIXME for now, assume this class's ClassLoader is the Tuscany system classloader
-        // FIXME we should really use the one associated with the parent composite
-        CompositeClassLoader extensionCL = new CompositeClassLoader(getClass().getClassLoader());
-
-        // see if the URL points to a composite JAR by looking for a default SCDL file inside it
-        URL scdlLocation;
-        try {
-            scdlLocation = new URL("jar:" + url.toExternalForm() + "!/META-INF/sca/default.scdl");
-        } catch (MalformedURLException e) {
-            // the form of the jar: URL should be correct given url.toExternalForm() worked
-            throw new AssertionError();
-        }
-        try {
-            scdlLocation.openStream().close();
-            // we connected to the SCDL so let's add the JAR file to the classloader
-            extensionCL.addURL(url);
-        } catch (IOException e) {
-            // assume that the URL we were given is not a JAR file so just use the supplied resource
-            scdlLocation = url;
-        }
-
-        // create a ComponentDefinition to represent the component we are going to deploy
-        SystemCompositeImplementation implementation = new SystemCompositeImplementation();
-        implementation.setScdlLocation(scdlLocation);
-        implementation.setClassLoader(extensionCL);
-        URI uri = parent.getUri().resolve(name);
-        ComponentDefinition<SystemCompositeImplementation> definition =
-            new ComponentDefinition<SystemCompositeImplementation>(uri, implementation);
-
-        // FIXME: [rfeng] Should we reset the thread context class loader here?
-        // From the debugger with tomcat, the current TCCL is the RealmClassLoader
-        // ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
-        try {
-            // Thread.currentThread().setContextClassLoader(extensionCL);
-            Component component;
-            try {
-                component = deployer.deploy(parent, definition);
-                component.start();
-            } catch (BuilderException e) {
-                // FIXME JFM handle the exception
-                e.printStackTrace();
-            } catch (ComponentException e) {
-                // FIXME handle the exception
-                e.printStackTrace();
-            } catch (ResolutionException e) {
-                // FIXME handle the exception
-                e.printStackTrace();
-            }
-        } catch (LoaderException e) {
-            // FIXME handle the exception
-            e.printStackTrace();
-        }
+        throw new UnsupportedOperationException("");
+//        // FIXME for now, assume this class's ClassLoader is the Tuscany system classloader
+//        // FIXME we should really use the one associated with the parent composite
+//        CompositeClassLoader extensionCL = new CompositeClassLoader(getClass().getClassLoader());
+//
+//        // see if the URL points to a composite JAR by looking for a default SCDL file inside it
+//        URL scdlLocation;
+//        try {
+//            scdlLocation = new URL("jar:" + url.toExternalForm() + "!/META-INF/sca/default.scdl");
+//        } catch (MalformedURLException e) {
+//            // the form of the jar: URL should be correct given url.toExternalForm() worked
+//            throw new AssertionError();
+//        }
+//        try {
+//            scdlLocation.openStream().close();
+//            // we connected to the SCDL so let's add the JAR file to the classloader
+//            extensionCL.addURL(url);
+//        } catch (IOException e) {
+//            // assume that the URL we were given is not a JAR file so just use the supplied resource
+//            scdlLocation = url;
+//        }
+//
+//        // create a ComponentDefinition to represent the component we are going to deploy
+//        SystemCompositeImplementation implementation = new SystemCompositeImplementation();
+//        implementation.setScdlLocation(scdlLocation);
+//        implementation.setClassLoader(extensionCL);
+//        URI uri = parent.getUri().resolve(name);
+//        ComponentDefinition<SystemCompositeImplementation> definition =
+//            new ComponentDefinition<SystemCompositeImplementation>(uri, implementation);
+//
+//        // FIXME: [rfeng] Should we reset the thread context class loader here?
+//        // From the debugger with tomcat, the current TCCL is the RealmClassLoader
+//        // ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
+//        try {
+//            // Thread.currentThread().setContextClassLoader(extensionCL);
+//            Component component;
+//            try {
+//                component = deployer.deploy(parent, definition);
+//                component.start();
+//            } catch (BuilderException e) {
+//                // FIXME JFM handle the exception
+//                e.printStackTrace();
+//            } catch (ComponentException e) {
+//                // FIXME handle the exception
+//                e.printStackTrace();
+//            } catch (ResolutionException e) {
+//                // FIXME handle the exception
+//                e.printStackTrace();
+//            }
+//        } catch (LoaderException e) {
+//            // FIXME handle the exception
+//            e.printStackTrace();
+//        }
     }
 }

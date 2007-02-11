@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.util.List;
+
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -60,6 +62,10 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * Returns the child associated with a given name
      */
     SCAObject getChild(String name);
+
+    List<Service> getServices();
+
+    List<Reference> getReferences();
 
     /**
      * Invoked by child components to return an wire to a target based on matching type. Resolved targets may be

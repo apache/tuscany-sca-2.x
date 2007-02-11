@@ -36,9 +36,7 @@ import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -55,7 +53,6 @@ import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.component.ComponentManager;
-import org.apache.tuscany.core.wire.LoopBackWire;
 import org.apache.tuscany.core.wire.NonBlockingBridgingInterceptor;
 import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 import org.apache.tuscany.core.wire.WireUtils;
@@ -327,108 +324,34 @@ public class ConnectorImpl implements Connector {
         sourceChain.addInterceptor(new SynchronousBridgingInterceptor(head));
     }
 
-    protected void connect(SCAObject source, OutboundWire sourceWire, Reference target) throws WiringException {
-        InboundWire targetWire = null;
-        for (ReferenceBinding binding : target.getReferenceBindings()) {
-            InboundWire candidate = binding.getInboundWire();
-            if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
-                targetWire = candidate;
-                break;
-            }
-        }
-        if (targetWire == null) {
-            if (target.getReferenceBindings().size() > 0 && source instanceof Component) {
-                // TODO create a pluggable algorithm for selecting the binding type
-                targetWire = target.getReferenceBindings().get(0).getInboundWire();
-            }
-            if (targetWire == null) {
-                throw new NoCompatibleBindingsException(sourceWire.getUri(), sourceWire.getTargetUri());
-            }
-        }
-        checkIfWireable(sourceWire, targetWire);
-        boolean optimizable = isOptimizable(source.getScope(), target.getScope());
-        connect(sourceWire, targetWire, optimizable);
-    }
-
-    protected void connect(SCAObject source, OutboundWire sourceWire, Service target) throws WiringException {
-        InboundWire targetWire = null;
-        for (ServiceBinding binding : target.getServiceBindings()) {
-            InboundWire candidate = binding.getInboundWire();
-            if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
-                targetWire = candidate;
-                break;
-            }
-        }
-        if (targetWire == null) {
-            throw new NoCompatibleBindingsException(sourceWire.getUri(), sourceWire.getTargetUri());
-        }
-        checkIfWireable(sourceWire, targetWire);
-        boolean optimizable = isOptimizable(source.getScope(), target.getScope());
-        connect(sourceWire, targetWire, optimizable);
-    }
-
-    protected void connect(SCAObject source, OutboundWire sourceWire, Component target)
-        throws WiringException {
-        URI targetUri = sourceWire.getTargetUri();
-        assert targetUri != null;
-        InboundWire targetWire;
-        targetWire = target.getTargetWire(sourceWire.getTargetUri().getFragment());
-        if (targetWire == null) {
-            URI sourceUri = sourceWire.getUri();
-            throw new TargetServiceNotFoundException("Target not found ", sourceUri, targetUri);
-        }
-        checkIfWireable(sourceWire, targetWire);
-        boolean optimizable = isOptimizable(source.getScope(), target.getScope());
-        connect(sourceWire, targetWire, optimizable);
-    }
-
-    protected void autowire(OutboundWire outboundWire, CompositeComponent parent) throws WiringException {
-        InboundWire targetWire;
-        try {
-            Class interfaze = outboundWire.getServiceContract().getInterfaceClass();
-            if (CompositeComponent.class.equals(interfaze)) {
-                JavaServiceContract contract = new JavaServiceContract(CompositeComponent.class);
-                targetWire = new LoopBackWire();
-                targetWire.setServiceContract(contract);
-                targetWire.setContainer(parent);
-                outboundWire.setTargetWire(targetWire);
-                return;
-            }
-            targetWire = parent.resolveAutowire(interfaze);
-        } catch (TargetResolutionException e) {
-            URI sourceName = outboundWire.getUri();
-            URI targetName = outboundWire.getTargetUri();
-            throw new WireConnectException("Error resolving autowire target", sourceName, targetName, e);
-        }
-        if (targetWire == null) {
-            // autowire may return null if it is optional. The client must decide if an error should be thrown
-            return;
-        }
-        Scope sourceScope = outboundWire.getContainer().getScope();
-        Scope targetScope = targetWire.getContainer().getScope();
-        boolean optimizable = isOptimizable(sourceScope, targetScope);
-        connect(outboundWire, targetWire, optimizable);
-    }
-
-    protected void checkIfWireable(OutboundWire sourceWire, InboundWire targetWire)
+    protected boolean assertWireable(OutboundWire sourceWire, InboundWire targetWire, boolean silent)
         throws IncompatibleInterfacesException {
         if (wireService == null) {
             Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
             Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
             if (!sourceInterface.isAssignableFrom(targetInterface)) {
-                throw new IncompatibleInterfacesException(sourceWire.getUri(), targetWire.getUri());
+                if (!silent) {
+                    throw new IncompatibleInterfacesException(sourceWire.getUri(), targetWire.getUri());
+                } else {
+                    return false;
+                }
             }
         } else {
             try {
                 ServiceContract sourceContract = sourceWire.getServiceContract();
                 ServiceContract targetContract = targetWire.getServiceContract();
-                wireService.checkCompatibility(sourceContract, targetContract, false);
+                wireService.checkCompatibility(sourceContract, targetContract, false, silent);
             } catch (IncompatibleServiceContractException e) {
                 URI sourceUri = sourceWire.getUri();
                 URI targetUri = targetWire.getUri();
-                throw new IncompatibleInterfacesException(sourceUri, targetUri, e);
+                if (!silent) {
+                    throw new IncompatibleInterfacesException(sourceUri, targetUri, e);
+                } else {
+                    return false;
+                }
             }
         }
+        return true;
     }
 
     protected boolean isOptimizable(Scope pReferrer, Scope pReferee) {
@@ -487,7 +410,7 @@ public class ConnectorImpl implements Connector {
             if (targetWire == null) {
                 throw new TargetServiceNotFoundException("Target not found", sourceUri, targetUri);
             }
-            checkIfWireable(outboundWire, targetWire);
+            assertWireable(outboundWire, targetWire, false);
             boolean optimizable = isOptimizable(service.getScope(), targetComponent.getScope());
             connect(outboundWire, targetWire, optimizable);
             connect(inboundWire, outboundWire, true);
@@ -529,30 +452,41 @@ public class ConnectorImpl implements Connector {
         // connect outbound wires for component references to their targets
         for (List<OutboundWire> referenceWires : component.getOutboundWires().values()) {
             for (OutboundWire outboundWire : referenceWires) {
-                if (outboundWire.isAutowire()) {
-                    autowire(outboundWire, parent);
-                } else {
-                    if (outboundWire.getTargetUri() == null) {
-                        URI source = outboundWire.getUri();
-                        URI target = outboundWire.getTargetUri();
-                        throw new MissingWireTargetException("Target name was null", source, target);
+                if (outboundWire.getTargetUri() == null) {
+                    URI source = outboundWire.getUri();
+                    URI target = outboundWire.getTargetUri();
+                    throw new MissingWireTargetException("Target name was null", source, target);
+                }
+                URI sourceUri = outboundWire.getUri();
+                URI targetUri = outboundWire.getTargetUri();
+                String fragment = targetUri.getFragment();
+                URI defragUri = UriHelper.getDefragmentedName(targetUri);
+                Component targetComponent = componentManager.getComponent(defragUri);
+                if (targetComponent == null) {
+                    throw new TargetComponentNotFoundException("Target not found", sourceUri, targetUri);
+                }
+                InboundWire targetWire = null;
+                if (fragment == null) {
+                    // JFM TODO test
+                    // find a suitable wire since no specific service was named
+                    for (InboundWire wire : targetComponent.getInboundWires()) {
+                        if (assertWireable(outboundWire, wire, true)) {
+                            targetWire = wire;
+                            break;
+                        }
                     }
-                    URI sourceUri = outboundWire.getUri();
-                    URI targetUri = outboundWire.getTargetUri();
-                    String fragment = targetUri.getFragment();
-                    URI defragUri = UriHelper.getDefragmentedName(targetUri);
-                    Component targetComponent = componentManager.getComponent(defragUri);
-                    if (targetComponent == null) {
-                        throw new TargetComponentNotFoundException("Target not found", sourceUri, targetUri);
-                    }
-                    InboundWire targetWire = targetComponent.getTargetWire(fragment);
                     if (targetWire == null) {
                         throw new TargetServiceNotFoundException("Target not found", sourceUri, targetUri);
                     }
-                    checkIfWireable(outboundWire, targetWire);
-                    boolean optimizable = isOptimizable(component.getScope(), component.getScope());
-                    connect(outboundWire, targetWire, optimizable);
+                } else {
+                    targetWire = targetComponent.getTargetWire(fragment);
+                    if (targetWire == null) {
+                        throw new TargetServiceNotFoundException("Target not found", sourceUri, targetUri);
+                    }
+                    assertWireable(outboundWire, targetWire, false);
                 }
+                boolean optimizable = isOptimizable(component.getScope(), component.getScope());
+                connect(outboundWire, targetWire, optimizable);
             }
         }
     }

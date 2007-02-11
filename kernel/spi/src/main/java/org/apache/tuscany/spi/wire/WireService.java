@@ -142,16 +142,31 @@ public interface WireService {
      * superset of those specified by the service. <li>other specified attributes of the two interfaces MUST match,
      * including Scope and Callback interface </ol>
      * <p/>
-     * <p>Please note this test is not symetric: the success of checkCompatibility(A, B) does NOT imply that
+     * <p>Please note this test is not symetric: the success of checkCompatibility(A, B) does NOT imply
      * checkCompatibility(B, A)
      *
      * @param source         The source service contract
      * @param target         The target service contract
      * @param ignoreCallback Indicate the callback should be checked
+     * @param silent         if true, errors will be thrown if the service contracts are not compatible
+     * @return true if the service contracts are compatible
      * @throws IncompatibleServiceContractException
      *          If the source service contract is not compatible with the target one
      */
-    void checkCompatibility(ServiceContract<?> source, ServiceContract<?> target, boolean ignoreCallback)
+    boolean checkCompatibility(ServiceContract<?> source,
+                               ServiceContract<?> target,
+                               boolean ignoreCallback,
+                               boolean silent)
         throws IncompatibleServiceContractException;
+
+    /**
+     * Performs a silent check for service contract compatibility using the algorithm defined by {@link
+     * #checkCompatibility(org.apache.tuscany.spi.model.ServiceContract,org.apache.tuscany.spi.model.ServiceContract,
+     *boolean)}
+     *
+     * @param source The source service contract
+     * @param target The target service contract
+     * @return true if compatible
+     */
 
 }

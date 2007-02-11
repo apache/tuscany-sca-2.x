@@ -131,16 +131,16 @@ public class WireServiceExtensionTestCase extends TestCase {
         EasyMock.verify(invoker);
     }
 
-    public void testCreateAutowireReferenceWire() throws Exception {
+    /**
+     * Non-required references (including autowire references) may not have a target set. In this case, a wire should
+     * not be created. Verifies that a reference without a target does not have wires created.
+     */
+    public void testDoNotCreateWireForNonRequiredReferenceWithNoTarget() throws Exception {
         ReferenceDefinition definition = new ReferenceDefinition(URI.create("foo"), contract);
-        definition.setAutowire(true);
         ReferenceTarget target = new ReferenceTarget();
         target.setReferenceName(URI.create("#refName"));
-        OutboundWire wire = wireService.createWire(target, definition).get(0);
-        assertTrue(wire.isAutowire());
-        assertEquals("#refName", wire.getUri().toString());
-        assertEquals(contract, wire.getServiceContract());
-        assertEquals(Callback.class, wire.getCallbackInterface());
+        List<OutboundWire> wires = wireService.createWire(target, definition);
+        assertTrue(wires.isEmpty());
     }
 
     public void testCreateReferenceMultipleWire() throws Exception {

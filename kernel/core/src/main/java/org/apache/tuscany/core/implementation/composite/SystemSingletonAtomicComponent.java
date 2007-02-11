@@ -33,6 +33,8 @@ import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AbstractComponentExtension;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
@@ -43,6 +45,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 
 /**
@@ -54,14 +57,22 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     implements AtomicComponent {
     private T instance;
     private Map<String, InboundWire> inboundWires;
+    // JFM FIXME JDKWireService
     private WireService wireService = new JDKWireService();
+    // JFM FIXME remove
+    private JavaInterfaceProcessorRegistry interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
     private List<ServiceContract> serviceContracts = new ArrayList<ServiceContract>();
 
     public SystemSingletonAtomicComponent(URI name, CompositeComponent parent, Class<S> interfaze, T instance) {
         super(name, parent);
         this.instance = instance;
         inboundWires = new HashMap<String, InboundWire>();
-        initWire(interfaze);
+        try {
+            initWire(interfaze);
+        } catch (InvalidServiceContractException e) {
+            // JFM FIXME
+            e.printStackTrace();
+        }
     }
 
 
@@ -73,7 +84,12 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         this.instance = instance;
         inboundWires = new HashMap<String, InboundWire>();
         for (Class<?> interfaze : services) {
-            initWire(interfaze);
+            try {
+                initWire(interfaze);
+            } catch (InvalidServiceContractException e) {
+                // xcv ficme
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
     }
 
@@ -159,8 +175,8 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         return serviceContracts;
     }
 
-    private void initWire(Class<?> interfaze) {
-        JavaServiceContract serviceContract = new JavaServiceContract(interfaze);
+    private void initWire(Class<?> interfaze) throws InvalidServiceContractException {
+        JavaServiceContract serviceContract = interfaceProcessorRegistry.introspect(interfaze);
         // create a relative URI
         URI uri = URI.create("#" + interfaze.getName());
         ServiceDefinition def = new ServiceDefinition(uri, serviceContract, false);
