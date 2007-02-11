@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.plugin.itest;
 
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
 /**
@@ -39,7 +39,7 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
             getComponentManager().registerJavaObject(MavenEmbeddedArtifactRepository.COMPONENT_NAME,
                                                      ArtifactRepository.class,
                                                      artifactRepository);
-        } catch (ComponentRegistrationException e) {
+        } catch (RegistrationException e) {
             throw new InitializationException(e);
         }
     }

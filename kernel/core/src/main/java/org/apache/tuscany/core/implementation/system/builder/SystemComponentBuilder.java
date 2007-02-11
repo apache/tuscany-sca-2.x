@@ -132,38 +132,15 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
             String mappedName = resource.getMappedName();
             if (mappedName == null) {
                 // by type
-                factory = new ResourceObjectFactory<Object>(type, optional, parent, host);
+                factory = new ResourceObjectFactory<Object>(type, optional, host);
             } else {
-                factory = new ResourceObjectFactory<Object>(type, mappedName, optional, parent, host);
+                factory = new ResourceObjectFactory<Object>(type, mappedName, optional, host);
             }
             component.addResourceFactory(name, factory);
 
         }
         return component;
     }
-
-//    private void processReferences(ComponentDefinition<SystemImplementation> definition,
-//                                   Map<String, JavaMappedReference> references,
-//                                   CompositeComponent parent,
-//                                   SystemAtomicComponentImpl component) {
-//        // no proxies needed for system components
-//        for (ReferenceTarget target : definition.getReferenceTargets().values()) {
-//            String referenceName = target.getReferenceName();
-//            JavaMappedReference referenceDefiniton = references.get(referenceName);
-//            Class interfaze = referenceDefiniton.getServiceContract().getInterfaceClass();
-//            OutboundWire wire;
-//            if (referenceDefiniton.isAutowire()) {
-//                boolean required = referenceDefiniton.isRequired();
-//                wire = new SystemOutboundAutowire(referenceName, interfaze, parent, required);
-//            } else {
-//                //FIXME support multiplicity!
-//                assert target.getTargets().size() == 1 : "Multiplicity not yet implemented";
-//                QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
-//                wire = new SystemOutboundWireImpl(referenceName, targetName, interfaze);
-//            }
-//            component.addOutboundWire(wire);
-//        }
-//    }
 
     private void processProperties(Map<String, PropertyValue<?>> propertyValues,
                                    Collection<JavaMappedProperty<?>> properties,

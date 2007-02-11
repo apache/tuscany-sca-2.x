@@ -26,6 +26,11 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.osoa.sca.ComponentContext;
 
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.RegistrationException;
+import org.apache.tuscany.spi.event.EventPublisher;
+
 import org.apache.tuscany.core.component.event.HttpRequestEnded;
 import org.apache.tuscany.core.component.event.HttpRequestStart;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
@@ -34,10 +39,6 @@ import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.event.EventPublisher;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -71,9 +72,9 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         super.registerSystemComponents();
         try {
             getComponentManager().registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
-                                                     WebappRuntimeInfo.class,
-                                                     (WebappRuntimeInfo) getRuntimeInfo());
-        } catch (ComponentRegistrationException e) {
+                WebappRuntimeInfo.class,
+                (WebappRuntimeInfo) getRuntimeInfo());
+        } catch (RegistrationException e) {
             throw new InitializationException(e);
         }
     }

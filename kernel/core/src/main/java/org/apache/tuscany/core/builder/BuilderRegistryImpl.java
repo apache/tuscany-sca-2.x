@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
@@ -156,7 +156,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         } catch (BuilderException e) {
             e.addContextName(componentDefinition.getUri().toString());
             throw e;
-        } catch (ComponentRegistrationException e) {
+        } catch (RegistrationException e) {
             BuilderInstantiationException bie = new BuilderInstantiationException("Error registering component", e);
             bie.addContextName(componentDefinition.getUri().toString());
             throw bie;

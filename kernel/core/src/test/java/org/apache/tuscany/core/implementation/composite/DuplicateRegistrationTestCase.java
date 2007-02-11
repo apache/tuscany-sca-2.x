@@ -18,18 +18,14 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.Reference;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.TestUtils;
-import org.apache.tuscany.core.mock.component.Source;
 import org.easymock.EasyMock;
 
 /**
@@ -39,28 +35,23 @@ import org.easymock.EasyMock;
  */
 public class DuplicateRegistrationTestCase extends TestCase {
 
-    public void testDuplicateRegistration() throws Exception {
+    public void testDuplicateServiceRegistration() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null);
         parent.start();
 
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(Source.class);
-        AtomicComponent component1 = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component1.getUri()).andReturn(URI.create("source")).atLeastOnce();
-        component1.stop();
-        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
-        TestUtils.populateInboundWires(component1, wires);
-        EasyMock.expect(component1.getInboundWires()).andReturn(wires).atLeastOnce();
-        EasyMock.replay(component1);
+        Service service1 = EasyMock.createMock(Service.class);
+        EasyMock.expect(service1.getUri()).andReturn(URI.create("service")).atLeastOnce();
+        service1.stop();
+        EasyMock.replay(service1);
 
-        AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component2.getUri()).andReturn(URI.create("source")).atLeastOnce();
-        component2.stop();
-        EasyMock.replay(component2);
+        Service service2 = EasyMock.createMock(Service.class);
+        EasyMock.expect(service2.getUri()).andReturn(URI.create("service")).atLeastOnce();
+        service2.stop();
+        EasyMock.replay(service2);
 
-        parent.register(component1);
+        parent.register(service2);
         try {
-            parent.register(component2);
+            parent.register(service1);
             fail();
         } catch (DuplicateNameException e) {
             // ok
@@ -68,28 +59,55 @@ public class DuplicateRegistrationTestCase extends TestCase {
         parent.stop();
     }
 
-    public void testDuplicateNameSystemService() throws Exception {
-        List<Class<?>> services = new ArrayList<Class<?>>();
-        services.add(Source.class);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
-        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getUri()).andReturn(URI.create("bar")).atLeastOnce();
-        List<InboundWire> wires = TestUtils.createInboundWires(services);
-        TestUtils.populateInboundWires(component, wires);
-        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
-        EasyMock.replay(component);
-        parent.register(component);
-        AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component2.getUri()).andReturn(URI.create("bar")).atLeastOnce();
-        EasyMock.replay(component2);
+    public void testDuplicateReferenceRegistration() throws Exception {
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null);
+        parent.start();
+
+        Reference reference1 = EasyMock.createMock(Reference.class);
+        EasyMock.expect(reference1.getUri()).andReturn(URI.create("reference")).atLeastOnce();
+        reference1.stop();
+        EasyMock.replay(reference1);
+
+        Reference reference2 = EasyMock.createMock(Reference.class);
+        EasyMock.expect(reference2.getUri()).andReturn(URI.create("reference")).atLeastOnce();
+        reference2.stop();
+        EasyMock.replay(reference2);
+
+        parent.register(reference2);
         try {
-            parent.register(component2);
+            parent.register(reference1);
             fail();
         } catch (DuplicateNameException e) {
-            // expected
+            // ok
         }
+        parent.stop();
+
     }
 
+    public void testDuplicateServiceReferenceRegistration() throws Exception {
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null);
+        parent.start();
+
+        Service service1 = EasyMock.createMock(Service.class);
+        EasyMock.expect(service1.getUri()).andReturn(URI.create("child")).atLeastOnce();
+        service1.stop();
+        EasyMock.replay(service1);
+
+        Reference service2 = EasyMock.createMock(Reference.class);
+        EasyMock.expect(service2.getUri()).andReturn(URI.create("child")).atLeastOnce();
+        service2.stop();
+        EasyMock.replay(service2);
+
+        parent.register(service2);
+        try {
+            parent.register(service1);
+            fail();
+        } catch (DuplicateNameException e) {
+            // ok
+        }
+        parent.stop();
+
+    }
 
     protected void setUp() throws Exception {
         super.setUp();

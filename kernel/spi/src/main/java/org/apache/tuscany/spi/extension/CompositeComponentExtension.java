@@ -29,23 +29,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
-import org.apache.tuscany.spi.component.InvalidAutowireInterface;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -57,34 +51,14 @@ import org.apache.tuscany.spi.wire.Wire;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class CompositeComponentExtension extends AbstractComponentExtension implements CompositeComponent {
-    protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();
-
+    protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final Map<String, Document> propertyValues;
-
-    // autowire mappings
-    protected final Map<Class, InboundWire> autowireInternal = new ConcurrentHashMap<Class, InboundWire>();
-    protected final Map<Class, InboundWire> autowireExternal = new ConcurrentHashMap<Class, InboundWire>();
-
-    /**
-     * Management service to use.
-     */
-    private TuscanyManagementService managementService;
 
     protected CompositeComponentExtension(URI name, CompositeComponent parent, Map<String, Document> propertyValues) {
         super(name, parent);
         this.propertyValues = propertyValues;
-    }
-
-    /**
-     * Autowires the management service.
-     *
-     * @param managementService Management service used for registering components.
-     */
-    @Autowire
-    public final void setManagementService(TuscanyManagementService managementService) {
-        this.managementService = managementService;
     }
 
     public Scope getScope() {
@@ -99,12 +73,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         return propertyValues.get(name);
     }
 
-    public SCAObject getChild(String name) {
-        assert name != null;
-        return children.get(name);
-    }
-
-
     public List<Service> getServices() {
         return Collections.unmodifiableList(services);
     }
@@ -113,41 +81,42 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         return Collections.unmodifiableList(references);
     }
 
-    public void register(SCAObject child) throws ComponentRegistrationException {
-        assert child instanceof Service || child instanceof Reference || child instanceof Component;
+
+    public SCAObject getChild(String name) {
+        return children.get(name);
+    }
+
+    public void register(Service service) throws RegistrationException {
         String name;
-        // TODO JFM should just use fragment when only refs and services are registered
-        if (child.getUri().getFragment() != null) {
-            name = child.getUri().getFragment();
+        if (service.getUri().getFragment() != null) {
+            name = service.getUri().getFragment();
         } else {
-            name = UriHelper.getBaseName(child.getUri());
+            name = UriHelper.getBaseName(service.getUri());
         }
         if (children.get(name) != null) {
-            String uri = child.getUri().toString();
-            throw new DuplicateNameException("A child is already registered with the name", uri);
+            String uri = service.getUri().toString();
+            throw new DuplicateNameException("A service or reference is already registered with the name", uri);
         }
-        children.put(name, child);
-        if (child instanceof Service) {
-            Service service = (Service) child;
-            synchronized (services) {
-                services.add(service);
-            }
-            registerAutowire(service);
-        } else if (child instanceof Reference) {
-            Reference reference = (Reference) child;
-            synchronized (references) {
-                references.add(reference);
-            }
-            registerAutowire(reference);
-        } else if (child instanceof AtomicComponent) {
-            AtomicComponent atomic = (AtomicComponent) child;
-            registerAutowire(atomic);
-            if (managementService != null) {
-                managementService.registerComponent(atomic.getUri().toString(), atomic);
-            }
-        } else if (child instanceof CompositeComponent) {
-            CompositeComponent component = (CompositeComponent) child;
-            registerAutowire(component);
+        children.put(name, service);
+        synchronized (services) {
+            services.add(service);
+        }
+    }
+
+    public void register(Reference reference) throws RegistrationException {
+        String name;
+        if (reference.getUri().getFragment() != null) {
+            name = reference.getUri().getFragment();
+        } else {
+            name = UriHelper.getBaseName(reference.getUri());
+        }
+        if (children.get(name) != null) {
+            String uri = reference.getUri().toString();
+            throw new DuplicateNameException("A service or reference is already registered with the name", uri);
+        }
+        children.put(name, reference);
+        synchronized (services) {
+            references.add(reference);
         }
     }
 
@@ -248,32 +217,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         }
     }
 
-    public InboundWire resolveAutowire(Class<?> instanceInterface) throws TargetResolutionException {
-        // FIXME JNB make this faster and thread safe
-        for (Map.Entry<Class, InboundWire> service : autowireInternal.entrySet()) {
-            if (instanceInterface.isAssignableFrom(service.getKey())) {
-                return service.getValue();
-            }
-        }
-        if (getParent() != null) {
-            return getParent().resolveAutowire(instanceInterface);
-        }
-        return null;
-    }
-
-    public InboundWire resolveExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException {
-        // FIXME JNB make this faster and thread safe
-        for (Map.Entry<Class, InboundWire> service : autowireExternal.entrySet()) {
-            if (instanceInterface.isAssignableFrom(service.getKey())) {
-                return service.getValue();
-            }
-        }
-        if (getParent() != null) {
-            return getParent().resolveAutowire(instanceInterface);
-        }
-        return null;
-    }
-
     public void prepare() throws PrepareException {
         for (Service service : services) {
             service.prepare();
@@ -283,120 +226,4 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         }
     }
 
-    protected void registerAutowireExternal(Class<?> interfaze, Service service) throws InvalidAutowireInterface {
-        if (interfaze == null) {
-            // The ServiceContract is not from Java
-            return;
-        }
-        if (autowireExternal.containsKey(interfaze)) {
-            return;
-        }
-        // TODO autowire should allow multiple interfaces
-        List<ServiceBinding> bindings = service.getServiceBindings();
-        if (bindings.size() == 0) {
-            return;
-        }
-        // pick the first binding until autowire allows multiple interfaces
-        InboundWire wire = bindings.get(0).getInboundWire();
-        if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-            String iName = interfaze.getName();
-            throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
-        }
-        autowireExternal.put(interfaze, wire);
-    }
-
-    protected void registerAutowireInternal(Class<?> interfaze, InboundWire wire) throws InvalidAutowireInterface {
-        if (interfaze == null) {
-            // The ServiceContract is not from Java
-            return;
-        }
-        if (autowireInternal.containsKey(interfaze)) {
-            return;
-        }
-        if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-            String iName = interfaze.getName();
-            throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
-        }
-        autowireInternal.put(interfaze, wire);
-    }
-
-    protected void registerAutowireInternal(Class<?> interfaze, Reference reference) throws InvalidAutowireInterface {
-        if (interfaze == null) {
-            // The ServiceContract is not from Java
-            return;
-        }
-        if (autowireInternal.containsKey(interfaze)) {
-            return;
-        }
-        List<ReferenceBinding> bindings = reference.getReferenceBindings();
-        if (bindings.size() == 0) {
-            return;
-        }
-        // pick the first binding until autowire allows multiple interfaces
-        InboundWire wire = bindings.get(0).getInboundWire();
-        if (!interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-            String iName = interfaze.getName();
-            throw new InvalidAutowireInterface("Matching inbound wire not found for interface", iName);
-        }
-        autowireInternal.put(interfaze, wire);
-    }
-
-    protected void registerAutowireInternal(Class<?> interfaze, AtomicComponent component)
-        throws InvalidAutowireInterface {
-        if (interfaze == null) {
-            // The ServiceContract is not from Java
-            return;
-        }
-        if (autowireInternal.containsKey(interfaze) || component.getInboundWires().size() == 0) {
-            return;
-        }
-        for (InboundWire wire : component.getInboundWires()) {
-            if (interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-                autowireInternal.put(interfaze, wire);
-                return;
-            }
-        }
-        throw new InvalidAutowireInterface("Matching inbound wire not found for interface", interfaze.getName());
-    }
-
-    protected void registerAutowire(CompositeComponent component) throws InvalidAutowireInterface {
-        // the composite is under the application hierarchy so only register its non-system services
-        Collection<InboundWire> wires = component.getInboundWires();
-        for (InboundWire wire : wires) {
-            Class<?> clazz = wire.getServiceContract().getInterfaceClass();
-            registerAutowireInternal(clazz, wire);
-        }
-    }
-
-    protected void registerAutowire(AtomicComponent component) throws InvalidAutowireInterface {
-        for (InboundWire wire : component.getInboundWires()) {
-            registerAutowireInternal(wire.getServiceContract().getInterfaceClass(), component);
-        }
-    }
-
-    protected void registerAutowire(Reference reference) throws InvalidAutowireInterface {
-        // TODO autowire should allow multiple interfaces
-        List<ReferenceBinding> bindings = reference.getReferenceBindings();
-        if (bindings.size() == 0) {
-            return;
-        }
-        // pick the first binding until autowire allows multiple interfaces
-        InboundWire wire = bindings.get(0).getInboundWire();
-        Class<?> clazz = wire.getServiceContract().getInterfaceClass();
-        registerAutowireInternal(clazz, reference);
-
-
-    }
-
-    protected void registerAutowire(Service service) throws InvalidAutowireInterface {
-        // TODO autowire should allow multiple interfaces
-        List<ServiceBinding> bindings = service.getServiceBindings();
-        if (bindings.size() == 0) {
-            return;
-        }
-        // pick the first binding until autowire allows multiple interfaces
-        InboundWire wire = bindings.get(0).getInboundWire();
-        Class<?> clazz = wire.getServiceContract().getInterfaceClass();
-        registerAutowireExternal(clazz, service);
-    }
 }

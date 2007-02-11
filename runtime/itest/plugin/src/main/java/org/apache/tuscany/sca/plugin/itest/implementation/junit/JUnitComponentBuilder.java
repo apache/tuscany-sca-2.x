@@ -22,11 +22,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.injection.ResourceObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -43,6 +38,12 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
+
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.ResourceObjectFactory;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -179,9 +180,9 @@ public class JUnitComponentBuilder extends ComponentBuilderExtension<Implementat
                 String mappedName = resource.getMappedName();
                 if (mappedName == null) {
                     // by type
-                    factory = new ResourceObjectFactory<Object>(type, optional, parent, host);
+                    factory = new ResourceObjectFactory<Object>(type, optional, host);
                 } else {
-                    factory = new ResourceObjectFactory<Object>(type, mappedName, optional, parent, host);
+                    factory = new ResourceObjectFactory<Object>(type, mappedName, optional, host);
                 }
                 component.addResourceFactory(name, factory);
             }

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.runtime.standalone.host;
 
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.RegistrationException;
 
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
@@ -35,7 +35,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
             getComponentManager().registerJavaObject(StandaloneRuntimeInfo.STANDALONE_COMPONENT_URI,
                 StandaloneRuntimeInfo.class,
                 (StandaloneRuntimeInfo) getRuntimeInfo());
-        } catch (ComponentRegistrationException e) {
+        } catch (RegistrationException e) {
             throw new InitializationException(e);
         }
     }

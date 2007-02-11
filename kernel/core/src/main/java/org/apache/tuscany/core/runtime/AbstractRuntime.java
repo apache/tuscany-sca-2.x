@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -164,7 +164,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         try {
             componentManager.register(systemComponent);
             componentManager.register(runtime.getRootComponent());
-        } catch (ComponentRegistrationException e) {
+        } catch (RegistrationException e) {
             throw new InitializationException(e);
         }
         systemComponent.start();
@@ -227,7 +227,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
             // register the component manager with itself so it can be autowired
             componentManager.registerJavaObject(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
             componentManager.registerJavaObject(AUTOWIRE_RESOLVER_URI, AutowireResolver.class, resolver);
-        } catch (ComponentRegistrationException e) {
+        } catch (RegistrationException e) {
             throw new InitializationException(e);
         }
     }

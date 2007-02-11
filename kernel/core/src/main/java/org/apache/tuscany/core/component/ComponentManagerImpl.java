@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.event.Event;
@@ -61,7 +61,7 @@ public class ComponentManagerImpl implements ComponentManager {
         this.resolver = resolver;
     }
 
-    public void register(Component component) throws ComponentRegistrationException {
+    public void register(Component component) throws RegistrationException {
         URI uri = component.getUri();
         assert uri != null;
         if (components.containsKey(uri)) {
@@ -88,7 +88,7 @@ public class ComponentManagerImpl implements ComponentManager {
     }
 
     public <S, I extends S> void registerJavaObject(URI uri, Class<S> service, I instance)
-        throws ComponentRegistrationException {
+        throws RegistrationException {
         SystemSingletonAtomicComponent<S, I> component =
             new SystemSingletonAtomicComponent<S, I>(uri, null, service, instance);
         register(component);
@@ -100,7 +100,7 @@ public class ComponentManagerImpl implements ComponentManager {
     }
 
     public <S, I extends S> void registerJavaObject(URI uri, List<Class<?>> services, I instance)
-        throws ComponentRegistrationException {
+        throws RegistrationException {
         SystemSingletonAtomicComponent<S, I> component =
             new SystemSingletonAtomicComponent<S, I>(uri, null, services, instance);
         register(component);
@@ -111,7 +111,7 @@ public class ComponentManagerImpl implements ComponentManager {
         }
     }
 
-    public void unregister(Component component) throws ComponentRegistrationException {
+    public void unregister(Component component) throws RegistrationException {
         URI uri = component.getUri();
         components.remove(uri);
         parentToChildren.remove(uri);

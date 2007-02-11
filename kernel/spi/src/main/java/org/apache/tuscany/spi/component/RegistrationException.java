@@ -19,27 +19,27 @@
 package org.apache.tuscany.spi.component;
 
 /**
- * Thrown when an error is encountered registering a component
+ * Thrown when an error is encountered registering a service or reference on a composite
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class ComponentRegistrationException extends ComponentException {
-    public ComponentRegistrationException() {
+public abstract class RegistrationException extends ComponentException {
+    public RegistrationException() {
     }
 
-    public ComponentRegistrationException(String message) {
+    public RegistrationException(String message) {
         super(message);
     }
 
-    public ComponentRegistrationException(String message, String identifier) {
+    public RegistrationException(String message, String identifier) {
         super(message, identifier);
     }
 
-    public ComponentRegistrationException(String message, Throwable cause) {
+    public RegistrationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ComponentRegistrationException(Throwable cause) {
+    public RegistrationException(Throwable cause) {
         super(cause);
     }
 }
