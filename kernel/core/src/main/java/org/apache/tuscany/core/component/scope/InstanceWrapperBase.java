@@ -18,31 +18,35 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 
 /**
- * Default implementation of an <code>InstanceWrapper</code>
- *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public class InstanceWrapperImpl extends InstanceWrapperBase<Object> {
-    private AtomicComponent component;
+public class InstanceWrapperBase<T> implements InstanceWrapper<T> {
+    protected final T instance;
+    private boolean started;
 
-    public InstanceWrapperImpl(AtomicComponent component, Object instance) {
-        super(instance);
-        assert component != null;
-        this.component = component;
+    public InstanceWrapperBase(T instance) {
+        assert instance != null;
+        this.instance = instance;
+    }
+
+    public T getInstance() {
+        assert started;
+        return instance;
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
     public void start() throws TargetInitializationException {
-        component.init(instance);
-        super.start();
+        started = true;
     }
 
     public void stop() throws TargetDestructionException {
-        super.stop();
-        component.destroy(instance);
+        started = false;
     }
 }
