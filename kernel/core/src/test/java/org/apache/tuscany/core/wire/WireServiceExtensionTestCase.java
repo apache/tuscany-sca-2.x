@@ -109,7 +109,6 @@ public class WireServiceExtensionTestCase extends TestCase {
 
         OutboundWire wire = wireService.createWire(target, definition).get(0);
         assertEquals("#refName", wire.getUri().toString());
-        assertFalse(wire.isAutowire());
         assertEquals(1, wire.getInvocationChains().size());
         assertEquals(contract, wire.getServiceContract());
         OutboundInvocationChain chain = wire.getInvocationChains().get(operation);
