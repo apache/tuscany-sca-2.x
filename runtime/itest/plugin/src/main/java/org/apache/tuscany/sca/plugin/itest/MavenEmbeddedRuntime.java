@@ -18,10 +18,23 @@
  */
 package org.apache.tuscany.sca.plugin.itest;
 
+import java.io.File;
+import java.net.URI;
+
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.spi.component.RegistrationException;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.resolver.ResolutionException;
 
 /**
  * @version $Rev$ $Date$
@@ -48,4 +61,26 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
         this.artifactRepository = artifactRepository;
     }
 
+    public void deployTestScdl(File testScdl, ClassLoader testClassLoader) throws Exception {
+        Deployer deployer = getDeployer();
+
+        URI name = URI.create("itest://testDomain/");
+        CompositeImplementation impl = new CompositeImplementation();
+        impl.setScdlLocation(testScdl.toURI().toURL());
+        impl.setClassLoader(testClassLoader);
+
+        ComponentDefinition<CompositeImplementation> definition =
+            new ComponentDefinition<CompositeImplementation>(name, impl);
+        Component testComponent = deployer.deploy(null, definition);
+    }
+
+    protected Deployer getDeployer() {
+        try {
+            URI uri = URI.create("sca://root.system/main/deployer");
+            AtomicComponent component = (AtomicComponent) getComponentManager().getComponent(uri);
+            return (Deployer) component.getTargetInstance();
+        } catch (TargetResolutionException e) {
+            throw new AssertionError(e);
+        }
+    }
 }
