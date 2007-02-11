@@ -47,16 +47,6 @@ public interface OutboundWire extends Wire {
     void setTargetUri(URI uri);
 
     /**
-     * @deprecated
-     */
-    boolean isAutowire();
-
-    /**
-     * @deprecated
-     */
-    void setAutowire(boolean val);
-
-    /**
      * Sets the callback interface type generated proxies implement
      */
     void setCallbackInterface(Class<?> interfaze);

@@ -114,14 +114,6 @@ public class OutboundWireImpl implements OutboundWire {
         this.target = target;
     }
 
-    public boolean isAutowire() {
-        return autowire;
-    }
-
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
-    }
-
     public boolean isOptimizable() {
         return optimizable;
     }
