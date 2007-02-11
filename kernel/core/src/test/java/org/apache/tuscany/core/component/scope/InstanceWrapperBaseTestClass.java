@@ -18,32 +18,30 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
-
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
+
+import org.apache.tuscany.spi.component.TargetInitializationException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InstanceWrapperTestCase extends TestCase {
+public class InstanceWrapperBaseTestClass extends TestCase {
+    private static final Object instance = new Object();
+    private InstanceWrapperBase<Object> wrapper;
 
-    public void testExceptionInit() throws Exception {
-        AtomicComponent component = getComponent();
-        InstanceWrapper wrapper = new InstanceWrapperImpl(component, new Object());
+    public void testLifecycle() throws Exception {
+        assertFalse(wrapper.isStarted());
         try {
-            wrapper.start();
+            wrapper.getInstance();
             fail();
-        } catch (SomeException e) {
+        } catch (AssertionError e) {
             // expected
         }
+        wrapper.start();
+        assertTrue(wrapper.isStarted());
+        assertSame(instance, wrapper.getInstance());
+        wrapper.stop();
         assertFalse(wrapper.isStarted());
-        EasyMock.verify(component);
-    }
-
-    public void testNonStart() throws Exception {
-        AtomicComponent comp = EasyMock.createNiceMock(AtomicComponent.class);  // class-level one has an expects
-        InstanceWrapper wrapper = new InstanceWrapperImpl(comp, new Object());
         try {
             wrapper.getInstance();
             fail();
@@ -52,15 +50,17 @@ public class InstanceWrapperTestCase extends TestCase {
         }
     }
 
-    private AtomicComponent getComponent() throws Exception {
-        // do not use setUp() since we do not need this in all testcases
-        AtomicComponent comp = EasyMock.createMock(AtomicComponent.class);
-        comp.init(EasyMock.isA(Object.class));
-        EasyMock.expectLastCall().andThrow(new SomeException());
-        EasyMock.replay(comp);
-        return comp;
+    public void testNullCheck() {
+        try {
+            new InstanceWrapperBase<Object>(null);
+            fail();
+        } catch (AssertionError e) {
+            // expected
+        }
     }
 
-    private class SomeException extends RuntimeException {
+    protected void setUp() throws Exception {
+        super.setUp();
+        wrapper = new InstanceWrapperBase<Object>(instance);
     }
 }
