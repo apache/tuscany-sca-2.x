@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 
 /**
  * Instantiates a composite component from an assembly definition
@@ -43,7 +44,10 @@ public class CompositeBuilder extends AbstractCompositeBuilder<CompositeImplemen
         URI name = componentDefinition.getUri();
         CompositeComponentImpl component = new CompositeComponentImpl(name, parent, null);
 
-        return build(parent, component, componentType, deploymentContext);
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext,
+                                                                    implementation.getClassLoader(),
+                                                                    implementation.getScdlLocation());
+        return build(parent, component, componentType, childContext);
     }
 
     protected Class<CompositeImplementation> getImplementationType() {
