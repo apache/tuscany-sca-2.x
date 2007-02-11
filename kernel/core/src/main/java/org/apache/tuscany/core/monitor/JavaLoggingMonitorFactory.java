@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.monitor;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -33,7 +31,6 @@ import java.util.logging.Logger;
 import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.monitor.ExceptionFormatter;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
 
 /**
