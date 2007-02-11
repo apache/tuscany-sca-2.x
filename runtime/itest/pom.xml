@@ -19,49 +19,15 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-itest-plugin</artifactId>
-    <packaging>maven-plugin</packaging>
-    <name>Apache Tuscany Integration Test Plugin</name>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>2.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-artifact</artifactId>
-            <version>2.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-api</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit</artifactId>
-            <version>2.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
-        </dependency>
-        <!-- [rfeng] A big hack to resolve servlet-api -->
-         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <scope>runtime</scope>
-        </dependency>          
-    </dependencies>
+    <artifactId>itest</artifactId>
+    <packaging>pom</packaging>
+    <name>Apache Tuscany Integration Test Runtime</name>
+    <modules>
+        <module>plugin</module>
+    </modules>
 </project>
