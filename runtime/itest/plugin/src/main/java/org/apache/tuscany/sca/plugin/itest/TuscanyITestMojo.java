@@ -149,6 +149,7 @@ public class TuscanyITestMojo extends AbstractMojo {
         Log log = getLog();
         log.info("Starting Tuscany...");
         MavenEmbeddedRuntime runtime = createRuntime();
+        runtime.setMonitorFactory(new MavenMonitorFactory(log));
         try {
             runtime.initialize();
         } catch (InitializationException e) {
