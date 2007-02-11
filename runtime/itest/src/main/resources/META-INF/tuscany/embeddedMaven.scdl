@@ -143,6 +143,10 @@
     <component name="localBindingBuilder">
         <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingBuilder"/>
     </component>
-    
+
+    <component name="org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnitLoader">
+        <system:implementation.system class="org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnitLoader"/>
+    </component>
+
 
 </composite>
