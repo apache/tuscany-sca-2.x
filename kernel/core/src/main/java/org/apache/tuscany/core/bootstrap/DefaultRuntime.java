@@ -54,7 +54,7 @@ public class DefaultRuntime extends CompositeComponentImpl implements RuntimeCom
      * @param runtimeProperties Property values for the runtime itself
      */
     public DefaultRuntime(Map<String, Document> runtimeProperties) {
-        super(ComponentNames.TUSCANY_RUNTIME, null, null, runtimeProperties);
+        super(ComponentNames.TUSCANY_RUNTIME, null, runtimeProperties);
     }
 
     protected void setRootComponent(CompositeComponent rootComponent) {

@@ -70,7 +70,7 @@ public class SystemWireConnectionTestCase extends TestCase {
 
         ComponentManagerImpl componentManager = new ComponentManagerImpl();
         ConnectorImpl connector = new ConnectorImpl(null, null, componentManager, null, null);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
 
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
@@ -115,7 +115,7 @@ public class SystemWireConnectionTestCase extends TestCase {
 
         ComponentManagerImpl componentManager = new ComponentManagerImpl();
         ConnectorImpl connector = new ConnectorImpl(null, null, componentManager, null, null);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getUri()).andReturn(URI.create("sca://source")).atLeastOnce();
         EasyMock.expect(source.getOutboundWires()).andReturn(wireMap);

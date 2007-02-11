@@ -240,7 +240,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         contract = new ServiceContract<Object>(Object.class) {
 
         };
-        composite = new CompositeComponentExtension(new URI("foo"), null, null, null) {
+        composite = new CompositeComponentExtension(new URI("foo"), null, null) {
 
             public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
                 throws TargetInvokerCreationException {

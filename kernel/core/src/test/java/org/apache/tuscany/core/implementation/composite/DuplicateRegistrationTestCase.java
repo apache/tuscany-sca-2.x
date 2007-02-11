@@ -40,7 +40,7 @@ import org.easymock.EasyMock;
 public class DuplicateRegistrationTestCase extends TestCase {
 
     public void testDuplicateRegistration() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -71,7 +71,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
     public void testDuplicateNameSystemService() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Source.class);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getUri()).andReturn(URI.create("bar")).atLeastOnce();
         List<InboundWire> wires = TestUtils.createInboundWires(services);

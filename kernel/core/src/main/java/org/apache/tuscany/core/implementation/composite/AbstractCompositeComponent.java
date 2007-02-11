@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
@@ -54,14 +53,10 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     /**
      * @param name           the name of the SCA composite
      * @param parent         the SCA composite parent
-     * @param connector      the connector for fusing wires
      * @param propertyValues the values of this composite's Properties
      */
-    public AbstractCompositeComponent(URI name,
-                                      CompositeComponent parent,
-                                      Connector connector,
-                                      Map<String, Document> propertyValues) {
-        super(name, parent, connector, propertyValues);
+    public AbstractCompositeComponent(URI name, CompositeComponent parent, Map<String, Document> propertyValues) {
+        super(name, parent, propertyValues);
     }
 
     public void start() {

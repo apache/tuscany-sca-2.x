@@ -25,7 +25,6 @@ import org.osoa.sca.annotations.Constructor;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -44,10 +43,8 @@ public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompo
 
     @Constructor
     public SystemCompositeBuilder(@Autowire BuilderRegistry builderRegistry,
-                                  @Autowire Connector connector,
-                                  @Autowire (required = false) TuscanyManagementService managementService) {
+                                  @Autowire(required = false)TuscanyManagementService managementService) {
         this.builderRegistry = builderRegistry;
-        this.connector = connector;
         this.managementService = managementService;
     }
 
@@ -57,7 +54,7 @@ public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompo
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         URI name = componentDefinition.getUri();
-        CompositeComponent component = new CompositeComponentImpl(name, parent, connector);
+        CompositeComponent component = new CompositeComponentImpl(name, parent);
         component.setManagementService(managementService);
         build(parent, component, componentType, deploymentContext);
         return component;

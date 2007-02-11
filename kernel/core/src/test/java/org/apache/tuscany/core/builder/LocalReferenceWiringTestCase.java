@@ -47,8 +47,8 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
     public void testConnectLocalReferenceBindingToAtomicComponent() throws Exception {
         AtomicComponent atomicComponent = createAtomicTarget();
         componentManager.register(atomicComponent);
-        CompositeComponent topComposite = new CompositeComponentImpl(URI.create("topComposite"), null, connector, null);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, connector, null);
+        CompositeComponent topComposite = new CompositeComponentImpl(URI.create("topComposite"), null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, null);
         reference = createLocalReference(parent, TARGET_NAME);
         parent.register(reference);
         // connect to the target
@@ -67,10 +67,10 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
      * Verifies the case where the outbound reference wire is connected to a target composite service
      */
     public void testConnectLocalReferenceBindingToCompositeService() throws Exception {
-        CompositeComponent topComposite = new CompositeComponentImpl(URI.create("topComposite"), null, connector, null);
+        CompositeComponent topComposite = new CompositeComponentImpl(URI.create("topComposite"), null, null);
         topComposite.register(createLocalService(topComposite));
         componentManager.register(topComposite);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, null);
         reference = createLocalReference(parent, URI.create("topComposite#target"));
         parent.register(reference);
         componentManager.register(parent);

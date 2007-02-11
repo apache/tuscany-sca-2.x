@@ -45,7 +45,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to an system atomic component
      */
     public void testAtomicAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();

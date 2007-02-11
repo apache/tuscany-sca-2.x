@@ -141,7 +141,7 @@ public class DefaultBootstrapper implements Bootstrapper {
             new CompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM_ROOT, runtime, null);
         runtime.setSystemComponent(systemComponent);
         CompositeComponent rootComponent =
-            new CompositeComponentImpl(ComponentNames.TUSCANY_APPLICATION_ROOT, runtime, null, null);
+            new CompositeComponentImpl(ComponentNames.TUSCANY_APPLICATION_ROOT, runtime, null);
         runtime.setRootComponent(rootComponent);
         return runtime;
     }
@@ -270,7 +270,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         BuilderRegistryImpl builderRegistry =
             new BuilderRegistryImpl(scopeRegistry, new JDKWireService(), componentManager);
         SystemCompositeBuilder builder =
-            new SystemCompositeBuilder(builderRegistry, getConnector(), managementService);
+            new SystemCompositeBuilder(builderRegistry, managementService);
         builderRegistry.register(SystemCompositeImplementation.class, builder);
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
         builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());

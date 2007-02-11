@@ -38,7 +38,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     public void testRegisterService() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getUri()).andReturn(URI.create("bar")).atLeastOnce();
         List<InboundWire> wires = TestUtils.createInboundWires(services);
@@ -52,7 +52,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     public void testAutowire() throws Exception {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Foo.class);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getUri()).andReturn(URI.create("component")).atLeastOnce();
         List<InboundWire> wires = TestUtils.createInboundWires(services);
