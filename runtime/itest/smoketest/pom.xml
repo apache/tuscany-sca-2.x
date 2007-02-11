@@ -20,15 +20,27 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany.sca.runtime</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>itest</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>itest</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany Integration Test Runtime</name>
-    <modules>
-        <module>plugin</module>
-        <module>smoketest</module>
-    </modules>
+    <groupId>org.apache.tuscany.sca.runtime.itest</groupId>
+    <artifactId>smoketest</artifactId>
+    <name>Apache Tuscany Integration Test Smoketest</name>
+    <description>Smoketest for the ITest plugin</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-itest-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
