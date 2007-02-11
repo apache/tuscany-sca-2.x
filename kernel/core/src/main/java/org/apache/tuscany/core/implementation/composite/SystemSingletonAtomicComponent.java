@@ -167,6 +167,10 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     }
 
 
+    public boolean isOptimizable() {
+        return true;
+    }
+
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         return null;
     }
