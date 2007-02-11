@@ -20,26 +20,18 @@ package org.apache.tuscany.core.monitor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.api.annotation.LogLevel;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.monitor.ExceptionFormatter;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
@@ -51,13 +43,7 @@ import org.apache.tuscany.host.monitor.FormatterRegistry;
  * @see java.util.logging
  */
 @Service(interfaces = {MonitorFactory.class, FormatterRegistry.class})
-public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegistry {
-    private String bundleName;
-    private Level defaultLevel;
-    private Map<String, Level> levels;
-    private List<ExceptionFormatter> formatters = new ArrayList<ExceptionFormatter>();
-    private ExceptionFormatter defaultFormatter = new DefaultExceptionFormatter();
-    private Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap<Class<?>, WeakReference<?>>();
+public class JavaLoggingMonitorFactory extends ProxyMonitorFactory {
 
     /**
      * Construct a MonitorFactory that will monitor the specified methods at the specified levels and generate messages
@@ -86,134 +72,25 @@ public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegis
     public JavaLoggingMonitorFactory() {
     }
 
-    public void initialize(Map<String, Object> configProperties) {
-        if (configProperties == null) {
-            return;
-        }
-        initInternal(configProperties);
-    }
-
-    private void initInternal(Map<String, Object> configProperties) {
-        try {
-            this.defaultLevel = (Level) configProperties.get("defaultLevel");
-            this.bundleName = (String) configProperties.get("bundleName");
-            Properties levels = (Properties) configProperties.get("levels");
-
-            this.levels = new HashMap<String, Level>();
-            if (levels != null) {
-                for (Map.Entry<Object, Object> entry : levels.entrySet()) {
-                    String method = (String) entry.getKey();
-                    String level = (String) entry.getValue();
-                    try {
-                        this.levels.put(method, Level.parse(level));
-                    } catch (IllegalArgumentException e) {
-                        throw new InvalidLevelException(method, level);
-                    }
-                }
-            }
-        } catch (ClassCastException cce) {
-            throw new IllegalArgumentException(cce.getLocalizedMessage());
-        }
-    }
-
-    public synchronized <T> T getMonitor(Class<T> monitorInterface) {
-        T proxy = getCachedMonitor(monitorInterface);
-        if (proxy == null) {
-            proxy = createMonitor(monitorInterface, bundleName);
-            proxies.put(monitorInterface, new WeakReference<T>(proxy));
-        }
-        return proxy;
-    }
-
-    private <T> T getCachedMonitor(Class<T> monitorInterface) {
-        WeakReference<?> ref = proxies.get(monitorInterface);
-        return (ref != null) ? monitorInterface.cast(ref.get()) : null;
-    }
-
-    private <T> T createMonitor(Class<T> monitorInterface, String bundleName) {
-        String className = monitorInterface.getName();
-        Logger logger = Logger.getLogger(className);
-        Method[] methods = monitorInterface.getMethods();
-        Map<String, Level> levels = new HashMap<String, Level>(methods.length);
-        for (Method method : methods) {
-            String key = className + '#' + method.getName();
-            Level level = null;
-            if (this.levels != null) {
-                this.levels.get(key);
-            }
-            // if not specified the in config properties, look for an annotation on the method
-            if (level == null) {
-                LogLevel annotation = method.getAnnotation(LogLevel.class);
-                if (annotation != null && annotation.value() != null) {
-                    try {
-                        level = Level.parse(annotation.value());
-                    } catch (IllegalArgumentException e) {
-                        // bad value, just use the default
-                        level = defaultLevel;
-                    }
-                }
-            }
-            if (level == null) {
-                level = defaultLevel;
-            }
-            levels.put(method.getName(), level);
-        }
-
+    protected <T> InvocationHandler createInvocationHandler(Class<T> monitorInterface,
+                                                            Map<String, Level> levels) {
         ResourceBundle bundle = locateBundle(monitorInterface, bundleName);
-
-        InvocationHandler handler = new LoggingHandler(logger, levels, bundle, formatters, defaultFormatter);
-        return monitorInterface
-            .cast(Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, handler));
+        Logger logger = Logger.getLogger(monitorInterface.getName());
+        return new LoggingHandler(logger, levels, bundle);
     }
 
-    private static <T> ResourceBundle locateBundle(Class<T> monitorInterface, String bundleName) {
-        Locale locale = Locale.getDefault();
-        ClassLoader cl = monitorInterface.getClassLoader();
-        String packageName = monitorInterface.getPackage().getName();
-        while (true) {
-            try {
-                return ResourceBundle.getBundle(packageName + '.' + bundleName, locale, cl);
-            } catch (MissingResourceException e) {
-                //ok
-            }
-            int index = packageName.lastIndexOf('.');
-            if (index == -1) {
-                break;
-            }
-            packageName = packageName.substring(0, index);
-        }
-        try {
-            return ResourceBundle.getBundle(bundleName, locale, cl);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public void register(ExceptionFormatter formatter) {
-        formatters.add(formatter);
-    }
-
-    public void unregister(ExceptionFormatter formatter) {
-        formatters.remove(formatter);
-    }
-
-    private static final class LoggingHandler implements InvocationHandler {
+    private class LoggingHandler implements InvocationHandler {
         private final Logger logger;
         private final Map<String, Level> methodLevels;
         private final ResourceBundle bundle;
-        private List<ExceptionFormatter> formatters;
-        private ExceptionFormatter defaultFormatter;
 
         public LoggingHandler(Logger logger,
                               Map<String, Level> methodLevels,
-                              ResourceBundle bundle,
-                              List<ExceptionFormatter> formatters,
-                              ExceptionFormatter defaultFormatter) {
+                              ResourceBundle bundle
+        ) {
             this.logger = logger;
             this.methodLevels = methodLevels;
             this.bundle = bundle;
-            this.formatters = formatters;
-            this.defaultFormatter = defaultFormatter;
         }
 
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -232,24 +109,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegis
                 if (args != null) {
                     for (Object o : args) {
                         if (o instanceof Throwable) {
-                            Throwable e = (Throwable) o;
-                            ExceptionFormatter formatter = null;
-                            for (ExceptionFormatter candidate : formatters) {
-                                if (candidate.canFormat(e.getClass())) {
-                                    formatter = candidate;
-                                    break;
-                                }
-                            }
-                            StringWriter writer = new StringWriter();
-                            PrintWriter pw = new PrintWriter(writer);
-                            if (formatter != null) {
-                                formatter.write(pw, e);
-                            } else {
-                                defaultFormatter.write(pw, e);
-                            }
-                            format(pw, e);
-                            pw.close();
-                            logRecord.setMessage(writer.toString());
+                            logRecord.setMessage(formatException((Throwable) o));
                             break;
                         }
                     }
@@ -259,63 +119,5 @@ public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegis
             }
             return null;
         }
-
-        private void format(PrintWriter writer, Throwable throwable) {
-            writer.println(throwable.getClass().getName());
-            StackTraceElement[] trace = throwable.getStackTrace();
-            for (StackTraceElement aTrace : trace) {
-                writer.println("\tat " + aTrace);
-            }
-            Throwable ourCause = throwable.getCause();
-
-            if (ourCause != null) {
-                printStackTraceAsCause(writer, ourCause, trace);
-            }
-        }
-
-        private void printStackTraceAsCause(PrintWriter pw,
-                                            Throwable throwable,
-                                            StackTraceElement[] causedTrace) {
-
-            // Compute number of frames in common between this and caused
-            StackTraceElement[] trace = throwable.getStackTrace();
-            int m = trace.length - 1;
-            int n = causedTrace.length - 1;
-            while (m >= 0 && n >= 0 && trace[m].equals(causedTrace[n])) {
-                m--;
-                n--;
-            }
-            int framesInCommon = trace.length - 1 - m;
-
-            pw.println("Caused by: " + throwable.getClass().getName());
-
-            ExceptionFormatter formatter = null;
-            for (ExceptionFormatter candidate : formatters) {
-                if (candidate.canFormat(throwable.getClass())) {
-                    formatter = candidate;
-                    break;
-                }
-            }
-            if (formatter != null) {
-                formatter.write(pw, throwable);
-            } else {
-                defaultFormatter.write(pw, throwable);
-            }
-
-
-            for (int i = 0; i <= m; i++) {
-                pw.println("\tat " + trace[i]);
-            }
-            if (framesInCommon != 0) {
-                pw.println("\t... " + framesInCommon + " more");
-            }
-
-            // Recurse if we have a cause
-            Throwable ourCause = throwable.getCause();
-            if (ourCause != null) {
-                printStackTraceAsCause(pw, ourCause, trace);
-            }
-        }
-
     }
 }
