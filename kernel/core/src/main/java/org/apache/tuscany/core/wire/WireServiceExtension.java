@@ -75,7 +75,6 @@ public abstract class WireServiceExtension implements WireService {
         wire.setUri(service.getUri());
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
-            // TODO handle policy
             chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(operation, chain);
         }
@@ -154,7 +153,6 @@ public abstract class WireServiceExtension implements WireService {
             outboundWire.setCallbackInterface(contract.getCallbackClass());
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                // TODO handle policy
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
                 outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
             }
@@ -195,7 +193,6 @@ public abstract class WireServiceExtension implements WireService {
             outboundWire.setCallbackInterface(contract.getCallbackClass());
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                // TODO handle policy
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
                 outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
             }
@@ -204,63 +201,81 @@ public abstract class WireServiceExtension implements WireService {
         serviceBinding.setOutboundWire(outboundWire);
     }
 
-    /**
-     * Compares two operations for wiring compatibility as defined by the SCA assembly specification, namely: <p/> <ol>
-     * <li>compatibility for the individual method is defined as compatibility of the signature, that is method name,
-     * input types, and output types MUST BE the same. <li>the order of the input and output types also MUST BE the
-     * same. <li>the set of Faults and Exceptions expected by the source MUST BE the same or be a superset of those
-     * specified by the service. </ol>
-     *
-     * @param source the source contract to compare
-     * @param target the target contract to compare
-     * @throws org.apache.tuscany.spi.wire.IncompatibleServiceContractException
-     *          if the two contracts don't match
-     */
-    public void checkCompatibility(ServiceContract<?> source, ServiceContract<?> target, boolean ignoreCallback)
+    public boolean checkCompatibility(ServiceContract<?> source,
+                                      ServiceContract<?> target,
+                                      boolean ignoreCallback,
+                                      boolean silent)
         throws IncompatibleServiceContractException {
         if (source == target) {
             // Shortcut for performance
-            return;
+            return true;
         }
         if (source.isRemotable() != target.isRemotable()) {
-            throw new IncompatibleServiceContractException("Remotable settings do not match", source, target);
+            if (!silent) {
+                throw new IncompatibleServiceContractException("Remotable settings do not match", source, target);
+            } else {
+                return false;
+            }
         }
         if (source.getInteractionScope() != target.getInteractionScope()) {
-            throw new IncompatibleServiceContractException("Interaction scopes settings do not match", source, target);
+            if (!silent) {
+                throw new IncompatibleServiceContractException("Interaction scopes do not match", source, target);
+            } else {
+                return false;
+            }
         }
 
         for (Operation<?> operation : source.getOperations().values()) {
             Operation<?> targetOperation = target.getOperations().get(operation.getName());
             if (targetOperation == null) {
-                throw new IncompatibleServiceContractException("Operation not found on target", source, target);
+                if (!silent) {
+                    throw new IncompatibleServiceContractException("Operation not found on target", source, target);
+                } else {
+                    return false;
+                }
             }
             if (!operation.equals(targetOperation)) {
-                throw new IncompatibleServiceContractException("Target operations are not compatible", source, target);
+                if (!silent) {
+                    throw new IncompatibleServiceContractException("Target operations are not compatible", source,
+                        target);
+                } else {
+                    return false;
+                }
             }
         }
 
         if (ignoreCallback) {
-            return;
+            return true;
         }
 
         for (Operation<?> operation : source.getCallbackOperations().values()) {
             Operation<?> targetOperation = target.getCallbackOperations().get(operation.getName());
             if (targetOperation == null) {
-                throw new IncompatibleServiceContractException("Callback operation not found on target",
-                    source,
-                    target,
-                    null,
-                    targetOperation);
+                if (!silent) {
+                    throw new IncompatibleServiceContractException("Callback operation not found on target",
+                        source,
+                        target,
+                        null,
+                        targetOperation);
+                } else {
+                    return false;
+                }
             }
             if (!operation.equals(targetOperation)) {
-                throw new IncompatibleServiceContractException("Target callback operation is not compatible",
-                    source,
-                    target,
-                    operation,
-                    targetOperation);
+                if (!silent) {
+                    throw new IncompatibleServiceContractException("Target callback operation is not compatible",
+                        source,
+                        target,
+                        operation,
+                        targetOperation);
+                } else {
+                    return false;
+                }
             }
         }
+        return true;
     }
+
 
     /**
      * Creates a wire for flowing outbound invocations from a reference
@@ -272,49 +287,27 @@ public abstract class WireServiceExtension implements WireService {
     protected List<OutboundWire> createWire(ReferenceTarget target, ReferenceDefinition definition) {
         ServiceContract<?> contract = definition.getServiceContract();
         List<OutboundWire> outboundWires = new ArrayList<OutboundWire>();
-        if (definition.isAutowire()) {
+        // NOTE: it is possible that targets are empty (e.g. when a reference is not required). 
+        // Return without creating wires
+        for (URI uri : target.getTargets()) {
             OutboundWire wire = new OutboundWireImpl();
-            wire.setAutowire(true);
             wire.setServiceContract(contract);
             wire.setUri(target.getReferenceName());
+            wire.setTargetUri(uri);
             for (Operation<?> operation : contract.getOperations().values()) {
-                // TODO handle policy
                 OutboundInvocationChain chain = createOutboundChain(operation);
                 wire.addInvocationChain(operation, chain);
+
             }
             if (contract.getCallbackName() != null) {
                 wire.setCallbackInterface(contract.getCallbackClass());
                 for (Operation<?> operation : contract.getCallbackOperations().values()) {
                     InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                    // TODO handle policy
                     callbackTargetChain.addInterceptor(new InvokerInterceptor());
                     wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
                 }
             }
             outboundWires.add(wire);
-        } else {
-            for (URI uri : target.getTargets()) {
-                OutboundWire wire = new OutboundWireImpl();
-                wire.setServiceContract(contract);
-                wire.setUri(target.getReferenceName());
-                wire.setTargetUri(uri);
-                for (Operation<?> operation : contract.getOperations().values()) {
-                    // TODO handle policy
-                    OutboundInvocationChain chain = createOutboundChain(operation);
-                    wire.addInvocationChain(operation, chain);
-
-                }
-                if (contract.getCallbackName() != null) {
-                    wire.setCallbackInterface(contract.getCallbackClass());
-                    for (Operation<?> operation : contract.getCallbackOperations().values()) {
-                        InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                        // TODO handle policy
-                        callbackTargetChain.addInterceptor(new InvokerInterceptor());
-                        wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
-                    }
-                }
-                outboundWires.add(wire);
-            }
         }
         return outboundWires;
     }

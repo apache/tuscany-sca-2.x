@@ -21,6 +21,7 @@ package org.apache.tuscany.core.loader;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -247,12 +248,21 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         }
         URI targetURI;
         QualifiedName qName = new QualifiedName(target);
+        StringBuilder buf = new StringBuilder();
+        List<String> names = deploymentContext.getPathNames();
+        for (int i = 0; i < names.size() - 1; i++) {
+            buf.append("/");
+        }
+        if (names.size() > 0) {
+            buf.append(names.get(names.size() - 1));
+        }
+        String path = buf.toString();
         try {
             if (qName.getPortName() == null) {
-                targetURI = new URI(componentDefinition.getUri() + "/" + qName.getPartName());
+                targetURI = new URI(path + "/" + qName.getPartName());
             } else {
                 targetURI =
-                    new URI(componentDefinition.getUri() + "/" + qName.getPartName() + "#" + qName.getPortName());
+                    new URI(path + "/" + qName.getPartName() + "#" + qName.getPortName());
             }
         } catch (URISyntaxException e) {
             throw new InvalidReferenceException("Illegal URI", name, e);
@@ -279,7 +289,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             if (referenceTarget == null) {
                 referenceTarget = new ReferenceTarget();
                 try {
-                    referenceTarget.setReferenceName(new URI(componentDefinition.getUri() + "#" + name));
+                    referenceTarget.setReferenceName(new URI(path + "#" + name));
                 } catch (URISyntaxException e) {
                     throw new IllegalSCDLNameException(e);
                 }

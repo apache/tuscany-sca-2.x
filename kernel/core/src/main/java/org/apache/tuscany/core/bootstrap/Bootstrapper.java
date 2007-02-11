@@ -86,7 +86,7 @@ public interface Bootstrapper {
      *
      * @return a new primordial Connector
      */
-    Connector createConnector();
+    Connector getConnector();
 
     /**
      * Returns the AutowireResolver that resolves autowire targets

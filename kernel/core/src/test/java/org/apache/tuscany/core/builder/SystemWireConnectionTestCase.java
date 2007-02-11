@@ -54,7 +54,6 @@ public class SystemWireConnectionTestCase extends TestCase {
 
         OutboundWire outbound = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(outbound.getTargetUri()).andReturn(URI.create("scasystem://target#bar")).atLeastOnce();
-        EasyMock.expect(outbound.isAutowire()).andReturn(false);
         EasyMock.expect(outbound.getUri()).andReturn(URI.create("scasystem://target#bar"));
         outbound.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();

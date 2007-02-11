@@ -21,7 +21,7 @@ package org.apache.tuscany.core.component.event;
 import java.net.URI;
 
 /**
- * Propagated when a composite starts
+ * Propagated when a component starts
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -30,10 +30,10 @@ public class ComponentStart extends AbstractEvent implements ComponentEvent {
     private URI uri;
 
     /**
-     * Creates a component stop event
+     * Creates a component start event
      *
      * @param source       the source of the event
-     * @param componentURI the uri of the component being stopped
+     * @param componentURI the uri of the component being started
      */
     public ComponentStart(Object source, URI componentURI) {
         super(source);

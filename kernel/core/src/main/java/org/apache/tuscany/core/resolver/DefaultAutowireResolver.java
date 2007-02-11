@@ -62,7 +62,7 @@ public class DefaultAutowireResolver implements AutowireResolver {
                         ReferenceDefinition reference = childType.getReferences().get(fragment);
                         assert reference != null;
                         ServiceContract requiredContract = reference.getServiceContract();
-                        resolve(compositeType, requiredContract, target);
+                        resolve(compositeType, requiredContract, target, reference.isRequired());
                     }
                 }
             }
@@ -74,7 +74,8 @@ public class DefaultAutowireResolver implements AutowireResolver {
                     ReferenceDefinition reference = type.getReferences().get(fragment);
                     assert reference != null;
                     ServiceContract requiredContract = reference.getServiceContract();
-                    resolve(parentDefinition.getImplementation().getComponentType(), requiredContract, target);
+                    CompositeComponentType<?, ?, ?> ctype = parentDefinition.getImplementation().getComponentType();
+                    resolve(ctype, requiredContract, target, reference.isRequired());
                 }
             }
 
@@ -92,12 +93,14 @@ public class DefaultAutowireResolver implements AutowireResolver {
      * @param compositeType    the composite component type to resolve against
      * @param requiredContract the required target contract
      * @param target           the reference target
+     * @param required         true if the autowire is required
      * @throws AutowireTargetNotFoundException
      *
      */
     private void resolve(CompositeComponentType<?, ?, ?> compositeType,
                          ServiceContract requiredContract,
-                         ReferenceTarget target) throws AutowireTargetNotFoundException {
+                         ReferenceTarget target,
+                         boolean required) throws AutowireTargetNotFoundException {
         // for now, attempt to match on interface, assume the class can be loaded
         Class<?> requiredInterface = requiredContract.getInterfaceClass();
         if (requiredInterface == null) {
@@ -126,7 +129,9 @@ public class DefaultAutowireResolver implements AutowireResolver {
         if (targetUri == null) {
             if (candidateUri == null) {
                 candidateUri = resolvePrimordial(requiredContract);
-                if (candidateUri == null) {
+                if (candidateUri == null && !required) {
+                    return;
+                } else if (candidateUri == null) {
                     String refName = target.getReferenceName().toString();
                     throw new AutowireTargetNotFoundException("No matching target found", refName);
                 }
@@ -140,7 +145,7 @@ public class DefaultAutowireResolver implements AutowireResolver {
     private URI resolvePrimordial(ServiceContract contract) {
         Class<?> requiredClass = contract.getInterfaceClass();
         for (Map.Entry<ServiceContract, URI> entry : primordialAutowire.entrySet()) {
-            if (requiredClass.isAssignableFrom(contract.getInterfaceClass())) {
+            if (requiredClass.isAssignableFrom(entry.getKey().getInterfaceClass())) {
                 return entry.getValue();
             }
         }

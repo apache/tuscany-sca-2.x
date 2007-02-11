@@ -30,10 +30,10 @@ public class ComponentStop extends AbstractEvent implements ComponentEvent {
     private URI uri;
 
     /**
-     * Creates a composite stop event
+     * Creates a component stop event
      *
      * @param source    the source of the event
-     * @param componentUri the composite component associated the composite being stopped
+     * @param componentUri the composite component associated the component being stopped
      */
     public ComponentStop(Object source, URI componentUri) {
         super(source);

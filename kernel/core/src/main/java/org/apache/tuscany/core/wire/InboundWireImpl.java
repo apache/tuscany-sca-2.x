@@ -51,13 +51,11 @@ public class InboundWireImpl implements InboundWire {
     private AtomicComponent targetComponent;
     private boolean optimizable;
 
-
     /**
      * Creates a local inbound wire
      */
     public InboundWireImpl() {
     }
-
 
     /**
      * Creates an inbound wire for the given binding type

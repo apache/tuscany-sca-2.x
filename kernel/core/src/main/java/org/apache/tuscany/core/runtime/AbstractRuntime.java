@@ -27,6 +27,7 @@ import org.osoa.sca.ComponentContext;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
@@ -45,6 +46,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
+import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
@@ -214,7 +216,8 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         TuscanyManagementService tms = (TuscanyManagementService) getManagementService();
         resolver = new DefaultAutowireResolver();
         componentManager = new ComponentManagerImpl(tms, resolver);
-        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, tms);
+        Connector connector = new ConnectorImpl(componentManager);
+        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, connector, tms);
     }
 
     protected void registerSystemComponents() throws InitializationException {

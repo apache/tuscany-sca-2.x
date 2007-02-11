@@ -25,9 +25,9 @@ import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BindingDefinition;
@@ -44,6 +44,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
@@ -52,7 +53,6 @@ import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
@@ -123,7 +123,6 @@ public class BootstrapDeployerTestCase extends TestCase {
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         URI uri = URI.create("sca://parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
-        parent.register(isA(SCAObject.class));
         replay(parent);
         // load the boot1 file using the bootstrap deployer
         componentDefinition.setUri(URI.create("sca://parent/simple"));
@@ -138,7 +137,6 @@ public class BootstrapDeployerTestCase extends TestCase {
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
         URI uri = URI.create(ComponentNames.TUSCANY_SYSTEM_ROOT + "/parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
-        parent.register(isA(SCAObject.class));
         replay(parent);
 
         // load the boot2 file using the bootstrap deployer
@@ -154,9 +152,11 @@ public class BootstrapDeployerTestCase extends TestCase {
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
         DefaultAutowireResolver resolver = new DefaultAutowireResolver();
         ComponentManager manager = new ComponentManagerImpl(null, resolver);
+        Connector connector = new ConnectorImpl(manager);
         manager.registerJavaObject(URI.create("ComponentManager"), ComponentManager.class, manager);
         NullMonitorFactory monitorFactory = new NullMonitorFactory();
-        Bootstrapper bootstrapper = new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, null);
+        Bootstrapper bootstrapper =
+            new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, connector, null);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
         deploymentContext = new RootDeploymentContext(null, xmlFactory, null, null);
         implementation = new SystemCompositeImplementation();

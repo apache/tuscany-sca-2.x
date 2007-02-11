@@ -19,8 +19,8 @@
 package org.apache.tuscany.core.injection;
 
 import java.lang.reflect.Constructor;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.spi.ObjectFactory;
 
@@ -39,6 +39,18 @@ public class PojoObjectFactoryTestCase extends TestCase {
         PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(ctor, initializers);
         Foo foo = factory.getInstance();
         assertEquals("foo", foo.foo);
+    }
+
+    /**
+     * Verifies null parameters can be passed to a constructor. This is valid when a reference is optional during
+     * constructor injection
+     */
+    public void testConstructorInjectionOptionalParam() throws Exception {
+        List<ObjectFactory> initializers = new ArrayList<ObjectFactory>();
+        initializers.add(null);
+        PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(ctor, initializers);
+        Foo foo = factory.getInstance();
+        assertNull(foo.foo);
     }
 
     public void testConstructorInitializerInjection() throws Exception {
