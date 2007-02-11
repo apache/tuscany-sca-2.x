@@ -88,6 +88,6 @@ public interface DeploymentContext {
      *
      * @return the ordered list of path names representing the current component hierarchy
      */
-    public List<String> getPathNames();
+    List<String> getPathNames();
 
 }

@@ -23,28 +23,30 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * A registry of physical component builders.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface PhysicalComponentBuilderRegistry {
 
     /**
      * Registers a physical component builder.
-     * 
-     * @param <PCD> Type of the physical component definition.
+     *
+     * @param <PCD>           Type of the physical component definition.
      * @param definitionClass Class of the physical component definition.
-     * @param builder Builder for the physical component definition.
+     * @param builder         Builder for the physical component definition.
      */
     <PCD extends PhysicalComponentDefinition, C extends Component> void register(Class<PCD> definitionClass,
-                                                                                 PhysicalComponentBuilder<PCD, C> builder);
+                                                                                 PhysicalComponentBuilder<PCD,
+                                                                                     C> builder);
 
     /**
      * Gets a builder for the specified physical component builder.
-     * 
-     * @param <PCD> Type of the physical component definition.
+     *
+     * @param <PCD>           Type of the physical component definition.
      * @param definitionClass Class of the physical component definition.
      * @return Builder for the physical component definition.
      */
-    <PCD extends PhysicalComponentDefinition, C extends Component> PhysicalComponentBuilder<PCD, C> getBuilder(Class<PCD> definitionClass);
+    <PCD extends PhysicalComponentDefinition, C extends Component> PhysicalComponentBuilder<PCD, C> getBuilder(
+        Class<PCD> definitionClass);
 
 }

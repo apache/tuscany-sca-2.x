@@ -27,40 +27,43 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Default map-based implementation of the physical component builder registry. 
- * 
+ * Default map-based implementation of the physical component builder registry.
+ * <p/>
  * TODO may be we can factor out all the registries into a parameterized one.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DefaultPhysicalComponentBuilderRegistry implements PhysicalComponentBuilderRegistry {
 
     // Internal cache
-    private Map<Class<? extends PhysicalComponentDefinition>, PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>> registry =
-        new ConcurrentHashMap<Class<? extends PhysicalComponentDefinition>, PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>>();
+    private Map<Class<? extends PhysicalComponentDefinition>,
+        PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>> registry =
+        new ConcurrentHashMap<Class<? extends PhysicalComponentDefinition>,
+            PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>>();
 
     /**
      * Registers a physical component builder.
-     * 
-     * @param <PCD> Type of the physical component definition.
+     *
+     * @param <PCD>           Type of the physical component definition.
      * @param definitionClass Class of the physical component definition.
-     * @param builder Builder for the physical component definition.
+     * @param builder         Builder for the physical component definition.
      */
-    public <PCD extends PhysicalComponentDefinition, C extends Component> void register(Class<PCD> definitionClass,
-                                                                                        PhysicalComponentBuilder<PCD, C> builder) {
+    public <PCD extends PhysicalComponentDefinition,
+        C extends Component> void register(Class<PCD> definitionClass, PhysicalComponentBuilder<PCD, C> builder) {
         registry.put(definitionClass, builder);
     }
 
     /**
      * Gets a builder for the specified physical component builder.
-     * 
-     * @param <PCD> Type of the physical component definition.
+     *
+     * @param <PCD>           Type of the physical component definition.
      * @param definitionClass Class of the physical component definition.
      * @return Builder for the physical component definition.
      */
     @SuppressWarnings("unchecked")
-    public <PCD extends PhysicalComponentDefinition, C extends Component> PhysicalComponentBuilder<PCD, C> getBuilder(Class<PCD> definitionClass) {
-        return (PhysicalComponentBuilder<PCD, C>)registry.get(definitionClass);
+    public <PCD extends PhysicalComponentDefinition, C extends Component> PhysicalComponentBuilder<PCD, C> getBuilder(
+        Class<PCD> definitionClass) {
+        return (PhysicalComponentBuilder<PCD, C>) registry.get(definitionClass);
     }
 
 }

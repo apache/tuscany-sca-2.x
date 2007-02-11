@@ -24,17 +24,17 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * Represents the physical component definition for a Java implementation.
- * 
- * @version $Rev$ $Date$
  *
+ * @version $Rev$ $Date$
  */
 public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition {
 
     // The byte code for the instance factory
     private byte[] instanceFactoryByteCode;
-    
+
     /**
      * Initializes the component id.
+     *
      * @param componentId The component id.
      */
     public JavaPhysicalComponentDefinition(final URI componentId) {
@@ -43,6 +43,7 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
 
     /**
      * Gets the byte code for the instance factory.
+     *
      * @return Byte code for the instance factory.
      */
     public byte[] getInstanceFactoryByteCode() {
@@ -51,15 +52,16 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
 
     /**
      * Sets the byte code for the instance factory.
+     *
      * @param instanceFactoryByteCode Byte code for the instance factory.
      */
     public void setInstanceFactoryByteCode(byte[] instanceFactoryByteCode) {
-        
-        if(instanceFactoryByteCode == null) {
+
+        if (instanceFactoryByteCode == null) {
             throw new IllegalArgumentException("Instance factory byte code is null");
         }
         this.instanceFactoryByteCode = instanceFactoryByteCode;
-        
+
     }
 
 }

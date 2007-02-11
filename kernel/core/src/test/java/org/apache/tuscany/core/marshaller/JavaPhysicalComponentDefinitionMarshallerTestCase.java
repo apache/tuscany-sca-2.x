@@ -20,17 +20,16 @@ package org.apache.tuscany.core.marshaller;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 import junit.framework.TestCase;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
 
 public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase {
 
@@ -47,45 +46,45 @@ public class JavaPhysicalComponentDefinitionMarshallerTestCase extends TestCase 
     }
 
     public void testUnmarshall() throws Exception {
-        
+
         byte[] test = "TEST".getBytes();
         String encodedBytes = new String(Base64.encodeBase64(test));
-        
-        String xml = 
-            "<componentJava componentId=\"uri\" xmlns=\"http://tuscany.apache.org/xmlns/1.0-SNAPSHOT\">" +
-            "  <instanceFactoryByteCode>" + encodedBytes + "</instanceFactoryByteCode>" +
-            "</componentJava>";
+
+        String xml =
+            "<componentJava componentId=\"uri\" xmlns=\"http://tuscany.apache.org/xmlns/1.0-SNAPSHOT\">"
+                + "  <instanceFactoryByteCode>" + encodedBytes + "</instanceFactoryByteCode>"
+                + "</componentJava>";
         XMLStreamReader reader = StaxUtil.createReader(xml);
-        
+
         ModelMarshaller<JavaPhysicalComponentDefinition> marshaller = new JavaPhysicalComponentDefinitionMarshaller();
         JavaPhysicalComponentDefinition definition = marshaller.unmarshall(reader);
-        
+
         assertEquals(new URI("uri"), definition.getComponentId());
         assertEquals("TEST", new String(definition.getInstanceFactoryByteCode()));
-        
+
     }
 
     public void testMarshall() throws Exception {
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
+
         JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition(new URI("uri"));
         definition.setInstanceFactoryByteCode("TEST".getBytes());
-        
+
         XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "UTF-8");
-        
-        
+
+
         ModelMarshaller<JavaPhysicalComponentDefinition> marshaller = new JavaPhysicalComponentDefinitionMarshaller();
         marshaller.marshall(definition, writer);
-        
+
         String xml = new String(out.toByteArray());
-        XMLStreamReader reader = StaxUtil.createReader(xml);        
+        XMLStreamReader reader = StaxUtil.createReader(xml);
         definition = marshaller.unmarshall(reader);
-        
+
         assertEquals(new URI("uri"), definition.getComponentId());
         assertEquals("TEST", new String(definition.getInstanceFactoryByteCode()));
-        
-        
+
+
     }
 
 }

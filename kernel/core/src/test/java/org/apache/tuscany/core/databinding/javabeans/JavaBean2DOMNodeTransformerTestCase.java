@@ -20,25 +20,26 @@
 package org.apache.tuscany.core.databinding.javabeans;
 
 import java.io.StringWriter;
-
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import junit.framework.TestCase;
+import org.w3c.dom.Node;
 
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.model.DataType;
+
+import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Node;
 
 /**
- * Testcase to test the XMLTypeMapperExtension which is the back bone for all transformations 
- * supported by the JavaBeans Databinding.
+ * Testcase to test the XMLTypeMapperExtension which is the back bone for all transformations supported by the JavaBeans
+ * Databinding.
+ *
+ * @version $Rev$ $Date$
  */
 public class JavaBean2DOMNodeTransformerTestCase extends TestCase {
-
-    JavaBean2DOMNodeTransformer aTransformer = new JavaBean2DOMNodeTransformer();
+    private JavaBean2DOMNodeTransformer aTransformer = new JavaBean2DOMNodeTransformer();
 
     /**
      * @see junit.framework.TestCase#setUp()
@@ -54,23 +55,21 @@ public class JavaBean2DOMNodeTransformerTestCase extends TestCase {
         EasyMock.replay(context);
 
         javax.xml.transform.Transformer transformer =
-                TransformerFactory.newInstance().newTransformer();
-        Object data = new int[] {10, 20, 30, 40};
+            TransformerFactory.newInstance().newTransformer();
+        Object data = new int[]{10, 20, 30, 40};
         Node aNode = aTransformer.transform(data, context);
         StringWriter sw = new StringWriter();
         transformer.transform(new DOMSource(aNode), new StreamResult(sw));
 
         System.out.println(sw.toString());
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><int_collection><int>10</int><int>20</int>"
-                     + "<int>30</int><int>40</int></int_collection>",
-                     sw.toString());
+            + "<int>30</int><int>40</int></int_collection>",
+            sw.toString());
     }
 
     public static class SamplePropertyBean {
-
-        public float floatNumber = 50;
-        public SamplePropertyBean innerProperty;
-        public boolean[] boolArray;
+        private float floatNumber = 50;
+        private SamplePropertyBean innerProperty;
         private double doubleNumber = 75;
         private int integerNumber = 25;
         private String[] stringArray;
@@ -113,7 +112,7 @@ public class JavaBean2DOMNodeTransformerTestCase extends TestCase {
 
         public String toString() {
             return Double.toString(integerNumber + floatNumber + doubleNumber) + " & "
-                    + ((innerProperty == null) ? "" : innerProperty.toString());
+                + ((innerProperty == null) ? "" : innerProperty.toString());
         }
 
         public String[] getStringArray() {

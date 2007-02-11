@@ -27,82 +27,87 @@ import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Represents a physical component model.
- * 
- * @version $Rev$ $Date$
  *
+ * @version $Rev$ $Date$
  */
 public abstract class PhysicalComponentDefinition extends ModelObject {
-    
+
     // Component Id.
     private final URI componentId;
-    
+
     // Inbound wires
     private final Set<WireDefinition> inboundWires = new HashSet<WireDefinition>();
-    
+
     // Outbound wires
     private final Set<WireDefinition> outboundWires = new HashSet<WireDefinition>();
 
     /**
      * Initializes the component id.
+     *
      * @param componentId The component id.
      */
     public PhysicalComponentDefinition(final URI componentId) {
-        
-        if(componentId == null) {
+
+        if (componentId == null) {
             throw new IllegalArgumentException("Component id is null");
         }
         this.componentId = componentId;
-        
+
     }
 
     /**
      * Returns the absolute id for the phyiscal component.
+     *
      * @return the absolute id for the phyiscal component
      */
     public URI getComponentId() {
         return componentId;
     }
-    
+
     /**
      * Returns a read-only view of the inbound wires.
+     *
      * @return List of inbound wires available on the component.
      */
     public Set<WireDefinition> getInboundWires() {
         return Collections.unmodifiableSet(inboundWires);
     }
-    
+
     /**
      * Adds an inbound wire.
+     *
      * @param inboundWire Inbound wire to add to the component.
      */
     public void addInboundWire(WireDefinition inboundWire) {
-        
-        if(inboundWire == null) {
+
+        if (inboundWire == null) {
             throw new IllegalArgumentException("Inbound wire is null");
         }
         inboundWires.add(inboundWire);
-        
+
     }
-    
+
     /**
      * Returns a read-only view of the outbound wires.
+     *
      * @return List of outbound wires available on the component.
      */
     public Set<WireDefinition> getOutboundWires() {
         return Collections.unmodifiableSet(outboundWires);
     }
-    
+
     /**
      * Adds an outbound wire.
+     *
      * @param outboundWire Outbound wire to add to the component.
      */
     public void addOutboundWire(WireDefinition outboundWire) {
-        
-        if(outboundWire == null) {
+
+        if (outboundWire == null) {
             throw new IllegalArgumentException("Outbound wire is null");
         }
         outboundWires.add(outboundWire);
-        
+
     }
-    
+
 }

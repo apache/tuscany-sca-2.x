@@ -24,57 +24,59 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Model class representing the portable definition of a wire. This class 
- * is used to describe the inbound and outbound wires on a physical 
- * component definition.
- * 
- * @version $Rev$ $Date$
+ * Model class representing the portable definition of a wire. This class is used to describe the inbound and outbound
+ * wires on a physical component definition.
  *
+ * @version $Rev$ $Date$
  */
 public class WireDefinition {
-    
+
     // The resolved URI of the wire
     private final URI wireUri;
-    
+
     // Interceptors defined against the wire
     private final Set<InterceptorDefinition> interceptors = new HashSet<InterceptorDefinition>();
 
     /**
      * Initializes the wire URI.
+     *
      * @param wireUri The resolved URI of the wire.
      */
     public WireDefinition(final URI wireUri) {
-        
-        if(wireUri == null) {
+
+        if (wireUri == null) {
             throw new IllegalArgumentException("Wire uri is null");
         }
         this.wireUri = wireUri;
-        
+
     }
-    
+
     /**
      * Returns a read-only view of the available interceptors.
+     *
      * @return List of interceptors available on the wire.
      */
     public Set<InterceptorDefinition> getInterceptors() {
         return Collections.unmodifiableSet(interceptors);
     }
-    
+
     /**
      * Adds an interceptor definition.
+     *
      * @param interceptorDefinition Interceptor definition to add to the wire.
      */
     public void addInterceptor(InterceptorDefinition interceptorDefinition) {
-        
-        if(interceptorDefinition == null) {
+
+        if (interceptorDefinition == null) {
             throw new IllegalArgumentException("Interceptor definition is null");
         }
         interceptors.add(interceptorDefinition);
-        
+
     }
 
     /**
      * Returns the wire URI.
+     *
      * @return The resolved URI of the wire.
      */
     public URI getWireUri() {

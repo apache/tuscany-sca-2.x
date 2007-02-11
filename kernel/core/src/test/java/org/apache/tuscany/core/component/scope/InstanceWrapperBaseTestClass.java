@@ -20,8 +20,6 @@ package org.apache.tuscany.core.component.scope;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.component.TargetInitializationException;
-
 /**
  * @version $Rev$ $Date$
  */
