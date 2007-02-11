@@ -16,6 +16,7 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.host.ResourceHost;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -33,8 +34,12 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
         ScopeRegistry registry = EasyMock.createMock(ScopeRegistry.class);
         EasyMock.expect(registry.getScopeContainer(Scope.STATELESS)).andReturn(container);
         EasyMock.replay(registry);
+        ResourceHost host = EasyMock.createMock(ResourceHost.class);
+        EasyMock.expect(host.resolveResource(EasyMock.eq(String.class))).andReturn("result");
+        EasyMock.replay(host);
         SystemComponentBuilder builder = new SystemComponentBuilder();
         builder.setScopeRegistry(registry);
+        builder.setHost(host);
         ConstructorDefinition<Foo> ctorDef = new ConstructorDefinition<SystemComponentBuilderResourceTestCase.Foo>(
             SystemComponentBuilderResourceTestCase.Foo.class.getConstructor());
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
@@ -57,7 +62,6 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
         EasyMock.replay(wire);
 
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveAutowire(String.class)).andReturn(wire);
         EasyMock.replay(parent);
         AtomicComponent component = builder.build(parent, definition, ctx);
         SystemComponentBuilderResourceTestCase.Foo foo =

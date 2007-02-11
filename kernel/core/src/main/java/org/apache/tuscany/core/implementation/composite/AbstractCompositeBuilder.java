@@ -2,7 +2,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
@@ -33,7 +33,7 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
             try {
                 Service service = builderRegistry.build(component, definition, deploymentContext);
                 component.register(service);
-            } catch (ComponentRegistrationException e) {
+            } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering service", e);
             }
         }
@@ -41,7 +41,7 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
             try {
                 Reference reference = builderRegistry.build(component, definition, deploymentContext);
                 component.register(reference);
-            } catch (ComponentRegistrationException e) {
+            } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering reference", e);
             }
         }

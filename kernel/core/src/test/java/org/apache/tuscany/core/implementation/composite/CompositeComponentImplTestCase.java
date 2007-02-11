@@ -18,16 +18,13 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.TestUtils;
 import org.easymock.EasyMock;
 
 /**
@@ -36,38 +33,23 @@ import org.easymock.EasyMock;
 public class CompositeComponentImplTestCase extends TestCase {
 
     public void testRegisterService() throws Exception {
-        List<Class<?>> services = new ArrayList<Class<?>>();
-        services.add(Foo.class);
         CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
-        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getUri()).andReturn(URI.create("bar")).atLeastOnce();
-        List<InboundWire> wires = TestUtils.createInboundWires(services);
-        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
-        EasyMock.replay(component);
-        parent.register(component);
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getUri()).andReturn(URI.create("bar")).atLeastOnce();
+        EasyMock.replay(service);
+        parent.register(service);
         assertNotNull(parent.getChild("bar"));
-        EasyMock.verify(component);
+        EasyMock.verify(service);
     }
 
-    public void testAutowire() throws Exception {
-        List<Class<?>> services = new ArrayList<Class<?>>();
-        services.add(Foo.class);
+    public void testRegisterReference() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
-        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getUri()).andReturn(URI.create("component")).atLeastOnce();
-        List<InboundWire> wires = TestUtils.createInboundWires(services);
-        TestUtils.populateInboundWires(component, wires);
-        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
-        EasyMock.replay(component);
-        parent.register(component);
-        parent.start();
-        assertNull(parent.resolveExternalAutowire(Foo.class));
-        assertNotNull(parent.resolveAutowire(Foo.class));
-        parent.stop();
-        EasyMock.verify(component);
+        Reference service = EasyMock.createMock(Reference.class);
+        EasyMock.expect(service.getUri()).andReturn(URI.create("bar")).atLeastOnce();
+        EasyMock.replay(service);
+        parent.register(service);
+        assertNotNull(parent.getChild("bar"));
+        EasyMock.verify(service);
     }
 
-    private class Foo {
-
-    }
 }

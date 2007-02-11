@@ -23,8 +23,6 @@ import java.util.List;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.services.management.TuscanyManagementService;
-import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * The runtime instantiation of an SCA composite component. Composites may contain child components, offer services, and
@@ -36,13 +34,6 @@ import org.apache.tuscany.spi.wire.InboundWire;
 public interface CompositeComponent extends Component, RuntimeEventListener {
 
     /**
-     * Sets the management service associated with the composite
-     *
-     * @param managementService the management service associated with the composite
-     */
-    void setManagementService(TuscanyManagementService managementService);
-
-    /**
      * Returns the value of a Property of this composite.
      *
      * @param name the name of the Property
@@ -51,42 +42,38 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     Document getPropertyValue(String name);
 
     /**
-     * Registers a child of this composite.
+     * Registers a service of this composite.
      *
-     * @param object the object to add as a child
-     * @throws ComponentRegistrationException
+     * @param service the service to add as a child
+     * @throws RegistrationException
      */
-    void register(SCAObject object) throws ComponentRegistrationException;
+    void register(Service service) throws RegistrationException;
+
+    /**
+     * Registers a reference of this composite.
+     *
+     * @param reference the reference to add as a child
+     * @throws RegistrationException
+     */
+    void register(Reference reference) throws RegistrationException;
 
     /**
      * Returns the child associated with a given name
      */
     SCAObject getChild(String name);
 
+    /**
+     * Returns the services for the component
+     *
+     * @return the services for the component
+     */
     List<Service> getServices();
 
+    /**
+     * Returns the references for the component
+     *
+     * @return the references for the component
+     */
     List<Reference> getReferences();
-
-    /**
-     * Invoked by child components to return an wire to a target based on matching type. Resolved targets may be
-     * serviceBindings or components in the parent or its ancestors, or references in a sibling component
-     *
-     * @param instanceInterface the type of service being requested
-     * @return a reference to the requested service or null if one is not be found
-     * @throws TargetResolutionException
-     */
-    InboundWire resolveAutowire(Class<?> instanceInterface) throws TargetResolutionException;
-
-    /**
-     * Invoked by a parent component to return an wire to a target in a child based on matching type. Resolved targets
-     * must be serviceBindings. For example, given a parent P and two siblings, A and B, A would request an autowire by
-     * invoking {@link #resolveAutowire(Class<?>)} on P, which in turn could invoke the present method on B in order to
-     * resolve a target.
-     *
-     * @param instanceInterface the type of service being requested
-     * @return a reference to the requested service or null if one is not be found
-     * @throws TargetResolutionException
-     */
-    InboundWire resolveExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException;
 
 }

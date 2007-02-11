@@ -130,7 +130,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         handleProperties(definition, component);
 
         // handle resources
-        handleResources(componentType, component, parent);
+        handleResources(componentType, component);
 
         handleCallbackSites(componentType, configuration);
 
@@ -159,8 +159,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     @SuppressWarnings({"unchecked"})
     private void handleResources(
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
-        JavaAtomicComponent component,
-        CompositeComponent parent) {
+        JavaAtomicComponent component) {
         for (Resource resource : componentType.getResources().values()) {
             ObjectFactory<?> objectFactory = resource.getObjectFactory();
             if (objectFactory != null) {
@@ -173,9 +172,9 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 String mappedName = resource.getMappedName();
                 if (mappedName == null) {
                     // by type
-                    factory = new ResourceObjectFactory<Object>(type, optional, parent, host);
+                    factory = new ResourceObjectFactory<Object>(type, optional, host);
                 } else {
-                    factory = new ResourceObjectFactory<Object>(type, mappedName, optional, parent, host);
+                    factory = new ResourceObjectFactory<Object>(type, mappedName, optional, host);
                 }
                 component.addResourceFactory(name, factory);
             }

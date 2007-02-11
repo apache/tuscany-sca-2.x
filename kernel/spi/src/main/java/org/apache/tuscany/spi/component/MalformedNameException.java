@@ -5,7 +5,7 @@ package org.apache.tuscany.spi.component;
  *
  * @version $Rev$ $Date$
  */
-public class MalformedNameException extends ComponentRegistrationException {
+public class MalformedNameException extends RegistrationException {
 
     public MalformedNameException(Throwable e) {
         super("Malformed name", e);

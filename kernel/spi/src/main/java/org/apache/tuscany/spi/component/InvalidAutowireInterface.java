@@ -23,7 +23,7 @@ package org.apache.tuscany.spi.component;
  *
  * @version $Rev$ $Date$
  */
-public class InvalidAutowireInterface extends ComponentRegistrationException {
+public class InvalidAutowireInterface extends RegistrationException {
 
     public InvalidAutowireInterface(String message, String identifier) {
         super(message, identifier);

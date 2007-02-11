@@ -45,7 +45,8 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
     public ResourceProcessor() {
     }
 
-    public void visitMethod(CompositeComponent parent, Method method,
+    public void visitMethod(CompositeComponent parent,
+                            Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
@@ -76,7 +77,8 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         type.add(resource);
     }
 
-    public void visitField(CompositeComponent parent, Field field,
+    public void visitField(CompositeComponent parent,
+                           Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
 
@@ -104,7 +106,8 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         type.add(resource);
     }
 
-    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+    public <T> void visitConstructor(CompositeComponent parent,
+                                     Constructor<T> constructor,
                                      PojoComponentType<JavaMappedService, JavaMappedReference,
                                          JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {

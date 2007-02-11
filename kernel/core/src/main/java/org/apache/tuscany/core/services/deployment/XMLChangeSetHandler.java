@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.deployer.ChangeSetHandler;
@@ -114,7 +113,6 @@ public class XMLChangeSetHandler implements ChangeSetHandler {
                 (ComponentDefinition<?>) loader.load(parent, null, xmlReader, deploymentContext);
             Component component = builder.build(parent, componentDefinition, deploymentContext);
             component.prepare();
-            parent.register(component);
         } catch (LoaderException e) {
             // FIXME throw something appropriate
             throw new AssertionError("FIXME");
@@ -122,9 +120,6 @@ public class XMLChangeSetHandler implements ChangeSetHandler {
             // FIXME throw something appropriate
             throw new AssertionError("FIXME");
         } catch (PrepareException e) {
-            // FIXME throw something appropriate
-            throw new AssertionError("FIXME");
-        } catch (ComponentRegistrationException e) {
             // FIXME throw something appropriate
             throw new AssertionError("FIXME");
         }

@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
@@ -39,13 +38,10 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
  * @version $Rev$ $Date$
  */
 public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompositeImplementation> {
-    private TuscanyManagementService managementService;
 
     @Constructor
-    public SystemCompositeBuilder(@Autowire BuilderRegistry builderRegistry,
-                                  @Autowire(required = false)TuscanyManagementService managementService) {
+    public SystemCompositeBuilder(@Autowire BuilderRegistry builderRegistry) {
         this.builderRegistry = builderRegistry;
-        this.managementService = managementService;
     }
 
     public CompositeComponent build(CompositeComponent parent,
@@ -55,7 +51,6 @@ public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompo
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         URI name = componentDefinition.getUri();
         CompositeComponent component = new CompositeComponentImpl(name, parent);
-        component.setManagementService(managementService);
         build(parent, component, componentType, deploymentContext);
         return component;
     }

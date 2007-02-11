@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**
@@ -38,17 +38,17 @@ public interface ComponentManager extends RuntimeEventListener {
      * Registers a component which will be managed by the runtime
      *
      * @param component the component
-     * @throws ComponentRegistrationException
+     * @throws RegistrationException
      */
-    void register(Component component) throws ComponentRegistrationException;
+    void register(Component component) throws RegistrationException;
 
     /**
      * Deregisters a component
      *
      * @param component the component to deregister
-     * @throws ComponentRegistrationException
+     * @throws RegistrationException
      */
-    void unregister(Component component) throws ComponentRegistrationException;
+    void unregister(Component component) throws RegistrationException;
 
     /**
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
@@ -57,10 +57,10 @@ public interface ComponentManager extends RuntimeEventListener {
      * @param uri      the uri of the resulting component
      * @param service  the service interface the component should expose
      * @param instance the Object that will become the component's implementation
-     * @throws ComponentRegistrationException
+     * @throws RegistrationException
      */
     <S, I extends S> void registerJavaObject(URI uri, Class<S> service, I instance)
-        throws ComponentRegistrationException;
+        throws RegistrationException;
 
     /**
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
@@ -69,10 +69,10 @@ public interface ComponentManager extends RuntimeEventListener {
      * @param uri      the name of the resulting component
      * @param services the service interfaces the component should expose
      * @param instance the Object that will become the component's implementation
-     * @throws ComponentRegistrationException
+     * @throws RegistrationException
      */
     <S, I extends S> void registerJavaObject(URI uri, List<Class<?>> services, I instance)
-        throws ComponentRegistrationException;
+        throws RegistrationException;
 
     /**
      * Returns the component with the given URI

@@ -20,13 +20,8 @@ package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.host.ResourceResolutionException;
-import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * Resolves a runtime resource to be injected on a field or method of a Java component type marked with {@link
@@ -41,9 +36,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
 
     private Class<T> type;
     private String mappedName;
-    private CompositeComponent parent;
     private ResourceHost host;
-    private boolean resolveFromHost;
     private boolean optional;
 
     /**
@@ -51,15 +44,10 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
      *
      * @param type     the type of the resource to inject
      * @param optional true if an error should be thrown if the resource is not found
-     * @param parent   the parent composite of the component to inject on
      * @param host     the runtime resource provider
      */
-    public ResourceObjectFactory(Class<T> type,
-                                 boolean optional,
-                                 CompositeComponent parent,
-                                 ResourceHost host) {
+    public ResourceObjectFactory(Class<T> type, boolean optional, ResourceHost host) {
         this.type = type;
-        this.parent = parent;
         this.host = host;
         this.optional = optional;
     }
@@ -70,74 +58,31 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
      * @param type       the type of the resource to inject
      * @param mappedName the resource name
      * @param optional   true if an error should be thrown if the resource is not found
-     * @param parent     the parent composite of the component to inject on
      * @param host       the runtime resource provider
      */
-    public ResourceObjectFactory(Class<T> type,
-                                 String mappedName,
-                                 boolean optional,
-                                 CompositeComponent parent,
-                                 ResourceHost host) {
+    public ResourceObjectFactory(Class<T> type, String mappedName, boolean optional, ResourceHost host) {
         this.type = type;
-        this.parent = parent;
         this.host = host;
-        if (mappedName.indexOf("://") >= 0) {
-            this.resolveFromHost = true;
-        }
         this.mappedName = mappedName;
         this.optional = optional;
     }
 
     @SuppressWarnings({"unchecked"})
     public T getInstance() throws ObjectCreationException {
-        if (resolveFromHost) {
-            return resolveInstance();
-        } else {
-            T instance = null;
-            if (mappedName == null) {
-                try {
-                    InboundWire wire = parent.resolveAutowire(type);
-                    if (wire != null) {
-                        instance = (T) wire.getTargetService();
-                    }
-                } catch (TargetResolutionException e) {
-                    throw new ObjectCreationException(e);
-                }
-                if (instance == null) {
-                    // if not found in parent scope, search the host namespace
-                    resolveFromHost = true;
-                    instance = resolveInstance();
-                }
-                if (instance == null && !optional) {
-                    throw new ResourceNotFoundException("No resource found matching type", type.getName());
-                }
-                return instance;
-            } else {
-                SCAObject child = parent.getChild(mappedName);
-                if (child instanceof AtomicComponent) {
-                    try {
-                        AtomicComponent component = (AtomicComponent) child;
-                        instance = type.cast(component.getTargetInstance());
-                    } catch (TargetResolutionException e) {
-                        throw new ObjectCreationException(e);
-                    }
-                } else if (child != null) {
-                    throw new InvalidResourceTypeException("Invalid resource type", mappedName);
-                } else if (!optional) {
-                    throw new ResourceNotFoundException("No resource found for URI", mappedName);
-                }
-                return instance;
-            }
-        }
-    }
-
-    private T resolveInstance() {
         try {
+            T resource;
             if (mappedName == null) {
-                return host.resolveResource(type);
+                resource = host.resolveResource(type);
+                if (!optional && resource == null) {
+                    throw new ResourceNotFoundException("Resource not found", type.getName());
+                }
             } else {
-                return host.resolveResource(type, mappedName);
+                resource = host.resolveResource(type, mappedName);
+                if (!optional && resource == null) {
+                    throw new ResourceNotFoundException("Resource not found", mappedName);
+                }
             }
+            return resource;
         } catch (ResourceResolutionException e) {
             throw new ObjectCreationException(e);
         }
