@@ -23,18 +23,14 @@ import java.net.URI;
 
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.resolver.ResolutionException;
+import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
 /**
  * @version $Rev$ $Date$
