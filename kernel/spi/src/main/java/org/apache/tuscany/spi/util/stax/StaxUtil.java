@@ -48,7 +48,7 @@ public abstract class StaxUtil {
     /**
      * XML input factory.
      */
-    private static final XMLInputFactory xmlFactory =
+    private static final XMLInputFactory XML_FACTORY =
         XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", StaxUtil.class.getClassLoader());
 
     private static final Map<String, Multiplicity> MULTIPLICITY = new HashMap<String, Multiplicity>(4);
@@ -223,7 +223,7 @@ public abstract class StaxUtil {
     public static XMLStreamReader createReader(String xml) throws XMLStreamException {
 
         InputStream in = new ByteArrayInputStream(xml.getBytes());
-        return xmlFactory.createXMLStreamReader(in);
+        return XML_FACTORY.createXMLStreamReader(in);
 
     }
 
@@ -236,7 +236,7 @@ public abstract class StaxUtil {
      */
     public static XMLStreamReader createReader(InputStream xml) throws XMLStreamException {
 
-        return xmlFactory.createXMLStreamReader(xml);
+        return XML_FACTORY.createXMLStreamReader(xml);
 
     }
 
@@ -255,7 +255,9 @@ public abstract class StaxUtil {
             reader.next();
             return reader.getName();
         } finally {
-            reader.close();
+            if (reader != null) {
+                reader.close();
+            }
         }
 
     }

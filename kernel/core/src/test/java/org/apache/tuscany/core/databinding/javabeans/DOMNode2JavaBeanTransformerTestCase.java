@@ -21,31 +21,33 @@ package org.apache.tuscany.core.databinding.javabeans;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
 import org.apache.tuscany.spi.model.DataType;
+
+import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
 /**
- * Testcase to test the XMLTypeMapperExtension which is the back bone for all transformations 
- * supported by the JavaBeans Databinding.
+ * Testcase to test the XMLTypeMapperExtension which is the back bone for all transformations supported by the JavaBeans
+ * Databinding.
+ *
+ * @version $Rev$ $Date$
  */
 public class DOMNode2JavaBeanTransformerTestCase extends TestCase {
 
-    DOMNode2JavaBeanTransformer dom2JavaTransformer = new DOMNode2JavaBeanTransformer();
+   private DOMNode2JavaBeanTransformer dom2JavaTransformer = new DOMNode2JavaBeanTransformer();
 
     /**
      * @see junit.framework.TestCase#setUp()
@@ -56,14 +58,14 @@ public class DOMNode2JavaBeanTransformerTestCase extends TestCase {
 
     public void testFieldSettings() throws Exception {
         String samplePropertyXML =
-                "<property name=\"prop2\" >" + "<integerNumber>27</integerNumber>"
-                        + "<floatNumber>79.34</floatNumber>"
-                        + "<doubleNumber>184.52</doubleNumber>" + "<innerProperty>"
-                        + "<integerNumber>54</integerNumber>" + "<floatNumber>158.68</floatNumber>"
-                        + "<doubleNumber>369.04</doubleNumber>" + "</innerProperty>"
-                        + "<stringArray>TestString_1</stringArray>"
-                        + "<stringArray>TestString_2</stringArray>" + "<boolArray>true</boolArray>"
-                        + "<boolArray>false</boolArray>" + "</property>";
+            "<property name=\"prop2\" >" + "<integerNumber>27</integerNumber>"
+                + "<floatNumber>79.34</floatNumber>"
+                + "<doubleNumber>184.52</doubleNumber>" + "<innerProperty>"
+                + "<integerNumber>54</integerNumber>" + "<floatNumber>158.68</floatNumber>"
+                + "<doubleNumber>369.04</doubleNumber>" + "</innerProperty>"
+                + "<stringArray>TestString_1</stringArray>"
+                + "<stringArray>TestString_2</stringArray>" + "<boolArray>true</boolArray>"
+                + "<boolArray>false</boolArray>" + "</property>";
 
         DocumentBuilder builder = DOMHelper.newDocumentBuilder();
         InputSource inputSource = new InputSource(new StringReader(samplePropertyXML));
@@ -73,27 +75,28 @@ public class DOMNode2JavaBeanTransformerTestCase extends TestCase {
         TransformationContext context = EasyMock.createMock(TransformationContext.class);
         DataType<Class> targetDataType = new DataType<Class>(null, SamplePropertyBean.class);
         EasyMock.expect(context.getTargetDataType()).andReturn(targetDataType).anyTimes();
-        
+
         DataType<Class> sourceDataType = new DataType<Class>(null, null);
         ElementInfo eleInfo = new ElementInfo(null, typeInfo);
         sourceDataType.setMetadata(ElementInfo.class.getName(), eleInfo);
         EasyMock.expect(context.getSourceDataType()).andReturn(sourceDataType).anyTimes();
         EasyMock.replay(context);
 
-        Object javaObject = dom2JavaTransformer.transform(((Document)samplePropertyNode).getDocumentElement(), context);
+        Object javaObject =
+            dom2JavaTransformer.transform(((Document) samplePropertyNode).getDocumentElement(), context);
 
         assertTrue(javaObject instanceof SamplePropertyBean);
         SamplePropertyBean samplePropBean = (SamplePropertyBean) javaObject;
         assertEquals(samplePropBean.getIntegerNumber(), 27);
-        assertEquals((float) 79.34, (float) samplePropBean.getFloatNumber());
-        assertEquals((double) samplePropBean.getInnerProperty().getDoubleNumber(), (double) 369.04);
+        assertEquals((float) 79.34, samplePropBean.getFloatNumber());
+        assertEquals(samplePropBean.getInnerProperty().getDoubleNumber(), 369.04);
 
         assertEquals(samplePropBean.getStringArray()[0], "TestString_1");
         assertEquals(samplePropBean.boolArray[0], true);
 
         /** testing for object to node * */
-       javax.xml.transform.Transformer transformer =
-                TransformerFactory.newInstance().newTransformer();
+        javax.xml.transform.Transformer transformer =
+            TransformerFactory.newInstance().newTransformer();
         JavaBean2DOMNodeTransformer java2DomTransformer = new JavaBean2DOMNodeTransformer();
         Node aNode = java2DomTransformer.transform(javaObject, context);
         StringWriter sw = new StringWriter();
@@ -105,7 +108,7 @@ public class DOMNode2JavaBeanTransformerTestCase extends TestCase {
         assertTrue(nodeString.indexOf("<doubleNumber>184.52</doubleNumber>") == -1);
         // test the case for fields that are of array type
         assertTrue(nodeString.indexOf("<stringArray>TestString_1</stringArray>"
-                + "<stringArray>TestString_2</stringArray>") != -1);
+            + "<stringArray>TestString_2</stringArray>") != -1);
         // testing the case for non-public field with public getter method
         assertTrue(nodeString.indexOf("<integerNumber>27</integerNumber>") != -1);
         // test the case for public field that is a another java bean .i.e. embeded javabean
@@ -118,12 +121,11 @@ public class DOMNode2JavaBeanTransformerTestCase extends TestCase {
 
     }
 
-    
 
     public static class SamplePropertyBean {
 
-        public float floatNumber = 50;
-        public SamplePropertyBean innerProperty;
+        private float floatNumber = 50;
+        private SamplePropertyBean innerProperty;
         public boolean[] boolArray;
         private double doubleNumber = 75;
         private int integerNumber = 25;
@@ -167,7 +169,7 @@ public class DOMNode2JavaBeanTransformerTestCase extends TestCase {
 
         public String toString() {
             return Double.toString(integerNumber + floatNumber + doubleNumber) + " & "
-                    + ((innerProperty == null) ? "" : innerProperty.toString());
+                + ((innerProperty == null) ? "" : innerProperty.toString());
         }
 
         public String[] getStringArray() {

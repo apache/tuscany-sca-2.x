@@ -23,11 +23,11 @@ import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
-import org.w3c.dom.Node;
 
 /**
- * Transformer to convert data from a databinding's representation of simple
- * types to Java Objects
+ * Transformer to convert data from a databinding's representation of simple types to Java Objects
+ *
+ * @version $Rev$ $Date$
  */
 public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension<T, Object> implements
     PullTransformer<T, Object> {
@@ -43,13 +43,13 @@ public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension
     }
 
     public Object transform(T source, TransformationContext context) {
-        TypeInfo simpleType = (TypeInfo)context.getSourceDataType().getMetadata(TypeInfo.class.getName());
+        TypeInfo simpleType = (TypeInfo) context.getSourceDataType().getMetadata(TypeInfo.class.getName());
         if (simpleType == null) {
             ElementInfo element =
-                (ElementInfo)context.getSourceDataType().getMetadata(ElementInfo.class.getName());
-            simpleType = (TypeInfo)element.getType();
+                (ElementInfo) context.getSourceDataType().getMetadata(ElementInfo.class.getName());
+            simpleType = element.getType();
         }
-        
+
         return mapper.toJavaObject(simpleType, getText(source), context);
     }
 
@@ -64,7 +64,8 @@ public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension
 
     /**
      * Get the string value from the source
-     * @param source
+     *
+     * @param source the source to return the string from
      * @return A string
      */
     protected abstract String getText(T source);
