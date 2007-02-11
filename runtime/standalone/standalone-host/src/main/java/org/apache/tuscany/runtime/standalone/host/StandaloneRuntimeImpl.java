@@ -28,10 +28,11 @@ import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
  * @version $Rev$ $Date$
  */
 public class StandaloneRuntimeImpl extends AbstractRuntime {
+
     protected void registerSystemComponents() throws InitializationException {
         super.registerSystemComponents();
         try {
-            getComponentManager().registerJavaObject(StandaloneRuntimeInfo.COMPONENT_NAME,
+            getComponentManager().registerJavaObject(StandaloneRuntimeInfo.STANDALONE_COMPONENT_URI,
                 StandaloneRuntimeInfo.class,
                 (StandaloneRuntimeInfo) getRuntimeInfo());
         } catch (ComponentRegistrationException e) {
