@@ -165,7 +165,7 @@ public abstract class ProxyMonitorFactory implements MonitorFactory, FormatterRe
                                                                  Map<String, Level> levels);
 
     protected String formatException(Throwable e) {
-        ExceptionFormatter formatter = null;
+        ExceptionFormatter formatter = defaultFormatter;
         for (ExceptionFormatter candidate : formatters) {
             if (candidate.canFormat(e.getClass())) {
                 formatter = candidate;
@@ -174,11 +174,7 @@ public abstract class ProxyMonitorFactory implements MonitorFactory, FormatterRe
         }
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
-        if (formatter != null) {
-            formatter.write(pw, e);
-        } else {
-            defaultFormatter.write(pw, e);
-        }
+        formatter.write(pw, e);
         format(pw, e);
         pw.close();
         return writer.toString();
@@ -213,19 +209,14 @@ public abstract class ProxyMonitorFactory implements MonitorFactory, FormatterRe
 
         pw.println("Caused by: " + throwable.getClass().getName());
 
-        ExceptionFormatter formatter = null;
+        ExceptionFormatter formatter = defaultFormatter;
         for (ExceptionFormatter candidate : formatters) {
             if (candidate.canFormat(throwable.getClass())) {
                 formatter = candidate;
                 break;
             }
         }
-        if (formatter != null) {
-            formatter.write(pw, throwable);
-        } else {
-            defaultFormatter.write(pw, throwable);
-        }
-
+        formatter.write(pw, throwable);
 
         for (int i = 0; i <= m; i++) {
             pw.println("\tat " + trace[i]);
