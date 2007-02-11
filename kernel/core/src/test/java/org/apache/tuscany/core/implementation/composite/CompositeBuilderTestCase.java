@@ -23,7 +23,6 @@ import java.net.URI;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -93,7 +92,7 @@ public class CompositeBuilderTestCase extends TestCase {
         mgr.register(component); // manually register this
         component.start();
         CompositeComponent sourceComponent = (CompositeComponent) mgr.getComponent(SOURCE_COMPONENT);
-        assertTrue(sourceComponent.getChild("InnerSourceService") instanceof Service);
+        assertNotNull(sourceComponent.getInboundWire("InnerSourceService"));
         AtomicComponent innerSourceComponent = (AtomicComponent) mgr.getComponent(INNER_SOURCE_COMPONENT);
         Source innerSourceInstance = (Source) deploymentContext.getCompositeScope().getInstance(innerSourceComponent);
         assertNotNull(innerSourceInstance);

@@ -40,12 +40,12 @@ public class DuplicateRegistrationTestCase extends TestCase {
         parent.start();
 
         Service service1 = EasyMock.createMock(Service.class);
-        EasyMock.expect(service1.getUri()).andReturn(URI.create("service")).atLeastOnce();
+        EasyMock.expect(service1.getUri()).andReturn(URI.create("#service")).atLeastOnce();
         service1.stop();
         EasyMock.replay(service1);
 
         Service service2 = EasyMock.createMock(Service.class);
-        EasyMock.expect(service2.getUri()).andReturn(URI.create("service")).atLeastOnce();
+        EasyMock.expect(service2.getUri()).andReturn(URI.create("#service")).atLeastOnce();
         service2.stop();
         EasyMock.replay(service2);
 
@@ -64,12 +64,12 @@ public class DuplicateRegistrationTestCase extends TestCase {
         parent.start();
 
         Reference reference1 = EasyMock.createMock(Reference.class);
-        EasyMock.expect(reference1.getUri()).andReturn(URI.create("reference")).atLeastOnce();
+        EasyMock.expect(reference1.getUri()).andReturn(URI.create("#reference")).atLeastOnce();
         reference1.stop();
         EasyMock.replay(reference1);
 
         Reference reference2 = EasyMock.createMock(Reference.class);
-        EasyMock.expect(reference2.getUri()).andReturn(URI.create("reference")).atLeastOnce();
+        EasyMock.expect(reference2.getUri()).andReturn(URI.create("#reference")).atLeastOnce();
         reference2.stop();
         EasyMock.replay(reference2);
 
@@ -89,12 +89,12 @@ public class DuplicateRegistrationTestCase extends TestCase {
         parent.start();
 
         Service service1 = EasyMock.createMock(Service.class);
-        EasyMock.expect(service1.getUri()).andReturn(URI.create("child")).atLeastOnce();
+        EasyMock.expect(service1.getUri()).andReturn(URI.create("#child")).atLeastOnce();
         service1.stop();
         EasyMock.replay(service1);
 
         Reference service2 = EasyMock.createMock(Reference.class);
-        EasyMock.expect(service2.getUri()).andReturn(URI.create("child")).atLeastOnce();
+        EasyMock.expect(service2.getUri()).andReturn(URI.create("#child")).atLeastOnce();
         service2.stop();
         EasyMock.replay(service2);
 

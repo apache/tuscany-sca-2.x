@@ -89,13 +89,13 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
     public void testMoreThanOneServiceGetDefault() throws Exception {
         Service service1 = EasyMock.createMock(Service.class);
-        EasyMock.expect(service1.getUri()).andReturn(URI.create("service1")).atLeastOnce();
+        EasyMock.expect(service1.getUri()).andReturn(URI.create("#service1")).atLeastOnce();
         service1.getServiceBindings();
         EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(service1);
 
         Service service2 = EasyMock.createMock(Service.class);
-        EasyMock.expect(service2.getUri()).andReturn(URI.create("service2")).atLeastOnce();
+        EasyMock.expect(service2.getUri()).andReturn(URI.create("#service2")).atLeastOnce();
         service2.getServiceBindings();
         EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(service2);

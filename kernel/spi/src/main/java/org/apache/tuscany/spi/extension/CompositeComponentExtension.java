@@ -40,7 +40,6 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.Wire;
@@ -81,18 +80,9 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         return Collections.unmodifiableList(references);
     }
 
-
-    public SCAObject getChild(String name) {
-        return children.get(name);
-    }
-
     public void register(Service service) throws RegistrationException {
-        String name;
-        if (service.getUri().getFragment() != null) {
-            name = service.getUri().getFragment();
-        } else {
-            name = UriHelper.getBaseName(service.getUri());
-        }
+        String name = service.getUri().getFragment();
+        assert name != null;
         if (children.get(name) != null) {
             String uri = service.getUri().toString();
             throw new DuplicateNameException("A service or reference is already registered with the name", uri);
@@ -104,12 +94,8 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     }
 
     public void register(Reference reference) throws RegistrationException {
-        String name;
-        if (reference.getUri().getFragment() != null) {
-            name = reference.getUri().getFragment();
-        } else {
-            name = UriHelper.getBaseName(reference.getUri());
-        }
+        String name = reference.getUri().getFragment();
+        assert name != null;
         if (children.get(name) != null) {
             String uri = reference.getUri().toString();
             throw new DuplicateNameException("A service or reference is already registered with the name", uri);

@@ -90,7 +90,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
 
 
     private Reference createLocalReference(CompositeComponent parent, URI target) throws Exception {
-        URI uri = URI.create("reference");
+        URI uri = URI.create("#reference");
         referenceBinding = createLocalReferenceBinding(uri, target);
         Reference reference = new ReferenceImpl(uri, parent, contract);
         reference.addReferenceBinding(referenceBinding);
