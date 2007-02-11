@@ -105,6 +105,16 @@ public class DeployerImpl implements Deployer {
         this.resolver = resolver;
     }
 
+    @Autowire
+    public void setComponentManager(ComponentManager componentManager) {
+        this.componentManager = componentManager;
+    }
+
+    @Autowire
+    public void setConnector(Connector connector) {
+        this.connector = connector;
+    }
+
     public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                           ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, PrepareException, ResolutionException {
