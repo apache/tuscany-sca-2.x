@@ -62,7 +62,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(service);
         composite.register(service);
-        composite.register(getReference("bar"));
+        composite.register(getReference("#bar"));
     }
 
     public void testOnEvent() {

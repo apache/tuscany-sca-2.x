@@ -58,11 +58,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     void register(Reference reference) throws RegistrationException;
 
     /**
-     * Returns the child associated with a given name
-     */
-    SCAObject getChild(String name);
-
-    /**
      * Returns the services for the component
      *
      * @return the services for the component

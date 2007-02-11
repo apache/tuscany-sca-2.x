@@ -70,6 +70,7 @@ import org.easymock.EasyMock;
  */
 public abstract class AbstractConnectorImplTestCase extends TestCase {
     protected static final URI TARGET = URI.create("target");
+    protected static final URI SERVICE_TARGET = URI.create("#target");
     protected static final String TARGET_FRAGMENT = "Foo";
     protected static final URI TARGET_NAME = URI.create("target#Foo");
     protected static final String RESPONSE = "response";
@@ -176,11 +177,11 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
      *
      */
     protected Service createLocalService(CompositeComponent parent) throws WireConnectException {
-        LocalServiceBinding serviceBinding = new LocalServiceBinding(TARGET, parent);
+        LocalServiceBinding serviceBinding = new LocalServiceBinding(SERVICE_TARGET, parent);
         InboundInvocationChain targetInboundChain = new InboundInvocationChainImpl(operation);
         targetInboundChain.addInterceptor(new SynchronousBridgingInterceptor());
         InboundWire localServiceInboundWire = new InboundWireImpl();
-        localServiceInboundWire.setUri(TARGET);
+        localServiceInboundWire.setUri(SERVICE_TARGET);
         localServiceInboundWire.setServiceContract(contract);
         localServiceInboundWire.addInvocationChain(operation, targetInboundChain);
         localServiceInboundWire.setContainer(serviceBinding);
@@ -197,7 +198,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         serviceBinding.setOutboundWire(targetOutboundWire);
         // manually connect the service chains
         connector.connect(targetInboundChain, targetOutboundChain);
-        Service service = new ServiceImpl(TARGET, null, contract);
+        Service service = new ServiceImpl(SERVICE_TARGET, null, contract);
         service.addServiceBinding(serviceBinding);
         return service;
     }
