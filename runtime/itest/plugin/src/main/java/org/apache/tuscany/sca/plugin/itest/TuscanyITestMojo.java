@@ -156,7 +156,7 @@ public class TuscanyITestMojo extends AbstractMojo {
             throw new MojoExecutionException("Error initializing Tuscany runtime", e);
         }
         try {
-            log.debug("Deploying test SCDL from " + testScdl);
+            log.info("Deploying test SCDL from " + testScdl);
             try {
                 // fixme this should probably be an isolated classloader
                 ClassLoader testClassLoader = createTestClassLoader(getClass().getClassLoader());

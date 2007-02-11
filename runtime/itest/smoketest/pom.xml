@@ -31,6 +31,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api-r1.0</artifactId>
+            <version>1.0-incubator-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
