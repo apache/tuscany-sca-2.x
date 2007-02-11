@@ -148,5 +148,13 @@
         <system:implementation.system class="org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnitLoader"/>
     </component>
 
+    <component name="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentTypeLoader">
+        <system:implementation.system class="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentTypeLoader"/>
+    </component>
+
+    <component name="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentBuilder">
+        <system:implementation.system class="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentBuilder"/>
+    </component>
+
 
 </composite>
