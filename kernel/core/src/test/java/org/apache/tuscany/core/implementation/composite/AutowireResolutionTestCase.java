@@ -41,7 +41,7 @@ public class AutowireResolutionTestCase extends TestCase {
     public void testConstruction() {
         CompositeComponent parent = createMock(CompositeComponent.class);
         replay(parent);
-        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
+        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null);
         assertEquals("test", component.getUri().toString());
         assertSame(parent, component.getParent());
         verify(parent);
@@ -52,7 +52,7 @@ public class AutowireResolutionTestCase extends TestCase {
         InboundWire wire = TestUtils.createInboundWire(Foo.class, parent);
         EasyMock.expect(parent.resolveAutowire(eq(Foo.class))).andReturn(wire);
         replay(parent);
-        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
+        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null);
         assertSame(wire, component.resolveAutowire(Foo.class));
         verify(parent);
     }

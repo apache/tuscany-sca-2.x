@@ -48,7 +48,6 @@ public class OutboundWireImpl implements OutboundWire {
     private URI target;
     private InboundWire targetWire;
     private SCAObject container;
-    private boolean autowire;
     private boolean optimizable;
 
     /**

@@ -169,11 +169,11 @@ public class CompositeComponentExtensionAutowireTestCase extends TestCase {
         private boolean system;
 
         public MockComposite() throws URISyntaxException {
-            super(new URI("foo"), null, null, null);
+            super(new URI("foo"), null, null);
         }
 
         public MockComposite(boolean system) throws URISyntaxException {
-            super(new URI("foo"), null, null, null);
+            super(new URI("foo"), null, null);
             this.system = system;
         }
 

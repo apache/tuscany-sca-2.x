@@ -30,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
@@ -63,7 +62,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     protected final List<Reference> references = new ArrayList<Reference>();
 
     protected final Map<String, Document> propertyValues;
-    protected final Connector connector;
 
     // autowire mappings
     protected final Map<Class, InboundWire> autowireInternal = new ConcurrentHashMap<Class, InboundWire>();
@@ -74,13 +72,9 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
      */
     private TuscanyManagementService managementService;
 
-    protected CompositeComponentExtension(URI name,
-                                          CompositeComponent parent,
-                                          Connector connector,
-                                          Map<String, Document> propertyValues) {
+    protected CompositeComponentExtension(URI name, CompositeComponent parent, Map<String, Document> propertyValues) {
         super(name, parent);
         this.propertyValues = propertyValues;
-        this.connector = connector;
     }
 
     /**
