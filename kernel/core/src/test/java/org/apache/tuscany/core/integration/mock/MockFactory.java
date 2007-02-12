@@ -234,6 +234,7 @@ public final class MockFactory {
     private static <T> JavaAtomicComponent createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
         throws NoSuchMethodException, URISyntaxException {
         PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setImplementationClass(clazz);
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
         configuration.setWorkContext(new WorkContextImpl());
