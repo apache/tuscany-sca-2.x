@@ -121,7 +121,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             try {
                 StringBuilder buf = new StringBuilder();
                 for (String path : deploymentContext.getPathNames()) {
-                    buf.append(path).append("/");
+                    buf.append(path);
+                    if (path.charAt(path.length()-1) != '/') {
+                        buf.append('/');
+                    }
                 }
                 uri = new URI(buf + name);
             } catch (URISyntaxException e) {
