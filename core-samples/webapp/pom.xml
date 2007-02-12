@@ -29,4 +29,19 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany Core Samples Webapp</name>
     <description>Sample projects that run in the webapp environment.</description>
+
+    <modules>
+        <module>webcalc</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
+                <artifactId>webapp-api</artifactId>
+                <version>${kernelVersion}</version>
+                <scope>runtime</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
