@@ -37,9 +37,4 @@ public interface SCAObject extends EventPublisher, Lifecycle {
      */
     URI getUri();
 
-    /**
-     * Called to signal that the composite should perform any initizalization
-     */
-    void prepare() throws PrepareException;
-
 }

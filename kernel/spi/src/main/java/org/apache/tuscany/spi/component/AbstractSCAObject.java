@@ -97,10 +97,6 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
         return listeners;
     }
 
-    public void prepare() throws PrepareException {
-
-    }
-
     public String toString() {
         return "[" + uri.toString() + "] in state [" + super.toString() + ']';
     }

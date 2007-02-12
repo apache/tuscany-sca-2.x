@@ -25,7 +25,6 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
@@ -33,27 +32,30 @@ import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
 
 /**
- * Federated deployer that deploys components in response to asynchronous 
- * messages from the federated domain.
- * 
- * @version $Revision$ $Date$
+ * Federated deployer that deploys components in response to asynchronous messages from the federated domain.
  *
+ * @version $Revision$ $Date$
  */
 public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition, C extends Component> implements
     RequestListener {
 
-    /** Marshaller registry. */
+    /**
+     * Marshaller registry.
+     */
     private ModelMarshallerRegistry marshallerRegistry;
 
-    /** Physical component builder registry. */
+    /**
+     * Physical component builder registry.
+     */
     private PhysicalComponentBuilderRegistry builderRegistry;
 
     /**
      * Deploys the component.
+     *
      * @param content SCDL content.
      * @return Response to the request message.
-     * 
-     * TODO Handle response messages.
+     *         <p/>
+     *         TODO Handle response messages.
      */
     public XMLStreamReader onRequest(XMLStreamReader content) {
 
@@ -61,15 +63,11 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
 
             final PCD definition = unmarshallDefinition(content);
             final C component = buildComponent(definition);
-
-            component.prepare();
             component.start();
 
         } catch (MarshalException ex) {
             return null;
         } catch (BuilderException ex) {
-            return null;
-        } catch (PrepareException ex) {
             return null;
         }
 
@@ -78,6 +76,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
 
     /**
      * Injects the discovery service.
+     *
      * @param discoveryService Discovery service to be injected.
      */
     @Autowire
@@ -88,6 +87,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
 
     /**
      * Injects the model marshaller registry.
+     *
      * @param marshallerRegistry Marshaller registry.
      */
     @Autowire
@@ -97,6 +97,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
 
     /**
      * Injects the builder registry.
+     *
      * @param builderRegistry Builder registry.
      */
     @Autowire
@@ -106,6 +107,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
 
     /**
      * Gets the builder registry.
+     *
      * @return Return the builder registry.
      */
     protected PhysicalComponentBuilderRegistry getBuilderRegistry() {
@@ -114,6 +116,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
 
     /**
      * Gets the marshaller registry.
+     *
      * @return Return the marshaller registry.
      */
     protected ModelMarshallerRegistry getMarshallerRegistry() {
@@ -121,14 +124,16 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
     }
 
     /**
-     * Returns the qualified name of the root element of the marshalled component 
-     * definition this deployer is interested in. 
+     * Returns the qualified name of the root element of the marshalled component definition this deployer is interested
+     * in.
+     *
      * @return The qualified name of the document element.
      */
     protected abstract QName getQualifiedName();
 
     /**
      * Unmarshalls the XML stream to a component definition.
+     *
      * @param content XML content stream.
      * @return Physical component definition.
      * @throws MarshalException If unable to marshall the component definition.
@@ -137,6 +142,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
 
     /**
      * Builds the component from the physical component definition.
+     *
      * @param componentDefinition Component definition.
      * @return Component instance.
      * @throws BuilderException If unable to build the component.

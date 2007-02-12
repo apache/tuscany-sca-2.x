@@ -28,12 +28,12 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.event.Event;
@@ -45,9 +45,14 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.resolver.ResolutionException;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.api.annotation.Monitor;
+import org.apache.tuscany.core.builder.WireCreationException;
 import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
@@ -117,7 +122,7 @@ public class DeployerImpl implements Deployer {
 
     public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                           ComponentDefinition<I> componentDefinition)
-        throws LoaderException, BuilderException, PrepareException, ResolutionException {
+        throws LoaderException, BuilderException, ResolutionException {
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
@@ -138,7 +143,6 @@ public class DeployerImpl implements Deployer {
             }
         };
         component.addListener(listener);
-        component.prepare();
         connect(component, componentDefinition);
         return component;
     }
@@ -194,8 +198,24 @@ public class DeployerImpl implements Deployer {
             }
         } else {
             connector.connect(component);
+            // this will be refactored out, currently  for atomic 
+            for (InboundWire inboundWire : component.getInboundWires()) {
+                for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
+                    Operation<?> operation = chain.getOperation();
+                    String serviceName = inboundWire.getUri().getFragment();
+                    TargetInvoker invoker;
+                    try {
+                        invoker = component.createTargetInvoker(serviceName, operation, null);
+                    } catch (TargetInvokerCreationException e) {
+                        throw new WireCreationException("Error processing inbound wire", component.getUri(), e);
+                    }
+                    chain.setTargetInvoker(invoker);
+                    chain.prepare();
+                }
+            }
+
         }
 
     }
-    
+
 }

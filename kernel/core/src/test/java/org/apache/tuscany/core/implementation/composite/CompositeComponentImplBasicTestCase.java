@@ -82,11 +82,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         composite.onEvent(event);
     }
 
-    public void testPrepare() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
-        composite.prepare();
-    }
-
     private Reference getReference(String name) throws InvalidServiceContractException {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         InboundWire wire = TestUtils.createInboundWire(Bar.class);

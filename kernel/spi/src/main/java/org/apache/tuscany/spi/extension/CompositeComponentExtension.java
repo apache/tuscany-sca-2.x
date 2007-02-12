@@ -31,7 +31,6 @@ import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
-import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.RegistrationException;
@@ -200,15 +199,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
                 }
             }
             return map;
-        }
-    }
-
-    public void prepare() throws PrepareException {
-        for (Service service : services) {
-            service.prepare();
-        }
-        for (Reference reference : references) {
-            reference.prepare();
         }
     }
 

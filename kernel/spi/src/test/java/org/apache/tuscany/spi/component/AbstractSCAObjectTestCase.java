@@ -79,11 +79,6 @@ public class AbstractSCAObjectTestCase extends TestCase {
         assertNotNull(object.toString());
     }
 
-    public void testToPrepare() throws Exception {
-        SCAObject object = new TestSCAObject(new URI("foo"));
-        object.prepare();
-    }
-
     private class TestSCAObject extends AbstractSCAObject {
         public TestSCAObject(URI name) {
             super(name);
