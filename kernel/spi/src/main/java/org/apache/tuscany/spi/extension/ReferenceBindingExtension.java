@@ -23,7 +23,6 @@ import java.net.URI;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -41,10 +40,6 @@ public abstract class ReferenceBindingExtension extends AbstractSCAObject implem
 
     protected ReferenceBindingExtension(URI name) {
         super(name);
-    }
-
-    public Scope getScope() {
-        return Scope.SYSTEM;
     }
 
     public void setReference(Reference reference) {

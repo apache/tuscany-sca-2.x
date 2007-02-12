@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
@@ -47,10 +46,6 @@ public class ServiceImpl extends AbstractSCAObject implements Service {
         super(name);
         this.serviceContract = contract;
         this.targetUri = targetUri;
-    }
-
-    public Scope getScope() {
-        return Scope.SYSTEM;
     }
 
     public ServiceContract<?> getServiceContract() {

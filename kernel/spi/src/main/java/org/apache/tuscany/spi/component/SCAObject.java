@@ -22,7 +22,6 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.event.EventPublisher;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
  * Represents the base SCA artifact type in an assembly
@@ -37,11 +36,6 @@ public interface SCAObject extends EventPublisher, Lifecycle {
      * @return the artifact URI
      */
     URI getUri();
-
-    /**
-     * Returns the artifact scope
-     */
-    Scope getScope();
 
     /**
      * Called to signal that the composite should perform any initizalization

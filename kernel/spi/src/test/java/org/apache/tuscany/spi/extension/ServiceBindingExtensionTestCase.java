@@ -21,8 +21,6 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.Scope;
-
 import junit.framework.TestCase;
 
 /**
@@ -30,15 +28,6 @@ import junit.framework.TestCase;
  */
 public class ServiceBindingExtensionTestCase extends TestCase {
     private URI uri;
-
-    public void testScope() throws Exception {
-        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
-            public QName getBindingType() {
-                return null;
-            }
-        };
-        assertEquals(Scope.SYSTEM, binding.getScope());
-    }
 
     public void testPrepare() throws Exception {
         ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {

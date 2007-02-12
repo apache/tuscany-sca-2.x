@@ -408,7 +408,7 @@ public class ConnectorImpl implements Connector {
                 throw new TargetServiceNotFoundException("Target not found", sourceUri, targetUri);
             }
             assertWireable(outboundWire, targetWire, false);
-            boolean optimizable = isOptimizable(service.getScope(), targetComponent.getScope());
+            boolean optimizable = isOptimizable(Scope.SYSTEM, targetComponent.getScope());
             connect(outboundWire, targetWire, optimizable);
             connect(inboundWire, outboundWire, true);
         }
@@ -478,7 +478,7 @@ public class ConnectorImpl implements Connector {
                     }
                     assertWireable(outboundWire, targetWire, false);
                 }
-                boolean optimizable = isOptimizable(component.getScope(), component.getScope());
+                boolean optimizable = isOptimizable(component.getScope(), targetComponent.getScope());
                 connect(outboundWire, targetWire, optimizable);
             }
         }

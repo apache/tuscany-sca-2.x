@@ -309,9 +309,6 @@ public class WireServiceExtensionTestCase extends TestCase {
             return null;
         }
 
-        public Scope getScope() {
-            return null;
-        }
     }
 
 

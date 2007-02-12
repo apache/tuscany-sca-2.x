@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
@@ -41,10 +40,6 @@ public class ReferenceImpl extends AbstractSCAObject implements Reference {
     public ReferenceImpl(URI name, ServiceContract<?> contract) {
         super(name);
         this.serviceContract = contract;
-    }
-
-    public Scope getScope() {
-        return Scope.SYSTEM;
     }
 
     public ServiceContract<?> getServiceContract() {

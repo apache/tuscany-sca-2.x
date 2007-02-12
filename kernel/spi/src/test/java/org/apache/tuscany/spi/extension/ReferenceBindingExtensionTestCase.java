@@ -5,7 +5,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -15,11 +14,6 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class ReferenceBindingExtensionTestCase extends TestCase {
-
-    public void testScope() throws Exception {
-        ReferenceBindingExtension binding = new MockBindingExtension();
-        assertEquals(Scope.SYSTEM, binding.getScope());
-    }
 
     public void testPrepare() throws Exception {
         ReferenceBindingExtension binding = new MockBindingExtension();
