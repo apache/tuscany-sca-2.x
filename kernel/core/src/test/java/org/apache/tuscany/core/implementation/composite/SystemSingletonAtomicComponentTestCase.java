@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.net.URI;
 
 import org.apache.tuscany.spi.component.TargetException;
 
@@ -48,7 +48,13 @@ public class SystemSingletonAtomicComponentTestCase extends TestCase {
         assertEquals(foo, component.getTargetInstance());
     }
 
-    
+    public void testOptimizable() {
+        FooImpl foo = new FooImpl();
+        SystemSingletonAtomicComponent<Foo, FooImpl> component =
+            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), Foo.class, foo);
+        assertTrue(component.isOptimizable());
+    }
+
     private interface Foo {
 
     }
