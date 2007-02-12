@@ -65,6 +65,7 @@ public class JUnitComponentBuilder extends ComponentBuilderExtension<Implementat
                                  DeploymentContext deployment) throws BuilderConfigException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             definition.getImplementation().getComponentType();
+        Class<?> implClass = componentType.getImplClass();
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
@@ -90,13 +91,7 @@ public class JUnitComponentBuilder extends ComponentBuilderExtension<Implementat
         configuration.setWireService(wireService);
         configuration.setWorkContext(workContext);
         configuration.setScheduler(workScheduler);
-        String className = definition.getImplementation().getClassName();
-        try {
-            configuration.setImplementationClass(deployment.getClassLoader().loadClass(className));
-        } catch (ClassNotFoundException e) {
-            // fixme
-            throw new RuntimeException();
-        }
+        configuration.setImplementationClass(implClass);
 
         // setup property injection sites
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {

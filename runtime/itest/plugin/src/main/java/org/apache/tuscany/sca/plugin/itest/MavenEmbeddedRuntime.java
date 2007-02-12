@@ -29,7 +29,9 @@ import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $Rev$ $Date$
@@ -59,6 +61,12 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
     public Component deployTestScdl(ComponentDefinition<CompositeImplementation> definition) throws Exception {
         Deployer deployer = getDeployer();
         return deployer.deploy(null, definition);
+    }
+
+    public void executeTest(URI componentId, Operation<?> operation) throws Exception {
+        Component testComponent = getComponentManager().getComponent(componentId);
+        TargetInvoker targetInvoker = testComponent.createTargetInvoker("testService", operation, null);
+        targetInvoker.invokeTarget(null, TargetInvoker.NONE);
     }
 
     protected Deployer getDeployer() {

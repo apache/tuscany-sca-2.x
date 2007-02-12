@@ -51,8 +51,10 @@ import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnit;
 
 /**
@@ -171,7 +173,7 @@ public class TuscanyITestMojo extends AbstractMojo {
             try {
                 // fixme this should probably be an isolated classloader
                 ClassLoader testClassLoader = createTestClassLoader(getClass().getClassLoader());
-                URI name = URI.create("itest://testDomain/");
+                URI name = URI.create("itest://localhost/testDomain/");
                 CompositeImplementation impl = new CompositeImplementation();
                 impl.setScdlLocation(testScdl.toURI().toURL());
                 impl.setClassLoader(testClassLoader);
@@ -179,7 +181,8 @@ public class TuscanyITestMojo extends AbstractMojo {
                 ComponentDefinition<CompositeImplementation> definition =
                     new ComponentDefinition<CompositeImplementation>(name, impl);
                 Component testComponent = runtime.deployTestScdl(definition);
-                testSuite = createTestSuite(definition, testComponent);
+                testSuite = createTestSuite(runtime, definition, testComponent);
+                testComponent.start();
             } catch (Exception e) {
                 throw new MojoExecutionException("Error deploying test component " + testScdl, e);
             }
@@ -272,10 +275,11 @@ public class TuscanyITestMojo extends AbstractMojo {
         return new URLClassLoader(urls, parent);
     }
 
-    protected SurefireTestSuite createTestSuite(ComponentDefinition<CompositeImplementation> definition,
-                                                Component testComponent) {
+    protected SurefireTestSuite createTestSuite(MavenEmbeddedRuntime runtime,
+                                                ComponentDefinition<CompositeImplementation> definition,
+                                                Component testComponent) throws MojoExecutionException {
         SCATestSuite suite = new SCATestSuite();
-        String uriBase = testComponent.getUri().toString();
+        URI uriBase = testComponent.getUri();
 
         CompositeImplementation impl = definition.getImplementation();
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();
@@ -285,18 +289,25 @@ public class TuscanyITestMojo extends AbstractMojo {
             ComponentDefinition<? extends Implementation<?>> junitDefinition = entry.getValue();
             Implementation<?> implementation = junitDefinition.getImplementation();
             if (ImplementationJUnit.class.isAssignableFrom(implementation.getClass())) {
-                String testSetName = uriBase + name;
-                SCATestSet testSet = createTestSet(testSetName, junitDefinition);
+                URI testSetName = uriBase.resolve(name);
+                SCATestSet testSet = createTestSet(runtime, testSetName, junitDefinition);
                 suite.add(testSet);
             }
         }
         return suite;
     }
 
-    protected SCATestSet createTestSet(String name, ComponentDefinition definition) {
+    protected SCATestSet createTestSet(MavenEmbeddedRuntime runtime,
+                                       URI name,
+                                       ComponentDefinition definition) throws MojoExecutionException {
         ImplementationJUnit impl = (ImplementationJUnit) definition.getImplementation();
         PojoComponentType componentType = impl.getComponentType();
         Map services = componentType.getServices();
-        return new SCATestSet(name, 1);
+        JavaMappedService testService = (JavaMappedService) services.get("testService");
+        if (testService == null) {
+            throw new MojoExecutionException("No testServic defined on component: " + definition.getUri());
+        }
+        Map<String, ? extends Operation<?>> operations = testService.getServiceContract().getOperations();
+        return new SCATestSet(runtime, name, operations.values());
     }
 }
