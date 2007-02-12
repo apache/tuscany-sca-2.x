@@ -21,7 +21,6 @@ package org.apache.tuscany.spi.component;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
