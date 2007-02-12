@@ -251,21 +251,26 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         }
         URI targetURI;
         QualifiedName qName = new QualifiedName(target);
-        StringBuilder buf = new StringBuilder();
         List<String> names = deploymentContext.getPathNames();
-        for (int i = 0; i < names.size() - 1; i++) {
-            buf.append("/");
-        }
-        if (names.size() > 0) {
+        String path;
+        if (names.size() == 0) {
+            path = "/";
+        } else {
+            StringBuilder buf = new StringBuilder();
+            for (int i = 0; i < names.size() - 1; i++) {
+                buf.append(names.get(i)).append("/");
+            }
             buf.append(names.get(names.size() - 1));
+            if (buf.charAt(buf.length()-1) != '/') {
+                buf.append('/');
+            }
+            path = buf.toString();
         }
-        String path = buf.toString();
         try {
-            if (qName.getPortName() == null) {
-                targetURI = new URI(path + "/" + qName.getPartName());
-            } else {
-                targetURI =
-                    new URI(path + "/" + qName.getPartName() + "#" + qName.getPortName());
+            URI uri = new URI(path);
+            targetURI = uri.resolve(qName.getPartName());
+            if (qName.getPortName() != null) {
+                targetURI = targetURI.resolve('#' + qName.getPortName());
             }
         } catch (URISyntaxException e) {
             throw new InvalidReferenceException("Illegal URI", name, e);
