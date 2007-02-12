@@ -182,6 +182,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.replay(parent);
         PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setImplementationClass(TargetImpl.class);
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.setParent(parent);
         configuration.setWorkContext(workContext);

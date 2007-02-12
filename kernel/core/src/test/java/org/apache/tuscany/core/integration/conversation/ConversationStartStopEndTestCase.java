@@ -47,7 +47,7 @@ import org.easymock.classextension.EasyMock;
  */
 public class ConversationStartStopEndTestCase extends AbstractConversationTestCase {
     private OutboundWire owire;
-    private Foo targetInstance;
+    private FooImpl targetInstance;
     private JDKOutboundInvocationHandler handler;
     private Method operation1;
     private Method operation2;
@@ -76,7 +76,7 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
         super.setUp();
         createRuntime();
         initializeRuntime();
-        targetInstance = EasyMock.createMock(Foo.class);
+        targetInstance = EasyMock.createMock(FooImpl.class);
         targetInstance.operation1();
         targetInstance.operation2();
         targetInstance.end();
@@ -109,19 +109,20 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
     private JavaAtomicComponent createAtomicComponent() throws Exception {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName(new URI("target"));
-        configuration.setInstanceFactory(new MockPojoFactory(Object.class.getConstructor()));
+        configuration.setInstanceFactory(new MockPojoFactory(FooImpl.class.getConstructor()));
+        configuration.setImplementationClass(FooImpl.class);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(container);
         component.start();
         return component;
     }
 
-    private class MockPojoFactory extends PojoObjectFactory<Object> {
-        public MockPojoFactory(Constructor<Object> ctr) {
+    private class MockPojoFactory extends PojoObjectFactory<FooImpl> {
+        public MockPojoFactory(Constructor<FooImpl> ctr) {
             super(ctr);
         }
 
-        public Foo getInstance() throws ObjectCreationException {
+        public FooImpl getInstance() throws ObjectCreationException {
             return targetInstance;
         }
     }
@@ -138,4 +139,16 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
 
     }
 
+    public static class FooImpl implements Foo {
+
+        public void operation1() {
+        }
+
+        public void operation2() {
+        }
+
+        @EndConversation
+        public void end() {
+        }
+    }
 }

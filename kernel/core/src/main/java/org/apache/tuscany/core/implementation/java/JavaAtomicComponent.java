@@ -58,7 +58,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
             methods = callbackClass.getMethods();
 
         } else {
-            methods = operation.getServiceContract().getInterfaceClass().getMethods();
+            methods = implementationClass.getMethods();
         }
         Method method = findMethod(operation, methods);
         return new JavaTargetInvoker(method, this, callbackWire, callbackClass, workContext, monitor);
