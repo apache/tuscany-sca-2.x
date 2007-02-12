@@ -18,11 +18,17 @@
  */
 package org.apache.tuscany.sca.plugin.itest.implementation.junit;
 
-import java.net.URL;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Collections;
+import java.net.URI;
 
 import org.osoa.sca.annotations.Constructor;
 
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -37,11 +43,15 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.DataType;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<ImplementationJUnit> {
+    private static final URI TEST_SERVICE_NAME = URI.create("#testService");
     private Introspector introspector;
 
     @Constructor({"registry", "introspector"})
@@ -66,13 +76,7 @@ public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<Imple
         } catch (ClassNotFoundException e) {
             throw new MissingResourceException(className, e);
         }
-        URL resource = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
-        PojoComponentType componentType;
-        if (resource == null) {
-            componentType = loadByIntrospection(parent, implementation, deploymentContext, implClass);
-        } else {
-            componentType = loadFromSidefile(parent, resource, deploymentContext);
-        }
+        PojoComponentType componentType = loadByIntrospection(parent, implementation, deploymentContext, implClass);
         implementation.setComponentType(componentType);
     }
 
@@ -81,16 +85,65 @@ public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<Imple
                                                     DeploymentContext deploymentContext,
                                                     Class<?> implClass) throws ProcessingException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>(implClass);
         introspector.introspect(parent, implClass, componentType, deploymentContext);
+
+        if (componentType.getInitMethod() == null) {
+            componentType.setInitMethod(getCallback(implClass, "setUp"));
+        }
+        if (componentType.getDestroyMethod() == null) {
+            componentType.setDestroyMethod(getCallback(implClass, "tearDown"));
+        }
+        ServiceContract testContract = generateTestContract(implClass);
+        JavaMappedService testService = new JavaMappedService(TEST_SERVICE_NAME, testContract, false);
+        componentType.add(testService);
         return componentType;
     }
 
-    protected PojoComponentType loadFromSidefile(CompositeComponent parent,
-                                                 URL url,
-                                                 DeploymentContext deploymentContext) throws LoaderException {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        return loaderRegistry.load(parent, componentType, url, PojoComponentType.class, deploymentContext);
+    protected Method getCallback(Class<?> implClass, String name) {
+        while (Object.class != implClass) {
+            try {
+                Method callback = implClass.getDeclaredMethod(name);
+                callback.setAccessible(true);
+                return callback;
+            } catch (NoSuchMethodException e) {
+                implClass = implClass.getSuperclass();
+                continue;
+            }
+        }
+        return null;
+    }
+
+    private static final DataType<List<DataType<Type>>> INPUT_TYPE;
+    private static final DataType<Type> OUTPUT_TYPE;
+    private static final List<DataType<Type>> FAULT_TYPE;
+    static {
+        List<DataType<Type>> paramDataTypes = Collections.emptyList();
+        INPUT_TYPE = new DataType<List<DataType<Type>>>("idl:input", Object[].class, paramDataTypes);
+        OUTPUT_TYPE = new DataType<Type>(null, void.class, void.class);
+        FAULT_TYPE = Collections.emptyList();
+    }
+
+    protected ServiceContract generateTestContract(Class<?> implClass) {
+        Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
+        for (Method method : implClass.getMethods()) {
+            // see if this is a test method
+            if (Modifier.isStatic(method.getModifiers())) {
+                continue;
+            }
+            if (method.getReturnType() != void.class) {
+                continue;
+            }
+            if (method.getParameterTypes().length != 0) {
+                continue;
+            }
+            String name = method.getName();
+            if (name.length() < 5 || !name.startsWith("test")) {
+                continue;
+            }
+            Operation<Type> operation = new Operation<Type>(name, INPUT_TYPE, OUTPUT_TYPE, FAULT_TYPE);
+            operations.put(name, operation);
+        }
+        return new JUnitServiceContract(operations);
     }
 }

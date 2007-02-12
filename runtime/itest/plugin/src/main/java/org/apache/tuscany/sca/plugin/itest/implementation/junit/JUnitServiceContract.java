@@ -16,19 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.runtime.itest.smoketest;
+package org.apache.tuscany.sca.plugin.itest.implementation.junit;
 
-import junit.framework.TestCase;
-import org.osoa.sca.annotations.Reference;
+import java.util.Map;
+import java.lang.reflect.Type;
+
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Operation;
 
 /**
  * @version $Rev$ $Date$
  */
-public class BasicTestComponent extends TestCase {
-    @Reference
-    public HelloService hello;
+public class JUnitServiceContract extends ServiceContract<Type> {
 
-    public void testGreeting() {
-//        assertEquals("Hello World", hello.getGreeting());
+    public JUnitServiceContract(Map<String, Operation<Type>> operations) {
+        setOperations(operations);
     }
 }

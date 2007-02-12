@@ -18,31 +18,45 @@
  */
 package org.apache.tuscany.sca.plugin.itest;
 
+import java.util.Collection;
+import java.net.URI;
+
 import org.apache.maven.surefire.testset.SurefireTestSet;
 import org.apache.maven.surefire.testset.TestSetFailedException;
 import org.apache.maven.surefire.report.ReporterManager;
+
+import org.apache.tuscany.spi.model.Operation;
 
 /**
  * @version $Rev$ $Date$
  */
 public class SCATestSet implements SurefireTestSet {
-    private final String name;
-    private final int testCount;
+    private final MavenEmbeddedRuntime runtime;
+    private final URI name;
+    private final Collection<? extends Operation<?>> operations;
 
-    public SCATestSet(String name, int testCount) {
+    public SCATestSet(MavenEmbeddedRuntime runtime, URI name, Collection<? extends Operation<?>> operations) {
+        this.runtime = runtime;
         this.name = name;
-        this.testCount = testCount;
+        this.operations = operations;
     }
 
     public void execute(ReporterManager reporterManager, ClassLoader classLoader) throws TestSetFailedException {
+        for (Operation<?> operation : operations) {
+            try {
+                runtime.executeTest(name, operation);
+            } catch (Exception e) {
+                throw new TestSetFailedException(e);
+            }
+        }
     }
 
     public int getTestCount() {
-        return testCount;
+        return operations.size();
     }
 
     public String getName() {
-        return name;
+        return name.toString();
     }
 
     public Class getTestClass() {
