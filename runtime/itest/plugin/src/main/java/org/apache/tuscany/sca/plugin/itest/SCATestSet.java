@@ -24,6 +24,7 @@ import java.net.URI;
 import org.apache.maven.surefire.testset.SurefireTestSet;
 import org.apache.maven.surefire.testset.TestSetFailedException;
 import org.apache.maven.surefire.report.ReporterManager;
+import org.apache.maven.surefire.report.ReportEntry;
 
 import org.apache.tuscany.spi.model.Operation;
 
@@ -32,20 +33,25 @@ import org.apache.tuscany.spi.model.Operation;
  */
 public class SCATestSet implements SurefireTestSet {
     private final MavenEmbeddedRuntime runtime;
-    private final URI name;
+    private final String name;
+    private final URI uri;
     private final Collection<? extends Operation<?>> operations;
 
-    public SCATestSet(MavenEmbeddedRuntime runtime, URI name, Collection<? extends Operation<?>> operations) {
+    public SCATestSet(MavenEmbeddedRuntime runtime, String name, URI uri, Collection<? extends Operation<?>> operations) {
         this.runtime = runtime;
         this.name = name;
+        this.uri = uri;
         this.operations = operations;
     }
 
     public void execute(ReporterManager reporterManager, ClassLoader classLoader) throws TestSetFailedException {
         for (Operation<?> operation : operations) {
+            reporterManager.testStarting(new ReportEntry(this, operation.getName(), getName()));
             try {
-                runtime.executeTest(name, operation);
+                runtime.executeTest(uri, operation);
+                reporterManager.testSucceeded(new ReportEntry(this, operation.getName(), getName()));
             } catch (Exception e) {
+                reporterManager.testFailed(new ReportEntry(this, operation.getName(), getName()));
                 throw new TestSetFailedException(e);
             }
         }
@@ -56,7 +62,7 @@ public class SCATestSet implements SurefireTestSet {
     }
 
     public String getName() {
-        return name.toString();
+        return name;
     }
 
     public Class getTestClass() {

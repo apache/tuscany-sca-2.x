@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.apache.maven.surefire.suite.SurefireTestSuite;
 import org.apache.maven.surefire.report.ReporterManager;
 import org.apache.maven.surefire.report.ReporterException;
+import org.apache.maven.surefire.report.ReportEntry;
 import org.apache.maven.surefire.testset.TestSetFailedException;
 
 /**
@@ -66,7 +67,10 @@ public class SCATestSuite implements SurefireTestSuite {
 
     protected void execute(SCATestSet testSet, ReporterManager reporterManager, ClassLoader classLoader)
         throws ReporterException, TestSetFailedException {
+        reporterManager.testSetStarting(new ReportEntry(this, testSet.getName(), "Starting"));
         testSet.execute(reporterManager, classLoader);
+        reporterManager.testSetCompleted(new ReportEntry(this, testSet.getName(), "Completed"));
+        reporterManager.reset();
     }
 
     public Map locateTestSets(ClassLoader classLoader) throws TestSetFailedException {

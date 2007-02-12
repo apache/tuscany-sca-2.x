@@ -20,15 +20,14 @@ package org.apache.tuscany.sca.plugin.itest;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -38,6 +37,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.surefire.report.BriefConsoleReporter;
 import org.apache.maven.surefire.report.BriefFileReporter;
 import org.apache.maven.surefire.report.Reporter;
 import org.apache.maven.surefire.report.ReporterException;
@@ -47,15 +47,15 @@ import org.apache.maven.surefire.testset.TestSetFailedException;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
 import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnit;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnit;
 
 /**
  * @version $Rev$ $Date$
@@ -207,7 +207,7 @@ public class TuscanyITestMojo extends AbstractMojo {
         try {
             Properties status = new Properties();
             boolean success = run(testSuite, status);
-            getLog().info("Test results: "+status);
+            getLog().debug("Test results: "+status);
             return success;
         } catch (ReporterException e) {
             throw new MojoExecutionException(e.getMessage(), e);
@@ -219,8 +219,9 @@ public class TuscanyITestMojo extends AbstractMojo {
     public boolean run(SurefireTestSuite suite, Properties status) throws ReporterException, TestSetFailedException {
         int totalTests = suite.getNumTests();
 
-        Reporter reporter = new BriefFileReporter(reportsDirectory, trimStackTrace);
-        List<Reporter> reports = Collections.singletonList(reporter);
+        List<Reporter> reports = new ArrayList<Reporter>();
+        reports.add(new BriefFileReporter(reportsDirectory, trimStackTrace));
+        reports.add(new BriefConsoleReporter(trimStackTrace));
         ReporterManager reporterManager = new ReporterManager(reports);
         reporterManager.initResultsFromProperties(status);
 
@@ -289,8 +290,8 @@ public class TuscanyITestMojo extends AbstractMojo {
             ComponentDefinition<? extends Implementation<?>> junitDefinition = entry.getValue();
             Implementation<?> implementation = junitDefinition.getImplementation();
             if (ImplementationJUnit.class.isAssignableFrom(implementation.getClass())) {
-                URI testSetName = uriBase.resolve(name);
-                SCATestSet testSet = createTestSet(runtime, testSetName, junitDefinition);
+                URI uri = uriBase.resolve(name);
+                SCATestSet testSet = createTestSet(runtime, name, uri, junitDefinition);
                 suite.add(testSet);
             }
         }
@@ -298,7 +299,8 @@ public class TuscanyITestMojo extends AbstractMojo {
     }
 
     protected SCATestSet createTestSet(MavenEmbeddedRuntime runtime,
-                                       URI name,
+                                       String name,
+                                       URI uri,
                                        ComponentDefinition definition) throws MojoExecutionException {
         ImplementationJUnit impl = (ImplementationJUnit) definition.getImplementation();
         PojoComponentType componentType = impl.getComponentType();
@@ -308,6 +310,6 @@ public class TuscanyITestMojo extends AbstractMojo {
             throw new MojoExecutionException("No testServic defined on component: " + definition.getUri());
         }
         Map<String, ? extends Operation<?>> operations = testService.getServiceContract().getOperations();
-        return new SCATestSet(runtime, name, operations.values());
+        return new SCATestSet(runtime, name, uri, operations.values());
     }
 }
