@@ -51,7 +51,7 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
     private static final String SIMPLE_JAVA_OBJECTS = "java.lang.Object";
 
     private static final Class[] SIMPLE_JAVA_TYPES =
-        {Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Date.class,
+    {Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Date.class,
         Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class, BigInteger.class,
         BigDecimal.class};
 

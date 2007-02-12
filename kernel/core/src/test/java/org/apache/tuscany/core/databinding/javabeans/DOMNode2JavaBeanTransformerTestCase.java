@@ -46,15 +46,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class DOMNode2JavaBeanTransformerTestCase extends TestCase {
-
-   private DOMNode2JavaBeanTransformer dom2JavaTransformer = new DOMNode2JavaBeanTransformer();
-
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+    private DOMNode2JavaBeanTransformer dom2JavaTransformer = new DOMNode2JavaBeanTransformer();
 
     public void testFieldSettings() throws Exception {
         String samplePropertyXML =
@@ -121,12 +113,14 @@ public class DOMNode2JavaBeanTransformerTestCase extends TestCase {
 
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
 
-    public static class SamplePropertyBean {
-
+    private static class SamplePropertyBean {
+        public boolean[] boolArray;
         private float floatNumber = 50;
         private SamplePropertyBean innerProperty;
-        public boolean[] boolArray;
         private double doubleNumber = 75;
         private int integerNumber = 25;
         private String[] stringArray;
