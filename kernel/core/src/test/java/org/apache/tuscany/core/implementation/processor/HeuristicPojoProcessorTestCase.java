@@ -61,7 +61,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         processor.visitEnd(null, SingleInterfaceImpl.class, type, null);
         assertEquals(1, type.getServices().size());
         assertEquals(PropertyInterface.class,
-            type.getServices().get(PropertyInterface.class.getName())
+            type.getServices().get(PropertyInterface.class.getSimpleName())
                 .getServiceContract().getInterfaceClass());
         assertTrue(type.getProperties().isEmpty());
         assertTrue(type.getReferences().isEmpty());
@@ -79,7 +79,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         processor.visitEnd(null, SingleInterfaceWithPropertyReferenceImpl.class, type, null);
         assertEquals(1, type.getServices().size());
         assertEquals(Interface1.class,
-            type.getServices().get(Interface1.class.getName())
+            type.getServices().get(Interface1.class.getSimpleName())
                 .getServiceContract().getInterfaceClass());
         assertEquals(1, type.getProperties().size());
         assertEquals(ComplexProperty.class, type.getProperties().get("property").getJavaType());
@@ -156,7 +156,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         Constructor<Child> ctor = Child.class.getConstructor();
         type.setConstructorDefinition(new ConstructorDefinition<Child>(ctor));
         processor.visitEnd(null, Child.class, type, null);
-        assertTrue(type.getServices().containsKey(Interface1.class.getName()));
+        assertTrue(type.getServices().containsKey(Interface1.class.getSimpleName()));
     }
 
     /**

@@ -54,7 +54,7 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
         CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
         SystemImplementation impl = new SystemImplementation(BasicInterfaceImpl.class);
         PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(parent, impl, null);
-        ServiceDefinition service = componentType.getServices().get(BasicInterface.class.getName());
+        ServiceDefinition service = componentType.getServices().get(BasicInterface.class.getSimpleName());
         assertEquals(BasicInterface.class, service.getServiceContract().getInterfaceClass());
         Property<?> property = componentType.getProperties().get("publicProperty");
         assertEquals(String.class, property.getJavaType());

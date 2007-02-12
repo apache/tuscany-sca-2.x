@@ -80,7 +80,7 @@ public class RubyIntrospector {
             try {
                 ServiceContract<?> sc = processorRegistry.introspect(Class.forName(serviceClass));
                 service.setServiceContract(sc);
-                service.setName(sc.getInterfaceClass().getName());
+                service.setName(sc.getInterfaceClass().getSimpleName());
                 componentType.add(service);
             } catch (ClassNotFoundException e) {
                 throw new MissingResourceException("Interface not found", e);

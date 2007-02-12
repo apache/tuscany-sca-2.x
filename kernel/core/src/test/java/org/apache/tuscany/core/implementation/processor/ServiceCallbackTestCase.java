@@ -46,7 +46,7 @@ public class ServiceCallbackTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(null, FooImpl.class, type, null);
-        JavaMappedService service = type.getServices().get(Foo.class.getName());
+        JavaMappedService service = type.getServices().get(Foo.class.getSimpleName());
         assertNotNull(service);
         Method method = FooImpl.class.getMethod("setCallback", FooCallback.class);
         processor.visitMethod(null, method, type, null);
@@ -57,7 +57,7 @@ public class ServiceCallbackTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(null, FooImpl.class, type, null);
-        JavaMappedService service = type.getServices().get(Foo.class.getName());
+        JavaMappedService service = type.getServices().get(Foo.class.getSimpleName());
         assertNotNull(service);
         Field field = FooImpl.class.getDeclaredField("callback");
         processor.visitField(null, field, type, null);
