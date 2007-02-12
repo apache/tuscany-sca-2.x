@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.plugin.itest;
 
-import java.io.File;
 import java.net.URI;
 
 import org.apache.tuscany.core.runtime.AbstractRuntime;
@@ -57,17 +56,9 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
         this.artifactRepository = artifactRepository;
     }
 
-    public void deployTestScdl(File testScdl, ClassLoader testClassLoader) throws Exception {
+    public Component deployTestScdl(ComponentDefinition<CompositeImplementation> definition) throws Exception {
         Deployer deployer = getDeployer();
-
-        URI name = URI.create("itest://testDomain/");
-        CompositeImplementation impl = new CompositeImplementation();
-        impl.setScdlLocation(testScdl.toURI().toURL());
-        impl.setClassLoader(testClassLoader);
-
-        ComponentDefinition<CompositeImplementation> definition =
-            new ComponentDefinition<CompositeImplementation>(name, impl);
-        Component testComponent = deployer.deploy(null, definition);
+        return deployer.deploy(null, definition);
     }
 
     protected Deployer getDeployer() {
