@@ -122,7 +122,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 StringBuilder buf = new StringBuilder();
                 for (String path : deploymentContext.getPathNames()) {
                     buf.append(path);
-                    if (path.charAt(path.length()-1) != '/') {
+                    if (path.charAt(path.length() - 1) != '/') {
                         buf.append('/');
                     }
                 }
@@ -261,7 +261,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 buf.append(names.get(i)).append("/");
             }
             buf.append(names.get(names.size() - 1));
-            if (buf.charAt(buf.length()-1) != '/') {
+            if (buf.charAt(buf.length() - 1) != '/') {
                 buf.append('/');
             }
             path = buf.toString();
