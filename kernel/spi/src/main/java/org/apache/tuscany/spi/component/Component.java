@@ -26,6 +26,7 @@ import org.osoa.sca.ComponentContext;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.PropertyValue;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -36,6 +37,13 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $$Rev$$ $$Date$$
  */
 public interface Component extends SCAObject {
+
+    /**
+     * Returns the component scope
+     *
+     * @return the component scope
+     */
+    Scope getScope();
 
     /**
      * Returns the SCA ComponentContext for this component.

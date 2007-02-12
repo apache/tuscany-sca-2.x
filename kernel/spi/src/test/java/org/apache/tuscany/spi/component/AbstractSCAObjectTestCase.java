@@ -24,7 +24,6 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.event.TrueFilter;
-import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -88,10 +87,6 @@ public class AbstractSCAObjectTestCase extends TestCase {
     private class TestSCAObject extends AbstractSCAObject {
         public TestSCAObject(URI name) {
             super(name);
-        }
-
-        public Scope getScope() {
-            return null;
         }
 
     }

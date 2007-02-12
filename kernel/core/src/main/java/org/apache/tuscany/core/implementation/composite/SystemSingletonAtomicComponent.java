@@ -74,7 +74,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         }
     }
 
-
     public SystemSingletonAtomicComponent(URI name, List<Class<?>> services, T instance) {
         super(name);
         this.instance = instance;

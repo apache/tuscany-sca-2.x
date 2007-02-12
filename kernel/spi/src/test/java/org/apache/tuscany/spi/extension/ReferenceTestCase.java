@@ -26,7 +26,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -43,11 +42,6 @@ import static org.easymock.EasyMock.replay;
  * @version $Rev$ $Date$
  */
 public class ReferenceTestCase extends TestCase {
-
-    public void testScope() throws Exception {
-        TestReferenceBinding ref = new TestReferenceBinding();
-        assertEquals(Scope.SYSTEM, ref.getScope());
-    }
 
     public void testPrepare() throws Exception {
         InboundInvocationChain chain = createMock(InboundInvocationChain.class);

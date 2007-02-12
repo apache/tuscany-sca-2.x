@@ -83,6 +83,7 @@ public class SystemWireConnectionTestCase extends TestCase {
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(target.getUri()).andReturn(URI.create("scasystem://target")).atLeastOnce();
         EasyMock.expect(target.isOptimizable()).andReturn(true);
+        EasyMock.expect(target.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.expect(target.getTargetWire("bar")).andReturn(inbound).atLeastOnce();
 
         EasyMock.replay(target);
