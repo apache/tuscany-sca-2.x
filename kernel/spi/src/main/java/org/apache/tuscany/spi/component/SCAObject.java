@@ -51,13 +51,6 @@ public interface SCAObject extends EventPublisher, Lifecycle {
     Scope getScope();
 
     /**
-     * The extensions map contains other runtime context such as type systems for various databindings
-     *
-     * @return A live map of extended context
-     */
-    Map<Object, Object> getExtensions();
-
-    /**
      * Called to signal that the composite should perform any initizalization
      */
     void prepare() throws PrepareException;

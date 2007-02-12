@@ -202,6 +202,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
 
     public void prepare() throws PrepareException {
+        // JFM REMOVE
         // connect inbound wires for atomic components
         for (InboundWire inboundWire : getInboundWires()) {
             for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
