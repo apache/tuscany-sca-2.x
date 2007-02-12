@@ -35,11 +35,8 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
     // Component Id.
     private final URI componentId;
 
-    // Inbound wires
-    private final Set<WireDefinition> inboundWires = new HashSet<WireDefinition>();
-
-    // Outbound wires
-    private final Set<WireDefinition> outboundWires = new HashSet<WireDefinition>();
+    // Wires
+    private final Set<WireDefinition> wires = new HashSet<WireDefinition>();
 
     /**
      * Initializes the component id.
@@ -65,48 +62,25 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
     }
 
     /**
-     * Returns a read-only view of the inbound wires.
+     * Returns a read-only view of the wires.
      *
-     * @return List of inbound wires available on the component.
+     * @return List of wires available on the component.
      */
-    public Set<WireDefinition> getInboundWires() {
-        return Collections.unmodifiableSet(inboundWires);
+    public Set<WireDefinition> getWires() {
+        return Collections.unmodifiableSet(wires);
     }
 
     /**
-     * Adds an inbound wire.
+     * Adds an wire.
      *
-     * @param inboundWire Inbound wire to add to the component.
+     * @param wire Wire to add to the component.
      */
-    public void addInboundWire(WireDefinition inboundWire) {
+    public void addWire(WireDefinition wire) {
 
-        if (inboundWire == null) {
-            throw new IllegalArgumentException("Inbound wire is null");
+        if (wire == null) {
+            throw new IllegalArgumentException("Wire is null");
         }
-        inboundWires.add(inboundWire);
-
-    }
-
-    /**
-     * Returns a read-only view of the outbound wires.
-     *
-     * @return List of outbound wires available on the component.
-     */
-    public Set<WireDefinition> getOutboundWires() {
-        return Collections.unmodifiableSet(outboundWires);
-    }
-
-    /**
-     * Adds an outbound wire.
-     *
-     * @param outboundWire Outbound wire to add to the component.
-     */
-    public void addOutboundWire(WireDefinition outboundWire) {
-
-        if (outboundWire == null) {
-            throw new IllegalArgumentException("Outbound wire is null");
-        }
-        outboundWires.add(outboundWire);
+        wires.add(wire);
 
     }
 
