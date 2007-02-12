@@ -42,7 +42,7 @@ public class MockServiceBinding extends AbstractSCAObject implements ServiceBind
 
 
     public MockServiceBinding(URI uri) {
-        super(uri, null);
+        super(uri);
     }
 
     public QName getBindingType() {

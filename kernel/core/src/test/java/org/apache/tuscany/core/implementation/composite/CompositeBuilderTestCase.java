@@ -85,7 +85,7 @@ public class CompositeBuilderTestCase extends TestCase {
         builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
         builder.setBuilderRegistry(builderRegistry);
 
-        CompositeComponent parent = new CompositeComponentImpl(PARENT_COMPONENT, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(PARENT_COMPONENT, null);
         mgr.register(parent);
         CompositeComponent component =
             (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);

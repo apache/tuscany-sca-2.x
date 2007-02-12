@@ -40,7 +40,7 @@ public abstract class PhysicalComponent<T> extends AbstractComponentExtension {
      * @param factory a factory for physical instances
      */
     protected PhysicalComponent(URI id, InstanceFactory<T> factory) {
-        super(id, null);
+        super(id);
         this.factory = factory;
     }
 

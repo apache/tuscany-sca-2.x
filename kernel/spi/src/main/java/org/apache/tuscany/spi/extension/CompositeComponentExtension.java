@@ -55,8 +55,8 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final Map<String, Document> propertyValues;
 
-    protected CompositeComponentExtension(URI name, CompositeComponent parent, Map<String, Document> propertyValues) {
-        super(name, parent);
+    protected CompositeComponentExtension(URI name, Map<String, Document> propertyValues) {
+        super(name);
         this.propertyValues = propertyValues;
     }
 

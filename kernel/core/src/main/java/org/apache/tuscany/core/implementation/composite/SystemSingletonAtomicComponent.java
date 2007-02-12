@@ -28,7 +28,6 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -63,8 +62,8 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     private JavaInterfaceProcessorRegistry interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
     private List<ServiceContract> serviceContracts = new ArrayList<ServiceContract>();
 
-    public SystemSingletonAtomicComponent(URI name, CompositeComponent parent, Class<S> interfaze, T instance) {
-        super(name, parent);
+    public SystemSingletonAtomicComponent(URI name, Class<S> interfaze, T instance) {
+        super(name);
         this.instance = instance;
         inboundWires = new HashMap<String, InboundWire>();
         try {
@@ -76,11 +75,8 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     }
 
 
-    public SystemSingletonAtomicComponent(URI name,
-                                          CompositeComponent parent,
-                                          List<Class<?>> services,
-                                          T instance) {
-        super(name, parent);
+    public SystemSingletonAtomicComponent(URI name, List<Class<?>> services, T instance) {
+        super(name);
         this.instance = instance;
         inboundWires = new HashMap<String, InboundWire>();
         for (Class<?> interfaze : services) {
@@ -166,10 +162,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         return Collections.emptyMap();
     }
 
-
-    public boolean isOptimizable() {
-        return true;
-    }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         return null;

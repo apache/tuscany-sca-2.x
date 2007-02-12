@@ -69,7 +69,6 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
 
         Component component = createMock(Component.class);
         CompositeComponent composite = createMock(CompositeComponent.class);
-        expect(component.getParent()).andReturn(composite);
         expect(inboundWire.getContainer()).andReturn(component);
         expect(outboundWire.getContainer()).andReturn(component);
 
@@ -123,7 +122,6 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
 
         ReferenceBinding referenceBinding = createMock(ReferenceBinding.class);
         CompositeComponent composite = createMock(CompositeComponent.class);
-        expect(referenceBinding.getParent()).andReturn(composite);
         expect(inboundWire.getContainer()).andReturn(referenceBinding).anyTimes();
         expect(outboundWire.getContainer()).andReturn(referenceBinding).anyTimes();
 
@@ -178,7 +176,6 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
 
         ServiceBinding serviceBinding = createMock(ServiceBinding.class);
         CompositeComponent composite = createMock(CompositeComponent.class);
-        expect(serviceBinding.getParent()).andReturn(composite);
         expect(inboundWire.getContainer()).andReturn(serviceBinding).anyTimes();
         expect(outboundWire.getContainer()).andReturn(serviceBinding).anyTimes();
 

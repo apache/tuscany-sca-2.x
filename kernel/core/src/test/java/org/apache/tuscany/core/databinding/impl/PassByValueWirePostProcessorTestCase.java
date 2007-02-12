@@ -159,7 +159,7 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
     private class FooComponent extends AtomicComponentExtension {
 
         public FooComponent() {
-            super(URI.create("foo"), null, null, null, null, null, 0);
+            super(URI.create("foo"), null, null, null, null, 0);
         }
 
         public Object createInstance() throws ObjectCreationException {

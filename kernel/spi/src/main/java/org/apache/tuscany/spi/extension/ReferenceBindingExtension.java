@@ -21,7 +21,6 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.model.Scope;
@@ -40,8 +39,8 @@ public abstract class ReferenceBindingExtension extends AbstractSCAObject implem
     protected OutboundWire outboundWire;
     protected ServiceContract<?> bindingServiceContract;
 
-    protected ReferenceBindingExtension(URI name, CompositeComponent parent) {
-        super(name, parent);
+    protected ReferenceBindingExtension(URI name) {
+        super(name);
     }
 
     public Scope getScope() {

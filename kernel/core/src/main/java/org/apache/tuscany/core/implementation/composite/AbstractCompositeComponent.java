@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
@@ -49,14 +48,12 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     // Indicates whether the composite context has been initialized
     protected boolean initialized;
 
-
     /**
      * @param name           the name of the SCA composite
-     * @param parent         the SCA composite parent
      * @param propertyValues the values of this composite's Properties
      */
-    public AbstractCompositeComponent(URI name, CompositeComponent parent, Map<String, Document> propertyValues) {
-        super(name, parent, propertyValues);
+    public AbstractCompositeComponent(URI name, Map<String, Document> propertyValues) {
+        super(name, propertyValues);
     }
 
     public void start() {

@@ -38,21 +38,15 @@ import org.apache.tuscany.spi.event.TrueFilter;
 public abstract class AbstractSCAObject extends AbstractLifecycle implements SCAObject {
     protected static final EventFilter TRUE_FILTER = new TrueFilter();
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
-    protected final CompositeComponent parent;
     protected final URI uri;
 
-    public AbstractSCAObject(URI uri, CompositeComponent parent) {
+    public AbstractSCAObject(URI uri) {
         assert uri != null;
         this.uri = uri;
-        this.parent = parent;
     }
 
     public URI getUri() {
         return uri;
-    }
-
-    public CompositeComponent getParent() {
-        return parent;
     }
 
     public void addListener(RuntimeEventListener listener) {

@@ -28,7 +28,7 @@ public class ReferenceBindingExtensionTestCase extends TestCase {
 
     private static class MockBindingExtension extends ReferenceBindingExtension {
         public MockBindingExtension() {
-            super(URI.create("_foo"), null);
+            super(URI.create("_foo"));
         }
 
         public QName getBindingType() {

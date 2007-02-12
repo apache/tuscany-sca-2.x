@@ -72,9 +72,7 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         outboundWire.setContainer(binding);
         inboundWire.setContainer(binding);
 
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.replay(parent);
-        Service service = new ServiceImpl(sourceUri, parent, null);
+        Service service = new ServiceImpl(sourceUri, null);
         service.addServiceBinding(binding);
 
         connector.connect(service);

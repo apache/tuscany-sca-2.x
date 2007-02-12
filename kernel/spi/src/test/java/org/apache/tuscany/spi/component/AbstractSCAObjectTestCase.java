@@ -35,7 +35,7 @@ import org.easymock.EasyMock;
 public class AbstractSCAObjectTestCase extends TestCase {
 
     public void testFireListener() throws Exception {
-        SCAObject object = new TestSCAObject(new URI("foo"), null);
+        SCAObject object = new TestSCAObject(new URI("foo"));
         Event event = new TestEvent();
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         listener.onEvent(EasyMock.same(event));
@@ -46,7 +46,7 @@ public class AbstractSCAObjectTestCase extends TestCase {
     }
 
     public void testRemoveListener() throws Exception {
-        SCAObject object = new TestSCAObject(new URI("foo"), null);
+        SCAObject object = new TestSCAObject(new URI("foo"));
         Event event = new TestEvent();
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         EasyMock.replay(listener);
@@ -56,7 +56,7 @@ public class AbstractSCAObjectTestCase extends TestCase {
     }
 
     public void testFalseFilterListener() throws Exception {
-        SCAObject object = new TestSCAObject(new URI("foo"), null);
+        SCAObject object = new TestSCAObject(new URI("foo"));
         Event event = new TestEvent();
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         EasyMock.replay(listener);
@@ -65,7 +65,7 @@ public class AbstractSCAObjectTestCase extends TestCase {
     }
 
     public void testTrueFilterListener() throws Exception {
-        SCAObject object = new TestSCAObject(new URI("foo"), null);
+        SCAObject object = new TestSCAObject(new URI("foo"));
         Event event = new TestEvent();
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         listener.onEvent(EasyMock.same(event));
@@ -76,18 +76,18 @@ public class AbstractSCAObjectTestCase extends TestCase {
     }
 
     public void testToString() throws Exception {
-        SCAObject object = new TestSCAObject(new URI("foo"), null);
+        SCAObject object = new TestSCAObject(new URI("foo"));
         assertNotNull(object.toString());
     }
 
     public void testToPrepare() throws Exception {
-        SCAObject object = new TestSCAObject(new URI("foo"), null);
+        SCAObject object = new TestSCAObject(new URI("foo"));
         object.prepare();
     }
 
     private class TestSCAObject extends AbstractSCAObject {
-        public TestSCAObject(URI name, CompositeComponent parent) {
-            super(name, parent);
+        public TestSCAObject(URI name) {
+            super(name);
         }
 
         public Scope getScope() {

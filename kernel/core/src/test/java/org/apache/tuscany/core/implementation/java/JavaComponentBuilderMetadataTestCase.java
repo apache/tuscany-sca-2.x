@@ -74,7 +74,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = new CompositeComponentImpl(URI.create("parent"), null, null);
+        parent = new CompositeComponentImpl(URI.create("parent"), null);
         constructor = SourceImpl.class.getConstructor((Class[]) null);
         createDeploymentContext();
         createComponentDefinitionAndType();
