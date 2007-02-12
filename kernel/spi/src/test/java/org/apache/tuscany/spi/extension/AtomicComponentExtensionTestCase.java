@@ -19,9 +19,6 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 import java.net.URI;
 
 import org.apache.tuscany.spi.ObjectCreationException;
@@ -29,7 +26,6 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
@@ -42,34 +38,10 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class AtomicComponentExtensionTestCase extends TestCase {
-    
+
     public void testIsEagerInit() throws Exception {
         TestExtension ext = new TestExtension();
         ext.isEagerInit();
-    }
-
-    public void testPrepare() throws Exception {
-        TestExtension ext = new TestExtension();
-        Operation<Type> operation = new Operation<Type>("foo", null, null, null);
-        InboundInvocationChain chain = EasyMock.createMock(InboundInvocationChain.class);
-        EasyMock.expect(chain.getOperation()).andReturn(operation);
-        chain.prepare();
-        chain.setTargetInvoker(EasyMock.isA(TargetInvoker.class));
-        EasyMock.replay(chain);
-
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(operation, chain);
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
-        EasyMock.expect(wire.getUri()).andReturn(URI.create("Service")).atLeastOnce();
-        EasyMock.replay(wire);
-
-        ext.addInboundWire(wire);
-        ext.prepare();
-
-        EasyMock.verify(chain);
-        EasyMock.verify(wire);
-
     }
 
     public void testInit() throws Exception {
