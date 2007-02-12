@@ -35,7 +35,6 @@ import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService
 import org.apache.tuscany.spi.implementation.java.Introspector;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
-import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
@@ -92,30 +91,27 @@ public class DefaultBootstrapper implements Bootstrapper {
     private final MonitorFactory monitorFactory;
     private final XMLInputFactory xmlFactory;
     private final ComponentManager componentManager;
-    private final TuscanyManagementService managementService;
     private final AutowireResolver resolver;
     private final Connector connector;
 
     /**
      * Create a default bootstrapper.
      *
-     * @param monitorFactory    the MonitorFactory to be used to create monitors for the primordial components
-     * @param xmlFactory        the XMLInputFactory to be used by the components to load XML artifacts
-     * @param componentManager  the component manager for the runtime instance
-     * @param resolver          the autowire resolver for the runtime instance
-     * @param connector         the connector for the runtime instance
-     * @param managementService management service used by the runtime.
+     * @param monitorFactory   the MonitorFactory to be used to create monitors for the primordial components
+     * @param xmlFactory       the XMLInputFactory to be used by the components to load XML artifacts
+     * @param componentManager the component manager for the runtime instance
+     * @param resolver         the autowire resolver for the runtime instance
+     * @param connector        the connector for the runtime instance
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
                                XMLInputFactory xmlFactory,
                                ComponentManager componentManager,
                                AutowireResolver resolver,
-                               Connector connector,
-                               TuscanyManagementService managementService) {
+                               Connector connector
+    ) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = xmlFactory;
         this.componentManager = componentManager;
-        this.managementService = managementService;
         this.resolver = resolver;
         this.connector = connector;
     }

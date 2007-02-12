@@ -24,7 +24,7 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class InstanceWrapperBaseTestClass extends TestCase {
-    private static final Object instance = new Object();
+    private static final Object INSTANCE = new Object();
     private InstanceWrapperBase<Object> wrapper;
 
     public void testLifecycle() throws Exception {
@@ -37,7 +37,7 @@ public class InstanceWrapperBaseTestClass extends TestCase {
         }
         wrapper.start();
         assertTrue(wrapper.isStarted());
-        assertSame(instance, wrapper.getInstance());
+        assertSame(INSTANCE, wrapper.getInstance());
         wrapper.stop();
         assertFalse(wrapper.isStarted());
         try {
@@ -59,6 +59,6 @@ public class InstanceWrapperBaseTestClass extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        wrapper = new InstanceWrapperBase<Object>(instance);
+        wrapper = new InstanceWrapperBase<Object>(INSTANCE);
     }
 }

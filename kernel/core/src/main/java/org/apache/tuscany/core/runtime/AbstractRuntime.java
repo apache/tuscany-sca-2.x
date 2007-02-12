@@ -217,7 +217,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         resolver = new DefaultAutowireResolver();
         componentManager = new ComponentManagerImpl(tms, resolver);
         Connector connector = new ConnectorImpl(componentManager);
-        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, connector, tms);
+        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, connector);
     }
 
     protected void registerSystemComponents() throws InitializationException {

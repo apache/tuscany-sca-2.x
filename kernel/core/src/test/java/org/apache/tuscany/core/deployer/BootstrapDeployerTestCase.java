@@ -156,7 +156,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         manager.registerJavaObject(URI.create("ComponentManager"), ComponentManager.class, manager);
         NullMonitorFactory monitorFactory = new NullMonitorFactory();
         Bootstrapper bootstrapper =
-            new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, connector, null);
+            new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, connector);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
         deploymentContext = new RootDeploymentContext(null, xmlFactory, null, null);
         implementation = new SystemCompositeImplementation();

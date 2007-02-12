@@ -101,7 +101,7 @@ public class SystemWireConnectionTestCase extends TestCase {
      * Verifies an application component cannot be wired to a service in a different scheme in the same composite
      */
     public void testSchemeIsolationWire() throws Exception {
-        OutboundWire outbound = new OutboundWireImpl();// EasyMock.createMock(OutboundWire.class);
+        OutboundWire outbound = new OutboundWireImpl();
         outbound.setUri(URI.create("ref"));
         outbound.setTargetUri(URI.create("sca://target#bar"));
         List<OutboundWire> wires = new ArrayList<OutboundWire>();
