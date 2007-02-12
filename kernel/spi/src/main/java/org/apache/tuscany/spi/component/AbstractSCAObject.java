@@ -19,7 +19,6 @@
 package org.apache.tuscany.spi.component;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,11 +37,9 @@ import org.apache.tuscany.spi.event.TrueFilter;
  */
 public abstract class AbstractSCAObject extends AbstractLifecycle implements SCAObject {
     protected static final EventFilter TRUE_FILTER = new TrueFilter();
-
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     protected final CompositeComponent parent;
     protected final URI uri;
-    private final Map<Object, Object> extensions = new HashMap<Object, Object>();
 
     public AbstractSCAObject(URI uri, CompositeComponent parent) {
         assert uri != null;
@@ -112,10 +109,6 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
 
     public String toString() {
         return "[" + uri.toString() + "] in state [" + super.toString() + ']';
-    }
-
-    public Map<Object, Object> getExtensions() {
-        return extensions;
     }
 
 }

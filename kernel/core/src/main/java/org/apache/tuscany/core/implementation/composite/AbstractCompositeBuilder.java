@@ -45,8 +45,6 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
                 throw new BuilderInstantiationException("Error registering reference", e);
             }
         }
-        component.getExtensions().putAll(componentType.getExtensions());
-        // connect services and references before components
         return component;
     }
 
