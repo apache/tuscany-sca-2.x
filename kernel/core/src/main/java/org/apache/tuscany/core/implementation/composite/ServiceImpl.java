@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.model.Scope;
@@ -40,15 +39,12 @@ public class ServiceImpl extends AbstractSCAObject implements Service {
     private List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
     private URI targetUri;
 
-    public ServiceImpl(URI name, CompositeComponent parent, ServiceContract<?> contract) {
-        this(name, parent, contract, null);
+    public ServiceImpl(URI name, ServiceContract<?> contract) {
+        this(name, contract, null);
     }
 
-    public ServiceImpl(URI name,
-                       CompositeComponent parent,
-                       ServiceContract<?> contract,
-                       URI targetUri) {
-        super(name, parent);
+    public ServiceImpl(URI name, ServiceContract<?> contract, URI targetUri) {
+        super(name);
         this.serviceContract = contract;
         this.targetUri = targetUri;
     }

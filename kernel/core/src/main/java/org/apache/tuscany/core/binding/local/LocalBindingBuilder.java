@@ -51,6 +51,6 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
                                   ReferenceDefinition referenceDefinition,
                                   LocalBindingDefinition bindingDefinition,
                                   DeploymentContext deploymentContext) throws BuilderException {
-        return new LocalReferenceBinding(referenceDefinition.getUri(), parent);
+        return new LocalReferenceBinding(referenceDefinition.getUri());
     }
 }

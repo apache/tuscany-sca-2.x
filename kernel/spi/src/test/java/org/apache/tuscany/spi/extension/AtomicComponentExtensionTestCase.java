@@ -99,11 +99,11 @@ public class AtomicComponentExtensionTestCase extends TestCase {
 
     private class TestExtension extends AtomicComponentExtension {
         public TestExtension() {
-            super(URI.create("_foo"), null, null, null, null, null, 0);
+            super(URI.create("_foo"), null, null, null, null, 0);
         }
 
         public TestExtension(ScopeContainer scopeContainer) {
-            super(URI.create("_foo"), null, null, null, null, null, 0);
+            super(URI.create("_foo"), null, null, null, null, 0);
             setScopeContainer(scopeContainer);
         }
 

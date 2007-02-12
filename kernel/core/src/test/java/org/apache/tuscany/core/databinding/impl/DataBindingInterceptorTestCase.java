@@ -75,7 +75,6 @@ public class DataBindingInterceptorTestCase extends TestCase {
         InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
         CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
         Component component = EasyMock.createMock(Component.class);
-        EasyMock.expect(component.getParent()).andReturn(composite).once();
         EasyMock.expect(outboundWire.getContainer()).andReturn(component);
         EasyMock.replay(outboundWire, inboundWire, composite, component);
 

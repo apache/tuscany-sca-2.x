@@ -50,12 +50,12 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     private AtomicComponent component;
 
     public void testGetScope() {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
         Assert.assertEquals(Scope.SYSTEM, composite.getScope());
     }
 
     public void testReferencesServices() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getUri()).andReturn(URI.create("#service")).atLeastOnce();
         service.getServiceBindings();
@@ -66,7 +66,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     }
 
     public void testOnEvent() {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
         Event event = new Event() {
             public Object getSource() {
                 return null;
@@ -83,7 +83,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     }
 
     public void testPrepare() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
         composite.prepare();
     }
 
@@ -95,7 +95,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         EasyMock.expect(binding.getUri()).andReturn(URI.create("#reference")).atLeastOnce();
         replay(binding);
 
-        Reference reference = new ReferenceImpl(URI.create(name), null, wire.getServiceContract());
+        Reference reference = new ReferenceImpl(URI.create(name), wire.getServiceContract());
         reference.addReferenceBinding(binding);
         return reference;
     }

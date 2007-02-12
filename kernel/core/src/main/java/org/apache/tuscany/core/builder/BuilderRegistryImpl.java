@@ -71,7 +71,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private ComponentManager componentManager;
 
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>
-        componentBuilders =
+    componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
@@ -176,7 +176,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             }
         }
         URI targetUri = serviceDefinition.getTarget();
-        Service service = new ServiceImpl(uri, parent, serviceContract, targetUri);
+        Service service = new ServiceImpl(uri, serviceContract, targetUri);
         for (BindingDefinition definition : serviceDefinition.getBindings()) {
             Class<?> bindingClass = definition.getClass();
             // noinspection SuspiciousMethodCalls
@@ -214,7 +214,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             }
         }
 
-        Reference reference = new ReferenceImpl(uri, parent, contract);
+        Reference reference = new ReferenceImpl(uri, contract);
         for (BindingDefinition bindingDefinition : referenceDefinition.getBindings()) {
             Class<?> bindingClass = bindingDefinition.getClass();
             // noinspection SuspiciousMethodCalls

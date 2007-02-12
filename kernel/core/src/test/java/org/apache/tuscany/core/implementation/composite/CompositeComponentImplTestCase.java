@@ -41,7 +41,7 @@ import org.easymock.EasyMock;
 public class CompositeComponentImplTestCase extends TestCase {
 
     public void testRegisterService() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null);
         List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
         InboundWireImpl wire = new InboundWireImpl(Wire.LOCAL_BINDING);
         ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
@@ -58,7 +58,7 @@ public class CompositeComponentImplTestCase extends TestCase {
     }
 
     public void testRegisterReference() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null);
 
         List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
         OutboundWire wire = new OutboundWireImpl(Wire.LOCAL_BINDING);

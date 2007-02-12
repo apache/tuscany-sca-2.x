@@ -47,9 +47,8 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
     public void testConnectLocalReferenceBindingToAtomicComponent() throws Exception {
         AtomicComponent atomicComponent = createAtomicTarget();
         componentManager.register(atomicComponent);
-        CompositeComponent topComposite = new CompositeComponentImpl(URI.create("topComposite"), null, null);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, null);
-        reference = createLocalReference(parent, TARGET_NAME);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null);
+        reference = createLocalReference(TARGET_NAME);
         parent.register(reference);
         // connect to the target
         connector.connect(parent);
@@ -67,11 +66,11 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
      * Verifies the case where the outbound reference wire is connected to a target composite service
      */
     public void testConnectLocalReferenceBindingToCompositeService() throws Exception {
-        CompositeComponent topComposite = new CompositeComponentImpl(URI.create("topComposite"), null, null);
+        CompositeComponent topComposite = new CompositeComponentImpl(URI.create("topComposite"), null);
         topComposite.register(createLocalService(topComposite));
         componentManager.register(topComposite);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, null);
-        reference = createLocalReference(parent, URI.create("topComposite#target"));
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null);
+        reference = createLocalReference(URI.create("topComposite#target"));
         parent.register(reference);
         componentManager.register(parent);
         connector.connect(parent);
@@ -89,10 +88,10 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
     }
 
 
-    private Reference createLocalReference(CompositeComponent parent, URI target) throws Exception {
+    private Reference createLocalReference(URI target) throws Exception {
         URI uri = URI.create("#reference");
         referenceBinding = createLocalReferenceBinding(uri, target);
-        Reference reference = new ReferenceImpl(uri, parent, contract);
+        Reference reference = new ReferenceImpl(uri, contract);
         reference.addReferenceBinding(referenceBinding);
         return reference;
     }

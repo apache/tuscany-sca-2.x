@@ -34,7 +34,7 @@ public class SystemSingletonAtomicComponentTestCase extends TestCase {
     public void testGetInstance() throws TargetException {
         FooImpl foo = new FooImpl();
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), null, Foo.class, foo);
+            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), Foo.class, foo);
         assertEquals(foo, component.getTargetInstance());
     }
 
@@ -44,7 +44,7 @@ public class SystemSingletonAtomicComponentTestCase extends TestCase {
         services.add(Foo.class);
         services.add(Bar.class);
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), null, services, foo);
+            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), services, foo);
         assertEquals(foo, component.getTargetInstance());
     }
 

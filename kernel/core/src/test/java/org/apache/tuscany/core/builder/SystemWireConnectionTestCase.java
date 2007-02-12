@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -34,7 +33,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
-import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.easymock.EasyMock;
@@ -70,13 +68,11 @@ public class SystemWireConnectionTestCase extends TestCase {
 
         ComponentManagerImpl componentManager = new ComponentManagerImpl();
         ConnectorImpl connector = new ConnectorImpl(null, null, componentManager, null, null);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
 
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         EasyMock.expect(source.getUri()).andReturn(URI.create("scasystem://source")).atLeastOnce();
         EasyMock.expect(source.getOutboundWires()).andReturn(wireMap);
-        EasyMock.expect(source.getParent()).andReturn(parent).atLeastOnce();
         EasyMock.replay(source);
 
         EasyMock.expect(outbound.getContainer()).andReturn(source).atLeastOnce();
@@ -115,11 +111,9 @@ public class SystemWireConnectionTestCase extends TestCase {
 
         ComponentManagerImpl componentManager = new ComponentManagerImpl();
         ConnectorImpl connector = new ConnectorImpl(null, null, componentManager, null, null);
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("foo"), null, null);
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getUri()).andReturn(URI.create("sca://source")).atLeastOnce();
         EasyMock.expect(source.getOutboundWires()).andReturn(wireMap);
-        EasyMock.expect(source.getParent()).andReturn(parent).atLeastOnce();
         EasyMock.replay(source);
 
 

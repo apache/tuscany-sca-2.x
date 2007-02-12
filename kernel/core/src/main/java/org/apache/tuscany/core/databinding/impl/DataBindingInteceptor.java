@@ -22,7 +22,6 @@ package org.apache.tuscany.core.databinding.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
@@ -38,8 +37,6 @@ import org.apache.tuscany.spi.wire.Wire;
 public class DataBindingInteceptor implements Interceptor {
     private Interceptor next;
 
-    private CompositeComponent compositeComponent;
-
     private Operation<?> sourceOperation;
 
     private Operation<?> targetOperation;
@@ -52,7 +49,6 @@ public class DataBindingInteceptor implements Interceptor {
         this.sourceOperation = sourceOperation;
         // this.targetWire = targetWire;
         this.targetOperation = targetOperation;
-        this.compositeComponent = sourceWire.getContainer().getParent();
     }
 
     /**
@@ -102,7 +98,6 @@ public class DataBindingInteceptor implements Interceptor {
             return source;
         }
         Map<Class<?>, Object> metadata = new HashMap<Class<?>, Object>();
-        metadata.put(CompositeComponent.class, compositeComponent);
         return mediator.mediate(source, sourceType, targetType, metadata);
     }
 

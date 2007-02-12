@@ -26,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
@@ -90,7 +90,7 @@ public class ComponentManagerImpl implements ComponentManager {
     public <S, I extends S> void registerJavaObject(URI uri, Class<S> service, I instance)
         throws RegistrationException {
         SystemSingletonAtomicComponent<S, I> component =
-            new SystemSingletonAtomicComponent<S, I>(uri, null, service, instance);
+            new SystemSingletonAtomicComponent<S, I>(uri, service, instance);
         register(component);
         if (resolver != null) {
             for (ServiceContract contract : component.getServiceContracts()) {
@@ -102,7 +102,7 @@ public class ComponentManagerImpl implements ComponentManager {
     public <S, I extends S> void registerJavaObject(URI uri, List<Class<?>> services, I instance)
         throws RegistrationException {
         SystemSingletonAtomicComponent<S, I> component =
-            new SystemSingletonAtomicComponent<S, I>(uri, null, services, instance);
+            new SystemSingletonAtomicComponent<S, I>(uri, services, instance);
         register(component);
         if (resolver != null) {
             for (ServiceContract contract : component.getServiceContracts()) {

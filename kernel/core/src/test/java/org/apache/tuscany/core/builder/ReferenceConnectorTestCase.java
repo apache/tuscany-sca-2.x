@@ -21,7 +21,6 @@ package org.apache.tuscany.core.builder;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.model.Operation;
@@ -46,7 +45,6 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
-    private CompositeComponent parent;
 
     public void testConnectReferenceWiresNoInboundInterceptors() throws Exception {
         URI referenceUri = URI.create("foo");
@@ -74,7 +72,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(referenceBinding);
         outboundWire.setContainer(referenceBinding);
 
-        Reference reference = new ReferenceImpl(referenceUri, parent, contract);
+        Reference reference = new ReferenceImpl(referenceUri, contract);
         reference.addReferenceBinding(referenceBinding);
 
         connector.connect(reference);
@@ -114,7 +112,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(referenceBinding);
         outboundWire.setContainer(referenceBinding);
 
-        Reference reference = new ReferenceImpl(referenceUri, parent, contract);
+        Reference reference = new ReferenceImpl(referenceUri, contract);
         reference.addReferenceBinding(referenceBinding);
 
         connector.connect(reference);
@@ -163,7 +161,6 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
         AtomicComponent source = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(source);
     }

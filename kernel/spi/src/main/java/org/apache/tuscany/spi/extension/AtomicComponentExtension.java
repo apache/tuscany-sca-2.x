@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetDestructionException;
@@ -65,18 +64,16 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     private boolean allowsPassByReference;
 
     protected AtomicComponentExtension(URI name,
-                                       CompositeComponent parent,
                                        WireService wireService,
                                        WorkContext workContext,
                                        WorkScheduler workScheduler,
                                        ExecutionMonitor monitor,
                                        int initLevel) {
-        this(name, parent, wireService, workContext, workScheduler, monitor, initLevel, -1, -1);
+        this(name, wireService, workContext, workScheduler, monitor, initLevel, -1, -1);
 
     }
 
     protected AtomicComponentExtension(URI name,
-                                       CompositeComponent parent,
                                        WireService wireService,
                                        WorkContext workContext,
                                        WorkScheduler workScheduler,
@@ -84,7 +81,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
                                        int initLevel,
                                        long maxIdleTime,
                                        long maxAge) {
-        super(name, parent);
+        super(name);
         assert !(maxIdleTime > 0 && maxAge > 0);
         this.wireService = wireService;
         this.workContext = workContext;

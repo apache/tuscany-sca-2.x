@@ -50,7 +50,7 @@ public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompo
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         URI name = componentDefinition.getUri();
-        CompositeComponent component = new CompositeComponentImpl(name, parent);
+        CompositeComponent component = new CompositeComponentImpl(name);
         build(parent, component, componentType, deploymentContext);
         return component;
     }

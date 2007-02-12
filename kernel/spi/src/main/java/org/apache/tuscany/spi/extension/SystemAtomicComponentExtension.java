@@ -33,7 +33,7 @@ public abstract class SystemAtomicComponentExtension extends AtomicComponentExte
     public SystemAtomicComponentExtension(URI name,
                                           CompositeComponent parent,
                                           int initLevel) {
-        super(name, parent, null, null, null, null, initLevel);
+        super(name, null, null, null, null, initLevel);
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {

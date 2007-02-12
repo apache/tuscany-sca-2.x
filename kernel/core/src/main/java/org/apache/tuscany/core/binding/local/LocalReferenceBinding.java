@@ -22,7 +22,6 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
@@ -37,8 +36,8 @@ import org.apache.tuscany.spi.wire.Wire;
  */
 public class LocalReferenceBinding extends ReferenceBindingExtension {
 
-    public LocalReferenceBinding(URI name, CompositeComponent parent) throws CoreRuntimeException {
-        super(name, parent);
+    public LocalReferenceBinding(URI name) throws CoreRuntimeException {
+        super(name);
     }
 
     public QName getBindingType() {

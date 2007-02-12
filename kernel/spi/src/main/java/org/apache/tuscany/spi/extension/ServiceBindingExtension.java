@@ -45,7 +45,7 @@ public abstract class ServiceBindingExtension extends AbstractSCAObject implemen
     protected ServiceContract<?> bindingServiceContract;
 
     public ServiceBindingExtension(URI name, CompositeComponent parent) throws CoreRuntimeException {
-        super(name, parent);
+        super(name);
     }
 
     public Scope getScope() {

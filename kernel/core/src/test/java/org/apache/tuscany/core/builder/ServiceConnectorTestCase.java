@@ -58,7 +58,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     public void testConnectServiceToAtomicComponent() throws Exception {
         configureAtomicTarget();
-        Service sourceService = new ServiceImpl(SOURCE, parent, contract);
+        Service sourceService = new ServiceImpl(SOURCE, contract);
         sourceService.addServiceBinding(sourceServiceBinding);
         connector.connect(sourceService);
         Interceptor interceptor = inboundChain.getHeadInterceptor();
@@ -70,7 +70,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     public void testConnectServiceToReference() throws Exception {
         configureReferenceTarget();
-        Service sourceService = new ServiceImpl(URI.create("source"), parent, contract);
+        Service sourceService = new ServiceImpl(URI.create("source"), contract);
         sourceService.addServiceBinding(sourceServiceBinding);
         connector.connect(sourceService);
         Interceptor interceptor = inboundChain.getHeadInterceptor();
@@ -129,7 +129,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     private void configureReferenceTarget() throws Exception {
         ReferenceBinding binding = createLocalReferenceBinding(TARGET, URI.create("OtherTarget"));
-        Reference referenceTarget = new ReferenceImpl(TARGET, parent, contract);
+        Reference referenceTarget = new ReferenceImpl(TARGET, contract);
         referenceTarget.addReferenceBinding(binding);
         // put a terminating interceptor on the outbound wire of the reference for testing an invocation
         binding.getOutboundWire().getInvocationChains().get(operation).addInterceptor(new InvokerInterceptor());

@@ -18,17 +18,16 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.util.Map;
 import java.net.URI;
+import java.util.Map;
 
-import org.osoa.sca.ComponentContext;
 import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
+import org.osoa.sca.ServiceReference;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.PropertyValue;
 
@@ -43,11 +42,10 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
     /**
      * Initializes component name and parent.
      *
-     * @param name   Name of the component.
-     * @param parent Parent of the component.
+     * @param name Name of the component.
      */
-    public AbstractComponentExtension(URI name, CompositeComponent parent) {
-        super(name, parent);
+    public AbstractComponentExtension(URI name) {
+        super(name);
         this.context = new ComponentContextImpl();
     }
 

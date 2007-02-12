@@ -75,7 +75,7 @@ public class ReferenceTestCase extends TestCase {
 
     private class TestReferenceBinding extends ReferenceBindingExtension {
         public TestReferenceBinding() {
-            super(URI.create("_foo"), null);
+            super(URI.create("_foo"));
         }
 
         public QName getBindingType() {

@@ -23,8 +23,6 @@ import java.util.Map;
 
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-
 /**
  * The standard implementation of a composite component. Autowiring is performed by delegating to the parent composite.
  *
@@ -36,21 +34,19 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
      * Constructor specifying property values
      *
      * @param name           the name of this Component
-     * @param parent         this component's parent
      * @param propertyValues this composite's Property values
      */
-    public CompositeComponentImpl(URI name, CompositeComponent parent, Map<String, Document> propertyValues) {
-        super(name, parent, propertyValues);
+    public CompositeComponentImpl(URI name, Map<String, Document> propertyValues) {
+        super(name, propertyValues);
     }
 
     /**
      * Constructor specifying if the composite is a system composite
      *
-     * @param name   the name of this Component
-     * @param parent this component's parent
+     * @param name the name of this Component
      */
-    public CompositeComponentImpl(URI name, CompositeComponent parent) {
-        super(name, parent, null);
+    public CompositeComponentImpl(URI name) {
+        super(name, null);
     }
 
 }

@@ -40,7 +40,7 @@ public class CompositeLifecycleTestCase extends TestCase {
         listener.onEvent(EasyMock.isA(ComponentStart.class));
         listener.onEvent(EasyMock.isA(ComponentStop.class));
         EasyMock.replay(listener);
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("foo"), null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("foo"), null);
         composite.addListener(listener);
         composite.start();
         composite.stop();

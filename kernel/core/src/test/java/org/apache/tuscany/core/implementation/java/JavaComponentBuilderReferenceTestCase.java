@@ -97,7 +97,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         wireService = new JDKWireService();
-        parent = new CompositeComponentImpl(URI.create("parent"), null, null);
+        parent = new CompositeComponentImpl(URI.create("parent"), null);
         constructor = SourceImpl.class.getConstructor((Class[]) null);
         createDeploymentContext();
         createWire();

@@ -130,7 +130,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         // create the source
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
-        EasyMock.expect(source.getParent()).andReturn(parent).atLeastOnce();
         EasyMock.expect(source.getOutboundWires()).andReturn(outboundWires).atLeastOnce();
         EasyMock.expect(source.getUri()).andReturn(URI.create("source")).atLeastOnce();
         source.getInboundWires();
@@ -164,7 +163,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         serviceBinding.setOutboundWire(targetOutboundWire);
         // manually connect the service chains
         connector.connect(targetInboundChain, targetOutboundChain);
-        Service service = new ServiceImpl(TARGET, null, contract);
+        Service service = new ServiceImpl(TARGET, contract);
         service.addServiceBinding(serviceBinding);
         return service;
     }
@@ -198,14 +197,14 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         serviceBinding.setOutboundWire(targetOutboundWire);
         // manually connect the service chains
         connector.connect(targetInboundChain, targetOutboundChain);
-        Service service = new ServiceImpl(SERVICE_TARGET, null, contract);
+        Service service = new ServiceImpl(SERVICE_TARGET, contract);
         service.addServiceBinding(serviceBinding);
         return service;
     }
 
     protected ReferenceBinding createLocalReferenceBinding(URI uri, URI target)
         throws TargetInvokerCreationException {
-        ReferenceBinding referenceBinding = new LocalReferenceBinding(uri, null);
+        ReferenceBinding referenceBinding = new LocalReferenceBinding(uri);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire referenceInboundWire = new InboundWireImpl();
         referenceInboundWire.setServiceContract(contract);
@@ -231,7 +230,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         chain.addInterceptor(new SynchronousBridgingInterceptor());
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(contract);
-        LocalReferenceBinding referenceBinding = new LocalReferenceBinding(URI.create("baz"), parent);
+        LocalReferenceBinding referenceBinding = new LocalReferenceBinding(URI.create("baz"));
         wire.setContainer(referenceBinding);
         wire.addInvocationChain(operation, chain);
 

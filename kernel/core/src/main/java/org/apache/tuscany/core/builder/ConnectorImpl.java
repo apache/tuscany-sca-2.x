@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -393,8 +392,6 @@ public class ConnectorImpl implements Connector {
      * @throws WiringException if an exception connecting the service wires is encountered
      */
     private void handleService(Service service) throws WiringException {
-        CompositeComponent parent = service.getParent();
-        assert parent != null;
         for (ServiceBinding binding : service.getServiceBindings()) {
             InboundWire inboundWire = binding.getInboundWire();
             OutboundWire outboundWire = binding.getOutboundWire();
@@ -418,8 +415,6 @@ public class ConnectorImpl implements Connector {
     }
 
     private void handleReference(Reference reference) throws WiringException {
-        CompositeComponent parent = reference.getParent();
-        assert parent != null;
         for (ReferenceBinding binding : reference.getReferenceBindings()) {
             InboundWire inboundWire = binding.getInboundWire();
             Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
@@ -447,8 +442,6 @@ public class ConnectorImpl implements Connector {
     }
 
     private void handleComponent(Component component) throws WiringException {
-        CompositeComponent parent = component.getParent();
-        assert parent != null;
         // connect outbound wires for component references to their targets
         for (List<OutboundWire> referenceWires : component.getOutboundWires().values()) {
             for (OutboundWire outboundWire : referenceWires) {

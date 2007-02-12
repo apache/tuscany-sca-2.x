@@ -68,7 +68,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
         super(configuration.getName(),
-            configuration.getParent(),
             configuration.getWireService(),
             configuration.getWorkContext(),
             configuration.getScheduler(),

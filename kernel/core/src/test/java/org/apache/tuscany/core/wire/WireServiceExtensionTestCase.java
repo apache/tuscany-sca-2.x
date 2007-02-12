@@ -273,7 +273,7 @@ public class WireServiceExtensionTestCase extends TestCase {
         private OutboundWire outboundWire;
 
         public MockReferenceBinding(URI uri) throws URISyntaxException {
-            super(uri, null);
+            super(uri);
         }
 
         public ServiceContract<?> getBindingServiceContract() {
