@@ -36,6 +36,10 @@
         <module>webapp</module>
     </modules>
 
+    <properties>
+        <kernelVersion>1.0-incubator-SNAPSHOT</kernelVersion>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
