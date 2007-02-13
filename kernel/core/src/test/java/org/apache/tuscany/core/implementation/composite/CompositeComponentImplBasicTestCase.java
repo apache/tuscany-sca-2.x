@@ -85,7 +85,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     private Reference getReference(String name) throws InvalidServiceContractException {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         InboundWire wire = TestUtils.createInboundWire(Bar.class);
-        wire.setContainer(binding);
         EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
         EasyMock.expect(binding.getUri()).andReturn(URI.create("#reference")).atLeastOnce();
         replay(binding);

@@ -72,17 +72,15 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expect(container.isOptimizable()).andReturn(false);
         EasyMock.replay(container);
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setContainer(container);
         inboundWire.setUri(URI.create("target"));
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
-        EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.expect(outboundWire.getTargetUri()).andReturn(URI.create("target")).atLeastOnce();
         EasyMock.replay(outboundWire);
-        connector.connect(outboundWire, inboundWire, true);
+        connector.connect(container, outboundWire, container, inboundWire, true);
         EasyMock.verify(container);
         EasyMock.verify(outboundWire);
     }
@@ -95,18 +93,16 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expect(container.getUri()).andReturn(URI.create("source"));
         EasyMock.replay(container);
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setContainer(container);
         inboundWire.setUri(URI.create("target"));
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
-        EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.expect(outboundWire.getTargetUri()).andReturn(URI.create("target")).atLeastOnce();
         EasyMock.replay(outboundWire);
 
-        connector.connect(outboundWire, inboundWire, true);
+        connector.connect(container, outboundWire, container, inboundWire, true);
         EasyMock.verify(container);
         EasyMock.verify(outboundWire);
     }
@@ -168,7 +164,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setUri(URI.create("target"));
         try {
-            connector.connect(inboundWire, outboundWire, false);
+            connector.connect(null, inboundWire, null, outboundWire, false);
             fail();
         } catch (IncompatibleInterfacesException e) {
             // expected
@@ -181,14 +177,12 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.replay(container);
         Operation<Type> operation = new Operation<Type>("bar", null, null, null);
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setContainer(container);
         inboundWire.setUri(URI.create("sca://foo"));
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setContainer(container);
         outboundWire.setTargetUri(URI.create("target"));
         outboundWire.addInvocationChain(operation, new OutboundInvocationChainImpl(operation));
         try {
-            connector.connect(outboundWire, inboundWire, false);
+            connector.connect(container, outboundWire, container, inboundWire, false);
             fail();
         } catch (IncompatibleInterfacesException e) {
             // expected

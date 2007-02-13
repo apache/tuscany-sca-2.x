@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -47,6 +48,7 @@ import static org.easymock.EasyMock.verify;
 public class ConnectorPostProcessTestCase extends TestCase {
 
     public void testInboundToOutboundPostProcessCalled() throws Exception {
+        SCAObject container = EasyMock.createMock(SCAObject.class);
         OutboundWire owire = new OutboundWireImpl();
         owire.setUri(URI.create("target"));
         InboundWire iwire = createNiceMock(InboundWire.class);
@@ -54,14 +56,14 @@ public class ConnectorPostProcessTestCase extends TestCase {
         expect(iwire.getInvocationChains()).andReturn(chains);
         replay(iwire);
         WirePostProcessorRegistry registry = createMock(WirePostProcessorRegistry.class);
-        registry.process(EasyMock.eq(iwire), EasyMock.eq(owire));
+        registry.process(EasyMock.eq(container), EasyMock.eq(iwire), EasyMock.eq(container), EasyMock.eq(owire));
         replay(registry);
         WireService wireService = createMock(WireService.class);
         EasyMock.expect(wireService.checkCompatibility((ServiceContract<?>) EasyMock.anyObject(),
             (ServiceContract<?>) EasyMock.anyObject(), EasyMock.eq(false), EasyMock.eq(false))).andReturn(true);
         replay(wireService);
         ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null, null);
-        connector.connect(iwire, owire, false);
+        connector.connect(container, iwire, container, owire, false);
         verify(registry);
     }
 
@@ -75,15 +77,13 @@ public class ConnectorPostProcessTestCase extends TestCase {
         replay(target);
 
         OutboundWire owire = new OutboundWireImpl();
-        owire.setContainer(source);
         owire.setTargetUri(URI.create("target"));
 
         InboundWire iwire = new InboundWireImpl();
-        iwire.setContainer(target);
         iwire.setUri(URI.create("target"));
 
         WirePostProcessorRegistry registry = createMock(WirePostProcessorRegistry.class);
-        registry.process(EasyMock.eq(owire), EasyMock.eq(iwire));
+        registry.process(EasyMock.eq(source), EasyMock.eq(owire), EasyMock.eq(target), EasyMock.eq(iwire));
         replay(registry);
 
         WireService wireService = createMock(WireService.class);
@@ -91,7 +91,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
             (ServiceContract<?>) EasyMock.anyObject(), EasyMock.eq(false), EasyMock.eq(false))).andReturn(true);
         replay(wireService);
         ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null, null);
-        connector.connect(owire, iwire, false);
+        connector.connect(source, owire, target, iwire, false);
         verify(registry);
     }
 

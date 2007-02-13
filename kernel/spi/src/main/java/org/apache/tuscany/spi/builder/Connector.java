@@ -41,12 +41,12 @@ public interface Connector {
     /**
      * Bridges the invocation chains associated with an inbound and outbound wire.
      *
+     * @param source      the inbound wire source
      * @param inbound     the wire to bridge from
      * @param outbound    the target wire
-     * @param optimizable if the bridge may be optimized
-     * @throws WiringException
+     * @param optimizable if the bridge may be optimized @throws WiringException
      */
-    void connect(InboundWire inbound, OutboundWire outbound, boolean optimizable)
+    void connect(SCAObject source, InboundWire inbound, SCAObject target, OutboundWire outbound, boolean optimizable)
         throws WiringException;
 
 }

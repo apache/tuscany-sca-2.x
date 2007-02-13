@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
@@ -60,7 +61,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
         this.dataBindingRegistry = dataBindingRegistry;
     }
 
-    public void process(OutboundWire source, InboundWire target) {
+    public void process(SCAObject source, OutboundWire sourceWire, SCAObject target, InboundWire targetWire) {
         Interceptor tailInterceptor;
         PassByValueInterceptor passByValueInterceptor;
         Operation<?> targetOperation;
@@ -69,17 +70,18 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
         DataBinding resultDataBinding;
 
         boolean allowsPassByReference = false;
-        if (target.getContainer() instanceof AtomicComponentExtension) {
+        // JFM this nneds to be fixed
+        if (target instanceof AtomicComponentExtension) {
             allowsPassByReference =
-                ((AtomicComponentExtension) target.getContainer()).isAllowsPassByReference();
+                ((AtomicComponentExtension) target).isAllowsPassByReference();
         }
-        if (target.getServiceContract().isRemotable()
+        if (targetWire.getServiceContract().isRemotable()
             && !allowsPassByReference) {
-            Map<Operation<?>, InboundInvocationChain> chains = target.getInvocationChains();
+            Map<Operation<?>, InboundInvocationChain> chains = targetWire.getInvocationChains();
             for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
                 targetOperation = entry.getKey();
                 sourceOperation =
-                    getSourceOperation(source.getInvocationChains().keySet(), targetOperation.getName());
+                    getSourceOperation(sourceWire.getInvocationChains().keySet(), targetOperation.getName());
 
 
                 if (null != sourceOperation) {
@@ -90,7 +92,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
                     passByValueInterceptor.setArgsDataBindings(argsDataBindings);
                     passByValueInterceptor.setResultDataBinding(resultDataBinding);
                     entry.getValue().addInterceptor(0, passByValueInterceptor);
-                    tailInterceptor = source.getInvocationChains().get(sourceOperation).getTailInterceptor();
+                    tailInterceptor = sourceWire.getInvocationChains().get(sourceOperation).getTailInterceptor();
                     if (tailInterceptor != null) {
                         tailInterceptor.setNext(passByValueInterceptor);
                     }
@@ -99,23 +101,23 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
         }
 
         // Check if there's a callback
-        Map callbackOperations = source.getServiceContract().getCallbackOperations();
+        Map callbackOperations = sourceWire.getServiceContract().getCallbackOperations();
         allowsPassByReference = false;
-        if (source.getContainer() instanceof AtomicComponentExtension) {
+        if (source instanceof AtomicComponentExtension) {
             allowsPassByReference =
-                ((AtomicComponentExtension) source.getContainer()).isAllowsPassByReference();
+                ((AtomicComponentExtension) source).isAllowsPassByReference();
         }
 
-        if (source.getServiceContract().isRemotable()
+        if (sourceWire.getServiceContract().isRemotable()
             && !allowsPassByReference
             && callbackOperations != null
             && !callbackOperations.isEmpty()) {
             //URI targetAddress = UriHelper.getBaseName(source.getUri());
-            Map<Operation<?>, InboundInvocationChain> callbackChains = source.getTargetCallbackInvocationChains();
+            Map<Operation<?>, InboundInvocationChain> callbackChains = sourceWire.getTargetCallbackInvocationChains();
             for (Map.Entry<Operation<?>, InboundInvocationChain> entry : callbackChains.entrySet()) {
                 targetOperation = entry.getKey();
                 sourceOperation =
-                    getSourceOperation(target.getSourceCallbackInvocationChains(source.getUri()).keySet(),
+                    getSourceOperation(targetWire.getSourceCallbackInvocationChains(sourceWire.getUri()).keySet(),
                         targetOperation.getName());
 
                 argsDataBindings = resolveArgsDataBindings(targetOperation);
@@ -128,7 +130,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
 
                 entry.getValue().addInterceptor(0, passByValueInterceptor);
                 tailInterceptor =
-                    target.getSourceCallbackInvocationChains(source.getUri()).get(sourceOperation)
+                    targetWire.getSourceCallbackInvocationChains(sourceWire.getUri()).get(sourceOperation)
                         .getTailInterceptor();
                 if (tailInterceptor != null) {
                     tailInterceptor.setNext(passByValueInterceptor);
@@ -137,7 +139,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
         }
     }
 
-    public void process(InboundWire source, OutboundWire target) {
+    public void process(SCAObject source, InboundWire sourceWire, SCAObject target, OutboundWire targetWire) {
         //to be done if required.. 
     }
 

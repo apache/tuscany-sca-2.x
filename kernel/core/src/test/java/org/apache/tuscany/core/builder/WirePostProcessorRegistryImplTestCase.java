@@ -18,10 +18,11 @@
  */
 package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.spi.wire.WirePostProcessor;
-import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WirePostProcessor;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -34,28 +35,30 @@ import static org.easymock.EasyMock.verify;
 public class WirePostProcessorRegistryImplTestCase extends TestCase {
 
     public void testRegisterUnregister() throws Exception {
+        SCAObject container = EasyMock.createMock(SCAObject.class);
         WirePostProcessorRegistry registry = new WirePostProcessorRegistryImpl();
         OutboundWire owire = EasyMock.createMock(OutboundWire.class);
         InboundWire iwire = EasyMock.createMock(InboundWire.class);
         WirePostProcessor processor = createMock(WirePostProcessor.class);
-        processor.process(EasyMock.eq(owire), EasyMock.eq(iwire));
+        processor.process(EasyMock.eq(container), EasyMock.eq(owire), EasyMock.eq(container), EasyMock.eq(iwire));
         EasyMock.replay(processor);
         registry.register(processor);
-        registry.process(owire, iwire);
+        registry.process(container, owire, container, iwire);
         registry.unregister(processor);
-        registry.process(owire, iwire);
+        registry.process(container, owire, container, iwire);
         verify(processor);
     }
 
     public void testProcessInboundToOutbound() throws Exception {
         WirePostProcessorRegistry registry = new WirePostProcessorRegistryImpl();
+        SCAObject container = EasyMock.createMock(SCAObject.class);
         OutboundWire owire = EasyMock.createMock(OutboundWire.class);
         InboundWire iwire = EasyMock.createMock(InboundWire.class);
         WirePostProcessor processor = createMock(WirePostProcessor.class);
-        processor.process(EasyMock.eq(iwire), EasyMock.eq(owire));
+        processor.process(EasyMock.eq(container), EasyMock.eq(iwire), EasyMock.eq(container), EasyMock.eq(owire));
         EasyMock.replay(processor);
         registry.register(processor);
-        registry.process(iwire, owire);
+        registry.process(container, iwire, container, owire);
         verify(processor);
     }
 

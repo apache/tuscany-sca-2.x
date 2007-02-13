@@ -20,9 +20,9 @@
 package org.apache.tuscany.core.databinding.impl;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.Hashtable;
 import java.util.Map;
-import java.net.URI;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -87,8 +87,6 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         OutboundInvocationChainImpl outChain = new OutboundInvocationChainImpl(operation1);
         outChainsMap.put(operation1, outChain);
 
-        expect(inboundWire.getContainer()).andReturn(componentExtn).times(2);
-        expect(outboundWire.getContainer()).andReturn(componentExtn).times(2);
         expect(inboundWire.getServiceContract()).andReturn(serviceContract);
         expect(inboundWire.getInvocationChains()).andReturn(inChainsMap);
         expect(outboundWire.getServiceContract()).andReturn(serviceContract).times(2);
@@ -101,7 +99,7 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         outChain.addInterceptor(new SynchronousBridgingInterceptor(inChain.getHeadInterceptor()));
 
         EasyMock.replay(inboundWire, outboundWire);
-        processor.process(outboundWire, inboundWire);
+        processor.process(componentExtn, outboundWire, componentExtn, inboundWire);
 
         assertEquals(true, inChain.getHeadInterceptor() instanceof PassByValueInterceptor);
         assertEquals(true,
@@ -133,8 +131,6 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         OutboundInvocationChainImpl outChain = new OutboundInvocationChainImpl(operation1);
         outChainsMap.put(operation1, outChain);
 
-        expect(inboundWire.getContainer()).andReturn(componentExtn).times(2);
-        expect(outboundWire.getContainer()).andReturn(componentExtn).times(2);
         expect(inboundWire.getServiceContract()).andReturn(serviceContract);
         expect(inboundWire.getInvocationChains()).andReturn(inChainsMap);
         expect(outboundWire.getServiceContract()).andReturn(serviceContract).times(2);
@@ -147,7 +143,7 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         outChain.addInterceptor(new SynchronousBridgingInterceptor(inChain.getHeadInterceptor()));
 
         EasyMock.replay(inboundWire, outboundWire);
-        processor.process(outboundWire, inboundWire);
+        processor.process(componentExtn, outboundWire, componentExtn, inboundWire);
 
         assertEquals(false, inChain.getHeadInterceptor() instanceof PassByValueInterceptor);
         assertEquals(false,

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.component.AtomicComponent;
 
 /**
  * Implementations are responsible for managing the inbound side of a wire, including the invocation chains associated
@@ -76,4 +77,9 @@ public interface InboundWire extends Wire {
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
     void setTargetWire(OutboundWire wire);
+
+    /**
+     * @deprecated
+     */
+    public void setComponent(AtomicComponent container);
 }

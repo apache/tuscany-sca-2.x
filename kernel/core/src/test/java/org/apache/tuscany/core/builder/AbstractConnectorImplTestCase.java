@@ -109,7 +109,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         target.createTargetInvoker(EasyMock.eq(TARGET_FRAGMENT), EasyMock.eq(operation), EasyMock.eq(targetWire));
         EasyMock.expectLastCall().andReturn(mockInvoker);
         EasyMock.replay(target);
-        targetWire.setContainer(target);
         return target;
     }
 
@@ -135,8 +134,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         source.getInboundWires();
         EasyMock.expectLastCall().andReturn(Collections.emptyList());
         EasyMock.replay(source);
-
-        outboundWire.setContainer(source);
         return source;
     }
 
@@ -149,7 +146,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundWire serviceInboundWire = new InboundWireImpl(qName);
         serviceInboundWire.setServiceContract(contract);
         serviceInboundWire.addInvocationChain(operation, targetInboundChain);
-        serviceInboundWire.setContainer(serviceBinding);
 
         OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);
         // place an invoker interceptor on the end
@@ -157,7 +153,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         OutboundWire targetOutboundWire = new OutboundWireImpl(qName);
         targetOutboundWire.setServiceContract(contract);
         targetOutboundWire.addInvocationChain(operation, targetOutboundChain);
-        targetOutboundWire.setContainer(serviceBinding);
 
         serviceBinding.setInboundWire(serviceInboundWire);
         serviceBinding.setOutboundWire(targetOutboundWire);
@@ -183,7 +178,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         localServiceInboundWire.setUri(SERVICE_TARGET);
         localServiceInboundWire.setServiceContract(contract);
         localServiceInboundWire.addInvocationChain(operation, targetInboundChain);
-        localServiceInboundWire.setContainer(serviceBinding);
 
         OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);
         // place an invoker interceptor on the end
@@ -191,7 +185,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         OutboundWire targetOutboundWire = new OutboundWireImpl();
         targetOutboundWire.setServiceContract(contract);
         targetOutboundWire.addInvocationChain(operation, targetOutboundChain);
-        targetOutboundWire.setContainer(serviceBinding);
 
         serviceBinding.setInboundWire(localServiceInboundWire);
         serviceBinding.setOutboundWire(targetOutboundWire);
@@ -208,7 +201,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire referenceInboundWire = new InboundWireImpl();
         referenceInboundWire.setServiceContract(contract);
-        referenceInboundWire.setContainer(referenceBinding);
         referenceInboundWire.addInvocationChain(operation, inboundChain);
         referenceInboundWire.setUri(uri);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
@@ -218,7 +210,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetUri(target);
         outboundWire.addInvocationChain(operation, outboundChain);
-        outboundWire.setContainer(referenceBinding);
         outboundWire.setUri(uri);
         referenceBinding.setInboundWire(referenceInboundWire);
         referenceBinding.setOutboundWire(outboundWire);
@@ -231,7 +222,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(contract);
         LocalReferenceBinding referenceBinding = new LocalReferenceBinding(URI.create("baz"));
-        wire.setContainer(referenceBinding);
         wire.addInvocationChain(operation, chain);
 
         OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);

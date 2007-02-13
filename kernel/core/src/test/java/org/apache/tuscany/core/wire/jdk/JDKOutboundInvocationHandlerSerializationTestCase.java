@@ -91,7 +91,6 @@ public class JDKOutboundInvocationHandlerSerializationTestCase extends TestCase 
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         operation.setServiceContract(opContract);
         map.put(operation, createChain(operation));
-        EasyMock.expect(wire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
         URI uri = URI.create("#foo");
         EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();

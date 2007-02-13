@@ -69,8 +69,6 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         ServiceBinding binding = new MockServiceBinding(sourceUri);
         binding.setOutboundWire(outboundWire);
         binding.setInboundWire(inboundWire);
-        outboundWire.setContainer(binding);
-        inboundWire.setContainer(binding);
 
         Service service = new ServiceImpl(sourceUri, null);
         service.addServiceBinding(binding);

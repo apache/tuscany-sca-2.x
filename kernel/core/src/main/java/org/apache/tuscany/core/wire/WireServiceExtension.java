@@ -90,7 +90,8 @@ public abstract class WireServiceExtension implements WireService {
         // create incoming service wires
         for (ServiceDefinition service : componentType.getServices().values()) {
             InboundWire wire = createWire(service);
-            wire.setContainer(component);
+            // JFM TODO refactor
+            wire.setComponent(component);
             component.addInboundWire(wire);
         }
         // create outgoing reference wires
@@ -103,14 +104,10 @@ public abstract class WireServiceExtension implements WireService {
             if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
                 // 0..1 or 1..1
                 for (OutboundWire wire : wires) {
-                    wire.setContainer(component);
                     component.addOutboundWire(wire);
                 }
             } else {
                 // 0..N or 1..N
-                for (OutboundWire wire : wires) {
-                    wire.setContainer(component);
-                }
                 component.addOutboundWires(wires);
             }
         }
@@ -119,7 +116,6 @@ public abstract class WireServiceExtension implements WireService {
     public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, URI target) {
         InboundWire inboundWire = new InboundWireImpl(referenceBinding.getBindingType());
         inboundWire.setServiceContract(contract);
-        inboundWire.setContainer(referenceBinding);
         inboundWire.setUri(referenceBinding.getUri());
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
@@ -134,7 +130,6 @@ public abstract class WireServiceExtension implements WireService {
             bindingContract = contract;
         }
         outboundWire.setServiceContract(bindingContract);
-        outboundWire.setContainer(referenceBinding);
         for (Operation<?> operation : bindingContract.getOperations().values()) {
             OutboundInvocationChain chain = createOutboundChain(operation);
             if (referenceBinding instanceof LocalReferenceBinding) {
@@ -169,7 +164,6 @@ public abstract class WireServiceExtension implements WireService {
             bindingContract = contract;
         }
         inboundWire.setServiceContract(bindingContract);
-        inboundWire.setContainer(serviceBinding);
         inboundWire.setUri(serviceBinding.getUri());
         for (Operation<?> operation : bindingContract.getOperations().values()) {
             InboundInvocationChain inboundChain = createInboundChain(operation);
@@ -180,7 +174,6 @@ public abstract class WireServiceExtension implements WireService {
         OutboundWire outboundWire = new OutboundWireImpl(serviceBinding.getBindingType());
         outboundWire.setServiceContract(contract);
         outboundWire.setUri(serviceBinding.getUri());
-        outboundWire.setContainer(serviceBinding);
         outboundWire.setTargetUri(URI.create(targetName));
 
         for (Operation<?> operation : contract.getOperations().values()) {

@@ -21,7 +21,6 @@ package org.apache.tuscany.core.implementation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
@@ -38,14 +37,6 @@ public final class TestUtils {
     private static final JavaInterfaceProcessorRegistry REGISTRY = new JavaInterfaceProcessorRegistryImpl();
 
     private TestUtils() {
-    }
-
-    public static List<InboundWire> populateInboundWires(AtomicComponent component, List<InboundWire> wires)
-        throws InvalidServiceContractException {
-        for (InboundWire wire : wires) {
-            wire.setContainer(component);
-        }
-        return wires;
     }
 
     public static List<InboundWire> createInboundWires(List<Class<?>> interfazes)
@@ -68,7 +59,6 @@ public final class TestUtils {
     public static InboundWire createInboundWire(Class<?> interfaze, CompositeComponent parent)
         throws InvalidServiceContractException {
         InboundWire wire = createInboundWire(interfaze);
-        wire.setContainer(parent);
         return wire;
     }
 }
