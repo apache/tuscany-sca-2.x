@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
  *
  * @version $Rev$ $Date$
  */
-public class InboundInvocationChainImpl extends InvocationChainImpl implements InboundInvocationChain {
+public class InboundInvocationChainImpl extends AbstractInvocationChain implements InboundInvocationChain {
 
     /**
      * Creates an new target-side chain for the given operation
