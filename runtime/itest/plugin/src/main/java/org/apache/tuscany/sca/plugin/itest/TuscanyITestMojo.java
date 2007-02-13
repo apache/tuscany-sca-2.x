@@ -77,8 +77,7 @@ public class TuscanyITestMojo extends AbstractMojo {
     public boolean trimStackTrace;
 
     /**
-     * The directory containing generated test classes of the project being
-     * tested.
+     * The directory containing generated test classes of the project being tested.
      * 
      * @parameter expression="${project.build.testOutputDirectory}"
      * @required
@@ -91,6 +90,14 @@ public class TuscanyITestMojo extends AbstractMojo {
      * @readonly
      */
     public List testClassPath;
+
+    /**
+     * The SCA domain in which to deploy the test components.
+     *
+     * @parameter expression="itest://localhost/testDomain/"
+     * @required
+     */
+    public String testDomain;
 
     /**
      * @parameter
@@ -173,7 +180,7 @@ public class TuscanyITestMojo extends AbstractMojo {
             try {
                 // fixme this should probably be an isolated classloader
                 ClassLoader testClassLoader = createTestClassLoader(getClass().getClassLoader());
-                URI name = URI.create("itest://localhost/testDomain/");
+                URI name = URI.create(testDomain);
                 CompositeImplementation impl = new CompositeImplementation();
                 impl.setScdlLocation(testScdl.toURI().toURL());
                 impl.setClassLoader(testClassLoader);
