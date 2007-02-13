@@ -54,7 +54,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         connector.connect(parent);
         // connect the internal reference chains
         connector.connect(reference);
-        InboundInvocationChain chain = referenceBinding.getInboundWire().getInvocationChains().get(operation);
+        InboundInvocationChain chain = referenceBinding.getInboundWire().getInboundInvocationChains().get(operation);
         Interceptor interceptor = chain.getHeadInterceptor();
         MessageImpl msg = new MessageImpl();
         msg.setTargetInvoker(new MockInvoker());
@@ -75,7 +75,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         componentManager.register(parent);
         connector.connect(parent);
         connector.connect(reference);
-        InboundInvocationChain chain = referenceBinding.getInboundWire().getInvocationChains().get(operation);
+        InboundInvocationChain chain = referenceBinding.getInboundWire().getInboundInvocationChains().get(operation);
         Interceptor interceptor = chain.getHeadInterceptor();
         MessageImpl msg = new MessageImpl();
         msg.setTargetInvoker(new MockInvoker());

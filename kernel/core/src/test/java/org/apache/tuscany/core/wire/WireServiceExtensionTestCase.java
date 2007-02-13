@@ -89,9 +89,9 @@ public class WireServiceExtensionTestCase extends TestCase {
         EasyMock.replay(invoker);
         InboundWire wire = wireService.createWire(definition);
         assertEquals("service#foo", wire.getSourceUri().toString());
-        assertEquals(1, wire.getInvocationChains().size());
+        assertEquals(1, wire.getInboundInvocationChains().size());
         assertEquals(contract, wire.getServiceContract());
-        InboundInvocationChain chain = wire.getInvocationChains().get(operation);
+        InboundInvocationChain chain = wire.getInboundInvocationChains().get(operation);
         assertEquals(operation, chain.getOperation());
         // verify the chain is invokable
         MessageImpl msg = new MessageImpl();
@@ -108,9 +108,9 @@ public class WireServiceExtensionTestCase extends TestCase {
 
         OutboundWire wire = wireService.createWire(target, definition).get(0);
         assertEquals("#refName", wire.getSourceUri().toString());
-        assertEquals(1, wire.getInvocationChains().size());
+        assertEquals(1, wire.getOutboundInvocationChains().size());
         assertEquals(contract, wire.getServiceContract());
-        OutboundInvocationChain chain = wire.getInvocationChains().get(operation);
+        OutboundInvocationChain chain = wire.getOutboundInvocationChains().get(operation);
         assertEquals(operation, chain.getOperation());
         assertNull(chain.getHeadInterceptor());
         assertEquals(1, wire.getTargetCallbackInvocationChains().size());
@@ -186,12 +186,12 @@ public class WireServiceExtensionTestCase extends TestCase {
         wireService.createWires(binding, contract, URI.create("target"));
 
         InboundWire inboundWire = binding.getInboundWire();
-        assertEquals(1, inboundWire.getInvocationChains().size());
+        assertEquals(1, inboundWire.getInboundInvocationChains().size());
         assertEquals(contract, inboundWire.getServiceContract());
         assertEquals(uri, inboundWire.getSourceUri());
 
         OutboundWire outboundWire = binding.getOutboundWire();
-        assertEquals(1, outboundWire.getInvocationChains().size());
+        assertEquals(1, outboundWire.getOutboundInvocationChains().size());
         assertEquals(contract, outboundWire.getServiceContract());
         assertEquals(uri, outboundWire.getSourceUri());
     }
@@ -202,11 +202,11 @@ public class WireServiceExtensionTestCase extends TestCase {
         wireService.createWires(binding, contract, "target");
 
         InboundWire inboundWire = binding.getInboundWire();
-        assertEquals(1, inboundWire.getInvocationChains().size());
+        assertEquals(1, inboundWire.getInboundInvocationChains().size());
         assertEquals(contract, inboundWire.getServiceContract());
         assertEquals(uri, inboundWire.getSourceUri());
         OutboundWire outboundWire = binding.getOutboundWire();
-        assertEquals(1, outboundWire.getInvocationChains().size());
+        assertEquals(1, outboundWire.getOutboundInvocationChains().size());
         assertEquals(contract, outboundWire.getServiceContract());
         assertEquals(uri, outboundWire.getSourceUri());
         assertEquals(1, outboundWire.getTargetCallbackInvocationChains().size());

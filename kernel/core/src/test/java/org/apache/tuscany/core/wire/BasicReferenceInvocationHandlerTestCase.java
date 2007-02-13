@@ -55,7 +55,7 @@ public class BasicReferenceInvocationHandlerTestCase extends TestCase {
         chain.prepare();
         //chains.put(echo, chain);
         OutboundWire wire = new OutboundWireImpl();
-        wire.addInvocationChain(operation, chain);
+        wire.addOutboundInvocationChain(operation, chain);
         wire.setServiceContract(contract);
         wire.setSourceUri(URI.create("#wire"));
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);

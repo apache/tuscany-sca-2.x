@@ -66,7 +66,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
         wire.setServiceContract(contract);
         wire.setSourceUri(URI.create("#Wire"));
         Operation operation = contract.getOperations().get("checkedException");
-        wire.addInvocationChain(operation, createChain(checkedMethod, operation));
+        wire.addOutboundInvocationChain(operation, createChain(checkedMethod, operation));
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(TestBean.class, wire, null);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
@@ -85,7 +85,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
         wire.setSourceUri(URI.create("#Wire"));
         Operation operation = contract.getOperations().get("runtimeException");
         OutboundInvocationChain chain = createChain(runtimeMethod, operation);
-        wire.addInvocationChain(operation, chain);
+        wire.addOutboundInvocationChain(operation, chain);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(TestBean.class, wire, null);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),

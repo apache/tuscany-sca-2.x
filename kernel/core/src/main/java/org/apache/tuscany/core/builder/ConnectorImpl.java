@@ -103,8 +103,8 @@ public class ConnectorImpl implements Connector {
                         OutboundWire targetWire,
                         boolean optimizable)
         throws WiringException {
-        Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
-        for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
+        Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getOutboundInvocationChains();
+        for (InboundInvocationChain inboundChain : sourceWire.getInboundInvocationChains().values()) {
             // match invocation chains
             OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getOperation());
             if (outboundChain == null) {
@@ -140,10 +140,10 @@ public class ConnectorImpl implements Connector {
         assert source != null;
         assert target != null;
         assert sourceWire.getTargetUri() != null;
-        Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
+        Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInboundInvocationChains();
         String portName = sourceWire.getTargetUri().getFragment();
         // match outbound to inbound chains
-        for (OutboundInvocationChain outboundChain : sourceWire.getInvocationChains().values()) {
+        for (OutboundInvocationChain outboundChain : sourceWire.getOutboundInvocationChains().values()) {
             Operation<?> operation = outboundChain.getOperation();
             InboundInvocationChain inboundChain = targetChains.get(operation);
             if (inboundChain == null) {
@@ -196,7 +196,7 @@ public class ConnectorImpl implements Connector {
                     connect(outboundChain, inboundChain, invoker, false);
                 }
                 ServiceBinding binding = (ServiceBinding) source;
-                InboundInvocationChain chain = binding.getInboundWire().getInvocationChains().get(operation);
+                InboundInvocationChain chain = binding.getInboundWire().getInboundInvocationChains().get(operation);
                 chain.setTargetInvoker(invoker);
             } else {
                 if (target instanceof Component && isOneWayOperation) {
@@ -423,7 +423,7 @@ public class ConnectorImpl implements Connector {
     private void handleReference(Reference reference) throws WiringException {
         for (ReferenceBinding binding : reference.getReferenceBindings()) {
             InboundWire inboundWire = binding.getInboundWire();
-            Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
+            Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInboundInvocationChains();
             for (InboundInvocationChain chain : inboundChains.values()) {
                 // add target invoker on inbound side
                 ServiceContract contract = inboundWire.getServiceContract();

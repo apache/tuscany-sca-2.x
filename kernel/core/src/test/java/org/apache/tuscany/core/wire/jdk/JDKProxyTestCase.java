@@ -41,7 +41,7 @@ public class JDKProxyTestCase extends TestCase {
     public void testCreateProxy() {
         URI uri = URI.create("#service");
         EasyMock.expect(inboundWire.getSourceUri()).andReturn(uri).atLeastOnce();
-        EasyMock.expect(inboundWire.getInvocationChains()).andReturn(chains);
+        EasyMock.expect(inboundWire.getInboundInvocationChains()).andReturn(chains);
         EasyMock.replay(inboundWire);
         TestInterface intf = wireService.createProxy(TestInterface.class, inboundWire);
         assertTrue(Proxy.isProxyClass(intf.getClass()));

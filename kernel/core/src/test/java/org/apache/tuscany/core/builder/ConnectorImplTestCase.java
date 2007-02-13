@@ -74,7 +74,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setSourceUri(URI.create("target"));
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        outboundWire.getInvocationChains();
+        outboundWire.getOutboundInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
@@ -95,7 +95,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setSourceUri(URI.create("target"));
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        outboundWire.getInvocationChains();
+        outboundWire.getOutboundInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
@@ -160,7 +160,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
     public void testIncompatibleInboundOutboundWiresConnect() throws Exception {
         Operation<Type> operation = new Operation<Type>("bar", null, null, null);
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.addInvocationChain(operation, new InboundInvocationChainImpl(operation));
+        inboundWire.addInboundInvocationChain(operation, new InboundInvocationChainImpl(operation));
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setSourceUri(URI.create("target"));
         try {
@@ -180,7 +180,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setSourceUri(URI.create("sca://foo"));
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setTargetUri(URI.create("target"));
-        outboundWire.addInvocationChain(operation, new OutboundInvocationChainImpl(operation));
+        outboundWire.addOutboundInvocationChain(operation, new OutboundInvocationChainImpl(operation));
         try {
             connector.connect(container, outboundWire, container, inboundWire, false);
             fail();

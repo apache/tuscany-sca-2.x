@@ -78,7 +78,7 @@ public class NonBlockingForwardSyncCallbackConnectionTestCase extends TestCase {
         inboundWire.setSourceUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new NonBlockingForwardSyncCallbackConnectionTestCase.MockInterceptor());
-        inboundWire.addInvocationChain(operation, inboundChain);
+        inboundWire.addInboundInvocationChain(operation, inboundChain);
         componentManager.register(target);
 
         AtomicComponent source = createSource();
@@ -86,7 +86,7 @@ public class NonBlockingForwardSyncCallbackConnectionTestCase extends TestCase {
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetUri(targetUriFragment);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
-        outboundWire.addInvocationChain(operation, outboundChain);
+        outboundWire.addOutboundInvocationChain(operation, outboundChain);
 
         InboundInvocationChain callbackInboundChain = new InboundInvocationChainImpl(callbackOperation);
         callbackInboundChain.addInterceptor(new NonBlockingForwardSyncCallbackConnectionTestCase.MockInterceptor());

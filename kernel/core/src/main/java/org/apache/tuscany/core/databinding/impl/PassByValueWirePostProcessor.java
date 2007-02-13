@@ -77,11 +77,11 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
         }
         if (targetWire.getServiceContract().isRemotable()
             && !allowsPassByReference) {
-            Map<Operation<?>, InboundInvocationChain> chains = targetWire.getInvocationChains();
+            Map<Operation<?>, InboundInvocationChain> chains = targetWire.getInboundInvocationChains();
             for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
                 targetOperation = entry.getKey();
                 sourceOperation =
-                    getSourceOperation(sourceWire.getInvocationChains().keySet(), targetOperation.getName());
+                    getSourceOperation(sourceWire.getOutboundInvocationChains().keySet(), targetOperation.getName());
 
 
                 if (null != sourceOperation) {
@@ -92,7 +92,8 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
                     passByValueInterceptor.setArgsDataBindings(argsDataBindings);
                     passByValueInterceptor.setResultDataBinding(resultDataBinding);
                     entry.getValue().addInterceptor(0, passByValueInterceptor);
-                    tailInterceptor = sourceWire.getInvocationChains().get(sourceOperation).getTailInterceptor();
+                    tailInterceptor =
+                        sourceWire.getOutboundInvocationChains().get(sourceOperation).getTailInterceptor();
                     if (tailInterceptor != null) {
                         tailInterceptor.setNext(passByValueInterceptor);
                     }

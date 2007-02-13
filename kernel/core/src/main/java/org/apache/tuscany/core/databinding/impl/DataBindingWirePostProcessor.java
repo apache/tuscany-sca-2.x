@@ -52,11 +52,11 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
     }
 
     public void process(SCAObject source, OutboundWire sourceWire, SCAObject target, InboundWire targetWire) {
-        Map<Operation<?>, OutboundInvocationChain> chains = sourceWire.getInvocationChains();
+        Map<Operation<?>, OutboundInvocationChain> chains = sourceWire.getOutboundInvocationChains();
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                getTargetOperation(targetWire.getInvocationChains().keySet(), sourceOperation.getName());
+                getTargetOperation(targetWire.getInboundInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null && targetDataBinding == null) {
@@ -113,11 +113,11 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         // Either Service or Reference
         boolean isReference = source instanceof ReferenceBinding;
 
-        Map<Operation<?>, InboundInvocationChain> chains = sourceWire.getInvocationChains();
+        Map<Operation<?>, InboundInvocationChain> chains = sourceWire.getInboundInvocationChains();
         for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                getTargetOperation(targetWire.getInvocationChains().keySet(), sourceOperation.getName());
+                getTargetOperation(targetWire.getOutboundInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null && targetDataBinding == null) {
@@ -131,7 +131,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 interceptor.setMediator(mediator);
                 if (isReference) {
                     // FIXME: We need a better way to position the interceptors
-                    targetWire.getInvocationChains().get(targetOperation).addInterceptor(0, interceptor);
+                    targetWire.getOutboundInvocationChains().get(targetOperation).addInterceptor(0, interceptor);
                     Interceptor tail = entry.getValue().getTailInterceptor();
                     if (tail != null) {
                         // HACK to relink the bridging interceptor

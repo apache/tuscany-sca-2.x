@@ -247,7 +247,7 @@ public final class MockFactory {
             if (interceptor != null) {
                 chain.addInterceptor(interceptor);
             }
-            wire.addInvocationChain(operation, chain);
+            wire.addOutboundInvocationChain(operation, chain);
         }
     }
 

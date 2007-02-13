@@ -55,14 +55,14 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setSourceUri(sourceUri);
-        inboundWire.addInvocationChain(operation, inboundChain);
+        inboundWire.addInboundInvocationChain(operation, inboundChain);
         inboundWire.setServiceContract(contract);
 
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setSourceUri(sourceUri);
         outboundWire.setTargetUri(TARGET_NAME);
-        outboundWire.addInvocationChain(operation, outboundChain);
+        outboundWire.addOutboundInvocationChain(operation, outboundChain);
         outboundWire.setServiceContract(contract);
 
         // create the binding
@@ -96,7 +96,7 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         MessageImpl msg = new MessageImpl();
         Map<String, List<OutboundWire>> wires = source.getOutboundWires();
         OutboundWire wire = wires.get(TARGET_FRAGMENT).get(0);
-        OutboundInvocationChain chain = wire.getInvocationChains().get(operation);
+        OutboundInvocationChain chain = wire.getOutboundInvocationChains().get(operation);
         msg.setTargetInvoker(chain.getTargetInvoker());
         Message resp = chain.getHeadInterceptor().invoke(msg);
         assertEquals(RESPONSE, resp.getBody());
