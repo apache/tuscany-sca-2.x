@@ -31,4 +31,8 @@ public class ComponentContextTestComponent extends TestCase {
     public void testContextWasInjected() {
         assertTrue(tester.isContextInjected());
     }
+
+    public void testComponentURI() {
+        assertEquals("itest://localhost/testDomain/ComponentContextTester", tester.getURI());
+    }
 }
