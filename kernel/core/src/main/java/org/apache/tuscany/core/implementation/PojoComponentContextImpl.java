@@ -50,7 +50,7 @@ public class PojoComponentContextImpl implements ComponentContext {
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) {
-        return null;
+        return type.cast(component.getProperty(propertyName));
     }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {

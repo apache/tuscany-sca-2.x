@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osoa.sca.ComponentContext;
 
@@ -62,6 +63,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     protected Map<String, Member> referenceSites;
     protected Map<String, Member> resourceSites;
     protected Map<String, Member> propertySites;
+    protected Map<String, ObjectFactory<?>> propertyFactories = new ConcurrentHashMap<String, ObjectFactory<?>>();
     protected Map<String, Member> callbackSites;
     protected List<Injector<Object>> injectors;
     protected Class implementationClass;
@@ -162,7 +164,13 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
                 break;
             }
         }
-        //FIXME throw an error if no injection site found
+
+        propertyFactories.put(name, factory);
+    }
+
+    Object getProperty(String name) {
+        ObjectFactory<?> factory = propertyFactories.get(name);
+        return factory != null ? factory.getInstance() : null;
     }
 
     public void addResourceFactory(String name, ObjectFactory<?> factory) {

@@ -38,13 +38,10 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class PojoAtomicComponentTestCase extends TestCase {
-    private PojoObjectFactory<Foo> factory;
+    private PojoConfiguration config;
 
     @SuppressWarnings({"unchecked"})
     public void testDestroy() throws Exception {
-        PojoConfiguration config = new PojoConfiguration();
-        config.setName(URI.create("foo"));
-        config.setInstanceFactory(factory);
         EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
         invoker.invokeEvent(EasyMock.notNull());
         EasyMock.replay(invoker);
@@ -57,9 +54,6 @@ public class PojoAtomicComponentTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testInit() throws Exception {
-        PojoConfiguration config = new PojoConfiguration();
-        config.setName(URI.create("foo"));
-        config.setInstanceFactory(factory);
         EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
         invoker.invokeEvent(EasyMock.notNull());
         EasyMock.replay(invoker);
@@ -70,18 +64,12 @@ public class PojoAtomicComponentTestCase extends TestCase {
     }
 
     public void testOptimizable() throws Exception {
-        PojoConfiguration config = new PojoConfiguration();
-        config.setName(URI.create("foo"));
-        config.setInstanceFactory(factory);
         TestAtomicComponent component = new TestAtomicComponent(config);
         assertTrue(component.isOptimizable());
     }
 
     @SuppressWarnings({"unchecked"})
     public void testDestroyableButOptimizable() throws Exception {
-        PojoConfiguration config = new PojoConfiguration();
-        config.setInstanceFactory(factory);
-        config.setName(URI.create("foo"));
         EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
         invoker.invokeEvent(EasyMock.notNull());
         EasyMock.replay(invoker);
@@ -92,18 +80,12 @@ public class PojoAtomicComponentTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testStatelessOptimizable() throws Exception {
-        PojoConfiguration config = new PojoConfiguration();
-        config.setName(URI.create("foo"));
-        config.setInstanceFactory(factory);
         TestStatelessAtomicComponent component = new TestStatelessAtomicComponent(config);
         assertTrue(component.isOptimizable());
     }
 
     @SuppressWarnings({"unchecked"})
     public void testNotOptimizable() throws Exception {
-        PojoConfiguration config = new PojoConfiguration();
-        config.setInstanceFactory(factory);
-        config.setName(URI.create("foo"));
         EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
         invoker.invokeEvent(EasyMock.notNull());
         EasyMock.replay(invoker);
@@ -112,9 +94,24 @@ public class PojoAtomicComponentTestCase extends TestCase {
         assertFalse(component.isOptimizable());
     }
 
+    public void testPropertyAccess() {
+        String value = "Foo!";
+        ObjectFactory objectFactory = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(objectFactory.getInstance()).andReturn(value);
+        EasyMock.replay(objectFactory);
+
+        TestAtomicComponent component = new TestAtomicComponent(config);
+        component.addPropertyFactory("foo", objectFactory);
+        assertSame(value, component.getProperty("foo"));
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor());
+        PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor());
+
+        config = new PojoConfiguration();
+        config.setInstanceFactory(factory);
+        config.setName(URI.create("foo"));
     }
 
     private class TestAtomicComponent extends PojoAtomicComponent {
