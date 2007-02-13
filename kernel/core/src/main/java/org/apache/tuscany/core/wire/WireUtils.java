@@ -121,11 +121,11 @@ public final class WireUtils {
      * Determines if the given wire is optimizable, i.e. its invocation chains may be bypassed during an invocation.
      * This is typically calculated during the connect phase to optimize away invocation chains.
      *
+     * @param container the wire container
      * @param wire the wire
      * @return true if the wire is optimizable
      */
-    public static boolean isOptimizable(InboundWire wire) {
-        SCAObject container = wire.getContainer();
+    public static boolean isOptimizable(SCAObject container, InboundWire wire) {
         if (!(container instanceof Component) || !((Component) container).isOptimizable()) {
             return false;
         }

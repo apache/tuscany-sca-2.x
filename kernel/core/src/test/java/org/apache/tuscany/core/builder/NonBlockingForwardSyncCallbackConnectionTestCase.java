@@ -74,7 +74,6 @@ public class NonBlockingForwardSyncCallbackConnectionTestCase extends TestCase {
         EasyMock.replay(target);
 
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setContainer(target);
         inboundWire.setServiceContract(contract);
         inboundWire.setUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
@@ -84,7 +83,6 @@ public class NonBlockingForwardSyncCallbackConnectionTestCase extends TestCase {
 
         AtomicComponent source = createSource();
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setContainer(source);
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetUri(targetUriFragment);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
@@ -96,7 +94,7 @@ public class NonBlockingForwardSyncCallbackConnectionTestCase extends TestCase {
         chains.put(callbackOperation, callbackInboundChain);
         outboundWire.addTargetCallbackInvocationChains(chains);
 
-        connector.connect(outboundWire, inboundWire, true);
+        connector.connect(source, outboundWire, target, inboundWire, true);
 
         // test the forward request
         Message msg = new MessageImpl();

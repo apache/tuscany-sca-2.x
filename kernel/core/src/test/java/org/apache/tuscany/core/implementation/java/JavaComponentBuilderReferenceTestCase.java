@@ -19,14 +19,13 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -132,7 +131,6 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
     }
 
     private void createWire() {
-        SCAObject scaObject = EasyMock.createNiceMock(SCAObject.class);
         Map<Operation<?>, OutboundInvocationChain> chains = Collections.emptyMap();
         wire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(wire.getUri()).andReturn(URI.create("#target")).atLeastOnce();
@@ -141,7 +139,6 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         JavaServiceContract targetContract = new JavaServiceContract(Target.class);
         targetContract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         EasyMock.expect(wire.getServiceContract()).andReturn(targetContract).atLeastOnce();
-        EasyMock.expect(wire.getContainer()).andReturn(scaObject).atLeastOnce();
         EasyMock.replay(wire);
 
     }

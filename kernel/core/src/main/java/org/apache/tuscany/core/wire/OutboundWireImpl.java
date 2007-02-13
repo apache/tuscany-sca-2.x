@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -47,7 +46,6 @@ public class OutboundWireImpl implements OutboundWire {
     private URI uri;
     private URI target;
     private InboundWire targetWire;
-    private SCAObject container;
     private boolean optimizable;
 
     /**
@@ -115,14 +113,6 @@ public class OutboundWireImpl implements OutboundWire {
 
     public boolean isOptimizable() {
         return optimizable;
-    }
-
-    public SCAObject getContainer() {
-        return container;
-    }
-
-    public void setContainer(SCAObject container) {
-        this.container = container;
     }
 
     public Object getTargetService() throws TargetResolutionException {

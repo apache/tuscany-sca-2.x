@@ -99,8 +99,6 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         sourceServiceBinding = new MockServiceBinding(SOURCE);
         sourceServiceBinding.setInboundWire(inboundWire);
         sourceServiceBinding.setOutboundWire(outboundWire);
-        inboundWire.setContainer(sourceServiceBinding);
-        outboundWire.setContainer(sourceServiceBinding);
     }
 
     private void configureAtomicTarget() throws Exception {
@@ -120,8 +118,6 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
             EasyMock.isA(InboundWire.class))).andReturn(new MockInvoker());
         EasyMock.replay(atomicTarget);
 
-        inboundWire.setContainer(atomicTarget);
-
         parent = EasyMock.createNiceMock(CompositeComponent.class);
         EasyMock.replay(parent);
         componentManager.register(atomicTarget);
@@ -133,7 +129,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         referenceTarget.addReferenceBinding(binding);
         // put a terminating interceptor on the outbound wire of the reference for testing an invocation
         binding.getOutboundWire().getInvocationChains().get(operation).addInterceptor(new InvokerInterceptor());
-        connector.connect(binding.getInboundWire(), binding.getOutboundWire(), true);
+        connector.connect(binding, binding.getInboundWire(), binding, binding.getOutboundWire(), true);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
         EasyMock.expect(parent.getUri()).andReturn(TARGET);
         EasyMock.expect(parent.getTargetWire(TARGET_FRAGMENT)).andReturn(binding.getInboundWire());

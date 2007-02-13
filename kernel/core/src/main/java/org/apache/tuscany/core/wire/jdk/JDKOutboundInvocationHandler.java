@@ -24,17 +24,16 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.net.URI;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetInvocationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
@@ -48,7 +47,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
-import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.wire.NoMethodForOperationException;
 import org.apache.tuscany.core.wire.WireUtils;
 
@@ -218,8 +216,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         ServiceContract contract = wire.getServiceContract();
         this.referenceName = wire.getUri().getFragment();
         // TODO JFM remove getContainer
-        SCAObject scaObject = wire.getContainer();
-        this.fromAddress =  UriHelper.getDefragmentedName(wire.getUri());
+        this.fromAddress = UriHelper.getDefragmentedName(wire.getUri());
         this.contractIsConversational = contract.getInteractionScope().equals(CONVERSATIONAL);
         this.contractIsRemotable = contract.isRemotable();
         this.contractHasCallback = contract.getCallbackClass() != null;
@@ -228,14 +225,15 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         } else {
             this.callbackClassName = null;
         }
-        // FIXME JFM this should be done during the callback and not be dependent on PojoAtomicComponent
-        this.wireContainerIsAtomicComponent = scaObject instanceof PojoAtomicComponent;
-        if (wireContainerIsAtomicComponent && contractHasCallback) {
-            this.callbackIsImplemented =
-                ((PojoAtomicComponent) scaObject).implementsCallback(contract.getCallbackClass());
-        } else {
-            this.callbackIsImplemented = false;
-        }
+        // FIXME JFM this should not be dependent on PojoAtomicComponent
+        // JFM commenting out as this should not be specific to pojo types
+//        this.wireContainerIsAtomicComponent = scaObject instanceof PojoAtomicComponent;
+//        if (wireContainerIsAtomicComponent && contractHasCallback) {
+//            this.callbackIsImplemented =
+//                ((PojoAtomicComponent) scaObject).implementsCallback(contract.getCallbackClass());
+//        } else {
+//            this.callbackIsImplemented = false;
+//        }
         if (mapping == null) {
             chains = WireUtils.createInterfaceToWireMapping(interfaze, wire);
         } else {

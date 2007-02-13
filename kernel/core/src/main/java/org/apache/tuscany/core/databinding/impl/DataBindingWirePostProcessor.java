@@ -51,12 +51,12 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         this.mediator = mediator;
     }
 
-    public void process(OutboundWire source, InboundWire target) {
-        Map<Operation<?>, OutboundInvocationChain> chains = source.getInvocationChains();
+    public void process(SCAObject source, OutboundWire sourceWire, SCAObject target, InboundWire targetWire) {
+        Map<Operation<?>, OutboundInvocationChain> chains = sourceWire.getInvocationChains();
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
+                getTargetOperation(targetWire.getInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null && targetDataBinding == null) {
@@ -68,20 +68,20 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 // references can be wired
                 // to the same service
                 DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(source, sourceOperation, targetOperation);
+                    new DataBindingInteceptor(sourceWire, sourceOperation, targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }
         }
 
         // Check if there's a callback
-        Map callbackOperations = source.getServiceContract().getCallbackOperations();
+        Map callbackOperations = sourceWire.getServiceContract().getCallbackOperations();
         if (callbackOperations == null || callbackOperations.isEmpty()) {
             return;
         }
         //Object targetAddress = UriHelper.getBaseName(source.getUri());
         Map<Operation<?>, OutboundInvocationChain> callbackChains =
-            target.getSourceCallbackInvocationChains(source.getUri());
+            targetWire.getSourceCallbackInvocationChains(sourceWire.getUri());
         if (callbackChains == null) {
             // callback chains could be null
             return;
@@ -89,7 +89,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : callbackChains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                getTargetOperation(source.getTargetCallbackInvocationChains().keySet(), sourceOperation
+                getTargetOperation(sourceWire.getTargetCallbackInvocationChains().keySet(), sourceOperation
                     .getName());
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
@@ -102,23 +102,22 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 // references can be wired
                 // to the same service
                 DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(source, sourceOperation, targetOperation);
+                    new DataBindingInteceptor(sourceWire, sourceOperation, targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }
         }
     }
 
-    public void process(InboundWire source, OutboundWire target) {
-        SCAObject container = source.getContainer();
+    public void process(SCAObject source, InboundWire sourceWire, SCAObject target, OutboundWire targetWire) {
         // Either Service or Reference
-        boolean isReference = container instanceof ReferenceBinding;
+        boolean isReference = source instanceof ReferenceBinding;
 
-        Map<Operation<?>, InboundInvocationChain> chains = source.getInvocationChains();
+        Map<Operation<?>, InboundInvocationChain> chains = sourceWire.getInvocationChains();
         for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
+                getTargetOperation(targetWire.getInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null && targetDataBinding == null) {
@@ -128,11 +127,11 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side
                 DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(source, sourceOperation, targetOperation);
+                    new DataBindingInteceptor(sourceWire, sourceOperation, targetOperation);
                 interceptor.setMediator(mediator);
                 if (isReference) {
                     // FIXME: We need a better way to position the interceptors
-                    target.getInvocationChains().get(targetOperation).addInterceptor(0, interceptor);
+                    targetWire.getInvocationChains().get(targetOperation).addInterceptor(0, interceptor);
                     Interceptor tail = entry.getValue().getTailInterceptor();
                     if (tail != null) {
                         // HACK to relink the bridging interceptor

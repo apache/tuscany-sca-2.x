@@ -100,7 +100,6 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         expect(outboundWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
         URI uri = URI.create("fooRef");
         expect(outboundWire.getUri()).andReturn(uri).atLeastOnce();
-        expect(outboundWire.getContainer()).andReturn(null).anyTimes();
         expect(outboundWire.getServiceContract()).andReturn(outboundContract).anyTimes();
         replay(outboundWire);
 

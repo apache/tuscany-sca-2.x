@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.core.wire;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -47,7 +46,6 @@ public class InboundWireImpl implements InboundWire {
     private Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
     private Map<URI, Map<Operation<?>, OutboundInvocationChain>> callbackSourceChainMaps =
         new HashMap<URI, Map<Operation<?>, OutboundInvocationChain>>();
-    private SCAObject container;
     private AtomicComponent targetComponent;
     private boolean optimizable;
 
@@ -148,14 +146,7 @@ public class InboundWireImpl implements InboundWire {
         this.optimizable = optimizable;
     }
 
-    public SCAObject getContainer() {
-        return container;
-    }
-
-    public void setContainer(SCAObject container) {
-        if (container instanceof AtomicComponent) {
-            targetComponent = (AtomicComponent) container;
-        }
-        this.container = container;
+    public void setComponent(AtomicComponent container) {
+        this.targetComponent = container;
     }
 }

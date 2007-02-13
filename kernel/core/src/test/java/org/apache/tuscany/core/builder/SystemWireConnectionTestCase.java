@@ -75,7 +75,6 @@ public class SystemWireConnectionTestCase extends TestCase {
         EasyMock.expect(source.getOutboundWires()).andReturn(wireMap);
         EasyMock.replay(source);
 
-        EasyMock.expect(outbound.getContainer()).andReturn(source).atLeastOnce();
         EasyMock.replay(outbound);
 
         componentManager.register(source);
@@ -87,7 +86,6 @@ public class SystemWireConnectionTestCase extends TestCase {
         EasyMock.expect(target.getTargetWire("bar")).andReturn(inbound).atLeastOnce();
 
         EasyMock.replay(target);
-        inbound.setContainer(target);
         componentManager.register(target);
 
         connector.connect(source);

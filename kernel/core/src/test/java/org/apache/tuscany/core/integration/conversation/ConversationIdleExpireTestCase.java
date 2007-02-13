@@ -89,11 +89,9 @@ public class ConversationIdleExpireTestCase extends AbstractConversationTestCase
         EasyMock.replay(source);
 
         owire = MockFactory.createOutboundWire("foo", Foo.class);
-        owire.setContainer(source);
         owire.setTargetUri(URI.create("foo#bar"));
         InboundWire iwire = MockFactory.createInboundWire("foo", Foo.class);
-        iwire.setContainer(target);
-        connector.connect(owire, iwire, false);
+        connector.connect(source, owire, target, iwire, false);
         handler = new JDKOutboundInvocationHandler(Foo.class, owire, workContext);
         operation1 = Foo.class.getMethod("operation1");
         operation2 = Foo.class.getMethod("operation2");

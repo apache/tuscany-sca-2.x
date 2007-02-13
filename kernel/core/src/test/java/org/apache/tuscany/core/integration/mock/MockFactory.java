@@ -117,7 +117,6 @@ public final class MockFactory {
         String serviceName = targetService.getName().substring(targetService.getName().lastIndexOf('.') + 1);
         InboundWire inboundWire = createInboundWire(serviceName, targetService, targetHeadInterceptor);
         targetComponent.addInboundWire(inboundWire);
-        inboundWire.setContainer(targetComponent);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
@@ -130,11 +129,10 @@ public final class MockFactory {
         sourceComponent.setScopeContainer(sourceScope);
         OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
         sourceComponent.addOutboundWire(outboundWire);
-        outboundWire.setContainer(sourceComponent);
         outboundWire.setTargetUri(URI.create(targetName + "#" + serviceName));
         targetScope.register(targetComponent);
         sourceScope.register(sourceComponent);
-        CONNECTOR.connect(outboundWire, inboundWire, false);
+        CONNECTOR.connect(sourceComponent, outboundWire, targetComponent, inboundWire, false);
         Map<String, AtomicComponent> contexts = new HashMap<String, AtomicComponent>();
         contexts.put(sourceName, sourceComponent);
         contexts.put(targetName, targetComponent);
@@ -170,7 +168,6 @@ public final class MockFactory {
         String serviceName = targetService.getName().substring(targetService.getName().lastIndexOf('.') + 1);
         InboundWire inboundWire = createInboundWire(serviceName, targetService, null);
         targetComponent.addInboundWire(inboundWire);
-        inboundWire.setContainer(targetComponent);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
@@ -183,14 +180,13 @@ public final class MockFactory {
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
         sourceComponent.setScopeContainer(sourceScope);
         OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, null);
-        outboundWire.setContainer(sourceComponent);
         outboundWire.setTargetUri(URI.create(targetName + "#" + serviceName));
         List<OutboundWire> factories = new ArrayList<OutboundWire>();
         factories.add(outboundWire);
         sourceComponent.addOutboundWires(factories);
         targetScope.register(targetComponent);
         sourceScope.register(sourceComponent);
-        CONNECTOR.connect(outboundWire, inboundWire, false);
+        CONNECTOR.connect(sourceComponent, outboundWire, targetComponent, inboundWire, false);
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         components.put(sourceName, sourceComponent);
         components.put(targetName, targetComponent);

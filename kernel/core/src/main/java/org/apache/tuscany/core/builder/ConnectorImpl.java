@@ -97,7 +97,7 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public void connect(InboundWire sourceWire, OutboundWire targetWire, boolean optimizable)
+    public void connect(SCAObject source, InboundWire sourceWire, SCAObject target, OutboundWire targetWire, boolean optimizable)
         throws WiringException {
         Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
@@ -110,9 +110,9 @@ public class ConnectorImpl implements Connector {
         }
         if (postProcessorRegistry != null) {
             // run wire post-processors
-            postProcessorRegistry.process(sourceWire, targetWire);
+            postProcessorRegistry.process(source, sourceWire, target, targetWire);
         }
-        if (optimizable && WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
+        if (optimizable && WireUtils.isOptimizable(source, sourceWire) && WireUtils.isOptimizable(targetWire)) {
             sourceWire.setOptimizable(true);
             sourceWire.setTargetWire(targetWire);
         }
@@ -127,13 +127,15 @@ public class ConnectorImpl implements Connector {
      * @throws WiringException
      * @deprecated
      */
-    public void connect(OutboundWire sourceWire, InboundWire targetWire, boolean optimizable)
+    public void connect(SCAObject source,
+                        OutboundWire sourceWire,
+                        SCAObject target,
+                        InboundWire targetWire,
+                        boolean optimizable)
         throws WiringException {
-        assert sourceWire.getTargetUri() != null;
-        SCAObject source = sourceWire.getContainer();
         assert source != null;
-        SCAObject target = targetWire.getContainer();
         assert target != null;
+        assert sourceWire.getTargetUri() != null;
         Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         String portName = sourceWire.getTargetUri().getFragment();
         // match outbound to inbound chains
@@ -272,10 +274,10 @@ public class ConnectorImpl implements Connector {
         }
         if (postProcessorRegistry != null) {
             // run wire post-processors
-            postProcessorRegistry.process(sourceWire, targetWire);
+            postProcessorRegistry.process(source, sourceWire, target, targetWire);
         }
         // perform optimization, if possible
-        if (optimizable && WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
+        if (optimizable && WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(target, targetWire)) {
             sourceWire.setOptimizable(true);
             sourceWire.setTargetWire(targetWire);
         }
@@ -409,8 +411,8 @@ public class ConnectorImpl implements Connector {
             }
             assertWireable(outboundWire, targetWire, false);
             boolean optimizable = isOptimizable(Scope.SYSTEM, targetComponent.getScope());
-            connect(outboundWire, targetWire, optimizable);
-            connect(inboundWire, outboundWire, true);
+            connect(binding, outboundWire, targetComponent, targetWire, optimizable);
+            connect(binding, inboundWire, targetComponent, outboundWire, true);
         }
     }
 
@@ -437,7 +439,7 @@ public class ConnectorImpl implements Connector {
             }
             OutboundWire outboundWire = binding.getOutboundWire();
             // connect the reference's inbound and outbound wires
-            connect(inboundWire, outboundWire, true);
+            connect(binding, inboundWire, binding, outboundWire, true);
         }
     }
 
@@ -479,7 +481,7 @@ public class ConnectorImpl implements Connector {
                     assertWireable(outboundWire, targetWire, false);
                 }
                 boolean optimizable = isOptimizable(component.getScope(), targetComponent.getScope());
-                connect(outboundWire, targetWire, optimizable);
+                connect(component, outboundWire, targetComponent, targetWire, optimizable);
             }
         }
     }

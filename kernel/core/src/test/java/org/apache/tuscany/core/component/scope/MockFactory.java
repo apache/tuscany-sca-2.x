@@ -101,7 +101,7 @@ public final class MockFactory {
         wire.setUri(URI.create("#" + setter.getName()));
         wire.setServiceContract(new JavaServiceContract(targetClass));
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setContainer(targetComponent);
+        inboundWire.setComponent(targetComponent);
         inboundWire.setServiceContract(new JavaServiceContract(targetClass));
         inboundWire.setUri(URI.create("#" + target));
         wire.setTargetWire(inboundWire);

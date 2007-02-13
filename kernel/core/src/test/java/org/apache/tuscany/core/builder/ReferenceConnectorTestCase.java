@@ -69,8 +69,6 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expect(referenceBinding.getInboundWire()).andReturn(inboundWire);
         EasyMock.expect(referenceBinding.getOutboundWire()).andReturn(outboundWire);
         EasyMock.replay(referenceBinding);
-        inboundWire.setContainer(referenceBinding);
-        outboundWire.setContainer(referenceBinding);
 
         Reference reference = new ReferenceImpl(referenceUri, contract);
         reference.addReferenceBinding(referenceBinding);
@@ -109,8 +107,6 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expect(referenceBinding.getInboundWire()).andReturn(inboundWire);
         EasyMock.expect(referenceBinding.getOutboundWire()).andReturn(outboundWire);
         EasyMock.replay(referenceBinding);
-        inboundWire.setContainer(referenceBinding);
-        outboundWire.setContainer(referenceBinding);
 
         Reference reference = new ReferenceImpl(referenceUri, contract);
         reference.addReferenceBinding(referenceBinding);
@@ -141,7 +137,6 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire targetWire = new InboundWireImpl();
         targetWire.setServiceContract(contract);
         targetWire.addInvocationChain(operation, inboundChain);
-        targetWire.setContainer(target);
         targetWire.setUri(TARGET_NAME);
         // create the outbound wire and chain from the source component
         OutboundInvocationChain sourceChain = new OutboundInvocationChainImpl(operation);
@@ -149,9 +144,8 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         sourceWire.setServiceContract(contract);
         sourceWire.setTargetUri(TARGET_NAME);
         sourceWire.addInvocationChain(operation, sourceChain);
-        sourceWire.setContainer(source);
 
-        connector.connect(sourceWire, targetWire, false);
+        connector.connect(source, sourceWire, target, targetWire, false);
         Interceptor interceptor = sourceChain.getHeadInterceptor();
         MessageImpl msg = new MessageImpl();
         msg.setTargetInvoker(new MockInvoker());

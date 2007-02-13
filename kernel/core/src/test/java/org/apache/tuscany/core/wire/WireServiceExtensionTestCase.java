@@ -190,12 +190,10 @@ public class WireServiceExtensionTestCase extends TestCase {
         assertEquals(1, inboundWire.getInvocationChains().size());
         assertEquals(contract, inboundWire.getServiceContract());
         assertEquals(uri, inboundWire.getUri());
-        assertEquals(binding, inboundWire.getContainer());
 
         OutboundWire outboundWire = binding.getOutboundWire();
         assertEquals(1, outboundWire.getInvocationChains().size());
         assertEquals(contract, outboundWire.getServiceContract());
-        assertEquals(binding, outboundWire.getContainer());
         assertEquals(uri, outboundWire.getUri());
     }
 
@@ -207,12 +205,10 @@ public class WireServiceExtensionTestCase extends TestCase {
         InboundWire inboundWire = binding.getInboundWire();
         assertEquals(1, inboundWire.getInvocationChains().size());
         assertEquals(contract, inboundWire.getServiceContract());
-        assertEquals(binding, inboundWire.getContainer());
         assertEquals(uri, inboundWire.getUri());
         OutboundWire outboundWire = binding.getOutboundWire();
         assertEquals(1, outboundWire.getInvocationChains().size());
         assertEquals(contract, outboundWire.getServiceContract());
-        assertEquals(binding, outboundWire.getContainer());
         assertEquals(uri, outboundWire.getUri());
         assertEquals(1, outboundWire.getTargetCallbackInvocationChains().size());
     }

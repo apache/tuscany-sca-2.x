@@ -180,7 +180,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         URI uri = URI.create("#" + interfaze.getName());
         ServiceDefinition def = new ServiceDefinition(uri, serviceContract, false);
         InboundWire wire = wireService.createWire(def);
-        wire.setContainer(this);
+        wire.setComponent(this);
         inboundWires.put(wire.getUri().getFragment(), wire);
         serviceContracts.add(serviceContract);
     }

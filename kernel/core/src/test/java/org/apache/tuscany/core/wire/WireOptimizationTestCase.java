@@ -49,7 +49,6 @@ public class WireOptimizationTestCase extends TestCase {
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
         OutboundWire wire = new OutboundWireImpl();
-        wire.setContainer(component);
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
@@ -60,7 +59,6 @@ public class WireOptimizationTestCase extends TestCase {
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
         OutboundWire wire = new OutboundWireImpl();
-        wire.setContainer(component);
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
@@ -72,11 +70,10 @@ public class WireOptimizationTestCase extends TestCase {
         EasyMock.expect(component.isOptimizable()).andReturn(true);
         EasyMock.replay(component);
         InboundWire wire = new InboundWireImpl();
-        wire.setContainer(component);
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
-        assertTrue(WireUtils.isOptimizable(wire));
+        assertTrue(WireUtils.isOptimizable(component, wire));
 
     }
 
@@ -85,22 +82,20 @@ public class WireOptimizationTestCase extends TestCase {
         EasyMock.expect(component.isOptimizable()).andReturn(true);
         EasyMock.replay(component);
         InboundWire wire = new InboundWireImpl();
-        wire.setContainer(component);
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
-        assertTrue(WireUtils.isOptimizable(wire));
+        assertTrue(WireUtils.isOptimizable(component, wire));
     }
 
     public void testTargetWireNonInterceptorOptimization() throws Exception {
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
         InboundWire wire = new InboundWireImpl();
-        wire.setContainer(component);
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
-        assertFalse(WireUtils.isOptimizable(wire));
+        assertFalse(WireUtils.isOptimizable(component, wire));
     }
 
     protected void tearDown() throws Exception {

@@ -21,7 +21,6 @@ package org.apache.tuscany.spi.wire;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.ServiceContract;
 
@@ -85,15 +84,4 @@ public interface Wire {
      */
     void setOptimizable(boolean optimizable);
 
-    /**
-     * Returns the SCAObject that contains this wire
-     * @deprecated 
-     */
-    SCAObject getContainer();
-
-    /**
-     * Sets the name of the SCAObject that contains this wire
-     * @deprecated
-     */
-    void setContainer(SCAObject container);
 }

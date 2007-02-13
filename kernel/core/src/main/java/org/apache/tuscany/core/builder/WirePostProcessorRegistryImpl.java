@@ -21,10 +21,11 @@ package org.apache.tuscany.core.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.wire.WirePostProcessor;
-import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WirePostProcessor;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
 /**
  * The default implementation of a <code>WirePostProcessor</code>
@@ -35,15 +36,15 @@ public class WirePostProcessorRegistryImpl implements WirePostProcessorRegistry 
 
     private final List<WirePostProcessor> processors = new ArrayList<WirePostProcessor>();
 
-    public void process(OutboundWire source, InboundWire target) {
+    public void process(SCAObject source, OutboundWire sourceWire, SCAObject target, InboundWire targetWire) {
         for (WirePostProcessor processor : processors) {
-            processor.process(source, target);
+            processor.process(source, sourceWire, target, targetWire);
         }
     }
 
-    public void process(InboundWire source, OutboundWire target) {
+    public void process(SCAObject source, InboundWire sourceWire, SCAObject target, OutboundWire targetWire) {
         for (WirePostProcessor processor : processors) {
-            processor.process(source, target);
+            processor.process(source, sourceWire, target, targetWire);
         }
     }
 
