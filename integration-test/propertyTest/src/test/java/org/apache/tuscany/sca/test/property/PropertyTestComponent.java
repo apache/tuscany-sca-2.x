@@ -28,8 +28,6 @@ public class PropertyTestComponent extends TestCase {
     @Reference
     public CDComponent cdService;
     @Reference
-    public ABCDComponent abcdService;
-    @Reference
     public PropertyComponent propertyService;
 
 
@@ -80,13 +78,6 @@ public class PropertyTestComponent extends TestCase {
 
     public void testFileProperty() {
         assertEquals("fileValue", cdService.getFileProperty());
-    }
-
-    public void testABCD() {
-        assertEquals("a", abcdService.getA());
-        assertEquals("b", abcdService.getB());
-        assertEquals("c", abcdService.getC());
-        assertEquals("d", abcdService.getD());
     }
 
     public void testDefaultProperty() {
