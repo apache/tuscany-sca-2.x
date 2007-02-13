@@ -21,8 +21,9 @@
            xmlns:foo="http://foo"
            name="PropertyTestComposite">
 
-    <!--   <property name="manyValued" type="xsd:string" many="true"/> -->
+    <include name="PrimitivesTestComposite" scdlLocation="primitives.scdl"/>
 
+    <!--
     <property name="number" type="xsd:int">1</property>
 
     <property name="complex" type="foo:MyComplexType">
@@ -118,9 +119,5 @@
             </foo:numberSet>
         </property>
     </component>
-
-    <!--    <component name="Override">
-        <implementation.composite name="OverrideComposite" scdlLocation="override.scdl"/>
-    </component>
-    -->
+-->
 </composite>

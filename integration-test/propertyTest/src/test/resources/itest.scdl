@@ -23,8 +23,43 @@
 
     <include name="PropertyTestComposite" scdlResource="META-INF/sca/default.scdl"/>
 
-    <component name="testComponent">
-        <tuscany:junit class="calculator.CalculatorTestComponent"/>
-        <reference name="calculatorService">CalculatorServiceComponent</reference>
+    <component name="testConstructorPrimitives">
+        <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
+        <reference name="primitives">ConstructorPrimitives</reference>
+        <property name='expectedImplementation'>ConstructorPrimitives</property>
     </component>
+
+    <component name="testPublicFieldPrimitives">
+        <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
+        <reference name="primitives">PublicFieldPrimitives</reference>
+        <property name='expectedImplementation'>PublicFieldPrimitives</property>
+    </component>
+
+    <component name="testProtectedFieldPrimitives">
+        <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
+        <reference name="primitives">ProtectedFieldPrimitives</reference>
+        <property name='expectedImplementation'>ProtectedFieldPrimitives</property>
+    </component>
+
+    <component name="testPublicSetterPrimitives">
+        <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
+        <reference name="primitives">PublicSetterPrimitives</reference>
+        <property name='expectedImplementation'>PublicSetterPrimitives</property>
+    </component>
+
+    <component name="testProtectedSetterPrimitives">
+        <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
+        <reference name="primitives">ProtectedSetterPrimitives</reference>
+        <property name='expectedImplementation'>ProtectedSetterPrimitives</property>
+    </component>
+
+    <!--
+    <component name="testComponent">
+        <tuscany:junit class="org.apache.tuscany.sca.test.property.PropertyTestComponent"/>
+        <reference name="abService">ABComponent</reference>
+        <reference name="cdService">CDComponent</reference>
+        <reference name="abcdService">ABCDComponent</reference>
+        <reference name="propertyService">PropertyComponent</reference>
+    </component>
+-->
 </composite>
