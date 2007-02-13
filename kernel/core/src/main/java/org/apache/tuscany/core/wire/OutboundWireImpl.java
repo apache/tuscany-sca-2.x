@@ -126,4 +126,12 @@ public class OutboundWireImpl implements OutboundWire {
         callbackTargetChains.put(operation, chain);
     }
 
+
+    public String getCallbackReferenceName() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setCallbackReferenceName(String callbackReferenceName) {
+        throw new UnsupportedOperationException();
+    }
 }
