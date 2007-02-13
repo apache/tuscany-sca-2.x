@@ -121,7 +121,6 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         // connect the source to the target
         source.setTargetInterceptor(targetInterceptor);
         source.prepare();
-        target.prepare();
         Method method = JavaIDLUtils.findMethod(operation, SimpleTarget.class.getMethods());
         MockStaticInvoker invoker = new MockStaticInvoker(method, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);

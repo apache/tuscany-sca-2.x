@@ -63,7 +63,6 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         chain.addInterceptor(interceptor);
         chain.addInterceptor(new InvokerInterceptor());
         chain.setTargetInvoker(invoker);
-        chain.prepare();
         InboundWire wire = createWire(chain);
 
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);

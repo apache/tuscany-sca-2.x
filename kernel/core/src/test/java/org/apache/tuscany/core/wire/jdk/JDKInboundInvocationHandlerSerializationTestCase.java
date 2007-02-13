@@ -99,7 +99,6 @@ public class JDKInboundInvocationHandlerSerializationTestCase extends TestCase {
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.setTargetInvoker(invoker);
         chain.addInterceptor(new InvokerInterceptor());
-        chain.prepare();
         return chain;
     }
 

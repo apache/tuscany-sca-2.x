@@ -35,7 +35,4 @@ public class InboundInvocationChainImpl extends InvocationChainImpl implements I
         super(operation);
     }
 
-    public void prepare() {
-    }
-
 }

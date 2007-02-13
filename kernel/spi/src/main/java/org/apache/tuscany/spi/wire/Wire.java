@@ -19,9 +19,11 @@
 package org.apache.tuscany.spi.wire;
 
 import java.net.URI;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
@@ -96,7 +98,9 @@ public interface Wire {
     void setServiceContract(ServiceContract contract);
 
     /**
-     * Returns true if its invocation chains may be bypassed
+     * Returns true if the wire is optimizable and its invocation chains may be bypassed
+     *
+     * @return true if the wire is optimizable and its invocation chains may be bypassed
      */
     boolean isOptimizable();
 
@@ -109,7 +113,40 @@ public interface Wire {
 
     /**
      * Returns the non-proxied target instance for this wire
+     *
+     * @return the non-proxied target instance for this wire
      */
     Object getTargetService() throws TargetResolutionException;
+
+    /**
+     * Returns the invocation chains for service operations associated with the wire
+     *
+     * @return the invocation chains for service operations associated with the wire
+     */
+    Map<Operation<?>, InvocationChain> getInvocationChains();
+
+    /**
+     * Adds the invocation chain associated with the given operation
+     *
+     * @param operation the service operation
+     * @param chain     the invocation chain
+     */
+    void addInvocationChain(Operation<?> operation, InvocationChain chain);
+
+    /**
+     * Returns the invocation chains for callback service operations associated with the wire
+     *
+     * @return the invocation chains for callback service operations associated with the wire
+     */
+    Map<Operation<?>, InboundInvocationChain> getCallbackInvocationChains();
+
+    /**
+     * Adds the callback invocation chain associated with the given operation
+     *
+     * @param operation the service operation
+     * @param chain     the invocation chain
+     */
+    void addCallbackInvocationChain(Operation<?> operation, InboundInvocationChain chain);
+
 
 }
