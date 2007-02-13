@@ -47,16 +47,6 @@ public interface OutboundWire extends Wire {
     void setTargetUri(URI uri);
 
     /**
-     * Sets the callback interface type generated proxies implement
-     */
-    void setCallbackInterface(Class<?> interfaze);
-
-    /**
-     * Returns the callback interface type implemented by generated proxies
-     */
-    Class<?> getCallbackInterface();
-
-    /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a target
      * service.
      */

@@ -39,7 +39,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 public class OutboundWireImpl implements OutboundWire {
     private QName bindingType = LOCAL_BINDING;
     private ServiceContract serviceContract;
-    private Class<?>[] callbackInterfaces;
     private Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
     private Map<Operation<?>, InboundInvocationChain> callbackTargetChains =
         new HashMap<Operation<?>, InboundInvocationChain>();
@@ -77,22 +76,6 @@ public class OutboundWireImpl implements OutboundWire {
 
     public void setServiceContract(ServiceContract serviceContract) {
         this.serviceContract = serviceContract;
-    }
-
-    public void setCallbackInterface(Class<?> interfaze) {
-        callbackInterfaces = new Class[]{interfaze};
-    }
-
-    public Class<?> getCallbackInterface() {
-        return callbackInterfaces[0];
-    }
-
-    public void addCallbackInterface(Class<?> claz) {
-        throw new UnsupportedOperationException("Additional callback interfaces not yet supported");
-    }
-
-    public Class[] getImplementedCallbackInterfaces() {
-        return callbackInterfaces;
     }
 
     public URI getUri() {

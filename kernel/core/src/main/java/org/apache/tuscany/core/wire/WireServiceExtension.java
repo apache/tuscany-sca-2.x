@@ -145,7 +145,6 @@ public abstract class WireServiceExtension implements WireService {
         }
         // Add target callback chain to outbound wire
         if (contract.getCallbackName() != null) {
-            outboundWire.setCallbackInterface(contract.getCallbackClass());
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
@@ -183,7 +182,6 @@ public abstract class WireServiceExtension implements WireService {
 
         // Add target callback chain to outbound wire
         if (contract.getCallbackName() != null) {
-            outboundWire.setCallbackInterface(contract.getCallbackClass());
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
@@ -293,7 +291,6 @@ public abstract class WireServiceExtension implements WireService {
 
             }
             if (contract.getCallbackName() != null) {
-                wire.setCallbackInterface(contract.getCallbackClass());
                 for (Operation<?> operation : contract.getCallbackOperations().values()) {
                     InboundInvocationChain callbackTargetChain = createInboundChain(operation);
                     callbackTargetChain.addInterceptor(new InvokerInterceptor());
