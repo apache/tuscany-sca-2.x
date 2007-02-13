@@ -17,14 +17,36 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
-public interface CDComponent {  
+import org.osoa.sca.annotations.Property;
 
-    String getC();
-    String getC2();
-    String getD();
-    String getNoSource();
-    String getFileProperty();
-    int getOverrideValue();
+public class PropertyComponentImpl implements PropertyComponent {
+    @Property
+    protected ComplexPropertyBean complexPropertyOne;
+    
+    @Property
+    protected ComplexPropertyBean complexPropertyTwo;
+    
+    @Property(name = "location")
+    protected String location = "RTP";
+
+    @Property(name = "year")
+    protected String year = "2006";
+    
+    public String getLocation(){
+        return location;
+    }
+    
+    public String getYear(){
+        return year;
+    }
+
+    public ComplexPropertyBean getComplexPropertyOne() {
+        return complexPropertyOne;
+    }
+
+    public ComplexPropertyBean getComplexPropertyTwo() {
+        return complexPropertyTwo;
+    }
 }

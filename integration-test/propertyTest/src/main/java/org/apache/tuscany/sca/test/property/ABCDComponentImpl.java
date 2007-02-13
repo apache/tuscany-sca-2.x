@@ -17,36 +17,39 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
-import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 
-public class PropertyComponentImpl implements PropertyComponent {
-    @Property
-    protected ComplexPropertyBean complexPropertyOne;
+@Scope("COMPOSITE")
+public class ABCDComponentImpl implements ABCDComponent {
+    private ABComponent abComponent;
+    private CDComponent cdComponent;
     
-    @Property
-    protected ComplexPropertyBean complexPropertyTwo;
-    
-    @Property(name = "location")
-    protected String location = "RTP";
-
-    @Property(name = "year")
-    protected String year = "2006";
-    
-    public String getLocation(){
-        return location;
+    @Reference
+    public void setAb(ABComponent component) {
+        this.abComponent = component;
     }
     
-    public String getYear(){
-        return year;
+    @Reference
+    public void setCd(CDComponent component) {
+        this.cdComponent = component;
     }
-
-    public ComplexPropertyBean getComplexPropertyOne() {
-        return complexPropertyOne;
+    
+    public String getA() {
+        return this.abComponent.getA();
     }
-
-    public ComplexPropertyBean getComplexPropertyTwo() {
-        return complexPropertyTwo;
+    
+    public String getB() {
+        return this.abComponent.getB();       
+    }
+    
+    public String getC() {
+        return this.cdComponent.getC();
+    }
+    
+    public String getD() {
+        return this.cdComponent.getD();
     }
 }

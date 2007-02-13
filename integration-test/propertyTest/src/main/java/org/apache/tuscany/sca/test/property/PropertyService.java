@@ -17,39 +17,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
+public interface PropertyService {
 
-@Scope("COMPOSITE")
-public class ABCDComponentImpl implements ABCDComponent {
-    private ABComponent abComponent;
-    private CDComponent cdComponent;
-    
-    @Reference
-    public void setAb(ABComponent component) {
-        this.abComponent = component;
-    }
-    
-    @Reference
-    public void setCd(CDComponent component) {
-        this.cdComponent = component;
-    }
-    
-    public String getA() {
-        return this.abComponent.getA();
-    }
-    
-    public String getB() {
-        return this.abComponent.getB();       
-    }
-    
-    public String getC() {
-        return this.cdComponent.getC();
-    }
-    
-    public String getD() {
-        return this.cdComponent.getD();
-    }
 }

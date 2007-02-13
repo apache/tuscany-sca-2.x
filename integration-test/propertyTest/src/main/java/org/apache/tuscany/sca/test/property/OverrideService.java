@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,13 +18,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
-public interface ABComponent {  
+public interface OverrideService {
 
-    String getA();
-    String getB();
-    String getZ();
-    int getIntValue();
-    String getF();
 }
