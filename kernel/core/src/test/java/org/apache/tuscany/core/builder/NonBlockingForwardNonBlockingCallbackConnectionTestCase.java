@@ -92,9 +92,7 @@ public class NonBlockingForwardNonBlockingCallbackConnectionTestCase extends Tes
         InboundInvocationChain callbackInboundChain = new InboundInvocationChainImpl(callbackOperation);
         callbackInboundChain
             .addInterceptor(new NonBlockingForwardNonBlockingCallbackConnectionTestCase.MockInterceptor());
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(callbackOperation, callbackInboundChain);
-        outboundWire.addTargetCallbackInvocationChains(chains);
+        outboundWire.addTargetCallbackInvocationChain(callbackOperation, callbackInboundChain);
 
         connector.connect(source, outboundWire, target, inboundWire, true);
 

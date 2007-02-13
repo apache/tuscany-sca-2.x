@@ -53,11 +53,6 @@ public interface OutboundWire extends Wire {
     Map<Operation<?>, OutboundInvocationChain> getInvocationChains();
 
     /**
-     * Adds the collection of invocation chains keyed by operation
-     */
-    void addInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains);
-
-    /**
      * Adds the invocation chain associated with the given operation
      */
     void addInvocationChain(Operation<?> operation, OutboundInvocationChain chain);
@@ -67,11 +62,6 @@ public interface OutboundWire extends Wire {
      * target service.
      */
     Map<Operation<?>, InboundInvocationChain> getTargetCallbackInvocationChains();
-
-    /**
-     * Adds the collection of callback invocation chains keyed by operation
-     */
-    void addTargetCallbackInvocationChains(Map<Operation<?>, InboundInvocationChain> chains);
 
     /**
      * Adds the callback invocation chain associated with the given operation

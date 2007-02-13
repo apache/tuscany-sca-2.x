@@ -218,8 +218,7 @@ public final class MockFactory {
 
         OutboundWire wire = new OutboundWireImpl();
         wire.setUri(URI.create("#" + refName));
-        Map<Operation<?>, OutboundInvocationChain> outboundChains = createOutboundChains(interfaze, interceptor);
-        wire.addInvocationChains(outboundChains);
+        createOutboundChains(interfaze, interceptor, wire);
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
         return wire;
@@ -240,19 +239,16 @@ public final class MockFactory {
         return component;
     }
 
-    private static Map<Operation<?>, OutboundInvocationChain> createOutboundChains(Class<?> interfaze,
-                                                                                   Interceptor interceptor)
+    private static void createOutboundChains(Class<?> interfaze, Interceptor interceptor, OutboundWire wire)
         throws InvalidServiceContractException {
-        Map<Operation<?>, OutboundInvocationChain> invocations = new HashMap<Operation<?>, OutboundInvocationChain>();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         for (Operation<?> operation : contract.getOperations().values()) {
             OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
             if (interceptor != null) {
                 chain.addInterceptor(interceptor);
             }
-            invocations.put(operation, chain);
+            wire.addInvocationChain(operation, chain);
         }
-        return invocations;
     }
 
     private static Map<Operation<?>, InboundInvocationChain> createInboundChains(Class<?> interfaze,

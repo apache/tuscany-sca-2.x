@@ -114,20 +114,12 @@ public class OutboundWireImpl implements OutboundWire {
         return chains;
     }
 
-    public void addInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains) {
-        this.chains.putAll(chains);
-    }
-
     public void addInvocationChain(Operation<?> operation, OutboundInvocationChain chain) {
         chains.put(operation, chain);
     }
 
     public Map<Operation<?>, InboundInvocationChain> getTargetCallbackInvocationChains() {
         return callbackTargetChains;
-    }
-
-    public void addTargetCallbackInvocationChains(Map<Operation<?>, InboundInvocationChain> chains) {
-        callbackTargetChains.putAll(chains);
     }
 
     public void addTargetCallbackInvocationChain(Operation operation, InboundInvocationChain chain) {
