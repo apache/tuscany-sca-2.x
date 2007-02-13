@@ -21,10 +21,7 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 import java.util.Map;
 
-import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.ServiceReference;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Component;
@@ -36,7 +33,6 @@ import org.apache.tuscany.spi.model.PropertyValue;
  */
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
     protected ScopeContainer scopeContainer;
-    private final ComponentContext context;
     private Map<String, PropertyValue<?>> defaultPropertyValues;
 
     /**
@@ -46,7 +42,6 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
      */
     public AbstractComponentExtension(URI name) {
         super(name);
-        this.context = new ComponentContextImpl();
     }
 
     public void setScopeContainer(ScopeContainer scopeContainer) {
@@ -66,41 +61,7 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
     }
 
     public ComponentContext getComponentContext() {
-        return context;
-    }
-
-    private class ComponentContextImpl implements ComponentContext {
-
-        public String getURI() {
-            return AbstractComponentExtension.this.getUri().toString();
-        }
-
-        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <B> B getService(Class<B> businessInterface, String referenceName) {
-            throw new UnsupportedOperationException();
-        }
-
-        public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
-            throw new UnsupportedOperationException();
-        }
-
-        public <B> B getProperty(Class<B> type, String propertyName) {
-            throw new UnsupportedOperationException();
-        }
-
-        public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
-            throw new UnsupportedOperationException();
-        }
-
-        public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, String serviceName) {
-            throw new UnsupportedOperationException();
-        }
-
-        public RequestContext getRequestContext() {
-            throw new UnsupportedOperationException();
-        }
+        // by default, a component will not give out a component context
+        return null;
     }
 }
