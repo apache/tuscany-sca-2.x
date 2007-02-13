@@ -203,7 +203,7 @@ public final class MockFactory {
         InboundWire wire = new InboundWireImpl();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
-        wire.setUri(URI.create("#" + serviceName));
+        wire.setSourceUri(URI.create("#" + serviceName));
         wire.addInvocationChains(createInboundChains(interfaze, interceptor));
         return wire;
     }
@@ -217,7 +217,7 @@ public final class MockFactory {
         throws InvalidServiceContractException {
 
         OutboundWire wire = new OutboundWireImpl();
-        wire.setUri(URI.create("#" + refName));
+        wire.setSourceUri(URI.create("#" + refName));
         createOutboundChains(interfaze, interceptor, wire);
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);

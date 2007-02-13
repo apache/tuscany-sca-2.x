@@ -52,7 +52,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
 
     public void testBasicInvoke() throws Throwable {
         OutboundWire wire = new OutboundWireImpl();
-        wire.setUri(URI.create("#wire"));
+        wire.setSourceUri(URI.create("#wire"));
         Operation operation = contract.getOperations().get("hello");
         wire.addInvocationChain(operation, createChain(operation));
         wire.setServiceContract(contract);
@@ -62,7 +62,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
 
     public void testErrorInvoke() throws Throwable {
         OutboundWire wire = new OutboundWireImpl();
-        wire.setUri(URI.create("#wire"));
+        wire.setSourceUri(URI.create("#wire"));
         Operation operation = contract.getOperations().get("hello");
         wire.addInvocationChain(operation, createChain(operation));
         wire.setServiceContract(contract);
@@ -82,7 +82,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         source.setTargetInvoker(invoker);
 
         OutboundWire wire = new OutboundWireImpl();
-        wire.setUri(URI.create("#wire"));
+        wire.setSourceUri(URI.create("#wire"));
         wire.setServiceContract(contract);
         wire.addInvocationChain(operation, source);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
@@ -101,7 +101,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         source.setTargetInvoker(invoker);
 
         OutboundWire wire = new OutboundWireImpl();
-        wire.setUri(URI.create("#wire"));
+        wire.setSourceUri(URI.create("#wire"));
         wire.setServiceContract(contract);
         wire.addInvocationChain(operation, source);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);

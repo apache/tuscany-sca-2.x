@@ -48,11 +48,11 @@ public class SystemWireConnectionTestCase extends TestCase {
     public void testWireOptimization() throws Exception {
         InboundWire inbound = new InboundWireImpl();
         inbound.setServiceContract(new JavaServiceContract(Foo.class));
-        inbound.setUri(URI.create("scasystem://target#bar"));
+        inbound.setSourceUri(URI.create("scasystem://target#bar"));
 
         OutboundWire outbound = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(outbound.getTargetUri()).andReturn(URI.create("scasystem://target#bar")).atLeastOnce();
-        EasyMock.expect(outbound.getUri()).andReturn(URI.create("scasystem://target#bar"));
+        EasyMock.expect(outbound.getSourceUri()).andReturn(URI.create("scasystem://target#bar"));
         outbound.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outbound.getTargetCallbackInvocationChains();
@@ -101,7 +101,7 @@ public class SystemWireConnectionTestCase extends TestCase {
      */
     public void testSchemeIsolationWire() throws Exception {
         OutboundWire outbound = new OutboundWireImpl();
-        outbound.setUri(URI.create("ref"));
+        outbound.setSourceUri(URI.create("ref"));
         outbound.setTargetUri(URI.create("sca://target#bar"));
         List<OutboundWire> wires = new ArrayList<OutboundWire>();
         wires.add(outbound);

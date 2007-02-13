@@ -50,7 +50,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
     public void testInboundToOutboundPostProcessCalled() throws Exception {
         SCAObject container = EasyMock.createMock(SCAObject.class);
         OutboundWire owire = new OutboundWireImpl();
-        owire.setUri(URI.create("target"));
+        owire.setSourceUri(URI.create("target"));
         InboundWire iwire = createNiceMock(InboundWire.class);
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         expect(iwire.getInvocationChains()).andReturn(chains);
@@ -80,7 +80,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
         owire.setTargetUri(URI.create("target"));
 
         InboundWire iwire = new InboundWireImpl();
-        iwire.setUri(URI.create("target"));
+        iwire.setSourceUri(URI.create("target"));
 
         WirePostProcessorRegistry registry = createMock(WirePostProcessorRegistry.class);
         registry.process(EasyMock.eq(source), EasyMock.eq(owire), EasyMock.eq(target), EasyMock.eq(iwire));

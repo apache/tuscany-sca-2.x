@@ -117,7 +117,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
             for (Map.Entry<Operation<?>, InboundInvocationChain> entry : callbackChains.entrySet()) {
                 targetOperation = entry.getKey();
                 sourceOperation =
-                    getSourceOperation(targetWire.getSourceCallbackInvocationChains(sourceWire.getUri()).keySet(),
+                    getSourceOperation(targetWire.getSourceCallbackInvocationChains(sourceWire.getSourceUri()).keySet(),
                         targetOperation.getName());
 
                 argsDataBindings = resolveArgsDataBindings(targetOperation);
@@ -130,7 +130,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
 
                 entry.getValue().addInterceptor(0, passByValueInterceptor);
                 tailInterceptor =
-                    targetWire.getSourceCallbackInvocationChains(sourceWire.getUri()).get(sourceOperation)
+                    targetWire.getSourceCallbackInvocationChains(sourceWire.getSourceUri()).get(sourceOperation)
                         .getTailInterceptor();
                 if (tailInterceptor != null) {
                     tailInterceptor.setNext(passByValueInterceptor);

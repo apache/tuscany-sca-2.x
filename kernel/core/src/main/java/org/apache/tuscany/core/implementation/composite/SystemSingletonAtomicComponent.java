@@ -133,7 +133,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     }
 
     public void addInboundWire(InboundWire wire) {
-        inboundWires.put(wire.getUri().getFragment(), wire);
+        inboundWires.put(wire.getSourceUri().getFragment(), wire);
     }
 
     public Collection<InboundWire> getInboundWires() {
@@ -181,7 +181,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         ServiceDefinition def = new ServiceDefinition(uri, serviceContract, false);
         InboundWire wire = wireService.createWire(def);
         wire.setComponent(this);
-        inboundWires.put(wire.getUri().getFragment(), wire);
+        inboundWires.put(wire.getSourceUri().getFragment(), wire);
         serviceContracts.add(serviceContract);
     }
 

@@ -52,7 +52,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
         inboundWire.addInvocationChain(operation, inboundChain);
-        inboundWire.setUri(referenceUri);
+        inboundWire.setSourceUri(referenceUri);
 
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound chains always contains at least one interceptor
@@ -61,7 +61,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetUri(TARGET_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
-        outboundWire.setUri(referenceUri);
+        outboundWire.setSourceUri(referenceUri);
 
         ReferenceBinding referenceBinding = EasyMock.createMock(ReferenceBinding.class);
         referenceBinding.setReference(EasyMock.isA(Reference.class));
@@ -91,13 +91,13 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
         inboundWire.addInvocationChain(operation, inboundChain);
-        inboundWire.setUri(referenceUri);
+        inboundWire.setSourceUri(referenceUri);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound always contains at lease one interceptor
         outboundChain.addInterceptor(new InvokerInterceptor());
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
-        outboundWire.setUri(referenceUri);
+        outboundWire.setSourceUri(referenceUri);
         outboundWire.setTargetUri(TARGET_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
 
@@ -137,7 +137,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire targetWire = new InboundWireImpl();
         targetWire.setServiceContract(contract);
         targetWire.addInvocationChain(operation, inboundChain);
-        targetWire.setUri(TARGET_NAME);
+        targetWire.setSourceUri(TARGET_NAME);
         // create the outbound wire and chain from the source component
         OutboundInvocationChain sourceChain = new OutboundInvocationChainImpl(operation);
         OutboundWire sourceWire = new OutboundWireImpl();

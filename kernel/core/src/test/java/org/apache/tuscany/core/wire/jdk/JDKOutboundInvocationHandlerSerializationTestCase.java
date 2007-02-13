@@ -93,7 +93,7 @@ public class JDKOutboundInvocationHandlerSerializationTestCase extends TestCase 
         map.put(operation, createChain(operation));
         EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
         URI uri = URI.create("#foo");
-        EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();
+        EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn(map).times(2);
         EasyMock.replay(wire);
         Map<String, List<OutboundWire>> wires = new HashMap<String, List<OutboundWire>>();

@@ -81,7 +81,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         }
         //Object targetAddress = UriHelper.getBaseName(source.getUri());
         Map<Operation<?>, OutboundInvocationChain> callbackChains =
-            targetWire.getSourceCallbackInvocationChains(sourceWire.getUri());
+            targetWire.getSourceCallbackInvocationChains(sourceWire.getSourceUri());
         if (callbackChains == null) {
             // callback chains could be null
             return;

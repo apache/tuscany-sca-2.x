@@ -80,7 +80,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(wire.getTargetService()).andReturn(target);
         URI uri = URI.create("#ref");
-        EasyMock.expect(wire.getUri()).andReturn(uri).anyTimes();
+        EasyMock.expect(wire.getSourceUri()).andReturn(uri).anyTimes();
         EasyMock.replay(wire);
         component.addOutboundWire(wire);
         Bar bar = (Bar) component.createInstance();

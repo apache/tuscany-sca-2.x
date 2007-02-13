@@ -33,18 +33,18 @@ public interface Wire {
     QName LOCAL_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/binding/1.0", "binding.local");
 
     /**
-     * Returns the wire URI
+     * Returns the wire source URI
      *
-     * @return the wire URI
+     * @return the wire source URI
      */
-    URI getUri();
+    URI getSourceUri();
 
     /**
-     * Sets the wire URI
+     * Sets the wire source URI
      *
-     * @param uri the uri
+     * @param uri the source uri
      */
-    void setUri(URI uri);
+    void setSourceUri(URI uri);
 
     /**
      * Returns the wire binding type

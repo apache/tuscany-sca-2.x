@@ -202,7 +202,7 @@ public class DeployerImpl implements Deployer {
             for (InboundWire inboundWire : component.getInboundWires()) {
                 for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
                     Operation<?> operation = chain.getOperation();
-                    String serviceName = inboundWire.getUri().getFragment();
+                    String serviceName = inboundWire.getSourceUri().getFragment();
                     TargetInvoker invoker;
                     try {
                         invoker = component.createTargetInvoker(serviceName, operation, null);

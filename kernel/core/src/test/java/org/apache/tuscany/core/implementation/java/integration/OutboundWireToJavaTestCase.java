@@ -213,7 +213,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         wire.setServiceContract(contract);
         createChains(interfaze, wire);
         wire.setTargetUri(URI.create(targetName));
-        wire.setUri(URI.create("component#ref"));
+        wire.setSourceUri(URI.create("component#ref"));
         return wire;
     }
 

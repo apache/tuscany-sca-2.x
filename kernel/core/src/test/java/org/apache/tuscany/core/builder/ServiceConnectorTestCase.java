@@ -86,7 +86,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
         inboundWire.addInvocationChain(operation, inboundChain);
-        inboundWire.setUri(SOURCE);
+        inboundWire.setSourceUri(SOURCE);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound chains always contains at least one interceptor
         outboundChain.addInterceptor(new SynchronousBridgingInterceptor());
@@ -94,7 +94,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetUri(TARGET_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
-        outboundWire.setUri(SOURCE);
+        outboundWire.setSourceUri(SOURCE);
 
         sourceServiceBinding = new MockServiceBinding(SOURCE);
         sourceServiceBinding.setInboundWire(inboundWire);
@@ -107,7 +107,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
         inboundWire.addInvocationChain(operation, inboundChain);
-        inboundWire.setUri(TARGET);
+        inboundWire.setSourceUri(TARGET);
         AtomicComponent atomicTarget = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(atomicTarget.getTargetWire(EasyMock.isA(String.class))).andReturn(inboundWire).atLeastOnce();
         EasyMock.expect(atomicTarget.getUri()).andReturn(TARGET);

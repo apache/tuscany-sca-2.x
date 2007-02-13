@@ -75,7 +75,7 @@ public class LocalTargetInvokerTestCase extends TestCase {
         chains.put(operation, chain);
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         URI uri = URI.create("foo");
-        EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();
+        EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
         wire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(chains);
         EasyMock.expect(wire.getServiceContract()).andReturn(contract);

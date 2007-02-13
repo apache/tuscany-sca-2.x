@@ -86,11 +86,11 @@ public class InboundWireImpl implements InboundWire {
         this.serviceContract = serviceContract;
     }
 
-    public URI getUri() {
+    public URI getSourceUri() {
         return uri;
     }
 
-    public void setUri(URI serviceName) {
+    public void setSourceUri(URI serviceName) {
         this.uri = serviceName;
     }
 
