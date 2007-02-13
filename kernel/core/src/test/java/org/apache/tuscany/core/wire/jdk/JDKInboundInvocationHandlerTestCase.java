@@ -23,9 +23,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -149,10 +147,8 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         DataType<List<DataType<Type>>> inputType =
             new DataType<List<DataType<Type>>>(Object[].class, types);
         Operation<Type> operation = new Operation<Type>("echo", inputType, null, null, false, null, NO_CONVERSATION);
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(operation, chain);
         InboundWire wire = new InboundWireImpl();
-        wire.addInvocationChains(chains);
+        wire.addInboundInvocationChain(operation, chain);
         wire.setServiceContract(new ServiceContract<SimpleTarget>(SimpleTarget.class) {
         });
         wire.setSourceUri(URI.create("foo#bar"));

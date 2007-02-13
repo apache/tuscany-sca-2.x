@@ -204,7 +204,7 @@ public final class MockFactory {
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
         wire.setSourceUri(URI.create("#" + serviceName));
-        wire.addInvocationChains(createInboundChains(interfaze, interceptor));
+        createInboundChains(interfaze, interceptor, wire);
         return wire;
     }
 
@@ -251,11 +251,9 @@ public final class MockFactory {
         }
     }
 
-    private static Map<Operation<?>, InboundInvocationChain> createInboundChains(Class<?> interfaze,
-                                                                                 Interceptor interceptor)
+    private static void createInboundChains(Class<?> interfaze, Interceptor interceptor, InboundWire wire)
         throws InvalidServiceContractException {
 
-        Map<Operation<?>, InboundInvocationChain> invocations = new HashMap<Operation<?>, InboundInvocationChain>();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         for (Operation<?> method : contract.getOperations().values()) {
             InboundInvocationChain chain = new InboundInvocationChainImpl(method);
@@ -264,9 +262,8 @@ public final class MockFactory {
             }
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());
-            invocations.put(method, chain);
+            wire.addInboundInvocationChain(method, chain);
         }
-        return invocations;
     }
 
 }
