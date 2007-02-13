@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.InvocationChain;
 
 import junit.framework.TestCase;
 
@@ -32,7 +33,7 @@ import junit.framework.TestCase;
 public class InvocationChainImplTestCase extends TestCase {
 
     public void testInsertAtPos() throws Exception {
-        MockChain chain = new MockChain(new Operation<Type>("foo", null, null, null));
+        InvocationChain chain = new InvocationChainImpl(new Operation<Type>("foo", null, null, null));
         Interceptor inter3 = new MockInterceptor();
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
@@ -46,7 +47,7 @@ public class InvocationChainImplTestCase extends TestCase {
     }
 
     public void testInsertAtEnd() throws Exception {
-        MockChain chain = new MockChain(new Operation<Type>("foo", null, null, null));
+        InvocationChain chain = new InvocationChainImpl(new Operation<Type>("foo", null, null, null));
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
         chain.addInterceptor(0, inter1);
@@ -56,17 +57,6 @@ public class InvocationChainImplTestCase extends TestCase {
         assertEquals(inter2, head.getNext());
         assertEquals(inter2, chain.getTailInterceptor());
 
-    }
-
-    private class MockChain extends AbstractInvocationChain {
-
-        public MockChain(Operation operation) {
-            super(operation);
-        }
-
-        public void prepare() {
-
-        }
     }
 
     private class MockInterceptor implements Interceptor {

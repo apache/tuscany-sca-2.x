@@ -6,41 +6,36 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.model.Operation;
 
 /**
- *
+ * Default implementation of an invocation chain
  *
  * @version $Rev$ $Date$
- * @deprecated
  */
-public abstract class AbstractInvocationChain implements InvocationChain {
+public class InvocationChainImpl implements InvocationChain {
     protected Operation operation;
     protected TargetInvoker targetInvoker;
     protected Interceptor interceptorChainHead;
     protected Interceptor interceptorChainTail;
 
-
-    // the pointer to a bridged target head interceptor or null if the target has no interceptors
-    protected Interceptor targetInterceptorChainHead;
-
-    public AbstractInvocationChain(Operation operation) {
-        assert operation != null : "No operation type specified";
+    public InvocationChainImpl(Operation operation) {
+        assert operation != null;
         this.operation = operation;
     }
 
@@ -95,14 +90,6 @@ public abstract class AbstractInvocationChain implements InvocationChain {
 
     public Interceptor getTailInterceptor() {
         return interceptorChainTail;
-    }
-
-    public void setTargetInterceptor(Interceptor interceptor) {
-        targetInterceptorChainHead = interceptor;
-    }
-
-    public Interceptor getTargetInterceptor() {
-        return targetInterceptorChainHead;
     }
 
 }
