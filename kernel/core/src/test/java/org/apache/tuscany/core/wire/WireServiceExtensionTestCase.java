@@ -113,7 +113,6 @@ public class WireServiceExtensionTestCase extends TestCase {
         OutboundInvocationChain chain = wire.getInvocationChains().get(operation);
         assertEquals(operation, chain.getOperation());
         assertNull(chain.getHeadInterceptor());
-        assertEquals(Callback.class, wire.getCallbackInterface());
         assertEquals(1, wire.getTargetCallbackInvocationChains().size());
         InboundInvocationChain callbackChain = wire.getTargetCallbackInvocationChains().get(callbackOperation);
         assertEquals(callbackOperation, callbackChain.getOperation());
