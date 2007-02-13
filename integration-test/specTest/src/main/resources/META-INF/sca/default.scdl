@@ -18,16 +18,21 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	   xmlns:foo="http://foo" 
-           name="CompositeTest">
-   
-    <include name="myTotalService" scdlLocation="myTotalService.scdl"/>
-    <include name="myListService" scdlLocation="myListService.scdl"/>
-    <include name="mySimpleServiceInRecursive" scdlLocation="mySimpleServiceInRecursive.scdl"/>
-    <include name="myServiceInRecursive" scdlLocation="myServiceInRecursive.scdl"/>
-    <include name="mySimpleServiceInRecursive2" scdlLocation="mySimpleServiceInRecursive2.scdl"/>
-    <include name="MyTotalServiceInRecursive" scdlLocation="MyTotalServiceInRecursive.scdl"/>
-    <include name="MyTotalServiceInRecursiveForReferenceOverride" scdlLocation="MyTotalServiceInRecursiveForReferenceOverride.scdl"/>
-    
-    
+           name="SpecTestComposite">
+
+    <component name="ComponentContextTester">
+        <implementation.java class="org.apache.tuscany.sca.test.spec.ComponentContextTesterImpl"/>
+    </component>
+
+    <!--
+        <include name="myTotalService" scdlLocation="myTotalService.scdl"/>
+        <include name="myListService" scdlLocation="myListService.scdl"/>
+        <include name="mySimpleServiceInRecursive" scdlLocation="mySimpleServiceInRecursive.scdl"/>
+        <include name="myServiceInRecursive" scdlLocation="myServiceInRecursive.scdl"/>
+        <include name="mySimpleServiceInRecursive2" scdlLocation="mySimpleServiceInRecursive2.scdl"/>
+        <include name="MyTotalServiceInRecursive" scdlLocation="MyTotalServiceInRecursive.scdl"/>
+        <include name="MyTotalServiceInRecursiveForReferenceOverride" scdlLocation="MyTotalServiceInRecursiveForReferenceOverride.scdl"/>
+    -->
+
+
 </composite>
