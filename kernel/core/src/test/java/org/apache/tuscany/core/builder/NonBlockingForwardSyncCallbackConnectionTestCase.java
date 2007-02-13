@@ -75,7 +75,7 @@ public class NonBlockingForwardSyncCallbackConnectionTestCase extends TestCase {
 
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
-        inboundWire.setUri(targetUriFragment);
+        inboundWire.setSourceUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new NonBlockingForwardSyncCallbackConnectionTestCase.MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);

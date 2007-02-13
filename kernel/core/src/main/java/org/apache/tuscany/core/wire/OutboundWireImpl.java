@@ -78,11 +78,11 @@ public class OutboundWireImpl implements OutboundWire {
         this.serviceContract = serviceContract;
     }
 
-    public URI getUri() {
+    public URI getSourceUri() {
         return uri;
     }
 
-    public void setUri(URI referenceUri) {
+    public void setSourceUri(URI referenceUri) {
         this.uri = referenceUri;
     }
 

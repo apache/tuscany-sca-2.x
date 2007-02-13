@@ -29,6 +29,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.osoa.sca.ComponentContext;
 
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.OutboundWire;
+
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.ConversationIDObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -41,14 +50,6 @@ import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.extension.AtomicComponentExtension;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
@@ -73,13 +74,13 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
         super(configuration.getName(),
-              configuration.getWireService(),
-              configuration.getWorkContext(),
-              configuration.getScheduler(),
-              configuration.getMonitor(),
-              configuration.getInitLevel(),
-              configuration.getMaxIdleTime(),
-              configuration.getMaxAge());
+            configuration.getWireService(),
+            configuration.getWorkContext(),
+            configuration.getScheduler(),
+            configuration.getMonitor(),
+            configuration.getInitLevel(),
+            configuration.getMaxIdleTime(),
+            configuration.getMaxAge());
         assert configuration.getInstanceFactory() != null : "Object factory was null";
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
@@ -164,6 +165,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
                 break;
             }
         }
+        //FIXME throw an error if no injection site found
 
         propertyFactories.put(name, factory);
     }
@@ -171,6 +173,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     Object getProperty(String name) {
         ObjectFactory<?> factory = propertyFactories.get(name);
         return factory != null ? factory.getInstance() : null;
+
     }
 
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
@@ -203,7 +206,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     }
 
     protected void onReferenceWire(OutboundWire wire) {
-        String name = wire.getUri().getFragment();
+        String name = wire.getSourceUri().getFragment();
         Member member = referenceSites.get(name);
         if (member != null) {
             injectors.add(createInjector(member, wire));
@@ -221,7 +224,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     public void onReferenceWires(List<OutboundWire> wires) {
         assert wires.size() > 0 : "Wires were empty";
-        String referenceName = wires.get(0).getUri().getFragment();
+        String referenceName = wires.get(0).getSourceUri().getFragment();
         Member member = referenceSites.get(referenceName);
         if (member == null) {
             if (constructorParamNames.contains(referenceName)) {

@@ -214,9 +214,9 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
     private void init(Class<?> interfaze, OutboundWire wire, Map<Method, OutboundChainHolder> mapping)
         throws NoMethodForOperationException {
         ServiceContract contract = wire.getServiceContract();
-        this.referenceName = wire.getUri().getFragment();
+        this.referenceName = wire.getSourceUri().getFragment();
         // TODO JFM remove getContainer
-        this.fromAddress = UriHelper.getDefragmentedName(wire.getUri());
+        this.fromAddress = UriHelper.getDefragmentedName(wire.getSourceUri());
         this.contractIsConversational = contract.getInteractionScope().equals(CONVERSATIONAL);
         this.contractIsRemotable = contract.isRemotable();
         this.contractHasCallback = contract.getCallbackClass() != null;

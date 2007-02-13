@@ -76,7 +76,7 @@ public class NonBlockingForwardNonBlockingCallbackConnectionTestCase extends Tes
 
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
-        inboundWire.setUri(targetUriFragment);
+        inboundWire.setSourceUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new NonBlockingForwardNonBlockingCallbackConnectionTestCase.MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);

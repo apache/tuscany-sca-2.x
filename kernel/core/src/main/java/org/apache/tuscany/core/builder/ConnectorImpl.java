@@ -108,7 +108,7 @@ public class ConnectorImpl implements Connector {
             // match invocation chains
             OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getOperation());
             if (outboundChain == null) {
-                throw new IncompatibleInterfacesException(sourceWire.getUri(), targetWire.getTargetUri());
+                throw new IncompatibleInterfacesException(sourceWire.getSourceUri(), targetWire.getTargetUri());
             }
             connect(inboundChain, outboundChain);
         }
@@ -147,7 +147,7 @@ public class ConnectorImpl implements Connector {
             Operation<?> operation = outboundChain.getOperation();
             InboundInvocationChain inboundChain = targetChains.get(operation);
             if (inboundChain == null) {
-                throw new IncompatibleInterfacesException(sourceWire.getUri(), targetWire.getUri());
+                throw new IncompatibleInterfacesException(sourceWire.getSourceUri(), targetWire.getSourceUri());
             }
             Operation<?> inboundOperation = inboundChain.getOperation();
             boolean isOneWayOperation = operation.isNonBlocking();
@@ -157,8 +157,8 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = component.createTargetInvoker(portName, inboundOperation, targetWire);
                 } catch (TargetInvokerCreationException e) {
-                    URI sourceUri = sourceWire.getUri();
-                    URI targetUri = targetWire.getUri();
+                    URI sourceUri = sourceWire.getSourceUri();
+                    URI targetUri = targetWire.getSourceUri();
                     throw new WireConnectException("Error connecting source and target", sourceUri, targetUri, e);
                 }
             } else if (target instanceof ReferenceBinding) {
@@ -166,9 +166,9 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = referenceBinding.createTargetInvoker(targetWire.getServiceContract(), inboundOperation);
                 } catch (TargetInvokerCreationException e) {
-                    URI targetName = targetWire.getUri();
+                    URI targetName = targetWire.getSourceUri();
                     throw new WireConnectException("Error processing inbound wire",
-                        sourceWire.getUri(),
+                        sourceWire.getSourceUri(),
                         targetName,
                         e);
                 }
@@ -177,9 +177,9 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = binding.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
                 } catch (TargetInvokerCreationException e) {
-                    URI targetName = targetWire.getUri();
+                    URI targetName = targetWire.getSourceUri();
                     throw new WireConnectException("Error processing inbound wire",
-                        sourceWire.getUri(),
+                        sourceWire.getSourceUri(),
                         targetName,
                         e);
                 }
@@ -218,8 +218,8 @@ public class ConnectorImpl implements Connector {
                 String opName = operation.getName();
                 throw new IllegalCallbackException("Source callback chain should not exist for operation",
                     opName,
-                    sourceWire.getUri(),
-                    targetWire.getUri());
+                    sourceWire.getSourceUri(),
+                    targetWire.getSourceUri());
             }
 
             ServiceContract<?> targetContract = targetWire.getServiceContract();
@@ -235,8 +235,8 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = component.createTargetInvoker(targetOp.getName(), operation, null);
                 } catch (TargetInvokerCreationException e) {
-                    URI sourceUri = sourceWire.getUri();
-                    URI targetUri = targetWire.getUri();
+                    URI sourceUri = sourceWire.getSourceUri();
+                    URI targetUri = targetWire.getSourceUri();
                     throw new WireConnectException("Error connecting source and target", sourceUri, targetUri, e);
                 }
                 boolean isOneWayOperation = targetOp.isNonBlocking();
@@ -253,8 +253,8 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = binding.createTargetInvoker(sourceContract, operation);
                 } catch (TargetInvokerCreationException e) {
-                    URI sourceUri = sourceWire.getUri();
-                    URI targetUri = targetWire.getUri();
+                    URI sourceUri = sourceWire.getSourceUri();
+                    URI targetUri = targetWire.getSourceUri();
                     throw new WireConnectException("Error connecting source and target", sourceUri, targetUri, e);
                 }
                 connect(outboundChain, inboundChain, invoker, false);
@@ -265,9 +265,9 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = binding.createTargetInvoker(sourceContract, operation);
                 } catch (TargetInvokerCreationException e) {
-                    URI targetName = sourceWire.getUri();
+                    URI targetName = sourceWire.getSourceUri();
                     throw new WireConnectException("Error processing callback wire",
-                        sourceWire.getUri(),
+                        sourceWire.getSourceUri(),
                         targetName,
                         e);
                 }
@@ -336,7 +336,7 @@ public class ConnectorImpl implements Connector {
             Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
             if (!sourceInterface.isAssignableFrom(targetInterface)) {
                 if (!silent) {
-                    throw new IncompatibleInterfacesException(sourceWire.getUri(), targetWire.getUri());
+                    throw new IncompatibleInterfacesException(sourceWire.getSourceUri(), targetWire.getSourceUri());
                 } else {
                     return false;
                 }
@@ -347,8 +347,8 @@ public class ConnectorImpl implements Connector {
                 ServiceContract targetContract = targetWire.getServiceContract();
                 wireService.checkCompatibility(sourceContract, targetContract, false, silent);
             } catch (IncompatibleServiceContractException e) {
-                URI sourceUri = sourceWire.getUri();
-                URI targetUri = targetWire.getUri();
+                URI sourceUri = sourceWire.getSourceUri();
+                URI targetUri = targetWire.getSourceUri();
                 if (!silent) {
                     throw new IncompatibleInterfacesException(sourceUri, targetUri, e);
                 } else {
@@ -401,7 +401,7 @@ public class ConnectorImpl implements Connector {
         for (ServiceBinding binding : service.getServiceBindings()) {
             InboundWire inboundWire = binding.getInboundWire();
             OutboundWire outboundWire = binding.getOutboundWire();
-            URI sourceUri = outboundWire.getUri();
+            URI sourceUri = outboundWire.getSourceUri();
             URI targetUri = outboundWire.getTargetUri();
             String fragment = targetUri.getFragment();
             URI defragUri = UriHelper.getDefragmentedName(targetUri);
@@ -432,7 +432,7 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = binding.createTargetInvoker(contract, operation);
                 } catch (TargetInvokerCreationException e) {
-                    URI targetName = inboundWire.getUri();
+                    URI targetName = inboundWire.getSourceUri();
                     throw new WireConnectException("Error processing inbound wire",
                         reference.getUri(),
                         targetName,
@@ -452,11 +452,11 @@ public class ConnectorImpl implements Connector {
         for (List<OutboundWire> referenceWires : component.getOutboundWires().values()) {
             for (OutboundWire outboundWire : referenceWires) {
                 if (outboundWire.getTargetUri() == null) {
-                    URI source = outboundWire.getUri();
+                    URI source = outboundWire.getSourceUri();
                     URI target = outboundWire.getTargetUri();
                     throw new MissingWireTargetException("Target name was null", source, target);
                 }
-                URI sourceUri = outboundWire.getUri();
+                URI sourceUri = outboundWire.getSourceUri();
                 URI targetUri = outboundWire.getTargetUri();
                 String fragment = targetUri.getFragment();
                 URI defragUri = UriHelper.getDefragmentedName(targetUri);

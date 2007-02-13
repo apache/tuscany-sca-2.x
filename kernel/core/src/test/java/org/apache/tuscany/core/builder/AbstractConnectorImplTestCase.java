@@ -93,7 +93,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new InvokerInterceptor());
         InboundWire targetWire = new InboundWireImpl();
-        targetWire.setUri(TARGET);
+        targetWire.setSourceUri(TARGET);
         targetWire.setServiceContract(contract);
         targetWire.addInvocationChain(operation, chain);
 
@@ -175,7 +175,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundInvocationChain targetInboundChain = new InboundInvocationChainImpl(operation);
         targetInboundChain.addInterceptor(new SynchronousBridgingInterceptor());
         InboundWire localServiceInboundWire = new InboundWireImpl();
-        localServiceInboundWire.setUri(SERVICE_TARGET);
+        localServiceInboundWire.setSourceUri(SERVICE_TARGET);
         localServiceInboundWire.setServiceContract(contract);
         localServiceInboundWire.addInvocationChain(operation, targetInboundChain);
 
@@ -202,7 +202,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundWire referenceInboundWire = new InboundWireImpl();
         referenceInboundWire.setServiceContract(contract);
         referenceInboundWire.addInvocationChain(operation, inboundChain);
-        referenceInboundWire.setUri(uri);
+        referenceInboundWire.setSourceUri(uri);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound chains always contains at least one interceptor
         outboundChain.addInterceptor(new SynchronousBridgingInterceptor());
@@ -210,7 +210,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetUri(target);
         outboundWire.addInvocationChain(operation, outboundChain);
-        outboundWire.setUri(uri);
+        outboundWire.setSourceUri(uri);
         referenceBinding.setInboundWire(referenceInboundWire);
         referenceBinding.setOutboundWire(outboundWire);
         return referenceBinding;

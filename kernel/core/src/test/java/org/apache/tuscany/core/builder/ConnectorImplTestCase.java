@@ -72,7 +72,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expect(container.isOptimizable()).andReturn(false);
         EasyMock.replay(container);
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setUri(URI.create("target"));
+        inboundWire.setSourceUri(URI.create("target"));
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
@@ -93,7 +93,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expect(container.getUri()).andReturn(URI.create("source"));
         EasyMock.replay(container);
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setUri(URI.create("target"));
+        inboundWire.setSourceUri(URI.create("target"));
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
@@ -162,7 +162,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.addInvocationChain(operation, new InboundInvocationChainImpl(operation));
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setUri(URI.create("target"));
+        outboundWire.setSourceUri(URI.create("target"));
         try {
             connector.connect(null, inboundWire, null, outboundWire, false);
             fail();
@@ -177,7 +177,7 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.replay(container);
         Operation<Type> operation = new Operation<Type>("bar", null, null, null);
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setUri(URI.create("sca://foo"));
+        inboundWire.setSourceUri(URI.create("sca://foo"));
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setTargetUri(URI.create("target"));
         outboundWire.addInvocationChain(operation, new OutboundInvocationChainImpl(operation));

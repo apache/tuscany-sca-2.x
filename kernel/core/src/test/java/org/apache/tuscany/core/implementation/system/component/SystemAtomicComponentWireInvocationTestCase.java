@@ -52,7 +52,7 @@ public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
         component.setScopeContainer(scope);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         URI uri = URI.create("#setTarget");
-        EasyMock.expect(outboundWire.getUri()).andReturn(uri).atLeastOnce();
+        EasyMock.expect(outboundWire.getSourceUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(outboundWire.getTargetService()).andReturn(target);
         EasyMock.replay(outboundWire);
         component.addOutboundWire(outboundWire);

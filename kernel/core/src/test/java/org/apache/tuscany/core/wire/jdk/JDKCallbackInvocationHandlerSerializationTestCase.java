@@ -40,7 +40,7 @@ public class JDKCallbackInvocationHandlerSerializationTestCase extends TestCase 
         super.setUp();
         wire = EasyMock.createMock(InboundWire.class);
         URI uri = URI.create("#foo");
-        EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();
+        EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(wire);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getInboundWire(EasyMock.eq("foo"))).andReturn(wire);

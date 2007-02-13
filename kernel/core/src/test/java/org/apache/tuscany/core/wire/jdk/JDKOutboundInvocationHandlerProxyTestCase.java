@@ -66,7 +66,7 @@ public class JDKOutboundInvocationHandlerProxyTestCase extends TestCase {
             chain.setTargetInvoker(targetInvoker);
         }
         wire.setServiceContract(contract);
-        wire.setUri(URI.create("foo#bar"));
+        wire.setSourceUri(URI.create("foo#bar"));
         clientHello = Client.class.getMethod("hello");
 
     }

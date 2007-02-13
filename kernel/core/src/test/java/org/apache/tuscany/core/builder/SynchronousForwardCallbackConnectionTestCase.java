@@ -74,7 +74,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
 
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
-        inboundWire.setUri(targetUriFragment);
+        inboundWire.setSourceUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);
@@ -124,7 +124,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);
-        inboundWire.setUri(targetUriFragment);
+        inboundWire.setSourceUri(targetUriFragment);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(parent.getTargetWire(EasyMock.eq("service"))).andReturn(inboundWire);
 
@@ -175,7 +175,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
 
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
-        inboundWire.setUri(targetUriFragment);
+        inboundWire.setSourceUri(targetUriFragment);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         inboundChain.addInterceptor(new MockInterceptor());
         inboundWire.addInvocationChain(operation, inboundChain);

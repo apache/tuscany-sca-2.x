@@ -70,9 +70,9 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
     }
 
     public JDKInboundInvocationHandler(Class<?> interfaze, InboundWire wire, WorkContext context) {
-        assert wire.getUri() != null;
+        assert wire.getSourceUri() != null;
         this.context = context;
-        this.serviceName = wire.getUri().getFragment();
+        this.serviceName = wire.getSourceUri().getFragment();
         this.interfaze = interfaze;
         init(interfaze, wire);
     }

@@ -139,7 +139,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     }
 
     public void addInboundWire(InboundWire wire) {
-        serviceWires.put(wire.getUri().getFragment(), wire);
+        serviceWires.put(wire.getSourceUri().getFragment(), wire);
         onServiceWire(wire);
     }
 
@@ -165,7 +165,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     public void addOutboundWire(OutboundWire wire) {
         List<OutboundWire> list = new ArrayList<OutboundWire>();
         list.add(wire);
-        referenceWires.put(wire.getUri().getFragment(), list);
+        referenceWires.put(wire.getSourceUri().getFragment(), list);
         onReferenceWire(wire);
     }
 
@@ -175,7 +175,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     public void addOutboundWires(List<OutboundWire> wires) {
         assert wires != null && wires.size() > 0;
-        referenceWires.put(wires.get(0).getUri().getFragment(), wires);
+        referenceWires.put(wires.get(0).getSourceUri().getFragment(), wires);
         onReferenceWires(wires);
     }
 

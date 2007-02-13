@@ -133,7 +133,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
     private void createWire() {
         Map<Operation<?>, OutboundInvocationChain> chains = Collections.emptyMap();
         wire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(wire.getUri()).andReturn(URI.create("#target")).atLeastOnce();
+        EasyMock.expect(wire.getSourceUri()).andReturn(URI.create("#target")).atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn(chains).atLeastOnce();
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
         JavaServiceContract targetContract = new JavaServiceContract(Target.class);

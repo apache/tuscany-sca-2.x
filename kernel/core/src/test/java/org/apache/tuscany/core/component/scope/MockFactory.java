@@ -98,12 +98,12 @@ public final class MockFactory {
         AtomicComponent sourceComponent = new SystemAtomicComponentImpl(sourceConfig);
         sourceComponent.setScopeContainer(sourceScopeContainer);
         OutboundWire wire = new OutboundWireImpl();
-        wire.setUri(URI.create("#" + setter.getName()));
+        wire.setSourceUri(URI.create("#" + setter.getName()));
         wire.setServiceContract(new JavaServiceContract(targetClass));
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setComponent(targetComponent);
         inboundWire.setServiceContract(new JavaServiceContract(targetClass));
-        inboundWire.setUri(URI.create("#" + target));
+        inboundWire.setSourceUri(URI.create("#" + target));
         wire.setTargetWire(inboundWire);
         sourceComponent.addOutboundWire(wire);
         components.put(source, sourceComponent);

@@ -59,7 +59,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         ServiceContract contract = new JavaServiceContract(Foo.class);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         wire.setServiceContract(contract);
-        wire.setUri(URI.create("foo#bar"));
+        wire.setSourceUri(URI.create("foo#bar"));
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Foo.class, wire, null);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
@@ -70,7 +70,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         ServiceContract contract = new JavaServiceContract(Foo.class);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         wire.setServiceContract(contract);
-        wire.setUri(URI.create("foo#bar"));
+        wire.setSourceUri(URI.create("foo#bar"));
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Foo.class, wire, null);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
@@ -99,7 +99,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         outboundChains.put(op1, outboundChain);
         expect(outboundWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
         URI uri = URI.create("fooRef");
-        expect(outboundWire.getUri()).andReturn(uri).atLeastOnce();
+        expect(outboundWire.getSourceUri()).andReturn(uri).atLeastOnce();
         expect(outboundWire.getServiceContract()).andReturn(outboundContract).anyTimes();
         replay(outboundWire);
 

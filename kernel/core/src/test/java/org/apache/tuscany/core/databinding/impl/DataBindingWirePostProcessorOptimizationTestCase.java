@@ -99,7 +99,7 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.expect(outboundWire.getTargetCallbackInvocationChains()).andReturn(inboundChains).anyTimes();
         URI uri = URI.create("foo");
-        EasyMock.expect(outboundWire.getUri()).andReturn(uri).anyTimes();
+        EasyMock.expect(outboundWire.getSourceUri()).andReturn(uri).anyTimes();
 
         EasyMock.replay(outboundWire);
 

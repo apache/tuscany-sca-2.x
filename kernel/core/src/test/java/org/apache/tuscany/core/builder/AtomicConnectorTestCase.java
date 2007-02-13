@@ -54,13 +54,13 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         URI sourceUri = URI.create("source");
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setUri(sourceUri);
+        inboundWire.setSourceUri(sourceUri);
         inboundWire.addInvocationChain(operation, inboundChain);
         inboundWire.setServiceContract(contract);
 
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setUri(sourceUri);
+        outboundWire.setSourceUri(sourceUri);
         outboundWire.setTargetUri(TARGET_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
         outboundWire.setServiceContract(contract);
