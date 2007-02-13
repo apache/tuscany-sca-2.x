@@ -25,6 +25,8 @@ import org.apache.maven.surefire.testset.SurefireTestSet;
 import org.apache.maven.surefire.testset.TestSetFailedException;
 import org.apache.maven.surefire.report.ReporterManager;
 import org.apache.maven.surefire.report.ReportEntry;
+import org.apache.maven.surefire.report.StackTraceWriter;
+import org.apache.maven.surefire.report.PojoStackTraceWriter;
 
 import org.apache.tuscany.spi.model.Operation;
 
@@ -46,12 +48,14 @@ public class SCATestSet implements SurefireTestSet {
 
     public void execute(ReporterManager reporterManager, ClassLoader classLoader) throws TestSetFailedException {
         for (Operation<?> operation : operations) {
-            reporterManager.testStarting(new ReportEntry(this, operation.getName(), getName()));
+            String operationName = operation.getName();
+            reporterManager.testStarting(new ReportEntry(this, operationName, name));
             try {
                 runtime.executeTest(uri, operation);
-                reporterManager.testSucceeded(new ReportEntry(this, operation.getName(), getName()));
+                reporterManager.testSucceeded(new ReportEntry(this, operationName, name));
             } catch (Exception e) {
-                reporterManager.testFailed(new ReportEntry(this, operation.getName(), getName()));
+                StackTraceWriter stw = new PojoStackTraceWriter(name, operationName, e);
+                reporterManager.testFailed(new ReportEntry(this, operationName, name, stw));
                 throw new TestSetFailedException(e);
             }
         }
