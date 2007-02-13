@@ -74,23 +74,12 @@ public class ContextProcessor extends ImplementationProcessorExtension {
         }
         Class<?> paramType = method.getParameterTypes()[0];
         if (ComponentContext.class.equals(paramType)) {
-            // FIXME: handle injection of ComponentContext
-            throw new UnsupportedOperationException();
-/*
-            String name = method.getName();
-            name = JavaIntrospectionHelper.toPropertyName(name);
-            Resource resource = new Resource();
-            resource.setName(name);
-            resource.setMember(method);
-            resource.setObjectFactory(new CompositeContextObjectFactory(parent, wireService));
+            String name = JavaIntrospectionHelper.toPropertyName(method.getName());
+            Resource<ComponentContext> resource = new Resource<ComponentContext>(name, ComponentContext.class, method);
             type.getResources().put(name, resource);
-*/
         } else if (RequestContext.class.equals(paramType)) {
-            String name = method.getName();
-            name = JavaIntrospectionHelper.toPropertyName(name);
-            Resource resource = new Resource();
-            resource.setName(name);
-            resource.setMember(method);
+            String name = JavaIntrospectionHelper.toPropertyName(method.getName());
+            Resource<RequestContext> resource = new Resource<RequestContext>(name, RequestContext.class, method);
             resource.setObjectFactory(new RequestContextObjectFactory(workContext));
             type.getResources().put(name, resource);
         } else {
@@ -106,22 +95,13 @@ public class ContextProcessor extends ImplementationProcessorExtension {
         }
         Class<?> paramType = field.getType();
         if (ComponentContext.class.equals(paramType)) {
-            // FIXME: handle injection of ComponentContext
-            throw new UnsupportedOperationException();
-/*
             String name = field.getName();
-            Resource resource = new Resource();
-            resource.setName(name);
-            resource.setMember(field);
-            resource.setObjectFactory(new CompositeContextObjectFactory(parent, wireService));
+            Resource<ComponentContext> resource = new Resource<ComponentContext>(name, ComponentContext.class, field);
             type.getResources().put(name, resource);
-*/
         } else if (RequestContext.class.equals(paramType)) {
             String name = field.getName();
             name = JavaIntrospectionHelper.toPropertyName(name);
-            Resource resource = new Resource();
-            resource.setName(name);
-            resource.setMember(field);
+            Resource<RequestContext> resource = new Resource<RequestContext>(name, RequestContext.class, field);
             resource.setObjectFactory(new RequestContextObjectFactory(workContext));
             type.getResources().put(name, resource);
         } else {
