@@ -64,12 +64,6 @@
         </foo:numberSet>
     </property>
 
-    <component name="ABCDComponent">
-        <implementation.java class="org.apache.tuscany.sca.test.property.ABCDComponentImpl"/>
-        <reference name="ab">ABComponent</reference>
-        <reference name="cd">CDComponent</reference>
-    </component>
-
     <component name="ABComponent">
         <implementation.java class="org.apache.tuscany.sca.test.property.ABComponentImpl"/>
         <property name="a" source="$complex/foo:a"/>
