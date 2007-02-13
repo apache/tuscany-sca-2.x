@@ -55,8 +55,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class PojoAtomicComponent extends AtomicComponentExtension {
-    private final ComponentContext componentContext;
-
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
     protected PojoObjectFactory<?> instanceFactory;
@@ -67,6 +65,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     protected Map<String, Member> callbackSites;
     protected List<Injector<Object>> injectors;
     protected Class implementationClass;
+
+    private final ComponentContext componentContext;
     private List<Class<?>> constructorParamTypes = new ArrayList<Class<?>>();
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
