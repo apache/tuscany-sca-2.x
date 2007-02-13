@@ -97,7 +97,11 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public void connect(SCAObject source, InboundWire sourceWire, SCAObject target, OutboundWire targetWire, boolean optimizable)
+    public void connect(SCAObject source,
+                        InboundWire sourceWire,
+                        SCAObject target,
+                        OutboundWire targetWire,
+                        boolean optimizable)
         throws WiringException {
         Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
