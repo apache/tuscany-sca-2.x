@@ -19,8 +19,6 @@
 package org.apache.tuscany.core.implementation.java.integration;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -213,22 +211,20 @@ public class OutboundWireToJavaTestCase extends TestCase {
         JavaServiceContract contract = new JavaServiceContract(interfaze);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         wire.setServiceContract(contract);
-        wire.addInvocationChains(createInvocationChains(interfaze));
+        createChains(interfaze, wire);
         wire.setTargetUri(URI.create(targetName));
         wire.setUri(URI.create("component#ref"));
         return wire;
     }
 
-    private static Map<Operation<?>, OutboundInvocationChain> createInvocationChains(Class<?> interfaze)
+    private static void createChains(Class<?> interfaze, OutboundWire wire)
         throws InvalidServiceContractException {
-        Map<Operation<?>, OutboundInvocationChain> invocations = new HashMap<Operation<?>, OutboundInvocationChain>();
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract = registry.introspect(interfaze);
         for (Operation operation : contract.getOperations().values()) {
             OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-            invocations.put(operation, chain);
+            wire.addInvocationChain(operation, chain);
         }
-        return invocations;
     }
 
 }

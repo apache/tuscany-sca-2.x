@@ -89,9 +89,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
 
         InboundInvocationChain callbackInboundChain = new InboundInvocationChainImpl(callbackOperation);
         callbackInboundChain.addInterceptor(new MockInterceptor());
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(callbackOperation, callbackInboundChain);
-        outboundWire.addTargetCallbackInvocationChains(chains);
+        outboundWire.addTargetCallbackInvocationChain(callbackOperation, callbackInboundChain);
 
         connector.connect(source, outboundWire, target, inboundWire, true);
 
@@ -139,9 +137,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
 
         InboundInvocationChain callbackInboundChain = new InboundInvocationChainImpl(callbackOperation);
         callbackInboundChain.addInterceptor(new MockInterceptor());
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(callbackOperation, callbackInboundChain);
-        outboundWire.addTargetCallbackInvocationChains(chains);
+        outboundWire.addTargetCallbackInvocationChain(callbackOperation, callbackInboundChain);
 
         connector.connect(source, outboundWire, target, inboundWire, true);
         // test the forward request
@@ -195,9 +191,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
 
         InboundInvocationChain callbackInboundChain = new InboundInvocationChainImpl(callbackOperation);
         callbackInboundChain.addInterceptor(new MockInterceptor());
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(callbackOperation, callbackInboundChain);
-        outboundWire.addTargetCallbackInvocationChains(chains);
+        outboundWire.addTargetCallbackInvocationChain(callbackOperation, callbackInboundChain);
 
         connector.connect(source, outboundWire, target, inboundWire, true);
         // test the forward request

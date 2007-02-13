@@ -90,9 +90,7 @@ public class NonBlockingForwardSyncCallbackConnectionTestCase extends TestCase {
 
         InboundInvocationChain callbackInboundChain = new InboundInvocationChainImpl(callbackOperation);
         callbackInboundChain.addInterceptor(new NonBlockingForwardSyncCallbackConnectionTestCase.MockInterceptor());
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(callbackOperation, callbackInboundChain);
-        outboundWire.addTargetCallbackInvocationChains(chains);
+        outboundWire.addTargetCallbackInvocationChain(callbackOperation, callbackInboundChain);
 
         connector.connect(source, outboundWire, target, inboundWire, true);
 
