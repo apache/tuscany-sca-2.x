@@ -58,7 +58,7 @@ public class InvocationChainImplTestCase extends TestCase {
 
     }
 
-    private class MockChain extends InvocationChainImpl {
+    private class MockChain extends AbstractInvocationChain {
 
         public MockChain(Operation operation) {
             super(operation);

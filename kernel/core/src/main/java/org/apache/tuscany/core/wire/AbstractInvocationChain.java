@@ -24,11 +24,11 @@ import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Contains functionality common to source- and target- side invocation chains
+ *
  *
  * @version $Rev$ $Date$
  */
-public abstract class InvocationChainImpl implements InvocationChain {
+public abstract class AbstractInvocationChain implements InvocationChain {
     protected Operation operation;
     protected TargetInvoker targetInvoker;
     protected Interceptor interceptorChainHead;
@@ -38,7 +38,7 @@ public abstract class InvocationChainImpl implements InvocationChain {
     // the pointer to a bridged target head interceptor or null if the target has no interceptors
     protected Interceptor targetInterceptorChainHead;
 
-    public InvocationChainImpl(Operation operation) {
+    public AbstractInvocationChain(Operation operation) {
         assert operation != null : "No operation type specified";
         this.operation = operation;
     }
