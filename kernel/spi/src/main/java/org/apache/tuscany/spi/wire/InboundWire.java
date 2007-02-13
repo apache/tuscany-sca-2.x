@@ -81,5 +81,5 @@ public interface InboundWire extends Wire {
     /**
      * @deprecated
      */
-    public void setComponent(AtomicComponent container);
+    void setComponent(AtomicComponent container);
 }
