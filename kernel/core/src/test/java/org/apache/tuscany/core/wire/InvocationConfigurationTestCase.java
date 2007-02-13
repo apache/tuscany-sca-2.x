@@ -80,7 +80,6 @@ public class InvocationConfigurationTestCase extends TestCase {
         // connect the source to the target
         source.setTargetInterceptor(target.getHeadInterceptor());
         source.prepare();
-        target.prepare();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 

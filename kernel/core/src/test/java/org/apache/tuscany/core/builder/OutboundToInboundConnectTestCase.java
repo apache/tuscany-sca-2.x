@@ -63,7 +63,6 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         expect(invoker.invokeTarget(EasyMock.eq(val), EasyMock.eq(NONE))).andReturn(val);
         replay(invoker);
         connector.connect(outboundChain, inboundChain, invoker, false);
-        inboundChain.prepare();
         assertEquals(val, outboundChain.getTargetInvoker().invokeTarget(val, NONE));
         verify(invoker);
     }
@@ -85,7 +84,6 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         replay(invoker);
         assertEquals(0, interceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker, false);
-        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -108,7 +106,6 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         replay(invoker);
         assertEquals(0, interceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker, false);
-        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -135,7 +132,6 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker, false);
-        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, sourceInterceptor.getCount());

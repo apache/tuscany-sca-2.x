@@ -210,7 +210,6 @@ public class DeployerImpl implements Deployer {
                         throw new WireCreationException("Error processing inbound wire", component.getUri(), e);
                     }
                     chain.setTargetInvoker(invoker);
-                    chain.prepare();
                 }
             }
 

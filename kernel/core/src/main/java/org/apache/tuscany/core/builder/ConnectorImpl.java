@@ -439,7 +439,6 @@ public class ConnectorImpl implements Connector {
                         e);
                 }
                 chain.setTargetInvoker(invoker);
-                chain.prepare();
             }
             OutboundWire outboundWire = binding.getOutboundWire();
             // connect the reference's inbound and outbound wires

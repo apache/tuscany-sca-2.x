@@ -77,19 +77,4 @@ public interface InvocationChain {
      */
     Interceptor getTailInterceptor();
 
-    /**
-     * Sets the head interceptor of the bridged target-side chain
-     */
-    void setTargetInterceptor(Interceptor interceptor);
-
-    /**
-     * Returns the head interceptor of the birdged target-side chain
-     */
-    Interceptor getTargetInterceptor();
-
-    /**
-     * Signals to the chain that its configuration is complete. Implementations may use this callback to prepare their
-     * invocation chains.
-     */
-    void prepare();
 }

@@ -131,7 +131,6 @@ public class InboundInvocationErrorTestCase extends TestCase {
         chain.addInterceptor(new MockSyncInterceptor());
         chain.setTargetInvoker(invoker);
         chain.addInterceptor(new InvokerInterceptor());
-        chain.prepare();
         return chain;
     }
 

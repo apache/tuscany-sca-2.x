@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
 
 /**
  * Default implementation of an inbound wire
@@ -147,5 +148,22 @@ public class InboundWireImpl implements InboundWire {
 
     public void setComponent(AtomicComponent container) {
         this.targetComponent = container;
+    }
+
+
+    public Map<Operation<?>, InvocationChain> getInvocationChains() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addInvocationChain(Operation<?> operation, InvocationChain chain) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<Operation<?>, InboundInvocationChain> getCallbackInvocationChains() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addCallbackInvocationChain(Operation<?> operation, InboundInvocationChain chain) {
+        throw new UnsupportedOperationException();
     }
 }

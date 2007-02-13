@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.net.URI;
 import java.util.Map;
 
 import org.apache.tuscany.spi.model.Operation;

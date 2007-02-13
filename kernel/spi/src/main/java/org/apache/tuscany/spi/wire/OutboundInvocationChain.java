@@ -25,4 +25,20 @@ package org.apache.tuscany.spi.wire;
  */
 public interface OutboundInvocationChain extends InvocationChain {
 
+    /**
+     * Returns the head interceptor of the birdged target-side chain
+     */
+    Interceptor getTargetInterceptor();
+    
+    /**
+     * Sets the head interceptor of the bridged target-side chain
+     */
+    void setTargetInterceptor(Interceptor interceptor);
+
+    /**
+     * Signals to the chain that its configuration is complete. Implementations may use this callback to prepare their
+     * invocation chains.
+     */
+    void prepare();
+
 }
