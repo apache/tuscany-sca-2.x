@@ -26,14 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.extension.AtomicComponentExtension;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.osoa.sca.ComponentContext;
 
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.ConversationIDObjectFactory;
@@ -47,6 +40,14 @@ import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
@@ -54,6 +55,8 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class PojoAtomicComponent extends AtomicComponentExtension {
+    private final ComponentContext componentContext;
+
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
     protected PojoObjectFactory<?> instanceFactory;
@@ -68,13 +71,13 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
         super(configuration.getName(),
-            configuration.getWireService(),
-            configuration.getWorkContext(),
-            configuration.getScheduler(),
-            configuration.getMonitor(),
-            configuration.getInitLevel(),
-            configuration.getMaxIdleTime(),
-            configuration.getMaxAge());
+              configuration.getWireService(),
+              configuration.getWorkContext(),
+              configuration.getScheduler(),
+              configuration.getMonitor(),
+              configuration.getInitLevel(),
+              configuration.getMaxIdleTime(),
+              configuration.getMaxAge());
         assert configuration.getInstanceFactory() != null : "Object factory was null";
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
@@ -91,6 +94,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         callbackSites = configuration.getCallbackSite() != null ? configuration.getCallbackSite()
             : new HashMap<String, Member>();
         implementationClass = configuration.getImplementationClass();
+
+        componentContext = new PojoComponentContextImpl(this);
     }
 
 
@@ -279,4 +284,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     protected abstract ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire);
 
+
+    public ComponentContext getComponentContext() {
+        return componentContext;
+    }
 }
