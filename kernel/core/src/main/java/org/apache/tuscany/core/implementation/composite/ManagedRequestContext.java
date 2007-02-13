@@ -22,6 +22,7 @@ import javax.security.auth.Subject;
 
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.CallableReference;
 
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -43,7 +44,15 @@ public class ManagedRequestContext implements RequestContext {
         return workContext.getCurrentServiceName();
     }
 
-    public ServiceReference getServiceReference() {
+    public <B> ServiceReference<B> getServiceReference() {
+        throw new UnsupportedOperationException();
+    }
+
+    public <CB> CB getCallback() {
+        throw new UnsupportedOperationException();
+    }
+
+    public <CB> CallableReference<CB> getCallbackReference() {
         throw new UnsupportedOperationException();
     }
 }
