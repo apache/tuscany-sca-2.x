@@ -88,9 +88,9 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         outChainsMap.put(operation1, outChain);
 
         expect(inboundWire.getServiceContract()).andReturn(serviceContract);
-        expect(inboundWire.getInvocationChains()).andReturn(inChainsMap);
+        expect(inboundWire.getInboundInvocationChains()).andReturn(inChainsMap);
         expect(outboundWire.getServiceContract()).andReturn(serviceContract).times(2);
-        expect(outboundWire.getInvocationChains()).andReturn(outChainsMap).times(2);
+        expect(outboundWire.getOutboundInvocationChains()).andReturn(outChainsMap).times(2);
 
         Interceptor inInterceptor = createMock(Interceptor.class);
         Interceptor outInterceptor = createMock(Interceptor.class);
@@ -132,9 +132,9 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         outChainsMap.put(operation1, outChain);
 
         expect(inboundWire.getServiceContract()).andReturn(serviceContract);
-        expect(inboundWire.getInvocationChains()).andReturn(inChainsMap);
+        expect(inboundWire.getInboundInvocationChains()).andReturn(inChainsMap);
         expect(outboundWire.getServiceContract()).andReturn(serviceContract).times(2);
-        expect(outboundWire.getInvocationChains()).andReturn(outChainsMap).times(2);
+        expect(outboundWire.getOutboundInvocationChains()).andReturn(outChainsMap).times(2);
 
         Interceptor inInterceptor = createMock(Interceptor.class);
         Interceptor outInterceptor = createMock(Interceptor.class);

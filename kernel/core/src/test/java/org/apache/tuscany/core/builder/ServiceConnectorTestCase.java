@@ -85,7 +85,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
-        inboundWire.addInvocationChain(operation, inboundChain);
+        inboundWire.addInboundInvocationChain(operation, inboundChain);
         inboundWire.setSourceUri(SOURCE);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound chains always contains at least one interceptor
@@ -93,7 +93,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetUri(TARGET_NAME);
-        outboundWire.addInvocationChain(operation, outboundChain);
+        outboundWire.addOutboundInvocationChain(operation, outboundChain);
         outboundWire.setSourceUri(SOURCE);
 
         sourceServiceBinding = new MockServiceBinding(SOURCE);
@@ -106,7 +106,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundChain.addInterceptor(new InvokerInterceptor());
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
-        inboundWire.addInvocationChain(operation, inboundChain);
+        inboundWire.addInboundInvocationChain(operation, inboundChain);
         inboundWire.setSourceUri(TARGET);
         AtomicComponent atomicTarget = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(atomicTarget.getTargetWire(EasyMock.isA(String.class))).andReturn(inboundWire).atLeastOnce();
@@ -128,7 +128,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         Reference referenceTarget = new ReferenceImpl(TARGET, contract);
         referenceTarget.addReferenceBinding(binding);
         // put a terminating interceptor on the outbound wire of the reference for testing an invocation
-        binding.getOutboundWire().getInvocationChains().get(operation).addInterceptor(new InvokerInterceptor());
+        binding.getOutboundWire().getOutboundInvocationChains().get(operation).addInterceptor(new InvokerInterceptor());
         connector.connect(binding, binding.getInboundWire(), binding, binding.getOutboundWire(), true);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
         EasyMock.expect(parent.getUri()).andReturn(TARGET);

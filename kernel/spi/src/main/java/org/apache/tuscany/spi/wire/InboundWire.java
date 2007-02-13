@@ -35,7 +35,7 @@ public interface InboundWire extends Wire {
     /**
      * Returns the invocation chain for each operation on a service specified by a reference or a target service.
      */
-    Map<Operation<?>, InboundInvocationChain> getInvocationChains();
+    Map<Operation<?>, InboundInvocationChain> getInboundInvocationChains();
 
     /**
      * Adds the collection of invocation chains keyed by operation
@@ -45,7 +45,7 @@ public interface InboundWire extends Wire {
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Operation<?> operation, InboundInvocationChain chain);
+    void addInboundInvocationChain(Operation<?> operation, InboundInvocationChain chain);
 
     /**
      * Returns the callback invocation configuration for each operation on a service specified by a reference or a

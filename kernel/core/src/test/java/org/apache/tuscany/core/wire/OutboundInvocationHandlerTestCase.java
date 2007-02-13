@@ -54,7 +54,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         wire.setSourceUri(URI.create("#wire"));
         Operation operation = contract.getOperations().get("hello");
-        wire.addInvocationChain(operation, createChain(operation));
+        wire.addOutboundInvocationChain(operation, createChain(operation));
         wire.setServiceContract(contract);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
@@ -64,7 +64,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         wire.setSourceUri(URI.create("#wire"));
         Operation operation = contract.getOperations().get("hello");
-        wire.addInvocationChain(operation, createChain(operation));
+        wire.addOutboundInvocationChain(operation, createChain(operation));
         wire.setServiceContract(contract);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
         try {
@@ -84,7 +84,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         wire.setSourceUri(URI.create("#wire"));
         wire.setServiceContract(contract);
-        wire.addInvocationChain(operation, source);
+        wire.addOutboundInvocationChain(operation, source);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
         try {
             assertEquals("foo", handler.invoke(hello, new Object[]{}));
@@ -103,7 +103,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         wire.setSourceUri(URI.create("#wire"));
         wire.setServiceContract(contract);
-        wire.addInvocationChain(operation, source);
+        wire.addOutboundInvocationChain(operation, source);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }

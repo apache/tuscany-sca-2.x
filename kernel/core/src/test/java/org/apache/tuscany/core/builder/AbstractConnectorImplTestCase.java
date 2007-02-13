@@ -95,7 +95,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundWire targetWire = new InboundWireImpl();
         targetWire.setSourceUri(TARGET);
         targetWire.setServiceContract(contract);
-        targetWire.addInvocationChain(operation, chain);
+        targetWire.addInboundInvocationChain(operation, chain);
 
         MockInvoker mockInvoker = new MockInvoker();
 
@@ -119,7 +119,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setTargetUri(TARGET_NAME);
         outboundWire.setServiceContract(contract);
-        outboundWire.addInvocationChain(operation, outboundChain);
+        outboundWire.addOutboundInvocationChain(operation, outboundChain);
 
         Map<String, List<OutboundWire>> outboundWires = new HashMap<String, List<OutboundWire>>();
         List<OutboundWire> list = new ArrayList<OutboundWire>();
@@ -145,14 +145,14 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         targetInboundChain.addInterceptor(new SynchronousBridgingInterceptor());
         InboundWire serviceInboundWire = new InboundWireImpl(qName);
         serviceInboundWire.setServiceContract(contract);
-        serviceInboundWire.addInvocationChain(operation, targetInboundChain);
+        serviceInboundWire.addInboundInvocationChain(operation, targetInboundChain);
 
         OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);
         // place an invoker interceptor on the end
         targetOutboundChain.addInterceptor(new InvokerInterceptor());
         OutboundWire targetOutboundWire = new OutboundWireImpl(qName);
         targetOutboundWire.setServiceContract(contract);
-        targetOutboundWire.addInvocationChain(operation, targetOutboundChain);
+        targetOutboundWire.addOutboundInvocationChain(operation, targetOutboundChain);
 
         serviceBinding.setInboundWire(serviceInboundWire);
         serviceBinding.setOutboundWire(targetOutboundWire);
@@ -177,14 +177,14 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundWire localServiceInboundWire = new InboundWireImpl();
         localServiceInboundWire.setSourceUri(SERVICE_TARGET);
         localServiceInboundWire.setServiceContract(contract);
-        localServiceInboundWire.addInvocationChain(operation, targetInboundChain);
+        localServiceInboundWire.addInboundInvocationChain(operation, targetInboundChain);
 
         OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);
         // place an invoker interceptor on the end
         targetOutboundChain.addInterceptor(new InvokerInterceptor());
         OutboundWire targetOutboundWire = new OutboundWireImpl();
         targetOutboundWire.setServiceContract(contract);
-        targetOutboundWire.addInvocationChain(operation, targetOutboundChain);
+        targetOutboundWire.addOutboundInvocationChain(operation, targetOutboundChain);
 
         serviceBinding.setInboundWire(localServiceInboundWire);
         serviceBinding.setOutboundWire(targetOutboundWire);
@@ -201,7 +201,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire referenceInboundWire = new InboundWireImpl();
         referenceInboundWire.setServiceContract(contract);
-        referenceInboundWire.addInvocationChain(operation, inboundChain);
+        referenceInboundWire.addInboundInvocationChain(operation, inboundChain);
         referenceInboundWire.setSourceUri(uri);
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound chains always contains at least one interceptor
@@ -209,7 +209,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetUri(target);
-        outboundWire.addInvocationChain(operation, outboundChain);
+        outboundWire.addOutboundInvocationChain(operation, outboundChain);
         outboundWire.setSourceUri(uri);
         referenceBinding.setInboundWire(referenceInboundWire);
         referenceBinding.setOutboundWire(outboundWire);
@@ -222,14 +222,14 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(contract);
         LocalReferenceBinding referenceBinding = new LocalReferenceBinding(URI.create("baz"));
-        wire.addInvocationChain(operation, chain);
+        wire.addInboundInvocationChain(operation, chain);
 
         OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);
         // place an invoker interceptor on the end
         targetOutboundChain.addInterceptor(new InvokerInterceptor());
         OutboundWire targetOutboundWire = new OutboundWireImpl();
         targetOutboundWire.setServiceContract(contract);
-        targetOutboundWire.addInvocationChain(operation, targetOutboundChain);
+        targetOutboundWire.addOutboundInvocationChain(operation, targetOutboundChain);
         referenceBinding.setInboundWire(wire);
         referenceBinding.setOutboundWire(targetOutboundWire);
         // manually connect the service chains

@@ -33,18 +33,33 @@ public interface Wire {
     QName LOCAL_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/binding/1.0", "binding.local");
 
     /**
-     * Returns the wire source URI
+     * Returns the URI of the wire source
      *
      * @return the wire source URI
      */
     URI getSourceUri();
 
     /**
-     * Sets the wire source URI
+     * Sets the URI of the wire source
      *
      * @param uri the source uri
      */
     void setSourceUri(URI uri);
+
+    /**
+     * Returns the URI of the wire target
+     *
+     * @return the URI of the wire target
+     */
+    URI getTargetUri();
+
+    /**
+     * Sets the URI of the wire target
+     *
+     * @param uri the URI of the wire target
+     */
+    void setTargetUri(URI uri);
+
 
     /**
      * Returns the wire binding type
@@ -52,11 +67,6 @@ public interface Wire {
      * @return the wire binding type
      */
     QName getBindingType();
-
-    /**
-     * Returns the non-proxied target instance for this wire
-     */
-    Object getTargetService() throws TargetResolutionException;
 
     /**
      * Returns the service contract associated with the wire
@@ -83,5 +93,10 @@ public interface Wire {
      * @param optimizable true if the wire is optimizable
      */
     void setOptimizable(boolean optimizable);
+
+    /**
+     * Returns the non-proxied target instance for this wire
+     */
+    Object getTargetService() throws TargetResolutionException;
 
 }

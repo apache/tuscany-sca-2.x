@@ -76,7 +76,7 @@ public abstract class WireServiceExtension implements WireService {
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(operation, chain);
+            wire.addInboundInvocationChain(operation, chain);
         }
         if (contract.getCallbackName() != null) {
             wire.setCallbackReferenceName(service.getCallbackReferenceName());
@@ -119,7 +119,7 @@ public abstract class WireServiceExtension implements WireService {
         inboundWire.setSourceUri(referenceBinding.getUri());
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
-            inboundWire.addInvocationChain(operation, chain);
+            inboundWire.addInboundInvocationChain(operation, chain);
         }
         OutboundWire outboundWire = new OutboundWireImpl(referenceBinding.getBindingType());
         outboundWire.setSourceUri(referenceBinding.getUri());
@@ -141,7 +141,7 @@ public abstract class WireServiceExtension implements WireService {
             } else {
                 chain.addInterceptor(new InvokerInterceptor());
             }
-            outboundWire.addInvocationChain(operation, chain);
+            outboundWire.addOutboundInvocationChain(operation, chain);
         }
         // Add target callback chain to outbound wire
         if (contract.getCallbackName() != null) {
@@ -167,7 +167,7 @@ public abstract class WireServiceExtension implements WireService {
         for (Operation<?> operation : bindingContract.getOperations().values()) {
             InboundInvocationChain inboundChain = createInboundChain(operation);
             inboundChain.addInterceptor(new SynchronousBridgingInterceptor());
-            inboundWire.addInvocationChain(operation, inboundChain);
+            inboundWire.addInboundInvocationChain(operation, inboundChain);
         }
 
         OutboundWire outboundWire = new OutboundWireImpl(serviceBinding.getBindingType());
@@ -177,7 +177,7 @@ public abstract class WireServiceExtension implements WireService {
 
         for (Operation<?> operation : contract.getOperations().values()) {
             OutboundInvocationChain outboundChain = createOutboundChain(operation);
-            outboundWire.addInvocationChain(operation, outboundChain);
+            outboundWire.addOutboundInvocationChain(operation, outboundChain);
         }
 
         // Add target callback chain to outbound wire
@@ -287,7 +287,7 @@ public abstract class WireServiceExtension implements WireService {
             wire.setTargetUri(uri);
             for (Operation<?> operation : contract.getOperations().values()) {
                 OutboundInvocationChain chain = createOutboundChain(operation);
-                wire.addInvocationChain(operation, chain);
+                wire.addOutboundInvocationChain(operation, chain);
 
             }
             if (contract.getCallbackName() != null) {

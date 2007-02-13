@@ -94,7 +94,15 @@ public class InboundWireImpl implements InboundWire {
         this.uri = serviceName;
     }
 
-    public Map<Operation<?>, InboundInvocationChain> getInvocationChains() {
+    public URI getTargetUri() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setTargetUri(URI uri) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<Operation<?>, InboundInvocationChain> getInboundInvocationChains() {
         return chains;
     }
 
@@ -102,7 +110,7 @@ public class InboundWireImpl implements InboundWire {
         this.chains.putAll(chains);
     }
 
-    public void addInvocationChain(Operation<?> operation, InboundInvocationChain chain) {
+    public void addInboundInvocationChain(Operation<?> operation, InboundInvocationChain chain) {
         chains.put(operation, chain);
     }
 

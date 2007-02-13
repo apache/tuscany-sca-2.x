@@ -33,29 +33,15 @@ import org.apache.tuscany.spi.model.Operation;
 public interface OutboundWire extends Wire {
 
     /**
-     * Returns the URI of the wire target
-     *
-     * @return the URI of the wire target
-     */
-    URI getTargetUri();
-
-    /**
-     * Sets the URI of the wire target
-     *
-     * @param uri the URI of the wire target
-     */
-    void setTargetUri(URI uri);
-
-    /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a target
      * service.
      */
-    Map<Operation<?>, OutboundInvocationChain> getInvocationChains();
+    Map<Operation<?>, OutboundInvocationChain> getOutboundInvocationChains();
 
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Operation<?> operation, OutboundInvocationChain chain);
+    void addOutboundInvocationChain(Operation<?> operation, OutboundInvocationChain chain);
 
     /**
      * Returns the callback invocation configuration for each operation on a service specified by a reference or a

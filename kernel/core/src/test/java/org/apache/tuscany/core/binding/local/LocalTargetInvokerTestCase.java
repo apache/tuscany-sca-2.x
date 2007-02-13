@@ -50,7 +50,7 @@ public class LocalTargetInvokerTestCase extends TestCase {
         Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
         chains.put(operation, chain);
         OutboundWire wire = EasyMock.createNiceMock(OutboundWire.class);
-        wire.getInvocationChains();
+        wire.getOutboundInvocationChains();
         EasyMock.expectLastCall().andReturn(chains);
         EasyMock.expect(wire.getServiceContract()).andReturn(serviceContract);
         EasyMock.replay(wire);
@@ -76,7 +76,7 @@ public class LocalTargetInvokerTestCase extends TestCase {
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         URI uri = URI.create("foo");
         EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
-        wire.getInvocationChains();
+        wire.getOutboundInvocationChains();
         EasyMock.expectLastCall().andReturn(chains);
         EasyMock.expect(wire.getServiceContract()).andReturn(contract);
         EasyMock.replay(wire);
@@ -99,7 +99,7 @@ public class LocalTargetInvokerTestCase extends TestCase {
         Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
         chains.put(operation, chain);
         OutboundWire wire = EasyMock.createNiceMock(OutboundWire.class);
-        wire.getInvocationChains();
+        wire.getOutboundInvocationChains();
         EasyMock.expectLastCall().andReturn(chains);
         EasyMock.expect(wire.getServiceContract()).andReturn(serviceContract);
         EasyMock.replay(wire);

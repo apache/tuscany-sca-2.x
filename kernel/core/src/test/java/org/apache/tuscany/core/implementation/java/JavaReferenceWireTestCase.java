@@ -55,7 +55,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         Constructor<SourceImpl> ctr = SourceImpl.class.getConstructor();
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(ctr));
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
-        wire.getInvocationChains();
+        wire.getOutboundInvocationChains();
         EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, OutboundInvocationChain>()).atLeastOnce();
         URI uri = URI.create("#target");
         EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
@@ -66,7 +66,7 @@ public class JavaReferenceWireTestCase extends TestCase {
             .andAnswer(new IAnswer<Target>() {
                 public Target answer() throws Throwable {
                     OutboundWire wire = (OutboundWire) EasyMock.getCurrentArguments()[1];
-                    wire.getInvocationChains();
+                    wire.getOutboundInvocationChains();
                     return target;
                 }
 

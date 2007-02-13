@@ -77,7 +77,7 @@ public class JDKInboundInvocationHandlerSerializationTestCase extends TestCase {
 
         URI uri = URI.create("component#foo");
         EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
-        EasyMock.expect(wire.getInvocationChains()).andReturn(map).times(2);
+        EasyMock.expect(wire.getInboundInvocationChains()).andReturn(map).times(2);
         EasyMock.replay(wire);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getInboundWire(EasyMock.eq("foo"))).andReturn(wire);

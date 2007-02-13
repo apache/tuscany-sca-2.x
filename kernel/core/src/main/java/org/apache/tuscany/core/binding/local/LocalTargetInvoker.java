@@ -41,7 +41,7 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
 
     public LocalTargetInvoker(Operation operation, OutboundWire outboundWire) {
         assert operation != null;
-        chain = outboundWire.getInvocationChains().get(operation);
+        chain = outboundWire.getOutboundInvocationChains().get(operation);
         assert chain != null;
         if (outboundWire.getSourceUri() != null) {
             fromAddress = URI.create(UriHelper.getBaseName(outboundWire.getSourceUri()));

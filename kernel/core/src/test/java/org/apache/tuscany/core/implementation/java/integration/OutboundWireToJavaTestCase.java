@@ -223,7 +223,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         ServiceContract<?> contract = registry.introspect(interfaze);
         for (Operation operation : contract.getOperations().values()) {
             OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-            wire.addInvocationChain(operation, chain);
+            wire.addOutboundInvocationChain(operation, chain);
         }
     }
 

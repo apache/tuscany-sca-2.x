@@ -53,7 +53,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
         owire.setSourceUri(URI.create("target"));
         InboundWire iwire = createNiceMock(InboundWire.class);
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        expect(iwire.getInvocationChains()).andReturn(chains);
+        expect(iwire.getInboundInvocationChains()).andReturn(chains);
         replay(iwire);
         WirePostProcessorRegistry registry = createMock(WirePostProcessorRegistry.class);
         registry.process(EasyMock.eq(container), EasyMock.eq(iwire), EasyMock.eq(container), EasyMock.eq(owire));

@@ -54,7 +54,7 @@ public final class WireUtils {
     public static Map<Method, InboundInvocationChain> createInboundMapping(InboundWire wire, Method[] methods)
         throws NoMethodForOperationException {
         Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
+        for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInboundInvocationChains().entrySet()) {
             Operation<?> operation = entry.getKey();
             InboundInvocationChain chain = entry.getValue();
             Method method = findMethod(operation, methods);
@@ -77,7 +77,7 @@ public final class WireUtils {
      */
     public static Map<Method, OutboundChainHolder> createInterfaceToWireMapping(Class<?> interfaze, OutboundWire wire)
         throws NoMethodForOperationException {
-        Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
+        Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getOutboundInvocationChains();
         Map<Method, OutboundChainHolder> chains = new HashMap<Method, OutboundChainHolder>(invocationChains.size());
         Method[] methods = interfaze.getMethods();
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
@@ -99,7 +99,7 @@ public final class WireUtils {
      * @return true if the wire is optimizable
      */
     public static boolean isOptimizable(OutboundWire wire) {
-        for (OutboundInvocationChain chain : wire.getInvocationChains().values()) {
+        for (OutboundInvocationChain chain : wire.getOutboundInvocationChains().values()) {
             if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();
                 if (current == null) {
@@ -129,7 +129,7 @@ public final class WireUtils {
         if (!(container instanceof Component) || !((Component) container).isOptimizable()) {
             return false;
         }
-        for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
+        for (InboundInvocationChain chain : wire.getInboundInvocationChains().values()) {
             if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();
                 while (current != null) {

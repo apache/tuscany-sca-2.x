@@ -200,7 +200,7 @@ public class DeployerImpl implements Deployer {
             connector.connect(component);
             // this will be refactored out, currently  for atomic 
             for (InboundWire inboundWire : component.getInboundWires()) {
-                for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
+                for (InboundInvocationChain chain : inboundWire.getInboundInvocationChains().values()) {
                     Operation<?> operation = chain.getOperation();
                     String serviceName = inboundWire.getSourceUri().getFragment();
                     TargetInvoker invoker;

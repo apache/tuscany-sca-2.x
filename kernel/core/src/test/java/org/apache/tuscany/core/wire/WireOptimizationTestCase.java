@@ -51,7 +51,7 @@ public class WireOptimizationTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
-        wire.addInvocationChain(operation, chain);
+        wire.addOutboundInvocationChain(operation, chain);
         assertTrue(WireUtils.isOptimizable(wire));
     }
 
@@ -61,7 +61,7 @@ public class WireOptimizationTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
-        wire.addInvocationChain(operation, chain);
+        wire.addOutboundInvocationChain(operation, chain);
         assertFalse(WireUtils.isOptimizable(wire));
     }
 
@@ -72,7 +72,7 @@ public class WireOptimizationTestCase extends TestCase {
         InboundWire wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
-        wire.addInvocationChain(operation, chain);
+        wire.addInboundInvocationChain(operation, chain);
         assertTrue(WireUtils.isOptimizable(component, wire));
 
     }
@@ -84,7 +84,7 @@ public class WireOptimizationTestCase extends TestCase {
         InboundWire wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
-        wire.addInvocationChain(operation, chain);
+        wire.addInboundInvocationChain(operation, chain);
         assertTrue(WireUtils.isOptimizable(component, wire));
     }
 
@@ -94,7 +94,7 @@ public class WireOptimizationTestCase extends TestCase {
         InboundWire wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
-        wire.addInvocationChain(operation, chain);
+        wire.addInboundInvocationChain(operation, chain);
         assertFalse(WireUtils.isOptimizable(component, wire));
     }
 

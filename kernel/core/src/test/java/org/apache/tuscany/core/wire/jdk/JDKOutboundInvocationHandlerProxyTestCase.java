@@ -57,7 +57,7 @@ public class JDKOutboundInvocationHandlerProxyTestCase extends TestCase {
         JavaServiceContract contract = registry.introspect(Target.class);
         for (Operation<?> operation : contract.getOperations().values()) {
             OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-            wire.addInvocationChain(operation, chain);
+            wire.addOutboundInvocationChain(operation, chain);
             targetInvoker = EasyMock.createMock(TargetInvoker.class);
             EasyMock.expect(targetInvoker.invokeTarget(EasyMock.isNull(), EasyMock.eq(TargetInvoker.NONE)))
                 .andReturn(new MessageImpl());

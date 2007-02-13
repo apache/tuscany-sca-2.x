@@ -110,11 +110,11 @@ public class OutboundWireImpl implements OutboundWire {
         this.targetWire = wire;
     }
 
-    public Map<Operation<?>, OutboundInvocationChain> getInvocationChains() {
+    public Map<Operation<?>, OutboundInvocationChain> getOutboundInvocationChains() {
         return chains;
     }
 
-    public void addInvocationChain(Operation<?> operation, OutboundInvocationChain chain) {
+    public void addOutboundInvocationChain(Operation<?> operation, OutboundInvocationChain chain) {
         chains.put(operation, chain);
     }
 

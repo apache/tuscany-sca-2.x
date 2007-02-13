@@ -41,7 +41,7 @@ public class WireUtilsTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         Operation<Type> op = new Operation<Type>("hello", null, null, null);
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(op);
-        wire.addInvocationChain(op, chain);
+        wire.addOutboundInvocationChain(op, chain);
         Map<Method, OutboundChainHolder> chains = WireUtils.createInterfaceToWireMapping(Foo.class, wire);
         assertEquals(1, chains.size());
         assertNotNull(chains.get(m));
@@ -51,7 +51,7 @@ public class WireUtilsTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         Operation<Type> op = new Operation<Type>("goodbye", null, null, null);
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(op);
-        wire.addInvocationChain(op, chain);
+        wire.addOutboundInvocationChain(op, chain);
         try {
             WireUtils.createInterfaceToWireMapping(Foo.class, wire);
             fail();
@@ -64,7 +64,7 @@ public class WireUtilsTestCase extends TestCase {
         InboundWire wire = new InboundWireImpl();
         Operation<Type> op = new Operation<Type>("hello", null, null, null);
         InboundInvocationChain chain = new InboundInvocationChainImpl(op);
-        wire.addInvocationChain(op, chain);
+        wire.addInboundInvocationChain(op, chain);
         Map<Method, InboundInvocationChain> chains = WireUtils.createInboundMapping(wire, new Method[]{m});
         assertEquals(1, chains.size());
         assertNotNull(chains.get(m));
@@ -74,7 +74,7 @@ public class WireUtilsTestCase extends TestCase {
         InboundWire wire = new InboundWireImpl();
         Operation<Type> op = new Operation<Type>("goodbye", null, null, null);
         InboundInvocationChain chain = new InboundInvocationChainImpl(op);
-        wire.addInvocationChain(op, chain);
+        wire.addInboundInvocationChain(op, chain);
         try {
             WireUtils.createInboundMapping(wire, new Method[]{m});
             fail();
