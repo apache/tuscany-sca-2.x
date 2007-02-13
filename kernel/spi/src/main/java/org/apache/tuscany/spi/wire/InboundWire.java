@@ -49,11 +49,6 @@ public interface InboundWire extends Wire {
     Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains(URI targetAddr);
 
     /**
-     * Adds the collection of callback invocation chains keyed by operation for a given target addr
-     */
-    void addSourceCallbackInvocationChains(URI targetAddr, Map<Operation<?>, OutboundInvocationChain> chains);
-
-    /**
      * Adds the callback invocation chain associated with the given operation for a given target addr
      */
     void addSourceCallbackInvocationChain(URI targetAddr, Operation<?> operation, OutboundInvocationChain chain);

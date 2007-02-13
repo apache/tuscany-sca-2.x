@@ -114,11 +114,6 @@ public class InboundWireImpl implements InboundWire {
         return callbackSourceChainMaps.get(targetAddr);
     }
 
-    public void addSourceCallbackInvocationChains(URI targetAddr,
-                                                  Map<Operation<?>, OutboundInvocationChain> chains) {
-        callbackSourceChainMaps.put(targetAddr, chains);
-    }
-
     public void addSourceCallbackInvocationChain(URI targetAddr,
                                                  Operation operation,
                                                  OutboundInvocationChain chain) {
