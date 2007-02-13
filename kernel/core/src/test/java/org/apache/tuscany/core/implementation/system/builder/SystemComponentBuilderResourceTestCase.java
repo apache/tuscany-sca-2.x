@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.implementation.system.builder;
 
 import java.net.URI;
+import java.lang.reflect.Field;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -44,10 +45,8 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
             SystemComponentBuilderResourceTestCase.Foo.class.getConstructor());
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        Resource resource = new Resource();
-        resource.setType(String.class);
-        resource.setName("resource");
-        resource.setMember(SystemComponentBuilderResourceTestCase.Foo.class.getDeclaredField("resource"));
+        Field member = Foo.class.getDeclaredField("resource");
+        Resource<String> resource = new Resource<String>("resource", String.class, member);
         type.add(resource);
         type.setImplementationScope(Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);

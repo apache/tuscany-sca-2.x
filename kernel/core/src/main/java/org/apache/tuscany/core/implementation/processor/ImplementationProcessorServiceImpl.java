@@ -418,8 +418,6 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         Class<T> param,
         List<String> explicitNames) throws ProcessingException {
 
-        org.apache.tuscany.spi.implementation.java.Resource resource =
-            new org.apache.tuscany.spi.implementation.java.Resource();
         String name = resourceAnnot.name();
         if (name == null || name.length() == 0) {
             if (constructorNames.length < pos + 1 || constructorNames[pos] == null
@@ -437,9 +435,9 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         if (type.getResources().get(name) != null) {
             throw new DuplicateResourceException(name);
         }
-        resource.setName(name);
+        org.apache.tuscany.spi.implementation.java.Resource<T> resource =
+            new org.apache.tuscany.spi.implementation.java.Resource<T>(name, param, null);
         resource.setOptional(resourceAnnot.optional());
-        resource.setType(param);
         String mappedName = resourceAnnot.mappedName();
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);

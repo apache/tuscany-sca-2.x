@@ -53,10 +53,7 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         builder.setScopeRegistry(registry);
         ConstructorDefinition<Foo> ctorDef = new ConstructorDefinition<Foo>(Foo.class.getConstructor());
         PojoComponentType type = new PojoComponentType();
-        Resource resource = new Resource();
-        resource.setType(String.class);
-        resource.setName("resource");
-        resource.setMember(Foo.class.getDeclaredField("resource"));
+        Resource resource = new Resource("resource", String.class, Foo.class.getDeclaredField("resource"));
         type.add(resource);
         type.setImplementationScope(Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);

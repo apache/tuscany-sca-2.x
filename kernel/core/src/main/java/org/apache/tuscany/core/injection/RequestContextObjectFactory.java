@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.injection;
 
+import org.osoa.sca.RequestContext;
+
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -12,7 +14,7 @@ import org.apache.tuscany.core.implementation.composite.ManagedRequestContext;
  *
  * @version $Rev$ $Date$
  */
-public class RequestContextObjectFactory implements ObjectFactory<ManagedRequestContext> {
+public class RequestContextObjectFactory implements ObjectFactory<RequestContext> {
     private WorkContext workContext;
 
     public RequestContextObjectFactory(WorkContext workContext) {

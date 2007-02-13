@@ -20,8 +20,10 @@ package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -31,8 +33,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.implementation.java.Resource;
-
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
 /**
  * Processes an {@link @Resource} annotation, updating the component type with corresponding {@link
@@ -57,6 +57,8 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         if (method.getParameterTypes().length != 1) {
             throw new IllegalResourceException("Resource setter must have one parameter", method.toString());
         }
+        Class<?> resourceType = method.getParameterTypes()[0];
+
         String name = annotation.name();
         if (name.length() < 1) {
             name = toPropertyName(method.getName());
@@ -66,11 +68,8 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         }
 
         String mappedName = annotation.mappedName();
-        Resource resource = new Resource();
-        resource.setMember(method);
-        resource.setType(method.getParameterTypes()[0]);
+        Resource<?> resource = createResource(name, resourceType, method);
         resource.setOptional(annotation.optional());
-        resource.setName(name);
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
         }
@@ -94,16 +93,19 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
             throw new DuplicateResourceException(name);
         }
 
+        Class<?> fieldType = field.getType();
         String mappedName = annotation.mappedName();
-        Resource resource = new Resource();
-        resource.setMember(field);
-        resource.setType(field.getType());
+
+        Resource<?> resource = createResource(name, fieldType, field);
         resource.setOptional(annotation.optional());
-        resource.setName(name);
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
         }
         type.add(resource);
+    }
+
+    public <T> Resource<T> createResource(String name, Class<T> type, Member member) {
+        return new Resource<T>(name, type, member);
     }
 
     public <T> void visitConstructor(CompositeComponent parent,

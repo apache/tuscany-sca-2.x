@@ -26,15 +26,22 @@ import org.apache.tuscany.spi.ObjectFactory;
  * A resource dependency declared by a Java component implementation
  * 
  * @version $Rev$ $Date$
+ * @param <T> the Java type of the resource
  */
-public class Resource {
+public class Resource<T> {
 
     private String name;
     private String mappedName;
     private boolean optional;
     private Member member;
-    private Class<?> type;
-    private ObjectFactory<?> objectFactory;
+    private Class<T> type;
+    private ObjectFactory<T> objectFactory;
+
+    public Resource(String name, Class<T> type, Member member) {
+        this.name = name;
+        this.type = type;
+        this.member = member;
+    }
 
     /**
      * The name of the resource
@@ -109,14 +116,14 @@ public class Resource {
      * 
      * @return the resource type
      */
-    public Class<?> getType() {
+    public Class<T> getType() {
         return type;
     }
 
     /**
      * Sets the resource type
      */
-    public void setType(Class<?> type) {
+    public void setType(Class<T> type) {
         this.type = type;
     }
 
@@ -125,14 +132,14 @@ public class Resource {
      * 
      * @return the object factory
      */
-    public ObjectFactory<?> getObjectFactory() {
+    public ObjectFactory<T> getObjectFactory() {
         return objectFactory;
     }
 
     /**
      * Sets the object factory
      */
-    public void setObjectFactory(ObjectFactory<?> objectFactory) {
+    public void setObjectFactory(ObjectFactory<T> objectFactory) {
         this.objectFactory = objectFactory;
     }
 }
