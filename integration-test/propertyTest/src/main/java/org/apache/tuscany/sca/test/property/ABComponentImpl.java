@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
 import org.osoa.sca.annotations.Property;
 

@@ -17,12 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
+public interface CDComponent {  
 
-public interface PropertyComponent {
-    public String getLocation();
-    public String getYear();
-    public ComplexPropertyBean getComplexPropertyOne();
-    public ComplexPropertyBean getComplexPropertyTwo();
+    String getC();
+    String getC2();
+    String getD();
+    String getNoSource();
+    String getFileProperty();
+    int getOverrideValue();
 }

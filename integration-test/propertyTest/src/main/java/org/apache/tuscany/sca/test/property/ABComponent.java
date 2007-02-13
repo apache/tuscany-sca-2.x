@@ -17,8 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
-public class OverrideServiceImpl implements OverrideService {
+public interface ABComponent {  
 
+    String getA();
+    String getB();
+    String getZ();
+    int getIntValue();
+    String getF();
 }

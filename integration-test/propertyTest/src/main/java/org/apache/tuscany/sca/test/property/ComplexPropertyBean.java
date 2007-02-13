@@ -1,4 +1,4 @@
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
 public class ComplexPropertyBean {
 

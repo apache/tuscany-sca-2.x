@@ -1,4 +1,3 @@
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,8 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
-public interface OverrideService {
 
+public interface PropertyComponent {
+    public String getLocation();
+    public String getYear();
+    public ComplexPropertyBean getComplexPropertyOne();
+    public ComplexPropertyBean getComplexPropertyTwo();
 }

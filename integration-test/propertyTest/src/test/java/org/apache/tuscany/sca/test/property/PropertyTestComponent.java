@@ -17,12 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.test.property;
 
 import junit.framework.TestCase;
 import org.osoa.sca.annotations.Reference;
 
-public class PropertyITest extends TestCase {
+public class PropertyTestComponent extends TestCase {
     @Reference
     public ABComponent abService;
     @Reference

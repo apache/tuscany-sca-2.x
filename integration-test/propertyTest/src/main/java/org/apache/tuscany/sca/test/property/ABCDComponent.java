@@ -16,9 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.test.property;
 
-package org.apache.tuscany.sca.itest;
-
-public interface PropertyService {
-
+public interface ABCDComponent {
+    String getA();
+    String getB();
+    String getC();
+    String getD();
 }
+
