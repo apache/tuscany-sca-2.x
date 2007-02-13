@@ -47,9 +47,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
      * @param host     the runtime resource provider
      */
     public ResourceObjectFactory(Class<T> type, boolean optional, ResourceHost host) {
-        this.type = type;
-        this.host = host;
-        this.optional = optional;
+        this(type, null, optional, host);
     }
 
     /**

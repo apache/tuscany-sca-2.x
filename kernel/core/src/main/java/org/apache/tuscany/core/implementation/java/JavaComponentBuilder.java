@@ -22,6 +22,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
+import org.osoa.sca.ComponentContext;
+
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -40,6 +42,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 
 import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.PojoComponentContextFactory;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.ResourceObjectFactory;
@@ -156,29 +159,31 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         }
     }
 
-    @SuppressWarnings({"unchecked"})
     private void handleResources(
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
         JavaAtomicComponent component) {
-        for (Resource resource : componentType.getResources().values()) {
+        for (Resource<?> resource : componentType.getResources().values()) {
+            String name = resource.getName();
             ObjectFactory<?> objectFactory = resource.getObjectFactory();
-            if (objectFactory != null) {
-                component.addResourceFactory(resource.getName(), objectFactory);
-            } else {
-                String name = resource.getName();
-                boolean optional = resource.isOptional();
-                Class<Object> type = (Class<Object>) resource.getType();
-                ResourceObjectFactory<Object> factory;
-                String mappedName = resource.getMappedName();
-                if (mappedName == null) {
-                    // by type
-                    factory = new ResourceObjectFactory<Object>(type, optional, host);
+            if (objectFactory == null) {
+                Class<?> type = resource.getType();
+                if (ComponentContext.class.equals(type)) {
+                    objectFactory = new PojoComponentContextFactory(component);
                 } else {
-                    factory = new ResourceObjectFactory<Object>(type, mappedName, optional, host);
+                    boolean optional = resource.isOptional();
+                    String mappedName = resource.getMappedName();
+                    objectFactory = createResourceObjectFactory(type, mappedName, optional, host);
                 }
-                component.addResourceFactory(name, factory);
             }
+            component.addResourceFactory(name, objectFactory);
         }
+    }
+
+    private <T> ResourceObjectFactory<T> createResourceObjectFactory(Class<T> type,
+                                                                     String mappedName,
+                                                                     boolean optional,
+                                                                     ResourceHost host) {
+        return new ResourceObjectFactory<T>(type, mappedName, optional, host);
     }
 
     private void handleProperties(ComponentDefinition<JavaImplementation> definition, JavaAtomicComponent component) {
