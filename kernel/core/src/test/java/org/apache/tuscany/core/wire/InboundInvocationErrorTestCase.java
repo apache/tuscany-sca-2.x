@@ -21,8 +21,6 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.WorkContext;
@@ -86,11 +84,9 @@ public class InboundInvocationErrorTestCase extends TestCase {
 
         Operation<Type> operation =
             new Operation<Type>("checkedException", null, null, null, false, null, NO_CONVERSATION);
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(operation, createChain(checkedMethod, checkedOperation));
         InboundWire wire = new InboundWireImpl();
         wire.setSourceUri(URI.create("#wire"));
-        wire.addInvocationChains(chains);
+        wire.addInboundInvocationChain(operation, createChain(checkedMethod, checkedOperation));
         wire.setServiceContract(new ServiceContract<TestBean>(TestBean.class) {
         });
 
@@ -111,11 +107,9 @@ public class InboundInvocationErrorTestCase extends TestCase {
 
         Operation<Type> operation =
             new Operation<Type>("runtimeException", null, null, null, false, null, NO_CONVERSATION);
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(operation, createChain(runtimeMethod, runtimeOperation));
         InboundWire wire = new InboundWireImpl();
         wire.setSourceUri(URI.create("#wire"));
-        wire.addInvocationChains(chains);
+        wire.addInboundInvocationChain(operation, createChain(runtimeMethod, runtimeOperation));
         wire.setServiceContract(new ServiceContract<TestBean>(TestBean.class) {
         });
 

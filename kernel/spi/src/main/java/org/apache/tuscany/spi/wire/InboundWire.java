@@ -38,11 +38,6 @@ public interface InboundWire extends Wire {
     Map<Operation<?>, InboundInvocationChain> getInboundInvocationChains();
 
     /**
-     * Adds the collection of invocation chains keyed by operation
-     */
-    void addInvocationChains(Map<Operation<?>, InboundInvocationChain> chains);
-
-    /**
      * Adds the invocation chain associated with the given operation
      */
     void addInboundInvocationChain(Operation<?> operation, InboundInvocationChain chain);

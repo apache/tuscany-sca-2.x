@@ -106,10 +106,6 @@ public class InboundWireImpl implements InboundWire {
         return chains;
     }
 
-    public void addInvocationChains(Map<Operation<?>, InboundInvocationChain> chains) {
-        this.chains.putAll(chains);
-    }
-
     public void addInboundInvocationChain(Operation<?> operation, InboundInvocationChain chain) {
         chains.put(operation, chain);
     }
