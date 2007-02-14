@@ -39,4 +39,9 @@ public class ComponentContextTestComponent extends TestCase {
     public void testGetService() {
         assertEquals("itest://localhost/testDomain/ReferencedService", tester.getServiceIdentity("getServiceTest"));
     }
+
+    public void testGetServiceReference() {
+        assertEquals("itest://localhost/testDomain/ReferencedService",
+                     tester.getServiceReferenceIdentity("getServiceTest"));
+    }
 }
