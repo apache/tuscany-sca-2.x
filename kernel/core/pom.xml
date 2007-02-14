@@ -36,12 +36,14 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-host-api</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>commonj-api_r1.1</artifactId>
@@ -68,11 +70,18 @@
             <artifactId>commons-codec</artifactId>
 				<version>1.3</version>
         </dependency>
+        
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3</version>
+		</dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
