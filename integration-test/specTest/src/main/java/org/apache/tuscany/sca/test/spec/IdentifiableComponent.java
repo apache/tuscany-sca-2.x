@@ -18,20 +18,17 @@
  */
 package org.apache.tuscany.sca.test.spec;
 
+import org.osoa.sca.annotations.Context;
+import org.osoa.sca.ComponentContext;
+
 /**
  * @version $Rev$ $Date$
  */
-public interface ComponentContextTester extends IdentityService {
-    /**
-     * Returns true if the ComponentContext was injected
-     * @return true if the ComponentContext was injected
-     */
-    boolean isContextInjected();
+public class IdentifiableComponent implements IdentityService {
+    @Context
+    public ComponentContext context;
 
-    /**
-     * Looks up a reference with the supplied name and returns the identity of the referenced component.
-     * @param name the name of a reference
-     * @return the identity of the referenced component
-     */
-    String getServiceIdentity(String name);
+    public String getURI() {
+        return context.getURI();
+    }    
 }
