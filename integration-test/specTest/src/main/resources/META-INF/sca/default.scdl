@@ -22,6 +22,11 @@
 
     <component name="ComponentContextTester">
         <implementation.java class="org.apache.tuscany.sca.test.spec.ComponentContextTesterImpl"/>
+        <reference name="getServiceTest">ReferencedService</reference>
+    </component>
+
+    <component name="ReferencedService">
+        <implementation.java class="org.apache.tuscany.sca.test.spec.IdentifiableComponent"/>
     </component>
 
     <!--

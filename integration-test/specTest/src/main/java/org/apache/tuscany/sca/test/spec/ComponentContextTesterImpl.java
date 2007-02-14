@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.test.spec;
 
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Component that tests ComponentContext functions.
@@ -30,11 +31,19 @@ public class ComponentContextTesterImpl implements ComponentContextTester {
     @Context
     public ComponentContext context;
 
+    @Reference
+    public IdentityService getServiceTest;
+
     public boolean isContextInjected() {
         return context != null;
     }
 
     public String getURI() {
         return context.getURI();
+    }
+
+    public String getServiceIdentity(String name) {
+        IdentityService service = context.getService(IdentityService.class, name);
+        return service.getURI();
     }
 }

@@ -21,17 +21,6 @@ package org.apache.tuscany.sca.test.spec;
 /**
  * @version $Rev$ $Date$
  */
-public interface ComponentContextTester extends IdentityService {
-    /**
-     * Returns true if the ComponentContext was injected
-     * @return true if the ComponentContext was injected
-     */
-    boolean isContextInjected();
-
-    /**
-     * Looks up a reference with the supplied name and returns the identity of the referenced component.
-     * @param name the name of a reference
-     * @return the identity of the referenced component
-     */
-    String getServiceIdentity(String name);
+public interface IdentityService {
+    String getURI();
 }

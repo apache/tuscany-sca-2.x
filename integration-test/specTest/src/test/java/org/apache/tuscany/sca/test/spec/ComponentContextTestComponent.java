@@ -35,4 +35,8 @@ public class ComponentContextTestComponent extends TestCase {
     public void testComponentURI() {
         assertEquals("itest://localhost/testDomain/ComponentContextTester", tester.getURI());
     }
+
+    public void testGetService() {
+        assertEquals("itest://localhost/testDomain/ReferencedService", tester.getServiceIdentity("getServiceTest"));
+    }
 }
