@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.test.spec;
 
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Reference;
 
@@ -44,6 +45,12 @@ public class ComponentContextTesterImpl implements ComponentContextTester {
 
     public String getServiceIdentity(String name) {
         IdentityService service = context.getService(IdentityService.class, name);
+        return service.getURI();
+    }
+
+    public String getServiceReferenceIdentity(String name) {
+        ServiceReference<IdentityService> ref = context.getServiceReference(IdentityService.class, name);
+        IdentityService service = ref.getService();
         return service.getURI();
     }
 }

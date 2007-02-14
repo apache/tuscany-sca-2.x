@@ -34,4 +34,12 @@ public interface ComponentContextTester extends IdentityService {
      * @return the identity of the referenced component
      */
     String getServiceIdentity(String name);
+
+    /**
+     * Looks up a reference with the supplied name using a ServiceReference
+     * and returns the identity of the referenced component.
+     * @param name the name of a reference
+     * @return the identity of the referenced component
+     */
+    String getServiceReferenceIdentity(String name);
 }
