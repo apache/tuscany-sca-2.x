@@ -42,7 +42,7 @@ public class PojoComponentContextImpl implements ComponentContext {
     }
 
     public <B> B getService(Class<B> businessInterface, String referenceName) {
-        return null;
+        return component.getService(businessInterface, referenceName);
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {

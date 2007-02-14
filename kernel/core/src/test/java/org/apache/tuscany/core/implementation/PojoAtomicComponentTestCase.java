@@ -80,7 +80,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testStatelessOptimizable() throws Exception {
-        TestStatelessAtomicComponent component = new TestStatelessAtomicComponent(config);
+        TestAtomicComponent component = new TestAtomicComponent(config, Scope.STATELESS);
         assertTrue(component.isOptimizable());
     }
 
@@ -90,7 +90,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
         invoker.invokeEvent(EasyMock.notNull());
         EasyMock.replay(invoker);
         config.setDestroyInvoker(invoker);
-        TestStatelessAtomicComponent component = new TestStatelessAtomicComponent(config);
+        TestAtomicComponent component = new TestAtomicComponent(config, Scope.STATELESS);
         assertFalse(component.isOptimizable());
     }
 
@@ -105,6 +105,22 @@ public class PojoAtomicComponentTestCase extends TestCase {
         assertSame(value, component.getProperty("foo"));
     }
 
+    public void testServiceLookup() {
+        URI uri = URI.create("#service");
+        FooService foo = EasyMock.createMock(FooService.class);
+        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(wire.getSourceUri()).andReturn(uri);
+        EasyMock.replay(wire);
+        ObjectFactory factory = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(factory.getInstance()).andReturn(foo);
+        EasyMock.replay(factory);
+        TestAtomicComponent component = new TestAtomicComponent(config, Scope.COMPOSITE, factory);
+        component.onReferenceWire(wire);
+        assertSame(foo, component.getService(FooService.class, "service"));
+        EasyMock.verify(wire);
+        EasyMock.verify(factory);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor());
@@ -115,37 +131,30 @@ public class PojoAtomicComponentTestCase extends TestCase {
     }
 
     private class TestAtomicComponent extends PojoAtomicComponent {
+        private final ObjectFactory factory;
+        private final Scope scope;
 
         public TestAtomicComponent(PojoConfiguration configuration) {
+            this(configuration, Scope.COMPOSITE, null);
+        }
+
+        public TestAtomicComponent(PojoConfiguration configuration, Scope scope) {
+            this(configuration, scope, null);
+        }
+
+        public TestAtomicComponent(PojoConfiguration configuration, Scope scope, ObjectFactory factory) {
             super(configuration);
+            this.scope = scope;
+            this.factory = factory;
         }
 
         public Scope getScope() {
-            return Scope.COMPOSITE;
+            return scope;
         }
 
-        protected ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire) {
-            return null;
-        }
-
-        public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
-            throws TargetInvokerCreationException {
-            return null;
-        }
-    }
-
-    private class TestStatelessAtomicComponent extends PojoAtomicComponent {
-
-        public TestStatelessAtomicComponent(PojoConfiguration configuration) {
-            super(configuration);
-        }
-
-        public Scope getScope() {
-            return Scope.STATELESS;
-        }
-
-        protected ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire) {
-            return null;
+        @SuppressWarnings({"unchecked"})
+        protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire) {
+            return factory;
         }
 
         public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
@@ -157,6 +166,9 @@ public class PojoAtomicComponentTestCase extends TestCase {
     private static class Foo {
         public Foo() {
         }
+    }
+
+    public static interface FooService {
     }
 
 }

@@ -70,9 +70,21 @@ public class PojoComponentContextImplTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
+    public void testGetService() {
+        String name = "foo";
+        FooService service = EasyMock.createMock(FooService.class);
+        EasyMock.expect(component.getService(FooService.class, name)).andReturn(service);
+        EasyMock.replay(component);
+        assertSame(service, context.getService(FooService.class, name));
+        EasyMock.verify(component);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         component = EasyMock.createMock(PojoAtomicComponent.class);
         context = new PojoComponentContextImpl(component);
+    }
+
+    public interface FooService {
     }
 }

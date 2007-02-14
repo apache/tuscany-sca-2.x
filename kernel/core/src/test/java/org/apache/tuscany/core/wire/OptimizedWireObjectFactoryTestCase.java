@@ -33,7 +33,7 @@ public class OptimizedWireObjectFactoryTestCase extends TestCase {
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(wire.getTargetService()).andReturn(foo);
         EasyMock.replay(wire);
-        OptimizedWireObjectFactory factory = new OptimizedWireObjectFactory(wire);
+        OptimizedWireObjectFactory<Foo> factory = new OptimizedWireObjectFactory<Foo>(Foo.class, wire);
         assertEquals(foo, factory.getInstance());
         EasyMock.verify(wire);
     }
