@@ -46,7 +46,7 @@ public class PojoComponentContextImpl implements ComponentContext {
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
-        return null;
+        return component.getServiceReference(businessInterface, referenceName);
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) {
