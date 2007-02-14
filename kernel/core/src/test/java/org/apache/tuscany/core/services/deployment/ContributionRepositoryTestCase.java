@@ -19,59 +19,49 @@
 
 package org.apache.tuscany.core.services.deployment;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.io.FileUtils;
-
 public class ContributionRepositoryTestCase extends TestCase {
     protected ContributionRepositoryImpl repository;
-    protected File rootRepositoryDir;
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.rootRepositoryDir = new File("target/repository");
+        // create repository (this should re-create the root directory)
+        this.repository = new ContributionRepositoryImpl("target/repository");
 
-        //clean repository
-        FileUtils.deleteDirectory(rootRepositoryDir);
-
-        //create repository (this should re-create the root directory)
-        this.repository = new ContributionRepositoryImpl(rootRepositoryDir, true);
-        
     }
 
-    public void testStore() throws Exception{
+    public void testStore() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
         URI contribution = getClass().getResource(resourceLocation).toURI();
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
-        repository.store(contribution,contributionStream);
-        
+        repository.store(contribution, contributionStream);
+
         URL contributionURL = repository.find(contribution);
         assertNotNull(contributionURL);
     }
-        
+
     public void testRemove() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
         URI contribution = getClass().getResource(resourceLocation).toURI();
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
-        repository.store(contribution,contributionStream);
-        
+        repository.store(contribution, contributionStream);
+
         repository.remove(contribution);
         URL contributionURL = repository.find(contribution);
         assertNull(contributionURL);
     }
-    
-    
-    public void testList() throws Exception{
+
+    public void testList() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
         URI contribution = getClass().getResource(resourceLocation).toURI();
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
-        repository.store(contribution,contributionStream);
-        
-        assertEquals(1, repository.list().size());        
+        repository.store(contribution, contributionStream);
+
+        assertEquals(1, repository.list().size());
     }
 }
