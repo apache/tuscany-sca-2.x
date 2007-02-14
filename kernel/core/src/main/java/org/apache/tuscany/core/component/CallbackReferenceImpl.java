@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.component;
 
+import org.apache.tuscany.spi.ObjectFactory;
+
 /**
  * Default implementation of a callback reference.
  * 
@@ -25,7 +27,7 @@ package org.apache.tuscany.core.component;
  * @param <CB> the type of the business interface
  */
 public class CallbackReferenceImpl<CB> extends CallableReferenceImpl<CB> {
-    public CallbackReferenceImpl(Class<CB> businessInterface) {
-        super(businessInterface);
+    public CallbackReferenceImpl(Class<CB> businessInterface, ObjectFactory<CB> factory) {
+        super(businessInterface, factory);
     }
 }

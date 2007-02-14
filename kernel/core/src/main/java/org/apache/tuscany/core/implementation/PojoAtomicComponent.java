@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -50,6 +51,7 @@ import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.component.ServiceReferenceImpl;
 
 /**
  * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
@@ -309,5 +311,14 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         }
         ObjectFactory<B> factory = createWireFactory(type, wire);
         return factory.getInstance();
+    }
+
+    public <B> ServiceReference<B> getServiceReference(Class<B> type, String name) {
+        OutboundWire wire = referenceFactories.get(name);
+        if (wire == null) {
+            return null;
+        }
+        ObjectFactory<B> factory = createWireFactory(type, wire);
+        return new ServiceReferenceImpl<B>(type, factory);
     }
 }

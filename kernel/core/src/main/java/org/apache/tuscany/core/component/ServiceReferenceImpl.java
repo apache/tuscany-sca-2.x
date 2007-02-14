@@ -20,6 +20,8 @@ package org.apache.tuscany.core.component;
 
 import org.osoa.sca.ServiceReference;
 
+import org.apache.tuscany.spi.ObjectFactory;
+
 /**
  * Default implementation of a ServiceReference.
  *
@@ -27,8 +29,8 @@ import org.osoa.sca.ServiceReference;
  * @param <B> the type of the business interface
  */
 public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements ServiceReference<B>{
-    public ServiceReferenceImpl(Class<B> businessInterface) {
-        super(businessInterface);
+    public ServiceReferenceImpl(Class<B> businessInterface, ObjectFactory<B> factory) {
+        super(businessInterface, factory);
     }
 
     public Object getConversationID() {

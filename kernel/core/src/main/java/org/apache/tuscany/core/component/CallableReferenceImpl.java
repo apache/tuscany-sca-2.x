@@ -21,6 +21,8 @@ package org.apache.tuscany.core.component;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
 
+import org.apache.tuscany.spi.ObjectFactory;
+
 /**
  * Base class for implementations of service and callback references.
  * 
@@ -29,13 +31,15 @@ import org.osoa.sca.Conversation;
  */
 public abstract class CallableReferenceImpl<B> implements CallableReference<B> {
     private final Class<B> businessInterface;
+    private final ObjectFactory<B> factory;
 
-    protected CallableReferenceImpl(Class<B> businessInterface) {
+    protected CallableReferenceImpl(Class<B> businessInterface, ObjectFactory<B> factory) {
         this.businessInterface = businessInterface;
+        this.factory = factory;
     }
 
     public B getService() {
-        return null;
+        return factory.getInstance();
     }
 
     public Class<B> getBusinessInterface() {
