@@ -145,11 +145,11 @@ public class OutboundWireImpl implements OutboundWire {
         throw new UnsupportedOperationException();
     }
 
-    public Map<Operation<?>, InboundInvocationChain> getCallbackInvocationChains() {
+    public Map<Operation<?>, InvocationChain> getCallbackInvocationChains() {
         throw new UnsupportedOperationException();
     }
 
-    public void addCallbackInvocationChain(Operation<?> operation, InboundInvocationChain chain) {
+    public void addCallbackInvocationChain(Operation<?> operation, InvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 }

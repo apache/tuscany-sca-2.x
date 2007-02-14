@@ -138,7 +138,7 @@ public interface Wire {
      *
      * @return the invocation chains for callback service operations associated with the wire
      */
-    Map<Operation<?>, InboundInvocationChain> getCallbackInvocationChains();
+    Map<Operation<?>, InvocationChain> getCallbackInvocationChains();
 
     /**
      * Adds the callback invocation chain associated with the given operation
@@ -146,7 +146,7 @@ public interface Wire {
      * @param operation the service operation
      * @param chain     the invocation chain
      */
-    void addCallbackInvocationChain(Operation<?> operation, InboundInvocationChain chain);
+    void addCallbackInvocationChain(Operation<?> operation, InvocationChain chain);
 
 
 }
