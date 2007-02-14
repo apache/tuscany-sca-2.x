@@ -45,6 +45,11 @@ public class WireImpl implements Wire {
     private Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
     private Map<Operation<?>, InvocationChain> callbackChains = new HashMap<Operation<?>, InvocationChain>();
 
+    /**
+     * Creates a wire with a local binding
+     */
+    public WireImpl() {
+    }
 
     /**
      * Creates a wire with the given binding type
