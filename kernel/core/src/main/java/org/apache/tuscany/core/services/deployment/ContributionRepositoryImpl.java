@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.core.services.deployment;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -31,7 +34,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tuscany.core.util.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.tuscany.spi.deployer.ContributionRepository;
 import org.osoa.sca.annotations.Property;
 
@@ -42,13 +45,13 @@ public class ContributionRepositoryImpl implements ContributionRepository {
     /**
      * Constructor with repository root
      * 
-     * @param root
+     * @param repository
      */
-    public ContributionRepositoryImpl(@Property String root) throws IOException {
-        this.rootFile = new File(root);
+    public ContributionRepositoryImpl(@Property(name = "repository") String repository) throws IOException {
+        this.rootFile = new File(repository);
         FileUtils.forceMkdir(rootFile);
         if (!rootFile.exists() || !rootFile.isDirectory() || !rootFile.canRead()) {
-            throw new IOException("The root is not a directory: " + root);
+            throw new IOException("The root is not a directory: " + repository);
         }
     }
 
@@ -64,15 +67,32 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         return new File(rootFile, FilenameUtils.getName(contribution.toString()));
     }
 
+    /**
+     * Write a specific source inputstream to a file on disk
+     * 
+     * @param source contents of the file to be written to disk
+     * @param target file to be written
+     * @throws IOException
+     */
+    public static void copy(InputStream source, File target) throws IOException {
+        BufferedOutputStream out = null;
+        BufferedInputStream in = null;
+
+        try {
+            out = new BufferedOutputStream(new FileOutputStream(target));
+            in = new BufferedInputStream(source);
+            IOUtils.copy(in, out);
+        } finally {
+            IOUtils.closeQuietly(out);
+            IOUtils.closeQuietly(in);
+        }
+    }
+
     public URL store(URI contribution, InputStream contributionStream) throws IOException {
         // where the file should be stored in the repository
         File location = mapToFile(contribution);
 
-        try {
-            IOUtils.write(contributionStream, location);
-        } finally {
-            IOUtils.closeQuietly(contributionStream);
-        }
+        copy(contributionStream, location);
 
         // add contribution to repositoryContent
         URL contributionURL = location.toURL();
