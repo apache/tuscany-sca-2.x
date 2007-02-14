@@ -27,6 +27,7 @@
     <artifactId>tuscany-itest-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Apache Tuscany Integration Test Plugin</name>
+    <description>A plugin for Apache Maven that simplifies integration testing of SCA components.</description>
 
     <dependencies>
         <dependency>
@@ -64,4 +65,13 @@
             <scope>runtime</scope>
         </dependency>          
     </dependencies>
+
+    <reporting>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+        </plugin>
+      </plugins>
+    </reporting>
 </project>

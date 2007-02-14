@@ -1,0 +1,50 @@
+Usage
+
+  The <<<tuscany-itest-plugin>>> is associated with the <<<integration-test>>> phase of the build lifecycle.
+
+  The plugin can be invoked directly from the command line:
+
++---+
+mvn org.apache.tuscany.sca:tuscany-itest-plugin:test
++---+
+
+  or can be included in the build definition for your project:
+  
++---+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-itest-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
++---+
+
+* Writing Integration Tests
+
+  Integration tests are written as JUnit TestCases (currently only JUnit 3.8.1 is supported but other frameworks
+  may be added later) that use SCA references to access services provided by the components under test. The
+  references are injected into your testcase before its setUp method is called (using constructor, setter or field
+  injection).
+
+  For example, to test a component that implemented the <<<MyService>>> interface you could write:
+
++---+
+    public class ServiceTestComponent extends TestCase {
+
+        @Reference
+        public MyService service;
+
+        public void testSomething() {
+            assertEquals(result, service.doSomething);
+        }
+    }
++---+
