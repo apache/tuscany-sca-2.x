@@ -45,7 +45,7 @@ public class SystemAtomicComponentImpl extends PojoAtomicComponent {
         return null;
     }
 
-    protected ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire) {
-        return new OptimizedWireObjectFactory(wire);
+    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire) {
+        return new OptimizedWireObjectFactory<B>(interfaze, wire);
     }
 }

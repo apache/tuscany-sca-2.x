@@ -28,17 +28,18 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $Rev$ $Date$
  */
-public class OptimizedWireObjectFactory implements ObjectFactory {
+public class OptimizedWireObjectFactory<B> implements ObjectFactory<B> {
+    private final Class<B> type;
+    private final OutboundWire wire;
 
-    private OutboundWire wire;
-
-    public OptimizedWireObjectFactory(OutboundWire factory) {
+    public OptimizedWireObjectFactory(Class<B> type, OutboundWire factory) {
         this.wire = factory;
+        this.type = type;
     }
 
-    public Object getInstance() throws ObjectCreationException {
+    public B getInstance() throws ObjectCreationException {
         try {
-            return wire.getTargetService();
+            return type.cast(wire.getTargetService());
         } catch (TargetResolutionException e) {
             throw new ObjectCreationException(e);
         }

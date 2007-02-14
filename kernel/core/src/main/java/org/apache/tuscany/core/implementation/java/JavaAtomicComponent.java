@@ -93,8 +93,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    protected ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire) {
-        return new WireObjectFactory(interfaze, wire, wireService);
+    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire) {
+        return new WireObjectFactory<B>(interfaze, wire, wireService);
     }
 }

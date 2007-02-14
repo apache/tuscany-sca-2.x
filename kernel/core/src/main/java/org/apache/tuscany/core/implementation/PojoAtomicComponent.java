@@ -64,12 +64,13 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     protected Map<String, Member> referenceSites;
     protected Map<String, Member> resourceSites;
     protected Map<String, Member> propertySites;
-    protected Map<String, ObjectFactory<?>> propertyFactories = new ConcurrentHashMap<String, ObjectFactory<?>>();
     protected Map<String, Member> callbackSites;
     protected List<Injector<Object>> injectors;
     protected Class implementationClass;
 
     private final ComponentContext componentContext;
+    private final Map<String, ObjectFactory<?>> propertyFactories = new ConcurrentHashMap<String, ObjectFactory<?>>();
+    private final Map<String, OutboundWire> referenceFactories = new ConcurrentHashMap<String, OutboundWire>();
     private List<Class<?>> constructorParamTypes = new ArrayList<Class<?>>();
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
@@ -170,12 +171,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         propertyFactories.put(name, factory);
     }
 
-    Object getProperty(String name) {
-        ObjectFactory<?> factory = propertyFactories.get(name);
-        return factory != null ? factory.getInstance() : null;
-
-    }
-
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
         Member member = resourceSites.get(name);
         if (member instanceof Field) {
@@ -219,7 +214,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
                 break;
             }
         }
-        //TODO error if ref not set on constructor or ref site
+
+        referenceFactories.put(name, wire);
     }
 
     public void onReferenceWires(List<OutboundWire> wires) {
@@ -293,10 +289,25 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         }
     }
 
-    protected abstract ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire);
+    protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire);
 
 
     public ComponentContext getComponentContext() {
         return componentContext;
+    }
+
+    public Object getProperty(String name) {
+        ObjectFactory<?> factory = propertyFactories.get(name);
+        return factory != null ? factory.getInstance() : null;
+
+    }
+
+    public <B> B getService(Class<B> type, String name) {
+        OutboundWire wire = referenceFactories.get(name);
+        if (wire == null) {
+            return null;
+        }
+        ObjectFactory<B> factory = createWireFactory(type, wire);
+        return factory.getInstance();
     }
 }
