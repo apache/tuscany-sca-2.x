@@ -33,15 +33,16 @@ public class ComponentContextTestComponent extends TestCase {
     }
 
     public void testComponentURI() {
-        assertEquals("itest://localhost/testDomain/ComponentContextTester", tester.getURI());
+        assertEquals("itest://localhost/testDomain/testHarness/ComponentContextTester", tester.getURI());
     }
 
     public void testGetService() {
-        assertEquals("itest://localhost/testDomain/ReferencedService", tester.getServiceIdentity("getServiceTest"));
+        assertEquals("itest://localhost/testDomain/testHarness/ReferencedService",
+                     tester.getServiceIdentity("getServiceTest"));
     }
 
     public void testGetServiceReference() {
-        assertEquals("itest://localhost/testDomain/ReferencedService",
+        assertEquals("itest://localhost/testDomain/testHarness/ReferencedService",
                      tester.getServiceReferenceIdentity("getServiceTest"));
     }
 }
