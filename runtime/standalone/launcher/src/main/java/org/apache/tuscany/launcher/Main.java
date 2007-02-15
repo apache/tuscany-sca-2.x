@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.launcher;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.text.MessageFormat;
@@ -29,34 +33,42 @@ import org.osoa.sca.ServiceReference;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.CompositeImplementation;
 
 /**
- * Main class for launcher runtime environment.
- * <code>
+ * Main class for launcher runtime environment. <code>
  * usage: java [jvm-options] -jar launcher.jar <componentURI>
  * </code>
- * where the componentURI identifies a component in the assembly that should be called.
- *
+ * where the componentURI identifies a component in the assembly that should be
+ * called.
+ * 
  * @version $Rev$ $Date$
  */
 public class Main {
     /**
      * Main method.
-     *
+     * 
      * @param args the command line args
-     * @throws Throwable if there are problems launching the runtime or application
+     * @throws Throwable if there are problems launching the runtime or
+     *             application
      */
     public static void main(String[] args) throws Throwable {
-        if (args.length == 0) {
+        if (args.length != 2) {
             usage();
             throw new AssertionError();
         }
 
+        URI applicationURI = new URI(args[0]);
+
         StandaloneRuntimeInfo runtimeInfo = DirectoryHelper.createRuntimeInfo("launcher", Main.class);
         TuscanyRuntime runtime = DirectoryHelper.createRuntime(runtimeInfo);
         runtime.initialize();
+
+        deployApplication(args, applicationURI, runtime);
+
         try {
-            URI applicationURI = new URI(args[0]);
+
             String serviceName = applicationURI.getFragment();
             ComponentContext context = runtime.getComponentContext(applicationURI);
             if (context == null) {
@@ -75,6 +87,20 @@ public class Main {
             runtime.destroy();
         }
 
+    }
+
+    private static void deployApplication(String[] args, URI applicationURI, TuscanyRuntime runtime) throws MalformedURLException {
+        URL applicationJar = new File(args[1]).toURL();
+        ClassLoader applicationClassLoader =
+            new URLClassLoader(new URL[] {applicationJar}, runtime.getHostClassLoader());
+        URL appScdl = applicationClassLoader.getResource("META-INF/sca/default.scdl");
+        CompositeImplementation impl = new CompositeImplementation();
+        impl.setScdlLocation(appScdl);
+        impl.setClassLoader(applicationClassLoader);
+
+        ComponentDefinition<CompositeImplementation> definition =
+            new ComponentDefinition<CompositeImplementation>(applicationURI, impl);
+        // TODO Deploy the SCDL
     }
 
     private static void usage() {
