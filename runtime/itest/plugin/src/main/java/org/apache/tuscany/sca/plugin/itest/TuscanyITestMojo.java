@@ -58,12 +58,17 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
 
 /**
+ * Integration-tests an SCA composite by running it in local copy of Apache Tuscany
+ * and calling JUnit-based test components to exercise it.
+ * 
  * @version $Rev$ $Date$
  * @goal test
  * @phase integration-test
  */
 public class TuscanyITestMojo extends AbstractMojo {
     /**
+     * The directory where reports will be written.
+     * 
      * @parameter expression="${project.build.directory}/surefire-reports"
      */
     public File reportsDirectory;
@@ -85,13 +90,6 @@ public class TuscanyITestMojo extends AbstractMojo {
     public File testClassesDirectory;
 
     /**
-     * @parameter expression="${project.testClasspathElements}"
-     * @required
-     * @readonly
-     */
-    public List testClassPath;
-
-    /**
      * The SCA domain in which to deploy the test components.
      *
      * @parameter expression="itest://localhost/testDomain/"
@@ -100,24 +98,38 @@ public class TuscanyITestMojo extends AbstractMojo {
     public String testDomain;
 
     /**
-     * @parameter
+     * The name of the component that will be implemented by the test harness composite.
+     *
+     * @parameter expression="testHarness"
+     * @required
      */
-    public List includes = new ArrayList();
+    public String testComponentName;
 
     /**
-     * @parameter
-     */
-    public List excludes = new ArrayList();
-
-    /**
+     * The location if the SCDL that defines the test harness composite.
+     * The source for this would normally be placed in the test/resources
+     * directory and be copied by the resource plugin; this allows property
+     * substitution if required.
+     *
      * @parameter expression="${project.build.testOutputDirectory}/itest.scdl"
      */
     public File testScdl;
 
     /**
+     * The location of the SCDL that configures the Apache Tuscany runtime.
+     * This allows the default runtime configuration supplied in this plugin
+     * to be overridden.
+     * 
      * @parameter
      */
     public URL systemScdl;
+
+    /**
+     * @parameter expression="${project.testClasspathElements}"
+     * @required
+     * @readonly
+     */
+    public List testClassPath;
 
     /**
      * Used to look up Artifacts in the remote repository.
@@ -180,7 +192,14 @@ public class TuscanyITestMojo extends AbstractMojo {
             try {
                 // fixme this should probably be an isolated classloader
                 ClassLoader testClassLoader = createTestClassLoader(getClass().getClassLoader());
+
                 URI name = URI.create(testDomain);
+                String harnessComponentName = testComponentName;
+                if (!harnessComponentName.endsWith("/")) {
+                    harnessComponentName = harnessComponentName + '/';
+                }
+                name = name.resolve(harnessComponentName);
+                
                 CompositeImplementation impl = new CompositeImplementation();
                 impl.setScdlLocation(testScdl.toURI().toURL());
                 impl.setClassLoader(testClassLoader);
