@@ -1,0 +1,29 @@
+Usage
+
+  The <<<tuscany-war-plugin>>> is associated with the <<<package>>> phase of the build lifecycle
+  and is typically included in the build definition for your project:
+
++---+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>tuscany-war</id>
+                        <goals>
+                            <goal>tuscany-war</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
++---+
+
+  The plugin adds the jars needed by the webapp integration code into WEB-INF/lib
+  so that they are included on the web application's classpath.
+
+  It also adds the jars needed by the webapp runtime into WEB-INF/tuscany/lib.
+  These are loaded by the integration code and do not appear on the web application's classpath.
