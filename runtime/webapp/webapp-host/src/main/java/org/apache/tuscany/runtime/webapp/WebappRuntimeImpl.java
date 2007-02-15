@@ -19,26 +19,25 @@
 package org.apache.tuscany.runtime.webapp;
 
 import java.net.URI;
+import java.net.URL;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.osoa.sca.ComponentContext;
 
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.event.EventPublisher;
-
-import org.apache.tuscany.core.component.event.HttpRequestEnded;
-import org.apache.tuscany.core.component.event.HttpRequestStart;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
-import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
+import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.RegistrationException;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.resolver.ResolutionException;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -56,9 +55,7 @@ import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
 public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime {
     private ServletContext servletContext;
 
-
     private ServletRequestInjector requestInjector;
-    private CompositeComponent application;
 
     public ServletContext getServletContext() {
         return servletContext;
@@ -120,12 +117,26 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
     }
 */
 
-    public void destroy() {
-        if (application != null) {
-            application.stop();
-            application = null;
+    @Deprecated
+    public void deploy(URI componentID, URL applicationScdl) throws InitializationException {
+        CompositeImplementation impl = new CompositeImplementation();
+        impl.setScdlLocation(applicationScdl);
+        impl.setClassLoader(getHostClassLoader());
+
+        ComponentDefinition<CompositeImplementation> definition =
+            new ComponentDefinition<CompositeImplementation>(componentID, impl);
+        try {
+            Component component = getDeployer().deploy(null, definition);
+            component.start();
+        } catch (LoaderException e) {
+            throw new InitializationException(e);
+        } catch (BuilderException e) {
+            throw new InitializationException(e);
+        } catch (ComponentException e) {
+            throw new InitializationException(e);
+        } catch (ResolutionException e) {
+            throw new InitializationException(e);
         }
-        super.destroy();
     }
 
     public void bindComponent(URI componentId) {
@@ -142,33 +153,37 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
     }
 
     public void sessionCreated(HttpSessionEvent event) {
+/*
         HttpSessionStart startSession = new HttpSessionStart(this, event.getSession().getId());
         application.publish(startSession);
         ((EventPublisher) requestInjector).publish(startSession);
+*/
     }
 
     public void sessionDestroyed(HttpSessionEvent event) {
+/*
         HttpSessionEnd endSession = new HttpSessionEnd(this, event.getSession().getId());
         application.publish(endSession);
         ((EventPublisher) requestInjector).publish(endSession);
+*/
     }
 
     public void httpRequestStarted(HttpServletRequest request) {
+/*
         HttpSession session = request.getSession(false);
         Object sessionId = session == null ? new LazyHTTPSessionId(request) : session.getId();
         HttpRequestStart httpRequestStart = new HttpRequestStart(this, sessionId);
-/*
         application.publish(httpRequestStart);
-*/
         ((EventPublisher) requestInjector).publish(httpRequestStart);
+*/
     }
 
     public void httpRequestEnded(Object sessionid) {
-        HttpRequestEnded httpRequestEnded = new HttpRequestEnded(this, sessionid);
 /*
+        HttpRequestEnded httpRequestEnded = new HttpRequestEnded(this, sessionid);
         application.publish(httpRequestEnded);
-*/
         ((EventPublisher) requestInjector).publish(httpRequestEnded);
+*/
     }
 
 

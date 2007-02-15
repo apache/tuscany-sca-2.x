@@ -19,11 +19,13 @@
 package org.apache.tuscany.runtime.webapp;
 
 import java.net.URI;
+import java.net.URL;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
+import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 
 /**
@@ -81,5 +83,13 @@ public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
      * Request has been ended with the given session id
      */
     void httpRequestEnded(Object id);
-    
+
+    /**
+     * Temporary method for deploying SCDL supplied with an application to the runtime.
+     *
+     * @param componentID the id of the component that the supplied SCDL should implement
+     * @param applicationScdl the location of an application composite
+     */
+    @Deprecated
+    void deploy(URI componentID, URL applicationScdl) throws InitializationException;
 }
