@@ -66,6 +66,13 @@
         </dependency>          
     </dependencies>
 
+    <distributionManagement>
+      <site>
+        <id>apache.website</id>
+        <url>scp://people.apache.org/www/incubator.apache.org/tuscany/plugins/tuscany-itest-plugin</url>
+      </site>
+    </distributionManagement>
+
     <reporting>
       <plugins>
         <plugin>
