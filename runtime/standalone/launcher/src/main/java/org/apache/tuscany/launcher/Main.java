@@ -33,8 +33,6 @@ import org.osoa.sca.ServiceReference;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeImplementation;
 
 /**
  * Main class for launcher runtime environment. <code>
@@ -94,13 +92,16 @@ public class Main {
         ClassLoader applicationClassLoader =
             new URLClassLoader(new URL[] {applicationJar}, runtime.getHostClassLoader());
         URL appScdl = applicationClassLoader.getResource("META-INF/sca/default.scdl");
+        // TODO Deploy the SCDL
+/*      the launcher's classloader should not contain the SPI module
+
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(appScdl);
         impl.setClassLoader(applicationClassLoader);
 
         ComponentDefinition<CompositeImplementation> definition =
             new ComponentDefinition<CompositeImplementation>(applicationURI, impl);
-        // TODO Deploy the SCDL
+*/
     }
 
     private static void usage() {

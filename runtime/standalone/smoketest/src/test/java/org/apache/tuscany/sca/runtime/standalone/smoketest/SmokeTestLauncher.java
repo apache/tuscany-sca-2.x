@@ -46,7 +46,11 @@ public class SmokeTestLauncher extends CommandTestCase {
     }
 
     public void testLauncherNoComponent() throws Exception {
-        ProcessBuilder pb = new ProcessBuilder("java", "-jar", launcher.getAbsolutePath(), "http://no.such.component");
+        ProcessBuilder pb = new ProcessBuilder("java",
+                                               "-jar",
+                                               launcher.getAbsolutePath(),
+                                               "http://no.such.component",
+                                               testJar.getAbsolutePath());
         pb.directory(installDir);
         Process process = pb.start();
         try {
