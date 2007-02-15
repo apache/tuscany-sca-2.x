@@ -22,10 +22,8 @@ import java.net.URI;
 
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -67,15 +65,5 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
         Component testComponent = getComponentManager().getComponent(componentId);
         TargetInvoker targetInvoker = testComponent.createTargetInvoker("testService", operation, null);
         targetInvoker.invokeTarget(null, TargetInvoker.NONE);
-    }
-
-    protected Deployer getDeployer() {
-        try {
-            URI uri = URI.create("sca://root.system/main/deployer");
-            AtomicComponent component = (AtomicComponent) getComponentManager().getComponent(uri);
-            return (Deployer) component.getTargetInstance();
-        } catch (TargetResolutionException e) {
-            throw new AssertionError(e);
-        }
     }
 }

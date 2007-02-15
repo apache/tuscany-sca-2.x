@@ -199,7 +199,7 @@ public class TuscanyITestMojo extends AbstractMojo {
                     harnessComponentName = harnessComponentName + '/';
                 }
                 name = name.resolve(harnessComponentName);
-                
+
                 CompositeImplementation impl = new CompositeImplementation();
                 impl.setScdlLocation(testScdl.toURI().toURL());
                 impl.setClassLoader(testClassLoader);
