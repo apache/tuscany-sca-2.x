@@ -32,9 +32,12 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
@@ -64,6 +67,8 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     private static final URI AUTOWIRE_RESOLVER_URI =
         URI.create(ComponentNames.TUSCANY_SYSTEM_ROOT.toString() + "/AutowireResolver");
+
+    private static final URI DEPLOYER_URI = URI.create("sca://root.system/main/deployer");
 
     private final XMLInputFactory xmlFactory;
     private URL systemScdl;
@@ -251,5 +256,15 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     protected ComponentManager getComponentManager() {
         return componentManager;
+    }
+
+
+    protected Deployer getDeployer() {
+        try {
+            AtomicComponent component = (AtomicComponent) getComponentManager().getComponent(DEPLOYER_URI);
+            return (Deployer) component.getTargetInstance();
+        } catch (TargetResolutionException e) {
+            throw new AssertionError(e);
+        }
     }
 }
