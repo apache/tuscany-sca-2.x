@@ -27,15 +27,20 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
 import org.osoa.sca.ComponentContext;
 
 /**
@@ -85,7 +90,15 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
             String name = entry.getKey();
             ComponentDefinition<? extends Implementation<?>> launchedDefinition = entry.getValue();
             Implementation<?> implementation = launchedDefinition.getImplementation();
-            System.err.println(implementation.getClass());
+            if(implementation.getClass().isAssignableFrom(Launched.class)) {
+                Launched launched = (Launched) implementation;
+                PojoComponentType launchedType = launched.getComponentType();
+                Map services = launchedType.getServices();
+                JavaMappedService testService = (JavaMappedService) services.get("main");
+                Operation<?> operation = testService.getServiceContract().getOperations().get("main");
+                // TODO Find the component and invoke main on the component
+                System.err.println("Got a lauched " + name);
+            }
         }
     }
 
