@@ -19,21 +19,16 @@
 package org.apache.tuscany.launcher;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ResourceBundle;
-import java.util.concurrent.Callable;
 import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-
-import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.osoa.sca.ComponentContext;
 
 /**
  * Main class for launcher runtime environment. <code>
@@ -60,13 +55,11 @@ public class Main {
             throw new AssertionError();
         }
 
-        URI applicationURI = new URI(args[0]);
-
         StandaloneRuntimeInfo runtimeInfo = DirectoryHelper.createRuntimeInfo("launcher", Main.class);
         StandaloneRuntime runtime = (StandaloneRuntime)DirectoryHelper.createRuntime(runtimeInfo);
         runtime.initialize();
 
-        ComponentContext componentContext = deployApplication(args, applicationURI, runtime);
+        ComponentContext componentContext = deployApplication(args, runtime);
         // TODO lookup implementation.lauched and do the rest
         
 
@@ -75,11 +68,11 @@ public class Main {
     /**
      * @deprecated Hack for deployment.
      */
-    private static ComponentContext deployApplication(String[] args, URI applicationURI, StandaloneRuntime runtime)
+    private static ComponentContext deployApplication(String[] args, StandaloneRuntime runtime)
         throws Exception {
 
         URI compositeUri = new URI("/test/composite");
-        URL applicationJar = new File(args[1]).toURL();
+        URL applicationJar = new File(args[0]).toURL();
         ClassLoader applicationClassLoader =
             new URLClassLoader(new URL[] {applicationJar}, runtime.getHostClassLoader());
         URL applicationScdl = applicationClassLoader.getResource("META-INF/sca/default.scdl");
@@ -90,11 +83,6 @@ public class Main {
     private static void usage() {
         System.err.println(getMessage("org.apache.tuscany.launcher.Usage"));
         System.exit(1);
-    }
-
-    private static void noComponent(URI applicationURI) {
-        System.err.println(getMessage("org.apache.tuscany.launcher.NoComponent", applicationURI));
-        System.exit(2);
     }
 
     private static String getMessage(String id, Object... params) {
