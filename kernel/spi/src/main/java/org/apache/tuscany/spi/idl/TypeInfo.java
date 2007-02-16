@@ -62,5 +62,11 @@ public class TypeInfo {
     public TypeInfo getBaseType() {
         return baseType;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Type: ").append(name);
+        return sb.toString();
+    }    
 
 }

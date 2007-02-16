@@ -8,10 +8,10 @@ import org.apache.tuscany.api.annotation.LogLevel;
  */
 public interface DeploymentMonitor {
 
-    @LogLevel("DEBUG")
+    @LogLevel("FINER")
     void startDeployment();
 
-    @LogLevel("DEBUG")
+    @LogLevel("FINER")
     void endDeployment();
 
     @LogLevel("SEVERE")

@@ -17,44 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.idl;
+package org.apache.tuscany.spi.deployer;
 
-import javax.xml.namespace.QName;
+import java.net.URL;
 
 /**
- * An abstraction of XML schema elements
+ * Provide content type for a given resource
+ * 
+ * @version $Rev$ $Date$
  */
-public class ElementInfo {
-    private QName name;
-    private TypeInfo type;
-
+public interface ContentTypeDescriber  {
     /**
-     * @param name
-     * @param type
+     * @param resourceURL
+     * @param defaultContentType
+     * @return
      */
-    public ElementInfo(QName name, TypeInfo type) {
-        super();
-        this.name = name;
-        this.type = type;
-    }
-
-    /**
-     * @return the name
-     */
-    public QName getQName() {
-        return name;
-    }
-
-    /**
-     * @return the type
-     */
-    public TypeInfo getType() {
-        return type;
-    }
-    
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("Element: ").append(name).append(" ").append(type);
-        return sb.toString();
-    }
+    String getContentType(URL resourceURL, String defaultContentType);
 }
