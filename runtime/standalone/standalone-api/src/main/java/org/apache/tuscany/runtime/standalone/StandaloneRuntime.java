@@ -35,11 +35,11 @@ public interface StandaloneRuntime extends TuscanyRuntime {
     /**
      * Deploys the specified application SCDL and runs the lauched component within the deployed composite.
      * 
-     * @param compositeUri URI by which the composite is deployed.
      * @param applicationScdl Application SCDL that implements the composite.
      * @param applicationClassLoader Classloader used to deploy the composite.
+     * @param args Arguments to be passed to the lauched component.
      * @deprecated This is a hack for deployment and should be removed.
      */
-    void deployAndRun(URI compositeUri, URL applicationScdl, ClassLoader applicationClassLoader) throws Exception;
+    void deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception;
 
 }

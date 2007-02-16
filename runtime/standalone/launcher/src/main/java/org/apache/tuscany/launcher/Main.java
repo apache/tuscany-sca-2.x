@@ -50,7 +50,7 @@ public class Main {
      */
     public static void main(String[] args) throws Throwable {
 
-        if (args.length != 1) {
+        if (args.length < 1) {
             usage();
             throw new AssertionError();
         }
@@ -75,7 +75,13 @@ public class Main {
         ClassLoader applicationClassLoader =
             new URLClassLoader(new URL[] {applicationJar}, runtime.getHostClassLoader());
         URL applicationScdl = applicationClassLoader.getResource("META-INF/sca/default.scdl");
-        runtime.deployAndRun(compositeUri, applicationScdl, applicationClassLoader);
+        
+        String[] appArgs = new String[0];
+        if(args.length > 1) {
+            appArgs = new String[args.length - 1];
+            System.arraycopy(args, 1, appArgs, 0, appArgs.length);
+        }
+        runtime.deployAndRun(applicationScdl, applicationClassLoader, appArgs);
 
     }
 
