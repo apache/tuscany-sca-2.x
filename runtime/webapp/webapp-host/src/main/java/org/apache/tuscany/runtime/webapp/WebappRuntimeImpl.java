@@ -30,6 +30,7 @@ import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
+import org.apache.tuscany.runtime.webapp.implementation.webapp.WebappComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
@@ -145,8 +146,10 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         if (component == null) {
             throw new TuscanyInitException("No component found with id " + componentId, componentId.toString());
         }
-        ComponentContext componentContext = component.getComponentContext();
-        servletContext.setAttribute(CONTEXT_ATTRIBUTE, componentContext);
+        if (component instanceof WebappComponent) {
+            WebappComponent webapp = (WebappComponent) component;
+            webapp.bind(getServletContext());
+        }
     }
 
     public ServletRequestInjector getRequestInjector() {
