@@ -79,7 +79,6 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         monitor.elementLoad(name);
         StAXElementLoader<? extends ModelObject> loader = loaders.get(name);
         if (loader == null) {
-            System.err.println(name);
             throw new UnrecognizedElementException(name);
         }
         return loader.load(parent, object, reader, deploymentContext);
