@@ -29,16 +29,12 @@
         <welcome-file>calc.jsp</welcome-file>
     </welcome-file-list>
 
-    <filter>
-        <filter-name>TuscanyFilter</filter-name>
-        <filter-class>org.apache.tuscany.runtime.webapp.TuscanyFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>TuscanyFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
     <listener>
         <listener-class>org.apache.tuscany.runtime.webapp.TuscanyContextListener</listener-class>
     </listener>
+
+    <context-param>
+        <param-name>tuscany.component</param-name>
+        <param-value>webcalc</param-value>
+    </context-param>
 </web-app>

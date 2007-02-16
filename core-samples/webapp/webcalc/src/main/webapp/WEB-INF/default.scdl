@@ -20,7 +20,17 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            name="CalculatorComposite">
 
+<!--
     <component name="CalculatorComponent">
 		<implementation.composite name="CalculatorComposite" jarLocation="lib/calculator-1.0-incubator-SNAPSHOT.jar"/>
+    </component>
+-->
+
+    <!-- config that includes the calculator composite -->
+    <include name="CalculatorComposite" scdlResource="META-INF/sca/default.scdl"/>
+
+    <component name="webcalc">
+        <implementation.java class="calculator.CalculatorClient"/>
+        <reference name="calculatorService">CalculatorServiceComponent</reference>
     </component>
 </composite>

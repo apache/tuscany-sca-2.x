@@ -32,7 +32,10 @@
     <description>Sample projects that illustrate core concepts for SCA and Tuscany.</description>
 
     <modules>
+        <module>common</module>
+<!--
         <module>standalone</module>
+-->
         <module>webapp</module>
     </modules>
 
@@ -47,6 +50,12 @@
                 <artifactId>sca-api-r1.0</artifactId>
                 <version>1.0-incubator-SNAPSHOT</version>
                 <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

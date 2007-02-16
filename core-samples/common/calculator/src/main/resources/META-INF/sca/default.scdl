@@ -18,15 +18,30 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
            name="CalculatorComposite">
 
-    <include name="CalculatorComposite"/>
-<!--
-    <component name="CalculatorClient">
-		<launched:launched class="calculator.CalculatorClient"/>
-        <reference name="calculatorService">CalculatorServiceComponent</reference>
+    <component name="CalculatorServiceComponent">
+		<implementation.java class="calculator.CalculatorServiceImpl"/>
+        <reference name="addService">AddServiceComponent</reference>
+        <reference name="subtractService">SubtractServiceComponent</reference>
+        <reference name="multiplyService">MultiplyServiceComponent</reference>
+        <reference name="divideService">DivideServiceComponent</reference>
     </component>
--->
+
+    <component name="AddServiceComponent">
+        <implementation.java class="calculator.AddServiceImpl"/>
+    </component>
+
+    <component name="SubtractServiceComponent">
+        <implementation.java class="calculator.SubtractServiceImpl"/>
+    </component>
+
+    <component name="MultiplyServiceComponent">
+        <implementation.java class="calculator.MultiplyServiceImpl"/>
+    </component>
+
+    <component name="DivideServiceComponent">
+        <implementation.java class="calculator.DivideServiceImpl"/>
+    </component>
 
 </composite>

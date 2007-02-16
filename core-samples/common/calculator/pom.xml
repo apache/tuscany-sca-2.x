@@ -20,24 +20,20 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany.sca.core-samples</groupId>
-        <artifactId>standalone</artifactId>
+        <artifactId>common</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca.core-samples.common</groupId>
     <artifactId>calculator</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tuscany Calculator Client Sample</name>
-    <description>A sample Calculator that runs from the command line.</description>
+    <name>Apache Tuscany Calculator Common Composite</name>
+    <description>A sample Calculator made of several SCA components wired together.</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.core-samples.common</groupId>
-            <artifactId>calculator</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api-r1.0</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -46,6 +42,21 @@
     </dependencies>
 
     <build>
-        <finalName>${artifactId}</finalName>
+        <!-- requires install as this sample is also used by the webapp sample -->
+        <defaultGoal>install</defaultGoal>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-itest-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
