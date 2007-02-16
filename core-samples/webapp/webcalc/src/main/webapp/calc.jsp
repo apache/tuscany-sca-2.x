@@ -1,6 +1,6 @@
 <%@ page import="calculator.CalculatorService" %>
-<%@ page import="org.osoa.sca.CompositeContext" %>
-<%@ page import="org.osoa.sca.CurrentCompositeContext" %>
+<%@ page import="org.osoa.sca.ComponentContext" %>
+<%@ page import="org.apache.tuscany.runtime.webapp.Constants" %>
 <%--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,11 +21,11 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    CompositeContext context = CurrentCompositeContext.getContext();
-    CalculatorService calc = context.locateService(CalculatorService.class, "CalculatorServiceComponent");
+    ComponentContext context = (ComponentContext) application.getAttribute(Constants.CONTEXT_ATTRIBUTE);
+    CalculatorService calc = context.getService(CalculatorService.class, "calculatorService");
 %>
 <html>
-<head><title>Calculator sample</title></head>
+<head><title>Calculator Sample</title></head>
 
 <body>
 <table>

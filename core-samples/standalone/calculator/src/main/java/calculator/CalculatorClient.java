@@ -27,7 +27,7 @@ import org.osoa.sca.annotations.Reference;
 public class CalculatorClient {
     
     private CalculatorService calculatorService;
-    
+
     @Reference
     public void setCalculatorService(CalculatorService calculatorService) {
         this.calculatorService = calculatorService;
