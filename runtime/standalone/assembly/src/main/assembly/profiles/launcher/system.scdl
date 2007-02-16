@@ -156,5 +156,10 @@
     <component name="localBindingBuilder">
         <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingBuilder"/>
     </component>
+    
+    <component name="artifactRepository">
+        <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
+        <property name="repository">.m2/repository</property>
+    </component>
 
 </composite>
