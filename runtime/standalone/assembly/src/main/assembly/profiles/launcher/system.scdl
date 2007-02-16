@@ -161,5 +161,9 @@
         <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
         <property name="repository">.m2/repository</property>
     </component>
+    
+    <component name="launchedLoader">
+        <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.implementation.launched.LaunchedLoader"/>
+    </component>
 
 </composite>

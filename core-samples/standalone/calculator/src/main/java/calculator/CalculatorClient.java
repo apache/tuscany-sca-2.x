@@ -23,19 +23,30 @@ package calculator;
  * locate the Calculator service and invoke it.
  */
 public class CalculatorClient {
-/*
-    public static void main(String[] args) throws Exception {
-
-        CompositeContext context = CurrentCompositeContext.getContext();
-        CalculatorService calculatorService =
-                context.locateService(CalculatorService.class, "CalculatorServiceComponent");
-
-        // Calculate
-        System.out.println("3 + 2=" + calculatorService.add(3, 2));
-        System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
-        System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
-        System.out.println("3 / 2=" + calculatorService.divide(3, 2));
-
+    
+    private CalculatorService calculatorService;
+    
+    public void setCalculatorService(CalculatorService calculatorService) {
+        this.calculatorService = calculatorService;
     }
-*/
+    
+    public Object main(Object ... args) throws Exception {
+        
+        if(args.length != 3) {
+            throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");
+        }
+        
+        if("add".equals(args[0])) {
+            return calculatorService.add(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+        } else if("substract".equals(args[0])) {
+            return calculatorService.subtract(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+        } else if("multiply".equals(args[0])) {
+            return calculatorService.multiply(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+        } else if("divide".equals(args[0])) {
+            return calculatorService.divide(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+        }
+
+        throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");
+    }
+    
 }

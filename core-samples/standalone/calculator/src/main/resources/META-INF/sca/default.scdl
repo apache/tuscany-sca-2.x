@@ -18,15 +18,14 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
            name="CalculatorComposite">
 
-<!--
-    <service name="CalculatorService">
-        <interface.java interface="calculator.CalculatorService"/>
-        <reference>CalculatorServiceComponent</reference>
-    </service>
--->
-
+    <component name="CalculatorClient">
+		<launched:launched class="calculator.CalculatorClient"/>
+        <reference name="calculatorService">CalculatorServiceComponent</reference>
+    </component>
+    
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService">AddServiceComponent</reference>

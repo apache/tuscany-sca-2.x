@@ -59,8 +59,7 @@ public class Main {
         StandaloneRuntime runtime = (StandaloneRuntime)DirectoryHelper.createRuntime(runtimeInfo);
         runtime.initialize();
 
-        ComponentContext componentContext = deployApplication(args, runtime);
-        // TODO lookup implementation.lauched and do the rest
+        deployAndRunApplication(args, runtime);
         
 
     }
@@ -68,7 +67,7 @@ public class Main {
     /**
      * @deprecated Hack for deployment.
      */
-    private static ComponentContext deployApplication(String[] args, StandaloneRuntime runtime)
+    private static void deployAndRunApplication(String[] args, StandaloneRuntime runtime)
         throws Exception {
 
         URI compositeUri = new URI("/test/composite");
@@ -76,7 +75,7 @@ public class Main {
         ClassLoader applicationClassLoader =
             new URLClassLoader(new URL[] {applicationJar}, runtime.getHostClassLoader());
         URL applicationScdl = applicationClassLoader.getResource("META-INF/sca/default.scdl");
-        return runtime.deploy(compositeUri, applicationScdl, applicationClassLoader);
+        runtime.deployAndRun(compositeUri, applicationScdl, applicationClassLoader);
 
     }
 

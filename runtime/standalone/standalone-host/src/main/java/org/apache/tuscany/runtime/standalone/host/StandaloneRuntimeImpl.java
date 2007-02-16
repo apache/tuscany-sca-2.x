@@ -20,13 +20,17 @@ package org.apache.tuscany.runtime.standalone.host;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.Implementation;
 
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
@@ -51,15 +55,14 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
     }
     
     /**
-     * Deploys the specified application SCDL.
+     * Deploys the specified application SCDL and runs the lauched component within the deployed composite.
      * 
      * @param compositeUri URI by which the composite is deployed.
      * @param applicationScdl Application SCDL that implements the composite.
      * @param applicationClassLoader Classloader used to deploy the composite.
-     * @return The component context for the deployed composite.
      * @deprecated This is a hack for deployment and should be removed.
      */
-    public ComponentContext deploy(URI compositeUri, URL applicationScdl, ClassLoader applicationClassLoader) throws Exception {
+    public void deployAndRun(URI compositeUri, URL applicationScdl, ClassLoader applicationClassLoader) throws Exception {
         
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(applicationScdl);
@@ -67,8 +70,16 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
 
         ComponentDefinition<CompositeImplementation> definition =
             new ComponentDefinition<CompositeImplementation>(compositeUri, impl);
+        Component component =  getDeployer().deploy(null, definition);
         
-        return getDeployer().deploy(null, definition).getComponentContext();
+        CompositeComponentType<?,?,?> componentType = impl.getComponentType();
+        Map<String, ComponentDefinition<? extends Implementation<?>>> components = componentType.getComponents();
+        for (Map.Entry<String, ComponentDefinition<? extends Implementation<?>>> entry : components.entrySet()) {
+            String name = entry.getKey();
+            ComponentDefinition<? extends Implementation<?>> junitDefinition = entry.getValue();
+            Implementation<?> implementation = junitDefinition.getImplementation();
+            System.err.println(implementation.getClass());
+        }
     }
 
     protected Deployer getDeployer() {
