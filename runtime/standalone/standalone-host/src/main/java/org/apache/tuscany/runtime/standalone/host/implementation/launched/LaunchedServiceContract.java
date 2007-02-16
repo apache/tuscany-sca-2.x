@@ -18,34 +18,20 @@
  */
 package org.apache.tuscany.runtime.standalone.host.implementation.launched;
 
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.model.AtomicImplementation;
+import java.lang.reflect.Type;
+import java.util.Map;
+
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Revison$ $Date$
+ *
  */
-public class Launched extends AtomicImplementation<PojoComponentType> {
-    private String className;
-    private String factoryName;
+public class LaunchedServiceContract extends ServiceContract<Type> {
 
-    public Launched(String className, String factoryName) {
-        this.className = className;
-        this.factoryName = factoryName;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public String getFactoryName() {
-        return factoryName;
-    }
-
-    public void setFactoryName(String factoryName) {
-        this.factoryName = factoryName;
+    public LaunchedServiceContract(Map<String, Operation<Type>> operations) {
+        setOperations(operations);
     }
 }
+

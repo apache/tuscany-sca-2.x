@@ -165,5 +165,13 @@
     <component name="launchedLoader">
         <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.implementation.launched.LaunchedLoader"/>
     </component>
+    
+    <component name="launchedComponentLoader">
+        <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.implementation.launched.LaunchedComponentTypeLoader"/>
+    </component>
+    
+    <component name="launchedComponentBuilder">
+        <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.implementation.launched.LaunchedComponentBuilder"/>
+    </component>
 
 </composite>
