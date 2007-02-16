@@ -80,10 +80,10 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
         Component component =  getDeployer().deploy(null, definition);
         component.start();
         
-        run(impl, args);
+        run(impl, args, compositeUri);
     }
 
-    private void run(CompositeImplementation impl, String[] args) {
+    private void run(CompositeImplementation impl, String[] args, URI compositeUri) throws Exception {
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = componentType.getComponents();
         for (Map.Entry<String, ComponentDefinition<? extends Implementation<?>>> entry : components.entrySet()) {
@@ -97,7 +97,14 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
                 JavaMappedService testService = (JavaMappedService) services.get("main");
                 Operation<?> operation = testService.getServiceContract().getOperations().get("main");
                 // TODO Find the component and invoke main on the component
-                System.err.println("Got a lauched " + name);
+                URI componentUri = compositeUri.resolve(name);
+                Component component = getComponentManager().getComponent(componentUri);
+                if(component == null) {
+                    System.err.println("Unable to get component " + componentUri);
+                } else {
+                    TargetInvoker targetInvoker = component.createTargetInvoker("main", operation, null);
+                    targetInvoker.invokeTarget(null, TargetInvoker.NONE);
+                }
             }
         }
     }
