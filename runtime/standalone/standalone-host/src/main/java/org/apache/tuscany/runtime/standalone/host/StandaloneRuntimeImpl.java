@@ -57,12 +57,14 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
     /**
      * Deploys the specified application SCDL and runs the lauched component within the deployed composite.
      * 
-     * @param compositeUri URI by which the composite is deployed.
      * @param applicationScdl Application SCDL that implements the composite.
      * @param applicationClassLoader Classloader used to deploy the composite.
+     * @param args Arguments to be passed to the lauched component.
      * @deprecated This is a hack for deployment and should be removed.
      */
-    public void deployAndRun(URI compositeUri, URL applicationScdl, ClassLoader applicationClassLoader) throws Exception {
+    public void deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception {
+        
+        URI compositeUri = new URI("/test/composite");
         
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(applicationScdl);
@@ -71,13 +73,18 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
         ComponentDefinition<CompositeImplementation> definition =
             new ComponentDefinition<CompositeImplementation>(compositeUri, impl);
         Component component =  getDeployer().deploy(null, definition);
+        component.start();
         
+        run(impl, args);
+    }
+
+    private void run(CompositeImplementation impl, String[] args) {
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = componentType.getComponents();
         for (Map.Entry<String, ComponentDefinition<? extends Implementation<?>>> entry : components.entrySet()) {
             String name = entry.getKey();
-            ComponentDefinition<? extends Implementation<?>> junitDefinition = entry.getValue();
-            Implementation<?> implementation = junitDefinition.getImplementation();
+            ComponentDefinition<? extends Implementation<?>> launchedDefinition = entry.getValue();
+            Implementation<?> implementation = launchedDefinition.getImplementation();
             System.err.println(implementation.getClass());
         }
     }
