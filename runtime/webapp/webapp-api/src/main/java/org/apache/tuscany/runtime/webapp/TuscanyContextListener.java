@@ -26,9 +26,12 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
 import org.apache.tuscany.host.runtime.ShutdownException;
+import static org.apache.tuscany.runtime.webapp.Constants.COMPOSITE_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.COMPONENT_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.ONLINE_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
+import static org.apache.tuscany.runtime.webapp.Constants.APPLICATION_SCDL_PATH_DEFAULT;
+import static org.apache.tuscany.runtime.webapp.Constants.APPLICATION_SCDL_PATH_PARAM;
 
 /**
  * Launches a Tuscany runtime in a web application, loading information from servlet context parameters. This listener
@@ -52,16 +55,22 @@ import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 public class TuscanyContextListener implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent event) {
+        ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
         ServletContext servletContext = event.getServletContext();
         WebappUtil utils = getUtils(servletContext);
         try {
-            ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader bootClassLoader = utils.getBootClassLoader(webappClassLoader);
+            // FIXME work this out from the servlet context
+            String defaultComposite = "http://locahost/sca/";
+            URI compositeId = new URI(utils.getInitParameter(COMPOSITE_PARAM, defaultComposite));
+            URI componentId = new URI(utils.getInitParameter(COMPONENT_PARAM, "webapp"));
+            String scdlPath = utils.getInitParameter(APPLICATION_SCDL_PATH_PARAM, APPLICATION_SCDL_PATH_DEFAULT);
+            URL scdl = servletContext.getResource(scdlPath);
+
             boolean online = Boolean.valueOf(utils.getInitParameter(ONLINE_PARAM, "true"));
-            URI componentId = new URI(servletContext.getInitParameter(COMPONENT_PARAM));
             WebappRuntimeInfo info = new WebappRuntimeInfoImpl(servletContext,
                                                                servletContext.getResource("/WEB-INF/tuscany/"),
                                                                online);
+            ClassLoader bootClassLoader = utils.getBootClassLoader(webappClassLoader);
             URL systemScdl = utils.getSystemScdl(bootClassLoader);
 
             WebappRuntime runtime = utils.getRuntime(bootClassLoader);
@@ -72,7 +81,7 @@ public class TuscanyContextListener implements ServletContextListener {
             runtime.initialize();
             servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);
 
-            runtime.bindComponent(componentId);
+            runtime.deploy(compositeId, scdl, componentId);
         } catch (TuscanyRuntimeException e) {
             servletContext.log(e.getMessage(), e);
             e.printStackTrace();

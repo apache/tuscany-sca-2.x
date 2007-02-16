@@ -10,17 +10,32 @@ public final class Constants {
     /**
      * Name of the servlet context-param that should contain the component id for the webapp.
      */
-    static final String COMPONENT_PARAM = "tuscany.component";
+    public static final String COMPOSITE_PARAM = "tuscany.composite";
+
+    /**
+     * Name of the servlet context-param that should contain the component id for the webapp.
+     */
+    public static final String COMPONENT_PARAM = "tuscany.component";
+
+    /**
+     * Servlet context-param name for user-specified application SCDL path.
+     */
+    static final String APPLICATION_SCDL_PATH_PARAM = "tuscany.applicationScdlPath";
+
+    /**
+     * Default application SCDL path.
+     */
+    public static final String APPLICATION_SCDL_PATH_DEFAULT = "/WEB-INF/default.scdl";
 
     /**
      * Servlet context-param name for setting if the runtime is online.
      */
-    static final String ONLINE_PARAM = "tuscany.online";
+    public static final String ONLINE_PARAM = "tuscany.online";
 
     /**
      * Name of the context attribute that contains the ComponentContext.
      */
-    static final String CONTEXT_ATTRIBUTE = "tuscany.context";
+    public static final String CONTEXT_ATTRIBUTE = "tuscany.context";
 
     /**
      * Name of the parameter that defines the name of webapp resource containing bootstrap jars.
@@ -51,16 +66,6 @@ public final class Constants {
      * Default webapp system SCDL path.
      */
     static final String SYSTEM_SCDL_PATH_DEFAULT = "META-INF/tuscany/webapp.scdl";
-
-    /**
-     * Servlet context-param name for user-specified application SCDL path.
-     */
-    static final String APPLICATION_SCDL_PATH_PARAM = "tuscany.applicationScdlPath";
-
-    /**
-     * Default application SCDL path.
-     */
-    static final String APPLICATION_SCDL_PATH_DEFAULT = "/WEB-INF/default.scdl";
 
     /**
      * Context attribute to which the Tuscany runtime for this servlet context is stored.

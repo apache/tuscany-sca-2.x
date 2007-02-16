@@ -53,14 +53,8 @@ public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
     void setServletContext(ServletContext servletContext);
 
     /**
-     * Bind the parameters, references and context for a component to the ServletContext.
-     *
-     * @param componentId the id of the component to bind
-     */
-    void bindComponent(URI componentId);
-
-    /**
      * Returns the request injector for the runtime
+     * @return the runtime's request injector
      */
     ServletRequestInjector getRequestInjector();
 
@@ -75,21 +69,25 @@ public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
     void stopRequest();
 
     /**
-     * Request has been started for the given request
+     * Request has been started for the given request.
+     * @param request the servlet request
      */
     void httpRequestStarted(HttpServletRequest request);
 
     /**
-     * Request has been ended with the given session id
+     * Request has been ended with the given session id.
+     * @param id the session id
      */
     void httpRequestEnded(Object id);
 
     /**
      * Temporary method for deploying SCDL supplied with an application to the runtime.
      *
-     * @param componentID the id of the component that the supplied SCDL should implement
+     * @param compositeId the id of the component that the supplied SCDL should implement
      * @param applicationScdl the location of an application composite
+     * @param componentId the id of the component that should be bound to the webapp
+     * @throws InitializationException if there was a problem initializing the composite
      */
     @Deprecated
-    void deploy(URI componentID, URL applicationScdl) throws InitializationException;
+    void deploy(URI compositeId, URL applicationScdl, URI componentId) throws InitializationException;
 }

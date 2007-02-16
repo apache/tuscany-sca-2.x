@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.RegistrationException;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -118,16 +119,16 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 */
 
     @Deprecated
-    public void deploy(URI componentID, URL applicationScdl) throws InitializationException {
+    public void deploy(URI compositeId, URL applicationScdl, URI componentId) throws InitializationException {
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(applicationScdl);
         impl.setClassLoader(getHostClassLoader());
 
         ComponentDefinition<CompositeImplementation> definition =
-            new ComponentDefinition<CompositeImplementation>(componentID, impl);
+            new ComponentDefinition<CompositeImplementation>(compositeId, impl);
+        CompositeComponent composite;
         try {
-            Component component = getDeployer().deploy(null, definition);
-            component.start();
+            composite = (CompositeComponent) getDeployer().deploy(null, definition);
         } catch (LoaderException e) {
             throw new InitializationException(e);
         } catch (BuilderException e) {
@@ -137,9 +138,9 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         } catch (ResolutionException e) {
             throw new InitializationException(e);
         }
-    }
+        composite.start();
 
-    public void bindComponent(URI componentId) {
+        componentId = compositeId.resolve(componentId);
         Component component = getComponentManager().getComponent(componentId);
         if (component == null) {
             throw new TuscanyInitException("No component found with id " + componentId, componentId.toString());
