@@ -46,16 +46,6 @@
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ScopeRegistryImpl"/>
     </component>
 
-    <!-- Store infrastructure -->
-    <component name="store">
-        <system:implementation.system class="org.apache.tuscany.core.services.store.memory.MemoryStore"/>
-    </component>
-
-    <!-- Resource host registry -->
-    <component name="resourceHostRegistry">
-        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
-    </component>
-
     <!-- Builder and BuilderRegistry -->
     <component name="builder">
         <system:implementation.system class="org.apache.tuscany.core.builder.BuilderRegistryImpl"/>
@@ -78,6 +68,11 @@
 
     <component name="wirePostProcessorRegistry">
         <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
+    </component>
+
+    <!-- Resource host registry -->
+    <component name="resourceHostRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
     </component>
 
     <!-- Default scopes -->
@@ -144,6 +139,11 @@
 
     <component name="propertyFactory">
         <system:implementation.system class="org.apache.tuscany.core.property.PropertyObjectFactoryImpl"/>
+    </component>
+
+    <!-- Store infrastructure -->
+    <component name="store">
+        <system:implementation.system class="org.apache.tuscany.core.services.store.memory.MemoryStore"/>
     </component>
 
     <component name="artifactRepository">
