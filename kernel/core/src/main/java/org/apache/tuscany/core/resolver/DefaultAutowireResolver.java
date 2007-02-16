@@ -133,7 +133,7 @@ public class DefaultAutowireResolver implements AutowireResolver {
                     return;
                 } else if (candidateUri == null) {
                     String refName = target.getReferenceName().toString();
-                    throw new AutowireTargetNotFoundException("No matching target found", refName);
+                    throw new AutowireTargetNotFoundException("No matching target found for " + refName, refName);
                 }
             }
             target.addTarget(candidateUri);
