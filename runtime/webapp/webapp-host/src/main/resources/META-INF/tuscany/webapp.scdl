@@ -169,4 +169,17 @@
         <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingBuilder"/>
     </component>
 
+    <!-- webapp component implementation -->
+    <component name="webappLoader">
+        <system:implementation.system class="org.apache.tuscany.runtime.webapp.implementation.webapp.WebappLoader"/>
+    </component>
+
+    <component name="webappComponentTypeLoader">
+        <system:implementation.system class="org.apache.tuscany.runtime.webapp.implementation.webapp.WebappComponentTypeLoader"/>
+    </component>
+
+    <component name="webappComponentTypeBuilder">
+        <system:implementation.system class="org.apache.tuscany.runtime.webapp.implementation.webapp.WebappBuilder"/>
+    </component>
+
 </composite>
