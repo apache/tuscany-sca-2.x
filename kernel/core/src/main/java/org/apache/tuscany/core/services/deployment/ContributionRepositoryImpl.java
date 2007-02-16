@@ -36,8 +36,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.tuscany.spi.deployer.ContributionRepository;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
+/**
+ * The default implementation of ContributionRepository
+ * 
+ * @version $Rev$ $Date$
+ */
+@EagerInit
 public class ContributionRepositoryImpl implements ContributionRepository {
     protected final File rootFile;
     protected final Map<URI, URL> reposirotyContent = new HashMap<URI, URL>();
@@ -123,6 +132,14 @@ public class ContributionRepositoryImpl implements ContributionRepository {
 
     public List<URI> list() {
         return new ArrayList<URI>(reposirotyContent.keySet());
+    }
+    
+    @Init
+    public void init() {
+    }
+    
+    @Destroy
+    public void destroy() {
     }
 
 }

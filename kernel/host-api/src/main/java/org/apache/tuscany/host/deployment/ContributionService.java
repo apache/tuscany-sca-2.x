@@ -47,13 +47,10 @@ public interface ContributionService {
      * @param source       an identifier for the source of this contribution
      * @param contribution a stream containing the resource being contributed; the stream will not be closed but the
      *                     read position after the call is undefined
-     * @param contentType  the type of contribution being made; must be a valid Content-Type value as specified by <a
-     *                     href="http://www.ietf.org/rfc/rfc2045.txt">RFC2045</a> and must not be null @return a URI
-     *                     that uniquely identifies this contribution within the SCA Domain
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException         if there was a problem reading the stream
      */
-    URI contribute(URI source, InputStream contribution, String contentType) throws DeploymentException, IOException;
+    URI contribute(URI source, InputStream contribution) throws DeploymentException, IOException;
     
     /**
      * Remove a contribution from the SCA domain

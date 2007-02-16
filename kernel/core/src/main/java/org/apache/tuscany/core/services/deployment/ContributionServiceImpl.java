@@ -23,28 +23,34 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tuscany.host.deployment.ContributionService;
 import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
-import org.apache.tuscany.spi.deployer.ContributionProcessor;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
+import org.apache.tuscany.spi.deployer.ContributionRepository;
+import org.apache.tuscany.spi.model.Contribution;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ContributionServiceImpl implements ContributionService, ContributionProcessorRegistry {
-    private Map<String, ContributionProcessor> registry = new HashMap<String, ContributionProcessor>();
+public class ContributionServiceImpl implements ContributionService {
+    /**
+     * Repository where contributions are stored. Usually set by injection.
+     */
+    protected ContributionRepository contributionRepository;
+    /**
+     * Registry of available processors. Usually set by injection.
+     */
+    protected ContributionProcessorRegistry processorRegistry;
 
-    public void register(ContributionProcessor processor) {
-        registry.put(processor.getContentType(), processor);
-    }
-
-    public void unregister(String contentType) {
-        registry.remove(contentType);
+    public ContributionServiceImpl(@Autowire ContributionRepository repository, 
+                                   @Autowire ContributionProcessorRegistry processorRegistry) {
+        super();
+        this.contributionRepository = repository;
+        this.processorRegistry = processorRegistry;
     }
 
     public URI contribute(URL contribution) throws DeploymentException, IOException {
@@ -59,37 +65,42 @@ public class ContributionServiceImpl implements ContributionService, Contributio
             throw new IllegalArgumentException("contribution cannot be converted to a URI", e);
         }
 
-        URLConnection connection = contribution.openConnection();
-        String contentType = connection.getContentType();
-        //todo try and figure out content type from the URL
-        if (contentType == null) {
-            throw new UnsupportedContentTypeException(null, contribution.toString());
-        }
-
-        InputStream is = connection.getInputStream();
+        InputStream is = contribution.openConnection().getInputStream();
         try {
-            return contribute(source, is, contentType);
+            return contribute(source, is);
         } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                // ignore
-            }
+            IOUtils.closeQuietly(is);
         }
     }
 
-    public URI contribute(URI source, InputStream contribution, String contentType)
-        throws DeploymentException, IOException {
-        if (contentType == null) {
-            throw new IllegalArgumentException("contentType was null");
+    public URI contribute(URI source, InputStream contributionStream) throws DeploymentException, IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("source URI for contribution is null");
         }
 
-        ContributionProcessor processor = registry.get(contentType);
-        if (processor == null) {
-            throw new UnsupportedContentTypeException(contentType, source.toString());
+        if (contributionStream == null) {
+            throw new IllegalArgumentException("Invalid contribution stream : null");
         }
-        
-        return null;
+
+        // store the contribution in the contribution repository
+        URL storedURL = this.contributionRepository.store(source, contributionStream);
+        Contribution contribution = null;
+        try {
+            // start processing valid contribution
+            contribution = new Contribution();
+            contribution.setUri(new URI("sca://contribution/" + UUID.randomUUID()));
+
+            this.processorRegistry.processContent(contribution, storedURL, contributionStream);
+
+        } catch (URISyntaxException urie) {
+            // FIXME
+        }
+
+        if (contribution == null) {
+            // FIXME throw exception
+        }
+
+        return contribution.getUri();
     }
 
     public void remove(URI contribution) throws DeploymentException {
