@@ -21,11 +21,13 @@ package org.apache.tuscany.runtime.standalone.host;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
@@ -89,23 +91,26 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
         for (Map.Entry<String, ComponentDefinition<? extends Implementation<?>>> entry : components.entrySet()) {
             String name = entry.getKey();
             ComponentDefinition<? extends Implementation<?>> launchedDefinition = entry.getValue();
-            Implementation<?> implementation = launchedDefinition.getImplementation();
+            Implementation implementation = launchedDefinition.getImplementation();
             if(implementation.getClass().isAssignableFrom(Launched.class)) {
-                Launched launched = (Launched) implementation;
-                PojoComponentType launchedType = launched.getComponentType();
-                Map services = launchedType.getServices();
-                JavaMappedService testService = (JavaMappedService) services.get("main");
-                Operation<?> operation = testService.getServiceContract().getOperations().get("main");
-                // TODO Find the component and invoke main on the component
-                URI componentUri = compositeUri.resolve(name);
-                Component component = getComponentManager().getComponent(componentUri);
-                if(component == null) {
-                    System.err.println("Unable to get component " + componentUri);
-                } else {
-                    TargetInvoker targetInvoker = component.createTargetInvoker("main", operation, null);
-                    targetInvoker.invokeTarget(null, TargetInvoker.NONE);
-                }
+                run(compositeUri.resolve(name), implementation);
             }
+        }
+    }
+
+    private void run(URI componentUri, Implementation implementation) throws TargetInvokerCreationException, InvocationTargetException {
+        Launched launched = (Launched) implementation;
+        PojoComponentType launchedType = launched.getComponentType();
+        Map services = launchedType.getServices();
+        JavaMappedService testService = (JavaMappedService) services.get("main");
+        Operation<?> operation = testService.getServiceContract().getOperations().get("main");
+        // TODO Find the component and invoke main on the component
+        Component component = getComponentManager().getComponent(componentUri);
+        if(component == null) {
+            System.err.println("Unable to get component " + componentUri);
+        } else {
+            TargetInvoker targetInvoker = component.createTargetInvoker("main", operation, null);
+            targetInvoker.invokeTarget(null, TargetInvoker.NONE);
         }
     }
 
