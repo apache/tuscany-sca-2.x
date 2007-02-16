@@ -32,6 +32,7 @@ import org.osoa.sca.ServiceReference;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 
 /**
@@ -44,6 +45,7 @@ import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
  * @version $Rev$ $Date$
  */
 public class Main {
+
     /**
      * Main method.
      * 
@@ -52,7 +54,8 @@ public class Main {
      *             application
      */
     public static void main(String[] args) throws Throwable {
-        if (args.length != 2) {
+
+        if (args.length != 1) {
             usage();
             throw new AssertionError();
         }
@@ -60,48 +63,28 @@ public class Main {
         URI applicationURI = new URI(args[0]);
 
         StandaloneRuntimeInfo runtimeInfo = DirectoryHelper.createRuntimeInfo("launcher", Main.class);
-        TuscanyRuntime runtime = DirectoryHelper.createRuntime(runtimeInfo);
+        StandaloneRuntime runtime = (StandaloneRuntime)DirectoryHelper.createRuntime(runtimeInfo);
         runtime.initialize();
 
-        deployApplication(args, applicationURI, runtime);
-
-        try {
-
-            String serviceName = applicationURI.getFragment();
-            ComponentContext context = runtime.getComponentContext(applicationURI);
-            if (context == null) {
-                noComponent(applicationURI);
-                throw new AssertionError();
-            }
-            ServiceReference<Callable> service;
-            if (serviceName == null) {
-                service = context.createSelfReference(Callable.class);
-            } else {
-                service = context.createSelfReference(Callable.class, serviceName);
-            }
-            Callable callable = service.getService();
-            callable.call();
-        } finally {
-            runtime.destroy();
-        }
+        ComponentContext componentContext = deployApplication(args, applicationURI, runtime);
+        // TODO lookup implementation.lauched and do the rest
+        
 
     }
 
-    private static void deployApplication(String[] args, URI applicationURI, TuscanyRuntime runtime) throws MalformedURLException {
+    /**
+     * @deprecated Hack for deployment.
+     */
+    private static ComponentContext deployApplication(String[] args, URI applicationURI, StandaloneRuntime runtime)
+        throws Exception {
+
+        URI compositeUri = new URI("/test/composite");
         URL applicationJar = new File(args[1]).toURL();
         ClassLoader applicationClassLoader =
             new URLClassLoader(new URL[] {applicationJar}, runtime.getHostClassLoader());
-        URL appScdl = applicationClassLoader.getResource("META-INF/sca/default.scdl");
-        // TODO Deploy the SCDL
-/*      the launcher's classloader should not contain the SPI module
+        URL applicationScdl = applicationClassLoader.getResource("META-INF/sca/default.scdl");
+        return runtime.deploy(compositeUri, applicationScdl, applicationClassLoader);
 
-        CompositeImplementation impl = new CompositeImplementation();
-        impl.setScdlLocation(appScdl);
-        impl.setClassLoader(applicationClassLoader);
-
-        ComponentDefinition<CompositeImplementation> definition =
-            new ComponentDefinition<CompositeImplementation>(applicationURI, impl);
-*/
     }
 
     private static void usage() {
