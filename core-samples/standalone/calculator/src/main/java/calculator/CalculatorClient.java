@@ -18,6 +18,8 @@
  */
 package calculator;
 
+import org.osoa.sca.annotations.Reference;
+
 /**
  * This client program shows how to create an SCA runtime, start it,
  * locate the Calculator service and invoke it.
@@ -26,6 +28,7 @@ public class CalculatorClient {
     
     private CalculatorService calculatorService;
     
+    @Reference
     public void setCalculatorService(CalculatorService calculatorService) {
         this.calculatorService = calculatorService;
     }
