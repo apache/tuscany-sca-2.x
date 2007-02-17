@@ -25,8 +25,8 @@ import java.util.Map;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.wire.OutboundChainHolder;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.ChainHolder;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
@@ -36,10 +36,10 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
-    private OutboundWire wire;
+    private Wire wire;
     private WireService wireService;
     // the cache of proxy interface method to operation mappings
-    private Map<Method, OutboundChainHolder> mappings;
+    private Map<Method, ChainHolder> mappings;
     private boolean optimizable;
 
     /**
@@ -50,34 +50,34 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
      * @param wireService the wire service to create the proxy
      * @throws NoMethodForOperationException
      */
-    public WireObjectFactory(Class<T> interfaze, OutboundWire wire, WireService wireService)
+    public WireObjectFactory(Class<T> interfaze, Wire wire, WireService wireService)
         throws NoMethodForOperationException {
         this.interfaze = interfaze;
         this.wire = wire;
         this.wireService = wireService;
         this.mappings = WireUtils.createInterfaceToWireMapping(interfaze, wire);
+        if (wire.isOptimizable()
+            && wire.getSourceContract().getInterfaceClass() != null
+            && interfaze.isAssignableFrom(wire.getSourceContract().getInterfaceClass())) {
+            optimizable = true;
+        }
     }
 
     public T getInstance() throws ObjectCreationException {
-        // note optimization must be done lazily as wire object factories are created during the build phase prior
-        // to the outbound and inbound wires being connected
-        if ((optimizable
-            || wire.isOptimizable())
-            && wire.getServiceContract().getInterfaceClass() != null
-            && interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
-            optimizable = true;
+        if (optimizable) {
             try {
-                return interfaze.cast(wire.getTargetService());
+                return interfaze.cast(wire.getTargetInstance());
             } catch (TargetResolutionException e) {
                 throw new ObjectCreationException(e);
             }
+        } else {
+            // clone the cached mappings
+            Map<Method, ChainHolder> newChains = new HashMap<Method, ChainHolder>(mappings.size());
+            for (Map.Entry<Method, ChainHolder> entry : mappings.entrySet()) {
+                newChains.put(entry.getKey(), entry.getValue().clone());
+            }
+            return interfaze.cast(wireService.createProxy(interfaze, wire, newChains));
         }
-        // clone the cached mappings
-        Map<Method, OutboundChainHolder> newChains = new HashMap<Method, OutboundChainHolder>(mappings.size());
-        for (Map.Entry<Method, OutboundChainHolder> entry : mappings.entrySet()) {
-            newChains.put(entry.getKey(), entry.getValue().clone());
-        }
-        return interfaze.cast(wireService.createProxy(interfaze, wire, newChains));
     }
 
 

@@ -30,9 +30,7 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
-import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.builder.ScopeNotFoundException;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -52,7 +50,6 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.component.ComponentManager;
@@ -66,7 +63,6 @@ import org.apache.tuscany.core.implementation.composite.ServiceImpl;
  */
 @EagerInit
 public class BuilderRegistryImpl implements BuilderRegistry {
-    private WireService wireService;
     private ScopeRegistry scopeRegistry;
     private ComponentManager componentManager;
 
@@ -76,11 +72,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
 
-    public BuilderRegistryImpl(@Autowire ScopeRegistry scopeRegistry,
-                               @Autowire WireService wireService,
-                               @Autowire ComponentManager componentManager) {
+    public BuilderRegistryImpl(@Autowire ScopeRegistry scopeRegistry, @Autowire ComponentManager componentManager) {
         this.scopeRegistry = scopeRegistry;
-        this.wireService = wireService;
         this.componentManager = componentManager;
     }
 
@@ -146,9 +139,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";
             // create wires for the component
-            if (wireService != null && component instanceof AtomicComponent) {
-                wireService.createWires((AtomicComponent) component, componentDefinition);
-            }
+//            if (wireService != null && component instanceof AtomicComponent) {
+//                wireService.createWires((AtomicComponent) component, componentDefinition);
+//            }
             componentManager.register(component);
             return component;
         } catch (BuilderException e) {
@@ -186,14 +179,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             }
             ServiceBinding binding =
                 bindingBuilder.build(parent, serviceDefinition, definition, deploymentContext);
-            if (wireService != null) {
-                if (targetUri == null) {
-                    throw new MissingWireTargetException("Service target uri not specified");
-                }
-                //String path = uri.getPath();
-                ServiceContract<?> contract = serviceDefinition.getServiceContract();
-                wireService.createWires(binding, contract, targetUri.toString());
-            }
+//            if (wireService != null) {
+//                if (targetUri == null) {
+//                    throw new MissingWireTargetException("Service target uri not specified");
+//                }
+//                //String path = uri.getPath();
+//                ServiceContract<?> contract = serviceDefinition.getServiceContract();
+//                wireService.createWires(binding, contract, targetUri.toString());
+//            }
             service.addServiceBinding(binding);
         }
         return service;
@@ -221,12 +214,12 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
             ReferenceBinding binding = bindingBuilder.build(parent, referenceDefinition, bindingDefinition, context);
             // create wires for the component
-            if (wireService != null) {
-                URI targetUri = bindingDefinition.getTargetUri();
-                // it is possible for a binding to not have a URI
-                wireService.createWires(binding, contract, targetUri);
-
-            }
+//            if (wireService != null) {
+//                URI targetUri = bindingDefinition.getTargetUri();
+//                // it is possible for a binding to not have a URI
+//                wireService.createWires(binding, contract, targetUri);
+//
+//            }
             reference.addReferenceBinding(binding);
 
         }

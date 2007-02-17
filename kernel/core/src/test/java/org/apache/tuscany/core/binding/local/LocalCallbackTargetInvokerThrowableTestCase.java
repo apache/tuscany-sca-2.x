@@ -19,80 +19,70 @@
 package org.apache.tuscany.core.binding.local;
 
 import java.lang.reflect.Type;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.HashMap;
-import java.util.Map;
-import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.easymock.IAnswer;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class LocalCallbackTargetInvokerThrowableTestCase extends TestCase {
-    private InboundWire wire;
-    private Message message;
-    private OutboundInvocationChain chain;
-    private Interceptor head;
     private LocalCallbackTargetInvoker invoker;
 
     /**
      * Verfies an exception thrown in the target is propagated to the client correctly
      */
     public void testThrowableTargetInvocation() throws Exception {
+        Message message = new MessageImpl();
+        message.setBody("foo");
         Message response = invoker.invoke(message);
         assertTrue(response.isFault());
         Object body = response.getBody();
-        if (!(body instanceof UndeclaredThrowableException)) {
-            fail(); // EasyMock wraps the Throwable in an UndeclaredThrowableException
+        if (!(body instanceof InsidiousException)) {
+            fail();
         }
-        UndeclaredThrowableException e = (UndeclaredThrowableException) body;
-        assertTrue(InsidiousException.class.equals(e.getUndeclaredThrowable().getClass()));
-        EasyMock.verify(wire);
-        EasyMock.verify(chain);
-        EasyMock.verify(head);
     }
 
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        URI targetAddress = URI.create("from");
-        message = new MessageImpl();
-        message.pushFromAddress(targetAddress);
-        message.setBody("foo");
-        Message response = new MessageImpl();
-        response.setBody("response");
         Operation<Type> operation = new Operation<Type>("echo", null, null, null);
-        head = EasyMock.createMock(Interceptor.class);
-        EasyMock.expect(head.invoke(EasyMock.isA(Message.class))).andStubAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                throw new InsidiousException();   // andThrow() does not seem to work here
-            }
-        });
-        EasyMock.replay(head);
-        chain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.expect(chain.getTargetInvoker()).andReturn(null);
-        EasyMock.expect(chain.getHeadInterceptor()).andReturn(head);
-        EasyMock.replay(chain);
-        Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
-        chains.put(operation, chain);
-        wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
-        EasyMock.replay(wire);
+        InvocationChain chain = new InvocationChainImpl(operation);
+        chain.addInterceptor(new InsidiuousInterceptor());
+        Wire wire = new WireImpl();
+        wire.addCallbackInvocationChain(operation, chain);
         invoker = new LocalCallbackTargetInvoker(operation, wire);
     }
 
-    private class InsidiousException extends Throwable {
+    private class InsidiousException extends RuntimeException {
 
+    }
+
+    private class InsidiuousInterceptor implements Interceptor {
+
+        public Message invoke(Message msg) throws InsidiousException {
+            throw new InsidiousException();
+        }
+
+        public void setNext(Interceptor next) {
+
+        }
+
+        public Interceptor getNext() {
+            return null;
+        }
+
+        public boolean isOptimizable() {
+            return false;
+        }
     }
 
 

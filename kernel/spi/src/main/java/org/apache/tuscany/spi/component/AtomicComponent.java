@@ -18,11 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
-import java.util.List;
-
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * The runtime instantiation of an SCA atomic, or leaf-type, component
@@ -66,24 +62,6 @@ public interface AtomicComponent extends Component {
      * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
      */
     long getMaxAge();
-
-    /**
-     * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the destination
-     * service of a wire
-     */
-    void addInboundWire(InboundWire wire);
-
-    /**
-     * Adds a source-side wire for the given reference. Source-side wires contain the invocation chains for a reference
-     * in the implementation associated with the instance wrapper created by this configuration.
-     */
-    void addOutboundWire(OutboundWire wire);
-
-    /**
-     * Adds a set of source-side multiplicity wires for the given reference. Source-side wires contain the invocation
-     * chains for a reference in the implementation associated with the instance wrapper created by this configuration.
-     */
-    void addOutboundWires(List<OutboundWire> wires);
 
     /**
      * Notifies the given instance of an initialization event.

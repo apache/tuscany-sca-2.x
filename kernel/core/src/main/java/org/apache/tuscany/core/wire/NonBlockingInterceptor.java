@@ -18,26 +18,24 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.util.LinkedList;
 import java.net.URI;
+import java.util.LinkedList;
 
 import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
- * Bridges interceptors in a non-blocking fashion between an {@link org.apache.tuscany.spi.wire.InboundInvocationChain}
- * and an {@link org.apache.tuscany.spi.wire.OutboundInvocationChain} by using a {@link
- * org.apache.tuscany.spi.component.WorkContext}.
+ * Adds non-blocking behavior to an invocation chain
  *
  * @version $$Rev$$ $$Date$$
  */
-public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
+public class NonBlockingInterceptor implements Interceptor {
 
     private static final Message RESPONSE = new ImmutableMessage();
 
@@ -45,12 +43,12 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
     private WorkContext workContext;
     private Interceptor next;
 
-    public NonBlockingBridgingInterceptor(WorkScheduler workScheduler, WorkContext workContext) {
+    public NonBlockingInterceptor(WorkScheduler workScheduler, WorkContext workContext) {
         this.workScheduler = workScheduler;
         this.workContext = workContext;
     }
 
-    public NonBlockingBridgingInterceptor(WorkScheduler workScheduler, WorkContext workContext, Interceptor next) {
+    public NonBlockingInterceptor(WorkScheduler workScheduler, WorkContext workContext, Interceptor next) {
         this.workScheduler = workScheduler;
         this.workContext = workContext;
         this.next = next;
@@ -125,19 +123,15 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
             throw new UnsupportedOperationException();
         }
 
-        public URI popFromAddress() {
-            return null;
-        }
-
-        public void pushFromAddress(URI fromAddress) {
+        public void pushCallbackUri(URI fromAddress) {
             throw new UnsupportedOperationException();
         }
 
-        public LinkedList<URI> getCallbackRoutingChain() {
+        public LinkedList<URI> getCallbackUris() {
             return null;
         }
 
-        public void setCallbackRoutingChain(LinkedList<URI> fromAddresses) {
+        public void setCallbackUris(LinkedList<URI> uris) {
             throw new UnsupportedOperationException();
         }
 

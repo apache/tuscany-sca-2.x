@@ -26,7 +26,6 @@ import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.annotations.Callback;
 
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -42,7 +41,6 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
@@ -71,35 +69,29 @@ public class CallbackInvocationTestCase extends TestCase {
     private ScopeContainer container;
     private DeploymentContext context;
     private JavaComponentBuilder builder;
-    private WireService wireService;
     private WorkScheduler scheduler;
     private WorkContext workContext;
     private ComponentManager componentManager;
     private Connector connector;
 
     /**
-     * Verifies callback wires are built and callback invocations are handled properly
+     * Verifies callbacks between two Java component implementations: wire creation, connection, injection of callback
+     * proxy, and invocation
      */
     public void testComponentToComponentCallback() throws Exception {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
-        JavaAtomicComponent fooComponent =
-            (JavaAtomicComponent) builder.build(null, targetDefinition, context);
-        fooComponent.setScopeContainer(container);
-        wireService.createWires(fooComponent, targetDefinition);
-        container.register(fooComponent);
-        componentManager.register(fooComponent);
-        CompositeComponent parent = createMock(CompositeComponent.class);
-        replay(parent);
-
+        JavaAtomicComponent targetComponent = (JavaAtomicComponent) builder.build(null, targetDefinition, context);
+        targetComponent.setScopeContainer(container);
+        container.register(targetComponent);
+        componentManager.register(targetComponent);
         ComponentDefinition<JavaImplementation> sourceDefinition = createSource(URI.create("fooClient"));
-        JavaAtomicComponent clientComponent =
-            (JavaAtomicComponent) builder.build(parent, sourceDefinition, context);
+        JavaAtomicComponent clientComponent = (JavaAtomicComponent) builder.build(null, sourceDefinition, context);
         clientComponent.setScopeContainer(container);
-        wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
         componentManager.register(clientComponent);
-
-        connector.connect(clientComponent);
+        connector.connect(sourceDefinition);
+        targetComponent.start();
+        clientComponent.start();
         FooClient client = (FooClient) clientComponent.getTargetInstance();
         client.invoke();
         assertTrue(client.invoked);
@@ -147,33 +139,27 @@ public class CallbackInvocationTestCase extends TestCase {
      */
     public void testTwoSourceComponentToComponentCallback() throws Exception {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
-        JavaAtomicComponent fooComponent =
+        JavaAtomicComponent targetComponent =
             (JavaAtomicComponent) builder.build(null, targetDefinition, context);
-        fooComponent.setScopeContainer(container);
-        wireService.createWires(fooComponent, targetDefinition);
-        container.register(fooComponent);
-        componentManager.register(fooComponent);
+        targetComponent.setScopeContainer(container);
+        container.register(targetComponent);
+        componentManager.register(targetComponent);
 
-        CompositeComponent parent = createMock(CompositeComponent.class);
-        replay(parent);
-
-        ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource(URI.create("fooCleint1"));
-        ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource(URI.create("fooCleint2"));
-        JavaAtomicComponent clientComponent1 =
-            (JavaAtomicComponent) builder.build(parent, sourceDefinition1, context);
+        ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource(URI.create("client1"));
+        ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource(URI.create("client2"));
+        JavaAtomicComponent clientComponent1 = (JavaAtomicComponent) builder.build(null, sourceDefinition1, context);
         clientComponent1.setScopeContainer(container);
-        wireService.createWires(clientComponent1, sourceDefinition1);
         container.register(clientComponent1);
         componentManager.register(clientComponent1);
-        JavaAtomicComponent clientComponent2 =
-            (JavaAtomicComponent) builder.build(parent, sourceDefinition2, context);
+        JavaAtomicComponent clientComponent2 = (JavaAtomicComponent) builder.build(null, sourceDefinition2, context);
         clientComponent2.setScopeContainer(container);
-        wireService.createWires(clientComponent2, sourceDefinition2);
         container.register(clientComponent2);
         componentManager.register(clientComponent2);
 
-        connector.connect(clientComponent1);
-        connector.connect(clientComponent2);
+        connector.connect(sourceDefinition1);
+        connector.connect(sourceDefinition2);
+        targetComponent.start();
+
         FooClient client1 = (FooClient) clientComponent1.getTargetInstance();
         client1.invoke();
         assertTrue(client1.invoked);
@@ -361,8 +347,7 @@ public class CallbackInvocationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         componentManager = new ComponentManagerImpl();
-        connector = new ConnectorImpl(new JDKWireService(), null, componentManager, scheduler, workContext);
-        wireService = new JDKWireService();
+        connector = new ConnectorImpl(null, componentManager, scheduler, workContext);
         container = new CompositeScopeContainer(null);
         container.start();
         context = createMock(DeploymentContext.class);

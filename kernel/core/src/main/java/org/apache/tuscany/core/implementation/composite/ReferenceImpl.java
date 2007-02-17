@@ -51,7 +51,6 @@ public class ReferenceImpl extends AbstractSCAObject implements Reference {
     }
 
     public void addReferenceBinding(ReferenceBinding binding) {
-        binding.setReference(this);
         bindings.add(binding);
     }
 

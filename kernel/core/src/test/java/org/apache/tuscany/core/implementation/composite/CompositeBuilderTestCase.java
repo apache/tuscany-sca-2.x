@@ -39,7 +39,6 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
@@ -56,7 +55,6 @@ import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.easymock.EasyMock;
 
 /**
@@ -74,12 +72,9 @@ public class CompositeBuilderTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeBuilder builder = new CompositeBuilder();
-        WireService wireService = new JDKWireService();
-        builder.setWireService(wireService);
         ComponentManagerImpl mgr = new ComponentManagerImpl();
-        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(null, wireService, mgr);
+        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(null, mgr);
         JavaComponentBuilder jBuilder = new JavaComponentBuilder();
-        jBuilder.setWireService(wireService);
         builderRegistry.register(JavaImplementation.class, jBuilder);
         builderRegistry.register(CompositeImplementation.class, builder);
         builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
@@ -90,13 +85,10 @@ public class CompositeBuilderTestCase extends TestCase {
         CompositeComponent component =
             (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);
         mgr.register(component); // manually register this
-        component.start();
         CompositeComponent sourceComponent = (CompositeComponent) mgr.getComponent(SOURCE_COMPONENT);
-        assertNotNull(sourceComponent.getInboundWire("InnerSourceService"));
+        assertNotNull(sourceComponent.getService("InnerSourceService"));
         AtomicComponent innerSourceComponent = (AtomicComponent) mgr.getComponent(INNER_SOURCE_COMPONENT);
-        Source innerSourceInstance = (Source) deploymentContext.getCompositeScope().getInstance(innerSourceComponent);
-        assertNotNull(innerSourceInstance);
-        component.stop();
+        assertNotNull(innerSourceComponent);
     }
 
     protected void setUp() throws Exception {

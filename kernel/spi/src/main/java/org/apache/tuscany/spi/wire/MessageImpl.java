@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.util.LinkedList;
 import java.net.URI;
+import java.util.LinkedList;
 
 /**
  * The default implementation of a message flowed through a wire during an invocation
@@ -29,7 +29,7 @@ import java.net.URI;
 public class MessageImpl implements Message {
     private Object body;
     private TargetInvoker invoker;
-    private LinkedList<URI> callbackRoutingChain;
+    private LinkedList<URI> callbackUris;
     private Object messageId;
     private Object correlationId;
     private boolean isFault;
@@ -55,23 +55,19 @@ public class MessageImpl implements Message {
         return invoker;
     }
 
-    public URI popFromAddress() {
-        return callbackRoutingChain.removeFirst();
-    }
-
-    public void pushFromAddress(URI fromAddress) {
-        if (callbackRoutingChain == null) {
-            callbackRoutingChain = new LinkedList<URI>();
+    public void pushCallbackUri(URI uri) {
+        if (callbackUris == null) {
+            callbackUris = new LinkedList<URI>();
         }
-        callbackRoutingChain.addFirst(fromAddress);
+        callbackUris.addFirst(uri);
     }
 
-    public LinkedList<URI> getCallbackRoutingChain() {
-        return callbackRoutingChain;
+    public LinkedList<URI> getCallbackUris() {
+        return callbackUris;
     }
 
-    public void setCallbackRoutingChain(LinkedList<URI> callbackRoutingChain) {
-        this.callbackRoutingChain = callbackRoutingChain;
+    public void setCallbackUris(LinkedList<URI> callbackRoutingChain) {
+        this.callbackUris = callbackRoutingChain;
     }
 
     public Object getMessageId() {

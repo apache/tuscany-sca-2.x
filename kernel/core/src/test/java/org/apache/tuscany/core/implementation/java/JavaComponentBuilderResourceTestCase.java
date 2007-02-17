@@ -23,13 +23,13 @@ import java.net.URI;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.host.ResourceHost;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -60,8 +60,8 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         JavaImplementation impl = new JavaImplementation(Foo.class, type);
         URI uri = URI.create("foo");
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(uri, impl);
-        InboundWire resourceWire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(resourceWire.getTargetService()).andReturn("result");
+        Wire resourceWire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(resourceWire.getTargetInstance()).andReturn("result");
         EasyMock.replay(resourceWire);
 
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);

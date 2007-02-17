@@ -2,8 +2,8 @@ package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
 import java.net.URI;
+import java.util.LinkedList;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -11,14 +11,14 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
+public class AbstractInvocationHandlerTestCase extends TestCase {
 
     public void testInvocation() throws Throwable {
         InvocationHandler handler = new InvocationHandler();
         Interceptor interceptor = new MockInterceptor();
         TargetInvoker invoker = EasyMock.createMock(TargetInvoker.class);
         EasyMock.replay(invoker);
-        OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
+        InvocationChain chain = EasyMock.createMock(InvocationChain.class);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor);
         EasyMock.replay(chain);
         Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new LinkedList<URI>());
@@ -28,7 +28,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
     public void testShortCircuitInvocation() throws Throwable {
         InvocationHandler handler = new InvocationHandler();
         TargetInvoker invoker = new MockInvoker();
-        OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
+        InvocationChain chain = EasyMock.createMock(InvocationChain.class);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(null);
         EasyMock.expect(chain.getTargetInvoker()).andReturn(invoker);
         EasyMock.replay(chain);
@@ -66,7 +66,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
         }
     }
 
-    private class InvocationHandler extends AbstractOutboundInvocationHandler {
+    private class InvocationHandler extends AbstractInvocationHandler {
 
         protected URI getFromAddress() {
             return URI.create("from");
@@ -80,7 +80,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
             assertNotNull(msg.getCorrelationId());
             assertNotNull(msg.getTargetInvoker());
             assertNotNull(msg.getMessageId());
-            assertNotNull(msg.getCallbackRoutingChain());
+            assertNotNull(msg.getCallbackUris());
             assertEquals("foo", Array.get(msg.getBody(), 0));
             msg.setBody("response");
             return msg;

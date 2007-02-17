@@ -58,7 +58,6 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  * @version $Rev$ $Date$
  */
 public class ScopeReferenceTestCase extends TestCase {
-
     private Map<String, Member> members;
 
     /**
@@ -68,8 +67,13 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
-        Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
-            scope, members, "target", Target.class, TargetImpl.class, scope);
+        Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", 
+            SourceImpl.class,
+            scope, members,
+            "target",
+            Target.class,
+            TargetImpl.class,
+            scope);
         scope.onEvent(new ComponentStart(this, null));
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");

@@ -21,20 +21,19 @@ package org.apache.tuscany.spi.wire;
 import org.apache.tuscany.spi.model.Operation;
 
 /**
- * An inbound or outbound invocation pipeline for a service operation. Wires consist of 1..n invocation chains
- * associated with the operations of the service contract the wire represents. Invocation chains are associated with the
- * outbound or inbound side of a wire are bridged or "connected" when an assembly is processed. Outbound chains are only
- * connected to inbound chains and vice versa.
+ * A wire consists of 1..n invocation chains associated with the operations of its source service contract.
  * <p/>
- * Invocation chains contain at least one {@link Interceptor} that process invocations in an around-style manner. In
- * some scenarios, a service proxy may only contain inbound invocation chains, for example, when a service is resolved
- * through a locate operation by a non-component client. In this case, there will be no outbound invocation chains and
- * the target invoker will be held by the target-side and passed down the pipeline.
+ * Invocation chains may contain {@link Interceptor}s that process invocations in an around-style manner. Invocation
+ * chains are also associated with a {@TargetInvoker} which is responsible for dispatching on the target service
+ * provider.
  * <p/>
- * A {@link Message} is used to pass data associated with an invocation through the chain. <code>Message</code>s contain
- * a {@link TargetInvoker} responsible for dispatching to a target instance and may be cached on the source-side.
- * Caching allows various optimizations such as avoiding target instance resolution when the client-side lifecycle scope
- * is a shorter duration than the target.
+ * A {@link Message} is used to pass data associated with an invocation through the chain. The TargetInvoker is passed
+ * with the Message through the interceptor stack, if one is present. At last interceptor in the stack, must call the
+ * TargetInvoker.
+ * <p/>
+ * In certain circumstances, the TargetInvoker may be cached in the source-side proxy. Caching allows various
+ * optimizations such as avoiding target instance resolution when the client-side lifecycle scope is a shorter duration
+ * than the target.
  *
  * @version $Rev$ $Date$
  */

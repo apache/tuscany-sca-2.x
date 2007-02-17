@@ -25,14 +25,16 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.core.util.FileHelper;
-import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
+
+import org.apache.tuscany.core.util.FileHelper;
+
 /**
  * Implementation of the content describer
- * 
+ *
  * @version $Rev$ $Date$
  */
 @EagerInit
@@ -46,8 +48,7 @@ public class ContentTypeDescriberImpl implements ContentTypeDescriber {
     }
 
     /**
-     * Initialize contentType registry with know types based on known file
-     * extensions
+     * Initialize contentType registry with know types based on known file extensions
      */
     private void init() {
         contentTypeRegistry.put("SCDL", "application/v.tuscany.scdl");
@@ -63,11 +64,10 @@ public class ContentTypeDescriberImpl implements ContentTypeDescriber {
     }
 
     /**
-     * Build contentType for a specific resource. We first check if the file is
-     * a supported one (looking into our registry based on resource extension)
-     * If not found, we try to check file contentType Or we return
+     * Build contentType for a specific resource. We first check if the file is a supported one (looking into our
+     * registry based on resource extension) If not found, we try to check file contentType Or we return
      * defaultContentType provided
-     * 
+     *
      * @param url
      * @param defaultContentType
      * @return

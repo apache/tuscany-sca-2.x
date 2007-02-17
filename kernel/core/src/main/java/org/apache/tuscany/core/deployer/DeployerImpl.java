@@ -25,15 +25,11 @@ import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.event.Event;
@@ -42,18 +38,10 @@ import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.resolver.ResolutionException;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.api.annotation.Monitor;
-import org.apache.tuscany.core.builder.WireCreationException;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.resolver.AutowireResolver;
@@ -69,20 +57,17 @@ public class DeployerImpl implements Deployer {
     private ScopeContainerMonitor monitor;
     private Loader loader;
     private AutowireResolver resolver;
-    private ComponentManager componentManager;
     private Connector connector;
 
     public DeployerImpl(XMLInputFactory xmlFactory,
                         Loader loader,
                         Builder builder,
                         AutowireResolver resolver,
-                        ComponentManager manager,
                         Connector connector) {
         this.xmlFactory = xmlFactory;
         this.loader = loader;
         this.builder = builder;
         this.resolver = resolver;
-        this.componentManager = manager;
         this.connector = connector;
     }
 
@@ -108,11 +93,6 @@ public class DeployerImpl implements Deployer {
     @Autowire
     public void setResolver(AutowireResolver resolver) {
         this.resolver = resolver;
-    }
-
-    @Autowire
-    public void setComponentManager(ComponentManager componentManager) {
-        this.componentManager = componentManager;
     }
 
     @Autowire
@@ -143,7 +123,7 @@ public class DeployerImpl implements Deployer {
             }
         };
         component.addListener(listener);
-        connect(component, componentDefinition);
+        connector.connect(componentDefinition);
         return component;
     }
 
@@ -173,48 +153,6 @@ public class DeployerImpl implements Deployer {
                                                             DeploymentContext deploymentContext)
         throws BuilderException {
         return builder.build(parent, componentDefinition, deploymentContext);
-    }
-
-    /**
-     * JFM TODO move to connector
-     */
-    private void connect(Component component, ComponentDefinition componentDefinition) throws WiringException {
-        if (component instanceof CompositeComponent) {
-            CompositeComponent composite = (CompositeComponent) component;
-            for (Service service : composite.getServices()) {
-                connector.connect(service);
-            }
-            for (Reference reference : composite.getReferences()) {
-                connector.connect(reference);
-            }
-        }
-        ComponentType<?, ?, ?> type = componentDefinition.getImplementation().getComponentType();
-        if (type instanceof CompositeComponentType) {
-            CompositeComponentType<?, ?, ?> compositeType = (CompositeComponentType<?, ?, ?>) type;
-            for (ComponentDefinition<? extends Implementation<?>> definition : compositeType.getComponents().values()) {
-                Component child = componentManager.getComponent(definition.getUri());
-                assert child != null;
-                connect(child, definition);
-            }
-        } else {
-            connector.connect(component);
-            // this will be refactored out, currently  for atomic 
-            for (InboundWire inboundWire : component.getInboundWires()) {
-                for (InboundInvocationChain chain : inboundWire.getInboundInvocationChains().values()) {
-                    Operation<?> operation = chain.getOperation();
-                    String serviceName = inboundWire.getSourceUri().getFragment();
-                    TargetInvoker invoker;
-                    try {
-                        invoker = component.createTargetInvoker(serviceName, operation, null);
-                    } catch (TargetInvokerCreationException e) {
-                        throw new WireCreationException("Error processing inbound wire", component.getUri(), e);
-                    }
-                    chain.setTargetInvoker(invoker);
-                }
-            }
-
-        }
-
     }
 
 }

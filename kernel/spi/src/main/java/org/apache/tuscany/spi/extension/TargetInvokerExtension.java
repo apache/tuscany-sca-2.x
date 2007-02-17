@@ -19,11 +19,10 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
 import java.net.URI;
+import java.util.LinkedList;
 
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -34,8 +33,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public abstract class TargetInvokerExtension implements TargetInvoker {
-
-    protected InboundWire wire;
     protected WorkContext workContext;
     protected ExecutionMonitor monitor;
     protected boolean cacheable;
@@ -43,12 +40,10 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
     /**
      * Creates a new invoker
      *
-     * @param wire        the callback wire
      * @param workContext the work context to use for setting correlation information
      * @param monitor     the event monitor
      */
-    public TargetInvokerExtension(InboundWire wire, WorkContext workContext, ExecutionMonitor monitor) {
-        this.wire = wire;
+    public TargetInvokerExtension(WorkContext workContext, ExecutionMonitor monitor) {
         this.workContext = workContext;
         this.monitor = monitor;
     }
@@ -59,11 +54,9 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
             if (messageId != null) {
                 workContext.setCurrentCorrelationId(messageId);
             }
-            if (wire != null) {
-                LinkedList<URI> callbackRoutingChain = msg.getCallbackRoutingChain();
-                if (callbackRoutingChain != null) {
-                    workContext.setCurrentCallbackRoutingChain(callbackRoutingChain);
-                }
+            LinkedList<URI> callbackRoutingChain = msg.getCallbackUris();
+            if (callbackRoutingChain != null) {
+                workContext.setCurrentCallbackUris(callbackRoutingChain);
             }
             Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence());
             msg.setBody(resp);

@@ -63,7 +63,7 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
 
     public void executeTest(URI componentId, Operation<?> operation) throws Exception {
         Component testComponent = getComponentManager().getComponent(componentId);
-        TargetInvoker targetInvoker = testComponent.createTargetInvoker("testService", operation, null);
+        TargetInvoker targetInvoker = testComponent.createTargetInvoker("testService", operation);
         targetInvoker.invokeTarget(null, TargetInvoker.NONE);
     }
 }

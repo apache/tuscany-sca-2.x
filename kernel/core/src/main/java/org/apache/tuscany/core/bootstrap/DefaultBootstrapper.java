@@ -78,7 +78,6 @@ import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.property.PropertyObjectFactoryImpl;
 import org.apache.tuscany.core.resolver.AutowireResolver;
-import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.apache.tuscany.host.MonitorFactory;
 
 /**
@@ -153,7 +152,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new PropertyObjectFactoryImpl(), introspector);
-        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, resolver, componentManager, connector);
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, resolver, connector);
         deployer.setMonitor(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
         return deployer;
     }
@@ -264,7 +263,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     private Builder createBuilder(ScopeRegistry scopeRegistry) {
         BuilderRegistryImpl builderRegistry =
-            new BuilderRegistryImpl(scopeRegistry, new JDKWireService(), componentManager);
+            new BuilderRegistryImpl(scopeRegistry, componentManager);
         SystemCompositeBuilder builder = new SystemCompositeBuilder(builderRegistry);
         builderRegistry.register(SystemCompositeImplementation.class, builder);
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());

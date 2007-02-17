@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.component.event.ComponentStart;
@@ -91,7 +90,7 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
         super.publish(event);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
         throws TargetInvokerCreationException {
         return null;
     }

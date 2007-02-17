@@ -32,24 +32,19 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
-import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 
 /**
@@ -59,24 +54,12 @@ public final class MockFactory {
 
     private static final WireService WIRE_SERVICE = new JDKWireService(new WorkContextImpl(), null);
     private static final JavaInterfaceProcessorRegistry REGISTRY = new JavaInterfaceProcessorRegistryImpl();
-    private static final ConnectorImpl CONNECTOR = new ConnectorImpl(null);
 
     private MockFactory() {
     }
 
     /**
      * Wires two components together where the reference interface is the same as target service
-     *
-     * @param sourceName
-     * @param sourceClass
-     * @param sourceScope
-     * @param members
-     * @param targetName
-     * @param targetService
-     * @param targetClass
-     * @param targetScope
-     * @return
-     * @throws Exception
      */
     public static Map<String, AtomicComponent> createWiredComponents(String sourceName,
                                                                      Class<?> sourceClass,
@@ -93,10 +76,9 @@ public final class MockFactory {
             null,
             members,
             targetName,
-            targetService,
             targetClass,
-            targetScope,
-            null);
+            targetScope
+        );
 
     }
 
@@ -106,17 +88,14 @@ public final class MockFactory {
                                                                      ScopeContainer sourceScope,
                                                                      Interceptor sourceHeadInterceptor,
                                                                      Map<String, Member> members,
-                                                                     String targetName, Class<?> targetService,
+                                                                     String targetName,
                                                                      Class<?> targetClass,
-                                                                     ScopeContainer targetScope,
-                                                                     Interceptor targetHeadInterceptor)
+                                                                     ScopeContainer targetScope
+    )
         throws Exception {
 
         JavaAtomicComponent targetComponent =
             createJavaComponent(targetName, targetScope, targetClass);
-        String serviceName = targetService.getName().substring(targetService.getName().lastIndexOf('.') + 1);
-        InboundWire inboundWire = createInboundWire(serviceName, targetService, targetHeadInterceptor);
-        targetComponent.addInboundWire(inboundWire);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
@@ -127,33 +106,22 @@ public final class MockFactory {
         configuration.setName(new URI(sourceName));
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
         sourceComponent.setScopeContainer(sourceScope);
-        OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
-        sourceComponent.addOutboundWire(outboundWire);
-        outboundWire.setTargetUri(URI.create(targetName + "#" + serviceName));
+        Wire wire = createWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
+        for (InvocationChain chain : wire.getInvocationChains().values()) {
+            chain.setTargetInvoker(targetComponent.createTargetInvoker(targetName, chain.getOperation()));
+        }
+        sourceComponent.attachWire(wire);
         targetScope.register(targetComponent);
         sourceScope.register(sourceComponent);
-        CONNECTOR.connect(sourceComponent, outboundWire, targetComponent, inboundWire, false);
-        Map<String, AtomicComponent> contexts = new HashMap<String, AtomicComponent>();
-        contexts.put(sourceName, sourceComponent);
-        contexts.put(targetName, targetComponent);
-        return contexts;
+        Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
+        components.put(sourceName, sourceComponent);
+        components.put(targetName, targetComponent);
+        return components;
     }
 
 
     /**
-     * Wires two contexts using a multiplicity reference
-     *
-     * @param sourceName
-     * @param sourceClass
-     * @param sourceReferenceClass
-     * @param sourceScope
-     * @param targetName
-     * @param targetService
-     * @param targetClass
-     * @param members
-     * @param targetScope
-     * @return
-     * @throws Exception
+     * Wires two components using a multiplicity reference
      */
     @SuppressWarnings("unchecked")
     public static Map<String, AtomicComponent> createWiredMultiplicity(String sourceName, Class<?> sourceClass,
@@ -166,8 +134,6 @@ public final class MockFactory {
         JavaAtomicComponent targetComponent =
             createJavaComponent(targetName, targetScope, targetClass);
         String serviceName = targetService.getName().substring(targetService.getName().lastIndexOf('.') + 1);
-        InboundWire inboundWire = createInboundWire(serviceName, targetService, null);
-        targetComponent.addInboundWire(inboundWire);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
@@ -179,51 +145,37 @@ public final class MockFactory {
 
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
         sourceComponent.setScopeContainer(sourceScope);
-        OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, null);
-        outboundWire.setTargetUri(URI.create(targetName + "#" + serviceName));
-        List<OutboundWire> factories = new ArrayList<OutboundWire>();
-        factories.add(outboundWire);
-        sourceComponent.addOutboundWires(factories);
+        Wire wire = createWire(targetName, sourceReferenceClass, null);
+        wire.setTargetUri(URI.create(targetName + "#" + serviceName));
+        for (InvocationChain chain : wire.getInvocationChains().values()) {
+            chain.setTargetInvoker(targetComponent.createTargetInvoker("target", chain.getOperation()));
+        }
+        List<Wire> wires = new ArrayList<Wire>();
+        wires.add(wire);
+        sourceComponent.attachWires(wires);
         targetScope.register(targetComponent);
         sourceScope.register(sourceComponent);
-        CONNECTOR.connect(sourceComponent, outboundWire, targetComponent, inboundWire, false);
+
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         components.put(sourceName, sourceComponent);
         components.put(targetName, targetComponent);
         return components;
     }
 
-    public static <T> InboundWire createInboundWire(String serviceName, Class<T> interfaze)
+    public static <T> Wire createWire(String serviceName, Class<T> interfaze)
         throws InvalidServiceContractException {
-        return createInboundWire(serviceName, interfaze, null);
+        return createWire(serviceName, interfaze, null);
     }
 
-    public static <T> InboundWire createInboundWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
+    public static <T> Wire createWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
         throws InvalidServiceContractException {
-        InboundWire wire = new InboundWireImpl();
+        Wire wire = new WireImpl();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        wire.setServiceContract(contract);
+        wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("#" + serviceName));
-        createInboundChains(interfaze, interceptor, wire);
+        createChains(interfaze, interceptor, wire);
         return wire;
     }
-
-    public static <T> OutboundWire createOutboundWire(String refName, Class<T> interfaze)
-        throws InvalidServiceContractException {
-        return createOutboundWire(refName, interfaze, null);
-    }
-
-    public static <T> OutboundWire createOutboundWire(String refName, Class<T> interfaze, Interceptor interceptor)
-        throws InvalidServiceContractException {
-
-        OutboundWire wire = new OutboundWireImpl();
-        wire.setSourceUri(URI.create("#" + refName));
-        createOutboundChains(interfaze, interceptor, wire);
-        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        wire.setServiceContract(contract);
-        return wire;
-    }
-
 
     @SuppressWarnings("unchecked")
     private static <T> JavaAtomicComponent createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
@@ -239,30 +191,18 @@ public final class MockFactory {
         return component;
     }
 
-    private static void createOutboundChains(Class<?> interfaze, Interceptor interceptor, OutboundWire wire)
-        throws InvalidServiceContractException {
-        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        for (Operation<?> operation : contract.getOperations().values()) {
-            OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-            if (interceptor != null) {
-                chain.addInterceptor(interceptor);
-            }
-            wire.addOutboundInvocationChain(operation, chain);
-        }
-    }
-
-    private static void createInboundChains(Class<?> interfaze, Interceptor interceptor, InboundWire wire)
+    private static void createChains(Class<?> interfaze, Interceptor interceptor, Wire wire)
         throws InvalidServiceContractException {
 
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         for (Operation<?> method : contract.getOperations().values()) {
-            InboundInvocationChain chain = new InboundInvocationChainImpl(method);
+            InvocationChain chain = new InvocationChainImpl(method);
             if (interceptor != null) {
                 chain.addInterceptor(interceptor);
             }
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());
-            wire.addInboundInvocationChain(method, chain);
+            wire.addInvocationChain(method, chain);
         }
     }
 

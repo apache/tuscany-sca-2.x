@@ -18,27 +18,32 @@
  */
 package org.apache.tuscany.core.injection;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CallbackWireObjectFactoryTestCase extends TestCase {
 
+    @SuppressWarnings({"unchecked"})
     public void testCreateInstance() throws Exception {
         WireService service = createMock(WireService.class);
-        service.createCallbackProxy(Foo.class, null);
-        expectLastCall().andReturn(null);
-        replay(service);
-        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(Foo.class, service, null);
-        factory.getInstance();
-        verify(service);
+        Foo foo = new Foo() {
+        };
+        EasyMock.expect(service.createCallbackProxy(EasyMock.eq(Foo.class), EasyMock.isA(List.class))).andReturn(foo);
+        EasyMock.replay(service);
+        List<Wire> wires = new ArrayList<Wire>();
+        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(Foo.class, service, wires);
+        assertEquals(foo, factory.getInstance());
+        EasyMock.verify(service);
     }
 
     private interface Foo {

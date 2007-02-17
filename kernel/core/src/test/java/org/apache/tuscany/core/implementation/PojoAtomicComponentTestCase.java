@@ -25,9 +25,8 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -108,14 +107,14 @@ public class PojoAtomicComponentTestCase extends TestCase {
     public void testServiceLookup() {
         URI uri = URI.create("#service");
         FooService foo = EasyMock.createMock(FooService.class);
-        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(wire.getSourceUri()).andReturn(uri);
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(wire);
         ObjectFactory factory = EasyMock.createMock(ObjectFactory.class);
         EasyMock.expect(factory.getInstance()).andReturn(foo);
         EasyMock.replay(factory);
         TestAtomicComponent component = new TestAtomicComponent(config, Scope.COMPOSITE, factory);
-        component.onReferenceWire(wire);
+        component.attachWire(wire);
         assertSame(foo, component.getService(FooService.class, "service"));
         EasyMock.verify(wire);
         EasyMock.verify(factory);
@@ -153,11 +152,11 @@ public class PojoAtomicComponentTestCase extends TestCase {
         }
 
         @SuppressWarnings({"unchecked"})
-        protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire) {
+        protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
             return factory;
         }
 
-        public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
+        public TargetInvoker createTargetInvoker(String targetName, Operation operation)
             throws TargetInvokerCreationException {
             return null;
         }

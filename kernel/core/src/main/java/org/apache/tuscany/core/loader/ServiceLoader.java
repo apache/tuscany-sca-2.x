@@ -20,6 +20,7 @@ package org.apache.tuscany.core.loader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -69,8 +70,17 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         String name = reader.getAttributeValue(null, "name");
         URI targetUri = null;
         ServiceDefinition def = new ServiceDefinition();
+        StringBuilder buf = new StringBuilder();
+        List<String> names = deploymentContext.getPathNames();
+        int len = names.size();
+        if (len > 0) {
+            for (int i = 0; i < len - 1; i++) {
+                buf.append(names.get(i)).append("/");
+            }
+            buf.append(names.get(len - 1));
+        }
         try {
-            def.setUri(new URI(parent.getUri().toString() + "#" + name));
+            def.setUri(new URI(buf + "#" + name));
         } catch (URISyntaxException e) {
             throw new IllegalSCDLNameException(e);
         }
@@ -84,15 +94,11 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                         String target = text != null ? text.trim() : null;
                         QualifiedName qName = new QualifiedName(target);
                         try {
-                            StringBuilder buf = new StringBuilder();
-                            for (String path : deploymentContext.getPathNames()) {
-                                buf.append(path).append("/");
-                            }
                             if (qName.getPortName() == null) {
-                                targetUri = new URI(buf + target);
+                                targetUri = new URI(buf + "/" + target);
                             } else {
                                 targetUri =
-                                    new URI(buf + qName.getPartName() + "#" + qName.getPortName());
+                                    new URI(buf + "/" + qName.getPartName() + "#" + qName.getPortName());
                             }
                         } catch (URISyntaxException e) {
                             throw new IllegalSCDLNameException(e);

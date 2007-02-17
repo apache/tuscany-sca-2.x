@@ -22,15 +22,12 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The default implementation of an SCA service
@@ -38,33 +35,11 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public abstract class ServiceBindingExtension extends AbstractSCAObject implements ServiceBinding {
-    protected Service service;
-    protected InboundWire inboundWire;
-    protected OutboundWire outboundWire;
     protected ServiceContract<?> bindingServiceContract;
+    protected Wire wire;
 
-    public ServiceBindingExtension(URI name, CompositeComponent parent) throws CoreRuntimeException {
+    public ServiceBindingExtension(URI name) throws CoreRuntimeException {
         super(name);
-    }
-
-    public void setService(Service service) {
-        this.service = service;
-    }
-
-    public InboundWire getInboundWire() {
-        return inboundWire;
-    }
-
-    public void setInboundWire(InboundWire wire) {
-        inboundWire = wire;
-    }
-
-    public OutboundWire getOutboundWire() {
-        return outboundWire;
-    }
-
-    public void setOutboundWire(OutboundWire outboundWire) {
-        this.outboundWire = outboundWire;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
@@ -76,4 +51,11 @@ public abstract class ServiceBindingExtension extends AbstractSCAObject implemen
         return bindingServiceContract;
     }
 
+    public Wire getWire() {
+        return wire;
+    }
+
+    public void setWire(Wire wire) {
+        this.wire = wire;
+    }
 }

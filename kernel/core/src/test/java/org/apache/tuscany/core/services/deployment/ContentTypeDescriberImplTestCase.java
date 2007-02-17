@@ -20,8 +20,6 @@ package org.apache.tuscany.core.services.deployment;
 
 import java.net.URL;
 
-import org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl;
-
 import junit.framework.TestCase;
 
 public class ContentTypeDescriberImplTestCase extends TestCase {
@@ -40,7 +38,7 @@ public class ContentTypeDescriberImplTestCase extends TestCase {
     public void testDefaultContentType() throws Exception {
         URL artifactURL = getClass().getResource("test.ext");
         assertEquals("application/v.tuscany.ext", contentTypeBuilder.getContentType(artifactURL,
-                                                                                    "application/v.tuscany.ext"));
+            "application/v.tuscany.ext"));
     }
 
     protected void setUp() throws Exception {

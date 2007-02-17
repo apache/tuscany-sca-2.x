@@ -21,9 +21,8 @@ package org.apache.tuscany.core.implementation.system.component;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -41,11 +40,11 @@ public class SystemAtomicComponentImpl extends PojoAtomicComponent {
         scope = Scope.COMPOSITE;
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
         return null;
     }
 
-    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire) {
+    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
         return new OptimizedWireObjectFactory<B>(interfaze, wire);
     }
 }

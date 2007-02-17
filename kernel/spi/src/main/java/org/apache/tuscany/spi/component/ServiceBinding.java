@@ -20,18 +20,15 @@ package org.apache.tuscany.spi.component;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The runtime instantiation of an SCA service binding.
  *
  * @version $Rev$ $Date$
  */
-public interface ServiceBinding extends SCAObject {
+public interface ServiceBinding extends Invocable {
 
     /**
      * Returns the binding qualified name
@@ -41,55 +38,14 @@ public interface ServiceBinding extends SCAObject {
     QName getBindingType();
 
     /**
-     * Sets the parent service for the binding
-     *
-     * @param service the parent service for the binding
-     */
-    void setService(Service service);
-
-    /**
      * Get the ServiceContract for the binding
      *
      * @return the ServiceContract for the binding
      */
     ServiceContract<?> getBindingServiceContract();
 
-    /**
-     * Returns the inbound wire for flowing a request through the service
-     *
-     * @return the inbound wire for flowing a request through the service
-     */
-    InboundWire getInboundWire();
+    Wire getWire();
 
-    /**
-     * Sets the inbound wire for flowing a request through the service
-     *
-     * @param wire the inbound wire for flowing a request through the service
-     */
-    void setInboundWire(InboundWire wire);
-
-    /**
-     * Returns the outbound wire for flowing a request out of the service
-     *
-     * @return the outbound wire for flowing a request out of the service
-     */
-    OutboundWire getOutboundWire();
-
-    /**
-     * Sets the outbound wire for flowing a request out of the service
-     *
-     * @param wire the outbound wire for flowing a request out of the service
-     */
-    void setOutboundWire(OutboundWire wire);
-
-    /**
-     * Returns the target invoker for dispatching callback invocations
-     *
-     * @param contract  the callback contract
-     * @param operation the callback operation the target invoker dispatches to
-     * @throws TargetInvokerCreationException
-     */
-    TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException;
+    void setWire(Wire wire);
 
 }

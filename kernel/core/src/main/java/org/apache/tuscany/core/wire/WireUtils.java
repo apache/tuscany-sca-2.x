@@ -22,16 +22,12 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.SCAObject;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.OutboundChainHolder;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Utilities for operating on wires
@@ -51,12 +47,12 @@ public final class WireUtils {
      * @return a collection containing the method to invocation chain mapping
      * @throws NoMethodForOperationException
      */
-    public static Map<Method, InboundInvocationChain> createInboundMapping(InboundWire wire, Method[] methods)
+    public static Map<Method, InvocationChain> createInboundMapping(Wire wire, Method[] methods)
         throws NoMethodForOperationException {
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInboundInvocationChains().entrySet()) {
+        Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>();
+        for (Map.Entry<Operation<?>, InvocationChain> entry : wire.getInvocationChains().entrySet()) {
             Operation<?> operation = entry.getKey();
-            InboundInvocationChain chain = entry.getValue();
+            InvocationChain chain = entry.getValue();
             Method method = findMethod(operation, methods);
             if (method == null) {
                 throw new NoMethodForOperationException(operation.getName());
@@ -75,18 +71,18 @@ public final class WireUtils {
      * @return a collection of method to operation mappings
      * @throws NoMethodForOperationException
      */
-    public static Map<Method, OutboundChainHolder> createInterfaceToWireMapping(Class<?> interfaze, OutboundWire wire)
+    public static Map<Method, ChainHolder> createInterfaceToWireMapping(Class<?> interfaze, Wire wire)
         throws NoMethodForOperationException {
-        Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getOutboundInvocationChains();
-        Map<Method, OutboundChainHolder> chains = new HashMap<Method, OutboundChainHolder>(invocationChains.size());
+        Map<Operation<?>, InvocationChain> invocationChains = wire.getInvocationChains();
+        Map<Method, ChainHolder> chains = new HashMap<Method, ChainHolder>(invocationChains.size());
         Method[] methods = interfaze.getMethods();
-        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
+        for (Map.Entry<Operation<?>, InvocationChain> entry : invocationChains.entrySet()) {
             Operation operation = entry.getKey();
             Method method = findMethod(operation, methods);
             if (method == null) {
                 throw new NoMethodForOperationException(operation.getName());
             }
-            chains.put(method, new OutboundChainHolder(entry.getValue()));
+            chains.put(method, new ChainHolder(entry.getValue()));
         }
         return chains;
     }
@@ -98,8 +94,8 @@ public final class WireUtils {
      * @param wire the wire
      * @return true if the wire is optimizable
      */
-    public static boolean isOptimizable(OutboundWire wire) {
-        for (OutboundInvocationChain chain : wire.getOutboundInvocationChains().values()) {
+    public static boolean isOptimizable(Wire wire) {
+        for (InvocationChain chain : wire.getInvocationChains().values()) {
             if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();
                 if (current == null) {
@@ -114,33 +110,6 @@ public final class WireUtils {
             }
         }
         // if there is a callback, the wire is never optimizable since the callback target needs to be disambiguated
-        return wire.getTargetCallbackInvocationChains().isEmpty();
+        return wire.getCallbackInvocationChains().isEmpty();
     }
-
-    /**
-     * Determines if the given wire is optimizable, i.e. its invocation chains may be bypassed during an invocation.
-     * This is typically calculated during the connect phase to optimize away invocation chains.
-     *
-     * @param container the wire container
-     * @param wire the wire
-     * @return true if the wire is optimizable
-     */
-    public static boolean isOptimizable(SCAObject container, InboundWire wire) {
-        if (!(container instanceof Component) || !((Component) container).isOptimizable()) {
-            return false;
-        }
-        for (InboundInvocationChain chain : wire.getInboundInvocationChains().values()) {
-            if (chain.getHeadInterceptor() != null) {
-                Interceptor current = chain.getHeadInterceptor();
-                while (current != null) {
-                    if (!current.isOptimizable()) {
-                        return false;
-                    }
-                    current = current.getNext();
-                }
-            }
-        }
-        return true;
-    }
-
 }

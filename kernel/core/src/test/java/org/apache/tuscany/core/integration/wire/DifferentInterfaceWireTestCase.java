@@ -62,10 +62,9 @@ public class DifferentInterfaceWireTestCase extends TestCase {
                 null,
                 members,
                 "target",
-                OtherTarget.class,
                 OtherTargetImpl.class,
-                scope,
-                null);
+                scope
+            );
         AtomicComponent sourceComponent = contexts.get("source");
         Source source = (Source) sourceComponent.getTargetInstance();
         Target target = source.getTarget();

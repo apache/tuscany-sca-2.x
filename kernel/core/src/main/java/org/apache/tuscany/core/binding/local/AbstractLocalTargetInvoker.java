@@ -21,9 +21,9 @@ package org.apache.tuscany.core.binding.local;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -50,7 +50,7 @@ public abstract class AbstractLocalTargetInvoker implements TargetInvoker {
         throw new InvocationTargetException(new UnsupportedOperationException());
     }
 
-    protected Message invoke(OutboundInvocationChain chain, TargetInvoker invoker, Message msg) throws Throwable {
+    protected Message invoke(InvocationChain chain, TargetInvoker invoker, Message msg) throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         if (headInterceptor == null) {
             try {

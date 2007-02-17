@@ -16,25 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.builder;
+package org.apache.tuscany.spi.component;
 
-import java.net.URI;
-
-import org.apache.tuscany.spi.builder.WiringException;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Denotes a general error connecting two wires
- *
  * @version $Rev$ $Date$
  */
-public class WireConnectException extends WiringException {
+public interface Invocable extends SCAObject {
 
-    public WireConnectException(String message) {
-        super(message);
-    }
-
-    public WireConnectException(String message, URI sourceUri, URI targetUri, Throwable throwable) {
-        super(message, sourceUri, targetUri, throwable);
-    }
+    /**
+     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service offered this
+     * artifact
+     *
+     * @param targetName the service name
+     * @param operation  the operation to invoke
+     * @return the target invoker
+     * @throws TargetInvokerCreationException
+     */
+    TargetInvoker createTargetInvoker(String targetName, Operation operation) throws TargetInvokerCreationException;
 
 }

@@ -19,10 +19,7 @@
 package org.apache.tuscany.spi.extension;
 
 import java.net.URI;
-
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -30,8 +27,12 @@ import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
+
+import junit.framework.AssertionFailedError;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -43,7 +44,7 @@ public class AtomicComponentExtensionTestCase extends TestCase {
     public void testURI() {
         assertSame(uri, ext.getUri());
     }
-    
+
     public void testRemoveInstance() throws Exception {
         ScopeContainer scopeContainer = EasyMock.createMock(ScopeContainer.class);
         EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE);
@@ -66,8 +67,24 @@ public class AtomicComponentExtensionTestCase extends TestCase {
             super(uri, null, null, null, null, 0);
         }
 
-        public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
+        public TargetInvoker createTargetInvoker(String targetName, Operation operation)
             throws TargetInvokerCreationException {
+            throw new AssertionFailedError();
+        }
+
+        public List<Wire> getWires(String name) {
+            throw new AssertionFailedError();
+        }
+
+        public void attachWire(Wire wire) {
+            throw new AssertionFailedError();
+        }
+
+        public void attachWires(List<Wire> wires) {
+            throw new AssertionFailedError();
+        }
+
+        public void attachCallbackWire(Wire wire) {
             throw new AssertionFailedError();
         }
 

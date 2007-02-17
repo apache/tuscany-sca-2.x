@@ -27,12 +27,10 @@ import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
@@ -41,10 +39,9 @@ import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.JavaTargetInvoker;
 import org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler;
 import org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.NonBlockingBridgingInterceptor;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.NonBlockingInterceptor;
 import org.easymock.classextension.EasyMock;
 
 /**
@@ -56,7 +53,7 @@ public class OneWayWireToJavaInvocationTestCase extends TestCase {
     private WorkScheduler scheduler;
     private WorkContext context;
     private CountDownLatch latch;
-    private OutboundInvocationChain ochain;
+    private InvocationChain ochain;
     private JavaTargetInvoker invoker;
     private JavaAtomicComponent component;
     private AsyncTarget target;
@@ -85,14 +82,13 @@ public class OneWayWireToJavaInvocationTestCase extends TestCase {
         EasyMock.replay(component);
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
-        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
-        invoker = new JavaTargetInvoker(method, component, inboundWire, context, monitor);
+        invoker = new JavaTargetInvoker(method, component, context, monitor);
         Operation<Type> operation = new Operation<Type>("invoke", null, null, null, false, null, TargetInvoker.NONE);
-        ochain = new OutboundInvocationChainImpl(operation);
-        NonBlockingBridgingInterceptor bridgeInterceptor = new NonBlockingBridgingInterceptor(scheduler, context);
+        ochain = new InvocationChainImpl(operation);
+        NonBlockingInterceptor bridgeInterceptor = new NonBlockingInterceptor(scheduler, context);
         ochain.addInterceptor(bridgeInterceptor);
-        InboundInvocationChain ichain = new InboundInvocationChainImpl(operation);
+        InvocationChain ichain = new InvocationChainImpl(operation);
         WaitInterceptor waitInterceptor = new WaitInterceptor();
         InvokerInterceptor invokerInterceptor = new InvokerInterceptor();
         ichain.addInterceptor(waitInterceptor);

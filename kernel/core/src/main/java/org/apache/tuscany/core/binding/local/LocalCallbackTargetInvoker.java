@@ -19,15 +19,14 @@
 package org.apache.tuscany.core.binding.local;
 
 import java.util.Map;
-import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Dispatches a callback invocation to the callback instance
@@ -36,12 +35,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class LocalCallbackTargetInvoker extends AbstractLocalTargetInvoker {
     private Operation operation;
-    private InboundWire inboundWire;
+    private Wire wire;
 
-    public LocalCallbackTargetInvoker(Operation operation, InboundWire inboundWire) {
+    public LocalCallbackTargetInvoker(Operation operation, Wire wire) {
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
-        this.inboundWire = inboundWire;
+        this.wire = wire;
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
@@ -55,14 +54,9 @@ public class LocalCallbackTargetInvoker extends AbstractLocalTargetInvoker {
     }
 
     private Message invoke(Operation operation, Message msg) throws Throwable {
-        URI targetAddress = msg.popFromAddress();
-        if (targetAddress == null) {
-            throw new AssertionError("Popped a null from address from message");
-        }
         //TODO optimize as this is slow in local invocations
-        Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =
-            inboundWire.getSourceCallbackInvocationChains(targetAddress);
-        OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
+        Map<Operation<?>, InvocationChain> chains = wire.getCallbackInvocationChains();
+        InvocationChain chain = chains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
         return invoke(chain, invoker, msg);
     }

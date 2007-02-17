@@ -25,9 +25,12 @@ import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.Map;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
@@ -37,37 +40,44 @@ import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 
 /**
- * Responsible for invoking on an outbound wire associated with a callback. The handler retrieves the correct outbound
- * callback wire from the work context.
+ * Responsible for dispatching to a callback through a wire.
  * <p/>
  * TODO cache target invoker
  *
  * @version $Rev$ $Date$
  */
-public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHandler
+public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
     implements WireInvocationHandler, InvocationHandler, Externalizable, SCAExternalizable {
     private transient WorkContext context;
-    private transient InboundWire wire;
-    private String serviceName;
+    private transient Map<URI, Wire> wires;
+    private List<String> sourceWireNames;
 
     /**
      * Constructor used for deserialization only
      */
     public JDKCallbackInvocationHandler() {
+        sourceWireNames = new ArrayList<String>();
+        wires = new HashMap<URI, Wire>();
     }
 
-    public JDKCallbackInvocationHandler(InboundWire wire, WorkContext context) {
+    public JDKCallbackInvocationHandler(List<Wire> wireList, WorkContext context) {
         this.context = context;
-        this.wire = wire;
-        this.serviceName = wire.getSourceUri().getFragment();
+        this.wires = new HashMap<URI, Wire>();
+        for (Wire wire : wireList) {
+            wires.put(wire.getSourceUri(), wire);
+        }
+        sourceWireNames = new ArrayList<String>();
+        for (URI uri : wires.keySet()) {
+            sourceWireNames.add(uri.getFragment());
+        }
     }
 
     @SuppressWarnings({"unchecked"})
@@ -85,23 +95,19 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         }
         Object correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
-        LinkedList<URI> callbackRoutingChain = (LinkedList<URI>) context.getCurrentCallbackRoutingChain().clone();
-        if (callbackRoutingChain == null) {
-            throw new AssertionError("Missing stack of from addresses");
-        }
-        URI targetAddress = callbackRoutingChain.removeFirst();
-        if (targetAddress == null) {
-            throw new AssertionError("Popped a null from address from stack");
-        }
-        //TODO optimize as this is slow in local invocations
-        Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =
-            wire.getSourceCallbackInvocationChains(targetAddress);
-        Operation operation = findOperation(method, sourceCallbackInvocationChains.keySet());
-        OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
+        LinkedList<URI> callbackUris = context.getCurrentCallbackUris();
+        assert callbackUris != null;
+        URI targetAddress = callbackUris.getLast();
+        assert targetAddress != null;
+        Wire wire = wires.get(targetAddress);
+        assert wire != null;
+        Map<Operation<?>, InvocationChain> chains = wire.getCallbackInvocationChains();
+        Operation operation = findOperation(method, chains.keySet());
+        InvocationChain chain = chains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
 
         try {
-            return invoke(chain, invoker, args, correlationId, callbackRoutingChain);
+            return invoke(chain, invoker, args, correlationId, callbackUris);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {
@@ -117,11 +123,18 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(serviceName);
+        int i = sourceWireNames.size() - 1;
+        out.writeInt(i);
+        for (String name : sourceWireNames) {
+            out.writeObject(name);
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        serviceName = (String) in.readObject();
+        int num = in.readInt();
+        for (int i = 0; i <= num; i++) {
+            sourceWireNames.add((String) in.readObject());
+        }
     }
 
     public void setWorkContext(WorkContext context) {
@@ -133,6 +146,11 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         if (owner == null) {
             throw new ReactivationException("Current atomic component not set on work context");
         }
-        wire = owner.getInboundWire(serviceName);
+        for (String name : sourceWireNames) {
+            // TODO JFM support multiplicity, remove get(0)
+            Wire wire = owner.getWires(name).get(0);
+            wires.put(wire.getSourceUri(), wire);
+
+        }
     }
 }

@@ -31,15 +31,13 @@ import org.osoa.sca.annotations.Init;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.wire.InboundWireImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.WireImpl;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -62,18 +60,14 @@ public final class MockFactory {
         AtomicComponent targetComponent = createAtomicComponent(target, targetScopeContainer, targetClass);
         PojoConfiguration sourceConfig = new PojoConfiguration();
         sourceConfig.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
-
-        //create target wire
         Method[] sourceMethods = sourceClass.getMethods();
         Class[] interfaces = targetClass.getInterfaces();
         EagerInit eager = targetClass.getAnnotation(EagerInit.class);
         if (eager != null) {
             sourceConfig.setInitLevel(eager.value());
         }
-
         Method setter = null;
         for (Class interfaze : interfaces) {
-
             for (Method method : sourceMethods) {
                 if (method.getParameterTypes().length == 1) {
                     if (interfaze.isAssignableFrom(method.getParameterTypes()[0])) {
@@ -87,25 +81,19 @@ public final class MockFactory {
                     sourceConfig.setDestroyInvoker(new MethodEventInvoker<Object>(method));
                 }
             }
-
         }
         if (setter == null) {
             throw new IllegalArgumentException("No setter found on source for target");
         }
-
         sourceConfig.addReferenceSite(setter.getName(), setter);
         sourceConfig.setName(new URI(source));
         AtomicComponent sourceComponent = new SystemAtomicComponentImpl(sourceConfig);
         sourceComponent.setScopeContainer(sourceScopeContainer);
-        OutboundWire wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         wire.setSourceUri(URI.create("#" + setter.getName()));
-        wire.setServiceContract(new JavaServiceContract(targetClass));
-        InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setComponent(targetComponent);
-        inboundWire.setServiceContract(new JavaServiceContract(targetClass));
-        inboundWire.setSourceUri(URI.create("#" + target));
-        wire.setTargetWire(inboundWire);
-        sourceComponent.addOutboundWire(wire);
+        wire.setSourceContract(new JavaServiceContract(targetClass));
+        wire.setTarget(targetComponent);
+        sourceComponent.attachWire(wire);
         components.put(source, sourceComponent);
         components.put(target, targetComponent);
         return components;

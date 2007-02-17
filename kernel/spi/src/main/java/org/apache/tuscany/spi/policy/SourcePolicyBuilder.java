@@ -20,12 +20,13 @@ package org.apache.tuscany.spi.policy;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Implementations contribute {@link org.apache.tuscany.spi.wire.Interceptor}s to handle source-side policy on a wire.
  *
  * @version $$Rev$$ $$Date$$
+ * @deprecated
  */
 public interface SourcePolicyBuilder {
 
@@ -36,6 +37,6 @@ public interface SourcePolicyBuilder {
      * @param wire       the wire to attach policy to
      * @throws BuilderException
      */
-    void build(ReferenceDefinition definition, OutboundWire wire) throws BuilderException;
+    void build(ReferenceDefinition definition, Wire wire) throws BuilderException;
 
 }

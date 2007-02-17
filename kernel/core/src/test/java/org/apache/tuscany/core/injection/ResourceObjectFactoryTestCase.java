@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.spi.host.ResourceHost;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -64,8 +64,8 @@ public class ResourceObjectFactoryTestCase extends TestCase {
         EasyMock.expect(host.resolveResource(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(host);
 
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getTargetService()).andReturn(null);
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getTargetInstance()).andReturn(null);
         EasyMock.replay(wire);
 
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, host);

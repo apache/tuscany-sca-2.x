@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundWire;
 
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.findClosestMatchingMethod;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
@@ -50,11 +49,10 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
 
     public JavaTargetInvoker(Method operation,
                              JavaAtomicComponent component,
-                             InboundWire wire,
                              Class callbackClass,
                              WorkContext context,
                              ExecutionMonitor monitor) {
-        super(wire, context, monitor);
+        super(context, monitor);
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
@@ -64,10 +62,9 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
 
     public JavaTargetInvoker(Method operation,
                              JavaAtomicComponent component,
-                             InboundWire callbackWire,
                              WorkContext context,
                              ExecutionMonitor monitor) {
-        this(operation, component, callbackWire, null, context, monitor);
+        this(operation, component, null, context, monitor);
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {

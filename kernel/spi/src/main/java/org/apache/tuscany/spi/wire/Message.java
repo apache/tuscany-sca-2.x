@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.util.LinkedList;
 import java.net.URI;
+import java.util.LinkedList;
 
 /**
  * Represents a request, response, or exception flowing through a wire
@@ -49,24 +49,19 @@ public interface Message {
     TargetInvoker getTargetInvoker();
 
     /**
-     * Returns the latest 'address' of the SCAObject where this message originated
+     * @deprecated
      */
-    URI popFromAddress();
+    void pushCallbackUri(URI uri);
 
     /**
-     * Adds the latest 'address' of the SCAObject where this message originated
+     * Returns the ordered list of callback URIs
      */
-    void pushFromAddress(URI fromAddress);
+    LinkedList<URI> getCallbackUris();
 
     /**
-     * Returns the chain of SCAObject addresses
+     * Sets the ordered list of callback URIs
      */
-    LinkedList<URI> getCallbackRoutingChain();
-
-    /**
-     * Sets the chain of SCAObject addresses
-     */
-    void setCallbackRoutingChain(LinkedList<URI> fromAddresses);
+    void setCallbackUris(LinkedList<URI> uris);
 
     /**
      * Returns the id of the message
@@ -103,18 +98,18 @@ public interface Message {
     void setBodyWithFault(Object fault);
 
     /**
-     * Returns the conversational sequence the message is associated with, {@link TargetInvoker.NONE}, {@link
-     * TargetInvoker.START}, {@link TargetInvoker.CONTINUE}, or {@link TargetInvoker.END}
+     * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END on {@link
+     * TargetInvoker}
      *
      * @return the conversational sequence the message is associated with
      */
     short getConversationSequence();
 
     /**
-     * Sets the conversational sequence the message is associated with,
+     * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END on {@link
+     * TargetInvoker}
      *
-     * @param sequence {@link TargetInvoker.NONE}, {@link TargetInvoker.START}, {@link TargetInvoker.CONTINUE}, or
-     *                 {@link TargetInvoker.END}
+     * @param sequence the conversational sequence
      */
     void setConversationSequence(short sequence);
 

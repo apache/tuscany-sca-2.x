@@ -24,51 +24,51 @@ import java.net.URI;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
 import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JDKOutboundInvocationHandlerProxyTestCase extends TestCase {
-
+public class JDKInvocationHandlerProxyTestCase extends TestCase {
     private JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
-    private OutboundWire wire;
     private Method clientHello;
-    private TargetInvoker targetInvoker;
 
+    /**
+     * Verifies a handler configured to use a different interface than the wire target can dispatch
+     */
     public void testDifferentInterface() throws Throwable {
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Client.class, wire, null);
+        Wire wire = new WireImpl();
+        JavaServiceContract contract = registry.introspect(Target.class);
+        for (Operation<?> operation : contract.getOperations().values()) {
+            InvocationChain chain = new InvocationChainImpl(operation);
+            wire.addInvocationChain(operation, chain);
+        }
+        wire.setSourceContract(contract);
+        wire.setSourceUri(URI.create("foo#bar"));
+        TargetInvoker targetInvoker = EasyMock.createMock(TargetInvoker.class);
+        EasyMock.expect(targetInvoker.invokeTarget(EasyMock.isNull(), EasyMock.eq(TargetInvoker.NONE)))
+            .andReturn(new MessageImpl());
+        EasyMock.expect(targetInvoker.isCacheable()).andReturn(false);
+        EasyMock.replay(targetInvoker);
+        wire.getInvocationChains().values().iterator().next().setTargetInvoker(targetInvoker);
+
+        JDKInvocationHandler handler = new JDKInvocationHandler(Client.class, wire, null);
         handler.invoke(null, clientHello, null);
         EasyMock.verify(targetInvoker);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        wire = new OutboundWireImpl();
-        JavaServiceContract contract = registry.introspect(Target.class);
-        for (Operation<?> operation : contract.getOperations().values()) {
-            OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-            wire.addOutboundInvocationChain(operation, chain);
-            targetInvoker = EasyMock.createMock(TargetInvoker.class);
-            EasyMock.expect(targetInvoker.invokeTarget(EasyMock.isNull(), EasyMock.eq(TargetInvoker.NONE)))
-                .andReturn(new MessageImpl());
-            EasyMock.expect(targetInvoker.isCacheable()).andReturn(false);
-            EasyMock.replay(targetInvoker);
-            chain.setTargetInvoker(targetInvoker);
-        }
-        wire.setServiceContract(contract);
-        wire.setSourceUri(URI.create("foo#bar"));
         clientHello = Client.class.getMethod("hello");
-
     }
 
     private interface Target {

@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.ObjectFactory;
  * @version $Rev$ $Date$
  * @param <B> the type of the business interface
  */
-public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements ServiceReference<B>{
+public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements ServiceReference<B> {
     public ServiceReferenceImpl(Class<B> businessInterface, ObjectFactory<B> factory) {
         super(businessInterface, factory);
     }

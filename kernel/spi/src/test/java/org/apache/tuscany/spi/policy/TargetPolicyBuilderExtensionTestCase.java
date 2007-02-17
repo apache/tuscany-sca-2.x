@@ -21,7 +21,7 @@ package org.apache.tuscany.spi.policy;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import static org.apache.tuscany.spi.policy.PolicyBuilderRegistry.EXTENSION;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -43,7 +43,7 @@ public class TargetPolicyBuilderExtensionTestCase extends TestCase {
 
     private static class MockPolicyBuilderExtension extends TargetPolicyBuilderExtension {
 
-        public void build(ServiceDefinition definition, InboundWire wire) throws BuilderException {
+        public void build(ServiceDefinition definition, Wire wire) throws BuilderException {
 
         }
     }

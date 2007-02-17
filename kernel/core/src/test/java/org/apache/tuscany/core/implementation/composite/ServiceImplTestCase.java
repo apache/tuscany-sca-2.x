@@ -33,7 +33,6 @@ public class ServiceImplTestCase extends TestCase {
 
     public void testStart() {
         ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
-        binding.setService(EasyMock.isA(Service.class));
         binding.start();
         EasyMock.replay(binding);
         Service service = new ServiceImpl(URI.create("foo#bar"), null, null);
@@ -45,7 +44,6 @@ public class ServiceImplTestCase extends TestCase {
 
     public void testStop() {
         ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
-        binding.setService(EasyMock.isA(Service.class));
         binding.stop();
         EasyMock.replay(binding);
         Service service = new ServiceImpl(URI.create("foo#bar"), null, null);
