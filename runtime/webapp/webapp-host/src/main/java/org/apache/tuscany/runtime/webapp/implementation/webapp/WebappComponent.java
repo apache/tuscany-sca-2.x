@@ -20,7 +20,11 @@ package org.apache.tuscany.runtime.webapp.implementation.webapp;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
+
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -36,14 +40,19 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.core.wire.WireObjectFactory;
+import org.apache.tuscany.core.component.ComponentContextProvider;
+import org.apache.tuscany.core.component.ComponentContextImpl;
+import org.apache.tuscany.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.runtime.webapp.Constants;
 
 /**
  * @version $Rev$ $Date$
  */
-public class WebappComponent extends AtomicComponentExtension {
-    private final Map<String, ObjectFactory<?>> attributes;
+public class WebappComponent extends AtomicComponentExtension implements ComponentContextProvider {
+    private final Map<String, ObjectFactory<?>> propertyFactories;
     private final Map<String, Class<?>> referenceTypes;
+    private final Map<String, OutboundWire> referenceFactories;
+    private final ComponentContext context;
 
     public WebappComponent(URI name,
                            WireService wireService,
@@ -53,15 +62,15 @@ public class WebappComponent extends AtomicComponentExtension {
                            Map<String, ObjectFactory<?>> attributes,
                            Map<String, Class<?>> referenceTypes) {
         super(name, wireService, workContext, workScheduler, monitor, 0, 0, 0);
-        this.attributes = attributes;
+        this.propertyFactories = attributes;
         this.referenceTypes = referenceTypes;
+        referenceFactories = new ConcurrentHashMap<String, OutboundWire>(referenceTypes.size());
+        context = new ComponentContextImpl(this);
     }
 
     protected void onReferenceWire(OutboundWire wire) {
         String name = wire.getSourceUri().getFragment();
-        Class<?> type = referenceTypes.get(name);
-        ObjectFactory<?> factory = createWireFactory(type, wire);
-        attributes.put(name, factory);
+        referenceFactories.put(name, wire);
     }
 
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire) {
@@ -70,8 +79,15 @@ public class WebappComponent extends AtomicComponentExtension {
 
     public void bind(ServletContext servletContext) {
         servletContext.setAttribute(Constants.CONTEXT_ATTRIBUTE, getComponentContext());
-        for (Map.Entry<String, ObjectFactory<?>> entry : attributes.entrySet()) {
+        for (Map.Entry<String, ObjectFactory<?>> entry : propertyFactories.entrySet()) {
             servletContext.setAttribute(entry.getKey(), entry.getValue().getInstance());
+        }
+        for (Map.Entry<String, OutboundWire> entry : referenceFactories.entrySet()) {
+            String name = entry.getKey();
+            OutboundWire wire = entry.getValue();
+            Class<?> type = referenceTypes.get(name);
+            ObjectFactory<?> factory = createWireFactory(type, wire);
+            servletContext.setAttribute(name, factory.getInstance());
         }
     }
 
@@ -87,5 +103,37 @@ public class WebappComponent extends AtomicComponentExtension {
 
     public Object getTargetInstance() throws TargetResolutionException {
         throw new UnsupportedOperationException();
+    }
+
+    public ComponentContext getComponentContext() {
+        return context;
+    }
+
+    public <B> B getProperty(Class<B> type, String propertyName) {
+        ObjectFactory<?> factory = propertyFactories.get(propertyName);
+        if (factory != null) {
+            return type.cast(factory.getInstance());
+        } else {
+            return null;
+        }
+
+    }
+
+    public <B> B getService(Class<B> type, String name) {
+        OutboundWire wire = referenceFactories.get(name);
+        if (wire == null) {
+            return null;
+        }
+        ObjectFactory<B> factory = createWireFactory(type, wire);
+        return factory.getInstance();
+    }
+
+    public <B> ServiceReference<B> getServiceReference(Class<B> type, String name) {
+        OutboundWire wire = referenceFactories.get(name);
+        if (wire == null) {
+            return null;
+        }
+        ObjectFactory<B> factory = createWireFactory(type, wire);
+        return new ServiceReferenceImpl<B>(type, factory);
     }
 }
