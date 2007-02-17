@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.deployer;
 
+import java.net.URI;
 import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
@@ -36,12 +37,28 @@ public class ChildDeploymentContext extends AbstractDeploymentContext {
     /**
      * Constructor specifying the loader for application resources.
      *
-     * @param parent the parent of this context
-     * @param classLoader the loader for application resources
+     * @param parent       the parent of this context
+     * @param classLoader  the loader for application resources
      * @param scdlLocation the location of the SCDL being deployed
      */
+    @Deprecated
     public ChildDeploymentContext(DeploymentContext parent, ClassLoader classLoader, URL scdlLocation) {
-        super(classLoader, scdlLocation);
+        this(parent, classLoader, scdlLocation, null);
+    }
+
+    /**
+     * Constructor defining properties of this context.
+     *
+     * @param parent       the parent of this context
+     * @param classLoader  the classloader for loading application resources
+     * @param scdlLocation the location of the SCDL defining this composite
+     * @param componentId  the id of the component being deployed
+     */
+    public ChildDeploymentContext(DeploymentContext parent,
+                                  ClassLoader classLoader,
+                                  URL scdlLocation,
+                                  URI componentId) {
+        super(classLoader, scdlLocation, componentId);
         assert parent != null;
         this.parent = parent;
     }

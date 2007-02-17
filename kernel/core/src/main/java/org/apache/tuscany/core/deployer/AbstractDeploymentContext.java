@@ -33,16 +33,23 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractDeploymentContext implements DeploymentContext {
-    private final URI compositeURI;
+    private final URI componentId;
     private final ClassLoader classLoader;
     private final URL scdlLocation;
     private final Map<String, Object> properties = new HashMap<String, Object>();
     private List<String> pathNames = new ArrayList<String>();
 
-    protected AbstractDeploymentContext(ClassLoader classLoader, URL scdlLocation) {
+    /**
+     * Constructor defining properties of this context.
+     *
+     * @param classLoader the classloader for loading application resources
+     * @param scdlLocation the location of the SCDL defining this composite
+     * @param componentId the id of the component being deployed
+     */
+    protected AbstractDeploymentContext(ClassLoader classLoader, URL scdlLocation, URI componentId) {
         this.classLoader = classLoader;
         this.scdlLocation = scdlLocation;
-        this.compositeURI = null;
+        this.componentId = componentId;
     }
 
     public ClassLoader getClassLoader() {
@@ -69,7 +76,7 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
         }
     }
 
-    public URI getCompositeURI() {
-        return compositeURI;
+    public URI getComponentId() {
+        return componentId;
     }
 }

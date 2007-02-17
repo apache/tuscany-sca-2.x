@@ -72,7 +72,7 @@ public interface DeploymentContext {
      *
      * @return the URI of the composite component currently being deployed
      */
-    URI getCompositeURI();
+    URI getComponentId();
 
     /**
      * Return the extension property with the supplied name.
@@ -92,7 +92,7 @@ public interface DeploymentContext {
 
     /**
      * Returns and ordered list of path names representing the current component hierarchy as an assembly is loaded.
-     * Deprecated in favour of {@link #getCompositeURI}
+     * Deprecated in favour of {@link #getComponentId}
      *
      * @return the ordered list of path names representing the current component hierarchy
      */
