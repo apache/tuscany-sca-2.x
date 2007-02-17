@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.osoa.sca.annotations.Conversation;
+import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
 
@@ -92,7 +92,7 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(-1, type.getMaxAge());
         assertEquals(-1, type.getMaxIdleTime());
     }
-    
+
     public void testSetConversationIDField() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
@@ -112,30 +112,30 @@ public class ConversationProcessorTestCase extends TestCase {
     }
 
     @Scope("CONVERSATION")
-    @Conversation(maxIdleTime = "10 seconds")
+    @ConversationAttributes(maxIdleTime = "10 seconds")
     private class FooMaxIdle {
     }
 
     @Scope("CONVERSATION")
-    @Conversation(maxAge = "10 seconds")
+    @ConversationAttributes(maxAge = "10 seconds")
     private class FooMaxAge {
     }
 
     @Scope("CONVERSATION")
-    @Conversation(maxAge = "10 seconds", maxIdleTime = "10 seconds")
+    @ConversationAttributes(maxAge = "10 seconds", maxIdleTime = "10 seconds")
     private class BadFooBoth {
     }
 
-    @Conversation(maxAge = "10 seconds")
+    @ConversationAttributes(maxAge = "10 seconds")
     private class ImplicitFooScope {
     }
 
     @Scope("STATELESS")
-    @Conversation(maxAge = "10 seconds")
+    @ConversationAttributes(maxAge = "10 seconds")
     private class BadFooScope {
     }
 
-    @Conversation
+    @ConversationAttributes
     private class FooJustConversation {
     }
 
