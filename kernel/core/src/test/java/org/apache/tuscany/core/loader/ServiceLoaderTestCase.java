@@ -162,7 +162,7 @@ public class ServiceLoaderTestCase extends TestCase {
         mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ServiceLoader(mockRegistry);
-        deploymentContext = new RootDeploymentContext(null, null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null, null, null);
         deploymentContext.getPathNames().add(PARENT_NAME);
         parent = EasyMock.createMock(CompositeComponent.class);
         URI uri = URI.create(PARENT_NAME);

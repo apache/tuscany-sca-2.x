@@ -96,7 +96,7 @@ public class CompositeBuilderTestCase extends TestCase {
         ScopeContainerMonitor monitor = EasyMock.createNiceMock(ScopeContainerMonitor.class);
         CompositeScopeContainer container = new CompositeScopeContainer(monitor);
         container.start();
-        deploymentContext = new RootDeploymentContext(null, null, container, null);
+        deploymentContext = new RootDeploymentContext(null, null, null, null, container);
     }
 
     private ComponentDefinition createTopComponentDef() throws Exception {

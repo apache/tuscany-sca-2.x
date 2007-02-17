@@ -134,7 +134,7 @@ public class ReferenceLoaderTestCase extends TestCase {
         mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ReferenceLoader(mockRegistry);
-        deploymentContext = new RootDeploymentContext(null, null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null, null, null);
         deploymentContext.getPathNames().add("parent");
         parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(parent.getUri()).andReturn(URI.create(PARENT_NAME));

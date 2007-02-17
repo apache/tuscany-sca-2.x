@@ -105,7 +105,8 @@ public class DeployerImpl implements Deployer {
         throws LoaderException, BuilderException, ResolutionException {
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
-        DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
+        DeploymentContext deploymentContext =
+            new RootDeploymentContext(null, null, componentDefinition.getUri(), xmlFactory, scopeContainer);
         deploymentContext.getPathNames().add(componentDefinition.getUri().toString());
         // load the model
         load(parent, componentDefinition, deploymentContext);

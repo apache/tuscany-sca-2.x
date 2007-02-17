@@ -86,7 +86,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
             throw new MissingIncludeException("No SCDL location or resource specified", name);
         }
 
-        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url);
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url, null);
         childContext.getPathNames().addAll(deploymentContext.getPathNames());
         CompositeComponentType composite;
         try {

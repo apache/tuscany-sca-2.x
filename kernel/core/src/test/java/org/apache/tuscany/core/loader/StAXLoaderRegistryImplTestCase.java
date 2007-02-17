@@ -118,7 +118,7 @@ public class StAXLoaderRegistryImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         name = new QName("http://mock", "test");
-        deploymentContext = new RootDeploymentContext(null, null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null, null, null);
         mockMonitor = EasyMock.createMock(LoaderRegistryImpl.Monitor.class);
         registry = new LoaderRegistryImpl(mockMonitor);
 
