@@ -25,7 +25,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
+import org.apache.tuscany.core.util.FileHelper;
 import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Service;
@@ -55,7 +55,7 @@ public class ContentTypeDescriberImpl implements ContentTypeDescriber {
     }
 
     protected String resolveContentyTypeByExtension(URL resourceURL) {
-        String artifactExtension = FilenameUtils.getExtension(resourceURL.getPath());
+        String artifactExtension = FileHelper.getExtension(resourceURL.getPath());
         if (artifactExtension == null) {
             return null;
         }

@@ -25,7 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.tuscany.core.util.IOHelper;
 import org.apache.tuscany.host.deployment.ContributionService;
 import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -69,7 +69,7 @@ public class ContributionServiceImpl implements ContributionService {
         try {
             return contribute(source, is);
         } finally {
-            IOUtils.closeQuietly(is);
+            IOHelper.closeQuietly(is);
         }
     }
 
