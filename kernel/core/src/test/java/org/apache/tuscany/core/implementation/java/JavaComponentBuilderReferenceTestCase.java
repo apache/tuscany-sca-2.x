@@ -35,7 +35,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -137,7 +136,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         EasyMock.expect(wire.getInvocationChains()).andReturn(chains).atLeastOnce();
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
         JavaServiceContract targetContract = new JavaServiceContract(Target.class);
-        targetContract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        targetContract.setConversational(false);
         EasyMock.expect(wire.getSourceContract()).andReturn(targetContract).atLeastOnce();
         EasyMock.replay(wire);
 

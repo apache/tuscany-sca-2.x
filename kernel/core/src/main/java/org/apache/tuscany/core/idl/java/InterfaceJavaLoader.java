@@ -40,9 +40,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
@@ -71,7 +69,8 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         throws XMLStreamException, LoaderException {
 
         assert INTERFACE_JAVA.equals(reader.getName());
-        InteractionScope interactionScope = StaxUtil.interactionScope(reader.getAttributeValue(null, "scope"));
+        String conversationalAttr = reader.getAttributeValue(null, "conversational");
+        boolean conversational = Boolean.parseBoolean(conversationalAttr);
         String name = reader.getAttributeValue(null, "interface");
         if (name == null) {
             // allow "class" as well as seems to be a common mistake
@@ -110,8 +109,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
             serviceContract.setDataBinding(dataType.getDataBinding());
         }
         serviceContract.getExtensions().putAll(extensions);
-
-        serviceContract.setInteractionScope(interactionScope);
+        serviceContract.setConversational(conversational);
         return serviceContract;
     }
 }

@@ -45,7 +45,6 @@ import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -67,7 +66,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private ComponentManager componentManager;
 
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>
-    componentBuilders =
+        componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
@@ -116,8 +115,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                             componentDefinition.getImplementation().getComponentType();
                         Map<String, ServiceDefinition> services = componentType.getServices();
                         for (ServiceDefinition serviceDef : services.values()) {
-                            InteractionScope intScope = serviceDef.getServiceContract().getInteractionScope();
-                            if (intScope == InteractionScope.CONVERSATIONAL) {
+                            ServiceContract<?> contract = serviceDef.getServiceContract();
+                            if (contract.isConversational()) {
                                 hasConversationalContract = true;
                                 break;
                             }

@@ -31,7 +31,6 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -79,7 +78,7 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
         ServiceContract<Foo> contract = new ServiceContract<Foo>() {
         };
         contract.setInterfaceClass(Foo.class);
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        contract.setConversational(false);
         EasyMock.expect(container.getUri()).andReturn(URI.create("bar")).atLeastOnce();
 
         wire = EasyMock.createMock(Wire.class);
@@ -88,7 +87,7 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
         ServiceContract<Object> opContract = new ServiceContract<Object>() {
         };
         contract.setInterfaceClass(Foo.class);
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        contract.setConversational(false);
         operation.setServiceContract(opContract);
         map.put(operation, createChain(operation));
         EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();

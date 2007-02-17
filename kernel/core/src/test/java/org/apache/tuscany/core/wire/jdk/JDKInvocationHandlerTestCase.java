@@ -30,7 +30,6 @@ import java.util.UUID;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -53,7 +52,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     public void testToString() {
         Wire wire = new WireImpl();
         ServiceContract contract = new JavaServiceContract(Foo.class);
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        contract.setConversational(false);
         wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("foo#bar"));
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
@@ -64,7 +63,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     public void testHashCode() {
         Wire wire = new WireImpl();
         ServiceContract contract = new JavaServiceContract(Foo.class);
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        contract.setConversational(false);
         wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("foo#bar"));
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
@@ -81,7 +80,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         DataType<Type> outputType1 = new DataType<Type>(String.class, String.class);
         Operation<Type> op1 = new Operation<Type>("test", inputType1, outputType1, null);
         ServiceContract<Type> contract = new JavaServiceContract(Foo.class);
-        contract.setInteractionScope(InteractionScope.CONVERSATIONAL);
+        contract.setConversational(true);
         op1.setServiceContract(contract);
 
         WorkContext wc = new WorkContextImpl();

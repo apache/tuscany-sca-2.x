@@ -35,7 +35,6 @@ import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.TargetInvocationException;
 import org.apache.tuscany.spi.component.WorkContext;
-import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
@@ -224,7 +223,7 @@ public final class JDKInvocationHandler extends AbstractInvocationHandler
         throws NoMethodForOperationException {
         ServiceContract contract = wire.getSourceContract();
         this.referenceName = wire.getSourceUri().getFragment();
-        this.contractIsConversational = CONVERSATIONAL.equals(contract.getInteractionScope());
+        this.contractIsConversational = contract.isConversational();
         this.contractIsRemotable = contract.isRemotable();
         this.contractHasCallback = contract.getCallbackClass() != null;
         // FIXME JFM this should not be dependent on PojoAtomicComponent
