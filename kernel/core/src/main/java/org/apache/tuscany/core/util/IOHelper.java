@@ -28,6 +28,10 @@ public class IOHelper {
      * The default buffer size to use.
      */
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+    
+    protected IOHelper() {
+        
+    }
 
     /**
      * Unconditionally close an <code>InputStream</code>.
@@ -79,8 +83,7 @@ public class IOHelper {
      * @throws IOException if an I/O error occurs
      * @since Commons IO 1.1
      */
-    public static int copy(InputStream input, OutputStream output)
-            throws IOException {
+    public static int copy(InputStream input, OutputStream output) throws IOException {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         int count = 0;
         int n = 0;
