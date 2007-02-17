@@ -107,7 +107,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
         Operation<?> operation = testService.getServiceContract().getOperations().get("main");
         Component component = getComponentManager().getComponent(componentUri);
         TargetInvoker targetInvoker = component.createTargetInvoker("main", operation, null);
-        return targetInvoker.invokeTarget(args, TargetInvoker.NONE);
+        return targetInvoker.invokeTarget(new Object[]{args}, TargetInvoker.NONE);
     }
 
     protected Deployer getDeployer() {
