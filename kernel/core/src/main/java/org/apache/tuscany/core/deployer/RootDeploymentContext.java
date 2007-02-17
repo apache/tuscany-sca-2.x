@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.deployer;
 
 import java.net.URL;
+import java.net.URI;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -38,15 +39,31 @@ public class RootDeploymentContext extends AbstractDeploymentContext {
      * Constructor specifying the loader for application resources.
      *
      * @param classLoader    the loader for application resources
-     * @param xmlFactory     a factory that can be used to obtain an StAX XMLStreamReader
-     * @param scopeContainer the scope context representing this deployment's COMPOSITE scope
      * @param scdlLocation   the location of the SCDL being deployed
      */
+    @Deprecated
     public RootDeploymentContext(ClassLoader classLoader,
                                  XMLInputFactory xmlFactory,
                                  ScopeContainer scopeContainer,
                                  URL scdlLocation) {
-        super(classLoader, scdlLocation);
+        this(classLoader, scdlLocation, null, xmlFactory, scopeContainer);
+    }
+
+    /**
+     * Constructor defining properties of this context.
+     *
+     * @param classLoader  the classloader for loading application resources
+     * @param scdlLocation the location of the SCDL defining this composite
+     * @param componentId  the id of the component being deployed
+     * @param xmlFactory     a factory that can be used to obtain an StAX XMLStreamReader
+     * @param scopeContainer the scope context representing this deployment's COMPOSITE scope
+     */
+    public RootDeploymentContext(ClassLoader classLoader,
+                                 URL scdlLocation,
+                                 URI componentId,
+                                 XMLInputFactory xmlFactory,
+                                 ScopeContainer scopeContainer) {
+        super(classLoader, scdlLocation, componentId);
         this.xmlFactory = xmlFactory;
         this.scopeContainer = scopeContainer;
     }
