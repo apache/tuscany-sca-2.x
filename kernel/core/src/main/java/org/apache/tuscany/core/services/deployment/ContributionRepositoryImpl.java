@@ -32,9 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
+import org.apache.tuscany.core.util.FileHelper;
+import org.apache.tuscany.core.util.IOHelper;
 import org.apache.tuscany.spi.deployer.ContributionRepository;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
@@ -58,7 +57,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      */
     public ContributionRepositoryImpl(@Property(name = "repository") String repository) throws IOException {
         this.rootFile = new File(repository);
-        FileUtils.forceMkdir(rootFile);
+        FileHelper.forceMkdir(rootFile);
         if (!rootFile.exists() || !rootFile.isDirectory() || !rootFile.canRead()) {
             throw new IOException("The root is not a directory: " + repository);
         }
@@ -73,7 +72,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      */
     private File mapToFile(URI contribution) {
         // FIXME: Map the contribution URI to a file?
-        return new File(rootFile, FilenameUtils.getName(contribution.toString()));
+        return new File(rootFile, FileHelper.getName(contribution.toString()));
     }
 
     /**
@@ -90,10 +89,10 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         try {
             out = new BufferedOutputStream(new FileOutputStream(target));
             in = new BufferedInputStream(source);
-            IOUtils.copy(in, out);
+            IOHelper.copy(in, out);
         } finally {
-            IOUtils.closeQuietly(out);
-            IOUtils.closeQuietly(in);
+            IOHelper.closeQuietly(out);
+            IOHelper.closeQuietly(in);
         }
     }
 
@@ -122,7 +121,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         if (contributionURL != null) {
             // remove
             try {
-                FileUtils.forceDelete(FileUtils.toFile(contributionURL));
+                FileHelper.forceDelete(FileHelper.toFile(contributionURL));
                 this.reposirotyContent.remove(contribution);
             } catch (IOException ioe) {
                 // handle file could not be removed
