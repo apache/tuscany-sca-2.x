@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.idl.InvalidConversationalOperationException;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -38,7 +38,6 @@ import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessor;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.CONVERSATION_END;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
@@ -86,14 +85,9 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         contract.setInterfaceClass(type);
         boolean remotable = type.isAnnotationPresent(Remotable.class);
         contract.setRemotable(remotable);
-        Scope interactionScope = type.getAnnotation(Scope.class);
-        boolean conversational = false;
-        if (interactionScope != null && "CONVERSATION".equalsIgnoreCase(interactionScope.value())) {
-            contract.setInteractionScope(InteractionScope.CONVERSATIONAL);
-            conversational = true;
-        } else {
-            contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-        }
+        //Scope interactionScope = type.getAnnotation(Scope.class);
+        boolean conversational = type.isAnnotationPresent(Conversational.class);
+        contract.setConversational(conversational);
         contract.setOperations(getOperations(type, remotable, conversational));
 
         if (callback != null) {

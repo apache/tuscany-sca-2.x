@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.LinkedList;
 
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 
@@ -66,7 +65,7 @@ public abstract class AbstractInvocationHandler {
             }
             Operation operation = chain.getOperation();
             ServiceContract contract = operation.getServiceContract();
-            if (InteractionScope.CONVERSATIONAL.equals(contract.getInteractionScope())) {
+            if (contract.isConversational()) {
                 int sequence = chain.getOperation().getConversationSequence();
                 if (sequence == Operation.CONVERSATION_END) {
                     msg.setConversationSequence(TargetInvoker.END);

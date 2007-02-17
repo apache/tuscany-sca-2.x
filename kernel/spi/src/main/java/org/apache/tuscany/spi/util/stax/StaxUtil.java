@@ -35,7 +35,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Multiplicity;
 
 /**
@@ -72,21 +71,6 @@ public abstract class StaxUtil {
      */
     public static Multiplicity multiplicity(String multiplicity, Multiplicity def) {
         return multiplicity == null ? def : MULTIPLICITY.get(multiplicity);
-    }
-
-    /**
-     * Convert a "scope" attribute to the equivalent enum value. Returns CONVERSATIONAL if the value equals (ignoring
-     * case) "conversational", otherwise returns NONCONVERSATIONAL.
-     *
-     * @param scope the attribute to convert
-     * @return the enum equivalent
-     */
-    public static InteractionScope interactionScope(String scope) {
-        if ("conversational".equalsIgnoreCase(scope)) {
-            return InteractionScope.CONVERSATIONAL;
-        } else {
-            return InteractionScope.NONCONVERSATIONAL;
-        }
     }
 
     public static Document createPropertyValue(XMLStreamReader reader, QName type, DocumentBuilder builder)

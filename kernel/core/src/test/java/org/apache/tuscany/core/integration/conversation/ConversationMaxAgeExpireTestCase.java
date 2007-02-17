@@ -22,12 +22,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndConversation;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -127,7 +127,7 @@ public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCa
         }
     }
 
-    @Scope("CONVERSATION")
+    @Conversational
     public static interface Foo {
 
         void operation1();

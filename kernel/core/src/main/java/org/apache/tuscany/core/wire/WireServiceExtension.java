@@ -55,7 +55,7 @@ public abstract class WireServiceExtension implements WireService {
                 return false;
             }
         }
-        if (source.getInteractionScope() != target.getInteractionScope()) {
+        if (source.isConversational() != target.isConversational()) {
             if (!silent) {
                 throw new IncompatibleServiceContractException("Interaction scopes do not match", source, target);
             } else {

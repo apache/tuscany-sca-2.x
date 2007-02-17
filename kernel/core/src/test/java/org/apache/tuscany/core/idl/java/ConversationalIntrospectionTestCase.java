@@ -18,13 +18,11 @@
  */
 package org.apache.tuscany.core.idl.java;
 
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndConversation;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.idl.InvalidConversationalOperationException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
-import static org.apache.tuscany.spi.model.InteractionScope.NONCONVERSATIONAL;
 import org.apache.tuscany.spi.model.Operation;
 
 import junit.framework.TestCase;
@@ -37,7 +35,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
 
     public void testServiceContractConversationalInformationIntrospection() throws Exception {
         JavaServiceContract contract = registry.introspect(Foo.class);
-        assertEquals(CONVERSATIONAL, contract.getInteractionScope());
+        assertTrue(contract.isConversational());
         int seq = contract.getOperations().get("operation").getConversationSequence();
         assertEquals(Operation.CONVERSATION_CONTINUE, seq);
         seq = contract.getOperations().get("endOperation").getConversationSequence();
@@ -55,12 +53,12 @@ public class ConversationalIntrospectionTestCase extends TestCase {
 
     public void testNonConversationalInformationIntrospection() throws Exception {
         JavaServiceContract contract = registry.introspect(NonConversationalFoo.class);
-        assertEquals(NONCONVERSATIONAL, contract.getInteractionScope());
+        assertFalse(contract.isConversational());
         int seq = contract.getOperations().get("operation").getConversationSequence();
         assertEquals(Operation.NO_CONVERSATION, seq);
     }
 
-    @Scope("CONVERSATION")
+    @Conversational
     private interface Foo {
         void operation();
 

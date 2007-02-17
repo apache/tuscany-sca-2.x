@@ -28,7 +28,7 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public abstract class ServiceContract<T> extends ModelObject implements Cloneable {
-    protected InteractionScope interactionScope;
+    protected boolean conversational;
     protected boolean remotable;
     protected Class<?> interfaceClass;
     protected String interfaceName;
@@ -81,17 +81,21 @@ public abstract class ServiceContract<T> extends ModelObject implements Cloneabl
     }
 
     /**
-     * Returns the service interaction scope
+     * Returns true if the service contract is conversational
+     *
+     * @return true if the service contract is conversational
      */
-    public InteractionScope getInteractionScope() {
-        return interactionScope;
+    public boolean isConversational() {
+        return conversational;
     }
 
     /**
-     * Sets the service interaction scope
+     * Sets if the service contract is conversational
+     *
+     * @param conversational the conversational attribute
      */
-    public void setInteractionScope(InteractionScope interactionScope) {
-        this.interactionScope = interactionScope;
+    public void setConversational(boolean conversational) {
+        this.conversational = conversational;
     }
 
     /**

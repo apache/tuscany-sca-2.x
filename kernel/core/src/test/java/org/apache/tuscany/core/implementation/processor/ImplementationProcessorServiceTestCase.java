@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
@@ -34,7 +34,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
@@ -52,7 +51,7 @@ public class ImplementationProcessorServiceTestCase extends TestCase {
         JavaMappedService service = implService.createService(Foo.class);
         assertTrue(Foo.class.equals(service.getServiceContract().getInterfaceClass()));
         assertTrue(service.isRemotable());
-        assertEquals(InteractionScope.CONVERSATIONAL, service.getServiceContract().getInteractionScope());
+        assertTrue(service.getServiceContract().isConversational());
         ServiceContract serviceContract = service.getServiceContract();
         assertTrue(Bar.class.equals(serviceContract.getCallbackClass()));
         assertTrue("ImplementationProcessorServiceTestCase$Bar".equals(serviceContract.getCallbackName()));
@@ -62,7 +61,7 @@ public class ImplementationProcessorServiceTestCase extends TestCase {
         JavaMappedService service = implService.createService(Baz.class);
         assertTrue(Baz.class.equals(service.getServiceContract().getInterfaceClass()));
         assertTrue(!service.isRemotable());
-        assertEquals(InteractionScope.NONCONVERSATIONAL, service.getServiceContract().getInteractionScope());
+        assertFalse(service.getServiceContract().isConversational());
     }
 
     public void testProcessParamProperty() throws Exception {
@@ -73,21 +72,21 @@ public class ImplementationProcessorServiceTestCase extends TestCase {
         List<String> injectionNames = new ArrayList<String>();
         String[] names = new String[]{"foo"};
         implService.processParam(int.class,
-                                 ctor.getGenericParameterTypes()[0],
-                                 paramAnnotations,
-                                 names,
-                                 0,
-                                 type,
-                                 injectionNames);
+            ctor.getGenericParameterTypes()[0],
+            paramAnnotations,
+            names,
+            0,
+            type,
+            injectionNames);
         org.apache.tuscany.spi.model.Property<?> property = type.getProperties().get("foo");
         assertEquals(int.class, property.getJavaType());
         assertEquals(SimpleTypeMapperExtension.XSD_INT, property.getXmlType());
     }
 
 
+    @Conversational
     @Callback(Bar.class)
     @Remotable
-    @Scope("CONVERSATION")
     public interface Foo {
 
     }
@@ -103,7 +102,7 @@ public class ImplementationProcessorServiceTestCase extends TestCase {
     public static class PropertyClass {
         private int foo;
 
-        public PropertyClass(@Property(name = "foo") int foo) {
+        public PropertyClass(@Property(name = "foo")int foo) {
             this.foo = foo;
         }
 
