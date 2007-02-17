@@ -39,6 +39,10 @@ public class FileHelper {
      * The Windows separator character.
      */
     private static final char WINDOWS_SEPARATOR = '\\';
+    
+    protected FileHelper() {
+        
+    }
     /**
      * Returns the index of the last directory separator character.
      * <p>
@@ -79,7 +83,7 @@ public class FileHelper {
         }
         int extensionPos = filename.lastIndexOf(EXTENSION_SEPARATOR);
         int lastSeparator = indexOfLastSeparator(filename);
-        return (lastSeparator > extensionPos ? -1 : extensionPos);
+        return lastSeparator > extensionPos ? -1 : extensionPos;
     }
     
     /**
@@ -267,7 +271,7 @@ public class FileHelper {
             return null;
         } else {
             String filename = url.getFile().replace('/', File.separatorChar);
-            int pos =0;
+            int pos = 0;
             while ((pos = filename.indexOf('%', pos)) >= 0) {
                 if (pos + 2 < filename.length()) {
                     String hexStr = filename.substring(pos + 1, pos + 3);
