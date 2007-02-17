@@ -16,20 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation;
+package org.apache.tuscany.core.component;
 
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.RequestContext;
 
+import org.apache.tuscany.core.component.ComponentContextProvider;
+
 /**
+ * Implementation of ComponentContext that delegates to a ComponentContextProvider.
+ * 
  * @version $Rev$ $Date$
  */
-public class PojoComponentContextImpl implements ComponentContext {
-    private final PojoAtomicComponent component;
+public class ComponentContextImpl implements ComponentContext {
+    private final ComponentContextProvider component;
 
-    public PojoComponentContextImpl(PojoAtomicComponent component) {
+    public ComponentContextImpl(ComponentContextProvider component) {
         this.component = component;
     }
 
@@ -50,7 +54,7 @@ public class PojoComponentContextImpl implements ComponentContext {
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) {
-        return type.cast(component.getProperty(propertyName));
+        return component.getProperty(type, propertyName);
     }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {

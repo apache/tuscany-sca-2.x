@@ -16,19 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation;
+package org.apache.tuscany.core.component;
 
 import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
+import org.apache.tuscany.core.implementation.PojoAtomicComponent;
+
 /**
  * @version $Rev$ $Date$
  */
-public class PojoComponentContextImplTestCase extends TestCase {
+public class ComponentContextImplTestCase extends TestCase {
     private PojoAtomicComponent component;
-    private PojoComponentContextImpl context;
+    private ComponentContextImpl context;
 
     public void testURI() {
         URI uri = URI.create("foo");
@@ -41,7 +43,7 @@ public class PojoComponentContextImplTestCase extends TestCase {
     public void testGetProperty() {
         String name = "foo";
         String value = "bar";
-        EasyMock.expect(component.getProperty(name)).andReturn(value);
+        EasyMock.expect(component.getProperty(String.class, name)).andReturn(value);
         EasyMock.replay(component);
         assertSame(value, context.getProperty(String.class, name));
         EasyMock.verify(component);
@@ -49,8 +51,7 @@ public class PojoComponentContextImplTestCase extends TestCase {
 
     public void testGetPropertyThatIsIncompatible() {
         String name = "foo";
-        String value = "bar";
-        EasyMock.expect(component.getProperty(name)).andReturn(value);
+        EasyMock.expect(component.getProperty(Integer.class, name)).andThrow(new ClassCastException());
         EasyMock.replay(component);
         try {
             context.getProperty(Integer.class, name);
@@ -64,7 +65,7 @@ public class PojoComponentContextImplTestCase extends TestCase {
     public void testGetPropertyThatIsSubclass() {
         String name = "foo";
         String value = "bar";
-        EasyMock.expect(component.getProperty(name)).andReturn(value);
+        EasyMock.expect(component.getProperty(Object.class, name)).andReturn(value);
         EasyMock.replay(component);
         assertSame(value, context.getProperty(Object.class, name));
         EasyMock.verify(component);
@@ -82,7 +83,7 @@ public class PojoComponentContextImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         component = EasyMock.createMock(PojoAtomicComponent.class);
-        context = new PojoComponentContextImpl(component);
+        context = new ComponentContextImpl(component);
     }
 
     public interface FooService {
