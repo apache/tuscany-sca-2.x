@@ -81,7 +81,10 @@ public class Main {
             appArgs = new String[args.length - 1];
             System.arraycopy(args, 1, appArgs, 0, appArgs.length);
         }
-        runtime.deployAndRun(applicationScdl, applicationClassLoader, appArgs);
+        Object ret = runtime.deployAndRun(applicationScdl, applicationClassLoader, appArgs);
+        System.err.println(ret);
+        
+        System.exit(0);
 
     }
 

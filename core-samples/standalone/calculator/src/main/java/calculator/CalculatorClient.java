@@ -33,7 +33,7 @@ public class CalculatorClient {
         this.calculatorService = calculatorService;
     }
     
-    public Object main(Object ... args) throws Exception {
+    public Object main(String[] args) throws Exception {
         
         if(args.length != 3) {
             throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");

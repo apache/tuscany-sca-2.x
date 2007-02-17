@@ -87,11 +87,11 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
                 }
             }
             Object ret;
-            if (payload != null && !payload.getClass().isArray()) {
+            //if (payload != null && !payload.getClass().isArray()) {
                 ret = operation.invoke(instance, payload);
-            } else {
-                ret = operation.invoke(instance, (Object[]) payload);
-            }
+            //} else {
+            //    ret = operation.invoke(instance, (Object[]) payload);
+            //}
             if (stateless) {
                 // notify a stateless instance of a destruction event after the invoke
                 component.destroy(instance);
