@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.deployer;
 
 import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractDeploymentContext implements DeploymentContext {
+    private final URI compositeURI;
     private final ClassLoader classLoader;
     private final URL scdlLocation;
     private final Map<String, Object> properties = new HashMap<String, Object>();
@@ -40,6 +42,7 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
     protected AbstractDeploymentContext(ClassLoader classLoader, URL scdlLocation) {
         this.classLoader = classLoader;
         this.scdlLocation = scdlLocation;
+        this.compositeURI = null;
     }
 
     public ClassLoader getClassLoader() {
@@ -64,5 +67,9 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
         } else {
             properties.put(name, value);
         }
+    }
+
+    public URI getCompositeURI() {
+        return compositeURI;
     }
 }
