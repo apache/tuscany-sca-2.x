@@ -14,7 +14,7 @@ public class CalculatorClientTestCase extends TestCase {
         double result = 5;
         EasyMock.expect(mockService.add(2, 3)).andReturn(result);
         EasyMock.replay(mockService);
-        assertEquals(result, client.main("add", "2", "3"));
+        assertEquals(result, client.main(new String[] {"add", "2", "3"}));
         EasyMock.verify(mockService);
     }
 

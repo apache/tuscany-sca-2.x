@@ -20,6 +20,7 @@ package org.apache.tuscany.runtime.standalone.host.implementation.launched;
 
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -94,7 +95,8 @@ public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<La
     private static final DataType<Type> OUTPUT_TYPE;
     private static final List<DataType<Type>> FAULT_TYPE;
     static {
-        List<DataType<Type>> paramDataTypes = Collections.emptyList();
+        List<DataType<Type>> paramDataTypes = new ArrayList<DataType<Type>>();
+        paramDataTypes.add(new DataType(null, String[].class, String[].class));
         INPUT_TYPE = new DataType<List<DataType<Type>>>("idl:input", Object[].class, paramDataTypes);
         OUTPUT_TYPE = new DataType<Type>(null, Object.class, Object.class);
         FAULT_TYPE = Collections.emptyList();

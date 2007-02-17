@@ -69,9 +69,9 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
      * @param args Arguments to be passed to the lauched component.
      * @deprecated This is a hack for deployment and should be removed.
      */
-    public void deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception {
+    public Object deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception {
         
-        URI compositeUri = new URI("/test/composite");
+        URI compositeUri = new URI("/test/composite/");
         
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(applicationScdl);
@@ -82,10 +82,10 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
         Component component =  getDeployer().deploy(null, definition);
         component.start();
         
-        run(impl, args, compositeUri);
+        return run(impl, args, compositeUri);
     }
 
-    private void run(CompositeImplementation impl, String[] args, URI compositeUri) throws Exception {
+    private Object run(CompositeImplementation impl, String[] args, URI compositeUri) throws Exception {
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = componentType.getComponents();
         for (Map.Entry<String, ComponentDefinition<? extends Implementation<?>>> entry : components.entrySet()) {
@@ -93,25 +93,21 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
             ComponentDefinition<? extends Implementation<?>> launchedDefinition = entry.getValue();
             Implementation implementation = launchedDefinition.getImplementation();
             if(implementation.getClass().isAssignableFrom(Launched.class)) {
-                run(compositeUri.resolve(name), implementation);
+                return run(compositeUri.resolve(name), implementation, args);
             }
         }
+        return null;
     }
 
-    private void run(URI componentUri, Implementation implementation) throws TargetInvokerCreationException, InvocationTargetException {
+    private Object run(URI componentUri, Implementation implementation, String[] args) throws TargetInvokerCreationException, InvocationTargetException {
         Launched launched = (Launched) implementation;
         PojoComponentType launchedType = launched.getComponentType();
         Map services = launchedType.getServices();
         JavaMappedService testService = (JavaMappedService) services.get("main");
         Operation<?> operation = testService.getServiceContract().getOperations().get("main");
-        // TODO Find the component and invoke main on the component
         Component component = getComponentManager().getComponent(componentUri);
-        if(component == null) {
-            System.err.println("Unable to get component " + componentUri);
-        } else {
-            TargetInvoker targetInvoker = component.createTargetInvoker("main", operation, null);
-            targetInvoker.invokeTarget(null, TargetInvoker.NONE);
-        }
+        TargetInvoker targetInvoker = component.createTargetInvoker("main", operation, null);
+        return targetInvoker.invokeTarget(args, TargetInvoker.NONE);
     }
 
     protected Deployer getDeployer() {
