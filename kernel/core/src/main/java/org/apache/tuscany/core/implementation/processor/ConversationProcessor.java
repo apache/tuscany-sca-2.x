@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.osoa.sca.annotations.Conversation;
+import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
 
@@ -49,7 +49,7 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context) throws ProcessingException {
 
-        Conversation conversation = clazz.getAnnotation(Conversation.class);
+        ConversationAttributes conversation = clazz.getAnnotation(ConversationAttributes.class);
         if (conversation == null) {
             return;
         }
@@ -59,7 +59,7 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
             type.setImplementationScope(org.apache.tuscany.spi.model.Scope.CONVERSATION);
         } else if (scope != null && !"CONVERSATION".equals(scope.value().toUpperCase())) {
             throw new InvalidConversationalImplementation(
-                "Service is marked with @Conversation but the scope is not @Scope(\"CONVERSATION\")", clazz.getName());
+                "Service is marked with @ConversationAttributes but the scope is not @Scope(\"CONVERSATION\")", clazz.getName());
         } else if (conversation != null) {
             long maxAge;
             long maxIdleTime;
