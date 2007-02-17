@@ -35,18 +35,6 @@ public class ChildDeploymentContext extends AbstractDeploymentContext {
     private final DeploymentContext parent;
 
     /**
-     * Constructor specifying the loader for application resources.
-     *
-     * @param parent       the parent of this context
-     * @param classLoader  the loader for application resources
-     * @param scdlLocation the location of the SCDL being deployed
-     */
-    @Deprecated
-    public ChildDeploymentContext(DeploymentContext parent, ClassLoader classLoader, URL scdlLocation) {
-        this(parent, classLoader, scdlLocation, null);
-    }
-
-    /**
      * Constructor defining properties of this context.
      *
      * @param parent       the parent of this context

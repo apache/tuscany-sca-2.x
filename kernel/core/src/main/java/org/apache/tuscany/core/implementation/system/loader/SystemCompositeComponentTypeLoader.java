@@ -56,7 +56,7 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
             throw new LoaderException("SCDL location not found");
         }
         ClassLoader cl = implementation.getClassLoader();
-        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation);
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation, null);
         childContext.getPathNames().addAll(deploymentContext.getPathNames());
         CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, childContext);
         implementation.setComponentType(componentType);

@@ -47,7 +47,6 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.ComponentManager;
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.easymock.EasyMock;
 
 /**
@@ -168,7 +167,7 @@ public class BuilderRegistryTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new RootDeploymentContext(null, null, null, null);
+        deploymentContext = EasyMock.createMock(DeploymentContext.class);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
         EasyMock.replay(parent);
     }

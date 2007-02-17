@@ -36,20 +36,6 @@ public class RootDeploymentContext extends AbstractDeploymentContext {
     private final ScopeContainer scopeContainer;
 
     /**
-     * Constructor specifying the loader for application resources.
-     *
-     * @param classLoader    the loader for application resources
-     * @param scdlLocation   the location of the SCDL being deployed
-     */
-    @Deprecated
-    public RootDeploymentContext(ClassLoader classLoader,
-                                 XMLInputFactory xmlFactory,
-                                 ScopeContainer scopeContainer,
-                                 URL scdlLocation) {
-        this(classLoader, scdlLocation, null, xmlFactory, scopeContainer);
-    }
-
-    /**
      * Constructor defining properties of this context.
      *
      * @param classLoader  the classloader for loading application resources
