@@ -61,7 +61,6 @@ public class ServiceImpl extends AbstractSCAObject implements Service {
     }
 
     public void addServiceBinding(ServiceBinding binding) {
-        binding.setService(this);
         bindings.add(binding);
     }
 

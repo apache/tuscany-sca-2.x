@@ -18,35 +18,33 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.physical.WireDefinition;
 
 /**
- * Implementations are responsible for bridging invocation chains as an assembly is converted to runtime artifacts
+ * Implementations are responsible for creating a wires between source and target artifacts
  *
  * @version $$Rev$$ $$Date$$
  */
 public interface Connector {
 
     /**
-     * Connects the given source's wires to corresponding wires to a target. Wires are connected by bridging invocation
-     * chains.
+     * Recursively connects component references and its children. This method will eventially be replaced by one that
+     * just takes a WireDefinition
      *
-     * @param source the source, i.e. a <code>ServiceBinding</code>, <code>Component</code>, or <code>Reference</code>
+     * @param definition the component definition to connect
      * @throws WiringException
+     * @deprecated
      */
-    void connect(SCAObject source) throws WiringException;
+    void connect(ComponentDefinition<? extends Implementation<?>> definition) throws WiringException;
 
     /**
-     * Bridges the invocation chains associated with an inbound and outbound wire.
+     * Placeholder for the connect operation using federated deployment
      *
-     * @param source      the inbound wire source
-     * @param inbound     the wire to bridge from
-     * @param outbound    the target wire
-     * @param optimizable if the bridge may be optimized @throws WiringException
+     * @param definition metadata describing the wire to create
+     * @throws WiringException
      */
-    void connect(SCAObject source, InboundWire inbound, SCAObject target, OutboundWire outbound, boolean optimizable)
-        throws WiringException;
+    void connect(WireDefinition definition) throws WiringException;
 
 }

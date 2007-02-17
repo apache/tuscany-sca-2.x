@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -84,18 +85,32 @@ public interface Wire {
     QName getBindingType();
 
     /**
-     * Returns the service contract associated with the wire
+     * Returns the service contract associated with the the source side of the wire
      *
      * @return the service contract associated with the wire
      */
-    ServiceContract getServiceContract();
+    ServiceContract getSourceContract();
 
     /**
-     * Sets the contract associated with the wire
+     * Sets the contract associated with the source side of the wire
      *
      * @param contract the contract associated with the wire
      */
-    void setServiceContract(ServiceContract contract);
+    void setSourceContract(ServiceContract contract);
+
+    /**
+     * Returns the service contract associated with the the target side of the wire
+     *
+     * @return the service contract associated with the wire
+     */
+    ServiceContract getTargetContract();
+
+    /**
+     * Sets the contract associated with the the target side of the wire
+     *
+     * @param contract the contract associated with the wire
+     */
+    void setTargetContract(ServiceContract contract);
 
     /**
      * Returns true if the wire is optimizable and its invocation chains may be bypassed
@@ -116,7 +131,14 @@ public interface Wire {
      *
      * @return the non-proxied target instance for this wire
      */
-    Object getTargetService() throws TargetResolutionException;
+    Object getTargetInstance() throws TargetResolutionException;
+
+    /**
+     * Sets the target for the wire for optimizations
+     *
+     * @param target the target for the wire
+     */
+    void setTarget(AtomicComponent target);
 
     /**
      * Returns the invocation chains for service operations associated with the wire

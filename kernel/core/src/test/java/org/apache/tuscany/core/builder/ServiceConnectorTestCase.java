@@ -20,121 +20,134 @@ package org.apache.tuscany.core.builder;
 
 import java.net.URI;
 
+import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.wire.Wire;
 
-import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
+import junit.framework.TestCase;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
-import org.apache.tuscany.core.mock.binding.MockServiceBinding;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
-import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
+import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
-    private static final URI SOURCE = URI.create("source");
-    private CompositeComponent parent;
-    private InboundInvocationChain inboundChain;
-    private ServiceBinding sourceServiceBinding;
+public class ServiceConnectorTestCase extends TestCase {
+    private static final URI PARENT = URI.create("parent");
+    private static final URI SOURCE = URI.create("parent#source");
+    private static final URI TARGET = URI.create("parent/target");
+    private static final URI REFERENCE_TARGET = URI.create("parent#target");
+    private ComponentManager manager;
+    private MockConnnector connector;
+    private ServiceContract<?> contract;
 
-    public void testConnectServiceToAtomicComponent() throws Exception {
-        configureAtomicTarget();
-        Service sourceService = new ServiceImpl(SOURCE, contract);
-        sourceService.addServiceBinding(sourceServiceBinding);
-        connector.connect(sourceService);
-        Interceptor interceptor = inboundChain.getHeadInterceptor();
-        MessageImpl msg = new MessageImpl();
-        msg.setTargetInvoker(new MockInvoker());
-        Message resp = interceptor.invoke(msg);
-        assertEquals(RESPONSE, resp.getBody());
+    /**
+     * Verifies connecting a wire from an atomic component to a target atomic component
+     */
+    @SuppressWarnings({"unchecked"})
+    public void testConnectToAtomic() throws Exception {
+        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
+        EasyMock.expect(binding.getBindingType()).andReturn(Wire.LOCAL_BINDING);
+        binding.setWire(EasyMock.isA(Wire.class));
+        EasyMock.replay(binding);
+
+        Service service = new ServiceImpl(SOURCE, contract);
+        service.addServiceBinding(binding);
+
+        CompositeComponent component = new CompositeComponentImpl(PARENT);
+        component.register(service);
+        manager.register(component);
+
+
+        AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(target.getUri()).andReturn(TARGET).atLeastOnce();
+        target.createTargetInvoker((String) EasyMock.isNull(), EasyMock.isA(Operation.class));
+        EasyMock.expectLastCall().andReturn(null);
+        EasyMock.replay(target);
+        manager.register(target);
+
+        ServiceDefinition definition = new ServiceDefinition(SOURCE, contract, false);
+        definition.setTarget(TARGET);
+        BindingDefinition bindingDefinition = new BindingDefinition(TARGET) {
+        };
+        definition.addBinding(bindingDefinition);
+        connector.connect(definition);
+
+        EasyMock.verify(binding);
+        EasyMock.verify(target);
     }
 
-    public void testConnectServiceToReference() throws Exception {
-        configureReferenceTarget();
-        Service sourceService = new ServiceImpl(URI.create("source"), contract);
-        sourceService.addServiceBinding(sourceServiceBinding);
-        connector.connect(sourceService);
-        Interceptor interceptor = inboundChain.getHeadInterceptor();
-        MessageImpl msg = new MessageImpl();
-        msg.setTargetInvoker(new MockInvoker());
-        Message resp = interceptor.invoke(msg);
-        assertEquals(RESPONSE, resp.getBody());
+    @SuppressWarnings({"unchecked"})
+    public void testConnectToReference() throws Exception {
+        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
+        EasyMock.expect(binding.getBindingType()).andReturn(Wire.LOCAL_BINDING);
+        binding.setWire(EasyMock.isA(Wire.class));
+        EasyMock.replay(binding);
+
+        Service service = new ServiceImpl(SOURCE, contract);
+        service.addServiceBinding(binding);
+
+        CompositeComponent component = new CompositeComponentImpl(PARENT);
+        component.register(service);
+
+        ReferenceBinding refBinding = EasyMock.createMock(ReferenceBinding.class);
+        EasyMock.expect(refBinding.getUri()).andReturn(REFERENCE_TARGET).atLeastOnce();
+        refBinding.createTargetInvoker(EasyMock.isA(String.class), EasyMock.isA(Operation.class));
+        EasyMock.expectLastCall().andReturn(null);
+        EasyMock.replay(refBinding);
+        Reference target = new ReferenceImpl(REFERENCE_TARGET, contract);
+        target.addReferenceBinding(refBinding);
+        component.register(target);
+        manager.register(component);
+
+        ServiceDefinition definition = new ServiceDefinition(SOURCE, contract, false);
+        definition.setTarget(REFERENCE_TARGET);
+        BindingDefinition bindingDefinition = new BindingDefinition(REFERENCE_TARGET) {
+        };
+        definition.addBinding(bindingDefinition);
+        connector.connect(definition);
+
+        EasyMock.verify(binding);
+        EasyMock.verify(refBinding);
     }
+
 
     protected void setUp() throws Exception {
         super.setUp();
-        inboundChain = new InboundInvocationChainImpl(operation);
-        InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setServiceContract(contract);
-        inboundWire.addInboundInvocationChain(operation, inboundChain);
-        inboundWire.setSourceUri(SOURCE);
-        OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
-        // Outbound chains always contains at least one interceptor
-        outboundChain.addInterceptor(new SynchronousBridgingInterceptor());
-        OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setServiceContract(contract);
-        outboundWire.setTargetUri(TARGET_NAME);
-        outboundWire.addOutboundInvocationChain(operation, outboundChain);
-        outboundWire.setSourceUri(SOURCE);
-
-        sourceServiceBinding = new MockServiceBinding(SOURCE);
-        sourceServiceBinding.setInboundWire(inboundWire);
-        sourceServiceBinding.setOutboundWire(outboundWire);
+        manager = new ComponentManagerImpl();
+        connector = new MockConnnector(manager);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        contract = registry.introspect(Foo.class);
     }
 
-    private void configureAtomicTarget() throws Exception {
-        InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
-        inboundChain.addInterceptor(new InvokerInterceptor());
-        InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setServiceContract(contract);
-        inboundWire.addInboundInvocationChain(operation, inboundChain);
-        inboundWire.setSourceUri(TARGET);
-        AtomicComponent atomicTarget = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(atomicTarget.getTargetWire(EasyMock.isA(String.class))).andReturn(inboundWire).atLeastOnce();
-        EasyMock.expect(atomicTarget.getUri()).andReturn(TARGET);
-        EasyMock.expect(atomicTarget.isOptimizable()).andReturn(true);
-        EasyMock.expect(atomicTarget.getScope()).andReturn(Scope.COMPOSITE);
-        EasyMock.expect(atomicTarget.createTargetInvoker(EasyMock.isA(String.class),
-            EasyMock.isA(Operation.class),
-            EasyMock.isA(InboundWire.class))).andReturn(new MockInvoker());
-        EasyMock.replay(atomicTarget);
 
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.replay(parent);
-        componentManager.register(atomicTarget);
+    private interface Foo {
+        void bar();
     }
 
-    private void configureReferenceTarget() throws Exception {
-        ReferenceBinding binding = createLocalReferenceBinding(TARGET, URI.create("OtherTarget"));
-        Reference referenceTarget = new ReferenceImpl(TARGET, contract);
-        referenceTarget.addReferenceBinding(binding);
-        // put a terminating interceptor on the outbound wire of the reference for testing an invocation
-        binding.getOutboundWire().getOutboundInvocationChains().get(operation).addInterceptor(new InvokerInterceptor());
-        connector.connect(binding, binding.getInboundWire(), binding, binding.getOutboundWire(), true);
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.expect(parent.getUri()).andReturn(TARGET);
-        EasyMock.expect(parent.getTargetWire(TARGET_FRAGMENT)).andReturn(binding.getInboundWire());
-        EasyMock.replay(parent);
-        componentManager.register(parent);
+    private class MockConnnector extends ConnectorImpl {
+
+        public MockConnnector(ComponentManager componentManager) {
+            super(componentManager);
+        }
+
+        public void connect(ServiceDefinition definition) throws WiringException {
+            super.connect(definition);
+        }
     }
 
 }

@@ -18,33 +18,12 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
 
 /**
  * Base class for wire service extensions
@@ -58,138 +37,6 @@ public abstract class WireServiceExtension implements WireService {
     protected WireServiceExtension(WorkContext context, PolicyBuilderRegistry policyRegistry) {
         this.policyRegistry = policyRegistry;
         this.context = context;
-    }
-
-    public OutboundInvocationChain createOutboundChain(Operation<?> operation) {
-        return new OutboundInvocationChainImpl(operation);
-    }
-
-    public InboundInvocationChain createInboundChain(Operation<?> operation) {
-        return new InboundInvocationChainImpl(operation);
-    }
-
-    public InboundWire createWire(ServiceDefinition service) {
-        InboundWire wire = new InboundWireImpl();
-        ServiceContract<?> contract = service.getServiceContract();
-        wire.setServiceContract(contract);
-        wire.setSourceUri(service.getUri());
-        for (Operation<?> operation : contract.getOperations().values()) {
-            InboundInvocationChain chain = createInboundChain(operation);
-            chain.addInterceptor(new InvokerInterceptor());
-            wire.addInboundInvocationChain(operation, chain);
-        }
-        if (contract.getCallbackName() != null) {
-            wire.setCallbackReferenceName(service.getCallbackReferenceName());
-        }
-        return wire;
-    }
-
-    public void createWires(AtomicComponent component, ComponentDefinition<?> definition) {
-        Implementation<?> implementation = definition.getImplementation();
-        ComponentType<?, ?, ?> componentType = implementation.getComponentType();
-        // create incoming service wires
-        for (ServiceDefinition service : componentType.getServices().values()) {
-            InboundWire wire = createWire(service);
-            // JFM TODO refactor
-            wire.setComponent(component);
-            component.addInboundWire(wire);
-        }
-        // create outgoing reference wires
-        for (ReferenceTarget referenceTarget : definition.getReferenceTargets().values()) {
-            Map<String, ? extends ReferenceDefinition> references = componentType.getReferences();
-            ReferenceDefinition mappedReference = references.get(referenceTarget.getReferenceName().getFragment());
-            assert mappedReference != null;
-            List<OutboundWire> wires = createWire(referenceTarget, mappedReference);
-            Multiplicity multiplicity = mappedReference.getMultiplicity();
-            if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
-                // 0..1 or 1..1
-                for (OutboundWire wire : wires) {
-                    component.addOutboundWire(wire);
-                }
-            } else {
-                // 0..N or 1..N
-                component.addOutboundWires(wires);
-            }
-        }
-    }
-
-    public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, URI target) {
-        InboundWire inboundWire = new InboundWireImpl(referenceBinding.getBindingType());
-        inboundWire.setServiceContract(contract);
-        inboundWire.setSourceUri(referenceBinding.getUri());
-        for (Operation<?> operation : contract.getOperations().values()) {
-            InboundInvocationChain chain = createInboundChain(operation);
-            inboundWire.addInboundInvocationChain(operation, chain);
-        }
-        OutboundWire outboundWire = new OutboundWireImpl(referenceBinding.getBindingType());
-        outboundWire.setSourceUri(referenceBinding.getUri());
-        outboundWire.setTargetUri(target);
-        // [rfeng] Check if the Reference has the binding contract
-        ServiceContract<?> bindingContract = referenceBinding.getBindingServiceContract();
-        if (bindingContract == null) {
-            bindingContract = contract;
-        }
-        outboundWire.setServiceContract(bindingContract);
-        for (Operation<?> operation : bindingContract.getOperations().values()) {
-            OutboundInvocationChain chain = createOutboundChain(operation);
-            if (referenceBinding instanceof LocalReferenceBinding) {
-                // Not ideal but the local binding case is special as its inbound and outbound wires are connected
-                // before the outbound wire is connected to the reference target. This requires the binding outbound
-                // chain to have an interceptor to connect to from the binding inbound chain. This outbound
-                // interceptor will then be bridged to the head target interceptor
-                chain.addInterceptor(new SynchronousBridgingInterceptor());
-            } else {
-                chain.addInterceptor(new InvokerInterceptor());
-            }
-            outboundWire.addOutboundInvocationChain(operation, chain);
-        }
-        // Add target callback chain to outbound wire
-        if (contract.getCallbackName() != null) {
-            for (Operation<?> operation : contract.getCallbackOperations().values()) {
-                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                callbackTargetChain.addInterceptor(new InvokerInterceptor());
-                outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
-            }
-        }
-        referenceBinding.setInboundWire(inboundWire);
-        referenceBinding.setOutboundWire(outboundWire);
-    }
-
-    public void createWires(ServiceBinding serviceBinding, ServiceContract<?> contract, String targetName) {
-        InboundWire inboundWire = new InboundWireImpl(serviceBinding.getBindingType());
-        // [rfeng] Check if the Reference has the serviceBinding contract
-        ServiceContract<?> bindingContract = serviceBinding.getBindingServiceContract();
-        if (bindingContract == null) {
-            bindingContract = contract;
-        }
-        inboundWire.setServiceContract(bindingContract);
-        inboundWire.setSourceUri(serviceBinding.getUri());
-        for (Operation<?> operation : bindingContract.getOperations().values()) {
-            InboundInvocationChain inboundChain = createInboundChain(operation);
-            inboundChain.addInterceptor(new SynchronousBridgingInterceptor());
-            inboundWire.addInboundInvocationChain(operation, inboundChain);
-        }
-
-        OutboundWire outboundWire = new OutboundWireImpl(serviceBinding.getBindingType());
-        outboundWire.setServiceContract(contract);
-        outboundWire.setSourceUri(serviceBinding.getUri());
-        outboundWire.setTargetUri(URI.create(targetName));
-
-        for (Operation<?> operation : contract.getOperations().values()) {
-            OutboundInvocationChain outboundChain = createOutboundChain(operation);
-            outboundWire.addOutboundInvocationChain(operation, outboundChain);
-        }
-
-        // Add target callback chain to outbound wire
-        if (contract.getCallbackName() != null) {
-            for (Operation<?> operation : contract.getCallbackOperations().values()) {
-                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                callbackTargetChain.addInterceptor(new InvokerInterceptor());
-                outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
-            }
-        }
-        serviceBinding.setInboundWire(inboundWire);
-        serviceBinding.setOutboundWire(outboundWire);
     }
 
     public boolean checkCompatibility(ServiceContract<?> source,
@@ -267,39 +114,5 @@ public abstract class WireServiceExtension implements WireService {
         return true;
     }
 
-
-    /**
-     * Creates a wire for flowing outbound invocations from a reference
-     *
-     * @param target     the reference definition
-     * @param definition the reference target configuration
-     * @return the wire the outbound wire
-     */
-    protected List<OutboundWire> createWire(ReferenceTarget target, ReferenceDefinition definition) {
-        ServiceContract<?> contract = definition.getServiceContract();
-        List<OutboundWire> outboundWires = new ArrayList<OutboundWire>();
-        // NOTE: it is possible that targets are empty (e.g. when a reference is not required). 
-        // Return without creating wires
-        for (URI uri : target.getTargets()) {
-            OutboundWire wire = new OutboundWireImpl();
-            wire.setServiceContract(contract);
-            wire.setSourceUri(target.getReferenceName());
-            wire.setTargetUri(uri);
-            for (Operation<?> operation : contract.getOperations().values()) {
-                OutboundInvocationChain chain = createOutboundChain(operation);
-                wire.addOutboundInvocationChain(operation, chain);
-
-            }
-            if (contract.getCallbackName() != null) {
-                for (Operation<?> operation : contract.getCallbackOperations().values()) {
-                    InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                    callbackTargetChain.addInterceptor(new InvokerInterceptor());
-                    wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
-                }
-            }
-            outboundWires.add(wire);
-        }
-        return outboundWires;
-    }
 
 }

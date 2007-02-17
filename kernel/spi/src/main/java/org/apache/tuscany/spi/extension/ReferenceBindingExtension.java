@@ -21,11 +21,9 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
-import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The default implementation of an SCA reference
@@ -33,37 +31,29 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  * @version $Rev$ $Date$
  */
 public abstract class ReferenceBindingExtension extends AbstractSCAObject implements ReferenceBinding {
-    protected Reference reference;
-    protected InboundWire inboundWire;
-    protected OutboundWire outboundWire;
+    protected Wire wire;
     protected ServiceContract<?> bindingServiceContract;
+    protected URI targetUri;
 
-    protected ReferenceBindingExtension(URI name) {
+    protected ReferenceBindingExtension(URI name, URI targetUri) {
         super(name);
-    }
-
-    public void setReference(Reference reference) {
-        this.reference = reference;
-    }
-
-    public void setInboundWire(InboundWire wire) {
-        this.inboundWire = wire;
-    }
-
-    public InboundWire getInboundWire() {
-        return inboundWire;
-    }
-
-    public OutboundWire getOutboundWire() {
-        return outboundWire;
-    }
-
-    public void setOutboundWire(OutboundWire outboundWire) {
-        this.outboundWire = outboundWire;
+        this.targetUri = targetUri;
     }
 
     public ServiceContract<?> getBindingServiceContract() {
         return bindingServiceContract;
     }
 
+    public Wire getWire() {
+        return wire;
+    }
+
+    public void setWire(Wire wire) {
+        this.wire = wire;
+    }
+
+
+    public URI getTargetUri() {
+        return targetUri;
+    }
 }

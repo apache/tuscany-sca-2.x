@@ -20,9 +20,7 @@ package org.apache.tuscany.spi.extension;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,16 +30,11 @@ import org.w3c.dom.Document;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * An extension point for composite components, which new types may extend
@@ -79,6 +72,36 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         return Collections.unmodifiableList(references);
     }
 
+    public Service getService(String name) {
+        if (name == null) {
+            if (services.size() == 1) {
+                return services.get(0);
+            } else {
+                return null;
+            }
+        }
+        SCAObject o = children.get(name);
+        if (o instanceof Service) {
+            return (Service) o;
+        }
+        return null;
+    }
+
+    public Reference getReference(String name) {
+        if (name == null) {
+            if (references.size() == 1) {
+                return references.get(0);
+            } else {
+                return null;
+            }
+        }
+        SCAObject o = children.get(name);
+        if (o instanceof Reference) {
+            return (Reference) o;
+        }
+        return null;
+    }
+
     public void register(Service service) throws RegistrationException {
         String name = service.getUri().getFragment();
         assert name != null;
@@ -102,103 +125,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         children.put(name, reference);
         synchronized (services) {
             references.add(reference);
-        }
-    }
-
-    public Map<String, List<OutboundWire>> getOutboundWires() {
-        synchronized (references) {
-            Map<String, List<OutboundWire>> map = new HashMap<String, List<OutboundWire>>();
-            for (Reference reference : references) {
-                List<OutboundWire> wires = new ArrayList<OutboundWire>();
-                map.put(reference.getUri().getFragment(), wires);
-                for (ReferenceBinding binding : reference.getReferenceBindings()) {
-                    OutboundWire wire = binding.getOutboundWire();
-                    if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
-                        wires.add(wire);
-                    }
-                }
-            }
-            return map;
-        }
-    }
-
-    public InboundWire getInboundWire(String serviceName) {
-        Service service;
-        if (serviceName == null) {
-            if (services.size() != 1) {
-                return null;
-            }
-            service = services.get(0);
-        } else {
-            SCAObject object = children.get(serviceName);
-            if (!(object instanceof Service)) {
-                return null;
-            }
-            service = (Service) object;
-        }
-        for (ServiceBinding binding : service.getServiceBindings()) {
-            InboundWire wire = binding.getInboundWire();
-            if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
-                return wire;
-            }
-        }
-        return null;
-    }
-
-    public InboundWire getTargetWire(String targetName) {
-        SCAObject object = null;
-        if (targetName == null) {
-            if (services.size() == 1) {
-                object = services.get(0);
-            } else if (references.size() == 1) {
-                object = references.get(0);
-            }
-        } else {
-            object = children.get(targetName);
-        }
-        if (object instanceof Service) {
-            Service service = (Service) object;
-            List<ServiceBinding> bindings = service.getServiceBindings();
-            if (bindings.isEmpty()) {
-                return null;
-            }
-            for (ServiceBinding binding : bindings) {
-                InboundWire wire = binding.getInboundWire();
-                if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
-                    return wire;
-                }
-            }
-            // for now, pick the first one
-            return bindings.get(0).getInboundWire();
-        } else if (object instanceof Reference) {
-            Reference reference = (Reference) object;
-            List<ReferenceBinding> bindings = reference.getReferenceBindings();
-            if (bindings.isEmpty()) {
-                return null;
-            }
-            for (ReferenceBinding binding : bindings) {
-                InboundWire wire = binding.getInboundWire();
-                if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
-                    return wire;
-                }
-            }
-            return bindings.get(0).getInboundWire();
-        }
-        return null;
-    }
-
-    public Collection<InboundWire> getInboundWires() {
-        synchronized (services) {
-            List<InboundWire> map = new ArrayList<InboundWire>();
-            for (Service service : services) {
-                for (ServiceBinding binding : service.getServiceBindings()) {
-                    InboundWire wire = binding.getInboundWire();
-                    if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
-                        map.add(wire);
-                    }
-                }
-            }
-            return map;
         }
     }
 

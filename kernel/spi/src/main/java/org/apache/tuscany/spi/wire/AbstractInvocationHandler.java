@@ -19,27 +19,27 @@
 package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
 import java.net.URI;
+import java.util.LinkedList;
 
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
- * Base class for performing invocations on an outbound chain. Subclasses are responsible for retrieving and supplying
- * the appropriate chain, target invoker and invocation arguments.
+ * Base class for performing invocations on a wire. Subclasses are responsible for retrieving and supplying the
+ * appropriate chain, target invoker, and invocation arguments.
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractOutboundInvocationHandler {
+public abstract class AbstractInvocationHandler {
     private boolean conversationStarted;
 
-    protected Object invoke(OutboundInvocationChain chain,
+    protected Object invoke(InvocationChain chain,
                             TargetInvoker invoker,
                             Object[] args,
                             Object correlationId,
-                            LinkedList<URI> callbackRoutingChain)
+                            LinkedList<URI> callbackUris)
         throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         if (headInterceptor == null) {
@@ -58,18 +58,11 @@ public abstract class AbstractOutboundInvocationHandler {
         } else {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
-            URI fromAddress = getFromAddress();
-            if (fromAddress != null && callbackRoutingChain != null) {
-                throw new AssertionError("Can't use both a from address and callback routing chain");
-            }
-            if (fromAddress != null) {
-                msg.pushFromAddress(fromAddress);
-            }
             if (correlationId != null) {
                 msg.setCorrelationId(correlationId);
             }
-            if (callbackRoutingChain != null) {
-                msg.setCallbackRoutingChain(callbackRoutingChain);
+            if (callbackUris != null) {
+                msg.setCallbackUris(callbackUris);
             }
             Operation operation = chain.getOperation();
             ServiceContract contract = operation.getServiceContract();
@@ -98,8 +91,4 @@ public abstract class AbstractOutboundInvocationHandler {
         }
     }
 
-    protected URI getFromAddress() {
-        // Default to null, only needed in outbound (forward) direction
-        return null;
-    }
 }

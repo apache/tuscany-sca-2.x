@@ -1,13 +1,14 @@
 package org.apache.tuscany.core.implementation.system.builder;
 
-import java.net.URI;
 import java.lang.reflect.Field;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.Resource;
@@ -16,8 +17,7 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.host.ResourceHost;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -56,8 +56,8 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
         ComponentDefinition<SystemImplementation> definition =
             new ComponentDefinition<SystemImplementation>(URI.create("foo"), impl);
 
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getTargetService()).andReturn("result");
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getTargetInstance()).andReturn("result");
         EasyMock.replay(wire);
 
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);

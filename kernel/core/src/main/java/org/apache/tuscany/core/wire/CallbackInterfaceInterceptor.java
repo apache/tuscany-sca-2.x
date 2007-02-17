@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 
 /**
- * An interceptor applied to the outbound side of a wire that ensures the callback target implements the required
+ * An interceptor applied to the forward direction of a wire that ensures the callback target implements the required
  * service contract. This is required as callback targets may be set dynamically by service implementations.
  *
  * @version $Rev$ $Date$

@@ -33,7 +33,6 @@ public class ReferenceImplTestCase extends TestCase {
 
     public void testStart() {
         ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
-        binding.setReference(EasyMock.isA(Reference.class));
         binding.start();
         EasyMock.replay(binding);
         Reference reference = new ReferenceImpl(URI.create("ref"), null);
@@ -45,7 +44,6 @@ public class ReferenceImplTestCase extends TestCase {
 
     public void testStop() {
         ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
-        binding.setReference(EasyMock.isA(Reference.class));
         binding.stop();
         EasyMock.replay(binding);
         Reference reference = new ReferenceImpl(URI.create("ref"), null);

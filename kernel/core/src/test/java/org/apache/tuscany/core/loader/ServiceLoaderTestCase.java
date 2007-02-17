@@ -68,7 +68,9 @@ public class ServiceLoaderTestCase extends TestCase {
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         replay(mockReader);
-        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, null);
+        DeploymentContext context = EasyMock.createMock(DeploymentContext.class);
+        context.getPathNames();
+        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, deploymentContext);
         assertNotNull(serviceDefinition);
         assertEquals(PARENT_NAME + "#" + name, serviceDefinition.getUri().toString());
     }
@@ -82,7 +84,7 @@ public class ServiceLoaderTestCase extends TestCase {
         replay(mockReader);
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        ServiceDefinition serviceDefinition = loader.load(parent, type, mockReader, null);
+        ServiceDefinition serviceDefinition = loader.load(parent, type, mockReader, deploymentContext);
         assertTrue(ServiceDefinition.class.equals(serviceDefinition.getClass()));
     }
 
@@ -100,10 +102,10 @@ public class ServiceLoaderTestCase extends TestCase {
 
         BindingDefinition binding = new BindingDefinition() {
         };
-        expect(mockRegistry.load(parent, null, mockReader, null)).andReturn(binding).times(2);
+        expect(mockRegistry.load(parent, null, mockReader, deploymentContext)).andReturn(binding).times(2);
         replay(mockRegistry);
 
-        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, null);
+        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, deploymentContext);
         assertEquals(2, serviceDefinition.getBindings().size());
     }
 
@@ -161,6 +163,7 @@ public class ServiceLoaderTestCase extends TestCase {
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ServiceLoader(mockRegistry);
         deploymentContext = new RootDeploymentContext(null, null, null, null);
+        deploymentContext.getPathNames().add(PARENT_NAME);
         parent = EasyMock.createMock(CompositeComponent.class);
         URI uri = URI.create(PARENT_NAME);
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();

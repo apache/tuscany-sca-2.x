@@ -21,13 +21,14 @@ package org.apache.tuscany.spi.policy;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import static org.apache.tuscany.spi.policy.PolicyBuilderRegistry.EXTENSION;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
+ * @deprecated
  */
 public class SourcePolicyBuilderExtensionTestCase extends TestCase {
 
@@ -43,7 +44,7 @@ public class SourcePolicyBuilderExtensionTestCase extends TestCase {
 
     private static class MockPolicyBuilderExtension extends SourcePolicyBuilderExtension {
 
-        public void build(ReferenceDefinition definition, OutboundWire wire) throws BuilderException {
+        public void build(ReferenceDefinition definition, Wire wire) throws BuilderException {
 
         }
     }

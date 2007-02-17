@@ -19,6 +19,7 @@
 package org.apache.tuscany.runtime.webapp.implementation.webapp;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
@@ -35,10 +36,10 @@ import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.wire.OutboundWire;
+
 import org.apache.tuscany.core.wire.WireObjectFactory;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ComponentContextImpl;
@@ -51,7 +52,7 @@ import org.apache.tuscany.runtime.webapp.Constants;
 public class WebappComponent extends AtomicComponentExtension implements ComponentContextProvider {
     private final Map<String, ObjectFactory<?>> propertyFactories;
     private final Map<String, Class<?>> referenceTypes;
-    private final Map<String, OutboundWire> referenceFactories;
+    private final Map<String, Wire> referenceFactories;
     private final ComponentContext context;
 
     public WebappComponent(URI name,
@@ -64,16 +65,28 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
         super(name, wireService, workContext, workScheduler, monitor, 0, 0, 0);
         this.propertyFactories = attributes;
         this.referenceTypes = referenceTypes;
-        referenceFactories = new ConcurrentHashMap<String, OutboundWire>(referenceTypes.size());
+        referenceFactories = new ConcurrentHashMap<String, Wire>(referenceTypes.size());
         context = new ComponentContextImpl(this);
     }
 
-    protected void onReferenceWire(OutboundWire wire) {
+    public List<Wire> getWires(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachCallbackWire(Wire wire) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire) {
         String name = wire.getSourceUri().getFragment();
         referenceFactories.put(name, wire);
     }
 
-    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire) {
+    public void attachWires(List<Wire> wires) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
         return new WireObjectFactory<B>(interfaze, wire, wireService);
     }
 
@@ -82,18 +95,18 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
         for (Map.Entry<String, ObjectFactory<?>> entry : propertyFactories.entrySet()) {
             servletContext.setAttribute(entry.getKey(), entry.getValue().getInstance());
         }
-        for (Map.Entry<String, OutboundWire> entry : referenceFactories.entrySet()) {
+        for (Map.Entry<String, Wire> entry : referenceFactories.entrySet()) {
             String name = entry.getKey();
-            OutboundWire wire = entry.getValue();
+            Wire wire = entry.getValue();
             Class<?> type = referenceTypes.get(name);
             ObjectFactory<?> factory = createWireFactory(type, wire);
             servletContext.setAttribute(name, factory.getInstance());
         }
     }
 
-    public TargetInvoker createTargetInvoker(String targetName,
-                                             Operation operation,
-                                             InboundWire callbackWire) throws TargetInvokerCreationException {
+
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+        throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }
 
@@ -120,7 +133,7 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
     }
 
     public <B> B getService(Class<B> type, String name) {
-        OutboundWire wire = referenceFactories.get(name);
+        Wire wire = referenceFactories.get(name);
         if (wire == null) {
             return null;
         }
@@ -129,7 +142,7 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> type, String name) {
-        OutboundWire wire = referenceFactories.get(name);
+        Wire wire = referenceFactories.get(name);
         if (wire == null) {
             return null;
         }

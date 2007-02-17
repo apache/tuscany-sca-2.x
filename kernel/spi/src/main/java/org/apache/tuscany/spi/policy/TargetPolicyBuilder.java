@@ -20,12 +20,13 @@ package org.apache.tuscany.spi.policy;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Implementations contribute {@link org.apache.tuscany.spi.wire.Interceptor}s to handle target-side policy on a wire.
  *
  * @version $$Rev$$ $$Date$$
+ * @deprecated
  */
 public interface TargetPolicyBuilder {
 
@@ -36,6 +37,6 @@ public interface TargetPolicyBuilder {
      * @param wire       the wire to attach policy to
      * @throws BuilderException
      */
-    void build(ServiceDefinition definition, InboundWire wire) throws BuilderException;
+    void build(ServiceDefinition definition, Wire wire) throws BuilderException;
 
 }

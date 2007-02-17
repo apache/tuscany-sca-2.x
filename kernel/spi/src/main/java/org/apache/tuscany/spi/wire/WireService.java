@@ -19,16 +19,10 @@
 package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.Method;
-import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires
@@ -56,7 +50,7 @@ public interface WireService {
      *                  this mapping for performance.
      * @throws ProxyCreationException
      */
-    <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, OutboundChainHolder> mapping)
+    <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, ChainHolder> mapping)
         throws ProxyCreationException;
 
     /**
@@ -66,68 +60,7 @@ public interface WireService {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    Object createCallbackProxy(Class<?> interfaze, InboundWire wire) throws ProxyCreationException;
-
-    /**
-     * Creates an {@link WireInvocationHandler} for the given wire
-     *
-     * @param interfaze the client side interface
-     * @param wire      the wire to create the invocation handler for
-     * @return the invocation handler
-     */
-    WireInvocationHandler createHandler(Class<?> interfaze, Wire wire);
-
-    /**
-     * Creates an outbound invocation chain for a given operation
-     *
-     * @param operation the operation to create the chain for
-     * @return the outbound invocation chain for a given operation
-     */
-    OutboundInvocationChain createOutboundChain(Operation<?> operation);
-
-    /**
-     * Creates an inbound invocation chain for a given operation
-     *
-     * @param operation the operation to create the chain for
-     * @return the inbound invocation chain for a given operation
-     */
-    InboundInvocationChain createInboundChain(Operation<?> operation);
-
-    /**
-     * Creates a wire for flowing inbound invocations to a service. The returned inbound chain will always contain at
-     * least one interceptor in order for outbound wires to connect to it.
-     *
-     * @param service the model representation of the service
-     * @return the wire for flowing inbound invocations to a service
-     */
-    InboundWire createWire(ServiceDefinition service);
-
-    /**
-     * Creates and injects wires for an atomic component
-     *
-     * @param component  the component
-     * @param definition the model artifact representing the component
-     */
-    void createWires(AtomicComponent component, ComponentDefinition<?> definition);
-
-    /**
-     * Creates and injects wires for a reference binding
-     *
-     * @param referenceBinding the reference
-     * @param contract         the model artifact representing the service contract for the reference
-     * @param targetName       the qualified target name or null if the reference referes to a target outside the SCA
-     *                         domain
-     */
-    void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, URI targetName);
-
-    /**
-     * Creates and injects wires for a service binding
-     *
-     * @param serviceBinding the serviceBinding
-     * @param contract       the serviceBinding contract
-     * @param targetName     the target nane
-     */
-    void createWires(ServiceBinding serviceBinding, ServiceContract<?> contract, String targetName);
+    Object createCallbackProxy(Class<?> interfaze, List<Wire> wires) throws ProxyCreationException;
 
     /**
      * Check the compatiblity of the source and the target service contracts.<p> A wire may only connect a source to a
@@ -158,15 +91,5 @@ public interface WireService {
                                boolean ignoreCallback,
                                boolean silent)
         throws IncompatibleServiceContractException;
-
-    /**
-     * Performs a silent check for service contract compatibility using the algorithm defined by {@link
-     * #checkCompatibility(org.apache.tuscany.spi.model.ServiceContract,org.apache.tuscany.spi.model.ServiceContract,
-     *boolean)}
-     *
-     * @param source The source service contract
-     * @param target The target service contract
-     * @return true if compatible
-     */
 
 }

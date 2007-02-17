@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.spi.component;
 
-import java.util.LinkedList;
 import java.net.URI;
+import java.util.LinkedList;
 
 /**
  * Implementations track information associated with a request as it is processed by the runtime
@@ -50,14 +50,20 @@ public interface WorkContext {
     void setCurrentAtomicComponent(AtomicComponent component);
 
     /**
-     * Returns the current chain of SCAObject addresses
+     * Returns an ordered list of callback URIs for the current context. Ordering is based on the sequence of service
+     * invocations for collocated components
+     *
+     * @return the current list of callback URIs
      */
-    LinkedList<URI> getCurrentCallbackRoutingChain();
+    LinkedList<URI> getCurrentCallbackUris();
 
     /**
-     * Sets the current stack of SCAObject addresses
+     * Sets an ordered list of callback URIs for the current context. Ordering is based on the sequence of service
+     * invocations for collocated components
+     *
+     * @return the current list of callback URIs
      */
-    void setCurrentCallbackRoutingChain(LinkedList<URI> callbackRoutingChain);
+    void setCurrentCallbackUris(LinkedList<URI> uris);
 
     /**
      * Returns the composite where a remote request came in

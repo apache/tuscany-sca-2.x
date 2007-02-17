@@ -1,62 +1,41 @@
 package org.apache.tuscany.core.binding.local;
 
 import java.lang.reflect.Type;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class LocalCallbackTargetInvokerInvocationExceptionTestCase extends TestCase {
-    private InboundWire wire;
-    private Message message;
-    private OutboundInvocationChain chain;
-    private LocalCallbackTargetInvoker invoker;
 
     /**
      * Verfies an InvocationTargetException thrown when invoking the target is propagated to the client correctly and
      * the originating error is unwrapped
      */
     public void testThrowableTargetInvocation() throws Exception {
-        Message response = invoker.invoke(message);
+        Operation<Type> operation = new Operation<Type>("echo", null, null, null);
+        Interceptor head = new ErrorInterceptor();
+        InvocationChain chain = new InvocationChainImpl(operation);
+        chain.addInterceptor(head);
+        Wire wire = new WireImpl();
+        wire.addCallbackInvocationChain(operation, chain);
+        LocalCallbackTargetInvoker invoker = new LocalCallbackTargetInvoker(operation, wire);
+        Message msg = new MessageImpl();
+        msg.setBody("foo");
+        Message response = invoker.invoke(msg);
         assertTrue(response.isFault());
         Object body = response.getBody();
         assertTrue(SomeException.class.equals(body.getClass()));
-        EasyMock.verify(wire);
-        EasyMock.verify(chain);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        URI targetAddress = URI.create("from");
-        message = new MessageImpl();
-        message.pushFromAddress(targetAddress);
-        message.setBody("foo");
-        Message response = new MessageImpl();
-        response.setBody("response");
-        Operation<Type> operation = new Operation<Type>("echo", null, null, null);
-        Interceptor head = new ErrorInterceptor();
-        chain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.expect(chain.getTargetInvoker()).andReturn(null);
-        EasyMock.expect(chain.getHeadInterceptor()).andReturn(head);
-        EasyMock.replay(chain);
-        Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
-        chains.put(operation, chain);
-        wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
-        EasyMock.replay(wire);
-        invoker = new LocalCallbackTargetInvoker(operation, wire);
     }
 
     private class SomeException extends Exception {

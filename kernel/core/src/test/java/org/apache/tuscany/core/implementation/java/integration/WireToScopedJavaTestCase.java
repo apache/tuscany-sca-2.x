@@ -23,7 +23,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -33,15 +32,11 @@ import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.builder.ConnectorImpl;
-import org.apache.tuscany.core.component.ComponentManager;
-import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.ComponentStart;
 import org.apache.tuscany.core.component.event.ComponentStop;
@@ -57,27 +52,25 @@ import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.integration.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
-import org.easymock.EasyMock;
 
 /**
  * Validates wiring from a wire to Java atomic component by scope
  *
  * @version $$Rev$$ $$Date$$
  */
-public class OutboundWireToJavaTestCase extends TestCase {
+public class WireToScopedJavaTestCase extends TestCase {
     private WorkContext workContext = new WorkContextImpl();
     private WireService wireService = new JDKWireService(new WorkContextImpl(), null);
 
     public void testToStatelessScope() throws Exception {
         StatelessScopeContainer scope = new StatelessScopeContainer(workContext, null);
         scope.start();
-        final OutboundWire wire = getWire(scope);
+        final Wire wire = getWire(scope);
         Target service = wireService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
@@ -91,7 +84,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
         scope.onEvent(new RequestStart(this));
 
-        final OutboundWire wire = getWire(scope);
+        final Wire wire = getWire(scope);
         Target service = wireService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
@@ -125,7 +118,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         workContext.setIdentifier(Scope.SESSION, session1);
         scope.onEvent(new HttpSessionStart(this, session1));
 
-        final OutboundWire wire = getWire(scope);
+        final Wire wire = getWire(scope);
         Target service = wireService.createProxy(Target.class, wire);
         Target target = wireService.createProxy(Target.class, wire);
         assertNotNull(service);
@@ -163,7 +156,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         scope.onEvent(new ComponentStart(this, null));
-        final OutboundWire wire = getWire(scope);
+        final Wire wire = getWire(scope);
         Target service = wireService.createProxy(Target.class, wire);
         Target target = wireService.createProxy(Target.class, wire);
         assertNotNull(service);
@@ -174,56 +167,45 @@ public class OutboundWireToJavaTestCase extends TestCase {
         scope.stop();
     }
 
-    private OutboundWire getWire(ScopeContainer scope) throws Exception {
-        ComponentManager componentManager = new ComponentManagerImpl();
-        ConnectorImpl connector = new ConnectorImpl(null, null, componentManager, null, null);
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.replay(parent);
+    private Wire getWire(ScopeContainer scope) throws Exception {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setImplementationClass(TargetImpl.class);
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
-        configuration.setParent(parent);
         configuration.setWorkContext(workContext);
         configuration.setName(new URI("source"));
-
-        JavaAtomicComponent source = new JavaAtomicComponent(configuration);
-        source.setScopeContainer(scope);
-        OutboundWire outboundWire = createOutboundWire("target#Target", Target.class);
-        source.addOutboundWire(outboundWire);
         configuration.setName(new URI("target"));
-        componentManager.register(source);
+
         JavaAtomicComponent target = new JavaAtomicComponent(configuration);
         target.setScopeContainer(scope);
-        InboundWire targetWire = MockFactory.createInboundWire("Target", Target.class);
-        target.addInboundWire(targetWire);
-        InboundWire inboundWire = target.getInboundWire("Target");
-        componentManager.register(target);
 
+        Wire wire = createWire("target#Target", Target.class, target);
 
-        connector.connect(source);
         target.start();
-        return outboundWire;
-    }
-
-    private static <T> OutboundWire createOutboundWire(String targetName, Class<T> interfaze)
-        throws InvalidServiceContractException {
-        OutboundWire wire = new OutboundWireImpl();
-        JavaServiceContract contract = new JavaServiceContract(interfaze);
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-        wire.setServiceContract(contract);
-        createChains(interfaze, wire);
-        wire.setTargetUri(URI.create(targetName));
-        wire.setSourceUri(URI.create("component#ref"));
         return wire;
     }
 
-    private static void createChains(Class<?> interfaze, OutboundWire wire)
+    private static <T> Wire createWire(String targetName, Class<T> interfaze, JavaAtomicComponent target)
+        throws InvalidServiceContractException {
+        Wire wire = new WireImpl();
+        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        wire.setSourceContract(contract);
+        createChains(interfaze, wire);
+        wire.setTargetUri(URI.create(targetName));
+        wire.setSourceUri(URI.create("component#ref"));
+        for (InvocationChain chain : wire.getInvocationChains().values()) {
+            chain.setTargetInvoker(target.createTargetInvoker("target", chain.getOperation()));
+        }
+        return wire;
+    }
+
+    private static void createChains(Class<?> interfaze, Wire wire)
         throws InvalidServiceContractException {
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract = registry.introspect(interfaze);
         for (Operation operation : contract.getOperations().values()) {
-            OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-            wire.addOutboundInvocationChain(operation, chain);
+            InvocationChain chain = new InvocationChainImpl(operation);
+            wire.addInvocationChain(operation, chain);
         }
     }
 

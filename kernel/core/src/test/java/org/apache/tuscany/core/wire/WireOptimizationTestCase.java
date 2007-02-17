@@ -21,15 +21,12 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -45,57 +42,24 @@ public class WireOptimizationTestCase extends TestCase {
     public void foo() {
     }
 
-    public void testSourceWireInterceptorOptimization() throws Exception {
+    public void testWireInterceptorOptimization() throws Exception {
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        OutboundWire wire = new OutboundWireImpl();
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
+        Wire wire = new WireImpl();
+        InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
-        wire.addOutboundInvocationChain(operation, chain);
+        wire.addInvocationChain(operation, chain);
         assertTrue(WireUtils.isOptimizable(wire));
     }
 
-    public void testSourceWireNonInterceptorOptimization() throws Exception {
+    public void testWireNonInterceptorOptimization() throws Exception {
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        OutboundWire wire = new OutboundWireImpl();
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
+        Wire wire = new WireImpl();
+        InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
-        wire.addOutboundInvocationChain(operation, chain);
+        wire.addInvocationChain(operation, chain);
         assertFalse(WireUtils.isOptimizable(wire));
-    }
-
-    public void testTargetWireInterceptorOptimization() throws Exception {
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
-        EasyMock.expect(component.isOptimizable()).andReturn(true);
-        EasyMock.replay(component);
-        InboundWire wire = new InboundWireImpl();
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        chain.addInterceptor(new OptimizableInterceptor());
-        wire.addInboundInvocationChain(operation, chain);
-        assertTrue(WireUtils.isOptimizable(component, wire));
-
-    }
-
-    public void testTargetWireNoOptimizationNonAtomicContainer() throws Exception {
-        Component component = EasyMock.createNiceMock(Component.class);
-        EasyMock.expect(component.isOptimizable()).andReturn(true);
-        EasyMock.replay(component);
-        InboundWire wire = new InboundWireImpl();
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        chain.addInterceptor(new OptimizableInterceptor());
-        wire.addInboundInvocationChain(operation, chain);
-        assertTrue(WireUtils.isOptimizable(component, wire));
-    }
-
-    public void testTargetWireNonInterceptorOptimization() throws Exception {
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
-        EasyMock.replay(component);
-        InboundWire wire = new InboundWireImpl();
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        chain.addInterceptor(new NonOptimizableInterceptor());
-        wire.addInboundInvocationChain(operation, chain);
-        assertFalse(WireUtils.isOptimizable(component, wire));
     }
 
     protected void tearDown() throws Exception {

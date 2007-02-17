@@ -19,17 +19,17 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
@@ -54,9 +54,9 @@ public class JavaReferenceWireTestCase extends TestCase {
         configuration.addReferenceSite("target", SourceImpl.class.getMethod("setTarget", Target.class));
         Constructor<SourceImpl> ctr = SourceImpl.class.getConstructor();
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(ctr));
-        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
-        wire.getOutboundInvocationChains();
-        EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, OutboundInvocationChain>()).atLeastOnce();
+        Wire wire = EasyMock.createMock(Wire.class);
+        wire.getInvocationChains();
+        EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, InvocationChain>()).atLeastOnce();
         URI uri = URI.create("#target");
         EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
@@ -65,8 +65,8 @@ public class JavaReferenceWireTestCase extends TestCase {
         EasyMock.expect(service.createProxy(EasyMock.eq(Target.class), EasyMock.eq(wire), EasyMock.isA(Map.class)))
             .andAnswer(new IAnswer<Target>() {
                 public Target answer() throws Throwable {
-                    OutboundWire wire = (OutboundWire) EasyMock.getCurrentArguments()[1];
-                    wire.getOutboundInvocationChains();
+                    Wire wire = (Wire) EasyMock.getCurrentArguments()[1];
+                    wire.getInvocationChains();
                     return target;
                 }
 
@@ -76,7 +76,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         configuration.setName(new URI("source"));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(scope);
-        component.addOutboundWire(wire);
+        component.attachWire(wire);
         component.start();
         Source source = (Source) component.getTargetInstance();
         assertSame(target, source.getTarget());

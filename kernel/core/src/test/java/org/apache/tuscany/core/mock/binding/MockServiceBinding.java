@@ -22,23 +22,18 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
  */
 public class MockServiceBinding extends AbstractSCAObject implements ServiceBinding {
-    private InboundWire inboundWire;
-    private OutboundWire outboundWire;
-    private ServiceContract<?> bindingServiceContract;
-
+    private Wire wire;
 
     public MockServiceBinding(URI uri) {
         super(uri);
@@ -48,32 +43,20 @@ public class MockServiceBinding extends AbstractSCAObject implements ServiceBind
         return null;
     }
 
-    public void setService(Service service) {
-    }
-
     public ServiceContract<?> getBindingServiceContract() {
-        return bindingServiceContract;
-    }
-
-    public InboundWire getInboundWire() {
-        return inboundWire;
-    }
-
-    public void setInboundWire(InboundWire inboundWire) {
-        this.inboundWire = inboundWire;
-    }
-
-    public OutboundWire getOutboundWire() {
-        return outboundWire;
-    }
-
-    public void setOutboundWire(OutboundWire outboundWire) {
-        this.outboundWire = outboundWire;
-    }
-
-    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException {
         return null;
     }
 
+    public Wire getWire() {
+        return wire;
+    }
+
+    public void setWire(Wire wire) {
+        this.wire = wire;
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+        throws TargetInvokerCreationException {
+        return null;
+    }
 }

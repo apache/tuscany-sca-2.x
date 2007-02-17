@@ -18,25 +18,14 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.component.SCAObject;
-
 /**
- * Implementations are called after inbound and outbound wires are decorated with policy and before they are connected.
+ * Implementations are called after wires are decorated with policy and before they are connected.
  *
  * @version $Rev$ $Date$
+ * @deprecated
  */
 public interface WirePostProcessor {
 
-    /**
-     * @param source
-     * @param target
-     */
-    void process(SCAObject source, OutboundWire sourceWire, SCAObject target, InboundWire targetWire);
-
-    /**
-     * @param source
-     * @param target
-     */
-    void process(SCAObject source, InboundWire sourceWire, SCAObject target, OutboundWire targetWire);
+    void process(Wire wire);
 
 }

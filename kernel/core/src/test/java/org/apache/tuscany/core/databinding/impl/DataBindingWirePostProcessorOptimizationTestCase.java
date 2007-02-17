@@ -23,15 +23,12 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -44,33 +41,18 @@ import org.easymock.EasyMock;
  */
 public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
     private DataBindingWirePostProcessor processor;
-    private OutboundInvocationChain outboundChain;
-    private OutboundWire outboundWire;
-    private InboundInvocationChain inboundChain;
-    private InboundWire inboundWire;
-    private SCAObject container;
+    private InvocationChain outboundChain;
+    private InvocationChain callbackChain;
+    private Wire wire;
 
-    public void testNoInterceptorInterposedOutboundToInbound() {
-        processor.process(container, outboundWire, container, inboundWire);
+    public void testNoInterceptorInterposed() {
+        processor.process(wire);
         EasyMock.verify(outboundChain);
-        EasyMock.verify(inboundChain);
-        EasyMock.verify(outboundWire);
-        EasyMock.verify(inboundWire);
+        EasyMock.verify(callbackChain);
     }
-
-    public void testNoInterceptorInterposedInboundToOutbound() {
-        processor.process(container, inboundWire, container, outboundWire);
-        EasyMock.verify(outboundChain);
-        EasyMock.verify(inboundChain);
-        EasyMock.verify(outboundWire);
-        EasyMock.verify(inboundWire);
-    }
-
 
     protected void setUp() throws Exception {
         super.setUp();
-        container = EasyMock.createMock(SCAObject.class);
-        EasyMock.replay(container);
 
         Mediator mediator = new MediatorImpl();
         processor = new DataBindingWirePostProcessor(mediator);
@@ -83,31 +65,25 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         contract.setOperations(operations);
         contract.setCallbackOperations(operations);
 
-        inboundChain = EasyMock.createMock(InboundInvocationChain.class);
-        EasyMock.replay(inboundChain);
-        Map<Operation<?>, InboundInvocationChain> inboundChains = new HashMap<Operation<?>, InboundInvocationChain>();
-        inboundChains.put(operation, inboundChain);
-
-        outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
+        outboundChain = EasyMock.createMock(InvocationChain.class);
         EasyMock.replay(outboundChain);
-        Map<Operation<?>, OutboundInvocationChain> outboundChains =
-            new HashMap<Operation<?>, OutboundInvocationChain>();
+        Map<Operation<?>, InvocationChain> outboundChains = new HashMap<Operation<?>, InvocationChain>();
         outboundChains.put(operation, outboundChain);
 
-        outboundWire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(outboundWire.getOutboundInvocationChains()).andReturn(outboundChains);
-        EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract).anyTimes();
-        EasyMock.expect(outboundWire.getTargetCallbackInvocationChains()).andReturn(inboundChains).anyTimes();
+        callbackChain = EasyMock.createMock(InvocationChain.class);
+        EasyMock.replay(callbackChain);
+        Map<Operation<?>, InvocationChain> callbackChains = new HashMap<Operation<?>, InvocationChain>();
+        callbackChains.put(operation, callbackChain);
+
+        wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getInvocationChains()).andReturn(outboundChains);
+        EasyMock.expect(wire.getSourceContract()).andReturn(contract).anyTimes();
+        EasyMock.expect(wire.getTargetContract()).andReturn(contract).anyTimes();
+        EasyMock.expect(wire.getCallbackInvocationChains()).andReturn(callbackChains).anyTimes();
         URI uri = URI.create("foo");
-        EasyMock.expect(outboundWire.getSourceUri()).andReturn(uri).anyTimes();
+        EasyMock.expect(wire.getSourceUri()).andReturn(uri).anyTimes();
 
-        EasyMock.replay(outboundWire);
-
-        inboundWire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(inboundWire.getInboundInvocationChains()).andReturn(inboundChains);
-        EasyMock.expect(inboundWire.getSourceCallbackInvocationChains(EasyMock.eq(uri))).andReturn(outboundChains)
-            .anyTimes();
-        EasyMock.replay(inboundWire);
+        EasyMock.replay(wire);
 
     }
 }

@@ -18,9 +18,11 @@
  */
 package org.apache.tuscany.core.injection;
 
+import java.util.List;
+
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
@@ -29,19 +31,18 @@ import org.apache.tuscany.spi.wire.WireService;
  * @version $Rev$ $Date$
  */
 public class CallbackWireObjectFactory implements ObjectFactory {
-
     private WireService wireService;
     private Class<?> interfaze;
-    private InboundWire wire;
+    private List<Wire> wires;
 
-    public CallbackWireObjectFactory(Class<?> interfaze, WireService wireService, InboundWire wire) {
+    public CallbackWireObjectFactory(Class<?> interfaze, WireService wireService, List<Wire> wires) {
         this.interfaze = interfaze;
         this.wireService = wireService;
-        this.wire = wire;
+        this.wires = wires;
     }
 
     public Object getInstance() throws ObjectCreationException {
-        return wireService.createCallbackProxy(interfaze, wire);
+        return wireService.createCallbackProxy(interfaze, wires);
     }
 
 }

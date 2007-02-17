@@ -21,19 +21,15 @@ package org.apache.tuscany.core.policy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.policy.SourcePolicyBuilder;
 import org.apache.tuscany.spi.policy.TargetPolicyBuilder;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * The default policy builder
  *
  * @version $Rev$ $Date$
+ * @deprecated
  */
 public class PolicyBuilderRegistryImpl implements PolicyBuilderRegistry {
 
@@ -59,21 +55,5 @@ public class PolicyBuilderRegistryImpl implements PolicyBuilderRegistry {
         sourceBuilders.get(phase).add(builder);
     }
 
-
-    public void buildSource(ReferenceDefinition referenceDefinition, OutboundWire wire) throws BuilderException {
-        for (List<SourcePolicyBuilder> builders : sourceBuilders) {
-            for (SourcePolicyBuilder builder : builders) {
-                builder.build(referenceDefinition, wire);
-            }
-        }
-    }
-
-    public void buildTarget(ServiceDefinition serviceDefinition, InboundWire wire) throws BuilderException {
-        for (List<TargetPolicyBuilder> builders : targetBuilders) {
-            for (TargetPolicyBuilder builder : builders) {
-                builder.build(serviceDefinition, wire);
-            }
-        }
-    }
 
 }

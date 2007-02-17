@@ -25,11 +25,10 @@ import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import org.osoa.sca.NoRegisteredCallbackException;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
@@ -39,12 +38,11 @@ import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.util.UriHelper;
-import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
-import org.apache.tuscany.spi.wire.OutboundChainHolder;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
+import org.apache.tuscany.spi.wire.ChainHolder;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 import org.apache.tuscany.core.wire.NoMethodForOperationException;
@@ -52,12 +50,11 @@ import org.apache.tuscany.core.wire.WireUtils;
 
 
 /**
- * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.OutboundWire} via
- * an {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}
+ * Dispatches to a target through a wire.
  *
  * @version $Rev$ $Date$
  */
-public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHandler
+public final class JDKInvocationHandler extends AbstractInvocationHandler
     implements WireInvocationHandler, InvocationHandler, Externalizable, SCAExternalizable {
     private static final long serialVersionUID = -6155278451964527325L;
 
@@ -68,37 +65,39 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
      * to a target of greater scope since the target reference can be maintained by the invoker. When a target invoker
      * is not cacheable, the master associated with the wire chains will be used.
      */
-    private transient Map<Method, OutboundChainHolder> chains;
+    private transient Map<Method, ChainHolder> chains;
     private transient WorkContext workContext;
-    private transient URI fromAddress;
-    private transient boolean wireContainerIsAtomicComponent;
+    //private transient URI fromAddress;
+    //private transient boolean wireContainerIsAtomicComponent;
     private transient boolean contractHasCallback;
-    private transient boolean callbackIsImplemented;
-    private transient String callbackClassName;
+    //private transient boolean callbackIsImplemented;
+    //private transient String callbackClassName;
     private transient boolean contractIsRemotable;
     private transient boolean contractIsConversational;
     private transient String convIdForRemotableTarget;
     private transient String convIdFromThread;
+    private transient Wire wire;
     private String referenceName;
     private Class<?> interfaze;
 
     /**
      * Constructor used for deserialization only
      */
-    public JDKOutboundInvocationHandler() {
+    public JDKInvocationHandler() {
     }
 
-    public JDKOutboundInvocationHandler(Class<?> interfaze, OutboundWire wire, WorkContext workContext)
+    public JDKInvocationHandler(Class<?> interfaze, Wire wire, WorkContext workContext)
         throws NoMethodForOperationException {
         this.workContext = workContext;
         this.interfaze = interfaze;
+        this.wire = wire;
         init(interfaze, wire, null);
     }
 
-    public JDKOutboundInvocationHandler(Class<?> interfaze,
-                                        OutboundWire wire,
-                                        Map<Method, OutboundChainHolder> mapping,
-                                        WorkContext workContext)
+    public JDKInvocationHandler(Class<?> interfaze,
+                                Wire wire,
+                                Map<Method, ChainHolder> mapping,
+                                WorkContext workContext)
         throws NoMethodForOperationException {
         this.workContext = workContext;
         this.interfaze = interfaze;
@@ -106,7 +105,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        OutboundChainHolder holder = chains.get(method);
+        ChainHolder holder = chains.get(method);
         if (holder == null) {
             if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
                 return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
@@ -121,7 +120,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             }
             throw new TargetInvocationException("Operation not configured", method.getName());
         }
-        OutboundInvocationChain chain = holder.getChain();
+        InvocationChain chain = holder.getChain();
         TargetInvoker invoker;
 
         if (holder.getCachedInvoker() == null) {
@@ -141,14 +140,13 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-
-        if (wireContainerIsAtomicComponent && contractHasCallback && !callbackIsImplemented) {
-            throw new NoRegisteredCallbackException("Instance is does not implement callback: "
-                + callbackClassName);
-        }
+// JFM commonting out temporarily
+//        if (wireContainerIsAtomicComponent && contractHasCallback && !callbackIsImplemented) {
+//            throw new NoRegisteredCallbackException("Instance is does not implement callback: "
+//                + callbackClassName);
+//        }
 
         if (contractIsConversational) {
-            assert workContext != null : "Work context cannot be null for conversational invocation";
             // Check for a conv id on thread and remember it
             convIdFromThread = (String) workContext.getIdentifier(Scope.CONVERSATION);
             if (contractIsRemotable) {
@@ -162,21 +160,32 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
                 workContext.setIdentifier(Scope.CONVERSATION, newConvId);
             }
         }
+        LinkedList<URI> list = null;
+        if (contractHasCallback) {
+            list = workContext.getCurrentCallbackUris();
+            if (list == null) {
+                list = new LinkedList<URI>();
+                workContext.setCurrentCallbackUris(list);
+            }
+            list.add(wire.getSourceUri());
+        }
 
-        Object result = invoke(chain, invoker, args, null, null);
+        Object result = invoke(chain, invoker, args, null, list);
         if (contractIsConversational && contractIsRemotable) {
             // Make sure we restore the remembered conv id to continue propagating
             workContext.setIdentifier(Scope.CONVERSATION, convIdFromThread);
+        }
+        if (contractHasCallback) {
+            list = workContext.getCurrentCallbackUris();
+            if (list != null) {
+                list.removeLast();
+            }
         }
         return result;
     }
 
     public Object invoke(Method method, Object[] args) throws Throwable {
         return invoke(null, method, args);
-    }
-
-    protected URI getFromAddress() {
-        return contractHasCallback ? fromAddress : null;
     }
 
     public void setWorkContext(WorkContext context) {
@@ -198,12 +207,12 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         if (owner == null) {
             throw new ReactivationException("Current atomic component not set on work context");
         }
-        List<OutboundWire> wires = owner.getOutboundWires().get(referenceName);
+        List<Wire> wires = owner.getWires(referenceName);
         if (wires == null) {
             throw new ReactivationException("Reference wire not found", referenceName, owner.getUri().toString());
         }
         // TODO handle multiplicity
-        OutboundWire wire = wires.get(0);
+        Wire wire = wires.get(0);
         try {
             init(interfaze, wire, null);
         } catch (NoMethodForOperationException e) {
@@ -211,20 +220,13 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         }
     }
 
-    private void init(Class<?> interfaze, OutboundWire wire, Map<Method, OutboundChainHolder> mapping)
+    private void init(Class<?> interfaze, Wire wire, Map<Method, ChainHolder> mapping)
         throws NoMethodForOperationException {
-        ServiceContract contract = wire.getServiceContract();
+        ServiceContract contract = wire.getSourceContract();
         this.referenceName = wire.getSourceUri().getFragment();
-        // TODO JFM remove getContainer
-        this.fromAddress = UriHelper.getDefragmentedName(wire.getSourceUri());
-        this.contractIsConversational = contract.getInteractionScope().equals(CONVERSATIONAL);
+        this.contractIsConversational = CONVERSATIONAL.equals(contract.getInteractionScope());
         this.contractIsRemotable = contract.isRemotable();
         this.contractHasCallback = contract.getCallbackClass() != null;
-        if (contractHasCallback) {
-            this.callbackClassName = contract.getCallbackClass().getName();
-        } else {
-            this.callbackClassName = null;
-        }
         // FIXME JFM this should not be dependent on PojoAtomicComponent
         // JFM commenting out as this should not be specific to pojo types
 //        this.wireContainerIsAtomicComponent = scaObject instanceof PojoAtomicComponent;

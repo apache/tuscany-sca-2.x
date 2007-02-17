@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.host.ResourceHost;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -50,8 +50,8 @@ public class ResourceInjectionTestCase extends TestCase {
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(containter);
 
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getTargetService()).andReturn("result");
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getTargetInstance()).andReturn("result");
         EasyMock.replay(wire);
 
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
@@ -78,8 +78,8 @@ public class ResourceInjectionTestCase extends TestCase {
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(containter);
 
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getTargetService()).andReturn("result");
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getTargetInstance()).andReturn("result");
         EasyMock.replay(wire);
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
         EasyMock.expect(host.resolveResource(EasyMock.eq(String.class))).andReturn("result");

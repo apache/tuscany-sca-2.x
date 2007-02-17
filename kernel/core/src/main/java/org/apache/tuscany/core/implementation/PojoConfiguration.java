@@ -175,7 +175,7 @@ public class PojoConfiguration {
         resourceSites.put(name, member);
     }
 
-    public Map<String, Member> getCallbackSite() {
+    public Map<String, Member> getCallbackSites() {
         return callbackSites;
     }
 

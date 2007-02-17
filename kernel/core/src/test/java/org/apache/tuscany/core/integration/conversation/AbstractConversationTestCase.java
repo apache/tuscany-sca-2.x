@@ -21,14 +21,10 @@ package org.apache.tuscany.core.integration.conversation;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
-import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.builder.ConnectorImpl;
-import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
-import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.services.store.memory.MemoryStore;
 import org.easymock.classextension.EasyMock;
 
@@ -41,17 +37,11 @@ public abstract class AbstractConversationTestCase extends TestCase {
     protected ScopeContainer container;
     protected MemoryStore store;
     protected WorkContext workContext;
-    protected ConnectorImpl connector;
-    protected JavaAtomicComponent target;
-
 
     protected void createRuntime() {
         workContext = new WorkContextImpl();
-        WirePostProcessorRegistry processorRegistry = new WirePostProcessorRegistryImpl();
-        connector = new ConnectorImpl(null, processorRegistry, null, null, workContext);
         store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
         container = new ConversationalScopeContainer(store, workContext, null);
-
     }
 
     protected void initializeRuntime() {

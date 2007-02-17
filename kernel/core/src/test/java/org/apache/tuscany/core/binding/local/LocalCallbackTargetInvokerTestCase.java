@@ -19,16 +19,16 @@
 package org.apache.tuscany.core.binding.local;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -37,9 +37,9 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class LocalCallbackTargetInvokerTestCase extends TestCase {
-    private InboundWire wire;
+    private Wire wire;
     private Message message;
-    private OutboundInvocationChain chain;
+    private InvocationChain chain;
     private Interceptor head;
     private LocalCallbackTargetInvoker invoker;
 
@@ -58,7 +58,7 @@ public class LocalCallbackTargetInvokerTestCase extends TestCase {
         super.setUp();
         URI targetAddress = URI.create("from");
         message = new MessageImpl();
-        message.pushFromAddress(targetAddress);
+        message.pushCallbackUri(targetAddress);
         message.setBody("foo");
         Message response = new MessageImpl();
         response.setBody("response");
@@ -66,14 +66,14 @@ public class LocalCallbackTargetInvokerTestCase extends TestCase {
         head = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(head.invoke(EasyMock.isA(Message.class))).andReturn(response);
         EasyMock.replay(head);
-        chain = EasyMock.createMock(OutboundInvocationChain.class);
+        chain = EasyMock.createMock(InvocationChain.class);
         EasyMock.expect(chain.getTargetInvoker()).andReturn(null);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(head);
         EasyMock.replay(chain);
-        Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
+        Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
         chains.put(operation, chain);
-        wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
+        wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getCallbackInvocationChains()).andReturn(chains);
         EasyMock.replay(wire);
 
         invoker = new LocalCallbackTargetInvoker(operation, wire);

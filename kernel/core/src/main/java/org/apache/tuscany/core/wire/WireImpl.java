@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -40,10 +41,12 @@ public class WireImpl implements Wire {
     private URI targetUri;
     private String callbackReferenceName;
     private QName bindingType;
-    private ServiceContract serviceContract;
+    private ServiceContract sourceContract;
+    private ServiceContract targetContract;
     private boolean optimizable;
     private Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
     private Map<Operation<?>, InvocationChain> callbackChains = new HashMap<Operation<?>, InvocationChain>();
+    private AtomicComponent target;
 
     /**
      * Creates a wire with a local binding
@@ -80,8 +83,8 @@ public class WireImpl implements Wire {
         return callbackReferenceName;
     }
 
-    public void setCallbackReferenceName(String callbackReferenceName) {
-        this.callbackReferenceName = callbackReferenceName;
+    public void setCallbackReferenceName(String name) {
+        this.callbackReferenceName = name;
     }
 
     public QName getBindingType() {
@@ -89,12 +92,21 @@ public class WireImpl implements Wire {
     }
 
 
-    public ServiceContract getServiceContract() {
-        return serviceContract;
+    public ServiceContract getSourceContract() {
+        return sourceContract;
     }
 
-    public void setServiceContract(ServiceContract serviceContract) {
-        this.serviceContract = serviceContract;
+    public void setSourceContract(ServiceContract contract) {
+        this.sourceContract = contract;
+    }
+
+
+    public ServiceContract getTargetContract() {
+        return targetContract;
+    }
+
+    public void setTargetContract(ServiceContract contract) {
+        this.targetContract = contract;
     }
 
     public boolean isOptimizable() {
@@ -105,8 +117,15 @@ public class WireImpl implements Wire {
         this.optimizable = optimizable;
     }
 
-    public Object getTargetService() throws TargetResolutionException {
-        return null;
+    public Object getTargetInstance() throws TargetResolutionException {
+        if (target == null) {
+            return null;
+        }
+        return target.getTargetInstance();
+    }
+
+    public void setTarget(AtomicComponent target) {
+        this.target = target;
     }
 
     public Map<Operation<?>, InvocationChain> getInvocationChains() {

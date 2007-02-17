@@ -26,9 +26,9 @@ import java.util.Map;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -41,11 +41,11 @@ public class WireObjectFactoryTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testCreateInstance() throws Exception {
         Operation<Type> op = new Operation<Type>("hello", null, null, null);
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(op);
-        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
-        Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
+        InvocationChain chain = new InvocationChainImpl(op);
+        Wire wire = EasyMock.createMock(Wire.class);
+        Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
         chains.put(op, chain);
-        EasyMock.expect(wire.getOutboundInvocationChains()).andReturn(chains);
+        EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
         WireService service = EasyMock.createMock(WireService.class);
@@ -66,11 +66,11 @@ public class WireObjectFactoryTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testOptimizedCreateInstance() throws Exception {
         ServiceContract<?> contract = new JavaServiceContract(Foo.class);
-        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
+        Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.isOptimizable()).andReturn(true);
-        EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
-        EasyMock.expect(wire.getOutboundInvocationChains()).andReturn((Map) Collections.emptyMap());
-        EasyMock.expect(wire.getTargetService()).andReturn(new Foo() {
+        EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();
+        EasyMock.expect(wire.getInvocationChains()).andReturn((Map) Collections.emptyMap());
+        EasyMock.expect(wire.getTargetInstance()).andReturn(new Foo() {
             public void hello() {
             }
         });
@@ -87,10 +87,10 @@ public class WireObjectFactoryTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testCannotOptimizeDifferentContractsCreateInstance() throws Exception {
         ServiceContract<?> contract = new JavaServiceContract(Object.class);
-        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
+        Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.isOptimizable()).andReturn(true);
-        EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
-        EasyMock.expect(wire.getOutboundInvocationChains()).andReturn((Map) Collections.emptyMap());
+        EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();
+        EasyMock.expect(wire.getInvocationChains()).andReturn((Map) Collections.emptyMap());
         EasyMock.replay(wire);
         WireService service = EasyMock.createMock(WireService.class);
         service.createProxy(EasyMock.eq(Foo.class), EasyMock.eq(wire), EasyMock.isA(Map.class));
@@ -110,10 +110,10 @@ public class WireObjectFactoryTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testNoJavaInterfaceCreateInstance() throws Exception {
         ServiceContract<?> contract = new JavaServiceContract();
-        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
+        Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.isOptimizable()).andReturn(true);
-        EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
-        EasyMock.expect(wire.getOutboundInvocationChains()).andReturn((Map) Collections.emptyMap());
+        EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();
+        EasyMock.expect(wire.getInvocationChains()).andReturn((Map) Collections.emptyMap());
         EasyMock.replay(wire);
         WireService service = EasyMock.createMock(WireService.class);
         service.createProxy(EasyMock.eq(Foo.class), EasyMock.eq(wire), EasyMock.isA(Map.class));

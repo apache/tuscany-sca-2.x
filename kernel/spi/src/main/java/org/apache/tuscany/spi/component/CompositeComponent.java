@@ -58,11 +58,27 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     void register(Reference reference) throws RegistrationException;
 
     /**
+     * Returns the service with the given name or null if not found
+     *
+     * @param name the service name which is relative to the composite
+     * @return the service with the given name or null if not found
+     */
+    Service getService(String name);
+
+    /**
      * Returns the services for the component
      *
      * @return the services for the component
      */
     List<Service> getServices();
+
+    /**
+     * Returns the reference with the given name or null if not found
+     *
+     * @param name the reference name which is relative to the composite
+     * @return the reference with the given name or null if not found
+     */
+    Reference getReference(String name);
 
     /**
      * Returns the references for the component

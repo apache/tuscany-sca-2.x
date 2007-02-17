@@ -27,14 +27,15 @@ import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.integration.mock.MockFactory;
-import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
+import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.easymock.classextension.EasyMock;
 
 /**
@@ -43,8 +44,8 @@ import org.easymock.classextension.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCase {
-    private JDKOutboundInvocationHandler handler;
-    private OutboundWire owire;
+    protected AtomicComponent target;
+    private JDKInvocationHandler handler;
     private FooImpl targetInstance;
     private Method operation1;
     private Method operation2;
@@ -82,17 +83,17 @@ public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCa
         targetInstance.operation2();
         targetInstance.end();
         EasyMock.replay(targetInstance);
-        target = createMaxIdleTimeAtomicComponent();
+        target = createTarget();
         // create source component mock
         JavaAtomicComponent source = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(source.getUri()).andReturn(URI.create("source")).atLeastOnce();
         EasyMock.replay(source);
 
-        owire = MockFactory.createOutboundWire("foo", Foo.class);
-        owire.setTargetUri(URI.create("foo#bar"));
-        InboundWire iwire = MockFactory.createInboundWire("foo", Foo.class);
-        connector.connect(source, owire, target, iwire, false);
-        handler = new JDKOutboundInvocationHandler(Foo.class, owire, workContext);
+        Wire wire = MockFactory.createWire("foo", Foo.class);
+        for (InvocationChain chain : wire.getInvocationChains().values()) {
+            chain.setTargetInvoker(target.createTargetInvoker("target", chain.getOperation()));
+        }
+        handler = new JDKInvocationHandler(Foo.class, wire, workContext);
         operation1 = Foo.class.getMethod("operation1");
         operation2 = Foo.class.getMethod("operation2");
     }
@@ -103,7 +104,7 @@ public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCa
         store.destroy();
     }
 
-    private JavaAtomicComponent createMaxIdleTimeAtomicComponent() throws Exception {
+    private AtomicComponent createTarget() throws Exception {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName(new URI("target"));
         configuration.setMaxAge(50);

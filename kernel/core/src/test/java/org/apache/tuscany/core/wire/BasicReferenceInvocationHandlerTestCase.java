@@ -24,8 +24,8 @@ import java.net.URI;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -33,7 +33,7 @@ import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
+import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -47,18 +47,17 @@ public class BasicReferenceInvocationHandlerTestCase extends TestCase {
         ServiceContract<?> contract = registry.introspect(SimpleTarget.class);
         Operation<?> operation = contract.getOperations().get("echo");
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
+        InvocationChain chain = new InvocationChainImpl(operation);
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         chain.addInterceptor(interceptor);
-        chain.setTargetInterceptor(new InvokerInterceptor());
+        chain.addInterceptor(new InvokerInterceptor());
         chain.setTargetInvoker(invoker);
-        chain.prepare();
         //chains.put(echo, chain);
-        OutboundWire wire = new OutboundWireImpl();
-        wire.addOutboundInvocationChain(operation, chain);
-        wire.setServiceContract(contract);
+        Wire wire = new WireImpl();
+        wire.addInvocationChain(operation, chain);
+        wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("#wire"));
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
         assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
     }

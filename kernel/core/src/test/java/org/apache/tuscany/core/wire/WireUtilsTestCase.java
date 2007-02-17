@@ -23,11 +23,9 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundChainHolder;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.ChainHolder;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 
@@ -38,20 +36,20 @@ public class WireUtilsTestCase extends TestCase {
     private Method m;
 
     public void testCreateInterfaceToWireMapping() throws Exception {
-        OutboundWire wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         Operation<Type> op = new Operation<Type>("hello", null, null, null);
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(op);
-        wire.addOutboundInvocationChain(op, chain);
-        Map<Method, OutboundChainHolder> chains = WireUtils.createInterfaceToWireMapping(Foo.class, wire);
+        InvocationChain chain = new InvocationChainImpl(op);
+        wire.addInvocationChain(op, chain);
+        Map<Method, ChainHolder> chains = WireUtils.createInterfaceToWireMapping(Foo.class, wire);
         assertEquals(1, chains.size());
         assertNotNull(chains.get(m));
     }
 
     public void testCreateInterfaceToWireMappingNoOperation() throws Exception {
-        OutboundWire wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         Operation<Type> op = new Operation<Type>("goodbye", null, null, null);
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(op);
-        wire.addOutboundInvocationChain(op, chain);
+        InvocationChain chain = new InvocationChainImpl(op);
+        wire.addInvocationChain(op, chain);
         try {
             WireUtils.createInterfaceToWireMapping(Foo.class, wire);
             fail();
@@ -60,21 +58,21 @@ public class WireUtilsTestCase extends TestCase {
         }
     }
 
-    public void testCreateInboundMapping() throws Exception {
-        InboundWire wire = new InboundWireImpl();
+    public void testCreateMapping() throws Exception {
+        Wire wire = new WireImpl();
         Operation<Type> op = new Operation<Type>("hello", null, null, null);
-        InboundInvocationChain chain = new InboundInvocationChainImpl(op);
-        wire.addInboundInvocationChain(op, chain);
-        Map<Method, InboundInvocationChain> chains = WireUtils.createInboundMapping(wire, new Method[]{m});
+        InvocationChain chain = new InvocationChainImpl(op);
+        wire.addInvocationChain(op, chain);
+        Map<Method, InvocationChain> chains = WireUtils.createInboundMapping(wire, new Method[]{m});
         assertEquals(1, chains.size());
         assertNotNull(chains.get(m));
     }
 
-    public void testCreateInboundMappingNoOperation() throws Exception {
-        InboundWire wire = new InboundWireImpl();
+    public void testCreateMappingNoOperation() throws Exception {
+        Wire wire = new WireImpl();
         Operation<Type> op = new Operation<Type>("goodbye", null, null, null);
-        InboundInvocationChain chain = new InboundInvocationChainImpl(op);
-        wire.addInboundInvocationChain(op, chain);
+        InvocationChain chain = new InvocationChainImpl(op);
+        wire.addInvocationChain(op, chain);
         try {
             WireUtils.createInboundMapping(wire, new Method[]{m});
             fail();

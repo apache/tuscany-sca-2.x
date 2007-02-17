@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * An extension point for binding builders. When adding support for new serviceBindings, implementations may extend this
@@ -42,18 +41,11 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 @EagerInit
 public abstract class BindingBuilderExtension<B extends BindingDefinition> implements BindingBuilder<B> {
-
     protected BuilderRegistry builderRegistry;
-    protected WireService wireService;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
         this.builderRegistry = registry;
-    }
-
-    @Autowire
-    public void setWireService(WireService wireService) {
-        this.wireService = wireService;
     }
 
     @Init

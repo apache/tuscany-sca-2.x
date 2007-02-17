@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -30,8 +30,8 @@ public class OptimizedWireObjectFactoryTestCase extends TestCase {
 
     public void testGetInstance() throws Exception {
         Foo foo = new Foo();
-        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(wire.getTargetService()).andReturn(foo);
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getTargetInstance()).andReturn(foo);
         EasyMock.replay(wire);
         OptimizedWireObjectFactory<Foo> factory = new OptimizedWireObjectFactory<Foo>(Foo.class, wire);
         assertEquals(foo, factory.getInstance());

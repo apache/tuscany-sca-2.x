@@ -6,15 +6,15 @@ package org.apache.tuscany.spi.wire;
  *
  * @version $Rev$ $Date$
  */
-public class OutboundChainHolder implements Cloneable {
-    OutboundInvocationChain chain;
+public class ChainHolder implements Cloneable {
+    InvocationChain chain;
     TargetInvoker cachedInvoker;
 
-    public OutboundChainHolder(OutboundInvocationChain config) {
+    public ChainHolder(InvocationChain config) {
         this.chain = config;
     }
 
-    public OutboundInvocationChain getChain() {
+    public InvocationChain getChain() {
         return chain;
     }
 
@@ -28,9 +28,9 @@ public class OutboundChainHolder implements Cloneable {
 
     @SuppressWarnings({"CloneDoesntDeclareCloneNotSupportedException"})
     @Override
-    public OutboundChainHolder clone() {
+    public ChainHolder clone() {
         try {
-            return (OutboundChainHolder) super.clone();
+            return (ChainHolder) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

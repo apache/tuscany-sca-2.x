@@ -25,9 +25,8 @@ import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -35,38 +34,38 @@ import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
+import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 
-public class OutboundInvocationHandlerTestCase extends TestCase {
+public class InvocationHandlerTestCase extends TestCase {
 
     private Method hello;
     private ServiceContract<?> contract;
 
-    public OutboundInvocationHandlerTestCase() {
+    public InvocationHandlerTestCase() {
         super();
     }
 
-    public OutboundInvocationHandlerTestCase(String arg0) {
+    public InvocationHandlerTestCase(String arg0) {
         super(arg0);
     }
 
     public void testBasicInvoke() throws Throwable {
-        OutboundWire wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         wire.setSourceUri(URI.create("#wire"));
         Operation operation = contract.getOperations().get("hello");
-        wire.addOutboundInvocationChain(operation, createChain(operation));
-        wire.setServiceContract(contract);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
+        wire.addInvocationChain(operation, createChain(operation));
+        wire.setSourceContract(contract);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 
     public void testErrorInvoke() throws Throwable {
-        OutboundWire wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         wire.setSourceUri(URI.create("#wire"));
         Operation operation = contract.getOperations().get("hello");
-        wire.addOutboundInvocationChain(operation, createChain(operation));
-        wire.setServiceContract(contract);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
+        wire.addInvocationChain(operation, createChain(operation));
+        wire.setSourceContract(contract);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
         try {
             handler.invoke(hello, new Object[]{});
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -77,15 +76,15 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
 
     public void testDirectErrorInvoke() throws Throwable {
         Operation operation = contract.getOperations().get("hello");
-        OutboundInvocationChain source = new OutboundInvocationChainImpl(operation);
+        InvocationChain source = new InvocationChainImpl(operation);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        OutboundWire wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         wire.setSourceUri(URI.create("#wire"));
-        wire.setServiceContract(contract);
-        wire.addOutboundInvocationChain(operation, source);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
+        wire.setSourceContract(contract);
+        wire.addInvocationChain(operation, source);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
         try {
             assertEquals("foo", handler.invoke(hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -96,35 +95,28 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
 
     public void testDirectInvoke() throws Throwable {
         Operation operation = contract.getOperations().get("hello");
-        OutboundInvocationChain source = new OutboundInvocationChainImpl(operation);
+        InvocationChain source = new InvocationChainImpl(operation);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        OutboundWire wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         wire.setSourceUri(URI.create("#wire"));
-        wire.setServiceContract(contract);
-        wire.addOutboundInvocationChain(operation, source);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
+        wire.setSourceContract(contract);
+        wire.addInvocationChain(operation, source);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 
-    private OutboundInvocationChain createChain(Operation operation) {
-        OutboundInvocationChain source = new OutboundInvocationChainImpl(operation);
-        MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
-        source.addInterceptor(sourceInterceptor);
-
-        InboundInvocationChain target = new InboundInvocationChainImpl(operation);
+    private InvocationChain createChain(Operation operation) {
+        InvocationChain chain = new InvocationChainImpl(operation);
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
-        target.addInterceptor(targetInterceptor);
-        target.addInterceptor(new InvokerInterceptor());
+        chain.addInterceptor(targetInterceptor);
+        chain.addInterceptor(new InvokerInterceptor());
 
-        // connect the source to the target
-        source.setTargetInterceptor(targetInterceptor);
-        source.prepare();
         Method method = JavaIDLUtils.findMethod(operation, SimpleTarget.class.getMethods());
         MockStaticInvoker invoker = new MockStaticInvoker(method, new SimpleTargetImpl());
-        source.setTargetInvoker(invoker);
-        return source;
+        chain.setTargetInvoker(invoker);
+        return chain;
     }
 
     public void setUp() throws Exception {

@@ -24,10 +24,9 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -68,18 +67,17 @@ public class InvocationConfigurationTestCase extends TestCase {
      * Tests basic wiring of a source to a target, including handlers and interceptors
      */
     public void testInvokeWithInterceptors() throws Exception {
-        OutboundInvocationChain source = new OutboundInvocationChainImpl(operation);
+        InvocationChain source = new InvocationChainImpl(operation);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
 
-        InboundInvocationChain target = new InboundInvocationChainImpl(operation);
+        InvocationChain target = new InvocationChainImpl(operation);
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
         // connect the source to the target
-        source.setTargetInterceptor(target.getHeadInterceptor());
-        source.prepare();
+        source.addInterceptor(target.getHeadInterceptor());
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 

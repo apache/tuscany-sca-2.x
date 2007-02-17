@@ -6,39 +6,34 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.core.builder;
+
+import java.net.URI;
+
+import junit.framework.TestCase;
 
 /**
- * Responsible for flowing a request to a target service and invoking an operation.
- *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface OutboundInvocationChain extends InvocationChain {
+public class InvalidSourceTypeExceptionTestCase extends TestCase {
 
-    /**
-     * Returns the head interceptor of the birdged target-side chain
-     */
-    Interceptor getTargetInterceptor();
-    
-    /**
-     * Sets the head interceptor of the bridged target-side chain
-     */
-    void setTargetInterceptor(Interceptor interceptor);
+    public void testInstantiation() throws Exception {
+        URI sourceUri = URI.create("source");
+        URI targetUri = URI.create("target");
+        InvalidSourceTypeException e = new InvalidSourceTypeException("message", sourceUri, targetUri);
+        assertEquals("message", e.getMessage());
+        assertEquals(sourceUri, e.getSourceUri());
+        assertEquals(targetUri, e.getTargetUri());
 
-    /**
-     * Signals to the chain that its configuration is complete. Implementations may use this callback to prepare their
-     * invocation chains.
-     */
-    void prepare();
-
+    }
 }

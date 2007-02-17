@@ -22,12 +22,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -36,87 +34,80 @@ import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JDKOutboundInvocationHandlerTestCase extends TestCase {
+public class JDKInvocationHandlerTestCase extends TestCase {
 
     public void testToString() {
-        OutboundWireImpl wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         ServiceContract contract = new JavaServiceContract(Foo.class);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-        wire.setServiceContract(contract);
+        wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("foo#bar"));
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Foo.class, wire, null);
+        JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
     }
 
     public void testHashCode() {
-        OutboundWireImpl wire = new OutboundWireImpl();
+        Wire wire = new WireImpl();
         ServiceContract contract = new JavaServiceContract(Foo.class);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-        wire.setServiceContract(contract);
+        wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("foo#bar"));
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Foo.class, wire, null);
+        JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }
 
     public void testConversational() throws Throwable {
-        OutboundWire outboundWire = createMock(OutboundWire.class);
-        Map<Operation<?>, OutboundInvocationChain> outboundChains =
-            new HashMap<Operation<?>, OutboundInvocationChain>();
+        Wire wire = new WireImpl();
         DataType<Type> type1 = new DataType<Type>(String.class, String.class);
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
         types.add(type1);
         DataType<List<DataType<Type>>> inputType1 = new DataType<List<DataType<Type>>>(Object[].class, types);
         DataType<Type> outputType1 = new DataType<Type>(String.class, String.class);
         Operation<Type> op1 = new Operation<Type>("test", inputType1, outputType1, null);
-        ServiceContract<Type> outboundContract = new JavaServiceContract(Foo.class);
-        outboundContract.setInteractionScope(InteractionScope.CONVERSATIONAL);
-        op1.setServiceContract(outboundContract);
+        ServiceContract<Type> contract = new JavaServiceContract(Foo.class);
+        contract.setInteractionScope(InteractionScope.CONVERSATIONAL);
+        op1.setServiceContract(contract);
 
         WorkContext wc = new WorkContextImpl();
         MockInvoker invoker = new MockInvoker(wc);
-        OutboundInvocationChain outboundChain = createMock(OutboundInvocationChain.class);
-        expect(outboundChain.getTargetInvoker()).andReturn(invoker).anyTimes();
-        expect(outboundChain.getHeadInterceptor()).andReturn(null).anyTimes();
-        replay(outboundChain);
-        outboundChains.put(op1, outboundChain);
-        expect(outboundWire.getOutboundInvocationChains()).andReturn(outboundChains).anyTimes();
+
+        InvocationChain chain = new InvocationChainImpl(op1);
+        chain.setTargetInvoker(invoker);
+        wire.addInvocationChain(op1, chain);
         URI uri = URI.create("fooRef");
-        expect(outboundWire.getSourceUri()).andReturn(uri).atLeastOnce();
-        expect(outboundWire.getServiceContract()).andReturn(outboundContract).anyTimes();
-        replay(outboundWire);
+        wire.setSourceUri(uri);
+        wire.setSourceContract(contract);
 
         String convID = UUID.randomUUID().toString();
         wc.setIdentifier(Scope.CONVERSATION, convID);
         invoker.setCurrentConversationID(convID);
 
-        outboundContract.setRemotable(true);
+        contract.setRemotable(true);
         invoker.setRemotableTest(true);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Foo.class, outboundWire, wc);
+        JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, wc);
         handler.invoke(Foo.class.getMethod("test", String.class), new Object[]{"bar"});
         String currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
         assertSame(convID, currentConvID);
 
-        outboundContract.setRemotable(false);
+        contract.setRemotable(false);
         invoker.setRemotableTest(false);
-        JDKOutboundInvocationHandler handler2 = new JDKOutboundInvocationHandler(Foo.class, outboundWire, wc);
+        JDKInvocationHandler handler2 = new JDKInvocationHandler(Foo.class, wire, wc);
         handler2.invoke(Foo.class.getMethod("test", String.class), new Object[]{"bar"});
         currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
         assertSame(convID, currentConvID);

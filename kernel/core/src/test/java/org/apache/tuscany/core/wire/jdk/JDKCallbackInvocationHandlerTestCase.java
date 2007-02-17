@@ -20,12 +20,15 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Proxy;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.WireImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -33,19 +36,25 @@ import org.apache.tuscany.core.wire.InboundWireImpl;
 public class JDKCallbackInvocationHandlerTestCase extends TestCase {
 
     public void testToString() {
-        InboundWireImpl wire = new InboundWireImpl();
-        wire.setSourceUri(URI.create("#wire"));
-        wire.setServiceContract(new JavaServiceContract(Foo.class));
-        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wire, new WorkContextImpl());
+        Wire wire = new WireImpl();
+        URI uri = URI.create("#wire");
+        wire.setSourceUri(uri);
+        List<Wire> wires = new ArrayList<Wire>();
+        wires.add(wire);
+        wire.setSourceContract(new JavaServiceContract(Foo.class));
+        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wires, new WorkContextImpl());
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
     }
 
     public void testHashCode() {
-        InboundWireImpl wire = new InboundWireImpl();
-        wire.setServiceContract(new JavaServiceContract(Foo.class));
-        wire.setSourceUri(URI.create("#wire"));
-        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wire, new WorkContextImpl());
+        Wire wire = new WireImpl();
+        wire.setSourceContract(new JavaServiceContract(Foo.class));
+        URI uri = URI.create("#wire");
+        wire.setSourceUri(uri);
+        List<Wire> wires = new ArrayList<Wire>();
+        wires.add(wire);
+        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wires, new WorkContextImpl());
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }

@@ -26,15 +26,16 @@ import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import static org.apache.tuscany.spi.model.Scope.CONVERSATION;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.spi.wire.InvocationChain;
 
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.integration.mock.MockFactory;
-import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
+import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.easymock.classextension.EasyMock;
 
 /**
@@ -46,9 +47,9 @@ import org.easymock.classextension.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ConversationStartStopEndTestCase extends AbstractConversationTestCase {
-    private OutboundWire owire;
+    protected AtomicComponent target;
     private FooImpl targetInstance;
-    private JDKOutboundInvocationHandler handler;
+    private JDKInvocationHandler handler;
     private Method operation1;
     private Method operation2;
     private Method endOperation;
@@ -83,16 +84,11 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
         EasyMock.replay(targetInstance);
         // create target component mock
         target = createAtomicComponent();
-        // create source component mock
-        JavaAtomicComponent source = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(source.getUri()).andReturn(URI.create("source")).atLeastOnce();
-        EasyMock.replay(source);
-
-        owire = MockFactory.createOutboundWire("foo", Foo.class);
-        owire.setTargetUri(URI.create("foo#bar"));
-        InboundWire iwire = MockFactory.createInboundWire("foo", Foo.class);
-        connector.connect(source, owire, target, iwire, false);
-        handler = new JDKOutboundInvocationHandler(Foo.class, owire, workContext);
+        Wire wire = MockFactory.createWire("foo", Foo.class);
+        for (InvocationChain chain : wire.getInvocationChains().values()) {
+            chain.setTargetInvoker(target.createTargetInvoker("foo", chain.getOperation()));
+        }
+        handler = new JDKInvocationHandler(Foo.class, wire, workContext);
         operation1 = Foo.class.getMethod("operation1");
         operation2 = Foo.class.getMethod("operation2");
         endOperation = Foo.class.getMethod("end");

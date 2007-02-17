@@ -19,9 +19,12 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Document;
+
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The standard implementation of a composite component. Autowiring is performed by delegating to the parent composite.
@@ -49,4 +52,19 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
         super(name, null);
     }
 
+    public void attachWire(Wire wire) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWires(List<Wire> wires) {
+        throw new UnsupportedOperationException();
+    }
+
+    public List<Wire> getWires(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachCallbackWire(Wire wire) {
+        throw new UnsupportedOperationException();
+    }
 }

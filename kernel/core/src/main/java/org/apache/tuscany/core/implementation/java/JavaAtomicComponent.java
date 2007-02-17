@@ -18,26 +18,17 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.core.wire.WireObjectFactory;
+import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.injection.CallbackWireObjectFactory;
-import org.apache.tuscany.core.injection.FieldInjector;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.InvalidAccessorException;
-import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.wire.WireObjectFactory;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -50,7 +41,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         super(configuration);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
         Method[] methods;
         Class callbackClass = null;
         if (operation.isCallback()) {
@@ -61,39 +52,10 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
             methods = implementationClass.getMethods();
         }
         Method method = findMethod(operation, methods);
-        return new JavaTargetInvoker(method, this, callbackWire, callbackClass, workContext, monitor);
+        return new JavaTargetInvoker(method, this, callbackClass, workContext, monitor);
     }
 
-    protected void onServiceWire(InboundWire wire) {
-        String name = wire.getCallbackReferenceName();
-        if (name == null) {
-            // It's ok not to have one, we just do nothing
-            return;
-        }
-        Member member = callbackSites.get(name);
-        if (member != null) {
-            injectors.add(createCallbackInjector(member, wire.getServiceContract(), wire));
-        }
-    }
-
-    protected Injector<Object> createCallbackInjector(Member member,
-                                                      ServiceContract<?> contract,
-                                                      InboundWire inboundWire) {
-        if (member instanceof Field) {
-            Field field = (Field) member;
-            ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), wireService, inboundWire);
-            return new FieldInjector<Object>(field, factory);
-        } else if (member instanceof Method) {
-            Method method = (Method) member;
-            Class<?> type = method.getParameterTypes()[0];
-            ObjectFactory<?> factory = new CallbackWireObjectFactory(type, wireService, inboundWire);
-            return new MethodInjector<Object>(method, factory);
-        } else {
-            throw new InvalidAccessorException("Member must be a field or method", member.getName());
-        }
-    }
-
-    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, OutboundWire wire) {
+    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
         return new WireObjectFactory<B>(interfaze, wire, wireService);
     }
 }

@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.system.component;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
@@ -50,14 +50,14 @@ public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
         configuration.setName(new URI("source"));
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scope);
-        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        Wire wire = EasyMock.createMock(Wire.class);
         URI uri = URI.create("#setTarget");
-        EasyMock.expect(outboundWire.getSourceUri()).andReturn(uri).atLeastOnce();
-        EasyMock.expect(outboundWire.getTargetService()).andReturn(target);
-        EasyMock.replay(outboundWire);
-        component.addOutboundWire(outboundWire);
+        EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
+        EasyMock.expect(wire.getTargetInstance()).andReturn(target);
+        EasyMock.replay(wire);
+        component.attachWire(wire);
         component.start();
         assertSame(((Source) component.getTargetInstance()).getTarget(), target);
-        EasyMock.verify(outboundWire);
+        EasyMock.verify(wire);
     }
 }

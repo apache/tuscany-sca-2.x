@@ -39,8 +39,8 @@ import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
@@ -60,7 +60,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
     private WireService wireService;
     private Constructor<SourceImpl> constructor;
     private CompositeComponent parent;
-    private OutboundWire wire;
+    private Wire wire;
     private ScopeContainer scopeContainer;
 
     public void testBuildReference() throws Exception {
@@ -84,7 +84,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         builder.setWireService(wireService);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
         component.setScopeContainer(scopeContainer);
-        component.addOutboundWire(wire);
+        component.attachWire(wire);
         deploymentContext.getCompositeScope().start();
         component.start();
 
@@ -131,14 +131,14 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
     }
 
     private void createWire() {
-        Map<Operation<?>, OutboundInvocationChain> chains = Collections.emptyMap();
-        wire = EasyMock.createMock(OutboundWire.class);
+        Map<Operation<?>, InvocationChain> chains = Collections.emptyMap();
+        wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.getSourceUri()).andReturn(URI.create("#target")).atLeastOnce();
-        EasyMock.expect(wire.getOutboundInvocationChains()).andReturn(chains).atLeastOnce();
+        EasyMock.expect(wire.getInvocationChains()).andReturn(chains).atLeastOnce();
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
         JavaServiceContract targetContract = new JavaServiceContract(Target.class);
         targetContract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-        EasyMock.expect(wire.getServiceContract()).andReturn(targetContract).atLeastOnce();
+        EasyMock.expect(wire.getSourceContract()).andReturn(targetContract).atLeastOnce();
         EasyMock.replay(wire);
 
     }

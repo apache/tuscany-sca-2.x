@@ -16,23 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.wire;
-
-import org.apache.tuscany.spi.wire.OutboundWire;
+package org.apache.tuscany.spi.wire;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class OutboundWireTestCase extends TestCase {
+public class ChainHolderTestCase extends TestCase {
 
-    /**
-     * Tests that the target wire returns null if there is no connected wire. This behavior is needed for optional
-     * autowires.
-     */
-    public void testGetNonExistentTargetService() throws Exception {
-        OutboundWire wire = new OutboundWireImpl();
-        assertNull(wire.getTargetService());
+    public void testClone() {
+        InvocationChain chain = EasyMock.createMock(InvocationChain.class);
+        EasyMock.replay(chain);
+        ChainHolder holder = new ChainHolder(chain);
+        assertNotNull(holder.clone());
     }
 }

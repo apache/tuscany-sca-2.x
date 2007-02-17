@@ -20,7 +20,7 @@ package org.apache.tuscany.core.implementation.system.component;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -77,12 +77,12 @@ public class SystemAtomicComponentTestCase extends TestCase {
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.addPropertyFactory("foo", new SingletonObjectFactory<String>("baz"));
         Foo target = new Foo();
-        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(wire.getTargetService()).andReturn(target);
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.expect(wire.getTargetInstance()).andReturn(target);
         URI uri = URI.create("#ref");
         EasyMock.expect(wire.getSourceUri()).andReturn(uri).anyTimes();
         EasyMock.replay(wire);
-        component.addOutboundWire(wire);
+        component.attachWire(wire);
         Bar bar = (Bar) component.createInstance();
         assertEquals("baz", bar.foo);
         assertEquals(target, bar.ref);

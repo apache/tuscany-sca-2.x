@@ -16,20 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.core.builder;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import java.net.URI;
+
+import org.apache.tuscany.spi.builder.WiringException;
 
 /**
+ * Denotes an invalid source type for a wire
+ *
  * @version $Rev$ $Date$
  */
-public class OutboundChainHolderTestCase extends TestCase {
+public class InvalidSourceTypeException extends WiringException {
 
-    public void testClone() {
-        OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.replay(chain);
-        OutboundChainHolder holder = new OutboundChainHolder(chain);
-        assertNotNull(holder.clone());
+    public InvalidSourceTypeException(String message, URI sourceUri, URI targetUri) {
+        super(message, sourceUri, targetUri);
     }
 }

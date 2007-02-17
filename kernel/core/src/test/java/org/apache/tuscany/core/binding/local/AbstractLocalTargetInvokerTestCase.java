@@ -19,9 +19,9 @@
 package org.apache.tuscany.core.binding.local;
 
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
@@ -48,7 +48,7 @@ public class AbstractLocalTargetInvokerTestCase extends TestCase {
             }
         });
         EasyMock.replay(interceptor);
-        OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
+        InvocationChain chain = EasyMock.createMock(InvocationChain.class);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor);
         EasyMock.replay(chain);
         invoker.invoke(chain, EasyMock.createNiceMock(TargetInvoker.class), new MessageImpl());
@@ -61,7 +61,7 @@ public class AbstractLocalTargetInvokerTestCase extends TestCase {
         TargetInvoker targetInvoker = EasyMock.createMock(TargetInvoker.class);
         EasyMock.expect(targetInvoker.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
         EasyMock.replay(targetInvoker);
-        OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
+        InvocationChain chain = EasyMock.createMock(InvocationChain.class);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(null);
         EasyMock.replay(chain);
         invoker.invoke(chain, targetInvoker, new MessageImpl());

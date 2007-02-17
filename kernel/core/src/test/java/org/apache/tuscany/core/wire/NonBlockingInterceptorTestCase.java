@@ -38,7 +38,7 @@ import org.easymock.IAnswer;
 /**
  * @version $Rev$ $Date$
  */
-public class NonBlockingBridgingInterceptorTestCase extends TestCase {
+public class NonBlockingInterceptorTestCase extends TestCase {
 
     public void testInvoke() throws Exception {
         WorkScheduler scheduler = createMock(WorkScheduler.class);
@@ -61,14 +61,14 @@ public class NonBlockingBridgingInterceptorTestCase extends TestCase {
         Interceptor next = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(next.invoke(EasyMock.eq(msg))).andReturn(msg);
         EasyMock.replay(next);
-        Interceptor interceptor = new NonBlockingBridgingInterceptor(scheduler, context, next);
+        Interceptor interceptor = new NonBlockingInterceptor(scheduler, context, next);
         interceptor.invoke(msg);
         verify(context);
         verify(next);
     }
 
     public void testOptimizable() {
-        NonBlockingBridgingInterceptor interceptor = new NonBlockingBridgingInterceptor(null, null);
+        NonBlockingInterceptor interceptor = new NonBlockingInterceptor(null, null);
         assertFalse(interceptor.isOptimizable());
     }
 

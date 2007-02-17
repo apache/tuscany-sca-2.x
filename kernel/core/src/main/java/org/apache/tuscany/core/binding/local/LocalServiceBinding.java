@@ -22,11 +22,9 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -37,20 +35,20 @@ import org.apache.tuscany.spi.wire.Wire;
  */
 public class LocalServiceBinding extends ServiceBindingExtension {
 
-    public LocalServiceBinding(URI name, CompositeComponent parent) throws CoreRuntimeException {
-        super(name, parent);
+    public LocalServiceBinding(URI name) throws CoreRuntimeException {
+        super(name);
     }
 
     public QName getBindingType() {
         return Wire.LOCAL_BINDING;
     }
 
-    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
+    public TargetInvoker createTargetInvoker(String name, Operation operation)
         throws TargetInvokerCreationException {
         if (operation.isCallback()) {
-            return new LocalCallbackTargetInvoker(operation, getInboundWire());
+            return new LocalCallbackTargetInvoker(operation, getWire());
         } else {
-            return new LocalTargetInvoker(operation, outboundWire);
+            return new LocalTargetInvoker(operation, getWire());
         }
     }
 }

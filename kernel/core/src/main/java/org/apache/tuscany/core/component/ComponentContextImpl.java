@@ -18,16 +18,14 @@
  */
 package org.apache.tuscany.core.component;
 
-import org.osoa.sca.ComponentContext;
 import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
-
-import org.apache.tuscany.core.component.ComponentContextProvider;
+import org.osoa.sca.ServiceReference;
 
 /**
  * Implementation of ComponentContext that delegates to a ComponentContextProvider.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ComponentContextImpl implements ComponentContext {

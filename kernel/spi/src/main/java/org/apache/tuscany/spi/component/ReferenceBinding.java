@@ -18,20 +18,18 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Manages an SCA reference configured with a binding
  *
  * @version $Rev$ $Date$
  */
-public interface ReferenceBinding extends SCAObject {
+public interface ReferenceBinding extends Invocable {
 
     /**
      * Returns the binding qualified name
@@ -39,44 +37,16 @@ public interface ReferenceBinding extends SCAObject {
      * @return the binding qualified name
      */
     QName getBindingType();
-    
-    /**
-     * Sets the parent reference for the binding
-     *
-     * @param reference the parent reference for the binding
-     */
-    void setReference(Reference reference);
 
     /**
-     * Returns the inbound wire for flowing a request through the reference
+     * Returns the wire for flowing a request through the reference
      */
-    InboundWire getInboundWire();
+    Wire getWire();
 
     /**
-     * Sets the inbound wire for flowing a request through the reference
+     * Sets the wire wire for flowing a request through the reference
      */
-    void setInboundWire(InboundWire wire);
-
-    /**
-     * Returns the outbound wire used by the reference to connect to a target
-     */
-    OutboundWire getOutboundWire();
-
-    /**
-     * Sets the outbound wire used by the reference to connect to a target
-     */
-    void setOutboundWire(OutboundWire wire);
-
-    /**
-     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to the target service of
-     * the reference
-     *
-     * @param contract  the service contract to invoke on
-     * @param operation the operation to invoke
-     * @throws TargetInvokerCreationException
-     */
-    TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException;
+    void setWire(Wire wire);
 
     /**
      * Returns the service contract for the binding
@@ -84,5 +54,12 @@ public interface ReferenceBinding extends SCAObject {
      * @return the service contract for the binding
      */
     ServiceContract<?> getBindingServiceContract();
+
+    /**
+     * Returns the target URI for the binding
+     *
+     * @return the target URI for the binding
+     */
+    URI getTargetUri();
 
 }

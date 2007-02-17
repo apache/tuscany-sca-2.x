@@ -16,14 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.wire;
+package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.spi.wire.Interceptor;
+import java.net.URI;
+
+import org.apache.tuscany.spi.builder.WiringException;
 
 /**
- * Responsible for bridging an outbound to an inbound invocation chain associated with a source and target respectively
+ * Denotes no binding was specified for a wire
  *
  * @version $Rev$ $Date$
  */
-public interface BridgingInterceptor extends Interceptor {
+public class NoBindingException extends WiringException {
+
+    public NoBindingException(String message, URI sourceUri, URI targetUri) {
+        super(message, sourceUri, targetUri);
+    }
 }

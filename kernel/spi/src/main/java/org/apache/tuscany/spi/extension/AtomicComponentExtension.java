@@ -19,12 +19,6 @@
 package org.apache.tuscany.spi.extension;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -35,8 +29,6 @@ import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
@@ -47,8 +39,6 @@ import org.apache.tuscany.spi.wire.WireService;
 public abstract class AtomicComponentExtension extends AbstractComponentExtension implements AtomicComponent {
     protected ScopeContainer scopeContainer;
     protected Scope scope;
-    protected Map<String, InboundWire> serviceWires = new HashMap<String, InboundWire>();
-    protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String, List<OutboundWire>>();
     protected WireService wireService;
     protected WorkContext workContext;
     protected WorkScheduler workScheduler;
@@ -138,58 +128,8 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     }
 
-    public void addInboundWire(InboundWire wire) {
-        serviceWires.put(wire.getSourceUri().getFragment(), wire);
-        onServiceWire(wire);
-    }
-
-    public InboundWire getInboundWire(String serviceName) {
-        if (serviceName == null) {
-            if (serviceWires.size() < 1) {
-                return null;
-            }
-            return serviceWires.values().iterator().next();
-        } else {
-            return serviceWires.get(serviceName);
-        }
-    }
-
-    public InboundWire getTargetWire(String targetName) {
-        return getInboundWire(targetName);
-    }
-
-    public Collection<InboundWire> getInboundWires() {
-        return Collections.unmodifiableCollection(serviceWires.values());
-    }
-
-    public void addOutboundWire(OutboundWire wire) {
-        List<OutboundWire> list = new ArrayList<OutboundWire>();
-        list.add(wire);
-        referenceWires.put(wire.getSourceUri().getFragment(), list);
-        onReferenceWire(wire);
-    }
-
-    public Map<String, List<OutboundWire>> getOutboundWires() {
-        return Collections.unmodifiableMap(referenceWires);
-    }
-
-    public void addOutboundWires(List<OutboundWire> wires) {
-        assert wires != null && wires.size() > 0;
-        referenceWires.put(wires.get(0).getSourceUri().getFragment(), wires);
-        onReferenceWires(wires);
-    }
-
     public void removeInstance() throws ComponentException {
         scopeContainer.remove(this);
-    }
-
-    protected void onReferenceWire(OutboundWire wire) {
-    }
-
-    protected void onReferenceWires(List<OutboundWire> wires) {
-    }
-
-    protected void onServiceWire(InboundWire wire) {
     }
 
 }

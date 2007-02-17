@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 public class WorkContextImpl implements WorkContext {
     private static final Object REMOTE_CONTEXT = new Object();
     private static final Object CORRELATION_ID = new Object();
-    private static final Object CALLBACK_ROUTING_CHAIN = new Object();
+    private static final Object CALLBACK_URIS = new Object();
     private static final Object CURRENT_ATOMIC = new Object();
     private static final Object CURRENT_SERVICE_NAMES = new Object();
 
@@ -79,17 +79,17 @@ public class WorkContextImpl implements WorkContext {
     }
 
     @SuppressWarnings("unchecked")
-    public LinkedList<URI> getCurrentCallbackRoutingChain() {
+    public LinkedList<URI> getCurrentCallbackUris() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (LinkedList<URI>) map.get(CALLBACK_ROUTING_CHAIN);
+        return (LinkedList<URI>) map.get(CALLBACK_URIS);
     }
 
-    public void setCurrentCallbackRoutingChain(LinkedList<URI> callbackRoutingChain) {
+    public void setCurrentCallbackUris(LinkedList<URI> uris) {
         Map<Object, Object> map = getWorkContextMap();
-        map.put(CALLBACK_ROUTING_CHAIN, callbackRoutingChain);
+        map.put(CALLBACK_URIS, uris);
     }
 
     public CompositeComponent getRemoteComponent() {

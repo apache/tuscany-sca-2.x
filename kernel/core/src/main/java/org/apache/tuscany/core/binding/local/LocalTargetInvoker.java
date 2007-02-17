@@ -22,12 +22,12 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.util.UriHelper;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Dispatches an invocation through a composite service or reference using the local binding
@@ -35,18 +35,18 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
-    private OutboundInvocationChain chain;
+    private InvocationChain chain;
     private URI fromAddress;
     private boolean contractHasCallback;
 
-    public LocalTargetInvoker(Operation operation, OutboundWire outboundWire) {
+    public LocalTargetInvoker(Operation operation, Wire wire) {
         assert operation != null;
-        chain = outboundWire.getOutboundInvocationChains().get(operation);
+        chain = wire.getInvocationChains().get(operation);
         assert chain != null;
-        if (outboundWire.getSourceUri() != null) {
-            fromAddress = URI.create(UriHelper.getBaseName(outboundWire.getSourceUri()));
+        if (wire.getSourceUri() != null) {
+            fromAddress = URI.create(UriHelper.getBaseName(wire.getSourceUri()));
         }
-        contractHasCallback = outboundWire.getServiceContract().getCallbackClass() != null;
+        contractHasCallback = !wire.getCallbackInvocationChains().isEmpty();
     }
 
     @Override
@@ -60,7 +60,8 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
             assert invoker != null;
             // Pushing the from address only needs to happen in the outbound (forward) direction for callbacks
             if (contractHasCallback) {
-                msg.pushFromAddress(fromAddress);
+                //JFM do we need this?
+                msg.pushCallbackUri(fromAddress);
             }
 
             return invoke(chain, invoker, msg);

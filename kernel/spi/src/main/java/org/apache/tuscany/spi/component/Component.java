@@ -18,25 +18,21 @@
  */
 package org.apache.tuscany.spi.component;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.ComponentContext;
 
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The runtime instantiation of an SCA component
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface Component extends SCAObject {
+public interface Component extends Invocable {
 
     /**
      * Returns the component scope
@@ -60,6 +56,13 @@ public interface Component extends SCAObject {
     void setScopeContainer(ScopeContainer scopeContainer);
 
     /**
+     * Returns a collection of wires for the component associated with a reference name
+     *
+     * @return a collection of wires for the component associated with a reference name
+     */
+    List<Wire> getWires(String name);
+
+    /**
      * Returns the default property values associated with the component.
      *
      * @return default property values associated with the component.
@@ -81,45 +84,24 @@ public interface Component extends SCAObject {
     boolean isOptimizable();
 
     /**
-     * Returns the wire associated with the given service name or null if not found.
+     * Attaches a callback wire to the comoponent
      *
-     * @return the wire associated with the given service name or null if not found.
+     * @param wire the wire to attach
      */
-    InboundWire getInboundWire(String serviceName);
+    void attachCallbackWire(Wire wire);
 
     /**
-     * Returns the inbound wire associated with the given target name or null if not found.  Targets can be services or
-     * references in the case of composites.
+     * Attaches a wire to a component reference
      *
-     * @param targetName the target service name or null if the default service should be returned
-     * @return the wire associated with the given service name or null if not found.
+     * @param wire the wire to attach
      */
-    InboundWire getTargetWire(String targetName);
+    void attachWire(Wire wire);
 
     /**
-     * Returns a map of inbound wires.
+     * Attaches a set of wires to a comoponent reference. Used for multiplicity.
      *
-     * @return a map of inbound wires.
+     * @param wires the wire to attach
      */
-    Collection<InboundWire> getInboundWires();
+    void attachWires(List<Wire> wires);
 
-    /**
-     * Returns a map of source-side wires for references. There may be 1..n wires per reference.
-     *
-     * @return a map of source-side wires for references.
-     */
-    Map<String, List<OutboundWire>> getOutboundWires();
-
-    /**
-     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service offered by
-     * the component
-     *
-     * @param targetName   the service name
-     * @param operation    the operation to invoke
-     * @param callbackWire the callback wire or null if the associated wire is unidirectional
-     * @return the target invoker
-     * @throws TargetInvokerCreationException
-     */
-    TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
-        throws TargetInvokerCreationException;
 }

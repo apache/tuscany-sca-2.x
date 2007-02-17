@@ -29,10 +29,9 @@ import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -71,11 +70,10 @@ public class DataBindingInterceptorTestCase extends TestCase {
         DataType<DataType> outputType2 =
             new DataType<DataType>("idl:output", Object.class, operation2.getOutputType());
 
-        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
+        Wire outboundWire = EasyMock.createMock(Wire.class);
         CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
         Component component = EasyMock.createMock(Component.class);
-        EasyMock.replay(outboundWire, inboundWire, composite, component);
+        EasyMock.replay(outboundWire, composite, component);
 
         DataBindingInteceptor interceptor = new DataBindingInteceptor(outboundWire, operation1, operation2);
         Mediator mediator = createMock(Mediator.class);

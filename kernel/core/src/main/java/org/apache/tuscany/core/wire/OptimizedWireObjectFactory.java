@@ -21,7 +21,7 @@ package org.apache.tuscany.core.wire;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Returns a target instance directly from a wire
@@ -30,16 +30,16 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class OptimizedWireObjectFactory<B> implements ObjectFactory<B> {
     private final Class<B> type;
-    private final OutboundWire wire;
+    private Wire wire;
 
-    public OptimizedWireObjectFactory(Class<B> type, OutboundWire factory) {
+    public OptimizedWireObjectFactory(Class<B> type, Wire factory) {
         this.wire = factory;
         this.type = type;
     }
 
     public B getInstance() throws ObjectCreationException {
         try {
-            return type.cast(wire.getTargetService());
+            return type.cast(wire.getTargetInstance());
         } catch (TargetResolutionException e) {
             throw new ObjectCreationException(e);
         }

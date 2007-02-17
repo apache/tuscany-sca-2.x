@@ -19,13 +19,13 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
 import java.net.URI;
+import java.util.LinkedList;
 
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -38,19 +38,19 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStart() {
         URI from = URI.create("foo");
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackRoutingChain(EasyMock.isA(LinkedList.class));
+        context.setCurrentCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
         target.invokeStart("test");
         EasyMock.replay(target);
-        Invoker invoker = new Invoker(wire, context, monitor, target);
+        Invoker invoker = new Invoker(context, monitor, target);
         Message msg = new MessageImpl();
-        msg.pushFromAddress(from);
+        msg.pushCallbackUri(from);
         msg.setBody("test");
         msg.setConversationSequence(Invoker.START);
         invoker.invoke(msg);
@@ -62,19 +62,19 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testContinue() {
         URI from = URI.create("foo");
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackRoutingChain(EasyMock.isA(LinkedList.class));
+        context.setCurrentCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
         target.invokeContinue("test");
         EasyMock.replay(target);
-        Invoker invoker = new Invoker(wire, context, monitor, target);
+        Invoker invoker = new Invoker(context, monitor, target);
         Message msg = new MessageImpl();
-        msg.pushFromAddress(from);
+        msg.pushCallbackUri(from);
         msg.setBody("test");
         msg.setConversationSequence(Invoker.CONTINUE);
         invoker.invoke(msg);
@@ -86,19 +86,19 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testEnd() {
         URI from = URI.create("foo");
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackRoutingChain(EasyMock.isA(LinkedList.class));
+        context.setCurrentCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
         target.invokeEnd("test");
         EasyMock.replay(target);
-        Invoker invoker = new Invoker(wire, context, monitor, target);
+        Invoker invoker = new Invoker(context, monitor, target);
         Message msg = new MessageImpl();
-        msg.pushFromAddress(from);
+        msg.pushCallbackUri(from);
         msg.setBody("test");
         msg.setConversationSequence(Invoker.END);
         invoker.invoke(msg);
@@ -110,19 +110,19 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testNone() {
         URI from = URI.create("foo");
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackRoutingChain(EasyMock.isA(LinkedList.class));
+        context.setCurrentCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
         target.invokeNone("test");
         EasyMock.replay(target);
-        Invoker invoker = new Invoker(wire, context, monitor, target);
+        Invoker invoker = new Invoker(context, monitor, target);
         Message msg = new MessageImpl();
-        msg.pushFromAddress(from);
+        msg.pushCallbackUri(from);
         msg.setBody("test");
         invoker.invoke(msg);
         EasyMock.verify(wire);
@@ -138,9 +138,8 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
     private class Invoker extends TargetInvokerExtension {
         private Target target;
 
-        public Invoker(InboundWire wire, WorkContext workContext, ExecutionMonitor monitor,
-                       TargetInvokerExtensionSequenceTestCase.Target target) {
-            super(wire, workContext, monitor);
+        public Invoker(WorkContext workContext, ExecutionMonitor monitor, Target target) {
+            super(workContext, monitor);
             this.target = target;
         }
 

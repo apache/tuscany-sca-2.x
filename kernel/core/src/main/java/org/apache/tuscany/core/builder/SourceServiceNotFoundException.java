@@ -6,34 +6,31 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.core.builder;
+
+import java.net.URI;
+
+import org.apache.tuscany.spi.builder.WiringException;
 
 /**
- * A set of interceptors  associated with the inbound side of a wire for an operation.
+ * Indicates the source service of a wire was not found
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface InboundInvocationChain extends InvocationChain {
+public class SourceServiceNotFoundException extends WiringException {
 
-    /**
-     * Returns the head interceptor of the birdged target-side chain
-     */
-    Interceptor getTargetInterceptor();
-
-    /**
-     * Sets the head interceptor of the bridged target-side chain
-     */
-    void setTargetInterceptor(Interceptor interceptor);
-
+    public SourceServiceNotFoundException(String message, URI sourceName) {
+        super(message, sourceName, null);
+    }
 
 }
