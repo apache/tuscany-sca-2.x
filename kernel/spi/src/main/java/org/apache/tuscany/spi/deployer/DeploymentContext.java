@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.deployer;
 
 import java.net.URL;
+import java.net.URI;
 import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 
@@ -66,6 +67,12 @@ public interface DeploymentContext {
      */
     URL getScdlLocation();
 
+    /**
+     * Returns the URI of the composite component currently being deployed.
+     *
+     * @return the URI of the composite component currently being deployed
+     */
+    URI getCompositeURI();
 
     /**
      * Return the extension property with the supplied name.
@@ -84,10 +91,11 @@ public interface DeploymentContext {
     void putExtension(String name, Object value);
 
     /**
-     * Returns and ordered list of path names representing the current component hierarchy as an assembly is loaded
+     * Returns and ordered list of path names representing the current component hierarchy as an assembly is loaded.
+     * Deprecated in favour of {@link #getCompositeURI}
      *
      * @return the ordered list of path names representing the current component hierarchy
      */
+    @Deprecated
     List<String> getPathNames();
-
 }
