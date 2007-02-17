@@ -102,7 +102,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
 
         TestAtomicComponent component = new TestAtomicComponent(config);
         component.addPropertyFactory("foo", objectFactory);
-        assertSame(value, component.getProperty("foo"));
+        assertSame(value, component.getProperty(String.class, "foo"));
     }
 
     public void testServiceLookup() {
