@@ -61,6 +61,8 @@ public class Main {
 
         deployAndRunApplication(args, runtime);
         
+        System.exit(0);
+        
 
     }
 
