@@ -18,17 +18,20 @@
  */
 package org.apache.tuscany.runtime.standalone.host;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Map;
 import java.util.Collection;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
+import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
@@ -38,13 +41,6 @@ import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-
-import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
-import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
-import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
-import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
@@ -63,7 +59,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
      * @param args Arguments to be passed to the lauched component.
      * @deprecated This is a hack for deployment and should be removed.
      */
-    public Object deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception {
+    public int deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception {
         
         URI compositeUri = new URI("/test/composite/");
         
@@ -81,7 +77,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
         return run(impl, args, compositeUri);
     }
 
-    private Object run(CompositeImplementation impl, String[] args, URI compositeUri) throws Exception {
+    private int run(CompositeImplementation impl, String[] args, URI compositeUri) throws Exception {
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = componentType.getComponents();
         for (Map.Entry<String, ComponentDefinition<? extends Implementation<?>>> entry : components.entrySet()) {
@@ -92,10 +88,10 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
                 return run(compositeUri.resolve(name), implementation, args);
             }
         }
-        return null;
+        return -1;
     }
 
-    private Object run(URI componentUri, Implementation implementation, String[] args) throws TargetInvokerCreationException, InvocationTargetException {
+    private int run(URI componentUri, Implementation implementation, String[] args) throws TargetInvokerCreationException, InvocationTargetException {
         Launched launched = (Launched) implementation;
         PojoComponentType launchedType = launched.getComponentType();
         Map services = launchedType.getServices();
@@ -103,7 +99,12 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
         Operation<?> operation = testService.getServiceContract().getOperations().get("main");
         Component component = getComponentManager().getComponent(componentUri);
         TargetInvoker targetInvoker = component.createTargetInvoker("main", operation);
-        return targetInvoker.invokeTarget(new Object[]{args}, TargetInvoker.NONE);
+        Object result = targetInvoker.invokeTarget(new Object[]{args}, TargetInvoker.NONE);
+        try {
+            return int.class.cast(result);
+        } catch (ClassCastException e) {
+            return 0;
+        }
     }
 
     protected Deployer getDeployer() {
