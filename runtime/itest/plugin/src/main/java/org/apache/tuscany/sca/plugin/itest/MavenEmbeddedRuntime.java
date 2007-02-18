@@ -21,16 +21,16 @@ package org.apache.tuscany.sca.plugin.itest;
 import java.net.URI;
 import java.util.Collection;
 
-import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.host.runtime.InitializationException;
 
 /**
  * @version $Rev$ $Date$
@@ -42,22 +42,19 @@ public class MavenEmbeddedRuntime extends AbstractRuntime<MavenRuntimeInfo> {
         super(MavenRuntimeInfo.class);
     }
 
-    protected void registerSystemComponents() throws InitializationException {
-        super.registerSystemComponents();
-        try {
-            getComponentManager().registerJavaObject(MavenEmbeddedArtifactRepository.COMPONENT_NAME,
-                                                     ArtifactRepository.class,
-                                                     artifactRepository);
-        } catch (RegistrationException e) {
-            throw new InitializationException(e);
-        }
+    protected void registerBaselineSystemComponents() throws InitializationException {
+        super.registerBaselineSystemComponents();
+        registerSystemComponent(MavenEmbeddedArtifactRepository.COMPONENT_NAME,
+            ArtifactRepository.class,
+            artifactRepository);
     }
 
     public void setArtifactRepository(ArtifactRepository artifactRepository) {
         this.artifactRepository = artifactRepository;
     }
 
-    public Collection<Component> deployTestScdl(ComponentDefinition<CompositeImplementation> definition) throws Exception {
+    public Collection<Component> deployTestScdl(ComponentDefinition<CompositeImplementation> definition)
+        throws Exception {
         Deployer deployer = getDeployer();
         return deployer.deploy(null, definition);
     }

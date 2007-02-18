@@ -20,7 +20,9 @@ package org.apache.tuscany.core.runtime;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.ComponentContext;
@@ -35,8 +37,11 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
@@ -46,6 +51,7 @@ import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.resolver.AutowireResolver;
@@ -83,6 +89,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     private CompositeComponent systemComponent;
     private CompositeComponent tuscanySystem;
     private AutowireResolver resolver;
+    private JavaInterfaceProcessorRegistry interfaceProcessorRegistry;
 
     protected AbstractRuntime(Class<I> runtimeInfoType) {
         this(runtimeInfoType, new NullMonitorFactory());
@@ -92,6 +99,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         this.runtimeInfoType = runtimeInfoType;
         this.monitorFactory = monitorFactory;
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
+        this.interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
     }
 
     public URL getSystemScdl() {
@@ -162,7 +170,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         URI name = ComponentNames.TUSCANY_SYSTEM_ROOT.resolve("main");
         Bootstrapper bootstrapper = createBootstrapper();
 
-        registerSystemComponents();
+        registerBaselineSystemComponents();
 
         // deploy the system scdl
         Collection<Component> components;
@@ -216,23 +224,48 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, connector);
     }
 
-    protected void registerSystemComponents() throws InitializationException {
+    protected void registerBaselineSystemComponents() throws InitializationException {
+        registerSystemComponent(RUNTIME_INFO_URI, runtimeInfoType, runtimeInfo);
+        registerSystemComponent(MONITOR_URI, MonitorFactory.class, getMonitorFactory());
+        // register the component manager with itself so it can be autowired
+        registerSystemComponent(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
+        registerSystemComponent(AUTOWIRE_RESOLVER_URI, AutowireResolver.class, resolver);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    protected <S, I extends S> void registerSystemComponent(URI uri, Class<S> type, I component)
+        throws InitializationException {
         try {
-            componentManager.registerJavaObject(RUNTIME_INFO_URI, runtimeInfoType, runtimeInfo);
-            componentManager.registerJavaObject(MONITOR_URI, MonitorFactory.class, getMonitorFactory());
-            // register the component manager with itself so it can be autowired
-            componentManager.registerJavaObject(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
-            componentManager.registerJavaObject(AUTOWIRE_RESOLVER_URI, AutowireResolver.class, resolver);
+            ServiceContract contract = interfaceProcessorRegistry.introspect(type);
+            componentManager.registerJavaObject(uri, contract, component);
         } catch (RegistrationException e) {
+            throw new InitializationException(e);
+        } catch (InvalidServiceContractException e) {
+            throw new InitializationException(e);
+        }
+    }
+
+    protected <I> void registerSystemComponent(URI uri, List<Class<?>> types, I component)
+        throws InitializationException {
+        try {
+            List<ServiceContract<?>> contracts = new ArrayList<ServiceContract<?>>();
+            for (Class<?> type : types) {
+                contracts.add(this.interfaceProcessorRegistry.introspect(type));
+
+            }
+            componentManager.registerJavaObject(uri, contracts, component);
+        } catch (RegistrationException e) {
+            throw new InitializationException(e);
+        } catch (InvalidServiceContractException e) {
             throw new InitializationException(e);
         }
     }
 
     protected Collection<Component> deploySystemScdl(Deployer deployer,
-                                                  CompositeComponent parent,
-                                                  URI name,
-                                                  URL systemScdl,
-                                                  ClassLoader systemClassLoader)
+                                                     CompositeComponent parent,
+                                                     URI name,
+                                                     URL systemScdl,
+                                                     ClassLoader systemClassLoader)
         throws LoaderException, BuilderException, ComponentException, ResolutionException {
 
         SystemCompositeImplementation impl = new SystemCompositeImplementation();

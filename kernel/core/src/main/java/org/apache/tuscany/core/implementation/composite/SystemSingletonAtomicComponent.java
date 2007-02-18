@@ -28,16 +28,11 @@ import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AbstractComponentExtension;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * An {@link org.apache.tuscany.spi.component.AtomicComponent} used when registering objects directly into a composite
@@ -47,31 +42,19 @@ import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComponentExtension
     implements AtomicComponent {
     private T instance;
-    // JFM FIXME remove and externalize service contract
-    private JavaInterfaceProcessorRegistry interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
     private List<ServiceContract> serviceContracts = new ArrayList<ServiceContract>();
 
-    public SystemSingletonAtomicComponent(URI name, Class<S> interfaze, T instance) {
+    public SystemSingletonAtomicComponent(URI name, ServiceContract<S> contract, T instance) {
         super(name);
         this.instance = instance;
-        try {
-            initWire(interfaze);
-        } catch (InvalidServiceContractException e) {
-            // JFM FIXME this will go away when we externalize ServiceContract
-            e.printStackTrace();
-        }
+        this.serviceContracts.add(contract);
     }
 
-    public SystemSingletonAtomicComponent(URI name, List<Class<?>> services, T instance) {
+    public SystemSingletonAtomicComponent(URI name, List<ServiceContract<?>> services, T instance) {
         super(name);
         this.instance = instance;
-        for (Class<?> interfaze : services) {
-            try {
-                initWire(interfaze);
-            } catch (InvalidServiceContractException e) {
-                // JFM FIXME this will go away when we externalize ServiceContract
-                e.printStackTrace();  
-            }
+        for (ServiceContract<?> contract : services) {
+            serviceContracts.add(contract);
         }
     }
 
@@ -146,11 +129,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
 
     public List<ServiceContract> getServiceContracts() {
         return serviceContracts;
-    }
-
-    private void initWire(Class<?> interfaze) throws InvalidServiceContractException {
-        JavaServiceContract serviceContract = interfaceProcessorRegistry.introspect(interfaze);
-        serviceContracts.add(serviceContract);
     }
 
 }
