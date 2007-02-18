@@ -45,11 +45,11 @@ public class SmokeTestLauncher extends CommandTestCase {
         }
     }
 
+/*
     public void testLauncherNoComponent() throws Exception {
         ProcessBuilder pb = new ProcessBuilder("java",
                                                "-jar",
                                                launcher.getAbsolutePath(),
-                                               "http://no.such.component",
                                                testJar.getAbsolutePath());
         pb.directory(installDir);
         Process process = pb.start();
@@ -61,8 +61,8 @@ public class SmokeTestLauncher extends CommandTestCase {
             process.destroy();
         }
     }
+*/
 
-/*
     public void testLauncherWithNoArgs() throws Exception {
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", launcher.getAbsolutePath(), testJar.getAbsolutePath());
         pb.directory(installDir);
@@ -75,7 +75,6 @@ public class SmokeTestLauncher extends CommandTestCase {
             process.destroy();
         }
     }
-*/
 
     protected void setUp() throws Exception {
         super.setUp();

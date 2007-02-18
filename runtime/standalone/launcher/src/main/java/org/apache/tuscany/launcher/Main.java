@@ -59,17 +59,14 @@ public class Main {
         StandaloneRuntime runtime = (StandaloneRuntime)DirectoryHelper.createRuntime(runtimeInfo);
         runtime.initialize();
 
-        deployAndRunApplication(args, runtime);
-        
-        System.exit(0);
-        
-
+        int status = deployAndRunApplication(args, runtime);
+        System.exit(status);
     }
 
     /**
      * @deprecated Hack for deployment.
      */
-    private static void deployAndRunApplication(String[] args, StandaloneRuntime runtime)
+    private static int deployAndRunApplication(String[] args, StandaloneRuntime runtime)
         throws Exception {
 
         URI compositeUri = new URI("/test/composite");
@@ -83,10 +80,7 @@ public class Main {
             appArgs = new String[args.length - 1];
             System.arraycopy(args, 1, appArgs, 0, appArgs.length);
         }
-        Object ret = runtime.deployAndRun(applicationScdl, applicationClassLoader, appArgs);
-        System.err.println(ret);
-        
-        System.exit(0);
+        return runtime.deployAndRun(applicationScdl, applicationClassLoader, appArgs);
 
     }
 

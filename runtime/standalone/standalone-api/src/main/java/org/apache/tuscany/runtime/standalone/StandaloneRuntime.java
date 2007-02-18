@@ -39,6 +39,6 @@ public interface StandaloneRuntime extends TuscanyRuntime<StandaloneRuntimeInfo>
      * @param args Arguments to be passed to the lauched component.
      * @deprecated This is a hack for deployment and should be removed.
      */
-    Object deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception;
+    int deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception;
 
 }
