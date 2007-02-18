@@ -21,9 +21,11 @@ package org.apache.tuscany.spi.deployer;
 import java.net.URL;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.Component;
 
 /**
  * A holder that can be used during the load process to store information that is not part of the logical assembly
@@ -90,12 +92,6 @@ public interface DeploymentContext {
      */
     void putExtension(String name, Object value);
 
-    /**
-     * Returns and ordered list of path names representing the current component hierarchy as an assembly is loaded.
-     * Deprecated in favour of {@link #getComponentId}
-     *
-     * @return the ordered list of path names representing the current component hierarchy
-     */
     @Deprecated
-    List<String> getPathNames();
+    Map<URI, Component> getComponents();
 }

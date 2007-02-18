@@ -19,10 +19,12 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
+import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -72,22 +74,19 @@ public class CompositeBuilderTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeBuilder builder = new CompositeBuilder();
-        ComponentManagerImpl mgr = new ComponentManagerImpl();
-        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(null, mgr);
+        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(null);
         JavaComponentBuilder jBuilder = new JavaComponentBuilder();
         builderRegistry.register(JavaImplementation.class, jBuilder);
         builderRegistry.register(CompositeImplementation.class, builder);
         builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
         builder.setBuilderRegistry(builderRegistry);
 
-        CompositeComponent parent = new CompositeComponentImpl(PARENT_COMPONENT, null);
-        mgr.register(parent);
         CompositeComponent component =
-            (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);
-        mgr.register(component); // manually register this
-        CompositeComponent sourceComponent = (CompositeComponent) mgr.getComponent(SOURCE_COMPONENT);
+            (CompositeComponent) builder.build(null, createTopComponentDef(), deploymentContext);
+        Map<URI,Component> components = deploymentContext.getComponents();
+        CompositeComponent sourceComponent = (CompositeComponent) components.get(SOURCE_COMPONENT);
         assertNotNull(sourceComponent.getService("InnerSourceService"));
-        AtomicComponent innerSourceComponent = (AtomicComponent) mgr.getComponent(INNER_SOURCE_COMPONENT);
+        AtomicComponent innerSourceComponent = (AtomicComponent) components.get(INNER_SOURCE_COMPONENT);
         assertNotNull(innerSourceComponent);
     }
 
@@ -96,7 +95,7 @@ public class CompositeBuilderTestCase extends TestCase {
         ScopeContainerMonitor monitor = EasyMock.createNiceMock(ScopeContainerMonitor.class);
         CompositeScopeContainer container = new CompositeScopeContainer(monitor);
         container.start();
-        deploymentContext = new RootDeploymentContext(null, null, null, null, container);
+        deploymentContext = new RootDeploymentContext(null, null, TOP_COMPONENT, null, container);
     }
 
     private ComponentDefinition createTopComponentDef() throws Exception {

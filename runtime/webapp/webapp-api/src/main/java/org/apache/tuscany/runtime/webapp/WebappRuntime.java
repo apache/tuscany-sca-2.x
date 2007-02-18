@@ -37,7 +37,7 @@ import org.apache.tuscany.host.servlet.ServletRequestInjector;
  * @see TuscanyFilter
  * @see TuscanySessionListener
  */
-public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
+public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime<WebappRuntimeInfo> {
     /**
      * Returns the ServletContext associated with this runtime.
      *

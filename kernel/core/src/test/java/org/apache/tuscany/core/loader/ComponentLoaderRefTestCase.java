@@ -44,6 +44,8 @@ import org.easymock.EasyMock;
  */
 public class ComponentLoaderRefTestCase extends TestCase {
     private ComponentLoader loader;
+    private final URI componentId = URI.create("sca://localhost/parent/");
+    private DeploymentContext context;
 
     public void testLoadReferenceNoFragment() throws LoaderException, XMLStreamException {
         PojoComponentType<?, MockReferenceDefinition, Property<?>> type =
@@ -59,16 +61,11 @@ public class ComponentLoaderRefTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getElementText()).andReturn("target");
         EasyMock.replay(reader);
-        DeploymentContext context = EasyMock.createMock(DeploymentContext.class);
-        List<String> names = new ArrayList<String>();
-        names.add("parent");
-        EasyMock.expect(context.getPathNames()).andReturn(names);
-        EasyMock.replay(context);
         loader.loadReference(reader, context, definition);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
         assertEquals(1, target.getTargets().size());
         URI uri = target.getTargets().get(0);
-        assertEquals("parent/target", uri.toString());
+        assertEquals(componentId.resolve("target"), uri);
         assertNull(uri.getFragment());
         EasyMock.verify(reader);
     }
@@ -87,16 +84,11 @@ public class ComponentLoaderRefTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getElementText()).andReturn("target/fragment");
         EasyMock.replay(reader);
-        DeploymentContext context = EasyMock.createMock(DeploymentContext.class);
-        List<String> names = new ArrayList<String>();
-        names.add("parent");
-        EasyMock.expect(context.getPathNames()).andReturn(names);
-        EasyMock.replay(context);
         loader.loadReference(reader, context, definition);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
         assertEquals(1, target.getTargets().size());
         URI uri = target.getTargets().get(0);
-        assertEquals("parent/target#fragment", uri.toString());
+        assertEquals(componentId.resolve("target#fragment"), uri);
         EasyMock.verify(reader);
     }
 
@@ -105,9 +97,12 @@ public class ComponentLoaderRefTestCase extends TestCase {
         LoaderRegistry mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ComponentLoader(mockRegistry, null);
         CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
-        URI uri = URI.create("foo");
-        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
+        EasyMock.expect(parent.getUri()).andReturn(componentId).atLeastOnce();
         EasyMock.replay(parent);
+
+        context = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(context.getComponentId()).andReturn(componentId);
+        EasyMock.replay(context);
     }
 
     private class MockReferenceDefinition extends ReferenceDefinition {

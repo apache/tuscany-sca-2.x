@@ -19,15 +19,21 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isNull;
+import static org.easymock.EasyMock.replay;
+import org.easymock.IAnswer;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
+import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
@@ -42,22 +48,13 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
-import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.java.JavaImplementation;
-import org.easymock.EasyMock;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isNull;
-import static org.easymock.EasyMock.replay;
-import org.easymock.IAnswer;
-
 /**
  * @version $Rev$ $Date$
  */
 public class ComponentLoaderTestCase extends TestCase {
     private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
+    private static final String COMPONENT_NAME = "sca://localhost/parent/";
     private static final String NAME = "testComponent";
-    private static final String FULL_NAME = "foo/testComponent";
     private JavaImplementation impl;
 
     private XMLStreamReader mockReader;
@@ -65,6 +62,8 @@ public class ComponentLoaderTestCase extends TestCase {
     private PropertyObjectFactory mockPropertyFactory;
     private ComponentLoader loader;
     private CompositeComponent parent;
+    private DeploymentContext ctx;
+    private URI componentId;
 
     public void testEmptyComponent() throws LoaderException, XMLStreamException {
         EasyMock.expect(mockReader.getName()).andReturn(COMPONENT).atLeastOnce();
@@ -94,14 +93,8 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
-        DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
-        ctx.getPathNames();
-        List<String> names = new ArrayList<String>();
-        names.add("foo");
-        EasyMock.expectLastCall().andReturn(names).anyTimes();
-        EasyMock.replay(ctx);
         ComponentDefinition component = loader.load(parent, null, mockReader, ctx);
-        assertEquals(FULL_NAME, component.getUri().toString());
+        assertEquals(COMPONENT_NAME + NAME, component.getUri().toString());
         assertNull(component.getInitLevel());
     }
 
@@ -132,14 +125,9 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
-        DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
-        ctx.getPathNames();
-        List<String> names = new ArrayList<String>();
-        names.add("foo");
-        EasyMock.expectLastCall().andReturn(names).anyTimes();
-        EasyMock.replay(ctx);
+
         ComponentDefinition component = loader.load(parent, null, mockReader, ctx);
-        assertEquals(FULL_NAME, component.getUri().toString());
+        assertEquals(COMPONENT_NAME + NAME, component.getUri().toString());
         assertEquals(Integer.valueOf(20), component.getInitLevel());
     }
 
@@ -185,12 +173,6 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         try {
-            DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
-            ctx.getPathNames();
-            List<String> names = new ArrayList<String>();
-            names.add("foo");
-            EasyMock.expectLastCall().andReturn(names).anyTimes();
-            EasyMock.replay(ctx);
             loader.load(parent, null, mockReader, ctx);
             fail();
         } catch (UnrecognizedElementException e) {
@@ -200,6 +182,7 @@ public class ComponentLoaderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        componentId = URI.create(COMPONENT_NAME);
         impl = new JavaImplementation();
         mockReader = EasyMock.createMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
@@ -209,5 +192,11 @@ public class ComponentLoaderTestCase extends TestCase {
         URI uri = URI.create("foo");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(parent);
+
+        ctx = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(ctx.getClassLoader()).andReturn(null);
+        EasyMock.expect(ctx.getScdlLocation()).andReturn(null);
+        EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
+        EasyMock.replay(ctx);
     }
 }

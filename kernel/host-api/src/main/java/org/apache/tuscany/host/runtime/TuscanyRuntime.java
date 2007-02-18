@@ -30,7 +30,7 @@ import org.apache.tuscany.host.management.ManagementService;
 /**
  * @version $Rev$ $Date$
  */
-public interface TuscanyRuntime {
+public interface TuscanyRuntime<I extends RuntimeInfo> {
     /**
      * Returns the location of the SCDL used to boot this runtime.
      *
@@ -64,15 +64,14 @@ public interface TuscanyRuntime {
      *
      * @return the info this runtime will make available to service components
      */
-    RuntimeInfo getRuntimeInfo();
+    I getRuntimeInfo();
 
     /**
-     * Sets the info this runtime should make available to service components. The instance supplied here should be
-     * registered in the system composite with the name {@link RuntimeInfo#COMPONENT_URI "RuntimeInfo"}.
+     * Sets the info this runtime should make available to service components.
      *
      * @param runtimeInfo the information this runtime should make available to service components
      */
-    void setRuntimeInfo(RuntimeInfo runtimeInfo);
+    void setRuntimeInfo(I runtimeInfo);
 
     /**
      * Returns the MonitorFactory that this runtime is using.

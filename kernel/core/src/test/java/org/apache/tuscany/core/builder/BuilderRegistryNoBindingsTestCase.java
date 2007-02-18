@@ -81,7 +81,7 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        registry = new BuilderRegistryImpl(null, null);
+        registry = new BuilderRegistryImpl(null);
         registry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
     }
 

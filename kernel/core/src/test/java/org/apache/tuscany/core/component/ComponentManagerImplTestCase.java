@@ -20,246 +20,67 @@ package org.apache.tuscany.core.component;
 
 import java.net.URI;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.DuplicateNameException;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.ComponentStart;
-import org.apache.tuscany.core.component.event.ComponentStop;
-import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ComponentManagerImplTestCase extends TestCase {
-    private ComponentManager manager;
+    private static final URI DOMAIN = URI.create("sca://localhost/");
+    private static final URI ROOT1 = DOMAIN.resolve("root1");
+    private static final URI GRANDCHILD = DOMAIN.resolve("parent/child2/grandchild");
+
+    private ComponentManagerImpl manager;
 
     public void testRegister() throws Exception {
-        Component child = EasyMock.createMock(Component.class);
-        URI name = URI.create("child");
-        EasyMock.expect(child.getUri()).andReturn(name).atLeastOnce();
-        EasyMock.replay(child);
-        manager.register(child);
-        assertEquals(child, manager.getComponent(name));
+        Component root = EasyMock.createMock(Component.class);
+        EasyMock.expect(root.getUri()).andReturn(ROOT1);
+        EasyMock.replay(root);
+        manager.register(root);
+        assertEquals(root, manager.getComponent(ROOT1));
+        EasyMock.verify(root);
+
+        EasyMock.reset(root);
+        EasyMock.expect(root.getUri()).andReturn(ROOT1);
+        EasyMock.replay(root);
+        manager.unregister(root);
+        EasyMock.verify(root);
+        assertEquals(null, manager.getComponent(ROOT1));
+    }
+
+    public void testRegisterGrandchild() throws Exception {
+        Component root = EasyMock.createMock(Component.class);
+        EasyMock.expect(root.getUri()).andReturn(GRANDCHILD);
+        EasyMock.replay(root);
+        manager.register(root);
+        assertEquals(root, manager.getComponent(GRANDCHILD));
+        EasyMock.verify(root);
     }
 
     public void testRegisterDuplicate() throws Exception {
-        Component component1 = EasyMock.createMock(Component.class);
-        URI name = URI.create("child");
-        EasyMock.expect(component1.getUri()).andReturn(name).atLeastOnce();
-        EasyMock.replay(component1);
+        Component root = EasyMock.createMock(Component.class);
+        EasyMock.expect(root.getUri()).andReturn(ROOT1);
+        EasyMock.replay(root);
 
-        Component component2 = EasyMock.createMock(Component.class);
-        EasyMock.expect(component2.getUri()).andReturn(name).atLeastOnce();
-        EasyMock.replay(component2);
+        Component duplicate = EasyMock.createMock(Component.class);
+        EasyMock.expect(duplicate.getUri()).andReturn(ROOT1);
+        EasyMock.replay(duplicate);
 
-        manager.register(component1);
+        manager.register(root);
+        assertEquals(root, manager.getComponent(ROOT1));
         try {
-            manager.register(component2);
+            manager.register(duplicate);
             fail();
         } catch (DuplicateNameException e) {
             // expected
         }
-    }
-
-    public void testRegisterSameNameDifferentSchemes() throws Exception {
-        Component component1 = EasyMock.createMock(Component.class);
-        URI name = URI.create("foo://component");
-        EasyMock.expect(component1.getUri()).andReturn(name).atLeastOnce();
-        EasyMock.replay(component1);
-
-        Component component2 = EasyMock.createMock(Component.class);
-        URI name2 = URI.create("bar://component");
-        EasyMock.expect(component2.getUri()).andReturn(name2).atLeastOnce();
-        EasyMock.replay(component2);
-
-        manager.register(component1);
-        manager.register(component2);
-    }
-
-    public void testUnRegister() throws Exception {
-        Component component = EasyMock.createMock(Component.class);
-        URI name = URI.create("component");
-        EasyMock.expect(component.getUri()).andReturn(name).atLeastOnce();
-        component.removeListener(EasyMock.isA(ComponentManager.class));
-        EasyMock.replay(component);
-        manager.register(component);
-        manager.unregister(component);
-        assertNull(manager.getComponent(name));
-    }
-
-    public void testStartNotification() throws Exception {
-        Component child1 = EasyMock.createMock(Component.class);
-        URI name1 = URI.create("sca://foo/child1");
-        EasyMock.expect(child1.getUri()).andReturn(name1).atLeastOnce();
-        child1.start();
-        EasyMock.replay(child1);
-
-        Component child2 = EasyMock.createMock(Component.class);
-        URI name2 = URI.create("sca://bar/child2");
-        EasyMock.expect(child2.getUri()).andReturn(name2).atLeastOnce();
-        EasyMock.replay(child2);
-
-        manager.register(child1);
-        manager.register(child2);
-        ComponentStart event = new ComponentStart(this, URI.create("sca://foo"));
-        manager.onEvent(event);
-        EasyMock.verify(child1);
-        EasyMock.verify(child2);
-    }
-
-    public void testChildStartNotification() throws Exception {
-        URI parentUri = URI.create("foo://foo");
-        Component child1 = EasyMock.createMock(Component.class);
-        URI name = URI.create("foo://foo/child1");
-        EasyMock.expect(child1.getUri()).andReturn(name).atLeastOnce();
-        child1.start();
-        EasyMock.replay(child1);
-
-        Component child2 = EasyMock.createMock(Component.class);
-        URI name2 = URI.create("foo://foo/child2");
-        EasyMock.expect(child2.getUri()).andReturn(name2).atLeastOnce();
-        child2.start();
-        EasyMock.replay(child2);
-
-        manager.register(child1);
-        manager.register(child2);
-        ComponentStart event = new ComponentStart(this, parentUri);
-        manager.onEvent(event);
-        EasyMock.verify(child2);
-        EasyMock.verify(child2);
-    }
-
-    public void testStopNotification() throws Exception {
-        Component child1 = EasyMock.createMock(Component.class);
-        URI name = URI.create("foo://foo/child1");
-        EasyMock.expect(child1.getUri()).andReturn(name).atLeastOnce();
-        child1.stop();
-        EasyMock.replay(child1);
-
-        Component child2 = EasyMock.createMock(Component.class);
-        URI name2 = URI.create("foo://bar/child2");
-        EasyMock.expect(child2.getUri()).andReturn(name2).atLeastOnce();
-        EasyMock.replay(child2);
-
-        manager.register(child1);
-        manager.register(child2);
-        ComponentStop event = new ComponentStop(this,  URI.create("foo://foo"));
-        manager.onEvent(event);
-        EasyMock.verify(child1);
-        EasyMock.verify(child2);
-    }
-
-    public void testChildStartStopNotification() throws Exception {
-        URI parentUri = URI.create("foo://foo");
-
-        Component child1 = EasyMock.createMock(Component.class);
-        URI name = URI.create("foo://foo/child1");
-        EasyMock.expect(child1.getUri()).andReturn(name).atLeastOnce();
-        child1.start();
-        child1.stop();
-        EasyMock.replay(child1);
-
-        Component child2 = EasyMock.createMock(Component.class);
-        URI name2 = URI.create("foo://foo/child2");
-        EasyMock.expect(child2.getUri()).andReturn(name2).atLeastOnce();
-        child2.start();
-        child2.stop();
-        EasyMock.replay(child2);
-
-        manager.register(child1);
-        manager.register(child2);
-        manager.onEvent(new ComponentStart(this, parentUri));
-        manager.onEvent(new ComponentStop(this, parentUri));
-        EasyMock.verify(child2);
-        EasyMock.verify(child2);
-    }
-
-    public void testChildRestart() throws Exception {
-        URI parentUri = URI.create("foo://foo");
-
-        Component child1 = EasyMock.createMock(Component.class);
-        URI name = URI.create("foo://foo/child1");
-        EasyMock.expect(child1.getUri()).andReturn(name).atLeastOnce();
-        child1.start();
-        child1.stop();
-        child1.start();
-        EasyMock.replay(child1);
-
-        Component child2 = EasyMock.createMock(Component.class);
-        URI name2 = URI.create("foo://foo/child2");
-        EasyMock.expect(child2.getUri()).andReturn(name2).atLeastOnce();
-        child2.start();
-        child2.stop();
-        child2.start();
-        EasyMock.replay(child2);
-
-        manager.register(child1);
-        manager.register(child2);
-        manager.onEvent(new ComponentStart(this, parentUri));
-        manager.onEvent(new ComponentStop(this, parentUri));
-        manager.onEvent(new ComponentStart(this, parentUri));
-        EasyMock.verify(child2);
-        EasyMock.verify(child2);
-    }
-
-    public void testMutiLevelChildStopNotification() throws Exception {
-        URI parentUri = URI.create("foo://foo");
-
-        Component child1 = EasyMock.createMock(Component.class);
-        URI name = URI.create("foo://foo/child");
-        EasyMock.expect(child1.getUri()).andReturn(name).atLeastOnce();
-        child1.stop();
-        EasyMock.replay(child1);
-
-        Component child2 = EasyMock.createMock(Component.class);
-        final URI name2 = URI.create("foo://foo/bar/child");
-        EasyMock.expect(child2.getUri()).andReturn(name2).atLeastOnce();
-        child2.stop();
-        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
-            public Object answer() throws Throwable {
-                manager.onEvent(new ComponentStop(this, name2));
-                return null;
-            }
-        });
-        EasyMock.replay(child2);
-
-        manager.register(child1);
-        manager.register(child2);
-        ComponentStop event = new ComponentStop(this, parentUri);
-        manager.onEvent(event);
-        EasyMock.verify(child1);
-        EasyMock.verify(child2);
-    }
-
-    public void testRegisterParentAfterChildStopNotification() throws Exception {
-        URI parentUri = URI.create("foo://foo");
-        final URI name1 = URI.create("foo://foo/child");
-        Component child1 = EasyMock.createMock(Component.class);
-        EasyMock.expect(child1.getUri()).andReturn(name1).atLeastOnce();
-        child1.stop();
-        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
-            public Object answer() throws Throwable {
-                manager.onEvent(new ComponentStop(this, name1));
-                return null;
-            }
-        });
-        EasyMock.replay(child1);
-
-        final URI name2 = URI.create("foo://foo/child/child");
-        Component child2 = EasyMock.createMock(Component.class);
-        EasyMock.expect(child2.getUri()).andReturn(name2).atLeastOnce();
-        child2.stop();
-        EasyMock.replay(child2);
-
-        // register child2 before child1
-        manager.register(child2);
-        manager.register(child1);
-        ComponentStop event = new ComponentStop(this, parentUri);
-        manager.onEvent(event);
-        EasyMock.verify(child1);
-        EasyMock.verify(child2);
+        assertEquals(root, manager.getComponent(ROOT1));
+        EasyMock.verify(root);
+        EasyMock.verify(duplicate);
     }
 
     protected void setUp() throws Exception {

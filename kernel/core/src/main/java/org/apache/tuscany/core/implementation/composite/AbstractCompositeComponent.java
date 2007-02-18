@@ -64,7 +64,7 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
             initialized = true;
             lifecycleState = INITIALIZED;
         }
-        publish(new ComponentStart(this, getUri()));
+//        publish(new ComponentStart(this, getUri()));
     }
 
     public void stop() {

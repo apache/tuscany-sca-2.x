@@ -20,11 +20,8 @@ package org.apache.tuscany.core.bootstrap;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -48,7 +45,6 @@ import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.idl.java.InterfaceJavaLoader;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
-import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeLoader;
 import org.apache.tuscany.core.implementation.composite.SystemCompositeBuilder;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
@@ -125,23 +121,6 @@ public class DefaultBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Create the RuntimeComponent that will form the root of the component tree. Returns an new instance of a {@link
-     * DefaultRuntime} with the system and application root components initialized with default composite components.
-     *
-     * @return a newly created root for the component tree
-     */
-    public RuntimeComponent createRuntime() {
-        DefaultRuntime runtime = new DefaultRuntime();
-        CompositeComponent systemComponent =
-            new CompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM_ROOT, null);
-        runtime.setSystemComponent(systemComponent);
-        CompositeComponent rootComponent =
-            new CompositeComponentImpl(ComponentNames.TUSCANY_APPLICATION_ROOT, null);
-        runtime.setRootComponent(rootComponent);
-        return runtime;
-    }
-
-    /**
      * Create primordial deployer that can be used to load the system definition.
      *
      * @return the primordial deployer
@@ -152,7 +131,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new PropertyObjectFactoryImpl(), introspector);
-        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, resolver, connector);
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, componentManager, resolver, connector);
         deployer.setMonitor(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
         return deployer;
     }
@@ -263,7 +242,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     private Builder createBuilder(ScopeRegistry scopeRegistry) {
         BuilderRegistryImpl builderRegistry =
-            new BuilderRegistryImpl(scopeRegistry, componentManager);
+            new BuilderRegistryImpl(scopeRegistry);
         SystemCompositeBuilder builder = new SystemCompositeBuilder(builderRegistry);
         builderRegistry.register(SystemCompositeImplementation.class, builder);
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());

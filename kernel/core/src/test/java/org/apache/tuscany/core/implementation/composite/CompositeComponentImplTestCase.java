@@ -69,7 +69,6 @@ public class CompositeComponentImplTestCase extends TestCase {
             }
         };
         RuntimeEventListener listener = createMock(RuntimeEventListener.class);
-        listener.onEvent(isA(ComponentStart.class));
         listener.onEvent(eq(event));
         expectLastCall();
         replay(listener);

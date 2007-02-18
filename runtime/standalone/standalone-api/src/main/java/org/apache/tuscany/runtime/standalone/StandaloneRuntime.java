@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.runtime.standalone;
 
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
@@ -30,7 +29,7 @@ import org.apache.tuscany.host.runtime.TuscanyRuntime;
  * @version $Revision$ $Date$
  *
  */
-public interface StandaloneRuntime extends TuscanyRuntime {
+public interface StandaloneRuntime extends TuscanyRuntime<StandaloneRuntimeInfo> {
     
     /**
      * Deploys the specified application SCDL and runs the lauched component within the deployed composite.

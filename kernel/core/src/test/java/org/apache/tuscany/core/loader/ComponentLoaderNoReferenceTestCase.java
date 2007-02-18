@@ -53,6 +53,7 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        URI componentId = URI.create("sca://localhost/parent/");
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         JavaImplementation impl = new JavaImplementation(null, type);
@@ -87,8 +88,10 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
         EasyMock.expect(parent.getUri()).andReturn(URI.create("foo"));
         EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(ctx.getClassLoader()).andReturn(null);
+        EasyMock.expect(ctx.getScdlLocation()).andReturn(null);
+        EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
         List<String> names = new ArrayList<String>();
-        EasyMock.expect(ctx.getPathNames()).andReturn(names).atLeastOnce();
         EasyMock.replay(ctx);
     }
 

@@ -19,8 +19,6 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -35,7 +33,6 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
@@ -69,21 +66,11 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         URI targetUri = null;
+        URI compositeId = deploymentContext.getComponentId();
+        URI componentBase = URI.create(compositeId +"/");
         ServiceDefinition def = new ServiceDefinition();
-        StringBuilder buf = new StringBuilder();
-        List<String> names = deploymentContext.getPathNames();
-        int len = names.size();
-        if (len > 0) {
-            for (int i = 0; i < len - 1; i++) {
-                buf.append(names.get(i)).append("/");
-            }
-            buf.append(names.get(len - 1));
-        }
-        try {
-            def.setUri(new URI(buf + "#" + name));
-        } catch (URISyntaxException e) {
-            throw new IllegalSCDLNameException(e);
-        }
+        def.setUri(compositeId.resolve('#' + name));
+
         while (true) {
             int i = reader.next();
             switch (i) {
@@ -93,16 +80,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                         String text = reader.getElementText();
                         String target = text != null ? text.trim() : null;
                         QualifiedName qName = new QualifiedName(target);
-                        try {
-                            if (qName.getPortName() == null) {
-                                targetUri = new URI(buf + "/" + target);
-                            } else {
-                                targetUri =
-                                    new URI(buf + "/" + qName.getPartName() + "#" + qName.getPortName());
-                            }
-                        } catch (URISyntaxException e) {
-                            throw new IllegalSCDLNameException(e);
-                        }
+                        targetUri = componentBase.resolve(qName.getFragment());
                     } else {
                         ModelObject o = registry.load(parent, null, reader, deploymentContext);
                         if (o instanceof ServiceContract) {

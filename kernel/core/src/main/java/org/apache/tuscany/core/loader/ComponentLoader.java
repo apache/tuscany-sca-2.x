@@ -75,6 +75,7 @@ import org.apache.tuscany.spi.util.stax.StaxUtil;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
+import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 
 /**
  * Loads a component definition from an XML-based assembly file
@@ -112,26 +113,16 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String initLevel = reader.getAttributeValue(null, "initLevel");
 
         try {
-            Implementation<?> impl = loadImplementation(parent, reader, deploymentContext);
-            deploymentContext.getPathNames().add(name);
-            registry.loadComponentType(parent, impl, deploymentContext);
-            deploymentContext.getPathNames().remove(deploymentContext.getPathNames().size() - 1);
+            URI componentId = URI.create(deploymentContext.getComponentId()+"/").resolve(name);
+            DeploymentContext childContext = new ChildDeploymentContext(deploymentContext,
+                                                                        deploymentContext.getClassLoader(),
+                                                                        deploymentContext.getScdlLocation(),
+                                                                        componentId);
+            Implementation<?> impl = loadImplementation(parent, reader, childContext);
+            registry.loadComponentType(parent, impl, childContext);
 
-            URI uri;
-            try {
-                StringBuilder buf = new StringBuilder();
-                for (String path : deploymentContext.getPathNames()) {
-                    buf.append(path);
-                    if (path.charAt(path.length() - 1) != '/') {
-                        buf.append('/');
-                    }
-                }
-                uri = new URI(buf + name);
-            } catch (URISyntaxException e) {
-                throw new IllegalSCDLNameException(e);
-            }
             ComponentDefinition<Implementation<?>> componentDefinition =
-                new ComponentDefinition<Implementation<?>>(uri, impl);
+                new ComponentDefinition<Implementation<?>>(componentId, impl);
 
             if (initLevel != null) {
                 if (initLevel.length() == 0) {
@@ -150,9 +141,9 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                     case START_ELEMENT:
                         QName qname = reader.getName();
                         if (PROPERTY.equals(qname)) {
-                            loadProperty(reader, deploymentContext, componentDefinition);
+                            loadProperty(reader, childContext, componentDefinition);
                         } else if (REFERENCE.equals(qname)) {
-                            loadReference(reader, deploymentContext, componentDefinition);
+                            loadReference(reader, childContext, componentDefinition);
                         } else {
                             throw new UnrecognizedElementException(qname);
                         }
@@ -242,39 +233,18 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                  ComponentDefinition<?> componentDefinition) throws XMLStreamException,
                                                                                     LoaderException {
         String name = reader.getAttributeValue(null, "name");
-        String text = reader.getElementText();
-        String target = text != null ? text.trim() : null;
         if (name == null) {
             throw new InvalidReferenceException("No name specified");
-        } else if (target == null) {
+        }
+
+        String target = reader.getElementText();
+        if (target == null) {
             throw new InvalidReferenceException("No target specified", name);
         }
-        URI targetURI;
-        QualifiedName qName = new QualifiedName(target);
-        List<String> names = deploymentContext.getPathNames();
-        String path;
-        if (names.size() == 0) {
-            path = "/";
-        } else {
-            StringBuilder buf = new StringBuilder();
-            for (int i = 0; i < names.size() - 1; i++) {
-                buf.append(names.get(i)).append("/");
-            }
-            buf.append(names.get(names.size() - 1));
-            if (buf.charAt(buf.length() - 1) != '/') {
-                buf.append('/');
-            }
-            path = buf.toString();
-        }
-        try {
-            URI uri = new URI(path);
-            targetURI = uri.resolve(qName.getPartName());
-            if (qName.getPortName() != null) {
-                targetURI = targetURI.resolve('#' + qName.getPortName());
-            }
-        } catch (URISyntaxException e) {
-            throw new InvalidReferenceException("Illegal URI", name, e);
-        }
+        QualifiedName qName = new QualifiedName(target.trim());
+
+        URI componentId = deploymentContext.getComponentId();
+        URI targetURI  = componentId.resolve(qName.getFragment());
         Implementation<?> impl = componentDefinition.getImplementation();
         ComponentType<?, ?, ?> componentType = impl.getComponentType();
         if (!componentType.getReferences().containsKey(name)) {
@@ -296,11 +266,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             ReferenceTarget referenceTarget = componentDefinition.getReferenceTargets().get(name);
             if (referenceTarget == null) {
                 referenceTarget = new ReferenceTarget();
-                try {
-                    referenceTarget.setReferenceName(new URI(path + "#" + name));
-                } catch (URISyntaxException e) {
-                    throw new IllegalSCDLNameException(e);
-                }
+                referenceTarget.setReferenceName(componentId.resolve('#' + name));
                 componentDefinition.add(referenceTarget);
             }
             referenceTarget.addTarget(targetURI);

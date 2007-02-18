@@ -20,22 +20,18 @@ package org.apache.tuscany.runtime.webapp;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Collection;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
-import org.osoa.sca.ComponentContext;
-
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
-import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
 import org.apache.tuscany.runtime.webapp.implementation.webapp.WebappComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -54,10 +50,14 @@ import org.apache.tuscany.spi.resolver.ResolutionException;
  * @version $$Rev$$ $$Date$$
  */
 
-public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime {
+public class WebappRuntimeImpl extends AbstractRuntime<WebappRuntimeInfo> implements WebappRuntime {
     private ServletContext servletContext;
 
     private ServletRequestInjector requestInjector;
+
+    public WebappRuntimeImpl() {
+        super(WebappRuntimeInfo.class);
+    }
 
     public ServletContext getServletContext() {
         return servletContext;
@@ -65,17 +65,6 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
-    }
-
-    protected void registerSystemComponents() throws InitializationException {
-        super.registerSystemComponents();
-        try {
-            getComponentManager().registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
-                WebappRuntimeInfo.class,
-                (WebappRuntimeInfo) getRuntimeInfo());
-        } catch (RegistrationException e) {
-            throw new InitializationException(e);
-        }
     }
 
 /*
@@ -127,9 +116,9 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
         ComponentDefinition<CompositeImplementation> definition =
             new ComponentDefinition<CompositeImplementation>(compositeId, impl);
-        CompositeComponent composite;
+        Collection<Component> components;
         try {
-            composite = (CompositeComponent) getDeployer().deploy(null, definition);
+            components = getDeployer().deploy(null, definition);
         } catch (LoaderException e) {
             throw new InitializationException(e);
         } catch (BuilderException e) {
@@ -139,7 +128,9 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         } catch (ResolutionException e) {
             throw new InitializationException(e);
         }
-        composite.start();
+        for (Component component : components) {
+            component.start();
+        }
 
         componentId = compositeId.resolve(componentId);
         Component component = getComponentManager().getComponent(componentId);

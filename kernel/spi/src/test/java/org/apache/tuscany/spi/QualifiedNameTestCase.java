@@ -31,18 +31,27 @@ public class QualifiedNameTestCase extends TestCase {
         QualifiedName name = new QualifiedName("Foo");
         assertEquals("Foo", name.getPartName());
         assertEquals(null, name.getPortName());
+        assertEquals("Foo", name.getQualifiedName());
+        assertEquals("Foo", name.getFragment());
+        assertEquals("Foo", name.toString());
     }
 
     public void testCompoundName() throws Exception {
         QualifiedName name = new QualifiedName("Foo/Bar");
         assertEquals("Foo", name.getPartName());
         assertEquals("Bar", name.getPortName());
+        assertEquals("Foo/Bar", name.getQualifiedName());
+        assertEquals("Foo#Bar", name.getFragment());
+        assertEquals("Foo/Bar", name.toString());
     }
 
     public void testCompoundMultiName() throws Exception {
-        QualifiedName name = new QualifiedName("Foo/Bar/Baz");
-        assertEquals("Foo", name.getPartName());
-        assertEquals("Bar/Baz", name.getPortName());
+        try {
+            new QualifiedName("Foo/Bar/Baz");
+            fail("Invalid name exception not thrown");
+        } catch (InvalidNameException e) {
+            // ok;
+        }
     }
 
     public void testInvalidName() throws Exception {
@@ -53,15 +62,4 @@ public class QualifiedNameTestCase extends TestCase {
             //expected
         }
     }
-
-    public void testQualifiedName() throws Exception {
-        QualifiedName name = new QualifiedName("Foo/Bar");
-        assertEquals("Foo/Bar", name.getQualifiedName());
-    }
-
-    public void testToString() throws Exception {
-        QualifiedName name = new QualifiedName("Foo/Bar");
-        assertEquals("Foo/Bar", name.toString());
-    }
-
 }

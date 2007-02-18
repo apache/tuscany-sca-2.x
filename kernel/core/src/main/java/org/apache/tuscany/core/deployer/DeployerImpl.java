@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.deployer;
 
+import java.util.Collection;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -25,11 +26,13 @@ import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.event.Event;
@@ -44,6 +47,7 @@ import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
+import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.resolver.AutowireResolver;
 
 /**
@@ -58,15 +62,18 @@ public class DeployerImpl implements Deployer {
     private Loader loader;
     private AutowireResolver resolver;
     private Connector connector;
+    private ComponentManager componentManager;
 
     public DeployerImpl(XMLInputFactory xmlFactory,
                         Loader loader,
                         Builder builder,
+                        ComponentManager componentManager,
                         AutowireResolver resolver,
                         Connector connector) {
         this.xmlFactory = xmlFactory;
         this.loader = loader;
         this.builder = builder;
+        this.componentManager = componentManager;
         this.resolver = resolver;
         this.connector = connector;
     }
@@ -100,14 +107,18 @@ public class DeployerImpl implements Deployer {
         this.connector = connector;
     }
 
-    public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
+    @Autowire
+    public void setComponentManager(ComponentManager componentManager) {
+        this.componentManager = componentManager;
+    }
+
+    public <I extends Implementation<?>> Collection<Component> deploy(CompositeComponent parent,
                                                           ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, ResolutionException {
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
         DeploymentContext deploymentContext =
             new RootDeploymentContext(null, null, componentDefinition.getUri(), xmlFactory, scopeContainer);
-        deploymentContext.getPathNames().add(componentDefinition.getUri().toString());
         // load the model
         load(parent, componentDefinition, deploymentContext);
         // resolve autowires
@@ -124,8 +135,19 @@ public class DeployerImpl implements Deployer {
             }
         };
         component.addListener(listener);
+
+        Collection<Component> components = deploymentContext.getComponents().values();
+        for (Component toRegister : components) {
+            try {
+                componentManager.register(toRegister);
+            } catch (RegistrationException e) {
+                BuilderInstantiationException bie = new BuilderInstantiationException("Error registering component", e);
+                bie.addContextName(componentDefinition.getUri().toString());
+                throw bie;
+            }
+        }
         connector.connect(componentDefinition);
-        return component;
+        return components;
     }
 
     /**

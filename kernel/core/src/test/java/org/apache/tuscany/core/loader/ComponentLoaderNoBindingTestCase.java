@@ -65,6 +65,7 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        URI componentId = URI.create("sca://localhost/parent/");
         parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(parent.getUri()).andReturn(URI.create("parent"));
         EasyMock.replay(parent);
@@ -96,7 +97,9 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
         EasyMock.replay(reader);
         ctx = EasyMock.createMock(DeploymentContext.class);
         List<String> names = new ArrayList<String>();
-        EasyMock.expect(ctx.getPathNames()).andReturn(names).atLeastOnce();
+        EasyMock.expect(ctx.getClassLoader()).andReturn(null);
+        EasyMock.expect(ctx.getScdlLocation()).andReturn(null);
+        EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
         EasyMock.replay(ctx);
 
 

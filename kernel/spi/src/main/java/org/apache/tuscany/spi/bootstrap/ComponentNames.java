@@ -34,27 +34,27 @@ public final class ComponentNames {
     /**
      * The name of the component that is the root of the application composite tree.
      */
-    public static final URI TUSCANY_APPLICATION_ROOT = URI.create("sca://root.application");
+    public static final URI TUSCANY_APPLICATION_ROOT = URI.create("sca://root.application/");
 
     /**
      * The name of the component that is the root of the system composite tree.
      */
-    public static final URI TUSCANY_SYSTEM_ROOT = URI.create("sca://root.system");
+    public static final URI TUSCANY_SYSTEM_ROOT = URI.create("sca://root.system/");
 
     /**
      * The name of the top-level component in the system composite tree.
      */
-    public static final URI TUSCANY_SYSTEM = URI.create("sca://root.system/main");
+    public static final URI TUSCANY_SYSTEM = TUSCANY_SYSTEM_ROOT.resolve("main/");
 
     /**
      * The name of the component that contains the deployer.
      */
-    public static final String TUSCANY_DEPLOYER = "deployer";
+    public static final URI TUSCANY_DEPLOYER = TUSCANY_SYSTEM.resolve("deployer");
 
     /**
      * The name of the component that contains the deployer.
      */
-    public static final String TUSCANY_WIRE_SERVICE = "wireService";
+    public static final URI TUSCANY_WIRE_SERVICE = TUSCANY_SYSTEM.resolve("wireService");
 
     private ComponentNames() {
     }

@@ -27,9 +27,10 @@ package org.apache.tuscany.spi;
 public class QualifiedName {
     public static final String NAME_SEPARATOR = "/";
 
-    private String qName;
-    private String partName;
-    private String portName;
+    private final String qName;
+    private final String fragment;
+    private final String partName;
+    private final String portName;
 
     /**
      * Constructs a new qualified name in the form of part/port where part is the parent context and port represents a
@@ -39,22 +40,20 @@ public class QualifiedName {
      * @throws InvalidNameException if the name is in an invalid format
      */
     public QualifiedName(String qualifiedName) throws InvalidNameException {
-        if (qualifiedName == null) {
-            return;
+        String[] parts = qualifiedName.split(NAME_SEPARATOR);
+        if (parts.length == 1) {
+            partName = parts[0];
+            portName = null;
+            qName = partName;
+            fragment = partName;
+        } else if (parts.length == 2) {
+            partName = parts[0];
+            portName = parts[1];
+            qName = partName + '/' + portName;
+            fragment = partName + '#' + portName;
+        } else {
+            throw new InvalidNameException(qualifiedName);
         }
-        int pos = qualifiedName.indexOf(QualifiedName.NAME_SEPARATOR);
-        switch (pos) {
-            case-1:
-                partName = qualifiedName;
-                break;
-            case 0:
-                throw new InvalidNameException(qualifiedName);
-            default:
-                partName = qualifiedName.substring(0, pos);
-                portName = qualifiedName.substring(pos + 1);
-                break;
-        }
-        qName = qualifiedName;
     }
 
     /**
@@ -66,7 +65,13 @@ public class QualifiedName {
     public QualifiedName(String partName, String portName) {
         this.partName = partName;
         this.portName = portName;
-        this.qName = partName + '/' + portName;
+        if (portName == null) {
+            qName = partName;
+            fragment = partName;
+        } else {
+            qName = partName + '/' + portName;
+            fragment = partName + '#' + portName;
+        }
     }
 
     /**
@@ -88,6 +93,10 @@ public class QualifiedName {
      */
     public String getQualifiedName() {
         return qName;
+    }
+
+    public String getFragment() {
+        return fragment;
     }
 
     public String toString() {

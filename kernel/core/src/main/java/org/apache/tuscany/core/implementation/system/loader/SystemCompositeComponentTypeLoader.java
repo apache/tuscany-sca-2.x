@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.system.loader;
 
 import java.net.URL;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -56,8 +57,8 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
             throw new LoaderException("SCDL location not found");
         }
         ClassLoader cl = implementation.getClassLoader();
-        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation, null);
-        childContext.getPathNames().addAll(deploymentContext.getPathNames());
+        URI componentId = deploymentContext.getComponentId();
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation, componentId);
         CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, childContext);
         implementation.setComponentType(componentType);
     }

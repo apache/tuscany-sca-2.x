@@ -28,11 +28,6 @@ import java.net.URL;
  * @version $Rev$ $Date$
  */
 public interface RuntimeInfo {
-    /**
-     * The default name that the runtime should assign to the component providing this service.
-     * TODO implement Tuscany component domains
-     */
-    URI COMPONENT_URI = URI.create("sca://RuntimeInfo");
 
     /**
      * Returns the SCA domain associated with this runtime.

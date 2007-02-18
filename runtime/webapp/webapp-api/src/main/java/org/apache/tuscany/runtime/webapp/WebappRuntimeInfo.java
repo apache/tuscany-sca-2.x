@@ -27,8 +27,6 @@ import org.apache.tuscany.host.RuntimeInfo;
  * @version $Rev$ $Date$
  */
 public interface WebappRuntimeInfo extends RuntimeInfo {
-    URI COMPONENT_NAME = URI.create("WebappRuntimeInfo");
-    
     /**
      * Returns the ServletContext associated with this webapp runtime.
      *
