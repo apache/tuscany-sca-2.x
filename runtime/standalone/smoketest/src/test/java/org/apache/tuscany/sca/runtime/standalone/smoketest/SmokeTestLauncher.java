@@ -45,25 +45,6 @@ public class SmokeTestLauncher extends CommandTestCase {
         }
     }
 
-/*
-    public void testLauncherNoComponent() throws Exception {
-        ProcessBuilder pb = new ProcessBuilder("java",
-                                               "-jar",
-                                               launcher.getAbsolutePath(),
-                                               testJar.getAbsolutePath());
-        pb.directory(installDir);
-        Process process = pb.start();
-        try {
-            compareOutput(loadResource("LauncherNoComponent.txt"), process.getErrorStream());
-            process.waitFor();
-            assertEquals(2, process.exitValue());
-        } finally {
-            process.destroy();
-        }
-    }
-*/
-
-/*
     public void testLauncherWithNoArgs() throws Exception {
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", launcher.getAbsolutePath(), testJar.getAbsolutePath());
         pb.directory(installDir);
@@ -76,7 +57,22 @@ public class SmokeTestLauncher extends CommandTestCase {
             process.destroy();
         }
     }
-*/
+
+    public void testReference() throws Exception {
+        ProcessBuilder pb = new ProcessBuilder("java",
+                                               "-jar",
+                                               launcher.getAbsolutePath(),
+                                               testJar.getAbsolutePath(),
+                                               "testReference");
+        pb.directory(installDir);
+        Process process = pb.start();
+        try {
+            process.waitFor();
+            assertEquals(0, process.exitValue());
+        } finally {
+            process.destroy();
+        }
+    }
 
     protected void setUp() throws Exception {
         super.setUp();
