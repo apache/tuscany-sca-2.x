@@ -17,15 +17,15 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="simplecallback">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="LoanApplication">
 
-    <component name="LoanClientComponent">
-        <implementation.java class="loanappconversation.LoanClientImpl"/>
-        <reference name="loanService">LoanServiceComponent</reference>
+    <component name="LoanService">
+        <implementation.java class="loanapplication.provider.impl.LoanServiceImpl"/>
+        <reference name="creditService">CreditService</reference>
     </component>
     
-    <component name="LoanServiceComponent">
-        <implementation.java class="loanappconversation.LoanServiceImpl"/>
+    <component name="CreditService">
+        <implementation.java class="loanapplication.provider.impl.CreditServiceImpl"/>
     </component>
     
 </composite>
