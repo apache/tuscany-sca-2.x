@@ -194,21 +194,19 @@ public class TuscanyITestMojo extends AbstractMojo {
                 // fixme this should probably be an isolated classloader
                 ClassLoader testClassLoader = createTestClassLoader(getClass().getClassLoader());
 
-                URI name = URI.create(testDomain);
+                URI domain = URI.create(testDomain);
                 String harnessComponentName = testComponentName;
-                if (!harnessComponentName.endsWith("/")) {
-                    harnessComponentName = harnessComponentName + '/';
-                }
-                name = name.resolve(harnessComponentName);
+                URI componentName = domain.resolve(harnessComponentName);
+                URI base = domain.resolve(harnessComponentName + "/");
 
                 CompositeImplementation impl = new CompositeImplementation();
                 impl.setScdlLocation(testScdl.toURI().toURL());
                 impl.setClassLoader(testClassLoader);
 
                 ComponentDefinition<CompositeImplementation> definition =
-                    new ComponentDefinition<CompositeImplementation>(name, impl);
+                    new ComponentDefinition<CompositeImplementation>(componentName, impl);
                 Collection<Component> testComponent = runtime.deployTestScdl(definition);
-                testSuite = createTestSuite(runtime, definition, name);
+                testSuite = createTestSuite(runtime, definition, base);
                 for (Component component : testComponent) {
                     component.start();
                 }
