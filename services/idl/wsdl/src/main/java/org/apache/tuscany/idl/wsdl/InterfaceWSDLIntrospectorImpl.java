@@ -21,15 +21,14 @@ package org.apache.tuscany.idl.wsdl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.osoa.sca.annotations.Constructor;
 
 /**
  * Introspector for creating WSDLServiceContract definitions from WSDL PortTypes.
@@ -52,7 +51,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
     protected Map<String, org.apache.tuscany.spi.model.Operation<QName>> introspectOperations(PortType portType)
         throws InvalidServiceContractException {
         Map<String, org.apache.tuscany.spi.model.Operation<QName>> operations =
-                new HashMap<String, org.apache.tuscany.spi.model.Operation<QName>>();
+            new HashMap<String, org.apache.tuscany.spi.model.Operation<QName>>();
         for (Object op : portType.getOperations()) {
             Operation wsdlOp = (Operation) op;
             operations.put(wsdlOp.getName(), introspectOperation(wsdlOp));
@@ -76,19 +75,19 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
         contract.setInterfaceName(portType.getQName().getLocalPart());
         contract.setOperations(introspectOperations(portType));
         // FIXME: set to Non-conversational for now
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        contract.setConversational(false);
         return contract;
     }
 
     /**
-     * @see org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector#introspect(javax.wsdl.PortType, javax.wsdl.PortType)
+     * @see org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector#introspect(javax.wsdl.PortType,javax.wsdl.PortType)
      */
     public WSDLServiceContract introspect(PortType portType, PortType callbackPortType)
         throws InvalidServiceContractException {
         assert portType != null : "PortType cannot be null";
         WSDLServiceContract contract = new WSDLServiceContract();
         // FIXME: set to Non-conversational for now
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        contract.setConversational(false);
         contract.setPortType(portType);
         contract.setInterfaceName(portType.getQName().getLocalPart());
         contract.setOperations(introspectOperations(portType));
