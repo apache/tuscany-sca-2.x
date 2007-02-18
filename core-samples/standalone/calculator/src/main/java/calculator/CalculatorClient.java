@@ -33,23 +33,25 @@ public class CalculatorClient {
         this.calculatorService = calculatorService;
     }
     
-    public Object main(String[] args) throws Exception {
+    public int main(String[] args) throws Exception {
         
         if(args.length != 3) {
             throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");
         }
         
         if("add".equals(args[0])) {
-            return calculatorService.add(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+            calculatorService.add(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
         } else if("substract".equals(args[0])) {
-            return calculatorService.subtract(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+            calculatorService.subtract(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
         } else if("multiply".equals(args[0])) {
-            return calculatorService.multiply(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+            calculatorService.multiply(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
         } else if("divide".equals(args[0])) {
-            return calculatorService.divide(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+            calculatorService.divide(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+        } else {
+            throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");
         }
-
-        throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");
+        
+        return 0;
     }
     
 }
