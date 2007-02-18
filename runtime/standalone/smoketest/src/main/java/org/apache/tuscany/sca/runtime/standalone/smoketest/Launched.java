@@ -20,17 +20,20 @@ package org.apache.tuscany.sca.runtime.standalone.smoketest;
 
 import java.util.concurrent.Callable;
 
+import org.osoa.sca.annotations.Reference;
+
 /**
  * @version $Rev$ $Date$
  */
-public class Launched implements Callable<Integer> {
-    private final HelloService hello;
+public class Launched {
+    private HelloService hello;
 
-    public Launched(HelloService hello) {
+    @Reference
+    public void setHello(HelloService hello) {
         this.hello = hello;
     }
 
-    public Integer call() throws Exception {
+    public Object main(String[] args) throws Exception {
         if ("Hello World".equals(hello.getGreeting())) {
             return 0;
         } else {
