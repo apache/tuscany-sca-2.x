@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components
@@ -55,11 +56,11 @@ public interface ComponentManager extends RuntimeEventListener {
      * create the initial configuration components.
      *
      * @param uri      the uri of the resulting component
-     * @param service  the service interface the component should expose
+     * @param service  the service contract the component should expose
      * @param instance the Object that will become the component's implementation
      * @throws RegistrationException
      */
-    <S, I extends S> void registerJavaObject(URI uri, Class<S> service, I instance)
+    <S, I extends S> void registerJavaObject(URI uri, ServiceContract<S> service, I instance)
         throws RegistrationException;
 
     /**
@@ -67,11 +68,11 @@ public interface ComponentManager extends RuntimeEventListener {
      * create the initial configuration components.
      *
      * @param uri      the name of the resulting component
-     * @param services the service interfaces the component should expose
+     * @param services the service contracts the component should expose
      * @param instance the Object that will become the component's implementation
      * @throws RegistrationException
      */
-    <S, I extends S> void registerJavaObject(URI uri, List<Class<?>> services, I instance)
+    <S, I extends S> void registerJavaObject(URI uri, List<ServiceContract<?>> services, I instance)
         throws RegistrationException;
 
     /**

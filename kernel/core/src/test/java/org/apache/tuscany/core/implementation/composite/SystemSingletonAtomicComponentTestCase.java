@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
 
@@ -32,27 +33,39 @@ import junit.framework.TestCase;
 public class SystemSingletonAtomicComponentTestCase extends TestCase {
 
     public void testGetInstance() throws TargetException {
+        ServiceContract<Foo> contract = new ServiceContract<Foo>(Foo.class) {
+
+        };
         FooImpl foo = new FooImpl();
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), Foo.class, foo);
+            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), contract, foo);
         assertEquals(foo, component.getTargetInstance());
     }
 
     public void testGetInstanceMultipleServices() throws TargetException {
         FooImpl foo = new FooImpl();
-        List<Class<?>> services = new ArrayList<Class<?>>();
-        services.add(Foo.class);
-        services.add(Bar.class);
+        List<ServiceContract<?>> services = new ArrayList<ServiceContract<?>>();
+        services.add(new ServiceContract<Foo>(Foo.class) {
+        });
+        services.add(new ServiceContract<Bar>(Bar.class) {
+        });
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
             new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), services, foo);
         assertEquals(foo, component.getTargetInstance());
     }
 
     public void testOptimizable() {
+        ServiceContract<Foo> contract = new ServiceContract<Foo>(Foo.class) {
+        };
         FooImpl foo = new FooImpl();
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), Foo.class, foo);
+            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), contract, foo);
         assertTrue(component.isOptimizable());
+    }
+
+
+    protected void setUp() throws Exception {
+        super.setUp();
     }
 
     private interface Foo {

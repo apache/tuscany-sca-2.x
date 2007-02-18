@@ -68,7 +68,7 @@ public class ComponentManagerImpl implements ComponentManager {
         }
     }
 
-    public <S, I extends S> void registerJavaObject(URI uri, Class<S> service, I instance)
+    public <S, I extends S> void registerJavaObject(URI uri, ServiceContract<S> service, I instance)
         throws RegistrationException {
         SystemSingletonAtomicComponent<S, I> component =
             new SystemSingletonAtomicComponent<S, I>(uri, service, instance);
@@ -80,7 +80,7 @@ public class ComponentManagerImpl implements ComponentManager {
         }
     }
 
-    public <S, I extends S> void registerJavaObject(URI uri, List<Class<?>> services, I instance)
+    public <S, I extends S> void registerJavaObject(URI uri, List<ServiceContract<?>> services, I instance)
         throws RegistrationException {
         SystemSingletonAtomicComponent<S, I> component =
             new SystemSingletonAtomicComponent<S, I>(uri, services, instance);

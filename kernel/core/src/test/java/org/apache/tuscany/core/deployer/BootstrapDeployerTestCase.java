@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -38,6 +39,7 @@ import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
@@ -46,6 +48,7 @@ import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
@@ -65,7 +68,6 @@ public class BootstrapDeployerTestCase extends TestCase {
     private DeploymentContext deploymentContext;
     private ComponentDefinition<SystemCompositeImplementation> componentDefinition;
     private SystemCompositeImplementation implementation;
-    private ComponentManager manager;
     private URI componentId;
 
     @SuppressWarnings("unchecked")
@@ -147,14 +149,17 @@ public class BootstrapDeployerTestCase extends TestCase {
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     protected void setUp() throws Exception {
         super.setUp();
         componentId = URI.create("sca://localhost/parent");
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
         DefaultAutowireResolver resolver = new DefaultAutowireResolver();
-        manager = new ComponentManagerImpl(null, resolver);
+        ComponentManager manager = new ComponentManagerImpl(null, resolver);
         Connector connector = new ConnectorImpl(manager);
-        manager.registerJavaObject(URI.create("ComponentManager"), ComponentManager.class, manager);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract contract = registry.introspect(ComponentManager.class);
+        manager.registerJavaObject(URI.create("ComponentManager"), contract, manager);
         NullMonitorFactory monitorFactory = new NullMonitorFactory();
         Bootstrapper bootstrapper =
             new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, connector);
