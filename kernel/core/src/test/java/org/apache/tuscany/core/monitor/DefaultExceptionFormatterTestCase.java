@@ -36,10 +36,8 @@ public class DefaultExceptionFormatterTestCase extends TestCase {
         PrintWriter pw = new PrintWriter(writer);
         TuscanyException e = new TuscanyException("somemessage") {
         };
-        e.addContextName("somecontext");
         formatter.write(pw, e);
         assertTrue(writer.toString().indexOf("somemessage") >= 0);
-        assertTrue(writer.toString().indexOf("somecontext") >= 0);
     }
 
     public void testTuscanyRuntimeExceptionFormat() throws Exception {
@@ -47,10 +45,8 @@ public class DefaultExceptionFormatterTestCase extends TestCase {
         PrintWriter pw = new PrintWriter(writer);
         TuscanyRuntimeException e = new TuscanyRuntimeException("somemessage") {
         };
-        e.addContextName("somecontext");
         formatter.write(pw, e);
         assertTrue(writer.toString().indexOf("somemessage") >= 0);
-        assertTrue(writer.toString().indexOf("somecontext") >= 0);
     }
 
     public void testNormalExceptionFormat() throws Exception {

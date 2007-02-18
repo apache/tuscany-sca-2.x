@@ -19,8 +19,8 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -91,12 +91,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         URI componentId = deploymentContext.getComponentId();
         DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url, componentId);
         CompositeComponentType composite;
-        try {
-            composite = loadFromSidefile(parent, url, childContext);
-        } catch (LoaderException e) {
-            e.addContextName(name);
-            throw e;
-        }
+        composite = loadFromSidefile(parent, url, childContext);
 
         Include include = new Include();
         include.setName(name);

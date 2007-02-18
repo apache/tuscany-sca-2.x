@@ -24,15 +24,15 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
-import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.event.Event;
@@ -45,9 +45,9 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 
 import org.apache.tuscany.api.annotation.Monitor;
+import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.resolver.AutowireResolver;
 
 /**
@@ -113,7 +113,7 @@ public class DeployerImpl implements Deployer {
     }
 
     public <I extends Implementation<?>> Collection<Component> deploy(CompositeComponent parent,
-                                                          ComponentDefinition<I> componentDefinition)
+                                                                      ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, ResolutionException {
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
@@ -141,9 +141,7 @@ public class DeployerImpl implements Deployer {
             try {
                 componentManager.register(toRegister);
             } catch (RegistrationException e) {
-                BuilderInstantiationException bie = new BuilderInstantiationException("Error registering component", e);
-                bie.addContextName(componentDefinition.getUri().toString());
-                throw bie;
+                throw new BuilderInstantiationException("Error registering component", e);
             }
         }
         connector.connect(componentDefinition);

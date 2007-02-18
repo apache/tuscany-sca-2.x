@@ -20,8 +20,6 @@ package org.apache.tuscany.core.loader;
 
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -42,7 +40,6 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 import org.apache.tuscany.spi.loader.InvalidReferenceException;
 import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -73,9 +70,9 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
+import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
-import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 
 /**
  * Loads a component definition from an XML-based assembly file
@@ -112,71 +109,66 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String name = reader.getAttributeValue(null, "name");
         String initLevel = reader.getAttributeValue(null, "initLevel");
 
-        try {
-            URI componentId = URI.create(deploymentContext.getComponentId()+"/").resolve(name);
-            DeploymentContext childContext = new ChildDeploymentContext(deploymentContext,
-                                                                        deploymentContext.getClassLoader(),
-                                                                        deploymentContext.getScdlLocation(),
-                                                                        componentId);
-            Implementation<?> impl = loadImplementation(parent, reader, childContext);
-            registry.loadComponentType(parent, impl, childContext);
+        URI componentId = URI.create(deploymentContext.getComponentId() + "/").resolve(name);
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext,
+            deploymentContext.getClassLoader(),
+            deploymentContext.getScdlLocation(),
+            componentId);
+        Implementation<?> impl = loadImplementation(parent, reader, childContext);
+        registry.loadComponentType(parent, impl, childContext);
 
-            ComponentDefinition<Implementation<?>> componentDefinition =
-                new ComponentDefinition<Implementation<?>>(componentId, impl);
+        ComponentDefinition<Implementation<?>> componentDefinition =
+            new ComponentDefinition<Implementation<?>>(componentId, impl);
 
-            if (initLevel != null) {
-                if (initLevel.length() == 0) {
-                    componentDefinition.setInitLevel(0);
-                } else {
-                    try {
-                        componentDefinition.setInitLevel(Integer.valueOf(initLevel));
-                    } catch (NumberFormatException e) {
-                        throw new InvalidValueException(initLevel, "initValue", e);
+        if (initLevel != null) {
+            if (initLevel.length() == 0) {
+                componentDefinition.setInitLevel(0);
+            } else {
+                try {
+                    componentDefinition.setInitLevel(Integer.valueOf(initLevel));
+                } catch (NumberFormatException e) {
+                    throw new InvalidValueException(initLevel, "initValue", e);
+                }
+            }
+        }
+
+        while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    QName qname = reader.getName();
+                    if (PROPERTY.equals(qname)) {
+                        loadProperty(reader, childContext, componentDefinition);
+                    } else if (REFERENCE.equals(qname)) {
+                        loadReference(reader, childContext, componentDefinition);
+                    } else {
+                        throw new UnrecognizedElementException(qname);
                     }
-                }
-            }
-
-            while (true) {
-                switch (reader.next()) {
-                    case START_ELEMENT:
-                        QName qname = reader.getName();
-                        if (PROPERTY.equals(qname)) {
-                            loadProperty(reader, childContext, componentDefinition);
-                        } else if (REFERENCE.equals(qname)) {
-                            loadReference(reader, childContext, componentDefinition);
-                        } else {
-                            throw new UnrecognizedElementException(qname);
+                    reader.next();
+                    break;
+                case END_ELEMENT:
+                    if (reader.getName().equals(COMPONENT)) {
+                        // hack to leave alone SystemImplementation
+                        if (!((Implementation) componentDefinition
+                            .getImplementation() instanceof SystemImplementation)) {
+                            populatePropertyValues(componentDefinition);
                         }
-                        reader.next();
-                        break;
-                    case END_ELEMENT:
-                        if (reader.getName().equals(COMPONENT)) {
-                            // hack to leave alone SystemImplementation
-                            if (!((Implementation) componentDefinition
-                                .getImplementation() instanceof SystemImplementation)) {
-                                populatePropertyValues(componentDefinition);
+                        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+                            (ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>) componentDefinition
+                                .getImplementation().getComponentType();
+                        for (ReferenceDefinition ref : type.getReferences().values()) {
+                            if (ref.isAutowire()) {
+                                ReferenceTarget referenceTarget = new ReferenceTarget();
+                                String compName = componentDefinition.getUri().toString();
+                                URI refName = URI.create(compName + ref.getUri().toString());
+                                referenceTarget.setReferenceName(refName);
+                                componentDefinition.add(referenceTarget);
                             }
-                            ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
-                                (ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>) componentDefinition
-                                    .getImplementation().getComponentType();
-                            for (ReferenceDefinition ref : type.getReferences().values()) {
-                                if (ref.isAutowire()) {
-                                    ReferenceTarget referenceTarget = new ReferenceTarget();
-                                    String compName = componentDefinition.getUri().toString();
-                                    URI refName = URI.create(compName + ref.getUri().toString());
-                                    referenceTarget.setReferenceName(refName);
-                                    componentDefinition.add(referenceTarget);
-                                }
-                            }
-                            validate(componentDefinition);
-                            return componentDefinition;
                         }
-                        break;
-                }
+                        validate(componentDefinition);
+                        return componentDefinition;
+                    }
+                    break;
             }
-        } catch (LoaderException e) {
-            e.addContextName(name);
-            throw e;
         }
     }
 
@@ -244,7 +236,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         QualifiedName qName = new QualifiedName(target.trim());
 
         URI componentId = deploymentContext.getComponentId();
-        URI targetURI  = componentId.resolve(qName.getFragment());
+        URI targetURI = componentId.resolve(qName.getFragment());
         Implementation<?> impl = componentDefinition.getImplementation();
         ComponentType<?, ?, ?> componentType = impl.getComponentType();
         if (!componentType.getReferences().containsKey(name)) {

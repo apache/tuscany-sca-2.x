@@ -44,7 +44,6 @@ public class LoaderExceptionFormatter implements ExceptionFormatter {
         } else {
             writer.write("\n");
         }
-        e.appendContextStack(writer).append("\n");
         return writer;
     }
 }

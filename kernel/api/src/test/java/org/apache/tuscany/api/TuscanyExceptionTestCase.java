@@ -20,8 +20,6 @@ package org.apache.tuscany.api;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -32,15 +30,12 @@ public class TuscanyExceptionTestCase extends TestCase {
     private static final Throwable CAUSE = new Throwable("Cause");
     private static final String IDENTIFIER = "IDENTIFIER";
     private static final String MESSAGE = "Message";
-    private static final String CONTEXT1 = "CONTEXT1";
-    private static final String CONTEXT2 = "CONTEXT2";
 
     public void testNoArgConstructor() {
         TuscanyException ex = new DummyException();
         assertNull(ex.getMessage());
         assertNull(ex.getCause());
         assertNull(ex.getIdentifier());
-        assertTrue(ex.returnContextNames().isEmpty());
     }
 
     public void testMessageConstructor() {
@@ -48,7 +43,6 @@ public class TuscanyExceptionTestCase extends TestCase {
         assertEquals(MESSAGE, ex.getMessage());
         assertNull(ex.getCause());
         assertNull(ex.getIdentifier());
-        assertTrue(ex.returnContextNames().isEmpty());
     }
 
     public void testAppendBaseMessage() {
@@ -72,7 +66,6 @@ public class TuscanyExceptionTestCase extends TestCase {
         assertEquals(CAUSE.getClass().getName() + ": " + CAUSE.getMessage(), ex.getMessage());
         assertEquals(CAUSE, ex.getCause());
         assertNull(ex.getIdentifier());
-        assertTrue(ex.returnContextNames().isEmpty());
     }
 
     public void testMessageThrowableConstructor() {
@@ -80,41 +73,6 @@ public class TuscanyExceptionTestCase extends TestCase {
         assertEquals(MESSAGE, ex.getMessage());
         assertEquals(CAUSE, ex.getCause());
         assertNull(ex.getIdentifier());
-        assertTrue(ex.returnContextNames().isEmpty());
-    }
-
-    public void testContextStack() {
-        TuscanyException ex = new DummyException(MESSAGE);
-        List<String> contexts = new ArrayList<String>();
-        contexts.add(CONTEXT1);
-        ex.addContextName(CONTEXT1);
-        assertEquals(contexts, ex.returnContextNames());
-        contexts.add(CONTEXT2);
-        ex.addContextName(CONTEXT2);
-        assertEquals(contexts, ex.returnContextNames());
-    }
-
-    public void testAppendContextMessage() {
-        TuscanyException ex = new DummyException(MESSAGE);
-        ex.addContextName(CONTEXT1);
-        ex.addContextName(CONTEXT2);
-        StringWriter writer = new StringWriter();
-        PrintWriter pw = new PrintWriter(writer);
-        ex.appendContextStack(pw);
-        assertEquals("\nContext stack trace: [CONTEXT2][CONTEXT1]", writer.toString());
-    }
-
-    public void testAddContext() throws Exception {
-        TuscanyException e = new DummyException();
-        e.addContextName("foo");
-        e.addContextName("bar");
-        assertEquals("foo", e.returnContextNames().get(0));
-        assertEquals("bar", e.returnContextNames().get(1));
-    }
-
-    public void testEmptyContext() throws Exception {
-        TuscanyException e = new DummyException();
-        assertEquals(0, e.returnContextNames().size());
     }
 
     public void testGetMessage() throws Exception {
@@ -124,20 +82,8 @@ public class TuscanyExceptionTestCase extends TestCase {
 
     public void testFullMessage() throws Exception {
         TuscanyException e = new DummyException("message", "foo");
-        e.addContextName("foo");
         e.getMessage();
     }
-
-    public void testImmutableContextNames() {
-        TuscanyException e = new DummyException("message", "foo");
-        try {
-            e.returnContextNames().add("foo");
-            fail();
-        } catch (UnsupportedOperationException e1) {
-            // expected
-        }
-    }
-
 
     public static class DummyException extends TuscanyException {
 

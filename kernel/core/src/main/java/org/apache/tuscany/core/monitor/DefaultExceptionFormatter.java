@@ -41,10 +41,10 @@ public class DefaultExceptionFormatter implements ExceptionFormatter {
     public PrintWriter write(PrintWriter writer, Throwable exception) {
         if (exception instanceof TuscanyException) {
             TuscanyException e = (TuscanyException) exception;
-            e.appendContextStack(e.appendBaseMessage(writer));
+            e.appendBaseMessage(writer);
         } else if (exception instanceof TuscanyRuntimeException) {
             TuscanyRuntimeException e = (TuscanyRuntimeException) exception;
-            e.appendContextStack(e.appendBaseMessage(writer));
+            e.appendBaseMessage(writer);
         }
         writer.append("\n");
         return writer;

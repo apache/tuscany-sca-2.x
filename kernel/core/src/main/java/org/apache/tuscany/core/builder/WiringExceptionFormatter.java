@@ -62,7 +62,6 @@ public class WiringExceptionFormatter implements ExceptionFormatter {
         if (e.getTargetUri() != null) {
             writer.write("\nTarget : " + e.getTargetUri());
         }
-        e.appendContextStack(writer).append("\n");
         return writer;
     }
 }
