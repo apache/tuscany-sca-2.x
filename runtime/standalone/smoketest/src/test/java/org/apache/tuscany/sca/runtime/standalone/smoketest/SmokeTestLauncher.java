@@ -63,6 +63,7 @@ public class SmokeTestLauncher extends CommandTestCase {
     }
 */
 
+/*
     public void testLauncherWithNoArgs() throws Exception {
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", launcher.getAbsolutePath(), testJar.getAbsolutePath());
         pb.directory(installDir);
@@ -75,6 +76,7 @@ public class SmokeTestLauncher extends CommandTestCase {
             process.destroy();
         }
     }
+*/
 
     protected void setUp() throws Exception {
         super.setUp();
