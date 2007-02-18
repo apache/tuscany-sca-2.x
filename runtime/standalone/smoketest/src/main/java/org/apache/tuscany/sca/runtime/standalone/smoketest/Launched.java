@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.runtime.standalone.smoketest;
 
-import java.util.concurrent.Callable;
-
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -33,11 +31,19 @@ public class Launched {
         this.hello = hello;
     }
 
-    public Object main(String[] args) throws Exception {
-        if ("Hello World".equals(hello.getGreeting())) {
+    public int main(String[] args) throws Exception {
+        if (args.length == 0) {
+            System.out.println("No Args");
             return 0;
-        } else {
-            return 1;
         }
+        String command = args[0];
+        if ("testReference".equals(command)) {
+            if ("Hello World".equals(hello.getGreeting())) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+        return 1;
     }
 }
