@@ -22,8 +22,8 @@
            name="SmoketestComposite">
 
     <component name="Main">
-        <implementation.java class="org.apache.tuscany.sca.runtime.standalone.smoketest.Launched"/>
-        <reference name="hello" target="Hello"/>
+        <tuscany:launched class="org.apache.tuscany.sca.runtime.standalone.smoketest.Launched"/>
+        <reference name="hello">Hello</reference>
     </component>
 
     <component name="Hello">
