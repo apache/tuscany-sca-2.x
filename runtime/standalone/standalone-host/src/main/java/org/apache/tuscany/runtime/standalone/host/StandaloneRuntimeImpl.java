@@ -21,6 +21,7 @@ package org.apache.tuscany.runtime.standalone.host;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
+import java.util.Collection;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -48,19 +49,12 @@ import org.osoa.sca.ComponentContext;
 /**
  * @version $Rev$ $Date$
  */
-public class StandaloneRuntimeImpl extends AbstractRuntime implements StandaloneRuntime {
+public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo> implements StandaloneRuntime {
 
-    protected void registerSystemComponents() throws InitializationException {
-        super.registerSystemComponents();
-        try {
-            getComponentManager().registerJavaObject(StandaloneRuntimeInfo.STANDALONE_COMPONENT_URI,
-                StandaloneRuntimeInfo.class,
-                (StandaloneRuntimeInfo) getRuntimeInfo());
-        } catch (RegistrationException e) {
-            throw new InitializationException(e);
-        }
+    public StandaloneRuntimeImpl() {
+        super(StandaloneRuntimeInfo.class);
     }
-    
+
     /**
      * Deploys the specified application SCDL and runs the lauched component within the deployed composite.
      * 
@@ -79,9 +73,11 @@ public class StandaloneRuntimeImpl extends AbstractRuntime implements Standalone
 
         ComponentDefinition<CompositeImplementation> definition =
             new ComponentDefinition<CompositeImplementation>(compositeUri, impl);
-        Component component =  getDeployer().deploy(null, definition);
-        component.start();
-        
+        Collection<Component> components =  getDeployer().deploy(null, definition);
+        for (Component component : components) {
+            component.start();
+        }
+
         return run(impl, args, compositeUri);
     }
 

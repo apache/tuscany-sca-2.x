@@ -43,7 +43,8 @@ import org.easymock.EasyMock;
 public class ServiceLoaderReferenceTestCase extends TestCase {
     private static final QName SERVICE = new QName(Version.XML_NAMESPACE_1_0, "service");
     private static final QName REFERENCE = new QName(Version.XML_NAMESPACE_1_0, "reference");
-    private static final String PARENT_NAME = "parent";
+    private static final String COMPONENT_NAME = "sca://domain/someComponent/";
+    private URI componentId;
     private ServiceLoader loader;
     private XMLStreamReader mockReader;
     private CompositeComponent parent;
@@ -61,8 +62,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         EasyMock.replay(mockReader);
         ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, ctx);
         assertNotNull(serviceDefinition);
-        assertEquals("parent/target", serviceDefinition.getTarget().getPath());
-        assertNull(serviceDefinition.getTarget().getFragment());
+        assertEquals(COMPONENT_NAME + "target", serviceDefinition.getTarget().toString());
     }
 
     public void testReferenceWithFragment() throws LoaderException, XMLStreamException {
@@ -77,7 +77,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         EasyMock.replay(mockReader);
         ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, ctx);
         assertNotNull(serviceDefinition);
-        assertEquals("parent/target#fragment", serviceDefinition.getTarget().toString());
+        assertEquals(COMPONENT_NAME + "target#fragment", serviceDefinition.getTarget().toString());
     }
 
 
@@ -86,14 +86,13 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
         LoaderRegistry mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ServiceLoader(mockRegistry);
+
+        componentId = URI.create(COMPONENT_NAME);
         parent = EasyMock.createMock(CompositeComponent.class);
-        URI uri = URI.create(PARENT_NAME);
-        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
+        EasyMock.expect(parent.getUri()).andReturn(componentId).atLeastOnce();
         EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);
-        List<String> names = new ArrayList<String>();
-        names.add("parent");
-        EasyMock.expect(ctx.getPathNames()).andReturn(names).atLeastOnce();
+        EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
         EasyMock.replay(ctx);
     }
 }

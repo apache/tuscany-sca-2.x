@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Collection;
 
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -206,9 +207,11 @@ public class TuscanyITestMojo extends AbstractMojo {
 
                 ComponentDefinition<CompositeImplementation> definition =
                     new ComponentDefinition<CompositeImplementation>(name, impl);
-                Component testComponent = runtime.deployTestScdl(definition);
-                testSuite = createTestSuite(runtime, definition, testComponent);
-                testComponent.start();
+                Collection<Component> testComponent = runtime.deployTestScdl(definition);
+                testSuite = createTestSuite(runtime, definition, name);
+                for (Component component : testComponent) {
+                    component.start();
+                }
             } catch (Exception e) {
                 throw new MojoExecutionException("Error deploying test component " + testScdl, e);
             }
@@ -304,9 +307,8 @@ public class TuscanyITestMojo extends AbstractMojo {
 
     protected SurefireTestSuite createTestSuite(MavenEmbeddedRuntime runtime,
                                                 ComponentDefinition<CompositeImplementation> definition,
-                                                Component testComponent) throws MojoExecutionException {
+                                                URI uriBase) throws MojoExecutionException {
         SCATestSuite suite = new SCATestSuite();
-        URI uriBase = testComponent.getUri();
 
         CompositeImplementation impl = definition.getImplementation();
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();

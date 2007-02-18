@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -45,16 +44,6 @@ public interface Bootstrapper {
      * @return the MonitorFactory being used by the bootstrapper
      */
     MonitorFactory getMonitorFactory();
-
-    /**
-     * Create the RuntimeComponent that forms the fundamental root of the component assembly. This component has two
-     * children: a {@link org.apache.tuscany.spi.component.CompositeComponent} that is the root for all system
-     * components, and a {@link org.apache.tuscany.spi.component.CompositeComponent} that is the root for all
-     * application components.
-     *
-     * @return a new RuntimeComponent; basically a new Tuscany instance
-     */
-    RuntimeComponent createRuntime();
 
     /**
      * Create a Deployer that can be used to deploy the system definition. This will most likely only support a small

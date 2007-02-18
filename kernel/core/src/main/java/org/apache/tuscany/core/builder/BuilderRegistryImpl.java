@@ -27,7 +27,6 @@ import org.osoa.sca.annotations.EagerInit;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.ScopeNotFoundException;
@@ -35,7 +34,6 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
@@ -63,7 +61,6 @@ import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 @EagerInit
 public class BuilderRegistryImpl implements BuilderRegistry {
     private ScopeRegistry scopeRegistry;
-    private ComponentManager componentManager;
 
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>
         componentBuilders =
@@ -71,9 +68,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
 
-    public BuilderRegistryImpl(@Autowire ScopeRegistry scopeRegistry, @Autowire ComponentManager componentManager) {
+    public BuilderRegistryImpl(@Autowire ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
-        this.componentManager = componentManager;
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {
@@ -102,54 +98,49 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             }
 
             Component component = componentBuilder.build(parent, componentDefinition, context);
-            if (component != null) {
-                component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
-                Scope scope = componentDefinition.getImplementation().getComponentType().getImplementationScope();
-                if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
-                    component.setScopeContainer(context.getCompositeScope());
-                } else {
-                    // Check for conversational contract if conversational scope
-                    if (scope == Scope.CONVERSATION) {
-                        boolean hasConversationalContract = false;
-                        ComponentType<ServiceDefinition, ReferenceDefinition, ?> componentType =
-                            componentDefinition.getImplementation().getComponentType();
-                        Map<String, ServiceDefinition> services = componentType.getServices();
-                        for (ServiceDefinition serviceDef : services.values()) {
-                            ServiceContract<?> contract = serviceDef.getServiceContract();
-                            if (contract.isConversational()) {
-                                hasConversationalContract = true;
-                                break;
-                            }
-                        }
-                        if (!hasConversationalContract) {
-                            String name = implClass.getName();
-                            throw new NoConversationalContractException(
-                                "No conversational contract for conversational implementation", name);
+            assert component != null;
+            component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
+            Scope scope = componentDefinition.getImplementation().getComponentType().getImplementationScope();
+            if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
+                component.setScopeContainer(context.getCompositeScope());
+            } else {
+                // Check for conversational contract if conversational scope
+                if (scope == Scope.CONVERSATION) {
+                    boolean hasConversationalContract = false;
+                    ComponentType<ServiceDefinition, ReferenceDefinition, ?> componentType =
+                        componentDefinition.getImplementation().getComponentType();
+                    Map<String, ServiceDefinition> services = componentType.getServices();
+                    for (ServiceDefinition serviceDef : services.values()) {
+                        ServiceContract<?> contract = serviceDef.getServiceContract();
+                        if (contract.isConversational()) {
+                            hasConversationalContract = true;
+                            break;
                         }
                     }
-                    // Now it's ok to set the scope container
-                    ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
-                    if (scopeContainer == null) {
-                        throw new ScopeNotFoundException(scope.toString());
+                    if (!hasConversationalContract) {
+                        String name = implClass.getName();
+                        throw new NoConversationalContractException(
+                            "No conversational contract for conversational implementation", name);
                     }
-                    component.setScopeContainer(scopeContainer);
                 }
+                // Now it's ok to set the scope container
+                ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
+                if (scopeContainer == null) {
+                    throw new ScopeNotFoundException(scope.toString());
+                }
+                component.setScopeContainer(scopeContainer);
             }
+            context.getComponents().put(component.getUri(), component);
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";
             // create wires for the component
 //            if (wireService != null && component instanceof AtomicComponent) {
 //                wireService.createWires((AtomicComponent) component, componentDefinition);
 //            }
-            componentManager.register(component);
             return component;
         } catch (BuilderException e) {
             e.addContextName(componentDefinition.getUri().toString());
             throw e;
-        } catch (RegistrationException e) {
-            BuilderInstantiationException bie = new BuilderInstantiationException("Error registering component", e);
-            bie.addContextName(componentDefinition.getUri().toString());
-            throw bie;
         }
     }
 

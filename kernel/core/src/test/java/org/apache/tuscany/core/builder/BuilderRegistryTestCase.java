@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.builder;
 
 import java.net.URI;
+import java.util.Map;
 
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -54,24 +55,47 @@ import org.easymock.EasyMock;
  */
 public class BuilderRegistryTestCase extends TestCase {
     private DeploymentContext deploymentContext;
+    private ScopeContainer scopeContainer;
+    private Map<URI, Component> components;
+
     //private BuilderRegistryImpl registry;
     private CompositeComponent parent;
 
+    @SuppressWarnings({"unchecked"})
     public void testRegistration() throws Exception {
-        MockBuilder builder = new MockBuilder();
-        ComponentManager componentManager = EasyMock.createNiceMock(ComponentManager.class);
-        BuilderRegistry registry = new BuilderRegistryImpl(null, componentManager);
-        registry.register(CompositeImplementation.class, builder);
+        URI componentId = URI.create("sca://localhost/component");
         CompositeImplementation implementation = new CompositeImplementation();
         ComponentDefinition<CompositeImplementation> componentDefinition =
             new ComponentDefinition<CompositeImplementation>(implementation);
         componentDefinition.getImplementation().setComponentType(new CompositeComponentType());
-        registry.build(parent, componentDefinition, deploymentContext);
+
+        CompositeComponent component = EasyMock.createMock(CompositeComponent.class);
+        component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
+        component.setScopeContainer(scopeContainer);
+        EasyMock.expect(component.getUri()).andReturn(componentId);
+        EasyMock.replay(component);
+
+        EasyMock.expect(deploymentContext.getCompositeScope()).andReturn(scopeContainer);
+        EasyMock.expect(deploymentContext.getComponents()).andReturn(components);
+        EasyMock.replay(deploymentContext);
+
+        EasyMock.expect(components.put(componentId, component)).andReturn(null);
+        EasyMock.replay(components);
+        
+        ComponentBuilder builder = EasyMock.createMock(ComponentBuilder.class);
+        EasyMock.expect(builder.build(parent, componentDefinition, deploymentContext)).andReturn(component);
+        EasyMock.replay(builder);
+
+        BuilderRegistry registry = new BuilderRegistryImpl(null);
+        registry.register(CompositeImplementation.class, builder);
+
+        assertSame(component, registry.build(parent, componentDefinition, deploymentContext));
+        EasyMock.verify(builder);
     }
 
     @SuppressWarnings({"unchecked"})
     public void testServiceBindingBuilderDispatch() throws Exception {
-        BuilderRegistry registry = new BuilderRegistryImpl(null, null);
+        BuilderRegistry registry = new BuilderRegistryImpl(null);
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
@@ -91,7 +115,7 @@ public class BuilderRegistryTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testReferenceBindingBuilderDispatch() throws Exception {
-        BuilderRegistry registry = new BuilderRegistryImpl(null, null);
+        BuilderRegistry registry = new BuilderRegistryImpl(null);
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
@@ -109,38 +133,12 @@ public class BuilderRegistryTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void testComponentImplementationDispatch() throws Exception {
-        ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
-        ScopeContainer scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
-        EasyMock.expect(scopeRegistry.getScopeContainer(EasyMock.isA(Scope.class))).andReturn(scopeContainer);
-        EasyMock.replay(scopeRegistry);
-        ComponentManager componentManager = EasyMock.createNiceMock(ComponentManager.class);
-        BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry, componentManager);
-
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
-        EasyMock.replay(component);
-        ComponentBuilder<FooImplementation> builder = EasyMock.createMock(ComponentBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(CompositeComponent.class),
-            EasyMock.isA(ComponentDefinition.class),
-            EasyMock.isA(DeploymentContext.class))).andReturn(component);
-        EasyMock.replay(builder);
-        registry.register(FooImplementation.class, builder);
-
-        FooImplementation impl = new FooImplementation();
-        impl.setComponentType(new ComponentType());
-        URI uri = URI.create("foo");
-        ComponentDefinition<FooImplementation> definition = new ComponentDefinition<FooImplementation>(uri, impl);
-        Component ret = registry.build(parent, definition, deploymentContext);
-        assertNotNull(ret);
-    }
-
-    @SuppressWarnings({"unchecked"})
     public void testNoConversationalContract() throws Exception {
         ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
         ScopeContainer scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
         EasyMock.expect(scopeRegistry.getScopeContainer(EasyMock.isA(Scope.class))).andReturn(scopeContainer);
         EasyMock.replay(scopeRegistry);
-        BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry, null);
+        BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry);
 
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
@@ -169,7 +167,8 @@ public class BuilderRegistryTestCase extends TestCase {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        EasyMock.replay(parent);
+        scopeContainer = EasyMock.createMock(ScopeContainer.class);
+        components = EasyMock.createMock(Map.class);
     }
 
     private class MockBuilder implements ComponentBuilder<CompositeImplementation> {

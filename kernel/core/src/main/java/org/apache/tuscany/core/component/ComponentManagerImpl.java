@@ -19,25 +19,19 @@
 package org.apache.tuscany.core.component;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.core.implementation.composite.SystemSingletonAtomicComponent;
+import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
-import org.apache.tuscany.spi.util.UriHelper;
-
-import org.apache.tuscany.core.component.event.ComponentStart;
-import org.apache.tuscany.core.component.event.ComponentStop;
-import org.apache.tuscany.core.implementation.composite.SystemSingletonAtomicComponent;
-import org.apache.tuscany.core.resolver.AutowireResolver;
 
 /**
  * Default implementation of the component manager
@@ -48,11 +42,9 @@ public class ComponentManagerImpl implements ComponentManager {
     private TuscanyManagementService managementService;
     private AutowireResolver resolver;
     private Map<URI, Component> components;
-    private Map<URI, List<URI>> parentToChildren;
 
     public ComponentManagerImpl() {
         components = new ConcurrentHashMap<URI, Component>();
-        parentToChildren = new ConcurrentHashMap<URI, List<URI>>();
     }
 
     public ComponentManagerImpl(TuscanyManagementService managementService, AutowireResolver resolver) {
@@ -61,29 +53,18 @@ public class ComponentManagerImpl implements ComponentManager {
         this.resolver = resolver;
     }
 
-    public void register(Component component) throws RegistrationException {
+    public synchronized void register(Component component) throws RegistrationException {
         URI uri = component.getUri();
         assert uri != null;
+        assert !uri.toString().endsWith("/");
         if (components.containsKey(uri)) {
             throw new DuplicateNameException(uri.toString());
         }
         components.put(uri, component);
-        URI parentUri = UriHelper.getParentNameAsUri(uri);
-        List<URI> children = parentToChildren.get(parentUri);
-        if (children == null) {
-            children = new ArrayList<URI>();
-            parentToChildren.put(parentUri, children);
-        }
-        // the parent may not be registered in this VM
-        synchronized (children) {
-            children.add(uri);
-        }
+
         if (managementService != null && component instanceof AtomicComponent) {
             // FIXME shouldn't it take the canonical name and also not distinguish atomic components?
             managementService.registerComponent(component.getUri().toString(), component);
-        }
-        if (component instanceof CompositeComponent) {
-            component.addListener(this);
         }
     }
 
@@ -111,11 +92,9 @@ public class ComponentManagerImpl implements ComponentManager {
         }
     }
 
-    public void unregister(Component component) throws RegistrationException {
+    public synchronized void unregister(Component component) throws RegistrationException {
         URI uri = component.getUri();
         components.remove(uri);
-        parentToChildren.remove(uri);
-        component.removeListener(this);
     }
 
     public Component getComponent(URI name) {
@@ -123,33 +102,6 @@ public class ComponentManagerImpl implements ComponentManager {
     }
 
     public void onEvent(Event event) {
-        // This could be faster but it is not an operation that is performed often
-        if (event instanceof ComponentStart) {
-            URI uri = ((ComponentStart) event).getComponentUri();
-            List<URI> children = parentToChildren.get(uri);
-            if (children != null) {
-                synchronized (children) {
-                    for (URI childUri : children) {
-                        // performs a depth-first traversal as the children will recursively fire start events
-                        Component child = components.get(childUri);
-                        assert child != null;
-                        child.start();
-                    }
-                }
-            }
-        } else if (event instanceof ComponentStop) {
-            URI uri = ((ComponentStop) event).getComponentUri();
-            List<URI> children = parentToChildren.get(uri);
-            if (children != null) {
-                synchronized (children) {
-                    for (URI childUri : children) {
-                        // performs a depth-first traversal as the children will recursively fire stop events
-                        Component child = components.get(childUri);
-                        assert child != null;
-                        child.stop();
-                    }
-                }
-            }
-        }
+        throw new UnsupportedOperationException();
     }
 }

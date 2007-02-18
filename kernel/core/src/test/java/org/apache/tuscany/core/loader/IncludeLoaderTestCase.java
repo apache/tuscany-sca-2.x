@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URL;
+import java.net.URI;
 import java.util.Collections;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -59,6 +60,7 @@ public class IncludeLoaderTestCase extends TestCase {
     private URL base;
     private URL includeURL;
     private ClassLoader cl;
+    private URI componentId;
 
     public void testNoLocation() throws LoaderException, XMLStreamException {
         String name = "foo";
@@ -90,8 +92,7 @@ public class IncludeLoaderTestCase extends TestCase {
 
         expect(context.getScdlLocation()).andReturn(base);
         expect(context.getClassLoader()).andReturn(cl);
-        context.getPathNames();
-        EasyMock.expectLastCall().andReturn(Collections.emptyList()).anyTimes();
+        expect(context.getComponentId()).andReturn(componentId);
 
         expect(registry.load((CompositeComponent) isNull(),
             (ModelObject) isNull(),
@@ -117,8 +118,7 @@ public class IncludeLoaderTestCase extends TestCase {
 
         expect(context.getScdlLocation()).andReturn(base);
         expect(context.getClassLoader()).andReturn(cl);
-        context.getPathNames();
-        EasyMock.expectLastCall().andReturn(Collections.emptyList()).anyTimes();
+        expect(context.getComponentId()).andReturn(componentId);
 
         expect(registry.load((CompositeComponent) isNull(),
             (ModelObject) isNull(),
@@ -147,8 +147,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(reader.next()).andReturn(END_ELEMENT);
 
         expect(context.getClassLoader()).andReturn(cl);
-        context.getPathNames();
-        EasyMock.expectLastCall().andReturn(Collections.emptyList()).anyTimes();
+        expect(context.getComponentId()).andReturn(componentId);
 
         expect(registry.load((CompositeComponent) isNull(),
             (ModelObject) isNull(),
@@ -173,5 +172,6 @@ public class IncludeLoaderTestCase extends TestCase {
         base = new URL("http://example.com/test.scdl");
         includeURL = new URL("http://example.com/include.scdl");
         loader = new IncludeLoader(registry);
+        componentId = URI.create("sca://localhost/parent/");
     }
 }

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.component.Component;
 
 /**
  * Base class for DeploymentContext implementations.
@@ -37,7 +38,7 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
     private final ClassLoader classLoader;
     private final URL scdlLocation;
     private final Map<String, Object> properties = new HashMap<String, Object>();
-    private List<String> pathNames = new ArrayList<String>();
+    private final Map<URI, Component> components = new HashMap<URI, Component>();
 
     /**
      * Constructor defining properties of this context.
@@ -60,10 +61,6 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
         return scdlLocation;
     }
 
-    public List<String> getPathNames() {
-        return pathNames;
-    }
-
     public Object getExtension(String name) {
         return properties.get(name);
     }
@@ -78,5 +75,10 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
 
     public URI getComponentId() {
         return componentId;
+    }
+
+    @Deprecated
+    public Map<URI, Component> getComponents() {
+        return components;
     }
 }

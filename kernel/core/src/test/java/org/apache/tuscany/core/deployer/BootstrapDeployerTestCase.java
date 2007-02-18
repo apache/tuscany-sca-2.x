@@ -66,12 +66,12 @@ public class BootstrapDeployerTestCase extends TestCase {
     private ComponentDefinition<SystemCompositeImplementation> componentDefinition;
     private SystemCompositeImplementation implementation;
     private ComponentManager manager;
+    private URI componentId;
 
     @SuppressWarnings("unchecked")
     public void testBoot1Load() throws LoaderException {
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
         URI uri = URI.create("sca://parent");
-        deploymentContext.getPathNames().add("sca://parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(parent);
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
@@ -89,7 +89,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals(2, services.size()); // included counts
         ServiceDefinition serviceDefinition = services.get("service");
         assertNotNull(serviceDefinition);
-        assertEquals("sca://parent#service", serviceDefinition.getUri().toString());
+        assertEquals(componentId.resolve("#service"), serviceDefinition.getUri());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
         Collection<BindingDefinition> bindings = serviceDefinition.getBindings();
         assertTrue(bindings.isEmpty());
@@ -127,8 +127,8 @@ public class BootstrapDeployerTestCase extends TestCase {
         replay(parent);
         // load the boot1 file using the bootstrap deployer
         componentDefinition.setUri(URI.create("sca://parent/simple"));
-        Component component = deployer.deploy(parent, componentDefinition);
-        assertNotNull(component);
+        Collection<Component> components = deployer.deploy(parent, componentDefinition);
+        assertFalse(components.isEmpty());
         verify(parent);
     }
 
@@ -139,14 +139,17 @@ public class BootstrapDeployerTestCase extends TestCase {
         replay(parent);
         // load the boot2 file using the bootstrap deployer
         componentDefinition.setUri(URI.create("newDeployer"));
-        CompositeComponent component = (CompositeComponent) deployer.deploy(parent, componentDefinition);
-        assertNotNull(component);
+        Collection<Component> components = deployer.deploy(parent, componentDefinition);
+        assertFalse(components.isEmpty());
         verify(parent);
-        component.start();
+        for (Component component : components) {
+            component.start();
+        }
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        componentId = URI.create("sca://localhost/parent");
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
         DefaultAutowireResolver resolver = new DefaultAutowireResolver();
         manager = new ComponentManagerImpl(null, resolver);
@@ -156,7 +159,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         Bootstrapper bootstrapper =
             new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, connector);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
-        deploymentContext = new RootDeploymentContext(null, null, null, xmlFactory, null);
+        deploymentContext = new RootDeploymentContext(null, null, componentId, xmlFactory, null);
         implementation = new SystemCompositeImplementation();
         implementation.setClassLoader(getClass().getClassLoader());
         componentDefinition = new ComponentDefinition<SystemCompositeImplementation>(implementation);

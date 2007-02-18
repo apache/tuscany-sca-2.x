@@ -19,8 +19,6 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -41,7 +39,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.easymock.EasyMock;
 
 /**
@@ -51,9 +48,9 @@ import org.easymock.EasyMock;
  */
 public class ReferenceLoaderTestCase extends TestCase {
     private static final QName REFERENCE = new QName(Version.XML_NAMESPACE_1_0, "reference");
-    private static final String PARENT_NAME = "parent";
+    private static final String COMPONENT_NAME = "sca://someComponent";
+    private URI componentId;
     private ReferenceLoader loader;
-    private DeploymentContext deploymentContext;
     private XMLStreamReader mockReader;
     private LoaderRegistry mockRegistry;
     private CompositeComponent parent;
@@ -69,7 +66,7 @@ public class ReferenceLoaderTestCase extends TestCase {
         EasyMock.replay(mockReader);
         ReferenceDefinition referenceDefinition = loader.load(parent, null, mockReader, ctx);
         assertNotNull(referenceDefinition);
-        assertEquals(PARENT_NAME + "#" + name, referenceDefinition.getUri().toString());
+        assertEquals(COMPONENT_NAME + "#" + name, referenceDefinition.getUri().toString());
     }
 
     public void testComponentTypeService() throws LoaderException, XMLStreamException {
@@ -117,32 +114,29 @@ public class ReferenceLoaderTestCase extends TestCase {
         EasyMock.expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
         EasyMock.expect(mockReader.getAttributeValue(null, "multiplicity")).andReturn("0..1");
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
-        EasyMock.expect(mockRegistry.load(parent, null, mockReader, deploymentContext)).andReturn(sc);
+        EasyMock.expect(mockRegistry.load(parent, null, mockReader, ctx)).andReturn(sc);
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
 
         EasyMock.replay(mockReader);
         EasyMock.replay(mockRegistry);
 
-        ReferenceDefinition referenceDefinition = loader.load(parent, null, mockReader, deploymentContext);
+        ReferenceDefinition referenceDefinition = loader.load(parent, null, mockReader, ctx);
         assertNotNull(referenceDefinition);
-        assertEquals(PARENT_NAME + "#" + name, referenceDefinition.getUri().toString());
+        assertEquals(COMPONENT_NAME + "#" + name, referenceDefinition.getUri().toString());
         assertSame(sc, referenceDefinition.getServiceContract());
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        componentId = URI.create(COMPONENT_NAME);
         mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ReferenceLoader(mockRegistry);
-        deploymentContext = new RootDeploymentContext(null, null, null, null, null);
-        deploymentContext.getPathNames().add("parent");
         parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.getUri()).andReturn(URI.create(PARENT_NAME));
+        EasyMock.expect(parent.getUri()).andReturn(URI.create(COMPONENT_NAME));
         EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);
-        List<String> names = new ArrayList<String>();
-        names.add("parent");
-        EasyMock.expect(ctx.getPathNames()).andReturn(names).atLeastOnce();
+        EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
         EasyMock.replay(ctx);
     }
 }

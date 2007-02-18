@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.plugin.itest;
 
 import java.net.URI;
+import java.util.Collection;
 
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
@@ -34,16 +35,16 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * @version $Rev$ $Date$
  */
-public class MavenEmbeddedRuntime extends AbstractRuntime {
+public class MavenEmbeddedRuntime extends AbstractRuntime<MavenRuntimeInfo> {
     private ArtifactRepository artifactRepository;
+
+    public MavenEmbeddedRuntime() {
+        super(MavenRuntimeInfo.class);
+    }
 
     protected void registerSystemComponents() throws InitializationException {
         super.registerSystemComponents();
         try {
-            getComponentManager().registerJavaObject(MavenRuntimeInfo.COMPONENT_NAME,
-                                                     MavenRuntimeInfo.class,
-                                                     (MavenRuntimeInfo) getRuntimeInfo());
-
             getComponentManager().registerJavaObject(MavenEmbeddedArtifactRepository.COMPONENT_NAME,
                                                      ArtifactRepository.class,
                                                      artifactRepository);
@@ -56,7 +57,7 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
         this.artifactRepository = artifactRepository;
     }
 
-    public Component deployTestScdl(ComponentDefinition<CompositeImplementation> definition) throws Exception {
+    public Collection<Component> deployTestScdl(ComponentDefinition<CompositeImplementation> definition) throws Exception {
         Deployer deployer = getDeployer();
         return deployer.deploy(null, definition);
     }

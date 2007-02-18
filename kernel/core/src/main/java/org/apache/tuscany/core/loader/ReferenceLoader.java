@@ -72,19 +72,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         Multiplicity multiplicity = StaxUtil.multiplicity(multiplicityVal, Multiplicity.ONE_ONE);
         ReferenceDefinition referenceDefinition = new ReferenceDefinition();
         referenceDefinition.setMultiplicity(multiplicity);
-        try {
-            StringBuilder buf = new StringBuilder();
-            List<String> names = deploymentContext.getPathNames();
-            for (int i = 0; i < names.size() - 1; i++) {
-                buf.append("/");
-            }
-            if (names.size() > 0) {
-                buf.append(names.get(names.size() - 1));
-            }
-            referenceDefinition.setUri(new URI(buf + "#" + name));
-        } catch (URISyntaxException e) {
-            throw new IllegalSCDLNameException(e);
-        }
+        referenceDefinition.setUri(deploymentContext.getComponentId().resolve('#' + name));
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:

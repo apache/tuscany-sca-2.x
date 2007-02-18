@@ -28,10 +28,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.ChangeSetHandler;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.Loader;
@@ -50,13 +48,11 @@ public class XMLChangeSetHandler implements ChangeSetHandler {
     private static final QName CHANGESET = new QName(NS, "changeSet");
     private static final QName CREATECOMPONENT = new QName(NS, "createComponent");
 
-    private final RuntimeComponent runtime;
     private final Builder builder;
     private final Loader loader;
     private final XMLInputFactory xmlFactory;
 
-    public XMLChangeSetHandler(RuntimeComponent runtime, Loader loader, Builder builder) {
-        this.runtime = runtime;
+    public XMLChangeSetHandler(Loader loader, Builder builder) {
         this.loader = loader;
         this.builder = builder;
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
@@ -105,11 +101,10 @@ public class XMLChangeSetHandler implements ChangeSetHandler {
 
     public void createComponent(XMLStreamReader xmlReader) throws XMLStreamException {
         DeploymentContext deploymentContext = new RootDeploymentContext(null, null, null, xmlFactory, null);
-        CompositeComponent parent = runtime.getRootComponent();
         try {
             ComponentDefinition<?> componentDefinition =
-                (ComponentDefinition<?>) loader.load(parent, null, xmlReader, deploymentContext);
-            builder.build(parent, componentDefinition, deploymentContext);
+                (ComponentDefinition<?>) loader.load(null, null, xmlReader, deploymentContext);
+            builder.build(null, componentDefinition, deploymentContext);
         } catch (LoaderException e) {
             // FIXME throw something appropriate
             throw new AssertionError("FIXME");

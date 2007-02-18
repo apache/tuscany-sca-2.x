@@ -20,6 +20,7 @@ package org.apache.tuscany.core.loader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -86,8 +87,9 @@ public class IncludeLoader extends LoaderExtension<Include> {
             throw new MissingIncludeException("No SCDL location or resource specified", name);
         }
 
-        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url, null);
-        childContext.getPathNames().addAll(deploymentContext.getPathNames());
+        // when we include, the componentId remains that of the parent
+        URI componentId = deploymentContext.getComponentId();
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url, componentId);
         CompositeComponentType composite;
         try {
             composite = loadFromSidefile(parent, url, childContext);

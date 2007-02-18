@@ -39,7 +39,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -54,12 +53,13 @@ public class ServiceLoaderTestCase extends TestCase {
     private static final QName BINDING = new QName(XML_NAMESPACE_1_0, "binding.foo");
     private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
     private static final QName INTERFACE_JAVA = new QName(XML_NAMESPACE_1_0, "interface.java");
-    private static final String PARENT_NAME = "parent";
+    private static final String PARENT_NAME = "sca://localhost/parent/";
     private ServiceLoader loader;
     private DeploymentContext deploymentContext;
     private XMLStreamReader mockReader;
     private LoaderRegistry mockRegistry;
     private CompositeComponent parent;
+    private URI componentId;
 
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
         String name = "serviceDefinition";
@@ -68,8 +68,6 @@ public class ServiceLoaderTestCase extends TestCase {
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         replay(mockReader);
-        DeploymentContext context = EasyMock.createMock(DeploymentContext.class);
-        context.getPathNames();
         ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, deploymentContext);
         assertNotNull(serviceDefinition);
         assertEquals(PARENT_NAME + "#" + name, serviceDefinition.getUri().toString());
@@ -162,11 +160,12 @@ public class ServiceLoaderTestCase extends TestCase {
         mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ServiceLoader(mockRegistry);
-        deploymentContext = new RootDeploymentContext(null, null, null, null, null);
-        deploymentContext.getPathNames().add(PARENT_NAME);
         parent = EasyMock.createMock(CompositeComponent.class);
-        URI uri = URI.create(PARENT_NAME);
-        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
+        componentId = URI.create(PARENT_NAME);
+        EasyMock.expect(parent.getUri()).andReturn(componentId).atLeastOnce();
         EasyMock.replay(parent);
+        deploymentContext = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(deploymentContext.getComponentId()).andReturn(componentId);
+        EasyMock.replay(deploymentContext);
     }
 }
