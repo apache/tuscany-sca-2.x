@@ -89,7 +89,6 @@ public class IncompatibleServiceContractExceptionFormatter implements ExceptionF
             writer.write("\nTarget Contract: " + targetContractName + "/" + targetOpName + "\n");
 
         }
-        e.appendContextStack(writer);
         return writer;
     }
 }

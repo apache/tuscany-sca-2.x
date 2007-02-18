@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.api;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
 import java.io.PrintWriter;
 
 /**
@@ -31,7 +28,6 @@ import java.io.PrintWriter;
 
 public abstract class TuscanyRuntimeException extends RuntimeException {
     private static final long serialVersionUID = -759677431966121786L;
-    private List<String> contextStack;
     private final String identifier;
 
     /**
@@ -106,31 +102,6 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
     }
 
     /**
-     * Returns a collection of names representing the context call stack where the error occured. The top of the stack
-     * is the first element in the collection.
-     *
-     * @return a collection of names representing the context call stack
-     */
-    public List<String> returnContextNames() {
-        if (contextStack == null) {
-            contextStack = new ArrayList<String>();
-        }
-        return Collections.unmodifiableList(contextStack);
-    }
-
-    /**
-     * Pushes a context name where an error occured onto the call stack.
-     *
-     * @param name the name of a context to push on the stack
-     */
-    public void addContextName(String name) {
-        if (contextStack == null) {
-            contextStack = new ArrayList<String>();
-        }
-        contextStack.add(name);
-    }
-
-    /**
      * Returns a string representing additional error information referred to in the error message.
      *
      * @return additional error information
@@ -140,7 +111,7 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
     }
 
     public PrintWriter appendBaseMessage(PrintWriter writer) {
-        if (identifier == null && contextStack == null) {
+        if (identifier == null) {
             if (super.getMessage() == null) {
                 return writer;
             }
@@ -149,19 +120,7 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
         if (super.getMessage() != null) {
             writer.append(super.getMessage());
         }
-        if (identifier != null) {
-            writer.append(" [").append(identifier).append(']');
-        }
-        return writer;
-    }
-
-    public PrintWriter appendContextStack(PrintWriter writer) {
-        if (contextStack != null) {
-            writer.append("Context stack trace: ");
-            for (int i = contextStack.size() - 1; i >= 0; i--) {
-                writer.append('[').append(contextStack.get(i)).append(']');
-            }
-        }
+        writer.append(" [").append(identifier).append(']');
         return writer;
     }
 

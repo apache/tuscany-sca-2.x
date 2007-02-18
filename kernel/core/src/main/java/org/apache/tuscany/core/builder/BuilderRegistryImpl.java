@@ -49,7 +49,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 
@@ -91,57 +90,48 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         Class<?> implClass = componentDefinition.getImplementation().getClass();
         // noinspection SuspiciousMethodCalls
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
-        try {
-            if (componentBuilder == null) {
-                String name = implClass.getName();
-                throw new NoRegisteredBuilderException("No builder registered for implementation", name);
-            }
-
-            Component component = componentBuilder.build(parent, componentDefinition, context);
-            assert component != null;
-            component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
-            Scope scope = componentDefinition.getImplementation().getComponentType().getImplementationScope();
-            if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
-                component.setScopeContainer(context.getCompositeScope());
-            } else {
-                // Check for conversational contract if conversational scope
-                if (scope == Scope.CONVERSATION) {
-                    boolean hasConversationalContract = false;
-                    ComponentType<ServiceDefinition, ReferenceDefinition, ?> componentType =
-                        componentDefinition.getImplementation().getComponentType();
-                    Map<String, ServiceDefinition> services = componentType.getServices();
-                    for (ServiceDefinition serviceDef : services.values()) {
-                        ServiceContract<?> contract = serviceDef.getServiceContract();
-                        if (contract.isConversational()) {
-                            hasConversationalContract = true;
-                            break;
-                        }
-                    }
-                    if (!hasConversationalContract) {
-                        String name = implClass.getName();
-                        throw new NoConversationalContractException(
-                            "No conversational contract for conversational implementation", name);
-                    }
-                }
-                // Now it's ok to set the scope container
-                ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
-                if (scopeContainer == null) {
-                    throw new ScopeNotFoundException(scope.toString());
-                }
-                component.setScopeContainer(scopeContainer);
-            }
-            context.getComponents().put(component.getUri(), component);
-            ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
-            assert componentType != null : "Component type must be set";
-            // create wires for the component
-//            if (wireService != null && component instanceof AtomicComponent) {
-//                wireService.createWires((AtomicComponent) component, componentDefinition);
-//            }
-            return component;
-        } catch (BuilderException e) {
-            e.addContextName(componentDefinition.getUri().toString());
-            throw e;
+        if (componentBuilder == null) {
+            String name = implClass.getName();
+            throw new NoRegisteredBuilderException("No builder registered for implementation", name);
         }
+
+        Component component = componentBuilder.build(parent, componentDefinition, context);
+        assert component != null;
+        component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
+        Scope scope = componentDefinition.getImplementation().getComponentType().getImplementationScope();
+        if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
+            component.setScopeContainer(context.getCompositeScope());
+        } else {
+            // Check for conversational contract if conversational scope
+            if (scope == Scope.CONVERSATION) {
+                boolean hasConversationalContract = false;
+                ComponentType<ServiceDefinition, ReferenceDefinition, ?> componentType =
+                    componentDefinition.getImplementation().getComponentType();
+                Map<String, ServiceDefinition> services = componentType.getServices();
+                for (ServiceDefinition serviceDef : services.values()) {
+                    ServiceContract<?> contract = serviceDef.getServiceContract();
+                    if (contract.isConversational()) {
+                        hasConversationalContract = true;
+                        break;
+                    }
+                }
+                if (!hasConversationalContract) {
+                    String name = implClass.getName();
+                    throw new NoConversationalContractException(
+                        "No conversational contract for conversational implementation", name);
+                }
+            }
+            // Now it's ok to set the scope container
+            ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
+            if (scopeContainer == null) {
+                throw new ScopeNotFoundException(scope.toString());
+            }
+            component.setScopeContainer(scopeContainer);
+        }
+        context.getComponents().put(component.getUri(), component);
+        ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
+        assert componentType != null : "Component type must be set";
+        return component;
     }
 
     @SuppressWarnings({"unchecked"})

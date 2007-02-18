@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -33,7 +32,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.tuscany.core.databinding.xml.InputStream2Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.InvalidValueException;
@@ -43,8 +44,8 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+
+import org.apache.tuscany.core.databinding.xml.InputStream2Node;
 
 /**
  * The property factory backed by the DataBindingframework
@@ -65,7 +66,7 @@ public final class PropertyHelper {
             path.setNamespaceContext(new DOMNamespeceContext(node));
         }
         XPathExpression expression = path.compile(xPathExpression);
-        Node result = (Node)expression.evaluate(node, XPathConstants.NODE);
+        Node result = (Node) expression.evaluate(node, XPathConstants.NODE);
         if (result == null) {
             return null;
         }
@@ -93,7 +94,7 @@ public final class PropertyHelper {
             InputStream is = url.openStream();
             try {
                 InputStream2Node transformer = new InputStream2Node();
-                return (Document)transformer.transform(is, null);
+                return (Document) transformer.transform(is, null);
             } finally {
                 is.close();
             }
@@ -107,7 +108,7 @@ public final class PropertyHelper {
                                          ComponentDefinition<? extends Implementation<?>> componentDefinition,
                                          DeploymentContext deploymentContext) throws LoaderException {
         Map<String, PropertyValue<?>> propertyValues = componentDefinition.getPropertyValues();
-        
+
         for (PropertyValue propValue : propertyValues.values()) {
             Document node = propValue.getValue();
             String source = propValue.getSource();
@@ -125,11 +126,7 @@ public final class PropertyHelper {
                         String name = source.substring(1, index);
                         Property<?> compositeProp = parent.getProperties().get(name);
                         if (compositeProp == null) {
-                            InvalidValueException ex =
-                                new InvalidValueException(
-                                                          "The 'source' cannot be resolved to a composite property");
-                            ex.addContextName(source);
-                            throw ex;
+                            throw new InvalidValueException("Source cannot be resolved to a composite property");
                         }
                         Document document = compositeProp.getDefaultValue();
                         // Adding /value because the document root is "value"
@@ -146,17 +143,14 @@ public final class PropertyHelper {
                         node = evaluate(null, document, xpath);
                         if (node != null) {
                             propValue.setValue(node);
-                        } 
+                        }
                         /*Property<?> prop =
-                            (Property<?>)componentDefinition.getImplementation().getComponentType()
-                                .getProperties().get(propValue.getName());
-                        propValue
-                            .setValueFactory(new SimplePropertyObjectFactory(prop, propValue.getValue()));*/
+                      (Property<?>)componentDefinition.getImplementation().getComponentType()
+                          .getProperties().get(propValue.getName());
+                  propValue
+                      .setValueFactory(new SimplePropertyObjectFactory(prop, propValue.getValue()));*/
                     } else {
-                        InvalidValueException ex =
-                            new InvalidValueException("The 'source' has an invalid value");
-                        ex.addContextName(source);
-                        throw ex;
+                        throw new InvalidValueException("Source has an invalid value");
                     }
                 } catch (Exception e) {
                     throw new LoaderException(e);
@@ -165,7 +159,7 @@ public final class PropertyHelper {
                 node = loadFromFile(propValue.getFile(), deploymentContext);
                 propValue.setValue(node);
                 Property<?> prop =
-                    (Property<?>)componentDefinition.getImplementation().getComponentType().getProperties()
+                    (Property<?>) componentDefinition.getImplementation().getComponentType().getProperties()
                         .get(propValue.getName());
                 propValue.setValueFactory(new SimplePropertyObjectFactory(prop, propValue.getValue()));
             }
