@@ -1,1 +1,1 @@
-usage: java [jvm-options] -jar launcher.jar <componentURI> <componentJar>
+usage: java [jvm-options] -jar launcher.jar <componentJar> [apparg1, apparg2, ...]
