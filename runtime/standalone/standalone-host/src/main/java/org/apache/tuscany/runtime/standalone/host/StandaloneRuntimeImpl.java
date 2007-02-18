@@ -102,7 +102,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
         JavaMappedService testService = (JavaMappedService) services.get("main");
         Operation<?> operation = testService.getServiceContract().getOperations().get("main");
         Component component = getComponentManager().getComponent(componentUri);
-        TargetInvoker targetInvoker = component.createTargetInvoker("main", operation, null);
+        TargetInvoker targetInvoker = component.createTargetInvoker("main", operation);
         return targetInvoker.invokeTarget(new Object[]{args}, TargetInvoker.NONE);
     }
 
