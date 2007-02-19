@@ -47,7 +47,11 @@ public class ComponentContextImpl implements ComponentContext {
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        return null;
+        try {
+            return (R) component.cast(target);
+        } catch (TuscanyRuntimeException e) {
+            throw new ServiceRuntimeException(e.getMessage(), e);
+        }
     }
 
     public <B> B getService(Class<B> businessInterface, String referenceName) {
