@@ -231,8 +231,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             for (Map.Entry<String, Member> entry : callbackSites.entrySet()) {
                 List<Wire> wires = callBackwires.get(entry.getKey());
                 if (wires == null) {
-                    // this is a programming error
-                    throw new AssertionError("Start called before wires were added");
+                    // this can happen when there are no clients wires to a component that has a callback  
+                    continue;
                 }
                 Member member = entry.getValue();
                 if (member instanceof Field) {

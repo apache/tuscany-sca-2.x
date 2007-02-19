@@ -23,6 +23,7 @@ import java.net.URI;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -49,6 +50,19 @@ public class PojoAtomicComponentTestCase extends TestCase {
         assertTrue(component.isDestroyable());
         component.destroy(new Object());
         EasyMock.verify(invoker);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void testNoCallbackWires() throws Exception {
+        ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
+        EasyMock.expect(container.getScope()).andReturn(Scope.CONVERSATION);
+        container.register(EasyMock.isA(AtomicComponent.class));
+        EasyMock.replay(container);
+        config.addCallbackSite("callback", Foo.class.getMethod("setCallback", Object.class));
+        AtomicComponent component = new TestAtomicComponent(config);
+        component.setScopeContainer(container);
+        component.start();
+        EasyMock.verify(container);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -164,6 +178,10 @@ public class PojoAtomicComponentTestCase extends TestCase {
 
     private static class Foo {
         public Foo() {
+        }
+
+        public void setCallback(Object callback){
+
         }
     }
 
