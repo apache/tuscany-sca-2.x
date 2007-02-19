@@ -28,11 +28,8 @@ import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -104,16 +101,6 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
             return int.class.cast(result);
         } catch (ClassCastException e) {
             return 0;
-        }
-    }
-
-    protected Deployer getDeployer() {
-        try {
-            URI uri = URI.create("sca://root.system/main/deployer");
-            AtomicComponent component = (AtomicComponent) getComponentManager().getComponent(uri);
-            return (Deployer) component.getTargetInstance();
-        } catch (TargetResolutionException e) {
-            throw new AssertionError(e);
         }
     }
 }
