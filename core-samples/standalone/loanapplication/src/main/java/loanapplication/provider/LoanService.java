@@ -36,7 +36,6 @@ public interface LoanService {
      * Submits a new loan application
      *
      * @param application the loan application
-     * @return the application number
      */
     @OneWay
     void apply(Application application);
