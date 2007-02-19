@@ -18,17 +18,19 @@
  */
 package org.apache.tuscany.sca.runtime.itest.smoketest;
 
+import org.osoa.sca.annotations.Property;
+
 /**
  * @version $Rev$ $Date$
  */
 public class HelloServiceImpl implements HelloService {
     private final String greeting;
 
-    public HelloServiceImpl(String greeting) {
+    public HelloServiceImpl(@Property(name="greeting")String greeting) {
         this.greeting = greeting;
     }
 
     public String getGreeting() {
-        return "Hello World";
+        return greeting;
     }
 }
