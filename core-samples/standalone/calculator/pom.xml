@@ -24,7 +24,7 @@
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>calculator-client</artifactId>
+    <artifactId>calc</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany Calculator Client Sample</name>
     <description>A sample Calculator that runs from the command line.</description>
@@ -32,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca.core-samples.common</groupId>
-            <artifactId>calculator-common</artifactId>
+            <artifactId>calculator</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
