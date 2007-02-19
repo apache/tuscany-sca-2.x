@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +15,22 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
+ */
+package org.apache.tuscany.sca.runtime.webapp.smoketest;
 
-    <parent>
-        <groupId>org.apache.tuscany.sca.runtime</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
-    </parent>
+import org.osoa.sca.annotations.Property;
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
-    <artifactId>webapp</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany Webapp SCA Runtime</name>
+/**
+ * @version $Rev$ $Date$
+ */
+public class HelloServiceImpl implements HelloService {
+    private final String greeting;
 
-    <modules>
-        <module>webapp-api</module>
-        <module>webapp-host</module>
-        <module>plugin.war</module>
-        <module>smoketest</module>
-    </modules>
+    public HelloServiceImpl(@Property(name="greeting")String greeting) {
+        this.greeting = greeting;
+    }
 
-</project>
+    public String getGreeting() {
+        return greeting;
+    }
+}
