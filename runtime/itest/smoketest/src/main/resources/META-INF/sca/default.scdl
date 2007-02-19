@@ -22,5 +22,6 @@
 
     <component name="Hello">
         <implementation.java class="org.apache.tuscany.sca.runtime.itest.smoketest.HelloServiceImpl"/>
+        <property name="greeting">Hello World</property>
     </component>
 </composite>
