@@ -19,9 +19,6 @@
 package org.apache.tuscany.spi.model.physical;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.tuscany.spi.model.ModelObject;
 
@@ -34,9 +31,6 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
 
     // Component Id.
     private final URI componentId;
-
-    // Wires
-    private final Set<WireDefinition> wires = new HashSet<WireDefinition>();
 
     /**
      * Initializes the component id.
@@ -59,29 +53,6 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      */
     public URI getComponentId() {
         return componentId;
-    }
-
-    /**
-     * Returns a read-only view of the wires.
-     *
-     * @return List of wires available on the component.
-     */
-    public Set<WireDefinition> getWires() {
-        return Collections.unmodifiableSet(wires);
-    }
-
-    /**
-     * Adds an wire.
-     *
-     * @param wire Wire to add to the component.
-     */
-    public void addWire(WireDefinition wire) {
-
-        if (wire == null) {
-            throw new IllegalArgumentException("Wire is null");
-        }
-        wires.add(wire);
-
     }
 
 }
