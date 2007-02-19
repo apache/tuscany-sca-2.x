@@ -32,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca.core-samples.common</groupId>
-            <artifactId>calculator-common</artifactId>
+            <artifactId>calculator</artifactId>
             <version>${project.version}</version>
         </dependency>
 
