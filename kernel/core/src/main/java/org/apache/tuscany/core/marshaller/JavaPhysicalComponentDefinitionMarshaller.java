@@ -105,14 +105,14 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
         
         try {
             
-            JavaPhysicalComponentDefinition definition = null;
+            JavaPhysicalComponentDefinition definition = new JavaPhysicalComponentDefinition();
             
             for (int i = reader.next(); i != END_DOCUMENT; i = reader.next()) {
                 switch (i) {
                     case START_ELEMENT:
                         if (reader.getName().equals(MESSAGE_TYPE)) {
                             final URI componentId = getComponentId(reader);
-                            definition = new JavaPhysicalComponentDefinition(componentId);
+                            definition.setComponentId(componentId);
                         } else if (reader.getName().equals(INSTANCE_FACTORY_BYTE_CODE)) {
                             setInstanceFactoryByteCode(reader, definition);
                         }
@@ -120,7 +120,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
                 }
             }
             
-            if (definition == null || definition.getInstanceFactoryByteCode() == null) {
+            if (definition.getComponentId() == null || definition.getInstanceFactoryByteCode() == null) {
                 throw new MarshalException("Invalid component definition");
             }
             

@@ -30,29 +30,22 @@ import org.apache.tuscany.spi.model.ModelObject;
 public abstract class PhysicalComponentDefinition extends ModelObject {
 
     // Component Id.
-    private final URI componentId;
+    private URI componentId;
 
     /**
-     * Initializes the component id.
-     *
-     * @param componentId The component id.
-     */
-    public PhysicalComponentDefinition(final URI componentId) {
-
-        if (componentId == null) {
-            throw new IllegalArgumentException("Component id is null");
-        }
-        this.componentId = componentId;
-
-    }
-
-    /**
-     * Returns the absolute id for the phyiscal component.
-     *
-     * @return the absolute id for the phyiscal component
+     * Gets the component id.
+     * @return Component id.
      */
     public URI getComponentId() {
         return componentId;
+    }
+
+    /**
+     * Sets the component id.
+     * @param componentId
+     */
+    public void setComponentId(URI componentId) {
+        this.componentId = componentId;
     }
 
 }
