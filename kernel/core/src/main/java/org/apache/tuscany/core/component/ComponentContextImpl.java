@@ -22,6 +22,9 @@ import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ServiceRuntimeException;
+
+import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
  * Implementation of ComponentContext that delegates to a ComponentContextProvider.
@@ -36,7 +39,11 @@ public class ComponentContextImpl implements ComponentContext {
     }
 
     public String getURI() {
-        return component.getUri().toString();
+        try {
+            return component.getUri().toString();
+        } catch (TuscanyRuntimeException e) {
+            throw new ServiceRuntimeException(e.getMessage(), e);
+        }
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
@@ -44,15 +51,27 @@ public class ComponentContextImpl implements ComponentContext {
     }
 
     public <B> B getService(Class<B> businessInterface, String referenceName) {
-        return component.getService(businessInterface, referenceName);
+        try {
+            return component.getService(businessInterface, referenceName);
+        } catch (TuscanyRuntimeException e) {
+            throw new ServiceRuntimeException(e.getMessage(), e);
+        }
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
-        return component.getServiceReference(businessInterface, referenceName);
+        try {
+            return component.getServiceReference(businessInterface, referenceName);
+        } catch (TuscanyRuntimeException e) {
+            throw new ServiceRuntimeException(e.getMessage(), e);
+        }
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) {
-        return component.getProperty(type, propertyName);
+        try {
+            return component.getProperty(type, propertyName);
+        } catch (TuscanyRuntimeException e) {
+            throw new ServiceRuntimeException(e.getMessage(), e);
+        }
     }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
