@@ -27,6 +27,7 @@ import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import loanapplication.provider.LoanService;
 import loanapplication.provider.LoanServiceCallback;
@@ -36,13 +37,14 @@ import loanapplication.message.Application;
 /**
  * The loan service implementation
  */
-@Scope("CONVERSATIONAL")
+@Scope("CONVERSATION")
+@Service(LoanService.class)    // allow introspection of single interface
 public class LoanServiceImpl implements LoanService {
     private String loanNumber;
     private CreditService creditService;
     private LoanServiceCallback callback;
 
-    public LoanServiceImpl(@Reference CreditService creditService) {
+    public LoanServiceImpl(@Reference(name = "creditService") CreditService creditService) {
         this.creditService = creditService;
     }
 
