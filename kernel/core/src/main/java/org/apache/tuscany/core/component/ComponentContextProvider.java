@@ -22,6 +22,7 @@ import java.net.URI;
 
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.CallableReference;
 
 /**
  * Interface implemented by Component's that want to expose a ComponentContext.
@@ -38,4 +39,6 @@ public interface ComponentContextProvider {
     <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName);
 
     <B> B getProperty(Class<B> type, String propertyName);
+
+    <B, R extends CallableReference<B>> R cast(B target);
 }

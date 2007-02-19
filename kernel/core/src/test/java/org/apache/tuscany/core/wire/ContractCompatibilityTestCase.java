@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import org.osoa.sca.CallableReference;
 
 /**
  * TODO some tests commented out due to DataType.equals() needing to be strict
@@ -363,6 +364,9 @@ public class ContractCompatibilityTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
+        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+            throw new UnsupportedOperationException();
+        }
     }
 
 }

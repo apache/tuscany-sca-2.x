@@ -20,11 +20,13 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationHandler;
 import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.CallableReference;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -76,4 +78,16 @@ public class JDKWireService extends WireServiceExtension {
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
+    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+        InvocationHandler handler = Proxy.getInvocationHandler(target);
+        if (handler instanceof JDKInvocationHandler) {
+            // TODO return a ServiceReference
+            throw new UnsupportedOperationException();
+        } else if (handler instanceof JDKCallbackInvocationHandler) {
+            // TODO return a CallbackReference
+            throw new UnsupportedOperationException();
+        } else {
+            throw new IllegalArgumentException("Not a Tuscany SCA proxy");
+        }
+    }
 }

@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.CallableReference;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.ObjectCreationException;
@@ -389,6 +390,10 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             ObjectFactory<B> factory = createWireFactory(type, wire);
             return new ServiceReferenceImpl<B>(type, factory);
         }
+    }
+
+    public <B, R extends CallableReference<B>> R cast(B target) {
+        return (R) wireService.cast(target);
     }
 
     protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire);

@@ -26,6 +26,7 @@ import javax.servlet.ServletContext;
 
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.CallableReference;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -148,5 +149,9 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
         }
         ObjectFactory<B> factory = createWireFactory(type, wire);
         return new ServiceReferenceImpl<B>(type, factory);
+    }
+
+    public <B, R extends CallableReference<B>> R cast(B target) {
+        return (R) wireService.cast(target);
     }
 }
