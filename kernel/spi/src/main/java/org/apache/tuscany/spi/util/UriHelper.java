@@ -46,36 +46,6 @@ public final class UriHelper {
         }
     }
 
-    /**
-     * Returns the parent name for a component URI, e.g. 'sca://Foo' for 'sca://Foo/Bar'
-     *
-     * @param uri the URI to parse
-     * @return the base name
-     */
-    public static String getParentName(URI uri) {
-        String s = uri.toString();
-        int pos = s.lastIndexOf('/');
-        int len = 0;
-        if (uri.getScheme() != null) {
-            len = uri.getScheme().length() + 3;
-        }
-        if ((len == 0 && pos > 0) || pos > len) {
-            return s.substring(0, pos);
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * Returns the parent component name as a URI
-     *
-     * @param uri the child URI
-     * @return the parent component name
-     */
-    public static URI getParentNameAsUri(URI uri) {
-        return URI.create(getParentName(uri));
-    }
-
     public static URI getDefragmentedName(URI uri) {
         if (uri.getFragment() == null) {
             return uri;
