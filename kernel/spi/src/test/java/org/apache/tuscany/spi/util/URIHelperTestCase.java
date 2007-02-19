@@ -52,46 +52,6 @@ public class URIHelperTestCase extends TestCase {
         assertEquals("#foo", UriHelper.getBaseName(uri));
     }
 
-    public void testParentName() throws Exception {
-        URI uri = new URI("foo/bar");
-        assertEquals("foo", UriHelper.getParentName(uri));
-    }
-
-    public void testNoParentName() throws Exception {
-        URI uri = new URI("foo");
-        assertEquals("", UriHelper.getParentName(uri));
-    }
-
-    public void testNoParentNameScheme() throws Exception {
-        URI uri = new URI("sca://foo");
-        assertEquals("", UriHelper.getParentName(uri));
-    }
-
-    public void testParentNameScheme() throws Exception {
-        URI uri = new URI("sca://foo/bar");
-        assertEquals("sca://foo", UriHelper.getParentName(uri));
-    }
-
-    public void testMultiParentName() throws Exception {
-        URI uri = new URI("foo/bar/baz");
-        assertEquals("foo/bar", UriHelper.getParentName(uri));
-    }
-
-    public void testParentFragment() throws Exception {
-        URI uri = new URI("#baz");
-        assertEquals("", UriHelper.getParentName(uri));
-    }
-
-    public void testMultiParentNameScheme() throws Exception {
-        URI uri = new URI("sca://foo/bar/baz");
-        assertEquals("sca://foo/bar", UriHelper.getParentName(uri));
-    }
-
-    public void testParentNameSchemeFragment() throws Exception {
-        URI uri = new URI("sca://foo/bar#bar");
-        assertEquals("sca://foo", UriHelper.getParentName(uri));
-    }
-
     public void testDefragmentedNameScheme() throws Exception {
         URI uri = new URI("sca://foo/bar#bar");
         assertEquals("sca://foo/bar", UriHelper.getDefragmentedName(uri).toString());
