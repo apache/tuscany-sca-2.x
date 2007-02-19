@@ -33,15 +33,6 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
     private byte[] instanceFactoryByteCode;
 
     /**
-     * Initializes the component id.
-     *
-     * @param componentId The component id.
-     */
-    public JavaPhysicalComponentDefinition(final URI componentId) {
-        super(componentId);
-    }
-
-    /**
      * Gets the byte code for the instance factory.
      *
      * @return Byte code for the instance factory.

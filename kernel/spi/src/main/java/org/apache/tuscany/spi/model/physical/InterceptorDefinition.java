@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.spi.model.physical;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.spi.model.ModelObject;
+
 /**
  * Model class representing the portable definition of an interceptor. This class 
  * is used to describe the interceptors around inbound and outbound wires on a 
@@ -26,6 +30,21 @@ package org.apache.tuscany.spi.model.physical;
  * @version $Rev$ $Date$
  *
  */
-public class InterceptorDefinition {
+public class InterceptorDefinition extends ModelObject {
+    
+    // The qualified name of the interceptor builder
+    private QName builder;
+
+    /**
+     * Gets the qualified name of the builder.
+     * @return
+     */
+    public QName getBuilder() {
+        return builder;
+    }
+
+    public void setBuilder(QName builder) {
+        this.builder = builder;
+    }
 
 }
