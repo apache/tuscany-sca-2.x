@@ -12,9 +12,10 @@ public class CalculatorClientTestCase extends TestCase {
 
     public void testAdd() throws Exception {
         double result = 5;
-        EasyMock.expect(mockService.add(2, 3)).andReturn(result);
+        EasyMock.expect(mockService.add(2.0, 3.0)).andReturn(result);
         EasyMock.replay(mockService);
-        assertEquals(result, client.main(new String[] {"add", "2", "3"}));
+        // The main returns 0 (status) instead of the result
+        assertEquals(0, client.main(new String[] {"add", "2", "3"}));
         EasyMock.verify(mockService);
     }
 
