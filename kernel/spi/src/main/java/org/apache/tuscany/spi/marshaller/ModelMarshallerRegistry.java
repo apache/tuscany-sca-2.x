@@ -18,33 +18,62 @@
  */
 package org.apache.tuscany.spi.marshaller;
 
-import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 
 /**
- * A registry for physical component definition marshallers.
+ * A registry for model object marshallers.
  * 
  * @version $Rev$ $Date$
  */
 public interface ModelMarshallerRegistry {
 
     /**
-     * Registers a physical component definition marshaller.
+     * Registers a model object marshaller.
      * 
-     * @param <PCD> Physical component definition.
-     * @param modelClass Physical component definition class.
-     * @param marshaller Marshaller responsible for marshalling.
+     * @param <MD> Model object type.
+     * @param modelClass Model obejct class.
+     * @param qname Qualified name of the root element of the marshalled XML.
+     * @param marshaller Model object marshaller.
      */
-    <PCD extends PhysicalComponentDefinition> void registerMarshaller(Class<PCD> modelClass,
-                                                                      ModelMarshaller<PCD> marshaller);
+    <MD extends ModelObject> void registerMarshaller(Class<MD> modelClass, QName qname, ModelMarshaller<MD> marshaller);
 
     /**
-     * Gets a marshaller for marshalling the registered type.
+     * Gets a marshaller for marshalling.
      * 
-     * @param <PCD> Physical component definition.
-     * @param modelClass Type of the physical model definition that needs to be
-     *            marshalled.
-     * @return Marshaller capable for marshalling the specified type.
+     * @param <MD> Model object type.
+     * @param modelClass Model obejct class.
+     * @return Model object marshaller.
      */
-    <PCD extends PhysicalComponentDefinition> ModelMarshaller<PCD> getMarshaller(Class<PCD> modelClass);
+    <MD extends ModelObject> ModelMarshaller<MD> getMarshaller(Class<MD> modelClass);
+    
+    /**
+     * Gets a marshaller for unmarshalling.
+     * 
+     * @param <MD> Model object type.
+     * @param qname Qualified name of the root element of the marshalled XML.
+     * @return Model object marshaller.
+     */
+    <MD extends ModelObject> ModelMarshaller<MD> getMarshaller(QName qname);
+
+    /**
+     * Marshalls a physical change set.
+     * 
+     * @param changeSet Physical chaneg set to be marshalled.
+     * @param writer Writer to which marshalled information is written.
+     */
+    void marshall(PhysicalChangeSet changeSet, XMLStreamWriter writer);
+
+    /**
+     * Unmarshalls an XML stream to a physical change set.
+     * 
+     * @param reader Reader from which marshalled information is read.
+     * @return Physical chnage set from the marshalled stream.
+     */
+    PhysicalChangeSet unmarshall(XMLStreamReader reader);
 
 }
