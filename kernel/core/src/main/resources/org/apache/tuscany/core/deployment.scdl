@@ -26,7 +26,11 @@
     name="org.apache.tuscany.core.Deployment">
 
     <!-- Contribution Service -->
-    <component name="contributionService">
+    <component name="contributionDirectoryWatcher" initLevel="100">
+        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionDirectoryWatcher" />
+        <property name="path">target/deployables</property>        
+    </component>
+    <component name="contributionService" initLevel="90">
         <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionServiceImpl" />
     </component>
     <component name="contributionRepository" initLevel="40">
@@ -34,14 +38,20 @@
         <property name="repository">target/repository</property>
     </component>
 
-    <component name="contributionProcessorRepository" initLevel="35">
+    <component name="contributionProcessorRegistry" initLevel="35">
         <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionProcessorRegistryImpl" />
     </component>
     <component name="contentTypeDescriber" initLevel="30">
         <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl" />
     </component>
-    <component name="jarContributionProcessor">
+    <component name="JarContributionProcessor" initLevel="30">
         <system:implementation.system class="org.apache.tuscany.core.services.deployment.contribution.JarContributionProcessor" />
     </component>
+    <component name="JavaContributionProcessor" initLevel="30">
+        <system:implementation.system class="org.apache.tuscany.core.services.deployment.contribution.JavaContributionProcessor" />
+    </component>
+    <component name="ScdlContributionProcessor" initLevel="30">
+        <system:implementation.system class="org.apache.tuscany.core.services.deployment.contribution.ScdlContributionProcessor" />
+    </component>    
 
 </composite>

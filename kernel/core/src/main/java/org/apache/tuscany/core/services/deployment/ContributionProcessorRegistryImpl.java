@@ -45,13 +45,13 @@ import org.osoa.sca.annotations.Service;
 @Service(ContributionProcessorRegistry.class)
 public class ContributionProcessorRegistryImpl implements ContributionProcessorRegistry {
     private Map<String, ContributionProcessor> registry = new HashMap<String, ContributionProcessor>();
-    private ContentTypeDescriber contentTypeBuilder;
+    private ContentTypeDescriber contentTypeDescriber;
 
-    public ContributionProcessorRegistryImpl(@Autowire ContentTypeDescriber contentTypeBuilder) {
-        if (contentTypeBuilder == null) {
-            this.contentTypeBuilder = new ContentTypeDescriberImpl();
+    public ContributionProcessorRegistryImpl(@Autowire ContentTypeDescriber contentTypeDescriber) {
+        if (contentTypeDescriber == null) {
+            this.contentTypeDescriber = new ContentTypeDescriberImpl();
         } else {
-            this.contentTypeBuilder = contentTypeBuilder;
+            this.contentTypeDescriber = contentTypeDescriber;
         }
     }
 
@@ -65,8 +65,9 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
 
     public void processContent(Contribution contribution, URI source, InputStream inputStream)
         throws DeploymentException, IOException {
+        
         URL sourceURL = contribution.getArtifact(source).getLocation();
-        String contentType = this.contentTypeBuilder.getContentType(sourceURL, null);
+        String contentType = this.contentTypeDescriber.getContentType(sourceURL, null);
         if (contentType == null) {
             throw new UnsupportedContentTypeException("Invalid contentType: null");
         }
