@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl;
 import org.apache.tuscany.host.deployment.DeploymentException;
+import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
 import org.apache.tuscany.spi.model.Contribution;
@@ -37,6 +39,7 @@ import org.apache.tuscany.spi.model.Contribution;
 public class JarContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
     public static final String CONTENT_TYPE = "application/x-compressed";
 
+    @Override
     public String getContentType() {
         return CONTENT_TYPE;
     }
@@ -75,13 +78,17 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
         if (sourceURL.toString().startsWith("jar:")) {
             return sourceURL;
         } else {
-            return new URL("jar:" + sourceURL.toString() + "!/");
+            return new URL("jar:" + sourceURL.toExternalForm() + "!/");
         }
 
     }
 
     public void processContent(Contribution contribution, URI source, InputStream inputStream)
         throws DeploymentException, IOException {
+        if(contribution == null){
+            throw new IllegalArgumentException("Invalid null contribution.");
+        }
+
         if (source == null) {
             throw new IllegalArgumentException("Invalid null source uri.");
         }
@@ -91,26 +98,24 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
         }
 
         URL sourceURL = contribution.getArtifact(source).getLocation();
+
         sourceURL = forceJarURL(sourceURL);
 
         for (URL artifactURL : getArtifacts(sourceURL, inputStream)) {
             // FIXME
             // contribution.addArtifact(artifact)
+            
+            ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
+            String contentType = contentTypeDescriber.getContentType(artifactURL, null);
+            System.out.println("Type : " + contentType);
+            
 
-            URL aURL = new URL(artifactURL.toString());
-            if (aURL.openConnection() != null) {
-                // TODO
+            //just process scdl for now
+            if("application/v.tuscany.scdl".equals(contentType) || "application/java-vm".equals(contentType) ){
+                this.registry.processContent(contribution, source, inputStream);
             }
-
-            // is default jar
-            URL manifestURL = new URL(sourceURL, "!/META-INF/Manifest.mf");
-            if (manifestURL.openConnection() == null) {
-                // does not exists
-            }
-
             // process each artifact
-            // this.registry.processContent(contribution, artifactURL,
-            // inputStream);
+            //this.registry.processContent(contribution, artifactURL, inputStream);
 
         }
 

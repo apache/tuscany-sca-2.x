@@ -84,13 +84,14 @@ public class ContributionServiceImpl implements ContributionService {
         }
 
         // store the contribution in the contribution repository
+        URI contributionURI = URI.create("sca://contribution/" + UUID.randomUUID());
         URL storedURL = this.contributionRepository.store(source, contributionStream);
+        
         Contribution contribution = null;
-        // start processing valid contribution
-        contribution = new Contribution(URI.create("sca://contribution/" + UUID.randomUUID()));
+        contribution = new Contribution(contributionURI);
         contribution.setLocation(storedURL);
 
-        this.processorRegistry.processContent(contribution, contribution.getUri(), contributionStream);
+        this.processorRegistry.processContent(contribution, contributionURI, storedURL.openStream());
 
         if (contribution == null) {
             // FIXME throw exception
