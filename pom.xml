@@ -22,18 +22,13 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>parent</artifactId>
-        <version>2-incubator-SNAPSHOT</version>
+        <version>2-incubating-SNAPSHOT</version>
     </parent>
-    <groupId>org.apache.tuscany.sca</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>org.apache.tuscany</groupId>
+    <artifactId>sca</artifactId>
+    <version>1.0-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Tuscany SCA Implementation Project</name>
-    <version>1.0-incubator-SNAPSHOT</version>
-    <properties>
-        <sca.version>1.0-incubator-SNAPSHOT</sca.version>
-        <scaKernelVersion>1.0-incubator-SNAPSHOT</scaKernelVersion>
-        <axis2Version>1.1.1</axis2Version>
-    </properties>
+    <name>Apache Tuscany SCA Implementation Project</name>
 
     <!-- definition of repositories where the parent pom can be found -->
     <repositories>
@@ -61,148 +56,36 @@
         </repository>
     </repositories>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Tuscany Kernel Modules -->
-            <dependency>
-                <groupId>org.apache.tuscany.sca.kernel</groupId>
-                <artifactId>core</artifactId>
-                <version>${scaKernelVersion}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- org.osoa.sca API -->
-            <dependency>
-                <groupId>org.osoa</groupId>
-                <artifactId>sca-api-r0.95</artifactId>
-                <version>1.0-incubator-SNAPSHOT</version>
-                <scope>compile</scope>
-            </dependency>
-            <!-- javax.servlet API -->
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.4</version>
-                <scope>provided</scope>
-            </dependency>
-            <!-- javax.resource API -->
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-                <version>1.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <!-- javax.transaction API -->
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-                <version>1.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <!-- commonj.work and commonj.timer APIs -->
-            <dependency>
-                <groupId>org.apache.tuscany</groupId>
-                <artifactId>commonj-api_r1.1</artifactId>
-                <version>1.0-incubator-M2</version>
-                <scope>compile</scope>
-            </dependency>
-            <!-- java.xml.stream API -->
-            <dependency>
-                <groupId>stax</groupId>
-                <artifactId>stax-api</artifactId>
-                <version>1.0.1</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- StAX implementation -->
-            <dependency>
-                <groupId>org.codehaus.woodstox</groupId>
-                <artifactId>wstx-asl</artifactId>
-                <version>3.2.0</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <!-- Axis2 Implementation -->
-            <dependency>
-                <groupId>org.apache.axis2</groupId>
-                <artifactId>axis2-kernel</artifactId>
-                <version>${axis2Version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-<!--
-            <dependency>
-                <groupId>org.apache.axis2</groupId>
-                <artifactId>addressing</artifactId>
-                <version>${axis2Version}</version>
-                <package>mar</package>
-                <scope>compile</scope>
-            </dependency>
-            -->
-
-            <!-- AXIOM Implementation -->
-            <dependency>
-                <groupId>org.apache.ws.commons.axiom</groupId>
-                <artifactId>axiom-api</artifactId>
-                <version>1.2.2</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ws.commons.axiom</groupId>
-                <artifactId>axiom-impl</artifactId>
-                <version>1.2.2</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- Woden implementation -->
-            <dependency>
-                <groupId>incubator-woden</groupId>
-                <artifactId>woden</artifactId>
-                <version>1.0.0M6</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- wsdl4j implementation -->
-            <dependency>
-                <groupId>wsdl4j</groupId>
-                <artifactId>wsdl4j</artifactId>
-                <version>1.6.2</version>
-            </dependency>
-
-            <!-- XmlSchema implementation -->
-            <dependency>
-                <groupId>org.apache.ws.commons.schema</groupId>
-                <artifactId>XmlSchema</artifactId>
-                <version>1.2</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>3.8.1</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>2.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymockclassextension</artifactId>
-                <version>2.2</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
-        <defaultGoal>install</defaultGoal>
-
         <pluginManagement>
             <plugins>
+                <!-- compiler plugin configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                    </configuration>
+                </plugin>
+
+                <!-- unit test plugin configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*TestCase.java</include>
+                        </includes>
+                        <reportFormat>brief</reportFormat>
+                        <useFile>false</useFile>
+                        <forkMode>once</forkMode>
+                        <argLine>-ea</argLine>
+                    </configuration>
+                </plugin>
+
+                <!-- source code style check plugin configuration -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
@@ -211,7 +94,7 @@
                         <dependency>
                             <groupId>org.apache.tuscany</groupId>
                             <artifactId>buildtools</artifactId>
-                            <version>${pom.version}</version>
+                            <version>2-incubating-SNAPSHOT</version>
                         </dependency>
                     </dependencies>
                     <executions>
@@ -234,6 +117,7 @@
                     </executions>
                 </plugin>
 
+                <!-- code semantic check plugin configuration -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
@@ -256,45 +140,7 @@
                     </executions>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.5</source>
-                        <target>1.5</target>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.2</version>
-                    <configuration>
-                        <includes>
-                            <include>**/*TestCase.java</include>
-                        </includes>
-                        <reportFormat>brief</reportFormat>
-                        <useFile>false</useFile>
-                        <forkMode>once</forkMode>
-                        <argLine>-ea</argLine>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.felix.plugins</groupId>
-                    <artifactId>maven-osgi-plugin</artifactId>
-                    <version>0.8.0-SNAPSHOT</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <osgiManifest>
-                            <bundleName>${pom.name}</bundleName>
-                            <bundleDescription>${pom.description}</bundleDescription>
-                            <bundleVendor>${pom.organization.name}</bundleVendor>
-                            <bundleLocalization>plugin</bundleLocalization>
-                        </osgiManifest>
-                    </configuration>
-                </plugin>
-
+                <!-- code coverage check plugin configuration -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clover-plugin</artifactId>
