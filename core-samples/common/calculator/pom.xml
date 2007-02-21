@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca.core-samples</groupId>
         <artifactId>common</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.core-samples.common</groupId>
@@ -42,12 +42,11 @@
     </dependencies>
 
     <build>
-        <!-- requires install as this sample is also used by the webapp sample -->
         <defaultGoal>install</defaultGoal>
 
         <plugins>
             <plugin>
-                <groupId>org.apache.tuscany.sca</groupId>
+                <groupId>org.apache.tuscany</groupId>
                 <artifactId>tuscany-itest-plugin</artifactId>
                 <executions>
                     <execution>

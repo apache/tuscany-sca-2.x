@@ -21,9 +21,10 @@
     <parent>
         <groupId>org.apache.tuscany.sca.core-samples</groupId>
         <artifactId>webapp</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca.core-samples.webapp</groupId>
     <artifactId>webcalc</artifactId>
     <packaging>war</packaging>
     <name>Apache Tuscany WebApp Calculator Sample</name>
@@ -45,17 +46,8 @@
         <finalName>${artifactId}</finalName>
         <plugins>
             <plugin>
-                <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
+                <groupId>org.apache.tuscany</groupId>
                 <artifactId>tuscany-war-plugin</artifactId>
-                <version>${kernelVersion}</version>
-                <executions>
-                    <execution>
-                        <id>tuscany-war</id>
-                        <goals>
-                            <goal>tuscany-war</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>core-samples</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.core-samples</groupId>
@@ -29,10 +29,6 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany Core Samples Webapp</name>
     <description>Sample projects that run in the webapp environment.</description>
-
-    <modules>
-        <module>webcalc</module>
-    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -44,4 +40,24 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.tuscany</groupId>
+                    <artifactId>tuscany-war-plugin</artifactId>
+                    <version>${kernelVersion}</version>
+                    <executions>
+                        <execution>
+                            <id>tuscany-war</id>
+                            <goals>
+                                <goal>tuscany-war</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

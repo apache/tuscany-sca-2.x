@@ -21,9 +21,10 @@
     <parent>
         <groupId>org.apache.tuscany.sca.core-samples</groupId>
         <artifactId>standalone</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca.core-samples.standalone</groupId>
     <artifactId>loan-application</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany Loan Application Client Sample</name>
