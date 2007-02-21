@@ -21,11 +21,12 @@ package loanapplication.provider.impl;
 import loanapplication.provider.CreditService;
 
 /**
- *
+ * The credit service implementation
  */
 public class CreditServiceImpl implements CreditService {
 
-    public int getCreditRating(String customerID) {
+    public int getCreditScore(String customerID) {
+        System.out.println("Credit Service: Performing credit check");
         return 700;
     }
 }

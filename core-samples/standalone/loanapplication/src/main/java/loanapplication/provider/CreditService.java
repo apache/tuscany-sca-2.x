@@ -24,11 +24,11 @@ package loanapplication.provider;
 public interface CreditService {
 
     /**
-     * Returns the customer credit rating
+     * Returns the customer credit score
      *
      * @param customerID the customer ID
      * @return the credit score
      */
-    int getCreditRating(String customerID);
+    int getCreditScore(String customerID);
 
 }

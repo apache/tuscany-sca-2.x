@@ -16,32 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package loanapplication.message;
+package loanapplication.provider;
 
 /**
- * A loan application
+ *
  */
-public interface Application {
-    int FIXED = 1;
-    int FIVE_YEAR_VARIABLE = 2;
+public interface RateService {
 
-    String getCustomerID();
+    float getRate(int type);
 
-    void setCustomerID(String customerID);
-
-    float getAmount();
-
-    void setAmount(float amount);
-
-    float getDownPayment();
-
-    void setDownPayment(float downPayment);
-
-    int getType();
-
-    void setType(int type);
-
-    int getTerm();
-
-    void setTerm(int term);
 }

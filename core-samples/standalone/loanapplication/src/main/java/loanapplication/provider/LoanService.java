@@ -21,7 +21,6 @@ package loanapplication.provider;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndConversation;
-import org.osoa.sca.annotations.OneWay;
 
 import loanapplication.message.Application;
 
@@ -33,18 +32,23 @@ import loanapplication.message.Application;
 public interface LoanService {
 
     /**
-     * Submits a new loan application
+     * Submits a new loan application. Calling this method will start a new conversation if one has not been previously
+     * initiated.
      *
      * @param application the loan application
      */
-    @OneWay
     void apply(Application application);
 
-    @OneWay
+    /**
+     * Called after the loan has been approved and when the client is read to complete the process. Calling this method
+     * will end the conversation.
+     */
     @EndConversation
     void secureLoan();
 
-    @OneWay
+    /**
+     * Called to cancel a loan application. Calling this method will end the conversation.
+     */
     @EndConversation
     void cancel();
 
