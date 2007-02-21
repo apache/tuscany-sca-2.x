@@ -17,15 +17,27 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="LoanApplication">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
+           name="LoanApplication">
+
+    <component name="LoanClient">
+        <launched:launched class="loanapplication.client.impl.ClientServiceImpl"/>
+        <reference name="loanService">LoanService</reference>
+    </component>
 
     <component name="LoanService">
         <implementation.java class="loanapplication.provider.impl.LoanServiceImpl"/>
         <reference name="creditService">CreditService</reference>
+        <reference name="rateService">RateService</reference>
     </component>
-    
+
     <component name="CreditService">
         <implementation.java class="loanapplication.provider.impl.CreditServiceImpl"/>
     </component>
-    
+
+    <component name="RateService">
+        <implementation.java class="loanapplication.provider.impl.RateServiceImpl"/>
+    </component>
+
 </composite>

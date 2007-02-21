@@ -18,8 +18,6 @@
  */
 package loanapplication.provider;
 
-import org.osoa.sca.annotations.OneWay;
-
 import loanapplication.message.LoanPackage;
 
 /**
@@ -29,13 +27,25 @@ public interface LoanServiceCallback {
     int APPROVED = 1;
     int DECLINED = -1;
 
-    @OneWay
-    void creditResult(int code);
+    /**
+     * Called when the customer's credit score is received from the credit check process.
+     *
+     * @param code the customer's credit score.
+     */
+    void creditScoreResult(int code);
 
-    @OneWay
+    /**
+     * Called to the loan has been {@link LoanServiceCallback#APPROVED} or {@link LoanServiceCallback#DECLINED}.
+     *
+     * @param code if the loan application was approved or declined.
+     */
     void applicationResult(int code);
 
-    @OneWay
+    /**
+     * Called after the loan has been secured to provide the completed loan information.
+     *
+     * @param loanPackage the loan information.
+     */
     void loanPackage(LoanPackage loanPackage);
 
 }

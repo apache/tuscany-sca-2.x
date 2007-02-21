@@ -16,32 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package loanapplication.message;
+package loanapplication.provider.impl;
+
+import loanapplication.message.Application;
+import loanapplication.provider.RateService;
 
 /**
- * A loan application
+ * The rate service implementation
  */
-public interface Application {
-    int FIXED = 1;
-    int FIVE_YEAR_VARIABLE = 2;
+public class RateServiceImpl implements RateService {
 
-    String getCustomerID();
+    public float getRate(int type) {
+        System.out.println("Rate Service: Calculating rate");
+        if (type == Application.FIVE_YEAR_VARIABLE) {
+            return 6.0f;
+        } else {
+            return 6.5f;
+        }
+    }
 
-    void setCustomerID(String customerID);
-
-    float getAmount();
-
-    void setAmount(float amount);
-
-    float getDownPayment();
-
-    void setDownPayment(float downPayment);
-
-    int getType();
-
-    void setType(int type);
-
-    int getTerm();
-
-    void setTerm(int term);
 }

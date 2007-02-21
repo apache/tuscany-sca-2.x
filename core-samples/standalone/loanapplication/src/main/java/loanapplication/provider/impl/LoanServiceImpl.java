@@ -18,36 +18,49 @@
  */
 package loanapplication.provider.impl;
 
-import static loanapplication.provider.LoanServiceCallback.DECLINED;
-import static loanapplication.provider.LoanServiceCallback.APPROVED;
-
+import java.io.Serializable;
 import java.util.UUID;
 
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
+import loanapplication.message.Application;
+import loanapplication.provider.CreditService;
 import loanapplication.provider.LoanService;
 import loanapplication.provider.LoanServiceCallback;
-import loanapplication.provider.CreditService;
-import loanapplication.message.Application;
+import loanapplication.provider.RateService;
 
 /**
  * The loan service implementation
  */
 @Scope("CONVERSATION")
-@Service(LoanService.class)    // allow introspection of single interface
-public class LoanServiceImpl implements LoanService {
+public class LoanServiceImpl implements LoanService, Serializable {
+    private static final long serialVersionUID = 7801583139613235069L;
+    // the loan number, demonstrates the use of conversational state
     private String loanNumber;
     private CreditService creditService;
+    private RateService rateService;
     private LoanServiceCallback callback;
 
-    public LoanServiceImpl(@Reference(name = "creditService") CreditService creditService) {
+    /**
+     * Instantiates a new component instance, passing in references to the credit and rate services
+     *
+     * @param creditService the credit service
+     * @param rateService   the rate service
+     */
+    public LoanServiceImpl(@Reference(name = "creditService")CreditService creditService,
+                           @Reference(name = "rateService")RateService rateService) {
         this.creditService = creditService;
+        this.rateService = rateService;
     }
 
+    /**
+     * A setter method for injecting the client callback reference. The reference will be injected by the runtime
+     *
+     * @param callback the client callback reference
+     */
     @Callback
     public void setCallback(LoanServiceCallback callback) {
         this.callback = callback;
@@ -55,23 +68,35 @@ public class LoanServiceImpl implements LoanService {
 
     public void apply(Application application) {
         String id = application.getCustomerID();
-        System.out.println("Application received: "+ id);
         loanNumber = UUID.randomUUID().toString();
-        int rating = creditService.getCreditRating(id);
-        if (rating > 500){
-            callback.creditResult(APPROVED);
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Application received for customer");
+        System.out.println("Assigned loan number: " + loanNumber);
+        System.out.println("---------------------------------------------------------------------");
+        int rating = creditService.getCreditScore(id);
+        if (rating > 500) {
+            // approve the loan
+            callback.creditScoreResult(rating);
+            rateService.getRate(application.getType());
+            callback.applicationResult(LoanServiceCallback.APPROVED);
         } else {
-            callback.creditResult(DECLINED);
+            // reject the loan
+            callback.creditScoreResult(rating);
+            callback.applicationResult(LoanServiceCallback.DECLINED);
         }
     }
 
-    @OneWay
     public void secureLoan() {
-        System.out.println("Loan secured: "+ loanNumber);
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Loan secured");
+        System.out.println("Loan number: " + loanNumber);
+        System.out.println("---------------------------------------------------------------------");
     }
 
-    @OneWay
     public void cancel() {
-        System.out.println("Loan cancelled: "+ loanNumber);
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Loan cancelled");
+        System.out.println("Loan number: " + loanNumber);
+        System.out.println("---------------------------------------------------------------------");
     }
 }
