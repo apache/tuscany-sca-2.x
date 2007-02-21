@@ -62,7 +62,7 @@ public class NonBlockingInterceptor implements Interceptor {
         try {
             workScheduler.scheduleWork(new Runnable() {
                 public void run() {
-                    workContext.setCurrentCorrelationId(null);
+                    workContext.setCorrelationId(null);
                     // if we got a conversation id, transfer it to new thread
                     if (conversationID != null) {
                         workContext.setIdentifier(Scope.CONVERSATION, conversationID);

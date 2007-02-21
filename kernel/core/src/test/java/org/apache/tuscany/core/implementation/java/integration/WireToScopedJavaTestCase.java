@@ -25,6 +25,7 @@ import java.util.concurrent.FutureTask;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -184,7 +185,7 @@ public class WireToScopedJavaTestCase extends TestCase {
     }
 
     private static <T> Wire createWire(String targetName, Class<T> interfaze, JavaAtomicComponent target)
-        throws InvalidServiceContractException {
+        throws InvalidServiceContractException, TargetInvokerCreationException {
         Wire wire = new WireImpl();
         JavaServiceContract contract = new JavaServiceContract(interfaze);
         contract.setConversational(false);

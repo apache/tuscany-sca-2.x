@@ -39,7 +39,6 @@ import org.apache.tuscany.spi.wire.Wire;
 public class WireImpl implements Wire {
     private URI sourceUri;
     private URI targetUri;
-    private String callbackReferenceName;
     private QName bindingType;
     private ServiceContract sourceContract;
     private ServiceContract targetContract;
@@ -77,14 +76,6 @@ public class WireImpl implements Wire {
 
     public void setTargetUri(URI targetUri) {
         this.targetUri = targetUri;
-    }
-
-    public String getCallbackReferenceName() {
-        return callbackReferenceName;
-    }
-
-    public void setCallbackReferenceName(String name) {
-        this.callbackReferenceName = name;
     }
 
     public QName getBindingType() {

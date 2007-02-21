@@ -60,6 +60,14 @@ public class ServiceProcessorTestCase extends TestCase {
         assertEquals(0, type.getServices().size());
     }
 
+    /**
+     * Verifies a service with a callback annotation is recognized
+     */
+    public void testMultipleWithCallbackAnnotation() throws Exception {
+        processor.visitClass(null, FooMultipleWithCalback.class, type, null);
+        assertEquals(1, type.getServices().size());
+    }
+
     public void testRemotableNoService() throws Exception {
         processor.visitClass(null, FooRemotableNoService.class, type, null);
         assertEquals(1, type.getServices().size());
@@ -100,6 +108,9 @@ public class ServiceProcessorTestCase extends TestCase {
     private interface Bar {
     }
 
+    private interface Bar2 {
+    }
+
     @Remotable
     private interface BazRemotable {
     }
@@ -114,7 +125,11 @@ public class ServiceProcessorTestCase extends TestCase {
 
     }
 
-    private class FooMultipleNoService implements Baz, Bar {
+    private class FooMultipleNoService implements Bar, Bar2 {
+
+    }
+
+    private class FooMultipleWithCalback implements Baz, Bar {
 
     }
 

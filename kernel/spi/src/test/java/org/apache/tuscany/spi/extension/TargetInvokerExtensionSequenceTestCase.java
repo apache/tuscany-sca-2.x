@@ -42,7 +42,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackUris(EasyMock.isA(LinkedList.class));
+        context.setCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
@@ -66,7 +66,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackUris(EasyMock.isA(LinkedList.class));
+        context.setCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
@@ -90,7 +90,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackUris(EasyMock.isA(LinkedList.class));
+        context.setCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
@@ -114,7 +114,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackUris(EasyMock.isA(LinkedList.class));
+        context.setCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);

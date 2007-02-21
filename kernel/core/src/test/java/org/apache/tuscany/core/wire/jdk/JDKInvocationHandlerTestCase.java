@@ -97,15 +97,11 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         wc.setIdentifier(Scope.CONVERSATION, convID);
         invoker.setCurrentConversationID(convID);
 
-        contract.setRemotable(true);
-        invoker.setRemotableTest(true);
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, wc);
         handler.invoke(Foo.class.getMethod("test", String.class), new Object[]{"bar"});
         String currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
         assertSame(convID, currentConvID);
 
-        contract.setRemotable(false);
-        invoker.setRemotableTest(false);
         JDKInvocationHandler handler2 = new JDKInvocationHandler(Foo.class, wire, wc);
         handler2.invoke(Foo.class.getMethod("test", String.class), new Object[]{"bar"});
         currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
@@ -120,7 +116,6 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
         private WorkContext wc;
         private String currentConversationID;
-        private boolean remotableTest;
 
         public MockInvoker(WorkContext wc) {
             this.wc = wc;
@@ -130,18 +125,10 @@ public class JDKInvocationHandlerTestCase extends TestCase {
             currentConversationID = id;
         }
 
-        public void setRemotableTest(boolean remotableTest) {
-            this.remotableTest = remotableTest;
-        }
-
         public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
             assertEquals("bar", Array.get(payload, 0));
             String convID = (String) wc.getIdentifier(Scope.CONVERSATION);
-            if (remotableTest) {
-                assertNotSame(convID, currentConversationID);
-            } else {
-                assertSame(convID, currentConversationID);
-            }
+            assertSame(convID, currentConversationID);
             return "response";
         }
 

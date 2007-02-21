@@ -217,12 +217,12 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     public void attachCallbackWire(Wire wire) {
         assert wire.getSourceUri().getFragment() != null;
-        String referenceName = wire.getCallbackReferenceName();
-        assert callbackSites.get(referenceName) != null;
-        List<Wire> wireList = callBackwires.get(referenceName);
+        String callbackName = wire.getSourceContract().getCallbackName();
+        assert callbackSites.get(callbackName) != null;
+        List<Wire> wireList = callBackwires.get(callbackName);
         if (wireList == null) {
             wireList = new ArrayList<Wire>();
-            callBackwires.put(referenceName, wireList);
+            callBackwires.put(callbackName, wireList);
         }
         wireList.add(wire);
     }
@@ -232,7 +232,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             for (Map.Entry<String, Member> entry : callbackSites.entrySet()) {
                 List<Wire> wires = callBackwires.get(entry.getKey());
                 if (wires == null) {
-                    // this can happen when there are no clients wires to a component that has a callback  
+                    // this can happen when there are no client wires to a component that has a callback  
                     continue;
                 }
                 Member member = entry.getValue();

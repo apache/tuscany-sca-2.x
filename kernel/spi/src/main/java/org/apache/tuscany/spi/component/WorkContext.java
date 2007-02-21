@@ -28,53 +28,6 @@ import java.util.LinkedList;
  */
 public interface WorkContext {
 
-    Object getCurrentCorrelationId();
-
-    void setCurrentCorrelationId(Object correlationId);
-
-    /**
-     * Returns the current atomic component as a request is processed or null if it is not being tracked. Note that the
-     * current atomic component is typically only tracked during persistence operations involving implementation
-     * instances
-     *
-     * @return the current atomic component as a request is processed or null
-     */
-    AtomicComponent getCurrentAtomicComponent();
-
-    /**
-     * Sets the current atomic component that is handling processing of a request. Note that in most cases it will not
-     * be necessary to track this in the rumtime
-     *
-     * @param component the current atomic component
-     */
-    void setCurrentAtomicComponent(AtomicComponent component);
-
-    /**
-     * Returns an ordered list of callback URIs for the current context. Ordering is based on the sequence of service
-     * invocations for collocated components
-     *
-     * @return the current list of callback URIs
-     */
-    LinkedList<URI> getCurrentCallbackUris();
-
-    /**
-     * Sets an ordered list of callback URIs for the current context. Ordering is based on the sequence of service
-     * invocations for collocated components
-     *
-     * @return the current list of callback URIs
-     */
-    void setCurrentCallbackUris(LinkedList<URI> uris);
-
-    /**
-     * Returns the composite where a remote request came in
-     */
-    CompositeComponent getRemoteComponent();
-
-    /**
-     * Sets the composite where a remote request came in
-     */
-    void setRemoteComponent(CompositeComponent component);
-
     /**
      * Returns the unique key for the given identifier associated with the current request
      */
@@ -94,6 +47,62 @@ public interface WorkContext {
      * Clears all identifiers associated with the current request
      */
     void clearIdentifiers();
+
+    /**
+     * Returns an ordered list of callback URIs for the current context. Ordering is based on the sequence of service
+     * invocations for collocated components
+     *
+     * @return the current list of callback URIs
+     */
+    LinkedList<URI> getCallbackUris();
+
+    /**
+     * Sets an ordered list of callback URIs for the current context. Ordering is based on the sequence of service
+     * invocations for collocated components
+     */
+    void setCallbackUris(LinkedList<URI> uris);
+
+    /**
+     * Returns the correlation id for the current invocation or null if not available. Transports may use correlation
+     * ids for message routing.
+     *
+     * @return the correlation id for the current invocation or null
+     */
+    Object getCorrelationId();
+
+    /**
+     * Sets the correlation id for the current invocation. Transports may use correlation ids for message routing.
+     *
+     * @param id the correlation id
+     */
+    void setCorrelationId(Object id);
+
+    /**
+     * Returns the composite where a remote request came in
+     */
+    CompositeComponent getRemoteComponent();
+
+    /**
+     * Sets the composite where a remote request came in
+     */
+    void setRemoteComponent(CompositeComponent component);
+
+    /**
+     * Returns the current atomic component as a request is processed or null if it is not being tracked. Note that the
+     * current atomic component is typically only tracked during persistence operations involving implementation
+     * instances
+     *
+     * @return the current atomic component as a request is processed or null
+     */
+    AtomicComponent getCurrentAtomicComponent();
+
+    /**
+     * Sets the current atomic component that is handling processing of a request. Note that in most cases it will not
+     * be necessary to track this in the rumtime
+     *
+     * @param component the current atomic component
+     */
+    void setCurrentAtomicComponent(AtomicComponent component);
 
     /**
      * Removes and returns the name of the last remotable service to handle the current request

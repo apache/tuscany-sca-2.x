@@ -75,7 +75,7 @@ public class ComponentManagerImpl implements ComponentManager {
         register(component);
         if (resolver != null) {
             for (ServiceContract contract : component.getServiceContracts()) {
-                resolver.addPrimordialUri(contract, uri);
+                resolver.addHostUri(contract, uri);
             }
         }
     }
@@ -87,7 +87,7 @@ public class ComponentManagerImpl implements ComponentManager {
         register(component);
         if (resolver != null) {
             for (ServiceContract contract : component.getServiceContracts()) {
-                resolver.addPrimordialUri(contract, uri);
+                resolver.addHostUri(contract, uri);
             }
         }
     }

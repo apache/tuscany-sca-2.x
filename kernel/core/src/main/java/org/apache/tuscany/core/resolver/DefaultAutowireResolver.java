@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.resolver.ResolutionException;
  * @version $Rev$ $Date$
  */
 public class DefaultAutowireResolver implements AutowireResolver {
-    private Map<ServiceContract, URI> primordialAutowire = new HashMap<ServiceContract, URI>();
+    private Map<ServiceContract, URI> hostAutowire = new HashMap<ServiceContract, URI>();
 
 
     @SuppressWarnings({"unchecked"})
@@ -82,8 +82,8 @@ public class DefaultAutowireResolver implements AutowireResolver {
         }
     }
 
-    public void addPrimordialUri(ServiceContract contract, URI uri) {
-        primordialAutowire.put(contract, uri);
+    public void addHostUri(ServiceContract contract, URI uri) {
+        hostAutowire.put(contract, uri);
     }
 
     /**
@@ -144,7 +144,7 @@ public class DefaultAutowireResolver implements AutowireResolver {
 
     private URI resolvePrimordial(ServiceContract contract) {
         Class<?> requiredClass = contract.getInterfaceClass();
-        for (Map.Entry<ServiceContract, URI> entry : primordialAutowire.entrySet()) {
+        for (Map.Entry<ServiceContract, URI> entry : hostAutowire.entrySet()) {
             if (requiredClass.isAssignableFrom(entry.getKey().getInterfaceClass())) {
                 return entry.getValue();
             }

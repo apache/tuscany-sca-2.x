@@ -18,12 +18,12 @@
  */
 package org.apache.tuscany.core.component;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -52,7 +52,7 @@ public class WorkContextImpl implements WorkContext {
         super();
     }
 
-    public Object getCurrentCorrelationId() {
+    public Object getCorrelationId() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
@@ -60,9 +60,9 @@ public class WorkContextImpl implements WorkContext {
         return map.get(CORRELATION_ID);
     }
 
-    public void setCurrentCorrelationId(Object correlationId) {
+    public void setCorrelationId(Object id) {
         Map<Object, Object> map = getWorkContextMap();
-        map.put(CORRELATION_ID, correlationId);
+        map.put(CORRELATION_ID, id);
     }
 
     public AtomicComponent getCurrentAtomicComponent() {
@@ -79,7 +79,7 @@ public class WorkContextImpl implements WorkContext {
     }
 
     @SuppressWarnings("unchecked")
-    public LinkedList<URI> getCurrentCallbackUris() {
+    public LinkedList<URI> getCallbackUris() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
@@ -87,7 +87,7 @@ public class WorkContextImpl implements WorkContext {
         return (LinkedList<URI>) map.get(CALLBACK_URIS);
     }
 
-    public void setCurrentCallbackUris(LinkedList<URI> uris) {
+    public void setCallbackUris(LinkedList<URI> uris) {
         Map<Object, Object> map = getWorkContextMap();
         map.put(CALLBACK_URIS, uris);
     }
