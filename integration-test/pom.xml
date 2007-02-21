@@ -19,14 +19,14 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany</groupId>
+        <artifactId>sca</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>integration-test</artifactId>
-    <version>1.0-incubator-SNAPSHOT</version>
+    <version>1.0-alpha-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apache Tuscany Integration Tests</name>
     <description>Integration tests for SCA.</description>
@@ -37,23 +37,48 @@
     </modules>
 
     <properties>
-        <kernelVersion>1.0-incubator-SNAPSHOT</kernelVersion>
+        <!-- version the SCA API that we implement -->
+        <scaSpecVersion>1.0</scaSpecVersion>
+
+        <!-- version the Apache Tuscany kernel that the runtimes work with -->
+        <kernelVersion>1.0-alpha-incubating-SNAPSHOT</kernelVersion>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.osoa</groupId>
-                <artifactId>sca-api-r1.0</artifactId>
-                <version>1.0-incubator-SNAPSHOT</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>3.8.1</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <dependencies>
+        <!-- org.osoa.sca API -->
+        <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api-r${scaSpecVersion}</artifactId>
+            <version>1.0-alpha-incubating-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <defaultGoal>verify</defaultGoal>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.tuscany</groupId>
+                    <artifactId>tuscany-itest-plugin</artifactId>
+                    <version>${kernelVersion}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
