@@ -19,12 +19,13 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany</groupId>
+        <artifactId>sca</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-war-plugin</artifactId>
+    <version>1.0-alpha-incubating-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Apache Tuscany War Plugin</name>
     <description>A plugin for Apache Maven that adds a Tuscany runtime to a war.</description>
@@ -48,18 +49,18 @@
     </dependencies>
 
     <distributionManagement>
-      <site>
-        <id>apache.website</id>
-        <url>scp://people.apache.org/www/incubator.apache.org/tuscany/plugins/tuscany-war-plugin</url>
-      </site>
+        <site>
+            <id>apache.website</id>
+            <url>scp://people.apache.org/www/incubator.apache.org/tuscany/plugins/tuscany-war-plugin</url>
+        </site>
     </distributionManagement>
 
     <reporting>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-        </plugin>
-      </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+            </plugin>
+        </plugins>
     </reporting>
 </project>

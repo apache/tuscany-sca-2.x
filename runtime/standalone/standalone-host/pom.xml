@@ -19,11 +19,12 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
         <artifactId>standalone</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
     <artifactId>standalone-host</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany Standalone Runtime Host</name>
@@ -32,20 +33,17 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>core</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
+            <artifactId>tuscany-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
             <artifactId>standalone-api</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.runtime.services</groupId>
             <artifactId>maven</artifactId>
-            <version>${sca.version}</version>
+            <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>

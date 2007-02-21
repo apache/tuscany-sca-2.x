@@ -18,15 +18,14 @@
  * under the License.    
 -->
 <project>
-
     <parent>
-        <groupId>org.apache.tuscany.sca.runtime.services.discovery</groupId>
+        <groupId>org.apache.tuscany.sca.runtime.services</groupId>
         <artifactId>discovery</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca.runtime.services.discovery</groupId>
     <artifactId>discovery-bonjour</artifactId>
-    <packaging>jar</packaging>
     <name>Apache Tuscany Zeroconf Discovery</name>
     <description>Apache Tuscany Zeroconf Discovery</description>
 
@@ -34,9 +33,8 @@
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-spi</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

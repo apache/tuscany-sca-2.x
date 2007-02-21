@@ -21,11 +21,11 @@
     <parent>
         <groupId>org.apache.tuscany.sca.runtime</groupId>
         <artifactId>itest</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.runtime.itest</groupId>
-    <artifactId>smoketest</artifactId>
+    <artifactId>itest-smoketest</artifactId>
     <name>Apache Tuscany Integration Test Smoketest</name>
     <description>Smoketest for the ITest plugin</description>
 
@@ -33,9 +33,8 @@
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api-r1.0</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -44,7 +43,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.tuscany.sca</groupId>
+                <groupId>org.apache.tuscany</groupId>
                 <artifactId>tuscany-itest-plugin</artifactId>
                 <executions>
                     <execution>
