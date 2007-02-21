@@ -64,20 +64,6 @@ public interface Wire {
     void setTargetUri(URI uri);
 
     /**
-     * Returns the callback reference name for the wire
-     *
-     * @return the callback reference name for the wire
-     */
-    String getCallbackReferenceName();
-
-    /**
-     * Sets the callback reference name for the wire
-     *
-     * @param name callback reference name for the wire
-     */
-    void setCallbackReferenceName(String name);
-
-    /**
      * Returns the wire binding type
      *
      * @return the wire binding type

@@ -49,17 +49,18 @@ public interface Message {
     TargetInvoker getTargetInvoker();
 
     /**
-     * @deprecated
+     * Adds a URI to the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a
+     * callback.
      */
     void pushCallbackUri(URI uri);
 
     /**
-     * Returns the ordered list of callback URIs
+     * Returns the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a callback.
      */
     LinkedList<URI> getCallbackUris();
 
     /**
-     * Sets the ordered list of callback URIs
+     * Sets the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a callback.
      */
     void setCallbackUris(LinkedList<URI> uris);
 
@@ -74,19 +75,20 @@ public interface Message {
     void setMessageId(Object messageId);
 
     /**
-     * Returns the correlation id of the message
+     * Returns the correlation id of the message or null if one is not available. Correlation ids are used by transports
+     * for message routing.
      */
     Object getCorrelationId();
 
     /**
-     * Sets the correlation id of the message
+     * Sets the correlation id of the message. Correlation ids are used by transports for message routing.
      */
     void setCorrelationId(Object correlationId);
 
     /**
-     * Test if the message represents a fault/exception
+     * Determines if the message represents a fault/exception
      *
-     * @return true if the message body is a fault object, false is the body is a normal payload
+     * @return true if the message body is a fault object, false if the body is a normal payload
      */
     boolean isFault();
 

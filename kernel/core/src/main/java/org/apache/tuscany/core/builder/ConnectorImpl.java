@@ -367,7 +367,6 @@ public class ConnectorImpl implements Connector {
             wire.addInvocationChain(operation, chain);
 
         }
-        wire.setCallbackReferenceName(contract.getCallbackName());
         for (Operation<?> operation : contract.getCallbackOperations().values()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             if (operation.isNonBlocking()) {

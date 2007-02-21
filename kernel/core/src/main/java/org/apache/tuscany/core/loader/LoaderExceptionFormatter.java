@@ -40,7 +40,7 @@ public class LoaderExceptionFormatter implements ExceptionFormatter {
         e.appendBaseMessage(writer);
         if (e.getLine() != LoaderException.UNDEFINED) {
             writer.write("\nLine: " + e.getLine() + "\n");
-            writer.write("Column: " + e.getColumn());
+            writer.write("Column: " + e.getColumn() + "\n");
         } else {
             writer.write("\n");
         }

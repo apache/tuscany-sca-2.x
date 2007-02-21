@@ -26,6 +26,7 @@ import java.util.Map;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.monitor.ExceptionFormatter;
 
 /**
  * Implementation of a {@link MonitorFactory} that produces implementations that simply return.
@@ -34,8 +35,9 @@ import org.apache.tuscany.host.MonitorFactory;
  */
 @EagerInit
 public class NullMonitorFactory implements MonitorFactory {
+
     /**
-     * Singleton wire hander that does nothing.
+     * Singleton hander that does nothing.
      */
     private static final InvocationHandler NULL_MONITOR = new InvocationHandler() {
         public Object invoke(Object proxy, Method method, Object[] args) {
@@ -54,5 +56,13 @@ public class NullMonitorFactory implements MonitorFactory {
          */
         return monitorInterface.cast(
             Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, NULL_MONITOR));
+    }
+
+    public void register(ExceptionFormatter formatter) {
+
+    }
+
+    public void unregister(ExceptionFormatter formatter) {
+
     }
 }

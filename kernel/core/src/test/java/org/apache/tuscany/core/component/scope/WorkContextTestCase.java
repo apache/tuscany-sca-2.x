@@ -107,23 +107,23 @@ public class WorkContextTestCase extends TestCase {
 
     public void testSetGetCorrelationId() {
         WorkContext context = new WorkContextImpl();
-        context.setCurrentCorrelationId("msg-005");
-        assertEquals(context.getCurrentCorrelationId(), "msg-005");
-        context.setCurrentCorrelationId(null);
-        assertNull(context.getCurrentCorrelationId());
+        context.setCorrelationId("msg-005");
+        assertEquals(context.getCorrelationId(), "msg-005");
+        context.setCorrelationId(null);
+        assertNull(context.getCorrelationId());
     }
 
     public void testSetGetCorrelationIdInNewThread() throws InterruptedException {
         WorkContext context = new WorkContextImpl();
-        context.setCurrentCorrelationId("msg-005");
-        assertEquals(context.getCurrentCorrelationId(), "msg-005");
+        context.setCorrelationId("msg-005");
+        assertEquals(context.getCorrelationId(), "msg-005");
         context.setIdentifier("TX", "002");
         ChildThread t = new ChildThread(context);
         t.start();
         t.join();
         assertTrue(t.passed);
-        context.setCurrentCorrelationId(null);
-        assertNull(context.getCurrentCorrelationId());
+        context.setCorrelationId(null);
+        assertNull(context.getCorrelationId());
     }
 
     public void testCurrentAtomicComponentDoesNotPropagateToChildThread() throws InterruptedException {
@@ -161,7 +161,7 @@ public class WorkContextTestCase extends TestCase {
         @Override
         public void run() {
             try {
-                assertNull(context.getCurrentCorrelationId());
+                assertNull(context.getCorrelationId());
                 assertEquals("002", context.getIdentifier("TX"));
             } catch (AssertionError e) {
                 passed = false;

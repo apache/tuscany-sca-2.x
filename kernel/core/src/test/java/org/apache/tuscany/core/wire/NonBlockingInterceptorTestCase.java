@@ -54,7 +54,7 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         WorkContext context = createMock(WorkContext.class);
         String convID = "convID";
         EasyMock.expect(context.getIdentifier(Scope.CONVERSATION)).andReturn(convID);
-        context.setCurrentCorrelationId(null);
+        context.setCorrelationId(null);
         context.setIdentifier(Scope.CONVERSATION, convID);
         EasyMock.replay(context);
         Message msg = new MessageImpl();

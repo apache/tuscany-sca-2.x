@@ -41,8 +41,8 @@ import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 
-import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.PojoComponentContextFactory;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.ResourceObjectFactory;
@@ -127,6 +127,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         }
         configuration.setMonitor(monitor);
         configuration.setName(definition.getUri());
+        handleCallbackSites(componentType, configuration);
+
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
 
         // handle properties
@@ -134,8 +136,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         // handle resources
         handleResources(componentType, component);
-
-        handleCallbackSites(componentType, configuration);
 
         // FIXME JFM  this should be refactored to be by operation
         component.setAllowsPassByReference(componentType.isAllowsPassByReference());
@@ -152,9 +152,10 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         PojoConfiguration configuration) {
         for (JavaMappedService service : componentType.getServices().values()) {
             // setup callback injection sites
-            if (service.getCallbackReferenceName() != null) {
+            String name = service.getServiceContract().getCallbackName();
+            if (name != null) {
                 // Only if there is a callback reference in the service
-                configuration.addCallbackSite(service.getCallbackReferenceName(), service.getCallbackMember());
+                configuration.addCallbackSite(name, service.getCallbackMember());
             }
         }
     }

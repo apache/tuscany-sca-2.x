@@ -68,7 +68,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         msg.setMessageId(id);
 
         WorkContext context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCorrelationId(id);
+        context.setCorrelationId(id);
         EasyMock.replay(context);
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);

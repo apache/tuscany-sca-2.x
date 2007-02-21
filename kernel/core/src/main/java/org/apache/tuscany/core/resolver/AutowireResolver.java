@@ -45,10 +45,10 @@ public interface AutowireResolver {
                  ComponentDefinition<? extends Implementation<?>> definition) throws ResolutionException;
 
     /**
-     * Adds the uri of a primordial system service that can be an autowire target
+     * Adds the uri of a host system service that can be an autowire target
      *
      * @param contract the service contract of the system service
      * @param uri      the component uri
      */
-    void addPrimordialUri(ServiceContract contract, URI uri);
+    void addHostUri(ServiceContract contract, URI uri);
 }

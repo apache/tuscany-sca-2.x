@@ -58,6 +58,7 @@ import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
@@ -226,7 +227,10 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     protected void registerBaselineSystemComponents() throws InitializationException {
         registerSystemComponent(RUNTIME_INFO_URI, runtimeInfoType, runtimeInfo);
-        registerSystemComponent(MONITOR_URI, MonitorFactory.class, getMonitorFactory());
+        List<Class<?>> monitorServices = new ArrayList<Class<?>>();
+        monitorServices.add(MonitorFactory.class);
+        monitorServices.add(FormatterRegistry.class);
+        registerSystemComponent(MONITOR_URI, monitorServices, getMonitorFactory());
         // register the component manager with itself so it can be autowired
         registerSystemComponent(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
         registerSystemComponent(AUTOWIRE_RESOLVER_URI, AutowireResolver.class, resolver);

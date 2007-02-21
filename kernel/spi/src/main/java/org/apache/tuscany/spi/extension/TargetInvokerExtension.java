@@ -52,11 +52,11 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
         try {
             Object messageId = msg.getMessageId();
             if (messageId != null) {
-                workContext.setCurrentCorrelationId(messageId);
+                workContext.setCorrelationId(messageId);
             }
             LinkedList<URI> callbackRoutingChain = msg.getCallbackUris();
             if (callbackRoutingChain != null) {
-                workContext.setCurrentCallbackUris(callbackRoutingChain);
+                workContext.setCallbackUris(callbackRoutingChain);
             }
             Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence());
             msg.setBody(resp);

@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -41,7 +42,8 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         super(configuration);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+        throws TargetInvokerCreationException {
         Method[] methods;
         Class callbackClass = null;
         if (operation.isCallback()) {
@@ -52,6 +54,9 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
             methods = implementationClass.getMethods();
         }
         Method method = findMethod(operation, methods);
+        if (method == null) {
+            throw new TargetMethodNotFoundException(operation);
+        }
         return new JavaTargetInvoker(method, this, callbackClass, workContext, monitor);
     }
 

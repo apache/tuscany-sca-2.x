@@ -59,7 +59,7 @@ public class MessageImpl implements Message {
         if (callbackUris == null) {
             callbackUris = new LinkedList<URI>();
         }
-        callbackUris.addFirst(uri);
+        callbackUris.add(uri);
     }
 
     public LinkedList<URI> getCallbackUris() {

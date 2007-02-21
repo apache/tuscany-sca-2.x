@@ -93,9 +93,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
             return hashCode();
             // TODO beter hash algorithm
         }
-        Object correlationId = context.getCurrentCorrelationId();
-        context.setCurrentCorrelationId(null);
-        LinkedList<URI> callbackUris = context.getCurrentCallbackUris();
+        LinkedList<URI> callbackUris = context.getCallbackUris();
         assert callbackUris != null;
         URI targetAddress = callbackUris.getLast();
         assert targetAddress != null;
@@ -105,7 +103,8 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
         Operation operation = findOperation(method, chains.keySet());
         InvocationChain chain = chains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-
+        Object correlationId = context.getCorrelationId();
+        context.setCorrelationId(null);
         try {
             return invoke(chain, invoker, args, correlationId, callbackUris);
         } catch (InvocationTargetException e) {

@@ -63,7 +63,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
             // scan intefaces for remotable
             Set<Class> interfaces = getAllInterfaces(clazz);
             for (Class<?> interfaze : interfaces) {
-                if (interfaze.getAnnotation(Remotable.class) != null) {
+                if (interfaze.isAnnotationPresent(Remotable.class) || interfaze.isAnnotationPresent(Callback.class)) {
                     JavaMappedService service;
                     try {
                         service = implService.createService(interfaze);
