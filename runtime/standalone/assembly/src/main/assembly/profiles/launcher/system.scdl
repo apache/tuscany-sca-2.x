@@ -174,4 +174,21 @@
         <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.implementation.launched.LaunchedComponentBuilder"/>
     </component>
 
+    <component name="wiringExceptionFormatter">
+        <system:implementation.system class="org.apache.tuscany.core.builder.WiringExceptionFormatter"/>
+    </component>
+
+    <component name="wiringExceptionFormatter">
+        <system:implementation.system class="org.apache.tuscany.core.builder.WiringExceptionFormatter"/>
+    </component>
+	 
+    <component name="loaderExceptionFormatter">
+        <system:implementation.system class="org.apache.tuscany.core.loader.LoaderExceptionFormatter"/>
+    </component>
+
+    <component name="incompatibleServiceContractExceptionFormatter">
+        <system:implementation.system class="org.apache.tuscany.core.wire.IncompatibleServiceContractExceptionFormatter"/>
+    </component>
+
+
 </composite>

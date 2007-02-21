@@ -24,10 +24,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
-import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
-import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -39,56 +35,74 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
+import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
+import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
+import org.apache.tuscany.api.annotation.LogLevel;
+
 /**
  * @version $Rev$ $Date$
  */
 public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo> implements StandaloneRuntime {
+    JavaLoggingMonitorFactory monitorFactory;
+    StandaloneMonitor monitor;
 
     public StandaloneRuntimeImpl() {
         super(StandaloneRuntimeInfo.class);
+        monitorFactory = new JavaLoggingMonitorFactory();
+        setMonitorFactory(monitorFactory);
+        monitor = monitorFactory.getMonitor(StandaloneMonitor.class);
     }
 
     /**
      * Deploys the specified application SCDL and runs the lauched component within the deployed composite.
-     * 
-     * @param applicationScdl Application SCDL that implements the composite.
+     *
+     * @param applicationScdl        Application SCDL that implements the composite.
      * @param applicationClassLoader Classloader used to deploy the composite.
-     * @param args Arguments to be passed to the lauched component.
+     * @param args                   Arguments to be passed to the lauched component.
      * @deprecated This is a hack for deployment and should be removed.
      */
     public int deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception {
-        
+
         URI compositeUri = new URI("/test/composite/");
-        
+
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(applicationScdl);
         impl.setClassLoader(applicationClassLoader);
 
         ComponentDefinition<CompositeImplementation> definition =
             new ComponentDefinition<CompositeImplementation>(compositeUri, impl);
-        Collection<Component> components =  getDeployer().deploy(null, definition);
-        for (Component component : components) {
-            component.start();
+        try {
+            Collection<Component> components = getDeployer().deploy(null, definition);
+            for (Component component : components) {
+                component.start();
+            }
+            return run(impl, args, compositeUri);
+        } catch (Exception e) {
+            monitor.runError(e);
         }
+        return -1;
 
-        return run(impl, args, compositeUri);
     }
 
     private int run(CompositeImplementation impl, String[] args, URI compositeUri) throws Exception {
-        CompositeComponentType<?,?,?> componentType = impl.getComponentType();
+        CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = componentType.getComponents();
         for (Map.Entry<String, ComponentDefinition<? extends Implementation<?>>> entry : components.entrySet()) {
             String name = entry.getKey();
             ComponentDefinition<? extends Implementation<?>> launchedDefinition = entry.getValue();
             Implementation implementation = launchedDefinition.getImplementation();
-            if(implementation.getClass().isAssignableFrom(Launched.class)) {
+            if (implementation.getClass().isAssignableFrom(Launched.class)) {
                 return run(compositeUri.resolve(name), implementation, args);
             }
         }
         return -1;
     }
 
-    private int run(URI componentUri, Implementation implementation, String[] args) throws TargetInvokerCreationException, InvocationTargetException {
+    private int run(URI componentUri, Implementation implementation, String[] args)
+        throws TargetInvokerCreationException, InvocationTargetException {
         Launched launched = (Launched) implementation;
         PojoComponentType launchedType = launched.getComponentType();
         Map services = launchedType.getServices();
@@ -102,5 +116,10 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
         } catch (ClassCastException e) {
             return 0;
         }
+    }
+
+    public interface StandaloneMonitor {
+        @LogLevel("SEVERE")
+        void runError(Exception e);
     }
 }
