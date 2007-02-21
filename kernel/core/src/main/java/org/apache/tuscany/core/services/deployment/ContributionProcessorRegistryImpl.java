@@ -21,6 +21,7 @@ package org.apache.tuscany.core.services.deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,22 +63,23 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
         registry.remove(contentType);
     }
 
-    public void processContent(Contribution contribution, URL source, InputStream inputStream)
+    public void processContent(Contribution contribution, URI source, InputStream inputStream)
         throws DeploymentException, IOException {
-        String contentType = this.contentTypeBuilder.getContentType(source, null);
+        URL sourceURL = contribution.getArtifact(source).getLocation();
+        String contentType = this.contentTypeBuilder.getContentType(sourceURL, null);
         if (contentType == null) {
             throw new UnsupportedContentTypeException("Invalid contentType: null");
         }
 
         if (!this.registry.containsKey(contentType)) {
-            throw new UnsupportedContentTypeException(contentType, source.getPath());
+            throw new UnsupportedContentTypeException(contentType, sourceURL.getPath());
         }
 
         this.registry.get(contentType).processContent(contribution, source, inputStream);
 
     }
 
-    public void processModel(Contribution contribution, URL source, Object modelObject) throws DeploymentException,
+    public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
         IOException {
     }
 }

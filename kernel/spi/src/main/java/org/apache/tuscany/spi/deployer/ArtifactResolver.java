@@ -20,6 +20,7 @@
 package org.apache.tuscany.spi.deployer;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Map;
 
 
@@ -69,14 +70,14 @@ public interface ArtifactResolver {
      * <li>Reference a list of WSDLs using
      * {http://www.w3.org/2004/08/wsdl-instance}wsdlLocation
      * </ul>
-     * 
      * @param targetNamespace The target namespace of the referenced artifact,
      *            if the targetNamespace is null, then it's not specified
      * @param location The URI of the referenced artifact, it can be absolute or
      *            relative
      * @param baseURI The URI of the owning artifact
+     * 
      * @return The URI of the resolved artifact
      */
-    URI resolve(URI contribution, String targetNamespace, String location, String baseURI, DeploymentContext context);
+    URL resolve(URI contribution, String targetNamespace, String location, String baseURI);
 
 }

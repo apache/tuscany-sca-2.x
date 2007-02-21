@@ -22,6 +22,7 @@ package org.apache.tuscany.core.services.deployment.contribution;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,9 +80,9 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
 
     }
 
-    public void processContent(Contribution contribution, URL sourceURL, InputStream inputStream)
+    public void processContent(Contribution contribution, URI source, InputStream inputStream)
         throws DeploymentException, IOException {
-        if (sourceURL == null) {
+        if (source == null) {
             throw new IllegalArgumentException("Invalid null source uri.");
         }
 
@@ -89,6 +90,7 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
             throw new IllegalArgumentException("Invalid null source inputstream.");
         }
 
+        URL sourceURL = contribution.getArtifact(source).getLocation();
         sourceURL = forceJarURL(sourceURL);
 
         for (URL artifactURL : getArtifacts(sourceURL, inputStream)) {
@@ -114,7 +116,7 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
 
     }
 
-    public void processModel(Contribution contribution, URL source, Object modelObject) throws DeploymentException,
+    public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
         IOException {
         // TODO Auto-generated method stub
 

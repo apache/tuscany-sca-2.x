@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.deployer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
 
 import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.spi.model.Contribution;
@@ -45,7 +45,7 @@ public interface ContributionProcessor {
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the stream
      */
-    void processContent(Contribution contribution, URL source, InputStream inputStream) throws DeploymentException,
+    void processContent(Contribution contribution, URI source, InputStream inputStream) throws DeploymentException,
         IOException;
 
     /**
@@ -56,11 +56,11 @@ public interface ContributionProcessor {
      * 
      * @param contribution The contribution model that will be used to hold the
      *            results from the processing
-     * @param source The URI for the contribution/artifact
+     * @param source The URI for the contribution/artifact. 
      * @param modelObject A model object for further processing by the processor
      * @throws DeploymentException
      * @throws IOException
      */
-    void processModel(Contribution contribution, URL source, Object modelObject) throws DeploymentException,
+    void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
         IOException;
 }

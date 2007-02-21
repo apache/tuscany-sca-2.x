@@ -20,6 +20,7 @@
 package org.apache.tuscany.spi.model;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,13 +31,22 @@ import java.util.Map;
  */
 public class DeployedArtifact extends ModelObject {
     protected Contribution contribution;
-    protected URI uri;
+    protected final URI uri;
+    protected URL location;
     /**
      * The map keeps all the model objects loaded/introspected from this artifact. The objects
      * are keyed by the java type of the model such as javax.wsdl.ModelObject. The value is also
      * a map with namespace as the key and the model object as the value.
      */
     protected Map<Class, Map<String, Object>> modelObjects = new HashMap<Class, Map<String, Object>>();
+
+    /**
+     * @param uri
+     */
+    public DeployedArtifact(URI uri) {
+        super();
+        this.uri = uri;
+    }
 
     public Contribution getContribution() {
         return contribution;
@@ -46,12 +56,12 @@ public class DeployedArtifact extends ModelObject {
         this.contribution = contribution;
     }
 
+    /**
+     * Get the absolute URI as the unique id for the artifact
+     * @return
+     */
     public URI getUri() {
         return uri;
-    }
-
-    public void setUri(URI uri) {
-        this.uri = uri;
     }
 
     public Map<Class, Map<String, Object>> getModelObjects() {
@@ -78,6 +88,20 @@ public class DeployedArtifact extends ModelObject {
             modelObjects.put(type, map);
         }
         map.put(namespace, modelObject);
+    }
+
+    /**
+     * @return the location
+     */
+    public URL getLocation() {
+        return location;
+    }
+
+    /**
+     * @param location the location to set
+     */
+    public void setLocation(URL location) {
+        this.location = location;
     }
 
 }
