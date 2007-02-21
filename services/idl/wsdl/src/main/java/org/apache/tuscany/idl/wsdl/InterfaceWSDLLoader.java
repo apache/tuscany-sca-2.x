@@ -100,9 +100,6 @@ public class InterfaceWSDLLoader extends LoaderExtension {
                 }
             }
         }
-        // FIXME set the interaction scope
-        // serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
-
         if (wsdlLocation != null) {
             try {
                 wsdlRegistry.loadDefinition(wsdlLocation, deploymentContext.getClassLoader());
