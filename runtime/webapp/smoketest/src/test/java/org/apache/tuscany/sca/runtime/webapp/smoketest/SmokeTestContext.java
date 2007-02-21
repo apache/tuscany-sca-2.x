@@ -53,6 +53,6 @@ public class SmokeTestContext extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        base = new URL("http://localhost:8088/smoketest/");
+        base = new URL("http://localhost:8088/webapp-smoketest/");
     }
 }

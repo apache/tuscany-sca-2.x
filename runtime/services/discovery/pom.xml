@@ -19,12 +19,12 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.runtime.services</groupId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
         <artifactId>services</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.runtime.services.discovery</groupId>
+    <groupId>org.apache.tuscany.sca.runtime.services</groupId>
     <artifactId>discovery</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Discovery Services</name>

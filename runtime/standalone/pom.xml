@@ -20,13 +20,13 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany.sca.runtime</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>runtime</artifactId>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
+    <groupId>org.apache.tuscany.sca.runtime</groupId>
     <artifactId>standalone</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany Standalone SCA Runtime</name>
@@ -37,7 +37,6 @@
         <module>standalone-host</module>
         <module>server.start</module>
         <module>server.shutdown</module>
-        <module>plugin.standalone</module>
         <module>assembly</module>
         <module>smoketest</module>
     </modules>

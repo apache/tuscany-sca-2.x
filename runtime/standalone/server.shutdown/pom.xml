@@ -19,26 +19,24 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
         <artifactId>standalone</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
     <artifactId>server.shutdown</artifactId>
     <name>Apache Tuscany Standalone Server Shutdown</name>
     <description>Standalone executable jar that can be used to shutdown the tuscany server.</description>
 
-    <!--
-      This library will typically be added to the application's classpath and so should
-      should have as few dependencies as possible and nothing from the Tuscany runtime.
-    -->
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
             <artifactId>standalone-api</artifactId>
-            <version>${sca.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

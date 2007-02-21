@@ -20,39 +20,38 @@
 <project>
 
     <parent>
-            <groupId>org.apache.tuscany.sca.runtime.services.discovery</groupId>
-            <artifactId>discovery</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany.sca.runtime.services</groupId>
+        <artifactId>discovery</artifactId>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca.runtime.services.discovery</groupId>
     <artifactId>discovery-jxta</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany JXTA Discovery</name>
     <description>Apache Tuscany JXTA Discovery</description>
 
-    <dependencies>    
-		
+    <dependencies>
+
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-spi</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency> 
-		  
+        </dependency>
+
         <dependency>
             <groupId>bouncycastle</groupId>
             <artifactId>bcprov-jdk14</artifactId>
             <version>124</version>
             <scope>compile</scope>
         </dependency>
-		
+
         <dependency>
             <groupId>org.jxta.platform</groupId>
             <artifactId>jxta</artifactId>
             <version>2.4.1</version>
             <scope>compile</scope>
         </dependency>
-		
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -63,14 +62,13 @@
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
-            <scope>compile</scope>
         </dependency>
-		
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-		
+
     </dependencies>
-	
+
 </project>

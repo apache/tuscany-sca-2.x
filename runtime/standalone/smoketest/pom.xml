@@ -19,11 +19,12 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
         <artifactId>standalone</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
     <artifactId>smoketest</artifactId>
     <name>Apache Tuscany SCA Standalone Smoketest</name>
     <description>Module to smoketest the standalone runtime.</description>
@@ -35,9 +36,9 @@
     <dependencies>
         <dependency>
             <groupId>org.osoa</groupId>
-            <artifactId>sca-api-r1.0</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
+            <artifactId>sca-api-r${scaSpecVersion}</artifactId>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -66,7 +67,7 @@
                                 <artifactItem>
                                     <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
                                     <artifactId>assembly</artifactId>
-                                    <version>${sca.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>bin</classifier>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>

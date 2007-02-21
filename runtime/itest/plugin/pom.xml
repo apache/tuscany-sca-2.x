@@ -19,12 +19,13 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany</groupId>
+        <artifactId>sca</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-itest-plugin</artifactId>
+    <version>1.0-alpha-incubating-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Apache Tuscany Integration Test Plugin</name>
     <description>A plugin for Apache Maven that simplifies integration testing of SCA components.</description>
@@ -54,31 +55,26 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
+            <artifactId>tuscany-core</artifactId>
+            <version>1.0-alpha-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-        <!-- [rfeng] A big hack to resolve servlet-api -->
-         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <scope>runtime</scope>
-        </dependency>          
     </dependencies>
 
     <distributionManagement>
-      <site>
-        <id>apache.website</id>
-        <url>scp://people.apache.org/www/incubator.apache.org/tuscany/plugins/tuscany-itest-plugin</url>
-      </site>
+        <site>
+            <id>apache.website</id>
+            <url>scp://people.apache.org/www/incubator.apache.org/tuscany/plugins/tuscany-itest-plugin</url>
+        </site>
     </distributionManagement>
 
     <reporting>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-        </plugin>
-      </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+        </plugins>
     </reporting>
 </project>
