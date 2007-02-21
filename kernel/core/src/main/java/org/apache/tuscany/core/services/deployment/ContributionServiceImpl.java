@@ -46,8 +46,9 @@ public class ContributionServiceImpl implements ContributionService {
      */
     protected ContributionProcessorRegistry processorRegistry;
 
-    public ContributionServiceImpl(@Autowire ContributionRepository repository, 
-                                   @Autowire ContributionProcessorRegistry processorRegistry) {
+    public ContributionServiceImpl(@Autowire
+    ContributionRepository repository, @Autowire
+    ContributionProcessorRegistry processorRegistry) {
         super();
         this.contributionRepository = repository;
         this.processorRegistry = processorRegistry;
@@ -85,16 +86,11 @@ public class ContributionServiceImpl implements ContributionService {
         // store the contribution in the contribution repository
         URL storedURL = this.contributionRepository.store(source, contributionStream);
         Contribution contribution = null;
-        try {
-            // start processing valid contribution
-            contribution = new Contribution();
-            contribution.setUri(new URI("sca://contribution/" + UUID.randomUUID()));
+        // start processing valid contribution
+        contribution = new Contribution(URI.create("sca://contribution/" + UUID.randomUUID()));
+        contribution.setLocation(storedURL);
 
-            this.processorRegistry.processContent(contribution, storedURL, contributionStream);
-
-        } catch (URISyntaxException urie) {
-            // FIXME
-        }
+        this.processorRegistry.processContent(contribution, contribution.getUri(), contributionStream);
 
         if (contribution == null) {
             // FIXME throw exception

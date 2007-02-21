@@ -20,8 +20,12 @@
 package org.apache.tuscany.spi.model;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -30,11 +34,10 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
-public class Contribution extends ModelObject {
+public class Contribution extends DeployedArtifact {
     public static final String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
     public static final String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
 
-    protected URI uri;
     protected List<String> exports = new ArrayList<String>();
     protected List<ContributionImport> imports = new ArrayList<ContributionImport>();
     protected List<QName> runnables = new ArrayList<QName>();
@@ -42,15 +45,19 @@ public class Contribution extends ModelObject {
     /**
      * A list of artifacts in the contribution
      */
-    protected List<DeployedArtifact> artifacts = new ArrayList<DeployedArtifact>();
+    protected Map<URI, DeployedArtifact> artifacts = new HashMap<URI, DeployedArtifact>();
 
 
+    /**
+     * @param uri
+     */
+    public Contribution(URI uri) {
+        super(uri);
+        artifacts.put(uri, this);
+    }
+    
     public URI getUri() {
         return uri;
-    }
-
-    public void setUri(URI uri) {
-        this.uri = uri;
     }
 
     public List<String> getExports() {
@@ -65,12 +72,30 @@ public class Contribution extends ModelObject {
         return runnables;
     }
 
-    public List<DeployedArtifact> getArtifacts() {
-        return artifacts;
+    public Map<URI, DeployedArtifact> getArtifacts() {
+        return Collections.unmodifiableMap(artifacts);
     }
     
     public void addArtifact(DeployedArtifact artifact) {
         artifact.setContribution(this);
-        artifacts.add(artifact);
+        artifacts.put(artifact.getUri(), artifact);
+    }
+    
+    public DeployedArtifact getArtifact(URI uri) {
+        return artifacts.get(uri);
+    }
+
+    /**
+     * @return the location
+     */
+    public URL getLocation() {
+        return location;
+    }
+
+    /**
+     * @param location the location to set
+     */
+    public void setLocation(URL location) {
+        this.location = location;
     }
 }

@@ -18,11 +18,13 @@
  */
 package org.apache.tuscany.core.services.deployment.contribution;
 
+import java.net.URI;
 import java.net.URL;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
+import org.apache.tuscany.spi.model.Contribution;
 import org.easymock.EasyMock;
 
 public class JarContributionProcessorTestCase extends TestCase {
@@ -42,6 +44,8 @@ public class JarContributionProcessorTestCase extends TestCase {
         jarContribution.start();
         EasyMock.verify(mockRegistry);
         URL jarURL = getClass().getResource(JarContributionProcessorTestCase.JAR_CONTRIBUTION);
-        jarContribution.processContent(null, jarURL, jarURL.openStream());
+        Contribution contribution = new Contribution(URI.create("sca://contributions/001"));
+        contribution.setLocation(jarURL);
+        jarContribution.processContent(contribution, contribution.getUri(), jarURL.openStream());
     }
 }
