@@ -19,36 +19,32 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany</groupId>
+        <artifactId>sca</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>core-samples</artifactId>
-    <version>1.0-incubator-SNAPSHOT</version>
+    <version>1.0-alpha-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apache Tuscany Core Samples</name>
     <description>Sample projects that illustrate core concepts for SCA and Tuscany.</description>
 
-    <modules>
-        <module>common</module>
-<!--
-        <module>standalone</module>
--->
-        <module>webapp</module>
-    </modules>
-
     <properties>
-        <kernelVersion>1.0-incubator-SNAPSHOT</kernelVersion>
+        <!-- version the SCA API that we implement -->
+        <scaSpecVersion>1.0</scaSpecVersion>
+
+        <!-- version the Apache Tuscany kernel that the runtimes work with -->
+        <kernelVersion>1.0-alpha-incubating-SNAPSHOT</kernelVersion>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.osoa</groupId>
-                <artifactId>sca-api-r1.0</artifactId>
-                <version>1.0-incubator-SNAPSHOT</version>
+                <artifactId>sca-api-r${scaSpecVersion}</artifactId>
+                <version>1.0-alpha-incubating-SNAPSHOT</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>

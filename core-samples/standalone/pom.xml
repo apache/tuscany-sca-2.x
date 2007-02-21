@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>core-samples</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.core-samples</groupId>
@@ -30,7 +30,4 @@
     <name>Apache Tuscany Core Samples Standalone</name>
     <description>Sample projects that run in the standalone environment.</description>
 
-    <modules>
-        <module>calculator</module>
-    </modules>
 </project>
