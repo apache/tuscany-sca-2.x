@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -130,7 +129,7 @@ public class TuscanyITestMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    public List testClassPath;
+    public List<String> testClassPath;
 
     /**
      * Used to look up Artifacts in the remote repository.
@@ -288,8 +287,8 @@ public class TuscanyITestMojo extends AbstractMojo {
     public ClassLoader createTestClassLoader(ClassLoader parent) {
         URL[] urls = new URL[testClassPath.size()];
         int idx = 0;
-        for (Iterator i = testClassPath.iterator(); i.hasNext();) {
-            File pathElement = new File((String) i.next());
+        for (String s : testClassPath) {
+            File pathElement = new File(s);
             try {
                 URL url = pathElement.toURI().toURL();
                 getLog().debug("Adding application URL: " + url);
