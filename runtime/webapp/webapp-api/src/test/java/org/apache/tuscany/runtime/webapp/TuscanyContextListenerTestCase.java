@@ -47,6 +47,7 @@ public class TuscanyContextListenerTestCase extends TestCase {
     private URL systemUrl;
     private URL scdl;
     private WebappUtil utils;
+    private String compositeId;
 
     public void testInitializationUsingDefaults() throws Exception {
         ServletContextEvent event = createMock(ServletContextEvent.class);
@@ -55,7 +56,7 @@ public class TuscanyContextListenerTestCase extends TestCase {
 
         WebappRuntime runtime = createMock(WebappRuntime.class);
         expect(utils.getBootClassLoader(cl)).andReturn(bootClassLoader);
-        expect(utils.getInitParameter("tuscany.composite", "http://locahost/sca/")).andReturn("http://locahost/sca/");
+        expect(utils.getInitParameter("tuscany.composite", compositeId)).andReturn(compositeId);
         expect(utils.getInitParameter("tuscany.component", contextName)).andReturn(contextName);
         expect(utils.getInitParameter("tuscany.online", "true")).andReturn("true");
         expect(utils.getInitParameter(APPLICATION_SCDL_PATH_PARAM, APPLICATION_SCDL_PATH_DEFAULT))
@@ -77,7 +78,7 @@ public class TuscanyContextListenerTestCase extends TestCase {
         runtime.setHostClassLoader(cl);
         runtime.setSystemScdl(systemUrl);
         runtime.initialize();
-        runtime.deploy(URI.create("http://locahost/sca/"), scdl, URI.create(contextName));
+        runtime.deploy(URI.create(compositeId), scdl, URI.create(contextName));
         replay(runtime);
 
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -107,5 +108,6 @@ public class TuscanyContextListenerTestCase extends TestCase {
         systemUrl = new URL("file:/system.scdl");
         scdl = new URL("file:/app.scdl");
         contextName = "webapp";
+        compositeId = "http://locahost/sca";
     }
 }
