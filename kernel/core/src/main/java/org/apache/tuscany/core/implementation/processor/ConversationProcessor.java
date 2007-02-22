@@ -59,7 +59,8 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
             type.setImplementationScope(org.apache.tuscany.spi.model.Scope.CONVERSATION);
         } else if (scope != null && !"CONVERSATION".equals(scope.value().toUpperCase())) {
             throw new InvalidConversationalImplementation(
-                "Service is marked with @ConversationAttributes but the scope is not @Scope(\"CONVERSATION\")", clazz.getName());
+                "Service is marked with @ConversationAttributes but the scope is not @Scope(\"CONVERSATION\")",
+                clazz.getName());
         } else if (conversation != null) {
             long maxAge;
             long maxIdleTime;

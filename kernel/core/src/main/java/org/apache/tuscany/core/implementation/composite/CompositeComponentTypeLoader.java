@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
@@ -54,7 +54,7 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
         ClassLoader cl = new CompositeClassLoader(implementation.getClassLoader());
-        URI componentId = URI.create(deploymentContext.getComponentId().toString()+'/');
+        URI componentId = URI.create(deploymentContext.getComponentId().toString() + '/');
         DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation, componentId);
         CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, childContext);
         implementation.setComponentType(componentType);

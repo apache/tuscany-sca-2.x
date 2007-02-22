@@ -29,12 +29,13 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl;
-import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
 import org.apache.tuscany.spi.model.Contribution;
+
+import org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl;
+import org.apache.tuscany.host.deployment.DeploymentException;
 
 public class JarContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
     public static final String CONTENT_TYPE = "application/x-compressed";
@@ -46,7 +47,7 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
 
     /**
      * Get a list of selected resources by the extensions
-     * 
+     *
      * @return
      * @throws IOException
      */
@@ -85,7 +86,7 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
 
     public void processContent(Contribution contribution, URI source, InputStream inputStream)
         throws DeploymentException, IOException {
-        if(contribution == null){
+        if (contribution == null) {
             throw new IllegalArgumentException("Invalid null contribution.");
         }
 
@@ -104,14 +105,13 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
         for (URL artifactURL : getArtifacts(sourceURL, inputStream)) {
             // FIXME
             // contribution.addArtifact(artifact)
-            
+
             ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
             String contentType = contentTypeDescriber.getContentType(artifactURL, null);
             System.out.println("Type : " + contentType);
-            
 
             //just process scdl for now
-            if("application/v.tuscany.scdl".equals(contentType) || "application/java-vm".equals(contentType) ){
+            if ("application/v.tuscany.scdl".equals(contentType) || "application/java-vm".equals(contentType)) {
                 this.registry.processContent(contribution, source, inputStream);
             }
             // process each artifact
@@ -122,7 +122,7 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
     }
 
     public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
-        IOException {
+                                                                                               IOException {
         // TODO Auto-generated method stub
 
     }

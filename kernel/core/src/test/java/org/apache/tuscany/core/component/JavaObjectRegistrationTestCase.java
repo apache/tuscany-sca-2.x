@@ -36,7 +36,7 @@ public class JavaObjectRegistrationTestCase extends TestCase {
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         URI uri = URI.create("foo");
-        ServiceContract<MockComponent> contract = new ServiceContract<MockComponent>(MockComponent.class){
+        ServiceContract<MockComponent> contract = new ServiceContract<MockComponent>(MockComponent.class) {
         };
         componentManager.registerJavaObject(uri, contract, instance);
         Component component = componentManager.getComponent(URI.create("foo"));
@@ -48,11 +48,11 @@ public class JavaObjectRegistrationTestCase extends TestCase {
     public void testDuplicateRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         URI uri = URI.create("foo");
-        ServiceContract<MockComponent> contract = new ServiceContract<MockComponent>(MockComponent.class){
+        ServiceContract<MockComponent> contract = new ServiceContract<MockComponent>(MockComponent.class) {
         };
         componentManager.registerJavaObject(uri, contract, instance);
         try {
-            componentManager.registerJavaObject(uri,contract, instance);
+            componentManager.registerJavaObject(uri, contract, instance);
             fail();
         } catch (DuplicateNameException e) {
             // ok

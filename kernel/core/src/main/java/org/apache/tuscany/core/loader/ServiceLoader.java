@@ -67,7 +67,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         String name = reader.getAttributeValue(null, "name");
         URI targetUri = null;
         URI compositeId = deploymentContext.getComponentId();
-        URI componentBase = URI.create(compositeId +"/");
+        URI componentBase = URI.create(compositeId + "/");
         ServiceDefinition def = new ServiceDefinition();
         def.setUri(compositeId.resolve('#' + name));
 

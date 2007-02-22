@@ -19,31 +19,26 @@
 
 package org.apache.tuscany.core.services.deployment;
 
-import java.net.URI;
-import java.net.URL;
-
-import junit.framework.TestCase;
-
-import org.apache.tuscany.core.services.deployment.contribution.JarContributionProcessor;
-import org.apache.tuscany.core.services.deployment.contribution.JavaContributionProcessor;
-import org.apache.tuscany.host.deployment.ContributionService;
 import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
 import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
 import org.apache.tuscany.spi.deployer.ContributionRepository;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.host.deployment.ContributionService;
 
 /**
  * This is more intended to be a integration test then a unit test. *
  */
 public class ContributionServiceImplTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
-    private ContributionRepository repository; 
+    private ContributionRepository repository;
     private ContentTypeDescriber contentTypeDescriber;
     private ContributionProcessorRegistry registry;
     private ContributionService contributionService;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
-        
+
 //        this.repository = new ContributionRepositoryImpl("target/repository");
 //        
 //        this.contentTypeDescriber = new ContentTypeDescriberImpl();

@@ -62,7 +62,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private ScopeRegistry scopeRegistry;
 
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>
-        componentBuilders =
+    componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();

@@ -29,12 +29,10 @@ import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.ComponentStart;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 
 /**

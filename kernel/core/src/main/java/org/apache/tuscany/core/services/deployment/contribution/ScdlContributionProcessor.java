@@ -22,70 +22,68 @@ package org.apache.tuscany.core.services.deployment.contribution;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.host.deployment.ContributionProcessorException;
-import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
-import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Contribution;
 
-public class ScdlContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor{
+import org.apache.tuscany.host.deployment.DeploymentException;
+
+public class ScdlContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
     public static final String CONTENT_TYPE = "application/v.tuscany.scdl";
-    private final LoaderRegistry registry;
-    
+
     protected XMLInputFactory xmlFactory;
-    
+    //private final LoaderRegistry registry;
+
     @Override
     public String getContentType() {
         return CONTENT_TYPE;
     }
-    
-    public ScdlContributionProcessor(@Autowire LoaderRegistry registry){
+
+    public ScdlContributionProcessor(@Autowire LoaderRegistry registry) {
         super();
-        this.registry = registry;
+        //this.registry = registry;
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
     }
-    
 
-    public void processContent(Contribution contribution, URI source, InputStream inputStream) 
-       throws DeploymentException, IOException {
+
+    public void processContent(Contribution contribution, URI source, InputStream inputStream)
+        throws DeploymentException, IOException {
         if (source == null) {
             throw new IllegalArgumentException("Invalid null source uri.");
         }
 
         if (inputStream == null) {
             throw new IllegalArgumentException("Invalid null source inputstream.");
-        }        
-        
-        try{
-            CompositeClassLoader cl = new CompositeClassLoader(getClass().getClassLoader());
-            cl.addURL(contribution.getLocation());
-            DeploymentContext deploymentContext = new RootDeploymentContext(cl, contribution.getArtifact(source).getLocation(), source, this.xmlFactory, null );
-
-            CompositeComponentType componentType = this.registry.load(null, null, contribution.getArtifact(source).getLocation(), CompositeComponentType.class, deploymentContext);
-
-            //FIXME add this to artifact
-            CompositeImplementation implementation = new CompositeImplementation();
-            ComponentDefinition<CompositeImplementation> componentDefinition = new ComponentDefinition<CompositeImplementation>(implementation);
-            
-        }catch(LoaderException le){
-            le.printStackTrace();
-            throw new ContributionProcessorException("Error processing SCDL", contribution.getArtifact(source).getLocation().toExternalForm(), le);
         }
+
+        //try {
+        CompositeClassLoader cl = new CompositeClassLoader(getClass().getClassLoader());
+        cl.addURL(contribution.getLocation());
+//        DeploymentContext deploymentContext = new RootDeploymentContext(cl,
+//            contribution.getArtifact(source).getLocation(), source, this.xmlFactory, null);
+
+        // CompositeComponentType componentType = this.registry.load(null, null,
+        //     contribution.getArtifact(source).getLocation(), CompositeComponentType.class, deploymentContext);
+
+        //FIXME add this to artifact
+//        CompositeImplementation implementation = new CompositeImplementation();
+//        ComponentDefinition<CompositeImplementation> componentDefinition =
+//            new ComponentDefinition<CompositeImplementation>(implementation);
+
+//        } catch (LoaderException le) {
+//            le.printStackTrace();
+//            throw new ContributionProcessorException("Error processing SCDL",
+//                contribution.getArtifact(source).getLocation().toExternalForm(), le);
+//        }
     }
 
-    public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException, IOException {
+    public void processModel(Contribution contribution, URI source, Object modelObject)
+        throws DeploymentException, IOException {
         // TODO Auto-generated method stub
 
     }

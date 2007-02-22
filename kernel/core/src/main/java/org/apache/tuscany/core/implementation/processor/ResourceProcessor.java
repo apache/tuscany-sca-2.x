@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -33,6 +32,8 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.implementation.java.Resource;
+
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
 /**
  * Processes an {@link @Resource} annotation, updating the component type with corresponding {@link
@@ -50,7 +51,8 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
-        org.apache.tuscany.api.annotation.Resource annotation = method.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
+        org.apache.tuscany.api.annotation.Resource annotation =
+            method.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (annotation == null) {
             return;
         }
@@ -81,7 +83,8 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
 
-        org.apache.tuscany.api.annotation.Resource annotation = field.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
+        org.apache.tuscany.api.annotation.Resource annotation =
+            field.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (annotation == null) {
             return;
         }

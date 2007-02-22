@@ -35,15 +35,15 @@ public @interface Resource {
     /**
      * Denotes the name of the resource declared by the implementation.
      */
-    public String name() default "";
+    String name() default "";
 
     /**
      * Denotes if the resource is optional
      */
-    public boolean optional() default false;
+    boolean optional() default false;
 
     /**
      * Denotes the default name of the resource provided by the runtime environment.
      */
-    public String mappedName() default "";
+    String mappedName() default "";
 }

@@ -22,23 +22,26 @@ package org.apache.tuscany.core.services.deployment;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.tuscany.host.deployment.ContributionService;
-import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+
+import org.apache.tuscany.spi.annotation.Autowire;
+
+import org.apache.tuscany.host.deployment.ContributionService;
+import org.apache.tuscany.host.deployment.DeploymentException;
 
 @EagerInit
 public class ContributionDirectoryWatcher {
     private final String path;
     private final ContributionService contributionService;
-    
-    public ContributionDirectoryWatcher(@Autowire ContributionService contributionService, @Property(name = "path")String path) {
+
+    public ContributionDirectoryWatcher(@Autowire ContributionService contributionService,
+                                        @Property(name = "path")String path) {
         this.path = path;
         this.contributionService = contributionService;
     }
-    
+
     @Init
     public void init() {
         File extensionDir = new File(path);
@@ -49,12 +52,12 @@ public class ContributionDirectoryWatcher {
 
         File[] files = extensionDir.listFiles();
         for (File file : files) {
-            try{
+            try {
                 this.contributionService.contribute(file.toURL());
-            }catch(DeploymentException de){
+            } catch (DeploymentException de) {
                 //FIXME handle this
                 de.printStackTrace();
-            }catch(IOException ioe){
+            } catch (IOException ioe) {
                 //FIXME handle this
                 ioe.printStackTrace();
             }

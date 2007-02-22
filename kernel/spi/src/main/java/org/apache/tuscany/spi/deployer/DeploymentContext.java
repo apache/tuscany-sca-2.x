@@ -18,14 +18,13 @@
  */
 package org.apache.tuscany.spi.deployer;
 
-import java.net.URL;
 import java.net.URI;
-import java.util.List;
+import java.net.URL;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
  * A holder that can be used during the load process to store information that is not part of the logical assembly

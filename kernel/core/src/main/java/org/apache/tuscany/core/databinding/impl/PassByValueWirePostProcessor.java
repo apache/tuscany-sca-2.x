@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
  * @version $Rev$ $Date$
  */
 public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
-    private DataBindingRegistry dataBindingRegistry;
+    //private DataBindingRegistry dataBindingRegistry;
 
     public PassByValueWirePostProcessor() {
         super();
@@ -44,7 +44,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
      */
     @Autowire
     public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
-        this.dataBindingRegistry = dataBindingRegistry;
+        //  this.dataBindingRegistry = dataBindingRegistry;
     }
 
     public void process(Wire wire) {
