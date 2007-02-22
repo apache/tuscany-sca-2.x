@@ -18,7 +18,7 @@ import loanapplication.provider.LoanServiceCallback;
  */
 @Service(ClientService.class)
 @Scope("COMPOSITE")
-public class ClientServiceImpl implements LoanServiceCallback {
+public class ClientServiceImpl implements ClientService, LoanServiceCallback {
     private LoanService loanService;
 
     /**

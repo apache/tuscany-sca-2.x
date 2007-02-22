@@ -24,7 +24,6 @@ import java.util.UUID;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
 
 import loanapplication.message.Application;
 import loanapplication.provider.CreditService;
