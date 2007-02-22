@@ -50,7 +50,7 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
-        org.osoa.sca.annotations.Resource annotation = method.getAnnotation(org.osoa.sca.annotations.Resource.class);
+        org.apache.tuscany.api.annotation.Resource annotation = method.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (annotation == null) {
             return;
         }
@@ -81,7 +81,7 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
 
-        org.osoa.sca.annotations.Resource annotation = field.getAnnotation(org.osoa.sca.annotations.Resource.class);
+        org.apache.tuscany.api.annotation.Resource annotation = field.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (annotation == null) {
             return;
         }

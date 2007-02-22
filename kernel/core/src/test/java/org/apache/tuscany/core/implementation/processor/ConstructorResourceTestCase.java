@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.osoa.sca.annotations.Resource;
+import org.apache.tuscany.api.annotation.Resource;
 
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;

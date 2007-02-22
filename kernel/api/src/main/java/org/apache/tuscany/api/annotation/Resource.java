@@ -16,18 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.processor;
+package org.apache.tuscany.api.annotation;
 
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Denotes an invalid usage of {@link @org.apache.tuscany.api.annotation.Resource}
+ * Annotation used to indicate a resource should be provided to an implementation by the runtime.
  *
  * @version $Rev$ $Date$
  */
-public class InvalidResourceException extends ProcessingException {
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Resource {
 
-    public InvalidResourceException(String message, String identifier) {
-        super(message, identifier);
-    }
+    /**
+     * Denotes the name of the resource declared by the implementation.
+     */
+    public String name() default "";
+
+    /**
+     * Denotes if the resource is optional
+     */
+    public boolean optional() default false;
+
+    /**
+     * Denotes the default name of the resource provided by the runtime environment.
+     */
+    public String mappedName() default "";
 }

@@ -31,7 +31,7 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Resource;
+import org.apache.tuscany.api.annotation.Resource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
