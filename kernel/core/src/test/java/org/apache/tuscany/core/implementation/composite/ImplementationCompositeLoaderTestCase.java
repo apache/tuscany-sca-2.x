@@ -25,7 +25,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -46,7 +46,7 @@ import org.easymock.IArgumentMatcher;
  * @version $Rev$ $Date$
  */
 public class ImplementationCompositeLoaderTestCase extends TestCase {
-    private static final QName IMPLEMENTATION_COMPOSITE = new QName(XML_NAMESPACE_1_0, "implementation.composite");
+    private static final QName IMPLEMENTATION_COMPOSITE = new QName(SCA_NS, "implementation.composite");
 
     private ClassLoader cl;
     private ImplementationCompositeLoader loader;

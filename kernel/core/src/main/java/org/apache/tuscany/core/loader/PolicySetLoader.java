@@ -26,7 +26,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -52,13 +52,13 @@ public class PolicySetLoader extends LoaderExtension<PolicySet> {
 
     private static final String WSPOLICY_NAMESPACE = "http://schemas.xmlsoap.org/ws/2004/09/policy";
 
-    private static final QName POLICYSET = new QName(XML_NAMESPACE_1_0, "policySet");
+    private static final QName POLICYSET = new QName(SCA_NS, "policySet");
 
-    private static final QName INTENTMAP = new QName(XML_NAMESPACE_1_0, "intentMap");
+    private static final QName INTENTMAP = new QName(SCA_NS, "intentMap");
 
-    private static final QName QUALIFIER = new QName(XML_NAMESPACE_1_0, "qualifier");
+    private static final QName QUALIFIER = new QName(SCA_NS, "qualifier");
 
-    private static final QName POLICYSETREFERENCE = new QName(XML_NAMESPACE_1_0, "policySetReference");
+    private static final QName POLICYSETREFERENCE = new QName(SCA_NS, "policySetReference");
 
     private static final QName WSPOLICYATTACHMENT = new QName(WSPOLICY_NAMESPACE, "PolicyAttachment");
 
@@ -80,10 +80,10 @@ public class PolicySetLoader extends LoaderExtension<PolicySet> {
         String name = reader.getAttributeValue(null, "name");
         String provides = reader.getAttributeValue(null, "provides");
         String appliesTo = reader.getAttributeValue(null, "appliesTo");
-        PolicySet policySet = new PolicySet(new QName(XML_NAMESPACE_1_0, name), parseIntentName(provides));
+        PolicySet policySet = new PolicySet(new QName(SCA_NS, name), parseIntentName(provides));
         String[] appliesToArtifact = split(appliesTo);
         for (String artifact : appliesToArtifact) {
-            policySet.addAppliedArtifacts(new QName(XML_NAMESPACE_1_0, artifact));
+            policySet.addAppliedArtifacts(new QName(SCA_NS, artifact));
         }
         while (true) {
             switch (reader.next()) {
@@ -114,7 +114,7 @@ public class PolicySetLoader extends LoaderExtension<PolicySet> {
         assert POLICYSETREFERENCE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         LoaderUtil.skipToEndElement(reader);
-        return new PolicySetReference(new QName(XML_NAMESPACE_1_0, name));
+        return new PolicySetReference(new QName(SCA_NS, name));
     }
 
     private IntentMap loadIntentMap(XMLStreamReader reader, DeploymentContext deploymentContext)

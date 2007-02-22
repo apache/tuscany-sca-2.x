@@ -25,7 +25,7 @@ import javax.xml.stream.XMLInputFactory;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.spi.model.IntentMap;
 import org.apache.tuscany.spi.model.PolicySet;
@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.model.Qualifier;
 import junit.framework.TestCase;
 
 public class PolicySetLoaderTestCase extends TestCase {
-    private static final QName POLICYSET = new QName(XML_NAMESPACE_1_0, "policySet");
+    private static final QName POLICYSET = new QName(SCA_NS, "policySet");
 
     public void testLoader() throws Exception {
         PolicySetLoader loader = new PolicySetLoader(null);
@@ -49,8 +49,8 @@ public class PolicySetLoaderTestCase extends TestCase {
         PolicySet policySet = loader.load(null, null, reader, null);
         assertNotNull(policySet);
         assertEquals(2, policySet.getAppliedArtifacts().size());
-        assertTrue(policySet.getAppliedArtifacts().contains(new QName(XML_NAMESPACE_1_0, "binding.ws")));
-        assertTrue(policySet.getAppliedArtifacts().contains(new QName(XML_NAMESPACE_1_0, "binding.jms")));
+        assertTrue(policySet.getAppliedArtifacts().contains(new QName(SCA_NS, "binding.ws")));
+        assertTrue(policySet.getAppliedArtifacts().contains(new QName(SCA_NS, "binding.jms")));
         Collection<IntentMap> intentMaps = policySet.getIntentMaps();
         assertEquals(1, intentMaps.size());
         IntentMap intentMap = intentMaps.iterator().next();

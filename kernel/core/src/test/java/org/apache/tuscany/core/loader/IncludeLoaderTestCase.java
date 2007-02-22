@@ -18,15 +18,22 @@
  */
 package org.apache.tuscany.core.loader;
 
-import java.net.URL;
 import java.net.URI;
-import java.util.Collections;
+import java.net.URL;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.Version;
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.isNull;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import org.osoa.sca.Constants;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -37,21 +44,11 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.ModelObject;
 
-import junit.framework.TestCase;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.isNull;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import org.easymock.EasyMock;
-
 /**
  * @version $Rev$ $Date$
  */
 public class IncludeLoaderTestCase extends TestCase {
-    private static final QName INCLUDE = new QName(Version.XML_NAMESPACE_1_0, "include");
+    private static final QName INCLUDE = new QName(Constants.SCA_NS, "include");
 
     private LoaderRegistry registry;
     private IncludeLoader loader;

@@ -25,7 +25,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -47,8 +47,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  * @version $Rev$ $Date$
  */
 public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
-    private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
-    private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
+    private static final QName SERVICE = new QName(SCA_NS, "service");
+    private static final QName REFERENCE = new QName(SCA_NS, "reference");
 
     @Constructor
     public ServiceLoader(@Autowire LoaderRegistry registry) {

@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.Version;
+import org.osoa.sca.Constants;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -49,7 +49,7 @@ import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
  */
 public class ImplementationCompositeLoader extends LoaderExtension<CompositeImplementation> {
     private static final QName IMPLEMENTATION_COMPOSITE =
-        new QName(Version.XML_NAMESPACE_1_0, "implementation.composite");
+        new QName(Constants.SCA_NS, "implementation.composite");
 
     private final ArtifactRepository artifactRepository;
 

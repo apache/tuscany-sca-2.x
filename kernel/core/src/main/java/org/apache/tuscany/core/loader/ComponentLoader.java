@@ -30,7 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.w3c.dom.Document;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.ObjectFactory;
@@ -80,9 +80,9 @@ import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
  * @version $Rev$ $Date$
  */
 public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
-    private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
-    private static final QName PROPERTY = new QName(XML_NAMESPACE_1_0, "property");
-    private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
+    private static final QName COMPONENT = new QName(SCA_NS, "component");
+    private static final QName PROPERTY = new QName(SCA_NS, "property");
+    private static final QName REFERENCE = new QName(SCA_NS, "reference");
 
     private static final String PROPERTY_FILE_ATTR = "file";
     private static final String PROPERTY_NAME_ATTR = "name";

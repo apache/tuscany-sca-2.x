@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.annotation.Autowire;
 
 public class JavaImplementationLoader extends LoaderExtension {
-    public static final QName IMPLEMENTATION_JAVA = new QName(XML_NAMESPACE_1_0, "implementation.java");
+    public static final QName IMPLEMENTATION_JAVA = new QName(SCA_NS, "implementation.java");
 
     @Constructor({"registry"})
     public JavaImplementationLoader(@Autowire LoaderRegistry registry) {

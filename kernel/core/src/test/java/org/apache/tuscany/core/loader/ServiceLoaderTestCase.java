@@ -25,7 +25,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -49,10 +49,10 @@ import static org.easymock.EasyMock.replay;
  * @version $Rev$ $Date$
  */
 public class ServiceLoaderTestCase extends TestCase {
-    private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
-    private static final QName BINDING = new QName(XML_NAMESPACE_1_0, "binding.foo");
-    private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
-    private static final QName INTERFACE_JAVA = new QName(XML_NAMESPACE_1_0, "interface.java");
+    private static final QName SERVICE = new QName(SCA_NS, "service");
+    private static final QName BINDING = new QName(SCA_NS, "binding.foo");
+    private static final QName REFERENCE = new QName(SCA_NS, "reference");
+    private static final QName INTERFACE_JAVA = new QName(SCA_NS, "interface.java");
     private static final String PARENT_NAME = "sca://localhost/parent/";
     private ServiceLoader loader;
     private DeploymentContext deploymentContext;
