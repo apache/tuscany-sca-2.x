@@ -73,21 +73,21 @@ public class ResourceProcessorTestCase extends TestCase {
 
     private class Foo {
 
-        @org.osoa.sca.annotations.Resource
+        @org.apache.tuscany.api.annotation.Resource
         protected Bar bar;
 
-        @org.osoa.sca.annotations.Resource(optional = true)
+        @org.apache.tuscany.api.annotation.Resource(optional = true)
         protected Bar barNotRequired;
 
-        @org.osoa.sca.annotations.Resource
+        @org.apache.tuscany.api.annotation.Resource
         public void setBar(Bar bar) {
         }
 
-        @org.osoa.sca.annotations.Resource(name = "someName", mappedName = "mapped")
+        @org.apache.tuscany.api.annotation.Resource(name = "someName", mappedName = "mapped")
         public void setBar2(Bar bar) {
         }
 
-        @org.osoa.sca.annotations.Resource
+        @org.apache.tuscany.api.annotation.Resource
         public void setBad() {
         }
 

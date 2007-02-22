@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.host.ResourceResolutionException;
 
 /**
  * Resolves a runtime resource to be injected on a field or method of a Java component type marked with {@link
- * org.osoa.sca.annotations.Resource}. If the mapped name of the resource is an absolute URI such as
+ * org.apache.tuscany.api.annotation.Resource}. If the mapped name of the resource is an absolute URI such as
  * <code>sca://localhost</code> or <code>jndi://localhost</code> the host container namespace is searched; otherwise the
  * URI is assumed to be relative and the parent composite is searched. If a mapped name is not provided, i.e. resolution
  * is by type, the parent composite is first searched followed by the host namespace.
