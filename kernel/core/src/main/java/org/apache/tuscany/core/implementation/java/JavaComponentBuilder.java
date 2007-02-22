@@ -89,7 +89,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             configuration.setDestroyInvoker(new MethodEventInvoker(destroyMethod));
         }
 
-        configuration.setWireService(wireService);
+        configuration.setProxyService(proxyService);
         configuration.setWorkContext(workContext);
         configuration.setScheduler(workScheduler);
         configuration.setImplementationClass(definition.getImplementation().getImplementationClass());

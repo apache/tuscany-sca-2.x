@@ -40,14 +40,14 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
-import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import org.apache.tuscany.core.wire.jdk.JDKProxyService;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
@@ -56,7 +56,7 @@ import org.easymock.IAnswer;
  */
 public class JavaComponentBuilderReferenceTestCase extends TestCase {
     private DeploymentContext deploymentContext;
-    private WireService wireService;
+    private ProxyService proxyService;
     private Constructor<SourceImpl> constructor;
     private CompositeComponent parent;
     private Wire wire;
@@ -80,7 +80,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(sourceImpl);
         definition.setUri(URI.create("component"));
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setWireService(wireService);
+        builder.setProxyService(proxyService);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
         component.setScopeContainer(scopeContainer);
         component.attachWire(wire);
@@ -94,7 +94,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        wireService = new JDKWireService();
+        proxyService = new JDKProxyService();
         parent = new CompositeComponentImpl(URI.create("parent"), null);
         constructor = SourceImpl.class.getConstructor((Class[]) null);
         createDeploymentContext();

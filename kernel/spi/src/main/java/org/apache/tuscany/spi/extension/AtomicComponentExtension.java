@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * An extension point for atomic component type, which new implementation types may extend
@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.wire.WireService;
 public abstract class AtomicComponentExtension extends AbstractComponentExtension implements AtomicComponent {
     protected ScopeContainer scopeContainer;
     protected Scope scope;
-    protected WireService wireService;
+    protected ProxyService proxyService;
     protected WorkContext workContext;
     protected WorkScheduler workScheduler;
     protected ExecutionMonitor monitor;
@@ -49,17 +49,17 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     private boolean allowsPassByReference;
 
     protected AtomicComponentExtension(URI name,
-                                       WireService wireService,
+                                       ProxyService proxyService,
                                        WorkContext workContext,
                                        WorkScheduler workScheduler,
                                        ExecutionMonitor monitor,
                                        int initLevel) {
-        this(name, wireService, workContext, workScheduler, monitor, initLevel, -1, -1);
+        this(name, proxyService, workContext, workScheduler, monitor, initLevel, -1, -1);
 
     }
 
     protected AtomicComponentExtension(URI name,
-                                       WireService wireService,
+                                       ProxyService proxyService,
                                        WorkContext workContext,
                                        WorkScheduler workScheduler,
                                        ExecutionMonitor monitor,
@@ -68,7 +68,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
                                        long maxAge) {
         super(name);
         assert !(maxIdleTime > 0 && maxAge > 0);
-        this.wireService = wireService;
+        this.proxyService = proxyService;
         this.workContext = workContext;
         this.workScheduler = workScheduler;
         this.monitor = monitor;

@@ -83,7 +83,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
         super(configuration.getName(),
-            configuration.getWireService(),
+            configuration.getProxyService(),
             configuration.getWorkContext(),
             configuration.getScheduler(),
             configuration.getMonitor(),
@@ -238,12 +238,12 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
                 Member member = entry.getValue();
                 if (member instanceof Field) {
                     Field field = (Field) member;
-                    ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), wireService, wires);
+                    ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), proxyService, wires);
                     injectors.add(new FieldInjector<Object>(field, factory));
                 } else if (member instanceof Method) {
                     Method method = (Method) member;
                     Class<?> type = method.getParameterTypes()[0];
-                    ObjectFactory<?> factory = new CallbackWireObjectFactory(type, wireService, wires);
+                    ObjectFactory<?> factory = new CallbackWireObjectFactory(type, proxyService, wires);
                     injectors.add(new MethodInjector<Object>(method, factory));
                 } else {
                     throw new InvalidAccessorException("Member must be a field or method", member.getName());
@@ -393,7 +393,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) {
-        return (R) wireService.cast(target);
+        return (R) proxyService.cast(target);
     }
 
     protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire);

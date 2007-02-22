@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import org.apache.tuscany.api.annotation.Monitor;
 
@@ -43,7 +43,7 @@ import org.apache.tuscany.api.annotation.Monitor;
 public abstract class ComponentBuilderExtension<I extends Implementation<?>> implements ComponentBuilder<I> {
     protected BuilderRegistry builderRegistry;
     protected ScopeRegistry scopeRegistry;
-    protected WireService wireService;
+    protected ProxyService proxyService;
     protected WorkScheduler workScheduler;
     protected WorkContext workContext;
     protected PolicyBuilderRegistry policyBuilderRegistry;
@@ -60,8 +60,8 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     }
 
     @Autowire
-    public void setWireService(WireService wireService) {
-        this.wireService = wireService;
+    public void setProxyService(ProxyService proxyService) {
+        this.proxyService = proxyService;
     }
 
     @Autowire

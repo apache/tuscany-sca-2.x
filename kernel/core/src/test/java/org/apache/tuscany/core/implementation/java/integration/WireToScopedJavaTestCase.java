@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -56,7 +56,7 @@ import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
-import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import org.apache.tuscany.core.wire.jdk.JDKProxyService;
 
 /**
  * Validates wiring from a wire to Java atomic component by scope
@@ -65,13 +65,13 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
  */
 public class WireToScopedJavaTestCase extends TestCase {
     private WorkContext workContext = new WorkContextImpl();
-    private WireService wireService = new JDKWireService(new WorkContextImpl(), null);
+    private ProxyService proxyService = new JDKProxyService(new WorkContextImpl());
 
     public void testToStatelessScope() throws Exception {
         StatelessScopeContainer scope = new StatelessScopeContainer(workContext, null);
         scope.start();
         final Wire wire = getWire(scope);
-        Target service = wireService.createProxy(Target.class, wire);
+        Target service = proxyService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals(null, service.getString());
@@ -85,7 +85,7 @@ public class WireToScopedJavaTestCase extends TestCase {
         scope.onEvent(new RequestStart(this));
 
         final Wire wire = getWire(scope);
-        Target service = wireService.createProxy(Target.class, wire);
+        Target service = proxyService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
 
@@ -94,8 +94,8 @@ public class WireToScopedJavaTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 scope.onEvent(new RequestStart(this));
-                Target service2 = wireService.createProxy(Target.class, wire);
-                Target target2 = wireService.createProxy(Target.class, wire);
+                Target service2 = proxyService.createProxy(Target.class, wire);
+                Target target2 = proxyService.createProxy(Target.class, wire);
                 assertEquals(null, service2.getString());
                 service2.setString("bar");
                 assertEquals("bar", service2.getString());
@@ -119,8 +119,8 @@ public class WireToScopedJavaTestCase extends TestCase {
         scope.onEvent(new HttpSessionStart(this, session1));
 
         final Wire wire = getWire(scope);
-        Target service = wireService.createProxy(Target.class, wire);
-        Target target = wireService.createProxy(Target.class, wire);
+        Target service = proxyService.createProxy(Target.class, wire);
+        Target target = proxyService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals("foo", service.getString());
@@ -133,10 +133,10 @@ public class WireToScopedJavaTestCase extends TestCase {
         workContext.setIdentifier(Scope.SESSION, session2);
         scope.onEvent(new HttpSessionStart(this, session2));
 
-        Target service2 = wireService.createProxy(Target.class, wire);
+        Target service2 = proxyService.createProxy(Target.class, wire);
         assertNotNull(service2);
         assertNull(service2.getString());
-        Target target2 = wireService.createProxy(Target.class, wire);
+        Target target2 = proxyService.createProxy(Target.class, wire);
         service2.setString("bar");
         assertEquals("bar", service2.getString());
         assertEquals("bar", target2.getString());
@@ -157,8 +157,8 @@ public class WireToScopedJavaTestCase extends TestCase {
         scope.start();
         scope.onEvent(new ComponentStart(this, null));
         final Wire wire = getWire(scope);
-        Target service = wireService.createProxy(Target.class, wire);
-        Target target = wireService.createProxy(Target.class, wire);
+        Target service = proxyService.createProxy(Target.class, wire);
+        Target target = proxyService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals("foo", service.getString());

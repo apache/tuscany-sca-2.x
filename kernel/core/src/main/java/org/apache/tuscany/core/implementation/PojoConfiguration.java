@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
@@ -55,7 +55,7 @@ public class PojoConfiguration {
     private Map<String, Member> propertySites = new HashMap<String, Member>();
     private Map<String, Member> resourceSites = new HashMap<String, Member>();
     private Map<String, Member> callbackSites = new HashMap<String, Member>();
-    private WireService wireService;
+    private ProxyService proxyService;
     private WorkContext workContext;
     private WorkScheduler scheduler;
     private ExecutionMonitor monitor;
@@ -191,12 +191,12 @@ public class PojoConfiguration {
         propertySites.put(name, member);
     }
 
-    public WireService getWireService() {
-        return wireService;
+    public ProxyService getProxyService() {
+        return proxyService;
     }
 
-    public void setWireService(WireService wireService) {
-        this.wireService = wireService;
+    public void setProxyService(ProxyService proxyService) {
+        this.proxyService = proxyService;
     }
 
     public WorkContext getWorkContext() {

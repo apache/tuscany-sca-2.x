@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -35,7 +35,7 @@ public class CallbackWireObjectFactoryTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testCreateInstance() throws Exception {
-        WireService service = createMock(WireService.class);
+        ProxyService service = createMock(ProxyService.class);
         Foo foo = new Foo() {
         };
         EasyMock.expect(service.createCallbackProxy(EasyMock.eq(Foo.class), EasyMock.isA(List.class))).andReturn(foo);

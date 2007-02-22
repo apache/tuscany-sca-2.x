@@ -157,16 +157,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             if (bindingBuilder == null) {
                 throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
             }
-            ServiceBinding binding =
-                bindingBuilder.build(parent, serviceDefinition, definition, deploymentContext);
-//            if (wireService != null) {
-//                if (targetUri == null) {
-//                    throw new MissingWireTargetException("Service target uri not specified");
-//                }
-//                //String path = uri.getPath();
-//                ServiceContract<?> contract = serviceDefinition.getServiceContract();
-//                wireService.createWires(binding, contract, targetUri.toString());
-//            }
+            ServiceBinding binding = bindingBuilder.build(parent, serviceDefinition, definition, deploymentContext);
             service.addServiceBinding(binding);
         }
         return service;
@@ -193,13 +184,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             // noinspection SuspiciousMethodCalls
             BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
             ReferenceBinding binding = bindingBuilder.build(parent, referenceDefinition, bindingDefinition, context);
-            // create wires for the component
-//            if (wireService != null) {
-//                URI targetUri = bindingDefinition.getTargetUri();
-//                // it is possible for a binding to not have a URI
-//                wireService.createWires(binding, contract, targetUri);
-//
-//            }
             reference.addReferenceBinding(binding);
 
         }

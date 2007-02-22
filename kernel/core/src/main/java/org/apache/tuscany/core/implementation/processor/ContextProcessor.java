@@ -36,7 +36,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.implementation.java.Resource;
-import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.injection.RequestContextObjectFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -48,13 +47,7 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  * @version $Rev$ $Date$
  */
 public class ContextProcessor extends ImplementationProcessorExtension {
-    //private WireService wireService;
     private WorkContext workContext;
-
-    @Autowire
-    public void setWireService(WireService wireService) {
-        //this.wireService = wireService;
-    }
 
     @Autowire
     public void setWorkContext(WorkContext workContext) {
