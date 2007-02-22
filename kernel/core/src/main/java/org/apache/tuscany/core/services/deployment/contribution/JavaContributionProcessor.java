@@ -24,76 +24,76 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.host.deployment.DeploymentException;
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
-import org.apache.tuscany.spi.implementation.java.Introspector;
 import org.apache.tuscany.spi.model.Contribution;
-import org.osoa.sca.annotations.Constructor;
 
-public class JavaContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor{
+import org.apache.tuscany.host.deployment.DeploymentException;
+
+public class JavaContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
     public static final String CONTENT_TYPE = "application/java-vm";
-    private Introspector introspector;
-    
+    //private Introspector introspector;
+
+    @Constructor({"introspector"})
+    public JavaContributionProcessor(@Autowire IntrospectionRegistry introspector) {
+        //this.introspector = introspector;
+    }
+
     @Override
     public String getContentType() {
         return CONTENT_TYPE;
     }
-    
-    @Constructor({"introspector"})
-    public JavaContributionProcessor(@Autowire IntrospectionRegistry introspector){
-        this.introspector = introspector;
-    }
-    
-    private String getClazzName(URL clazzURL){
+
+    private String getClazzName(URL clazzURL) {
         String clazzName;
-        
-        clazzName = clazzURL.toExternalForm().substring(clazzURL.toExternalForm().lastIndexOf("!/") + 2, 
-                                                        clazzURL.toExternalForm().length() - ".class".length());
+
+        clazzName = clazzURL.toExternalForm().substring(clazzURL.toExternalForm().lastIndexOf("!/") + 2,
+            clazzURL.toExternalForm().length() - ".class".length());
         clazzName = clazzName.replace("/", ".");
-        
+
         return clazzName;
     }
-    
 
-    public void processContent(Contribution contribution, URI source, InputStream inputStream) 
-       throws DeploymentException, IOException {
+
+    public void processContent(Contribution contribution, URI source, InputStream inputStream)
+        throws DeploymentException, IOException {
         if (source == null) {
             throw new IllegalArgumentException("Invalid null source uri.");
         }
 
         if (inputStream == null) {
             throw new IllegalArgumentException("Invalid null source inputstream.");
-        }        
-        
-        // TODO Auto-generated method stub
-        
-        try{
-           CompositeClassLoader cl = new CompositeClassLoader(getClass().getClassLoader());
-           cl.addURL(contribution.getLocation());
-           
-           String clazzName = getClazzName(contribution.getArtifact(source).getLocation());
-           System.out.println(clazzName);
-           
-           Class clazz = cl.loadClass(clazzName);
-                      
-//            PojoComponentType javaInfo = introspector.introspect(null, clazz, null, null);
-        }catch(ClassNotFoundException cnfe){
-            String msg = cnfe.getMessage();
-            
         }
+
+        // TODO Auto-generated method stub
+
+        //try {
+        CompositeClassLoader cl = new CompositeClassLoader(getClass().getClassLoader());
+        cl.addURL(contribution.getLocation());
+
+        String clazzName = getClazzName(contribution.getArtifact(source).getLocation());
+        System.out.println(clazzName);
+
+        //Class clazz = cl.loadClass(clazzName);
+
+//            PojoComponentType javaInfo = introspector.introspect(null, clazz, null, null);
+//        } catch (ClassNotFoundException cnfe) {
+//            String msg = cnfe.getMessage();
+//
+//        }
 //      catch(ProcessingException pe){
 //            String msg = pe.getMessage();
-        
-        
 
 
     }
 
-    public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException, IOException {
+    public void processModel(Contribution contribution, URI source, Object modelObject)
+        throws DeploymentException, IOException {
         // TODO Auto-generated method stub
 
     }

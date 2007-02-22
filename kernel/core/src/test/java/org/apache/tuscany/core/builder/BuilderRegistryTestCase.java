@@ -47,7 +47,6 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.easymock.EasyMock;
 
 /**
@@ -81,7 +80,7 @@ public class BuilderRegistryTestCase extends TestCase {
 
         EasyMock.expect(components.put(componentId, component)).andReturn(null);
         EasyMock.replay(components);
-        
+
         ComponentBuilder builder = EasyMock.createMock(ComponentBuilder.class);
         EasyMock.expect(builder.build(parent, componentDefinition, deploymentContext)).andReturn(component);
         EasyMock.replay(builder);

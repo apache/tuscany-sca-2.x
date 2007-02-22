@@ -22,8 +22,8 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -180,7 +180,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
         public Foo() {
         }
 
-        public void setCallback(Object callback){
+        public void setCallback(Object callback) {
 
         }
     }

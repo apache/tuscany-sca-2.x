@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.component;
 
-import java.net.URI;
-
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**

@@ -22,8 +22,9 @@ import java.net.URL;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
@@ -34,13 +35,13 @@ import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ResourceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 
 public class JavaContributionProcessorTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
-    private static final String JAVA_ARTIFACT_URL = "jar:file://repository/sample-calculator.jar!/calculator/AddService.class" ;
+    private static final String JAVA_ARTIFACT_URL =
+        "jar:file://repository/sample-calculator.jar!/calculator/AddService.class";
     private IntrospectionRegistryImpl registry;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
         registry = new IntrospectionRegistryImpl();
@@ -54,17 +55,17 @@ public class JavaContributionProcessorTestCase extends TestCase {
         registry.registerProcessor(new ReferenceProcessor(interfaceProcessorRegistry));
         registry.registerProcessor(new ResourceProcessor());
     }
-    
-    protected URL getClassURL() throws Exception{
+
+    protected URL getClassURL() throws Exception {
         URL jarURL = getClass().getResource(JAR_CONTRIBUTION);
         JarInputStream jar = new JarInputStream(getClass().getResourceAsStream(JAR_CONTRIBUTION));
-        URL rootURL =  new URL("jar:" + jarURL.toString() + "!/");
+        URL rootURL = new URL("jar:" + jarURL.toString() + "!/");
         URL classURL = null;
-        
+
         try {
             while (true) {
                 JarEntry entry = jar.getNextJarEntry();
-                if(entry.getName().endsWith(".class")){
+                if (entry.getName().endsWith(".class")) {
 
                     classURL = new URL(rootURL, entry.getName());
                     break;
@@ -78,7 +79,7 @@ public class JavaContributionProcessorTestCase extends TestCase {
 
     public final void testProcessJarArtifacts() throws Exception {
         //ContributionProcessor javaContributionProcessor = new JavaContributionProcessor(registry);
-        
+
         //URL jarURL = this.getClassURL();
         //javaContributionProcessor.processContent(null, jarURL, jarURL.openStream());
     }

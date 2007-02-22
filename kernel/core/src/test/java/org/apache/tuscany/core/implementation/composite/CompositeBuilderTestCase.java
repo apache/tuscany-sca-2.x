@@ -22,9 +22,9 @@ import java.net.URI;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -46,7 +46,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -64,7 +63,6 @@ import org.easymock.EasyMock;
  */
 public class CompositeBuilderTestCase extends TestCase {
     private static final URI TOP_COMPONENT = URI.create("Top");
-    private static final URI PARENT_COMPONENT = URI.create("Top/Parent");
     private static final URI SOURCE_COMPONENT = URI.create("Top/Parent/SourceComponent");
     private static final URI TARGET_COMPONENT = URI.create("Top/Parent/TargetComponent");
     private static final URI INNER_SOURCE_COMPONENT = URI.create("Top/Parent/SourceComponent/InnerSourceComponent");
@@ -83,7 +81,7 @@ public class CompositeBuilderTestCase extends TestCase {
 
         CompositeComponent component =
             (CompositeComponent) builder.build(null, createTopComponentDef(), deploymentContext);
-        Map<URI,Component> components = deploymentContext.getComponents();
+        Map<URI, Component> components = deploymentContext.getComponents();
         CompositeComponent sourceComponent = (CompositeComponent) components.get(SOURCE_COMPONENT);
         assertNotNull(sourceComponent.getService("InnerSourceService"));
         AtomicComponent innerSourceComponent = (AtomicComponent) components.get(INNER_SOURCE_COMPONENT);

@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
-import org.apache.tuscany.core.component.event.ComponentStart;
 import org.apache.tuscany.core.component.event.ComponentStop;
 
 /**

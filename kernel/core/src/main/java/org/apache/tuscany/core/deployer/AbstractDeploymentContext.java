@@ -18,15 +18,13 @@
  */
 package org.apache.tuscany.core.deployer;
 
-import java.net.URL;
 import java.net.URI;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Base class for DeploymentContext implementations.
@@ -43,9 +41,9 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
     /**
      * Constructor defining properties of this context.
      *
-     * @param classLoader the classloader for loading application resources
+     * @param classLoader  the classloader for loading application resources
      * @param scdlLocation the location of the SCDL defining this composite
-     * @param componentId the id of the component being deployed
+     * @param componentId  the id of the component being deployed
      */
     protected AbstractDeploymentContext(ClassLoader classLoader, URL scdlLocation, URI componentId) {
         this.classLoader = classLoader;

@@ -272,7 +272,7 @@ public class FileHelper {
         } else {
             String filename = url.getFile().replace('/', File.separatorChar);
             int pos = 0;
-            while ((pos = filename.indexOf('%', pos)) >= 0) {
+            while ((pos = filename.indexOf('%', pos)) >= 0) {  // NOPMD
                 if (pos + 2 < filename.length()) {
                     String hexStr = filename.substring(pos + 1, pos + 3);
                     char ch = (char) Integer.parseInt(hexStr, 16);
