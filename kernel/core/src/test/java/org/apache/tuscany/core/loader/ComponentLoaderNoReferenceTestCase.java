@@ -8,7 +8,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -31,8 +31,8 @@ import static org.easymock.EasyMock.isNull;
  * @version $Rev$ $Date$
  */
 public class ComponentLoaderNoReferenceTestCase extends TestCase {
-    private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
-    private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
+    private static final QName COMPONENT = new QName(SCA_NS, "component");
+    private static final QName REFERENCE = new QName(SCA_NS, "reference");
     private static final String NAME = "testComponent";
     private ComponentLoader loader;
     private XMLStreamReader reader;

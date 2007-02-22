@@ -28,7 +28,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -61,7 +61,7 @@ import org.apache.tuscany.core.property.PropertyHelper;
  * @version $Rev$ $Date$
  */
 public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
-    public static final QName COMPOSITE = new QName(XML_NAMESPACE_1_0, "composite");
+    public static final QName COMPOSITE = new QName(SCA_NS, "composite");
     public static final String URI_DELIMITER = "/";
 
     private final ArtifactRepository artifactRepository;

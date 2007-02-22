@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.xml.namespace.QName;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.spi.model.Intent;
 import org.apache.tuscany.spi.model.IntentName;
@@ -35,8 +35,8 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class IntentRegistryImplTestCase extends TestCase {
-    private static final QName WS_BINDING = new QName(XML_NAMESPACE_1_0, "binding.ws");
-    private static final QName JMS_BINDING = new QName(XML_NAMESPACE_1_0, "binding.jms");
+    private static final QName WS_BINDING = new QName(SCA_NS, "binding.ws");
+    private static final QName JMS_BINDING = new QName(SCA_NS, "binding.jms");
     private IntentRegistry intentReg;
 
     @Override

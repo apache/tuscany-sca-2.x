@@ -31,7 +31,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.replay;
 import org.easymock.IAnswer;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -52,7 +52,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  * @version $Rev$ $Date$
  */
 public class ComponentLoaderTestCase extends TestCase {
-    private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
+    private static final QName COMPONENT = new QName(SCA_NS, "component");
     private static final String COMPONENT_NAME = "sca://localhost/parent/";
     private static final String NAME = "testComponent";
     private JavaImplementation impl;

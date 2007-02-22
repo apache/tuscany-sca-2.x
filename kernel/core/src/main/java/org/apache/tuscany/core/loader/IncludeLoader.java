@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -49,7 +49,7 @@ import org.apache.tuscany.core.deployer.ChildDeploymentContext;
  * @version $Rev$ $Date$
  */
 public class IncludeLoader extends LoaderExtension<Include> {
-    private static final QName INCLUDE = new QName(XML_NAMESPACE_1_0, "include");
+    private static final QName INCLUDE = new QName(SCA_NS, "include");
 
     @Constructor({"registry"})
     public IncludeLoader(@Autowire LoaderRegistry registry) {

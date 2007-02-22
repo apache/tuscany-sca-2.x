@@ -27,7 +27,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.spi.model.Intent;
 import org.apache.tuscany.spi.model.IntentName;
@@ -42,8 +42,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.loader.PolicySetLoader;
 
 public class PolicyEngineImplTestCase extends TestCase {
-    private static final QName POLICYSET = new QName(XML_NAMESPACE_1_0, "policySet");
-    private static final QName WS_BINDING = new QName(XML_NAMESPACE_1_0, "binding.ws");
+    private static final QName POLICYSET = new QName(SCA_NS, "policySet");
+    private static final QName WS_BINDING = new QName(SCA_NS, "binding.ws");
     private IntentRegistry intentReg;
     private PolicyEngine policyEngine;
 

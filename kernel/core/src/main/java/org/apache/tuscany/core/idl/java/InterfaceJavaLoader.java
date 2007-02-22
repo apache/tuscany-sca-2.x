@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -48,7 +48,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
-    public static final QName INTERFACE_JAVA = new QName(XML_NAMESPACE_1_0, "interface.java");
+    public static final QName INTERFACE_JAVA = new QName(SCA_NS, "interface.java");
 
     private final JavaInterfaceProcessorRegistry interfaceRegsitry;
 

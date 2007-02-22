@@ -26,7 +26,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -46,9 +46,9 @@ import org.apache.tuscany.spi.model.WireDefinition;
  * @version $Rev: 465084 $ $Date: 2006-10-18 04:00:49 +0530 (Wed, 18 Oct 2006) $
  */
 public class WireLoader extends LoaderExtension<WireDefinition> {
-    private static final QName WIRE = new QName(XML_NAMESPACE_1_0, "wire");
-    private static final QName SOURCE_URI = new QName(XML_NAMESPACE_1_0, "source.uri");
-    private static final QName TARGET_URI = new QName(XML_NAMESPACE_1_0, "target.uri");
+    private static final QName WIRE = new QName(SCA_NS, "wire");
+    private static final QName SOURCE_URI = new QName(SCA_NS, "source.uri");
+    private static final QName TARGET_URI = new QName(SCA_NS, "target.uri");
 
     @Constructor
     public WireLoader(@Autowire LoaderRegistry registry) {

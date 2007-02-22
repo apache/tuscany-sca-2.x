@@ -24,7 +24,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.Version;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.osoa.sca.Constants;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -38,16 +40,13 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
 /**
  * Verifies loading of a reference definition from an XML-based assembly
  *
  * @version $Rev$ $Date$
  */
 public class ReferenceLoaderTestCase extends TestCase {
-    private static final QName REFERENCE = new QName(Version.XML_NAMESPACE_1_0, "reference");
+    private static final QName REFERENCE = new QName(Constants.SCA_NS, "reference");
     private static final String COMPONENT_NAME = "sca://someComponent";
     private URI componentId;
     private ReferenceLoader loader;

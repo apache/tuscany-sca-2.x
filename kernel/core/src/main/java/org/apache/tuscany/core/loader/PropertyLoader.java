@@ -25,7 +25,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 import org.w3c.dom.Document;
 
@@ -51,7 +51,7 @@ public class PropertyLoader extends LoaderExtension<Property> {
     public static final String PROPERTY_MANY_ATTR = "many";
     public static final String PROPERTY_OVERRIDE_ATTR = "override";
     
-    public static final QName PROPERTY = new QName(XML_NAMESPACE_1_0, "property");
+    public static final QName PROPERTY = new QName(SCA_NS, "property");
     private final DocumentBuilder documentBuilder;
 
     @Constructor({"registry"})
