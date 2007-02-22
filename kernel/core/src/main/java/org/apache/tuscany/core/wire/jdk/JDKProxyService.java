@@ -18,24 +18,23 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
 import java.util.List;
 import java.util.Map;
 
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.CallableReference;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
 
-import org.apache.tuscany.core.wire.WireServiceExtension;
+import org.apache.tuscany.core.wire.ProxyServiceExtension;
 
 /**
  * the default implementation of a wire service that uses JDK dynamic proxies
@@ -43,15 +42,15 @@ import org.apache.tuscany.core.wire.WireServiceExtension;
  * @version $$Rev$$ $$Date$$
  */
 @EagerInit
-public class JDKWireService extends WireServiceExtension {
+public class JDKProxyService extends ProxyServiceExtension {
 
-    public JDKWireService() {
-        super(null, null);
+    public JDKProxyService() {
+        super(null);
     }
 
     @Constructor
-    public JDKWireService(@Autowire WorkContext context, @Autowire PolicyBuilderRegistry policyRegistry) {
-        super(context, policyRegistry);
+    public JDKProxyService(@Autowire WorkContext context) {
+        super(context);
     }
 
     public <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException {

@@ -92,7 +92,7 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
             configuration.setDestroyInvoker(new MethodEventInvoker(destroyMethod));
         }
 
-        configuration.setWireService(wireService);
+        configuration.setProxyService(proxyService);
         configuration.setWorkContext(workContext);
         configuration.setScheduler(workScheduler);
         configuration.setImplementationClass(implClass);

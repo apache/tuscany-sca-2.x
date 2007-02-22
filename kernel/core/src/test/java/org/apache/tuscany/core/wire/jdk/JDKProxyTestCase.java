@@ -31,7 +31,7 @@ import org.apache.tuscany.core.wire.WireImpl;
  * @version $Rev$ $Date$
  */
 public class JDKProxyTestCase extends TestCase {
-    private JDKWireService wireService;
+    private JDKProxyService proxyService;
 
     public void testCreateProxy() {
         URI uri = URI.create("#service");
@@ -40,13 +40,13 @@ public class JDKProxyTestCase extends TestCase {
         ServiceContract contract = new ServiceContract() {
         };
         wire.setSourceContract(contract);
-        TestInterface proxy = wireService.createProxy(TestInterface.class, wire);
+        TestInterface proxy = proxyService.createProxy(TestInterface.class, wire);
         assertTrue(Proxy.isProxyClass(proxy.getClass()));
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        wireService = new JDKWireService();
+        proxyService = new JDKProxyService();
     }
 
     public static interface TestInterface {

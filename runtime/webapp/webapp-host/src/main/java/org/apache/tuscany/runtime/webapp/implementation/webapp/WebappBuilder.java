@@ -61,6 +61,6 @@ public class WebappBuilder extends ComponentBuilderExtension<WebappImplementatio
             referenceTypes.put(name, type);
         }
 
-        return new WebappComponent(uri, wireService, workContext, workScheduler, monitor, attributes, referenceTypes);
+        return new WebappComponent(uri, proxyService, workContext, workScheduler, monitor, attributes, referenceTypes);
     }
 }

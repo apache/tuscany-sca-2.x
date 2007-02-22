@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import org.apache.tuscany.core.wire.WireObjectFactory;
 import org.apache.tuscany.core.component.ComponentContextProvider;
@@ -57,13 +57,13 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
     private final ComponentContext context;
 
     public WebappComponent(URI name,
-                           WireService wireService,
+                           ProxyService proxyService,
                            WorkContext workContext,
                            WorkScheduler workScheduler,
                            ExecutionMonitor monitor,
                            Map<String, ObjectFactory<?>> attributes,
                            Map<String, Class<?>> referenceTypes) {
-        super(name, wireService, workContext, workScheduler, monitor, 0, 0, 0);
+        super(name, proxyService, workContext, workScheduler, monitor, 0, 0, 0);
         this.propertyFactories = attributes;
         this.referenceTypes = referenceTypes;
         referenceFactories = new ConcurrentHashMap<String, Wire>(referenceTypes.size());
@@ -88,7 +88,7 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
     }
 
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
-        return new WireObjectFactory<B>(interfaze, wire, wireService);
+        return new WireObjectFactory<B>(interfaze, wire, proxyService);
     }
 
     public void bind(ServletContext servletContext) {
@@ -152,6 +152,6 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) {
-        return (R) wireService.cast(target);
+        return (R) proxyService.cast(target);
     }
 }

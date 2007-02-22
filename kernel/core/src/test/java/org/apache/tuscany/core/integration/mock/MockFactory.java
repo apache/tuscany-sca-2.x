@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -45,14 +45,14 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.WireImpl;
-import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import org.apache.tuscany.core.wire.jdk.JDKProxyService;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public final class MockFactory {
 
-    private static final WireService WIRE_SERVICE = new JDKWireService(new WorkContextImpl(), null);
+    private static final ProxyService PROXY_SERVICE = new JDKProxyService(new WorkContextImpl());
     private static final JavaInterfaceProcessorRegistry REGISTRY = new JavaInterfaceProcessorRegistryImpl();
 
     private MockFactory() {
@@ -98,7 +98,7 @@ public final class MockFactory {
             createJavaComponent(targetName, targetScope, targetClass);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
-        configuration.setWireService(WIRE_SERVICE);
+        configuration.setProxyService(PROXY_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
@@ -136,7 +136,7 @@ public final class MockFactory {
         String serviceName = targetService.getName().substring(targetService.getName().lastIndexOf('.') + 1);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
-        configuration.setWireService(WIRE_SERVICE);
+        configuration.setProxyService(PROXY_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
@@ -183,7 +183,7 @@ public final class MockFactory {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setImplementationClass(clazz);
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
-        configuration.setWireService(WIRE_SERVICE);
+        configuration.setProxyService(PROXY_SERVICE);
         configuration.setWorkContext(new WorkContextImpl());
         configuration.setName(new URI(name));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);

@@ -37,8 +37,8 @@
     </component>
 
     <!-- Wire service -->
-    <component name="wireService">
-        <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireService"/>
+    <component name="proxyService">
+        <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKProxyService"/>
     </component>
 
     <!-- Scope infrastructure -->

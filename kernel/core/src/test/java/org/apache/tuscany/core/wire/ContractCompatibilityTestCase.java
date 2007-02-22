@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import junit.framework.TestCase;
 import org.osoa.sca.CallableReference;
@@ -47,12 +47,12 @@ import org.osoa.sca.CallableReference;
  */
 public class ContractCompatibilityTestCase extends TestCase {
 
-    private WireService wireService = new MockWireService();
+    private ProxyService proxyService = new MockProxyService();
 
     public void testNoOperation() throws Exception {
         ServiceContract source = new MockContract<Type>("FooContract");
         ServiceContract target = new MockContract<Type>("FooContract");
-        wireService.checkCompatibility(source, target, false, false);
+        proxyService.checkCompatibility(source, target, false, false);
     }
 
     public void testBasic() throws Exception {
@@ -66,7 +66,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opSource2);
         target.setOperations(targetOperations);
-        wireService.checkCompatibility(source, target, false, false);
+        proxyService.checkCompatibility(source, target, false, false);
     }
 
     public void testBasicIncompatibleOperationNames() throws Exception {
@@ -81,7 +81,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         targetOperations.put("op2", opSource2);
         target.setOperations(targetOperations);
         try {
-            wireService.checkCompatibility(source, target, false, false);
+            proxyService.checkCompatibility(source, target, false, false);
             fail();
         } catch (IncompatibleServiceContractException e) {
             //expected
@@ -109,7 +109,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
-        wireService.checkCompatibility(source, target, false, false);
+        proxyService.checkCompatibility(source, target, false, false);
     }
 
 
@@ -135,7 +135,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
         try {
-            wireService.checkCompatibility(source, target, false, false);
+            proxyService.checkCompatibility(source, target, false, false);
             fail();
         } catch (IncompatibleServiceContractException e) {
             //expected
@@ -184,7 +184,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
-        wireService.checkCompatibility(source, target, false, false);
+        proxyService.checkCompatibility(source, target, false, false);
     }
 
     /**
@@ -224,7 +224,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
         try {
-            wireService.checkCompatibility(source, target, false, false);
+            proxyService.checkCompatibility(source, target, false, false);
             fail();
         } catch (IncompatibleServiceContractException e) {
             //expected
@@ -252,7 +252,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
-        wireService.checkCompatibility(source, target, false, false);
+        proxyService.checkCompatibility(source, target, false, false);
     }
 
     public void testSourceFaultTargetNoFaultCompatibility() throws Exception {
@@ -271,7 +271,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
-        wireService.checkCompatibility(source, target, false, false);
+        proxyService.checkCompatibility(source, target, false, false);
     }
 
     /**
@@ -341,9 +341,9 @@ public class ContractCompatibilityTestCase extends TestCase {
         }
     }
 
-    private class MockWireService extends WireServiceExtension {
-        public MockWireService() {
-            super(null, null);
+    private class MockProxyService extends ProxyServiceExtension {
+        public MockProxyService() {
+            super(null);
         }
 
         public <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException {

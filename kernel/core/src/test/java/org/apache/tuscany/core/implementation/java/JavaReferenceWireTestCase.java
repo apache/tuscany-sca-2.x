@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -61,7 +61,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
-        WireService service = EasyMock.createMock(WireService.class);
+        ProxyService service = EasyMock.createMock(ProxyService.class);
         EasyMock.expect(service.createProxy(EasyMock.eq(Target.class), EasyMock.eq(wire), EasyMock.isA(Map.class)))
             .andAnswer(new IAnswer<Target>() {
                 public Target answer() throws Throwable {
@@ -72,7 +72,7 @@ public class JavaReferenceWireTestCase extends TestCase {
 
             }).atLeastOnce();
         EasyMock.replay(service);
-        configuration.setWireService(service);
+        configuration.setProxyService(service);
         configuration.setName(new URI("source"));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(scope);

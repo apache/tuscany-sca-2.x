@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * @version $$Rev$$ $$Date$$
  */
 
-public interface WireService {
+public interface ProxyService {
 
     /**
      * Creates a Java proxy for the given wire
@@ -96,6 +96,8 @@ public interface WireService {
      * @return true if the service contracts are compatible
      * @throws IncompatibleServiceContractException
      *          If the source service contract is not compatible with the target one
+     * <p>
+     * TODO JFM this method should be moved from this interface to the allocator phase
      */
     boolean checkCompatibility(ServiceContract<?> source,
                                ServiceContract<?> target,

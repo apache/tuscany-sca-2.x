@@ -54,7 +54,7 @@ public final class ComponentNames {
     /**
      * The name of the component that contains the deployer.
      */
-    public static final URI TUSCANY_WIRE_SERVICE = TUSCANY_SYSTEM.resolve("wireService");
+    public static final URI TUSCANY_WIRE_SERVICE = TUSCANY_SYSTEM.resolve("proxyService");
 
     private ComponentNames() {
     }

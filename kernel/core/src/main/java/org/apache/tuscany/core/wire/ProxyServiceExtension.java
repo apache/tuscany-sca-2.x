@@ -21,21 +21,18 @@ package org.apache.tuscany.core.wire;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * Base class for wire service extensions
  *
  * @version $Rev$ $Date$
  */
-public abstract class WireServiceExtension implements WireService {
-    protected PolicyBuilderRegistry policyRegistry;
+public abstract class ProxyServiceExtension implements ProxyService {
     protected WorkContext context;
 
-    protected WireServiceExtension(WorkContext context, PolicyBuilderRegistry policyRegistry) {
-        this.policyRegistry = policyRegistry;
+    protected ProxyServiceExtension(WorkContext context) {
         this.context = context;
     }
 

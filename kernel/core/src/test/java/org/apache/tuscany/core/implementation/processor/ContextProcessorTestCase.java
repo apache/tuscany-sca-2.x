@@ -21,8 +21,6 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
@@ -33,7 +31,9 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.wire.WireService;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -148,7 +148,6 @@ public class ContextProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         processor = new ContextProcessor();
-        processor.setWireService(EasyMock.createNiceMock(WireService.class));
         processor.setWorkContext(EasyMock.createNiceMock(WorkContext.class));
         composite = EasyMock.createNiceMock(CompositeComponent.class);
     }

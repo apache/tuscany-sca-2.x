@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * Uses a wire to return an object instance
@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.wire.WireService;
 public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
     private Wire wire;
-    private WireService wireService;
+    private ProxyService proxyService;
     // the cache of proxy interface method to operation mappings
     private Map<Method, ChainHolder> mappings;
     private boolean optimizable;
@@ -47,14 +47,14 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
      *
      * @param interfaze   the interface to inject on the client
      * @param wire        the backing wire
-     * @param wireService the wire service to create the proxy
+     * @param proxyService the wire service to create the proxy
      * @throws NoMethodForOperationException
      */
-    public WireObjectFactory(Class<T> interfaze, Wire wire, WireService wireService)
+    public WireObjectFactory(Class<T> interfaze, Wire wire, ProxyService proxyService)
         throws NoMethodForOperationException {
         this.interfaze = interfaze;
         this.wire = wire;
-        this.wireService = wireService;
+        this.proxyService = proxyService;
         this.mappings = WireUtils.createInterfaceToWireMapping(interfaze, wire);
         if (wire.isOptimizable()
             && wire.getSourceContract().getInterfaceClass() != null
@@ -76,7 +76,7 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
             for (Map.Entry<Method, ChainHolder> entry : mappings.entrySet()) {
                 newChains.put(entry.getKey(), entry.getValue().clone());
             }
-            return interfaze.cast(wireService.createProxy(interfaze, wire, newChains));
+            return interfaze.cast(proxyService.createProxy(interfaze, wire, newChains));
         }
     }
 

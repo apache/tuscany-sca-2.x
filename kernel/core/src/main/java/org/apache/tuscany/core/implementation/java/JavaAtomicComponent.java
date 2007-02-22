@@ -61,6 +61,6 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
     }
 
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
-        return new WireObjectFactory<B>(interfaze, wire, wireService);
+        return new WireObjectFactory<B>(interfaze, wire, proxyService);
     }
 }

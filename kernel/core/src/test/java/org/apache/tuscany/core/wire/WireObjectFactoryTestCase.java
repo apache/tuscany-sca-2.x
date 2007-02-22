@@ -26,7 +26,7 @@ import java.util.Map;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -48,7 +48,7 @@ public class WireObjectFactoryTestCase extends TestCase {
         EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
-        WireService service = EasyMock.createMock(WireService.class);
+        ProxyService service = EasyMock.createMock(ProxyService.class);
         service.createProxy(EasyMock.eq(Foo.class), EasyMock.eq(wire), EasyMock.isA(Map.class));
         EasyMock.expectLastCall().andReturn(new Foo() {
             public void hello() {
@@ -92,7 +92,7 @@ public class WireObjectFactoryTestCase extends TestCase {
         EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn((Map) Collections.emptyMap());
         EasyMock.replay(wire);
-        WireService service = EasyMock.createMock(WireService.class);
+        ProxyService service = EasyMock.createMock(ProxyService.class);
         service.createProxy(EasyMock.eq(Foo.class), EasyMock.eq(wire), EasyMock.isA(Map.class));
         EasyMock.expectLastCall().andReturn(new Foo() {
             public void hello() {
@@ -115,7 +115,7 @@ public class WireObjectFactoryTestCase extends TestCase {
         EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn((Map) Collections.emptyMap());
         EasyMock.replay(wire);
-        WireService service = EasyMock.createMock(WireService.class);
+        ProxyService service = EasyMock.createMock(ProxyService.class);
         service.createProxy(EasyMock.eq(Foo.class), EasyMock.eq(wire), EasyMock.isA(Map.class));
         EasyMock.expectLastCall().andReturn(new Foo() {
             public void hello() {

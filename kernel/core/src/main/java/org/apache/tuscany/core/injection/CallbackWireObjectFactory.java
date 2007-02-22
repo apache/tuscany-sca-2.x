@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * Returns proxy instance for a wire callback
@@ -31,18 +31,18 @@ import org.apache.tuscany.spi.wire.WireService;
  * @version $Rev$ $Date$
  */
 public class CallbackWireObjectFactory implements ObjectFactory {
-    private WireService wireService;
+    private ProxyService proxyService;
     private Class<?> interfaze;
     private List<Wire> wires;
 
-    public CallbackWireObjectFactory(Class<?> interfaze, WireService wireService, List<Wire> wires) {
+    public CallbackWireObjectFactory(Class<?> interfaze, ProxyService proxyService, List<Wire> wires) {
         this.interfaze = interfaze;
-        this.wireService = wireService;
+        this.proxyService = proxyService;
         this.wires = wires;
     }
 
     public Object getInstance() throws ObjectCreationException {
-        return wireService.createCallbackProxy(interfaze, wires);
+        return proxyService.createCallbackProxy(interfaze, wires);
     }
 
 }
