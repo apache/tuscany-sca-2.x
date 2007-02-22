@@ -60,7 +60,7 @@ public class TuscanyContextListener implements ServletContextListener {
         WebappUtil utils = getUtils(servletContext);
         try {
             // FIXME work this out from the servlet context
-            String defaultComposite = "http://locahost/sca/";
+            String defaultComposite = "http://locahost/sca";
             URI compositeId = new URI(utils.getInitParameter(COMPOSITE_PARAM, defaultComposite));
             URI componentId = new URI(utils.getInitParameter(COMPONENT_PARAM, "webapp"));
             String scdlPath = utils.getInitParameter(APPLICATION_SCDL_PATH_PARAM, APPLICATION_SCDL_PATH_DEFAULT);

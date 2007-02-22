@@ -132,6 +132,7 @@ public class WebappRuntimeImpl extends AbstractRuntime<WebappRuntimeInfo> implem
             component.start();
         }
 
+        compositeId = URI.create(compositeId.toString()+'/');
         componentId = compositeId.resolve(componentId);
         Component component = getComponentManager().getComponent(componentId);
         if (component == null) {
