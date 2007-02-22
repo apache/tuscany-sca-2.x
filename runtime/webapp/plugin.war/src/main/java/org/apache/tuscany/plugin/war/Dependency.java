@@ -34,11 +34,6 @@ public class Dependency {
     private static final String TYPE_JAR = "jar";
 
     /**
-     * Default boot libraries. TODO Decide on whether to get snapshot version rather than hardcoded version..
-     */
-    private static final Dependency[] DEFAULT_BOOT_LIBS = new Dependency[] { new WebappHostDependency() };
-
-    /**
      * Group Id that is injected in from configuration.
      */
     private String groupId;
@@ -89,15 +84,6 @@ public class Dependency {
     }
 
     /**
-     * Returns the default boot libraries.
-     * 
-     * @return Default boot libraries.
-     */
-    public static Dependency[] getDefaultBootLibs() {
-        return DEFAULT_BOOT_LIBS;
-    }
-
-    /**
      * Checks whether the specified artifact has the same artifact id.
      * 
      * @param artifact
@@ -108,15 +94,4 @@ public class Dependency {
         // TODO Auto-generated method stub
         return artifact.getArtifactId().equals(artifactId);
     }
-
-    /**
-     * Webapp host depndency.
-     */
-    private static class WebappHostDependency extends Dependency {
-        // TODO Decide on whether to get snapshot version rather than hardcoded version
-        private WebappHostDependency() {
-            super("org.apache.tuscany.sca.runtime.webapp", "webapp-host", "1.0-alpha-incubating-SNAPSHOT");
-        }
-    }
-
 }

@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -97,7 +98,7 @@ public class TuscanyWarMojo extends AbstractMojo {
      * 
      * @component
      */
-    private ArtifactMetadataSource metadataSource;
+    public ArtifactMetadataSource metadataSource;
 
     /**
      * Used to look up Artifacts in the remote repository.
@@ -106,7 +107,7 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    private ArtifactFactory artifactFactory;
+    public ArtifactFactory artifactFactory;
 
     /**
      * Used to look up Artifacts in the remote repository.
@@ -115,7 +116,7 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    protected ArtifactResolver resolver;
+    public ArtifactResolver resolver;
 
     /**
      * Location of the local repository.
@@ -124,7 +125,7 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @readonly
      * @required
      */
-    private ArtifactRepository localRepository;
+    public ArtifactRepository localRepository;
 
     /**
      * List of Remote Repositories used by the resolver
@@ -133,7 +134,7 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @readonly
      * @required
      */
-    private List remoteRepositories;
+    public List remoteRepositories;
 
     /**
      * The directory for the generated WAR.
@@ -141,28 +142,28 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @parameter expression="${project.build.directory}"
      * @required
      */
-    private String outputDirectory;
+    public String outputDirectory;
 
     /**
      * The directory for the generated WAR.
      * 
      * @parameter
      */
-    private Dependency[] bootLibs = Dependency.getDefaultBootLibs();
+    public Dependency[] bootLibs;
 
     /**
      * The directory for the generated WAR.
      * 
      * @parameter
      */
-    private Dependency[] extensions = new Dependency[0];
+    public Dependency[] extensions = new Dependency[0];
 
     /**
      * The directory for the generated WAR.
      * 
      * @parameter
      */
-    private Dependency[] dependencies = new Dependency[0];
+    public Dependency[] dependencies = new Dependency[0];
 
     /**
      * The name of the generated WAR.
@@ -170,54 +171,60 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @parameter expression="${project.build.finalName}"
      * @required
      */
-    private String warName;
+    public String warName;
 
     /**
      * A flag to indicate whether extension dependencies should be resolved transitively.
      * 
      * @parameter
      */
-    private boolean loadExtensionDependencies;
+    public boolean loadExtensionDependencies;
 
     /**
-     * The default version of boot dependany jar files
+     * The default version of the runtime to use.
      * 
      * @parameter
      */
-    private String runTimeVersion = null;
+    public String runTimeVersion;
     
     /**
      * WEB-INF jar files.
      */
-    private Set<String> packagedLibs = new HashSet<String>();
+    public Set<String> packagedLibs = new HashSet<String>();
 
     /**
      * Transitive dependencies for extensions.
      */
-    private Map transDepenedencyMap = new HashMap();
+    public Map<String, Set<String>> transDepenedencyMap = new HashMap<String, Set<String>>();
 
     /**
      * Executes the MOJO.
      */
     public void execute() throws MojoExecutionException {
 
-        JarFile originalWar = null;
+        JarFile originalWar;
         JarOutputStream newWar = null;
         File originalWarFile = null;
         File newWarFile = null;
 
         boolean success = false;
 
-        try {
+        if (runTimeVersion == null) {
+            try {
+                runTimeVersion = getPluginVersion();
+            } catch (IOException e) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            }
+        }
 
-        	// if there is a runtime version specified and no bootLib dependancies,
-        	// modify the bootLibs to have the runtime version.
-        	if (runTimeVersion != null && bootLibs == Dependency.getDefaultBootLibs()) {
-        		Dependency dependancy = new Dependency("org.apache.tuscany.sca.runtime.webapp", 
-        				"webapp-host", runTimeVersion);
-        		bootLibs = new Dependency[] {dependancy};
-        	}
-        	
+        if (bootLibs == null) {
+            Dependency dependancy = new Dependency("org.apache.tuscany.sca.runtime.webapp",
+                                                   "webapp-host",
+                                                   runTimeVersion);
+            bootLibs = new Dependency[] {dependancy};
+        }
+
+        try {
             originalWarFile = new File(outputDirectory, warName + ".war");
             originalWar = new JarFile(originalWarFile);
 
@@ -381,7 +388,7 @@ public class TuscanyWarMojo extends AbstractMojo {
 
         // Resolve the artifact
         resolver.resolve(artifact, remoteRepositories, localRepository);
-        resolvedArtifacts.add((Artifact) artifact);
+        resolvedArtifacts.add(artifact);
 
         if (!transitive) {
             return resolvedArtifacts;
@@ -407,6 +414,7 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @param path Path within the war file where artifact is added.
      * @param artifact Artifact to be added.
      * @throws IOException In case of an unexpected IO error.
+     * @return true if the artifact was added
      */
     private boolean addArtifact(JarOutputStream newWar, String path, Artifact artifact) throws IOException {
 
@@ -486,4 +494,15 @@ public class TuscanyWarMojo extends AbstractMojo {
 
     }
 
+    private String getPluginVersion() throws IOException {
+        Properties pomProperties = new Properties();
+        String propFile = "/META-INF/maven/org.apache.tuscany/tuscany-war-plugin/pom.properties";
+        InputStream is = getClass().getResourceAsStream(propFile);
+        try {
+            pomProperties.load(is);
+            return pomProperties.getProperty("version");
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
 }
