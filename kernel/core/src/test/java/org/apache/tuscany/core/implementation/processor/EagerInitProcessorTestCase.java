@@ -19,16 +19,8 @@ public class EagerInitProcessorTestCase extends TestCase {
         EagerInitProcessor processor = new EagerInitProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(null, NoLevel.class, type, null);
-        assertEquals(50, type.getInitLevel());
-    }
-
-    public void testLevel() throws ProcessingException {
-        EagerInitProcessor processor = new EagerInitProcessor();
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(null, Level.class, type, null);
-        assertEquals(1, type.getInitLevel());
+        assertEquals(50, type.getInitLevel());
     }
 
     public void testSubclass() throws ProcessingException {
@@ -36,14 +28,10 @@ public class EagerInitProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(null, SubClass.class, type, null);
-        assertEquals(1, type.getInitLevel());
+        assertEquals(50, type.getInitLevel());
     }
 
     @EagerInit
-    private class NoLevel {
-    }
-
-    @EagerInit(1)
     private class Level {
     }
 
