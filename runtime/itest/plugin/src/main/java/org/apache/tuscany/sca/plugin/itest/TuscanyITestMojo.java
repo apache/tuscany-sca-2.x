@@ -28,11 +28,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Collection;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.metadata.ResolutionGroup;
+import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -56,6 +64,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 
 /**
  * Integration-tests an SCA composite by running it in local copy of Apache Tuscany
@@ -125,6 +134,13 @@ public class TuscanyITestMojo extends AbstractMojo {
     public URL systemScdl;
 
     /**
+     * Set of extension artifacts that should be deployed to the runtime.
+     *
+     * @parameter
+     */
+    public Dependency[] extensions;
+
+    /**
      * @parameter expression="${project.testClasspathElements}"
      * @required
      * @readonly
@@ -179,7 +195,8 @@ public class TuscanyITestMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
         log.info("Starting Tuscany...");
-        MavenEmbeddedRuntime runtime = createRuntime();
+        ClassLoader cl = createHostClassLoader(getClass().getClassLoader(), extensions);
+        MavenEmbeddedRuntime runtime = createRuntime(cl);
         runtime.setMonitorFactory(new MavenMonitorFactory(log));
         try {
             runtime.initialize();
@@ -229,6 +246,59 @@ public class TuscanyITestMojo extends AbstractMojo {
         }
     }
 
+    protected ClassLoader createHostClassLoader(ClassLoader parent, Dependency[] extensions)
+        throws MojoExecutionException {
+        if (extensions == null || extensions.length == 0) {
+            return parent;
+        }
+
+        Set<Artifact> artifacts = new HashSet<Artifact>();
+        for (Dependency extension : extensions) {
+            Artifact artifact = extension.getArtifact(artifactFactory);
+            try {
+                resolver.resolve(artifact, remoteRepositories, localRepository);
+                ResolutionGroup resolutionGroup = metadataSource.retrieve(artifact,
+                                                                          localRepository,
+                                                                          remoteRepositories);
+                ArtifactResolutionResult result = resolver.resolveTransitively(resolutionGroup.getArtifacts(),
+                                                                               artifact,
+                                                                               remoteRepositories,
+                                                                               localRepository,
+                                                                               metadataSource);
+                artifacts.add(artifact);
+                artifacts.addAll(result.getArtifacts());
+            } catch (ArtifactResolutionException e) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            } catch (ArtifactNotFoundException e) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            } catch (ArtifactMetadataRetrievalException e) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            }
+        }
+        URL[] urls = new URL[artifacts.size()];
+        int i = 0;
+        for (Artifact artifact : artifacts) {
+            File file = artifact.getFile();
+            assert file != null;
+            try {
+                urls[i++] = file.toURI().toURL();
+            } catch (MalformedURLException e) {
+                // toURI should have made this valid
+                throw new AssertionError();
+            }
+        }
+
+        Log log = getLog();
+        if (log.isDebugEnabled()) {
+            log.debug("Tuscany extension classpath:");
+            for (URL url : urls) {
+                log.debug("  " + url);
+            }
+        }
+
+        return new CompositeClassLoader(urls, parent);
+    }
+
     public boolean runSurefire(SurefireTestSuite testSuite) throws MojoExecutionException {
         try {
             Properties status = new Properties();
@@ -264,8 +334,7 @@ public class TuscanyITestMojo extends AbstractMojo {
         return reporterManager.getNumErrors() == 0 && reporterManager.getNumFailures() == 0;
     }
 
-    protected MavenEmbeddedRuntime createRuntime() throws MojoExecutionException {
-        ClassLoader hostClassLoader = getClass().getClassLoader();
+    protected MavenEmbeddedRuntime createRuntime(ClassLoader hostClassLoader) throws MojoExecutionException {
         if (systemScdl == null) {
             systemScdl = hostClassLoader.getResource("META-INF/tuscany/embeddedMaven.scdl");
         }
@@ -332,7 +401,7 @@ public class TuscanyITestMojo extends AbstractMojo {
         Map services = componentType.getServices();
         JavaMappedService testService = (JavaMappedService) services.get("testService");
         if (testService == null) {
-            throw new MojoExecutionException("No testServic defined on component: " + definition.getUri());
+            throw new MojoExecutionException("No testService defined on component: " + definition.getUri());
         }
         Map<String, ? extends Operation<?>> operations = testService.getServiceContract().getOperations();
         return new SCATestSet(runtime, name, uri, operations.values());
