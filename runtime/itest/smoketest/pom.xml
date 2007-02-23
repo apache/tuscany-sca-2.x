@@ -52,6 +52,15 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <extensions>
+                        <dependency>
+                            <groupId>org.apache.tuscany.sca.kernel</groupId>
+                            <artifactId>tuscany-spi</artifactId>
+                            <version>${pom.version}</version>
+                        </dependency>
+                    </extensions>
+                </configuration>
             </plugin>
         </plugins>
     </build>

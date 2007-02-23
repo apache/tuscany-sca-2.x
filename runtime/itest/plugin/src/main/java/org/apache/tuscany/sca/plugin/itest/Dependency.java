@@ -21,10 +21,9 @@ package org.apache.tuscany.sca.plugin.itest;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 
-
 /**
  * Represents a configured tuscany dependency for boot and extension libraries.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class Dependency {
@@ -57,10 +56,10 @@ public class Dependency {
 
     /**
      * Initializes the field.
-     * 
-     * @param groupId Group id.
+     *
+     * @param groupId    Group id.
      * @param artifactId Artifact id.
-     * @param version Artifact version.
+     * @param version    Artifact version.
      */
     public Dependency(String groupId, String artifactId, String version) {
         super();
@@ -71,7 +70,7 @@ public class Dependency {
 
     /**
      * Gets the artifact using the specified artifact factory.
-     * 
+     *
      * @param artifactFactory Artifact factory to use.
      * @return Artifact identified by the dependency.
      */
