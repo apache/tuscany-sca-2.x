@@ -115,6 +115,9 @@ public class DefaultAutowireResolver implements AutowireResolver {
             ComponentType<?, ?, ?> candidateType = candidateImpl.getComponentType();
             for (ServiceDefinition service : candidateType.getServices().values()) {
                 Class<?> serviceInterface = service.getServiceContract().getInterfaceClass();
+                if (serviceInterface == null){
+                    continue;
+                }
                 if (requiredInterface.equals(serviceInterface)) {
                     targetUri = URI.create(candidate.getUri().toString() + service.getUri());
                     break;
