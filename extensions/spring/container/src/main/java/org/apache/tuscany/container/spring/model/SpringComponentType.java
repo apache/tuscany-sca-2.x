@@ -21,10 +21,10 @@ package org.apache.tuscany.container.spring.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Component type information for a Spring composite component implementation type. A component type is associated with
@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.model.Property;
  * @version $Rev$ $Date$
  */
 public class SpringComponentType<P extends Property<?>>
-    extends CompositeComponentType<BoundServiceDefinition, BoundReferenceDefinition, P> {
+    extends CompositeComponentType<ServiceDefinition, ReferenceDefinition, P> {
     private Map<String, ServiceDeclaration> serviceDeclarations = new HashMap<String, ServiceDeclaration>();
     private Map<String, ReferenceDeclaration> referenceDeclarations = new HashMap<String, ReferenceDeclaration>();
     private boolean exposeAllBeans;

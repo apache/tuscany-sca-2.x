@@ -19,36 +19,21 @@
 package org.apache.tuscany.container.spring.impl;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.extension.ServiceBindingExtension;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
-import org.apache.tuscany.test.ArtifactFactory;
-import org.apache.tuscany.test.binding.TestBindingDefinition;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import org.easymock.EasyMock;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -56,74 +41,89 @@ import org.springframework.core.io.UrlResource;
  * @version $$Rev$$ $$Date$$
  */
 public class SpringCompositeBuilderTestCase extends TestCase {
-    private ComponentDefinition<SpringImplementation> definition;
 
     /**
-     * Verifies that the builder calls back into the registry to load serviceBindings and wires them to bean targets
-     * when no <code>sca:service</code> tag is specified in the Spring application.xml
+     * Verifies that the builder calls back into the registry to load services and references when no
+     * <code>sca:service</code> tag is specified in the Spring application.xml
      */
-    @SuppressWarnings("unchecked")
     public void testImplicitServiceWiring() throws Exception {
-        // Create a service instance that the mock builder registry will return
-        WireService wireService = ArtifactFactory.createWireService();
-        ServiceBindingExtension binding =
-            new ServiceBindingExtension("fooServiceBinding", null) {
-                public QName getBindingType() {
-                    return null;
-                }
-            };
-        InboundWire inboundWire = ArtifactFactory.createLocalInboundWire("fooServiceBinding", TestBean.class);
-        OutboundWire outboundWire = ArtifactFactory.createLocalOutboundWire("fooServiceBinding", TestBean.class);
-        ArtifactFactory.terminateWire(outboundWire);
-        binding.setInboundWire(inboundWire);
-        binding.setOutboundWire(outboundWire);
-        inboundWire.setContainer(binding);
-        outboundWire.setContainer(binding);
-        Connector connector = ArtifactFactory.createConnector();
-        connector.connect(inboundWire, outboundWire, true);
-
-        Service service = ArtifactFactory.createService("fooServiceBinding", null, outboundWire.getServiceContract());
-        service.addServiceBinding(binding);
+        Service service = EasyMock.createMock(Service.class);
         // Configure the mock builder registry
-        BuilderRegistry registry = createMock(BuilderRegistry.class);
-        expect(registry.build(isA(CompositeComponent.class),
-            isA(BoundServiceDefinition.class),
-            isA(DeploymentContext.class))).andStubReturn(service);
-        replay(registry);
-
-        // Test the SpringCompositeBuilder
+        BuilderRegistry registry = EasyMock.createMock(BuilderRegistry.class);
+        EasyMock.expect(registry.build(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(ServiceDefinition.class),
+            EasyMock.isA(DeploymentContext.class))).andStubReturn(service);
+        EasyMock.replay(registry);
         SpringCompositeBuilder builder = new SpringCompositeBuilder();
-        builder.setWireService(wireService);
         builder.setBuilderRegistry(registry);
-        CompositeComponent parent = createNiceMock(CompositeComponent.class);
-        DeploymentContext context = createNiceMock(DeploymentContext.class);
-        CompositeComponent component = (CompositeComponent) builder.build(parent, definition, context);
-        component.start();
-        TestBean bean = wireService.createProxy(TestBean.class, component.getInboundWire("fooServiceBinding"));
-        assertEquals("call foo", bean.echo("call foo"));
-        verify(registry);
+        ComponentDefinition<SpringImplementation> definition = createDefinitionWithService();
+        CompositeComponent component = (CompositeComponent) builder.build(null, definition, null);
+        assertNotNull(component);
+        EasyMock.verify(registry);
     }
 
-    protected void setUp() throws Exception {
+    /**
+     * Verifies that the builder calls back into the registry to load services and references when no
+     * <code>sca:reference</code> tag is specified in the Spring application.xml
+     */
+    public void testImplicitReferenceWiring() throws Exception {
+        Service service = EasyMock.createMock(Service.class);
+        // Configure the mock builder registry
+        BuilderRegistry registry = EasyMock.createMock(BuilderRegistry.class);
+        EasyMock.expect(registry.build(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(ServiceDefinition.class),
+            EasyMock.isA(DeploymentContext.class))).andStubReturn(service);
+        EasyMock.replay(registry);
+        SpringCompositeBuilder builder = new SpringCompositeBuilder();
+        builder.setBuilderRegistry(registry);
+        ComponentDefinition<SpringImplementation> definition = createDefinitionWithReference();
+        CompositeComponent component = (CompositeComponent) builder.build(null, definition, null);
+        assertNotNull(component);
+        EasyMock.verify(registry);
+    }
+
+    protected ComponentDefinition<SpringImplementation> createDefinitionWithService() throws Exception {
         super.setUp();
-        URL url = getClass().getClassLoader().getResource("META-INF/sca/testServiceContext.xml");
+        ClassLoader loader = getClass().getClassLoader();
+        URL url = loader.getResource("META-INF/sca/testServiceContext.xml");
         Resource resource = new UrlResource(url);
-        SpringImplementation impl = new SpringImplementation(createComponentType());
-        definition = new ComponentDefinition<SpringImplementation>("spring", impl);
+        SpringComponentType<Property<?>> type = createComponentTypeWithService();
+        SpringImplementation impl = new SpringImplementation(loader);
+        impl.setComponentType(type);
+        URI uri = URI.create("composite");
+        ComponentDefinition<SpringImplementation> definition = new ComponentDefinition<SpringImplementation>(uri, impl);
         impl.setApplicationResource(resource);
+        return definition;
     }
 
-    private SpringComponentType<Property<?>> createComponentType() {
+    protected ComponentDefinition<SpringImplementation> createDefinitionWithReference() throws Exception {
+        super.setUp();
+        ClassLoader loader = getClass().getClassLoader();
+        URL url = loader.getResource("META-INF/sca/testServiceContext.xml");
+        Resource resource = new UrlResource(url);
+        SpringComponentType<Property<?>> type = createComponentTypeWithReference();
+        SpringImplementation impl = new SpringImplementation(loader);
+        impl.setComponentType(type);
+        URI uri = URI.create("composite");
+        ComponentDefinition<SpringImplementation> definition = new ComponentDefinition<SpringImplementation>(uri, impl);
+        impl.setApplicationResource(resource);
+        return definition;
+    }
+
+    private SpringComponentType<Property<?>> createComponentTypeWithService() {
         SpringComponentType<Property<?>> componentType = new SpringComponentType<Property<?>>();
-        BoundServiceDefinition serviceDefinition = new BoundServiceDefinition();
-        serviceDefinition.setName("fooService");
-        serviceDefinition.addBinding(new TestBindingDefinition());
-        try {
-            serviceDefinition.setTarget(new URI("testBean"));
-        } catch (URISyntaxException e) {
-            throw new AssertionError();
-        }
+        ServiceDefinition serviceDefinition = new ServiceDefinition();
+        serviceDefinition.setUri(URI.create("fooService"));
+        serviceDefinition.setTarget(URI.create("testBean"));
         componentType.add(serviceDefinition);
+        return componentType;
+    }
+
+    private SpringComponentType<Property<?>> createComponentTypeWithReference() {
+        SpringComponentType<Property<?>> componentType = new SpringComponentType<Property<?>>();
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition();
+        referenceDefinition.setUri(URI.create("fooReference"));
+        componentType.add(referenceDefinition);
         return componentType;
     }
 

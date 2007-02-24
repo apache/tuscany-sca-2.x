@@ -18,25 +18,15 @@
  */
 package org.apache.tuscany.container.spring.impl;
 
-import org.apache.tuscany.spi.QualifiedName;
+import java.net.URI;
+
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
 
-import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.springframework.core.io.Resource;
 
@@ -47,53 +37,14 @@ import org.springframework.core.io.Resource;
  */
 public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
 
-    @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
                            ComponentDefinition<SpringImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderException {
-        String name = componentDefinition.getName();
+        URI uri = componentDefinition.getUri();
         SpringImplementation implementation = componentDefinition.getImplementation();
         Resource resource = implementation.getApplicationResource();
-        SpringCompositeComponent component =
-            new SpringCompositeComponent(name, resource, parent, wireService, connector, null);
-        SpringComponentType<Property<?>> componentType = implementation.getComponentType();
-
-        // We need to set the target invoker as opposed to having the connector do it since the
-        // Spring context is "opaque" to the wiring fabric. In other words, the Spring context does not expose
-        // its beans as SCA components to the connector to wire the serviceBindings to
-        for (BoundServiceDefinition serviceDefinition : componentType.getServices().values()) {
-            // call back into builder registry to handle building of serviceBindings
-            Service service = builderRegistry.build(parent, serviceDefinition, deploymentContext);
-            for (ServiceBinding binding : service.getServiceBindings()) {
-                // wire service to bean invokers
-                InboundWire wire = binding.getInboundWire();
-                QualifiedName targetName = new QualifiedName(serviceDefinition.getTarget().getPath());
-                for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
-                    // FIXME this should go to the connector and get policy and be invoked from
-                    // SpringComposite.prepare()
-                    chain.addInterceptor(new SpringInterceptor());
-                    chain.setTargetInvoker(component.createTargetInvoker(targetName.getPartName(),
-                        chain.getOperation(),
-                        null));
-                }
-            }
-            try {
-                component.register(service);
-            } catch (ComponentRegistrationException e) {
-                throw new BuilderInstantiationException("Error registering service", e);
-            }
-        }
-        for (BoundReferenceDefinition referenceDefinition : componentType.getReferences().values()) {
-            // call back into builder registry to handle building of references
-            Reference reference = builderRegistry.build(parent, referenceDefinition, deploymentContext);
-            connector.connect(reference);
-            try {
-                component.register(reference);
-            } catch (ComponentRegistrationException e) {
-                throw new BuilderInstantiationException("Error registering reference", e);
-            }
-        }
-        return component;
+        ClassLoader cl = implementation.getClassLoader();
+        return new SpringCompositeComponent(uri, resource, proxyService, null, cl);
     }
 
     protected Class<SpringImplementation> getImplementationType() {

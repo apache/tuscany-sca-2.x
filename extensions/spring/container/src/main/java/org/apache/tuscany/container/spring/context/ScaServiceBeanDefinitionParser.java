@@ -25,6 +25,8 @@ import org.springframework.beans.factory.xml.ParserContext;
 
 /**
  * Parser for the &lt;sca:service/&gt; element
+ *
+ * @version $Rev$ $Date$
  */
 public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
 

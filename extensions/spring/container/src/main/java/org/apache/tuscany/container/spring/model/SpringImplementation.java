@@ -31,12 +31,17 @@ import org.springframework.core.io.Resource;
 public class SpringImplementation extends Implementation<SpringComponentType<Property<?>>> {
     private String location;
     private Resource applicationResource;
+    private ClassLoader classLoader;
 
-    public SpringImplementation() {
+    public SpringImplementation(ClassLoader classloader) {
+        this.classLoader = classloader;
     }
 
-    public SpringImplementation(SpringComponentType<Property<?>> componentType) {
-        super(componentType);
+    /**
+     * Returns the classloader of the Spring application context
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
     /**
