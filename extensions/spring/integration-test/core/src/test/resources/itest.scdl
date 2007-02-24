@@ -22,11 +22,11 @@
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
            name="SpecTestHarnessComposite">
 
-   <include scdlResource="META-INF/sca/spring.composite.scdl"/> 
+    <include scdlResource="META-INF/sca/spring.composite.scdl"/>
 
     <component name="WiringTestComponent">
         <tuscany:junit class="org.apache.tuscany.sca.extensions.spring.WiringTestComponentImpl"/>
-        <reference name="bean">SpringComposite/TestBean</reference>
+        <reference name="bean" target="SpringComposite/TestBean"/>
     </component>
 
 </composite>
