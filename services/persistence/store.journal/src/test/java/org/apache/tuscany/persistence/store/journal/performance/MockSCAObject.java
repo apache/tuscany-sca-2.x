@@ -18,47 +18,21 @@
  */
 package org.apache.tuscany.persistence.store.journal.performance;
 
-import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $Rev$ $Date$
  */
 public class MockSCAObject implements SCAObject {
-    public String getName() {
+
+    public URI getUri() {
         return null;
-    }
-
-    public String getCanonicalName() {
-        return "foo";
-    }
-
-    public CompositeComponent getParent() {
-        return null;
-    }
-
-    public Scope getScope() {
-        return null;
-    }
-
-    public void prepare() {
-
-    }
-
-    public Map<Object, Object> getExtensions() {
-        return null;
-    }
-
-    public boolean isSystem() {
-        return false;
     }
 
     public void publish(Event object) {
@@ -88,4 +62,5 @@ public class MockSCAObject implements SCAObject {
     public void stop() throws CoreRuntimeException {
 
     }
+
 }

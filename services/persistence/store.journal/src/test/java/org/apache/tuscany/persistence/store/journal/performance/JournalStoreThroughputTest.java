@@ -68,7 +68,7 @@ public class JournalStoreThroughputTest {
                 try {
                     System.out.println("-----------------------------------------------------");
                     System.out.println("JournalStore.append()");
-                    byte[] idBytes = serializeRecordId(owner.getCanonicalName(), id);
+                    byte[] idBytes = serializeRecordId(owner.getUri().toString(), id);
                     byte[] bytes = serialize(object);
                     System.out.println("Approx record size :" + (bytes.length + idBytes.length));
                     System.out.println("Total threads :" + barrier.getNumberWaiting());
