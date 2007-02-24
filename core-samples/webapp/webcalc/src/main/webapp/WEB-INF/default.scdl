@@ -34,6 +34,6 @@
         <tuscany:webapp>
             <reference name="calculatorService" interface="calculator.CalculatorService"/>
         </tuscany:webapp>
-        <reference name="calculatorService">CalculatorServiceComponent</reference>
+        <reference name="calculatorService" target="CalculatorServiceComponent"/>
     </component>
 </composite>

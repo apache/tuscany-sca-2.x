@@ -25,6 +25,6 @@
 
     <component name="testComponent">
         <tuscany:junit class="calculator.CalculatorTestComponent"/>
-        <reference name="calculatorService">CalculatorServiceComponent</reference>
+        <reference name="calculatorService" target="CalculatorServiceComponent"/>
     </component>
 </composite>

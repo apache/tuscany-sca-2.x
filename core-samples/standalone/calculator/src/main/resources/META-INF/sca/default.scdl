@@ -23,15 +23,15 @@
 
     <component name="CalculatorClient">
 		<launched:launched class="calculator.CalculatorClient"/>
-        <reference name="calculatorService">CalculatorServiceComponent</reference>
+        <reference name="calculatorService" target="CalculatorServiceComponent"/>
     </component>
     
     <component name="CalculatorServiceComponent">
     	<implementation.java class="calculator.CalculatorServiceImpl"/>
-        <reference name="addService">AddServiceComponent</reference>
-        <reference name="subtractService">SubtractServiceComponent</reference>
-        <reference name="multiplyService">MultiplyServiceComponent</reference>
-        <reference name="divideService">DivideServiceComponent</reference>
+        <reference name="addService" target="AddServiceComponent"/>
+        <reference name="subtractService" target="SubtractServiceComponent"/>
+        <reference name="multiplyService" target="MultiplyServiceComponent"/>
+        <reference name="divideService" target="DivideServiceComponent"/>
     </component>
     
     <component name="AddServiceComponent">
