@@ -57,7 +57,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         definition.setUri(URI.create("component"));
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
-        EasyMock.expect(reader.getElementText()).andReturn("target");
+        EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target");
         EasyMock.replay(reader);
         loader.loadReference(reader, context, definition);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
@@ -80,13 +80,37 @@ public class ComponentLoaderRefTestCase extends TestCase {
         definition.setUri(URI.create("component"));
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
-        EasyMock.expect(reader.getElementText()).andReturn("target/fragment");
+        EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target/fragment");
         EasyMock.replay(reader);
         loader.loadReference(reader, context, definition);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
         assertEquals(1, target.getTargets().size());
         URI uri = target.getTargets().get(0);
         assertEquals(componentId.resolve("target#fragment"), uri);
+        EasyMock.verify(reader);
+    }
+
+    public void testLoadReferenceWithMultipleTargetUris() throws LoaderException, XMLStreamException {
+        PojoComponentType<?, MockReferenceDefinition, Property<?>> type =
+            new PojoComponentType<ServiceDefinition, MockReferenceDefinition, Property<?>>();
+        MockReferenceDefinition reference = new MockReferenceDefinition();
+        reference.setUri(URI.create("#reference"));
+        type.add(reference);
+        JavaImplementation impl = new JavaImplementation();
+        impl.setComponentType(type);
+        ComponentDefinition<?> definition = new ComponentDefinition<JavaImplementation>(impl);
+        definition.setUri(URI.create("component"));
+        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
+        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
+        EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target1/fragment1 target2/fragment2");
+        EasyMock.replay(reader);
+        loader.loadReference(reader, context, definition);
+        ReferenceTarget target = definition.getReferenceTargets().get("reference");
+        assertEquals(2, target.getTargets().size());
+        URI uri1 = target.getTargets().get(0);
+        assertEquals(componentId.resolve("target1#fragment1"), uri1);
+        URI uri2 = target.getTargets().get(1);
+        assertEquals(componentId.resolve("target2#fragment2"), uri2);
         EasyMock.verify(reader);
     }
 

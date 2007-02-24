@@ -124,8 +124,6 @@ public class BootstrapDeployerTestCase extends TestCase {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-//        URI uri = URI.create("sca://parent");
-//        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         replay(parent);
         // load the boot1 file using the bootstrap deployer
         componentDefinition.setUri(URI.create("sca://parent/simple"));

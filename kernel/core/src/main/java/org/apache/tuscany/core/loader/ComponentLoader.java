@@ -20,7 +20,10 @@ package org.apache.tuscany.core.loader;
 
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -229,29 +232,38 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             throw new InvalidReferenceException("No name specified");
         }
 
-        String target = reader.getElementText();
+        String target = reader.getAttributeValue(null, "target");
         if (target == null) {
+            // TODO fix   xcv
             throw new InvalidReferenceException("No target specified", name);
         }
-        QualifiedName qName = new QualifiedName(target.trim());
-
         URI componentId = deploymentContext.getComponentId();
-        URI targetURI = componentId.resolve(qName.getFragment());
+        StringTokenizer tokenizer = new StringTokenizer(target);
+        List<URI> uris = new ArrayList<URI>();
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            QualifiedName qName = new QualifiedName(token);
+            uris.add(componentId.resolve(qName.getFragment()));
+        }
+
         Implementation<?> impl = componentDefinition.getImplementation();
         ComponentType<?, ?, ?> componentType = impl.getComponentType();
         if (!componentType.getReferences().containsKey(name)) {
             throw new UndefinedReferenceException(name);
         }
         if (componentType instanceof CompositeComponentType) {
+            if (uris.size() != 1) {
+                // FIXME not yet implemented
+                throw new UnsupportedOperationException();
+            }
             ReferenceDefinition definition = componentType.getReferences().get(name);
             if (definition.getBindings().isEmpty()) {
                 // TODO JFM allow selection of a default binding
-                LocalBindingDefinition binding = new LocalBindingDefinition(targetURI);
+                LocalBindingDefinition binding = new LocalBindingDefinition(uris.get(0));
                 definition.addBinding(binding);
             } else {
                 for (BindingDefinition binding : definition.getBindings()) {
-                    // FIXME this is bad - clarify in the spec how URIs are overriden
-                    binding.setTargetUri(targetURI);
+                    binding.setTargetUri(uris.get(0));
                 }
             }
         } else {
@@ -261,7 +273,9 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 referenceTarget.setReferenceName(componentId.resolve('#' + name));
                 componentDefinition.add(referenceTarget);
             }
-            referenceTarget.addTarget(targetURI);
+            for (URI uri : uris) {
+                referenceTarget.addTarget(uri);
+            }
         }
     }
 
