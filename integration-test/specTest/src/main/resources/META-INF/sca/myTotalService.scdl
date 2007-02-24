@@ -25,8 +25,8 @@
     
     <component name="MyTotalService">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService">MyNCService/MyService</reference>
-		<reference name="myListService">MyNCService/MyListService</reference>
+		<reference name="myService" target="MyNCService/MyService"/>
+		<reference name="myListService" target="MyNCService/MyListService"/>
     </component>
     
 </composite>

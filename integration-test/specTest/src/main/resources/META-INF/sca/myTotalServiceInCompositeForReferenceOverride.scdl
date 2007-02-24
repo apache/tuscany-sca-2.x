@@ -28,8 +28,8 @@
    
     <component name="MyTotalServiceComponentNo">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService">MyServiceRefNo</reference>
-		<reference name="myListService">MyListServiceRefNo</reference>
+		<reference name="myService" target="MyServiceRefNo"/>
+		<reference name="myListService" target="MyListServiceRefNo"/>
     </component>
     
     <reference name="MyServiceRefNo" override="no">
@@ -47,8 +47,8 @@
    
     <component name="MyTotalServiceComponentMay">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService">MyServiceRefMay</reference>
-		<reference name="myListService">MyListServiceRefMay</reference>
+		<reference name="myService" target="MyServiceRefMay"/>
+		<reference name="myListService" target="MyListServiceRefMay"/>
     </component>
     
     <reference name="MyServiceRefMay" override="may">
@@ -66,8 +66,8 @@
    
     <component name="MyTotalServiceComponentMust">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService">MyServiceRefMust</reference>
-		<reference name="myListService">MyListServiceRefMust</reference>
+		<reference name="myService" target="MyServiceRefMust"/>
+		<reference name="myListService" target="MyListServiceRefMust"/>
     </component>
     
     <reference name="MyServiceRefMust" override="must">

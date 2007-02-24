@@ -23,13 +23,13 @@
    
  	<service name="MyTotalService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceComponent</reference>	   
+        <reference target="MyTotalServiceComponent"/>	   
     </service>
    
     <component name="MyTotalServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService">MyServiceRef</reference>
-		<reference name="myListService">MyListServiceRef</reference>
+		<reference name="myService" target="MyServiceRef"/>
+		<reference name="myListService" target="MyListServiceRef"/>
     </component>
     
     <reference name="MyServiceRef">

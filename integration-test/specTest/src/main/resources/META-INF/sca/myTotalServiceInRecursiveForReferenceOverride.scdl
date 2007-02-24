@@ -38,12 +38,12 @@
       
     <component name="MyTotalServiceForReferenceComponent">
         <implementation.composite scdlLocation="myTotalServiceInCompositeForReferenceOverride.scdl"/>
-		<reference name="MyServiceRefNo">MyServiceInComposite/MyService</reference>
-		<reference name="MyListServiceRefNo">MyServiceInComposite/MyListService</reference>
-		<reference name="MyServiceRefMay">MyServiceInComposite/MyService</reference>
-		<reference name="MyListServiceRefMay">MyServiceInComposite/MyListService</reference>
-		<reference name="MyServiceRefMust">MyServiceInComposite/MyService</reference>
-		<reference name="MyListServiceRefMust">MyServiceInComposite/MyListService</reference>
+		<reference name="MyServiceRefNo" target="MyServiceInComposite/MyService"/>
+		<reference name="MyListServiceRefNo" target="MyServiceInComposite/MyListService"/>
+		<reference name="MyServiceRefMay" target="MyServiceInComposite/MyService"/>
+		<reference name="MyListServiceRefMay" target="MyServiceInComposite/MyListService"/>
+		<reference name="MyServiceRefMust" target="MyServiceInComposite/MyService"/>
+		<reference name="MyListServiceRefMust" target="MyServiceInComposite/MyListService"/>
     </component>
 
     <component name="MyServiceInComponent">
