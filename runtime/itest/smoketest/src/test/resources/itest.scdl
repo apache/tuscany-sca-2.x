@@ -25,6 +25,6 @@
 
     <component name="testComponent">
         <tuscany:junit class="org.apache.tuscany.sca.runtime.itest.smoketest.BasicTestComponent"/>
-        <reference name="hello">Hello</reference>
+        <reference name="hello" target="Hello"/>
     </component>
 </composite>
