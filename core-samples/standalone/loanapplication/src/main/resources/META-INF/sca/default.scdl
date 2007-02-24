@@ -23,13 +23,13 @@
 
     <component name="LoanClient">
         <launched:launched class="loanapplication.client.impl.ClientServiceImpl"/>
-        <reference name="loanService">LoanService</reference>
+        <reference name="loanService" target="LoanService"/>
     </component>
 
     <component name="LoanService">
         <implementation.java class="loanapplication.provider.impl.LoanServiceImpl"/>
-        <reference name="creditService">CreditService</reference>
-        <reference name="rateService">RateService</reference>
+        <reference name="creditService" target="CreditService"/>
+        <reference name="rateService" target="RateService"/>
     </component>
 
     <component name="CreditService">
