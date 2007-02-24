@@ -25,41 +25,41 @@
 
     <component name="testConstructorPrimitives">
         <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
-        <reference name="primitives">ConstructorPrimitives</reference>
+        <reference name="primitives" target="ConstructorPrimitives"/>
         <property name='expectedImplementation'>ConstructorPrimitives</property>
     </component>
 
     <component name="testPublicFieldPrimitives">
         <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
-        <reference name="primitives">PublicFieldPrimitives</reference>
+        <reference name="primitives" target="PublicFieldPrimitives"/>
         <property name='expectedImplementation'>PublicFieldPrimitives</property>
     </component>
 
     <component name="testProtectedFieldPrimitives">
         <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
-        <reference name="primitives">ProtectedFieldPrimitives</reference>
+        <reference name="primitives" target="ProtectedFieldPrimitives"/>
         <property name='expectedImplementation'>ProtectedFieldPrimitives</property>
     </component>
 
     <component name="testPublicSetterPrimitives">
         <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
-        <reference name="primitives">PublicSetterPrimitives</reference>
+        <reference name="primitives" target="PublicSetterPrimitives"/>
         <property name='expectedImplementation'>PublicSetterPrimitives</property>
     </component>
 
     <component name="testProtectedSetterPrimitives">
         <tuscany:junit class="org.apache.tuscany.sca.test.property.primitives.PrimitiveTestComponent"/>
-        <reference name="primitives">ProtectedSetterPrimitives</reference>
+        <reference name="primitives" target="ProtectedSetterPrimitives"/>
         <property name='expectedImplementation'>ProtectedSetterPrimitives</property>
     </component>
 
     <!--
     <component name="testComponent">
         <tuscany:junit class="org.apache.tuscany.sca.test.property.PropertyTestComponent"/>
-        <reference name="abService">ABComponent</reference>
-        <reference name="cdService">CDComponent</reference>
-        <reference name="abcdService">ABCDComponent</reference>
-        <reference name="propertyService">PropertyComponent</reference>
+        <reference name="abService" target="ABComponent"/>
+        <reference name="cdService" target="CDComponent"/>
+        <reference name="abcdService" target="ABCDComponent"/>
+        <reference name="propertyService" target="PropertyComponent"/>
     </component>
 -->
 </composite>
