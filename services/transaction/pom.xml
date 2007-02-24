@@ -28,6 +28,7 @@
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany Transaction Extensions</name>
+	 <version>1.0-alpha-incubating-SNAPSHOT</version>
 
     <!-- definition of repositories where the parent pom can be found -->
     <repositories>
