@@ -20,24 +20,24 @@ package org.apache.tuscany.container.spring.impl;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.container.spring.context.SCAApplicationContext;
 import org.springframework.beans.BeansException;
@@ -62,62 +62,57 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
     private AbstractApplicationContext springContext;
     private Resource resource;
-    private WireService wireService;
+    private ProxyService proxyService;
+    private ClassLoader loader;
 
     /**
      * Creates a new composite
      *
-     * @param name           the name of the SCA composite
+     * @param uri            the uri of the SCA composite
      * @param resource       a resource pointing to the application context
-     * @param parent         the SCA composite parent
-     * @param wireService    the wire service to create proxies
-     * @param connector      the connector to use for wiring children
      * @param propertyValues the values of this composite's Properties
      */
-    public SpringCompositeComponent(String name,
+    public SpringCompositeComponent(URI uri,
                                     Resource resource,
-                                    CompositeComponent parent,
-                                    WireService wireService,
-                                    Connector connector,
-                                    Map<String, Document> propertyValues) {
-        super(name, parent, connector, propertyValues);
+                                    ProxyService proxyService,
+                                    Map<String, Document> propertyValues,
+                                    ClassLoader loader) {
+        super(uri, propertyValues);
         this.resource = resource;
-        this.wireService = wireService;
+        this.proxyService = proxyService;
+        this.loader = loader;
     }
 
-    /**
-     * Creates a new composite
-     *
-     * @param name           the name of the SCA composite
-     * @param context        the Spring application context
-     * @param parent         the SCA composite parent
-     * @param connector      the connector to use for wiring children
-     * @param propertyValues the values of this composite's Properties
-     */
-    public SpringCompositeComponent(String name,
-                                    AbstractApplicationContext context,
-                                    CompositeComponent parent,
-                                    Connector connector,
-                                    Map<String, Document> propertyValues) {
-        super(name, parent, connector, propertyValues);
-        this.springContext = context;
-        SCAParentApplicationContext scaApplicationContext = new SCAParentApplicationContext();
-        springContext.setParent(scaApplicationContext);
-        // REVIEW we need to refresh to pick up the parent but this is not optimal
-        springContext.refresh();
-    }
-
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+        throws TargetInvokerCreationException {
+        TargetInvoker invoker = super.createTargetInvoker(targetName, operation);
+        if (invoker != null) {
+            return invoker;
+        }
+        // no service found, wire to a bean using the service name as the bean name
         ServiceContract contract = operation.getServiceContract();
         Method[] methods = contract.getInterfaceClass().getMethods();
         Method method = findMethod(operation, methods);
-        // FIXME test m == null
-        // Treat the serviceName as the Spring bean name to look up
+        if (method == null) {
+            throw new BeanMethodNotFound(operation);
+        }
         return new SpringInvoker(targetName, method, this);
     }
 
-    public void setScopeContainer(ScopeContainer scopeContainer) {
-        // not needed
+    public List<Wire> getWires(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachCallbackWire(Wire wire) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWires(List<Wire> wires) {
+        throw new UnsupportedOperationException();
     }
 
     public ConfigurableApplicationContext getApplicationContext() {
@@ -135,8 +130,16 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         }
         if (springContext == null) {
             SCAParentApplicationContext scaApplicationContext = new SCAParentApplicationContext();
-            springContext = new SCAApplicationContext(scaApplicationContext, resource);
-            springContext.start();
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            try {
+                // FIXME this is horrible
+                Thread.currentThread().setContextClassLoader(loader);
+                springContext = new SCAApplicationContext(scaApplicationContext, resource);
+                springContext.start();
+            } finally {
+                Thread.currentThread().setContextClassLoader(cl);
+
+            }
         }
     }
 
@@ -150,9 +153,15 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     }
 
     /**
-     * An inner class is required to act as the Spring application context parent as opposed to implementing the
-     * interface since the return types for {@link org.springframework.context.ApplicationContext#getParent()} and
-     * {@link org.apache.tuscany.spi.component.CompositeComponent#getParent()} clash
+     * Used in unit testing
+     */
+    void setSpringContext(AbstractApplicationContext springContext) {
+        this.springContext = springContext;
+    }
+    
+    /**
+     * TODO remove need for inner class as SCA.getParent() has been removed and no longer clashes with
+     * ApplicaitonContext.getParent
      */
     private class SCAParentApplicationContext implements ApplicationContext {
 
@@ -169,25 +178,25 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
             Class<?> type = null;
             if (object instanceof Reference) {
                 Reference reference = (Reference) object;
-                InboundWire wire = null;
+                Wire wire = null;
                 if (!reference.getReferenceBindings().isEmpty()) {
                     // FIXME JFM provide a better way for the runtime to select the binding as opposed to the first one
-                    wire = reference.getReferenceBindings().get(0).getInboundWire();
-                    type = wire.getServiceContract().getInterfaceClass();
+                    wire = reference.getReferenceBindings().get(0).getWire();
+                    type = wire.getSourceContract().getInterfaceClass();
                 }
                 if (requiredType != null && requiredType.isAssignableFrom(type)) {
                     // need null check since Spring may pass in a null
                     throw new BeanNotOfRequiredTypeException(name, requiredType, type);
                 }
-                return wireService.createProxy(type, wire);
+                return proxyService.createProxy(type, wire);
             } else if (object instanceof ServiceBinding) {
                 ServiceBinding serviceBinding = (ServiceBinding) object;
-                type = serviceBinding.getInboundWire().getServiceContract().getInterfaceClass();
+                type = serviceBinding.getWire().getSourceContract().getInterfaceClass();
                 if (requiredType != null && requiredType.isAssignableFrom(type)) {
                     // need null check since Spring may pass in a null
                     throw new BeanNotOfRequiredTypeException(name, requiredType, type);
                 }
-                return wireService.createProxy(type, serviceBinding.getInboundWire());
+                return proxyService.createProxy(type, serviceBinding.getWire());
             } else {
                 throw new AssertionError("Illegal object type [" + name + "]");
             }
@@ -222,7 +231,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         }
 
         public String getDisplayName() {
-            return getName();
+            return getUri().toString();
         }
 
         public long getStartupDate() {

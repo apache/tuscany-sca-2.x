@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -33,7 +34,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.Constants;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -42,9 +43,9 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
@@ -54,14 +55,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 /**
- * Loader for handling Spring <spring:implementation.spring> elements.
+ * Loader for handling Spring <implementation.spring> elements.
+ *
+ * @version $Rev$ $Date$
  */
 public class SpringImplementationLoader extends LoaderExtension<SpringImplementation> {
     private static final QName IMPLEMENTATION_SPRING = new QName("http://www.osoa.org/xmlns/sca/1.0",
         "implementation.spring");
     private static final String APPLICATION_CONTEXT = "applicationContext.xml";
-    private static final QName SERVICE_ELEMENT = new QName(XML_NAMESPACE_1_0, "service");
-    private static final QName REFERENCE_ELEMENT = new QName(XML_NAMESPACE_1_0, "reference");
+    private static final QName SERVICE_ELEMENT = new QName(Constants.SCA_NS, "service");
+    private static final QName REFERENCE_ELEMENT = new QName(Constants.SCA_NS, "reference");
 
     private final RuntimeInfo runtimeInfo;
 
@@ -85,8 +88,8 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
             throw new MissingResourceException("No location supplied");
         }
 
-        SpringImplementation implementation = new SpringImplementation();
         ClassLoader classLoader = deploymentContext.getClassLoader();
+        SpringImplementation implementation = new SpringImplementation(classLoader);
         implementation.setApplicationResource(getApplicationContextResource(locationAttr, classLoader));
         registry.loadComponentType(parent, implementation, deploymentContext);
         SpringComponentType type = implementation.getComponentType();
@@ -95,19 +98,19 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                 case START_ELEMENT:
                     QName qname = reader.getName();
                     if (SERVICE_ELEMENT.equals(qname)) {
-                        BoundServiceDefinition service =
-                            (BoundServiceDefinition) registry.load(parent, null, reader, deploymentContext);
+                        ServiceDefinition service =
+                            (ServiceDefinition) registry.load(parent, null, reader, deploymentContext);
                         if (!type.isExposeAllBeans()) {
-                            String name = service.getName();
+                            URI name = service.getUri();
                             if (!type.getServiceDeclarations().containsKey(name)) {
-                                throw new LoaderException("No service defined in Spring context for ", name);
+                                throw new LoaderException("No service defined in Spring context for ", name.toString());
                             }
                         }
-                        type.getDeclaredServices().put(service.getName(), service);
+                        type.getDeclaredServices().put(service.getUri(), service);
                     } else if (REFERENCE_ELEMENT.equals(qname)) {
-                        BoundReferenceDefinition reference =
-                            (BoundReferenceDefinition) registry.load(parent, null, reader, deploymentContext);
-                        type.getDeclaredReferences().put(reference.getName(), reference);
+                        ReferenceDefinition reference =
+                            (ReferenceDefinition) registry.load(parent, null, reader, deploymentContext);
+                        type.getDeclaredReferences().put(reference.getUri(), reference);
                     }
                     break;
                 case END_ELEMENT:
@@ -124,9 +127,9 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         File appXmlFile;
         File locationFile = new File(locationAttr);
 
-        if (!locationFile.isAbsolute()) {
-            locationFile = new File(runtimeInfo.getApplicationRootDirectory(), locationAttr);
-        }
+//        if (!locationFile.isAbsolute()) {
+//            locationFile = new File(runtimeInfo.getApplicationRootDirectory(), locationAttr);
+//        }
         if (!locationFile.exists()) {
             // FIXME hack
             URL url;

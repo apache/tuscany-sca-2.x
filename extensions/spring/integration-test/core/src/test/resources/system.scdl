@@ -16,21 +16,12 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
+ -->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+           name="SpringCoreIntegrationTestSystemComposite">
 
-    <parent>
-        <groupId>org.apache.tuscany.sca.spring</groupId>
-        <artifactId>spring</artifactId>
-        <version>1.0-incubating-SNAPSHOT</version>
-    </parent>
+    <include name="MavenSystemComposite" scdlResource="META-INF/tuscany/embeddedMaven.scdl"/>
+    <include name="SpringSystemComposite" scdlResource="META-INF/sca/spring.system.scdl"/>
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.spring</groupId>
-    <artifactId>spring-container</artifactId>
-    <version>1.0-alpha-incubating-SNAPSHOT</version>
-    <name>Apache Tuscany Spring Framework Container</name>
-    <description>Container for managing Spring composites</description>
-    <packaging>jar</packaging>
-
-</project>
+</composite>

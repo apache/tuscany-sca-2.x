@@ -21,6 +21,8 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * Handler for the &lt;sca:&gt; namespace in an application context
+ *
+ * @version $Rev$ $Date$
  */
 public class ScaNamespaceHandler extends NamespaceHandlerSupport {
 

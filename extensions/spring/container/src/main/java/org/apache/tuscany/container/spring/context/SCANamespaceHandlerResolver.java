@@ -28,7 +28,6 @@ import org.springframework.beans.factory.xml.NamespaceHandler;
  * @version $$Rev$$ $$Date$$
  */
 public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver {
-
     private static final String SCA_NAMESPACE = "http://www.springframework.org/schema/sca";
 
     private ScaNamespaceHandler handler;

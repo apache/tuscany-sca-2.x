@@ -25,6 +25,8 @@ import org.springframework.beans.factory.xml.ParserContext;
 
 /**
  * Parser for the &lt;sca:reference&gt; element
+ *
+ * @version $Rev$ $Date$
  */
 public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
 
