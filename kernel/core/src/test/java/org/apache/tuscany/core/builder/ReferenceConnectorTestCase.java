@@ -108,7 +108,6 @@ public class ReferenceConnectorTestCase extends TestCase {
         component.register(reference);
 
         ReferenceBinding refBinding = EasyMock.createMock(ReferenceBinding.class);
-        EasyMock.expect(refBinding.getUri()).andReturn(REFERENCE_TARGET).atLeastOnce();
         refBinding.createTargetInvoker(EasyMock.isA(String.class), EasyMock.isA(Operation.class));
         EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(refBinding);

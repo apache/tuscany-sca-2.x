@@ -25,11 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.component.event.ComponentStop;
 
@@ -63,7 +60,6 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
             initialized = true;
             lifecycleState = INITIALIZED;
         }
-//        publish(new ComponentStart(this, getUri()));
     }
 
     public void stop() {
@@ -87,11 +83,6 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
         }
         checkInit();
         super.publish(event);
-    }
-
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
-        throws TargetInvokerCreationException {
-        return null;
     }
 
     /**

@@ -35,9 +35,9 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
@@ -113,7 +113,6 @@ public class AtomicConnectorTestCase extends TestCase {
         manager.register(source);
 
         ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
-        EasyMock.expect(binding.getUri()).andReturn(TARGET).atLeastOnce();
         binding.createTargetInvoker(EasyMock.isA(String.class), EasyMock.isA(Operation.class));
         EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(binding);
@@ -155,7 +154,6 @@ public class AtomicConnectorTestCase extends TestCase {
         manager.register(source);
 
         ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
-        EasyMock.expect(binding.getUri()).andReturn(TARGET).atLeastOnce();
         binding.createTargetInvoker(EasyMock.isA(String.class), EasyMock.isA(Operation.class));
         EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(binding);

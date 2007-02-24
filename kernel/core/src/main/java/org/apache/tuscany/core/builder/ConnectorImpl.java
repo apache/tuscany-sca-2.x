@@ -56,7 +56,6 @@ import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
-import org.apache.tuscany.core.binding.local.LocalServiceBinding;
 import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
@@ -91,8 +90,38 @@ public class ConnectorImpl implements Connector {
         this.workContext = workContext;
     }
 
-
+    /**
+     * <strong>Note this method will not work yet</strong>
+     * <p/>
+     * Wires a source and target component based on a wire defintion
+     *
+     * @param definition the wire definition
+     * @throws WiringException
+     */
     public void connect(WireDefinition definition) throws WiringException {
+        URI sourceUri = definition.getSourceUri();
+        assert sourceUri != null;
+        URI targetUri = definition.getTargetUri();
+        assert targetUri != null;
+        URI baseSourceUri = UriHelper.getDefragmentedName(sourceUri);
+        URI baseTargetUri = UriHelper.getDefragmentedName(targetUri);
+        String targetFragment = targetUri.getFragment();
+        Component source = componentManager.getComponent(baseSourceUri);
+        if (source == null) {
+            throw new ComponentNotFoundException("Wire source component not found", baseSourceUri);
+        }
+        Component target = componentManager.getComponent(baseTargetUri);
+        if (target == null) {
+            throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
+        }
+        ServiceContract<?> contract = null;
+        Wire wire = createWire(sourceUri, targetUri, contract, definition.getBindingType());
+        try {
+            attachInvokers(targetFragment, wire, source, target);
+        } catch (TargetInvokerCreationException e) {
+            throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
+        }
+        source.attachWire(wire);
         throw new UnsupportedOperationException();
     }
 
@@ -135,54 +164,10 @@ public class ConnectorImpl implements Connector {
                 String fragment = uri.getFragment();
                 URI sourceURI = refDefinition.getUri();
                 Wire wire = createWire(sourceURI, uri, refDefinition.getServiceContract(), Wire.LOCAL_BINDING);
-                if (fragment == null) {
-                    try {
-                        // add target invokers
-                        attachInvokers(wire, source, target);
-                    } catch (TargetInvokerCreationException e) {
-                        throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                    }
-                } else {
-                    if (target instanceof CompositeComponent) {
-                        CompositeComponent composite = (CompositeComponent) target;
-                        Service service = composite.getService(fragment);
-                        if (service != null) {
-                            if (service.getServiceBindings().isEmpty()) {
-                                // for now, throw an assertion exception.
-                                // We will need to choose bindings during allocation
-                                throw new AssertionError();
-                            }
-                            ServiceBinding binding = service.getServiceBindings().get(0);
-                            try {
-                                // add target invokers
-                                attachInvokers(wire, source, binding);
-                            } catch (TargetInvokerCreationException e) {
-                                throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                            }
-                        }
-                        Reference reference = composite.getReference(fragment);
-                        if (reference != null) {
-                            ReferenceBinding binding = reference.getReferenceBindings().get(0);
-                            try {
-                                // add target invokers
-                                attachInvokers(wire, source, binding);
-                            } catch (TargetInvokerCreationException e) {
-                                throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                            }
-                        } else if (refDefinition.isRequired()) {
-                            throw new ComponentNotFoundException("Target not found", targetUri);
-                        } else if (wire == null) {
-                            continue;
-                        }
-                    } else {
-                        // atomic component
-                        try {
-                            // add target invokers
-                            attachInvokers(wire, source, target);
-                        } catch (TargetInvokerCreationException e) {
-                            throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                        }
-                    }
+                try {
+                    attachInvokers(fragment, wire, source, target);
+                } catch (TargetInvokerCreationException e) {
+                    throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
                 }
                 if (postProcessorRegistry != null) {
                     postProcessorRegistry.process(wire);
@@ -204,81 +189,50 @@ public class ConnectorImpl implements Connector {
         }
     }
 
+    /**
+     * @deprecated
+     */
     protected void connect(ServiceDefinition definition) throws WiringException {
         URI uri = definition.getUri();
         URI sourceUri = UriHelper.getDefragmentedName(uri);
-        URI targetUri = UriHelper.getDefragmentedName(definition.getTarget());
+        URI targetUri = definition.getTarget();
+        URI baseTargetUri = UriHelper.getDefragmentedName(targetUri);
         Component source = componentManager.getComponent(sourceUri);
         if (source == null) {
             throw new ComponentNotFoundException("Source not found", sourceUri);
         }
         if (!(source instanceof CompositeComponent)) {
             // this should not happen
-            throw new InvalidSourceTypeException("Illegal source type", uri, targetUri);
+            throw new InvalidSourceTypeException("Illegal source type", uri, baseTargetUri);
         }
         CompositeComponent sourceComposite = (CompositeComponent) source;
         Service service = sourceComposite.getService(uri.getFragment());
         if (service == null) {
             throw new SourceServiceNotFoundException("Service not found on composite", uri);
         }
-        Component target = componentManager.getComponent(targetUri);
+        Component target = componentManager.getComponent(baseTargetUri);
         if (target == null) {
             throw new ComponentNotFoundException("Target not found", sourceUri);
         }
         ServiceContract<?> contract = definition.getServiceContract();
-        if (target instanceof CompositeComponent) {
-            String fragment = definition.getTarget().getFragment();
-            CompositeComponent targetComposite = (CompositeComponent) target;
-            Invocable invocable;
-            Reference targetReference = targetComposite.getReference(fragment);
-            if (targetReference == null) {
-                Service targetService = targetComposite.getService(fragment);
-                if (targetService == null) {
-                    throw new TargetServiceNotFoundException("Service not found", sourceUri, definition.getTarget());
-                }
-                // TODO select binding in allocator
-                if (targetService.getServiceBindings().isEmpty()) {
-                    invocable = new LocalServiceBinding(service.getUri());
-                } else {
-                    invocable = targetService.getServiceBindings().get(0);
-                }
-            } else {
-                if (targetReference.getReferenceBindings().isEmpty()) {
-                    throw new NoBindingException("No binding specified for wire", sourceUri, targetUri);
-                } else {
-                    invocable = targetReference.getReferenceBindings().get(0);
-                }
+        // TODO if no binding, do local
+        for (ServiceBinding binding : service.getServiceBindings()) {
+            Wire wire = createWire(uri, targetUri, contract, binding.getBindingType());
+            binding.setWire(wire);
+            if (postProcessorRegistry != null) {
+                postProcessorRegistry.process(wire);
             }
-            for (ServiceBinding binding : service.getServiceBindings()) {
-                Wire wire = createWire(uri, targetUri, contract, binding.getBindingType());
-                binding.setWire(wire);
-                if (postProcessorRegistry != null) {
-                    postProcessorRegistry.process(wire);
-                }
-                try {
-                    attachInvokers(wire, binding, invocable);
-                } catch (TargetInvokerCreationException e) {
-                    throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                }
-            }
-
-        } else {
-            // TODO if no binding, do local
-            for (ServiceBinding binding : service.getServiceBindings()) {
-                Wire wire = createWire(uri, targetUri, contract, binding.getBindingType());
-                binding.setWire(wire);
-                if (postProcessorRegistry != null) {
-                    postProcessorRegistry.process(wire);
-                }
-                try {
-                    attachInvokers(wire, binding, target);
-                } catch (TargetInvokerCreationException e) {
-                    throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                }
+            try {
+                attachInvokers(definition.getTarget().getFragment(), wire, binding, target);
+            } catch (TargetInvokerCreationException e) {
+                throw new WireCreationException("Error creating invoker", sourceUri, baseTargetUri, e);
             }
         }
     }
 
+    /**
+     * @deprecated
+     */
     protected void connect(ReferenceDefinition definition) throws WiringException {
         URI uri = definition.getUri();
         URI sourceUri = UriHelper.getDefragmentedName(uri);
@@ -308,40 +262,10 @@ public class ConnectorImpl implements Connector {
                 if (target == null) {
                     throw new ComponentNotFoundException("Target not found", sourceUri);
                 }
-                if (target instanceof CompositeComponent) {
-                    String fragment = targetUri.getFragment();
-                    CompositeComponent targetComposite = (CompositeComponent) target;
-                    Invocable invocable;
-                    Reference targetReference = targetComposite.getReference(fragment);
-                    if (targetReference == null) {
-                        Service targetService = targetComposite.getService(fragment);
-                        if (targetService == null) {
-                            throw new TargetServiceNotFoundException("Service not found", sourceUri, targetUri);
-                        }
-                        // TODO select binding in allocator
-                        if (targetService.getServiceBindings().isEmpty()) {
-                            throw new NoBindingException("No binding specified for wire", sourceUri, targetUri);
-                        } else {
-                            invocable = targetService.getServiceBindings().get(0);
-                        }
-                    } else {
-                        if (targetReference.getReferenceBindings().isEmpty()) {
-                            throw new NoBindingException("No binding specified for wire", sourceUri, targetUri);
-                        } else {
-                            invocable = targetReference.getReferenceBindings().get(0);
-                        }
-                    }
-                    try {
-                        attachInvokers(wire, binding, invocable);
-                    } catch (TargetInvokerCreationException e) {
-                        throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                    }
-                } else {
-                    try {
-                        attachInvokers(wire, binding, target);
-                    } catch (TargetInvokerCreationException e) {
-                        throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                    }
+                try {
+                    attachInvokers(targetUri.getFragment(), wire, binding, target);
+                } catch (TargetInvokerCreationException e) {
+                    throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
                 }
             } else {
                 Wire wire = createWire(sourceUri, null, binding.getBindingServiceContract(), binding.getBindingType());
@@ -378,10 +302,10 @@ public class ConnectorImpl implements Connector {
         return wire;
     }
 
-    private void attachInvokers(Wire wire, Invocable source, Invocable target)
+    private void attachInvokers(String name, Wire wire, Invocable source, Invocable target)
         throws TargetInvokerCreationException {
         for (InvocationChain chain : wire.getInvocationChains().values()) {
-            String name = target.getUri().getFragment();
+            //String name = target.getUri().getFragment();
             chain.setTargetInvoker(target.createTargetInvoker(name, chain.getOperation()));
         }
         for (InvocationChain chain : wire.getCallbackInvocationChains().values()) {

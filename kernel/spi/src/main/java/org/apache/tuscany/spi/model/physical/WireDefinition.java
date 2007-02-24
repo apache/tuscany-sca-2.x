@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.model.ModelObject;
 
@@ -32,15 +33,35 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 public class WireDefinition extends ModelObject {
-
-    // The resolved URI of the wire
-    private URI wireUri;
-
+    private QName bindingType;
+    // The resolved source URI of the wire
+    private URI sourceUri;
+    // The resolved source URI of the wire
+    private URI targetUri;
     // Interceptors defined against the wire
     private final Set<InterceptorDefinition> interceptors = new HashSet<InterceptorDefinition>();
 
     /**
+     * Returns the wire binding type.
+     *
+     * @return the binding type of the wire.
+     */
+    public QName getBindingType() {
+        return bindingType;
+    }
+
+    /**
+     * Sets the wire binding type
+     *
+     * @param bindingType the wire binding type
+     */
+    public void setBindingType(QName bindingType) {
+        this.bindingType = bindingType;
+    }
+
+    /**
      * Returns a read-only view of the available interceptors.
+     *
      * @return List of interceptors available on the wire.
      */
     public Set<InterceptorDefinition> getInterceptors() {
@@ -49,6 +70,7 @@ public class WireDefinition extends ModelObject {
 
     /**
      * Adds an interceptor definition.
+     *
      * @param interceptorDefinition Interceptor definition to add to the wire.
      */
     public void addInterceptor(InterceptorDefinition interceptorDefinition) {
@@ -61,19 +83,40 @@ public class WireDefinition extends ModelObject {
     }
 
     /**
-     * Sets the Wire URI.
-     * @param wireUri Wire URI.
+     * Sets the Wire source URI.
+     *
+     * @param sourceUri Wire source URI.
      */
-    public void setWireUri(URI wireUri) {
-        this.wireUri = wireUri;
+    public void setSourceUri(URI sourceUri) {
+        this.sourceUri = sourceUri;
     }
 
     /**
-     * Gets the Wire URI.
-     * @return Wire URI.
+     * Gets the Wire source URI.
+     *
+     * @return Wire source URI.
      */
-    public URI getWireUri() {
-        return wireUri;
+    public URI getSourceUri() {
+        return sourceUri;
+    }
+
+
+    /**
+     * Sets the Wire target URI.
+     *
+     * @param targetUri Wire source URI.
+     */
+    public void setTargetUri(URI targetUri) {
+        this.targetUri = targetUri;
+    }
+
+    /**
+     * Gets the Wire target URI.
+     *
+     * @return Wire target URI.
+     */
+    public URI getTargetUri() {
+        return targetUri;
     }
 
 }
