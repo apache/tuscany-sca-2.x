@@ -5,9 +5,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.TransactionManager;
 
-import org.osoa.sca.annotations.Resource;
-
 import org.apache.tuscany.spi.annotation.Autowire;
+
+import org.apache.tuscany.api.annotation.Resource;
 
 public class TestService1 {
     

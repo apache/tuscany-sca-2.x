@@ -28,6 +28,7 @@ import javax.persistence.spi.PersistenceUnitInfo;
 /**
  * Default implementation of the persistence unit builder.
  *
+ * @version $Rev$ $Date$
  */
 public class DefaultPersistenceUnitBuilder implements PersistenceUnitBuilder {
 

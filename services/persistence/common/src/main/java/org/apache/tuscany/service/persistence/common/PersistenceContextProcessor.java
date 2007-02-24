@@ -20,6 +20,7 @@ package org.apache.tuscany.service.persistence.common;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.net.URI;
 import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -30,13 +31,18 @@ import javax.transaction.TransactionManager;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.InterfaceJavaIntrospector;
 import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.model.ServiceContract;
+
+import org.apache.tuscany.core.component.ComponentManager;
 
 /**
  * Annotation processor for injecting <code>PersistenceUnit</code> annotations on properties.
@@ -48,8 +54,9 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
     /**
      * Transaction Manager
      */
-    @Autowire
     private TransactionManager transactionManager;
+    private ComponentManager componentManager;
+    private InterfaceJavaIntrospector introspector;
 
     /**
      * Persistence unit builder
@@ -63,6 +70,21 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
      */
     public PersistenceContextProcessor(@Autowire ImplementationProcessorService service) {
         super(PersistenceContext.class, service);
+    }
+
+    @Autowire
+    public void setTransactionManager(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
+    @Autowire
+    public void setComponentManager(ComponentManager componentManager) {
+        this.componentManager = componentManager;
+    }
+
+    @Autowire
+    public void setIntrospector(InterfaceJavaIntrospector introspector) {
+        this.introspector = introspector;
     }
 
     /**
@@ -83,13 +105,18 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
                                     DeploymentContext context) throws ProcessingException {
 
         String unitName = annotation.unitName();
-        EntityManagerFactory emf = (EntityManagerFactory) parent.getSystemChild(unitName);
+        URI unitUri = parent.getUri().resolve(unitName);
+        EntityManagerFactory emf = (EntityManagerFactory) componentManager.getComponent(unitUri);
 
         if (emf == null) {
             emf = builder.newEntityManagerFactory(unitName, context.getClassLoader());
             try {
-                parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
-            } catch (ComponentRegistrationException e) {
+                ServiceContract<EntityManagerFactory> contract =
+                    (ServiceContract) introspector.introspect(EntityManagerFactory.class);
+                componentManager.registerJavaObject(unitUri, contract, emf);
+            } catch (RegistrationException e) {
+                throw new ProcessingException(e);
+            } catch (InvalidServiceContractException e) {
                 throw new ProcessingException(e);
             }
         }
