@@ -23,7 +23,7 @@
 
     <component name="Main">
         <tuscany:launched class="org.apache.tuscany.sca.runtime.standalone.smoketest.Launched"/>
-        <reference name="hello">Hello</reference>
+        <reference name="hello" target="Hello"/>
     </component>
 
     <component name="Hello">

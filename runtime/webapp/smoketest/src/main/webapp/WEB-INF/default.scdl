@@ -25,7 +25,7 @@
         <tuscany:webapp>
             <reference name="hello" interface="org.apache.tuscany.sca.runtime.webapp.smoketest.HelloService"/>
         </tuscany:webapp>
-        <reference name="hello">HelloComponent</reference>
+        <reference name="hello" target="HelloComponent"/>
     </component>
 
     <component name="HelloComponent">
