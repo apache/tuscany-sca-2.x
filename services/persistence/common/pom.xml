@@ -29,6 +29,7 @@
     <packaging>jar</packaging>
     <name>Apache Tuscany JPA</name>
     <description>Tuscany JPA Integration.</description>
+	 <version>1.0-alpha-incubating-SNAPSHOT</version>
 
 
     <repositories>
@@ -44,12 +45,6 @@
     </repositories>
 
     <dependencies>
-		<dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>test</artifactId>
-            <version>${sca.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
@@ -58,19 +53,19 @@
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-spi</artifactId>
-            <version>${sca.version}</version>
+			   <version>1.0-alpha-incubating-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.services.transaction</groupId>
             <artifactId>tuscany-transaction-geronimo</artifactId>
-            <version>${sca.version}</version>
+			   <version>1.0-alpha-incubating-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-api</artifactId>
-            <version>${sca.version}</version>
+			   <version>1.0-alpha-incubating-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

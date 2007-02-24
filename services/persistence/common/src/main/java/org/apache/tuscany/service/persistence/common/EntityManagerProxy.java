@@ -31,6 +31,7 @@ import javax.transaction.TransactionManager;
 /**
  * Proxy for entity manager.
  *
+ * @version $Rev$ $Date$
  */
 public class EntityManagerProxy implements InvocationHandler {
     

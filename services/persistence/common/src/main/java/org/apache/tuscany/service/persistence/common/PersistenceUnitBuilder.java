@@ -23,16 +23,16 @@ import javax.persistence.EntityManagerFactory;
 /**
  * Interface for building persistence units as specified by the JPA specification..
  *
+ * @version $Rev$ $Date$
  */
 public interface PersistenceUnitBuilder {
-    
+
     /**
-     * Builds the entity manager factory matching the unit name. All persistence.xml 
-     * files available for the specified classloader is scanned for the specified 
-     * persistence unit. The JPA provider API is used to create the entity manager 
-     * factory.
-     * 
-     * @param unitName Persistence unit name.
+     * Builds the entity manager factory matching the unit name. All persistence.xml files available for the specified
+     * classloader is scanned for the specified persistence unit. The JPA provider API is used to create the entity
+     * manager factory.
+     *
+     * @param unitName    Persistence unit name.
      * @param classLoader Classloader.
      * @return Entity manager factory.
      */

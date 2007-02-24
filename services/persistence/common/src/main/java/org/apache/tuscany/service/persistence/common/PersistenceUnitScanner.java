@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 /**
  * Scans the classloader for the specified persistence unit.
  *
+ * @version $Rev$ $Date$
  */
 class PersistenceUnitScanner {
 
