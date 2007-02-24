@@ -21,6 +21,7 @@ package org.apache.tuscany.persistence.store.journal;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -76,7 +77,8 @@ public class JournalStoreExpireTestCase extends TestCase {
         super.setUp();
         TestUtils.cleanupLog();
         owner = EasyMock.createMock(SCAObject.class);
-        EasyMock.expect(owner.getCanonicalName()).andReturn("foo").atLeastOnce();
+        URI uri = URI.create("foo");
+        EasyMock.expect(owner.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(owner);
     }
 

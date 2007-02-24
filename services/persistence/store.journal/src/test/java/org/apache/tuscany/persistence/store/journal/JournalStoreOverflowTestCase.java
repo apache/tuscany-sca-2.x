@@ -19,6 +19,7 @@
 package org.apache.tuscany.persistence.store.journal;
 
 import java.util.UUID;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
@@ -78,7 +79,7 @@ public class JournalStoreOverflowTestCase extends TestCase {
         super.setUp();
         TestUtils.cleanupLog();
         owner = EasyMock.createMock(SCAObject.class);
-        EasyMock.expect(owner.getCanonicalName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(owner.getUri()).andReturn(URI.create("foo")).atLeastOnce();
         EasyMock.replay(owner);
     }
 

@@ -38,10 +38,10 @@ import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
 import org.apache.tuscany.spi.services.store.Store;
+import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.apache.tuscany.spi.services.store.StoreReadException;
 import org.apache.tuscany.spi.services.store.StoreWriteException;
-import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
 
 import org.apache.tuscany.api.annotation.Monitor;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.partition;
@@ -405,7 +405,7 @@ public class JournalStore extends AbstractEventPublisher implements Store {
 
     public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
         try {
-            journal.writeHeader(serializeHeader(Header.DELETE, 0, owner.getCanonicalName(), id, NEVER), true);
+            journal.writeHeader(serializeHeader(Header.DELETE, 0, owner.getUri().toString(), id, NEVER), true);
             RecordKey key = new RecordKey(id, owner);
             // remove from the cache
             cache.remove(key);
@@ -440,7 +440,7 @@ public class JournalStore extends AbstractEventPublisher implements Store {
             throw new StoreWriteException("Type must implement serializable", name, id);
         }
         Serializable serializable = (Serializable) object;
-        String canonicalName = owner.getCanonicalName();
+        String name = owner.getUri().toString();
         List<byte[]> bytes;
         try {
             bytes = partition(serialize(serializable), blockSize);
@@ -448,10 +448,10 @@ public class JournalStore extends AbstractEventPublisher implements Store {
             throw new StoreWriteException(e);
         }
         try {
-            byte[] header = serializeHeader(operation, bytes.size(), canonicalName, id, expiration);
+            byte[] header = serializeHeader(operation, bytes.size(), name, id, expiration);
             long headerKey = journal.writeHeader(header, false);
             // write chunked records in non-forced mode except last one
-            byte[] recordId = serializeRecordId(canonicalName, id);
+            byte[] recordId = serializeRecordId(name, id);
             long[] keys = new long[bytes.size() + 1];
             keys[0] = headerKey;
             for (int i = 0; i < bytes.size() - 1; i++) {
@@ -550,7 +550,7 @@ public class JournalStore extends AbstractEventPublisher implements Store {
                         RecordEntry record = entry.getValue();
                         if (record.getExpiration() <= now) {
                             try {
-                                String ownerName = key.getOwner().getCanonicalName();
+                                String ownerName = key.getOwner().getUri().toString();
                                 String id = key.getId();
                                 byte[] header =
                                     SerializationHelper.serializeHeader(Header.DELETE, 0, ownerName, id, Store.NEVER);

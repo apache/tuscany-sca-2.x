@@ -54,7 +54,7 @@ public class RecordKey {
         if (id != null ? !id.equals(recordKey.id) : recordKey.id != null) {
             return false;
         }
-        return !(owner != null ? !owner.getCanonicalName().equals(recordKey.owner.getCanonicalName()) :
+        return !(owner != null ? !owner.getUri().equals(recordKey.owner.getUri()) :
             recordKey.owner != null);
     }
 
