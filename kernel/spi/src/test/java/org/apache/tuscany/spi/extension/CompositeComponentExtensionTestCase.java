@@ -18,17 +18,17 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.lang.reflect.Type;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
@@ -73,21 +73,30 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         assertNotNull(composite.getReference(null));
     }
 
+    public void testCreateTargetInvoker() throws Exception {
+        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
+        EasyMock.expect(binding.createTargetInvoker(EasyMock.eq("service"), EasyMock.isA(Operation.class)))
+            .andReturn(null);
+        EasyMock.replay(binding);
+        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
+        bindings.add(binding);
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
+        EasyMock.expect(service.getServiceBindings()).andReturn(bindings).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
+        Operation<Type> operation = new Operation<Type>("op", null, null, null);
+        composite.createTargetInvoker("service", operation);
+        EasyMock.verify(binding);
+
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         contract = new ServiceContract<Object>(Object.class) {
 
         };
         composite = new CompositeComponentExtension(new URI("foo"), null) {
-
-            public TargetInvoker createTargetInvoker(String targetName, Operation operation)
-                throws TargetInvokerCreationException {
-                throw new UnsupportedOperationException();
-            }
-
-            public void setScopeContainer(ScopeContainer scopeContainer) {
-                throw new UnsupportedOperationException();
-            }
 
             public List<Wire> getWires(String name) {
                 throw new UnsupportedOperationException();

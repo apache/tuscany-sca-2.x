@@ -20,7 +20,6 @@ package org.apache.tuscany.spi.extension;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,11 +29,16 @@ import org.w3c.dom.Document;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * An extension point for composite components, which new types may extend
@@ -62,14 +66,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
 
     public Document getPropertyValue(String name) {
         return propertyValues.get(name);
-    }
-
-    public List<Service> getServices() {
-        return Collections.unmodifiableList(services);
-    }
-
-    public List<Reference> getReferences() {
-        return Collections.unmodifiableList(references);
     }
 
     public Service getService(String name) {
@@ -128,4 +124,28 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         }
     }
 
+    public TargetInvoker createTargetInvoker(String name, Operation operation)
+        throws TargetInvokerCreationException {
+        Service service = getService(name);
+        if (service != null) {
+            if (service.getServiceBindings().isEmpty()) {
+                // for now, throw an assertion exception.
+                // We will need to choose bindings during allocation
+                throw new AssertionError();
+            }
+            ServiceBinding binding = service.getServiceBindings().get(0);
+            return binding.createTargetInvoker(name, operation);
+        }
+        Reference reference = getReference(name);
+        if (reference != null) {
+            if (reference.getReferenceBindings().isEmpty()) {
+                // for now, throw an assertion exception.
+                // We will need to choose bindings during allocation
+                throw new AssertionError();
+            }
+            ReferenceBinding binding = reference.getReferenceBindings().get(0);
+            binding.createTargetInvoker(name, operation);
+        }
+        return null;
+    }
 }

@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.component;
 
-import java.util.List;
-
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -66,25 +64,11 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     Service getService(String name);
 
     /**
-     * Returns the services for the component
-     *
-     * @return the services for the component
-     */
-    List<Service> getServices();
-
-    /**
      * Returns the reference with the given name or null if not found
      *
      * @param name the reference name which is relative to the composite
      * @return the reference with the given name or null if not found
      */
     Reference getReference(String name);
-
-    /**
-     * Returns the references for the component
-     *
-     * @return the references for the component
-     */
-    List<Reference> getReferences();
 
 }
