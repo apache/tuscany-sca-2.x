@@ -22,11 +22,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.injection.ResourceObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -43,13 +38,18 @@ import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.ResourceObjectFactory;
+
 /**
  * @version $Revsion$ $Date$
- * 
- * TODO This is a straight copy from the JUnit component builder
- *
+ *          <p/>
+ *          TODO This is a straight copy from the JUnit component builder
  */
-public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched>{
+public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched> {
 
     private ResourceHost host;
 
@@ -63,15 +63,14 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
         return Launched.class;
     }
 
-    public Component build(Component parent,
-                           ComponentDefinition<Launched> definition,
-                           DeploymentContext deployment) throws BuilderConfigException {
+    @SuppressWarnings({"unchecked"})
+    public Component build(ComponentDefinition<Launched> definition, DeploymentContext deployment)
+        throws BuilderConfigException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             definition.getImplementation().getComponentType();
         Class<?> implClass = componentType.getImplClass();
 
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setParent(parent);
         if (definition.getInitLevel() != null) {
             configuration.setInitLevel(definition.getInitLevel());
         } else {
@@ -135,7 +134,7 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
         handleProperties(definition, component);
 
         // handle resources
-        handleResources(componentType, component, parent);
+        handleResources(componentType, component);
 
         handleCallbackSites(componentType, configuration);
 
@@ -164,8 +163,8 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
     @SuppressWarnings({"unchecked"})
     private void handleResources(
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
-        JavaAtomicComponent component,
-        Component parent) {
+        JavaAtomicComponent component) {
+        
         for (Resource resource : componentType.getResources().values()) {
             ObjectFactory<?> objectFactory = resource.getObjectFactory();
             if (objectFactory != null) {

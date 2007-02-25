@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -46,12 +45,11 @@ import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * @version $Revision$ $Date$
- *
  */
-public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<Launched>{
-    private static final URI SERVICE_NAME = URI.create("#main");    
+public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<Launched> {
+    private static final URI SERVICE_NAME = URI.create("#main");
     private Introspector introspector;
-    
+
     public LaunchedComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry,
                                        @Autowire IntrospectionRegistry introspector) {
         super(loaderRegistry);
@@ -63,9 +61,9 @@ public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<La
         return Launched.class;
     }
 
-    public void load(Component parent,
-                     Launched implementation,
-                     DeploymentContext deploymentContext) throws LoaderException {
+    public void load(
+        Launched implementation,
+        DeploymentContext deploymentContext) throws LoaderException {
         String className = implementation.getClassName();
         Class<?> implClass;
         try {
@@ -73,17 +71,17 @@ public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<La
         } catch (ClassNotFoundException e) {
             throw new MissingResourceException(className, e);
         }
-        PojoComponentType componentType = loadByIntrospection(parent, implementation, deploymentContext, implClass);
+        PojoComponentType componentType = loadByIntrospection(implementation, deploymentContext, implClass);
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(Component parent,
-                                                    Launched implementation,
-                                                    DeploymentContext deploymentContext,
-                                                    Class<?> implClass) throws ProcessingException {
+    protected PojoComponentType loadByIntrospection(
+        Launched implementation,
+        DeploymentContext deploymentContext,
+        Class<?> implClass) throws ProcessingException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>(implClass);
-        introspector.introspect(parent, implClass, componentType, deploymentContext);
+        introspector.introspect(implClass, componentType, deploymentContext);
 
         ServiceContract launchedContract = generateContract(implClass);
         JavaMappedService testService = new JavaMappedService(SERVICE_NAME, launchedContract, false);
@@ -94,14 +92,16 @@ public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<La
     private static final DataType<List<DataType<Type>>> INPUT_TYPE;
     private static final DataType<Type> OUTPUT_TYPE;
     private static final List<DataType<Type>> FAULT_TYPE;
+
     static {
         List<DataType<Type>> paramDataTypes = new ArrayList<DataType<Type>>();
+        //noinspection unchecked
         paramDataTypes.add(new DataType(null, String[].class, String[].class));
         INPUT_TYPE = new DataType<List<DataType<Type>>>("idl:input", Object[].class, paramDataTypes);
         OUTPUT_TYPE = new DataType<Type>(null, Object.class, Object.class);
         FAULT_TYPE = Collections.emptyList();
     }
-    
+
     protected ServiceContract generateContract(Class<?> implClass) {
         Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
         Operation<Type> operation = new Operation<Type>("main", INPUT_TYPE, OUTPUT_TYPE, FAULT_TYPE);

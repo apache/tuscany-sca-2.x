@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.net.URI;
 import javax.servlet.ServletContext;
 
 import org.apache.tuscany.host.RuntimeInfo;
