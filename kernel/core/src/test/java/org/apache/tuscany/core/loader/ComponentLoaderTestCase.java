@@ -147,7 +147,7 @@ public class ComponentLoaderTestCase extends TestCase {
         expect(reader.getAttributeValue(null, "file")).andReturn(null);
         expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         replay(reader);
-        loader.loadProperty(reader, null, defn);
+        loader.loadProperty(reader, defn, null);
         assertEquals("$source", defn.getPropertyValues().get("name").getSource());
         EasyMock.verify(reader);
     }
