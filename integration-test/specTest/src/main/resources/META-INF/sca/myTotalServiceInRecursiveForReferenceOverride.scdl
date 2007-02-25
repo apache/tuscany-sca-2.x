@@ -21,19 +21,16 @@
 	   xmlns:foo="http://foo" 
            name="MyTotalServiceInRecursiveTest">
    
-	<service name="MyTotalServiceNo">
+	<service name="MyTotalServiceNo" promote="MyTotalServiceForReferenceComponent/MyTotalServiceNo">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceForReferenceComponent/MyTotalServiceNo</reference>	   
     </service>
 
-	<service name="MyTotalServiceMay">
+	<service name="MyTotalServiceMay" promote="MyTotalServiceForReferenceComponent/MyTotalServiceMay">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceForReferenceComponent/MyTotalServiceMay</reference>	   
     </service>
 
-	<service name="MyTotalServiceMust">
+	<service name="MyTotalServiceMust" promote="MyTotalServiceForReferenceComponent/MyTotalServiceMust">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceForReferenceComponent/MyTotalServiceMust</reference>	   
     </service>
       
     <component name="MyTotalServiceForReferenceComponent">
