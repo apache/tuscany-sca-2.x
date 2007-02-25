@@ -57,7 +57,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         if (method == null) {
             throw new TargetMethodNotFoundException(operation);
         }
-        return new JavaTargetInvoker(method, this, callbackClass, workContext, monitor);
+        return new JavaTargetInvoker(method, this, callbackClass, workContext);
     }
 
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {

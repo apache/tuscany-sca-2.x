@@ -139,7 +139,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         private Target target;
 
         public Invoker(WorkContext workContext, ExecutionMonitor monitor, Target target) {
-            super(workContext, monitor);
+            super(workContext);
             this.target = target;
         }
 

@@ -28,10 +28,7 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.ProxyService;
-
-import org.apache.tuscany.api.annotation.Monitor;
 
 /**
  * An extension point for component builders. When adding support for new component types, implementations may extend
@@ -44,10 +41,8 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     protected BuilderRegistry builderRegistry;
     protected ScopeRegistry scopeRegistry;
     protected ProxyService proxyService;
-    protected WorkScheduler workScheduler;
     protected WorkContext workContext;
     protected PolicyBuilderRegistry policyBuilderRegistry;
-    protected ExecutionMonitor monitor;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
@@ -65,11 +60,6 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     }
 
     @Autowire
-    public void setWorkScheduler(WorkScheduler workScheduler) {
-        this.workScheduler = workScheduler;
-    }
-
-    @Autowire
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }
@@ -77,11 +67,6 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     @Autowire
     public void setPolicyBuilderRegistry(PolicyBuilderRegistry registry) {
         policyBuilderRegistry = registry;
-    }
-
-    @Monitor
-    public void setMonitor(ExecutionMonitor monitor) {
-        this.monitor = monitor;
     }
 
     @Init

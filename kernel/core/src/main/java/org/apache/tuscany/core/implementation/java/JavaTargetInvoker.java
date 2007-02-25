@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -47,24 +46,17 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     protected Class callbackClass;
     protected boolean stateless;
 
-    public JavaTargetInvoker(Method operation,
-                             JavaAtomicComponent component,
-                             Class callbackClass,
-                             WorkContext context,
-                             ExecutionMonitor monitor) {
-        super(context, monitor);
+    public JavaTargetInvoker(Method operation, JavaAtomicComponent component, Class clazz, WorkContext context) {
+        super(context);
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
         stateless = Scope.STATELESS == component.getScope();
-        this.callbackClass = callbackClass;
+        this.callbackClass = clazz;
     }
 
-    public JavaTargetInvoker(Method operation,
-                             JavaAtomicComponent component,
-                             WorkContext context,
-                             ExecutionMonitor monitor) {
-        this(operation, component, null, context, monitor);
+    public JavaTargetInvoker(Method operation, JavaAtomicComponent component, WorkContext context) {
+        this(operation, component, null, context);
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {

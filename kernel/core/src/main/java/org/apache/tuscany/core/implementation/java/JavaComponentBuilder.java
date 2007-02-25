@@ -88,7 +88,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         configuration.setProxyService(proxyService);
         configuration.setWorkContext(workContext);
-        configuration.setScheduler(workScheduler);
         configuration.setImplementationClass(definition.getImplementation().getImplementationClass());
 
         // setup property injection sites
@@ -122,7 +121,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         for (Class<?> clazz : constr.getParameterTypes()) {
             configuration.addConstructorParamType(clazz);
         }
-        configuration.setMonitor(monitor);
         configuration.setName(definition.getUri());
         handleCallbackSites(componentType, configuration);
 

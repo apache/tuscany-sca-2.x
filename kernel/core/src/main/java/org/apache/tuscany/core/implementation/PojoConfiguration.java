@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ExecutionMonitor;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.ProxyService;
 
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -55,8 +53,6 @@ public class PojoConfiguration {
     private Map<String, Member> callbackSites = new HashMap<String, Member>();
     private ProxyService proxyService;
     private WorkContext workContext;
-    private WorkScheduler scheduler;
-    private ExecutionMonitor monitor;
     private long maxIdleTime = -1;
     private long maxAge = -1;
     private Class implementationClass;
@@ -195,22 +191,6 @@ public class PojoConfiguration {
 
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
-    }
-
-    public WorkScheduler getScheduler() {
-        return scheduler;
-    }
-
-    public void setScheduler(WorkScheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
-    public ExecutionMonitor getMonitor() {
-        return monitor;
-    }
-
-    public void setMonitor(ExecutionMonitor monitor) {
-        this.monitor = monitor;
     }
 
     public Class getImplementationClass() {

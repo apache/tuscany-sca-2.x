@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
@@ -41,28 +40,18 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     protected Scope scope;
     protected ProxyService proxyService;
     protected WorkContext workContext;
-    protected WorkScheduler workScheduler;
-    protected ExecutionMonitor monitor;
     private final int initLevel;
     private final long maxIdleTime;
     private final long maxAge;
     private boolean allowsPassByReference;
 
-    protected AtomicComponentExtension(URI name,
-                                       ProxyService proxyService,
-                                       WorkContext workContext,
-                                       WorkScheduler workScheduler,
-                                       ExecutionMonitor monitor,
-                                       int initLevel) {
-        this(name, proxyService, workContext, workScheduler, monitor, initLevel, -1, -1);
-
+    protected AtomicComponentExtension(URI name, ProxyService proxyService, WorkContext workContext, int initLevel) {
+        this(name, proxyService, workContext, initLevel, -1, -1);
     }
 
     protected AtomicComponentExtension(URI name,
                                        ProxyService proxyService,
                                        WorkContext workContext,
-                                       WorkScheduler workScheduler,
-                                       ExecutionMonitor monitor,
                                        int initLevel,
                                        long maxIdleTime,
                                        long maxAge) {
@@ -70,8 +59,6 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         assert !(maxIdleTime > 0 && maxAge > 0);
         this.proxyService = proxyService;
         this.workContext = workContext;
-        this.workScheduler = workScheduler;
-        this.monitor = monitor;
         this.initLevel = initLevel;
         this.maxIdleTime = maxIdleTime;
         this.maxAge = maxAge;
