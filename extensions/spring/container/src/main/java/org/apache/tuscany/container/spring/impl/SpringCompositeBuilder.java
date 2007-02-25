@@ -36,9 +36,8 @@ import org.springframework.core.io.Resource;
  */
 public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
 
-    public Component build(Component parent,
-                           ComponentDefinition<SpringImplementation> componentDefinition,
-                           DeploymentContext deploymentContext) throws BuilderException {
+    public Component build(ComponentDefinition<SpringImplementation> componentDefinition, DeploymentContext context)
+        throws BuilderException {
         URI uri = componentDefinition.getUri();
         SpringImplementation implementation = componentDefinition.getImplementation();
         Resource resource = implementation.getApplicationResource();

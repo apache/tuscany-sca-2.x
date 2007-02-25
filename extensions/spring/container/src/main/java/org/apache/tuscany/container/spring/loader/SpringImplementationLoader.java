@@ -37,7 +37,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.Constants;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -78,9 +77,9 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
     }
 
     @SuppressWarnings("unchecked")
-    public SpringImplementation load(Component parent,
-                                     ModelObject object, XMLStreamReader reader,
-                                     DeploymentContext deploymentContext)
+    public SpringImplementation load(
+        ModelObject object, XMLStreamReader reader,
+        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
         String locationAttr = reader.getAttributeValue(null, "location");
@@ -91,7 +90,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         ClassLoader classLoader = deploymentContext.getClassLoader();
         SpringImplementation implementation = new SpringImplementation(classLoader);
         implementation.setApplicationResource(getApplicationContextResource(locationAttr, classLoader));
-        registry.loadComponentType(parent, implementation, deploymentContext);
+        registry.loadComponentType(implementation, deploymentContext);
         SpringComponentType type = implementation.getComponentType();
         while (true) {
             switch (reader.next()) {
@@ -99,7 +98,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                     QName qname = reader.getName();
                     if (SERVICE_ELEMENT.equals(qname)) {
                         ServiceDefinition service =
-                            (ServiceDefinition) registry.load(parent, null, reader, deploymentContext);
+                            (ServiceDefinition) registry.load(null, reader, deploymentContext);
                         if (!type.isExposeAllBeans()) {
                             URI name = service.getUri();
                             if (!type.getServiceDeclarations().containsKey(name)) {
@@ -109,7 +108,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                         type.getDeclaredServices().put(service.getUri(), service);
                     } else if (REFERENCE_ELEMENT.equals(qname)) {
                         ReferenceDefinition reference =
-                            (ReferenceDefinition) registry.load(parent, null, reader, deploymentContext);
+                            (ReferenceDefinition) registry.load(null, reader, deploymentContext);
                         type.getDeclaredReferences().put(reference.getUri(), reference);
                     }
                     break;

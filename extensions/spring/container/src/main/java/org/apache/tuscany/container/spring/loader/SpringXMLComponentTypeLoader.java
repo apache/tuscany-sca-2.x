@@ -27,7 +27,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -62,9 +61,9 @@ public class SpringXMLComponentTypeLoader extends ComponentTypeLoaderExtension<S
         return SpringImplementation.class;
     }
 
-    public void load(Component parent,
-                     SpringImplementation implementation,
-                     DeploymentContext context) throws LoaderException {
+    public void load(
+        SpringImplementation implementation,
+        DeploymentContext context) throws LoaderException {
         if (implementation.getComponentType() != null) {
             // FIXME hack since the builder registry loads the implementation type and the Spring implementation
             //  loader needs to as well. The second call is done by the builder registry and we just ignore it.
