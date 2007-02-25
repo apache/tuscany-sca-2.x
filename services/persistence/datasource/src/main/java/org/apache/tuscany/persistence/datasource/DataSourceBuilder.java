@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -43,7 +42,7 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
         return DataSourceImplementation.class;
     }
 
-    public Component build(CompositeComponent parent,
+    public Component build(Component parent,
                            ComponentDefinition<DataSourceImplementation> definition,
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         try {
