@@ -36,7 +36,6 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>>
     extends ComponentType<S, R, P> {
     private Class<?> implClass;
-    private boolean allowsPassByReference;
     private ConstructorDefinition<?> constructorDefinition;
     private Method initMethod;
     private Method destroyMethod;
@@ -52,6 +51,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Constructor specifying the java class for the POJO this is describing.
+     *
      * @param implClass the java class for the POJO this is describing
      */
     public PojoComponentType(Class<?> implClass) {
@@ -60,6 +60,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Returns the java class for the POJO this is describing.
+     *
      * @return the java class for the POJO this is describing
      */
     public Class<?> getImplClass() {
@@ -68,6 +69,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Sets the java class for the POJO this is describing.
+     *
      * @param implClass the java class for the POJO this is describing
      */
     public void setImplClass(Class<?> implClass) {
@@ -76,6 +78,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Returns the constructor used to instantiate implementation instances.
+     *
      * @return the constructor used to instantiate implementation instances
      */
     public ConstructorDefinition<?> getConstructorDefinition() {
@@ -84,6 +87,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Sets the constructor used to instantiate implementation instances
+     *
      * @param definition the constructor used to instantiate implementation instances
      */
     public void setConstructorDefinition(ConstructorDefinition<?> definition) {
@@ -92,6 +96,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Returns the component initializer method.
+     *
      * @return the component initializer method
      */
     public Method getInitMethod() {
@@ -100,6 +105,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Sets the component initializer method.
+     *
      * @param initMethod the component initializer method
      */
     public void setInitMethod(Method initMethod) {
@@ -108,6 +114,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Returns the component destructor method.
+     *
      * @return the component destructor method
      */
     public Method getDestroyMethod() {
@@ -116,6 +123,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     /**
      * Sets the component destructor method.
+     *
      * @param destroyMethod the component destructor method
      */
     public void setDestroyMethod(Method destroyMethod) {
@@ -128,14 +136,6 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     public void add(Resource resource) {
         resources.put(resource.getName(), resource);
-    }
-
-    public boolean isAllowsPassByReference() {
-        return allowsPassByReference;
-    }
-
-    public void setAllowsPassByReference(boolean allowsPassByReference) {
-        this.allowsPassByReference = allowsPassByReference;
     }
 
     public Member getConversationIDMember() {

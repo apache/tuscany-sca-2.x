@@ -132,9 +132,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         // handle resources
         handleResources(componentType, component);
 
-        // FIXME JFM  this should be refactored to be by operation
-        component.setAllowsPassByReference(componentType.isAllowsPassByReference());
-
         if (componentType.getConversationIDMember() != null) {
             component.addConversationIDFactory(componentType.getConversationIDMember());
         }

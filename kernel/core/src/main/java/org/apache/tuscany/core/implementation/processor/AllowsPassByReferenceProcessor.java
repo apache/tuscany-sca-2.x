@@ -40,10 +40,10 @@ public class AllowsPassByReferenceProcessor extends ImplementationProcessorExten
                                DeploymentContext context)
         throws ProcessingException {
         AllowsPassByReference annotation = clazz.getAnnotation(AllowsPassByReference.class);
-        if (annotation != null) {
-            type.setAllowsPassByReference(true);
+        if (annotation == null) {
+            return;
         } else {
-            type.setAllowsPassByReference(false);
+            // TODO implement
         }
 
     }
