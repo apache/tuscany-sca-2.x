@@ -50,14 +50,14 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         Service service = EasyMock.createMock(Service.class);
         // Configure the mock builder registry
         BuilderRegistry registry = EasyMock.createMock(BuilderRegistry.class);
-        EasyMock.expect(registry.build(EasyMock.isA(Component.class),
+        EasyMock.expect(registry.build(
             EasyMock.isA(ServiceDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andStubReturn(service);
         EasyMock.replay(registry);
         SpringCompositeBuilder builder = new SpringCompositeBuilder();
         builder.setBuilderRegistry(registry);
         ComponentDefinition<SpringImplementation> definition = createDefinitionWithService();
-        Component component = builder.build(null, definition, null);
+        Component component = builder.build(definition, null);
         assertNotNull(component);
         EasyMock.verify(registry);
     }
@@ -70,14 +70,14 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         Service service = EasyMock.createMock(Service.class);
         // Configure the mock builder registry
         BuilderRegistry registry = EasyMock.createMock(BuilderRegistry.class);
-        EasyMock.expect(registry.build(EasyMock.isA(Component.class),
+        EasyMock.expect(registry.build(
             EasyMock.isA(ServiceDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andStubReturn(service);
         EasyMock.replay(registry);
         SpringCompositeBuilder builder = new SpringCompositeBuilder();
         builder.setBuilderRegistry(registry);
         ComponentDefinition<SpringImplementation> definition = createDefinitionWithReference();
-        Component component = builder.build(null, definition, null);
+        Component component = builder.build(definition, null);
         assertNotNull(component);
         EasyMock.verify(registry);
     }
