@@ -50,7 +50,7 @@ public class DataSourceComponent extends AtomicComponentExtension {
                                ProviderObjectFactory instanceFactory,
                                int initLevel) {
 
-        super(uri, null, null, null, null, initLevel);
+        super(uri, null, null, initLevel, -1, -1);
         this.instanceFactory = instanceFactory;
     }
 
