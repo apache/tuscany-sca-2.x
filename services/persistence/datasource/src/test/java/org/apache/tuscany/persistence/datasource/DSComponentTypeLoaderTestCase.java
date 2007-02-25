@@ -17,7 +17,7 @@ public class DSComponentTypeLoaderTestCase extends TestCase {
         DataSourceImplementation implementation = new DataSourceImplementation();
         implementation.setProviderName(Foo.class.getName());
         implementation.setClassLoader(getClass().getClassLoader());
-        loader.load(null, implementation, null);
+        loader.load(implementation, null);
         ComponentType<?, ?, ?> type = implementation.getComponentType();
         assertEquals(2, type.getProperties().size());
         assertNull(type.getProperties().get("object"));
@@ -36,7 +36,7 @@ public class DSComponentTypeLoaderTestCase extends TestCase {
         implementation.setProviderName(BadFoo.class.getName());
         implementation.setClassLoader(getClass().getClassLoader());
         try {
-            loader.load(null, implementation, null);
+            loader.load(implementation, null);
             fail();
         } catch (AmbiguousPropertyException e) {
             // expected

@@ -23,7 +23,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -68,10 +67,10 @@ public class DataSourceImplementationLoader extends LoaderExtension {
         return DATASOURCE;
     }
 
-    public ModelObject load(Component parent,
-                            ModelObject object,
-                            XMLStreamReader reader,
-                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ModelObject load(
+        ModelObject object,
+        XMLStreamReader reader,
+        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         String driverName = reader.getAttributeValue(null, PROVIDER);
         if (driverName == null) {
             throw new LoaderException("No provider specified for DataSource");

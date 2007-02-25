@@ -44,7 +44,7 @@ public class DataSourceImplementationLoaderTestCase extends TestCase {
         DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(ctx.getClassLoader()).andReturn(getClass().getClassLoader());
         EasyMock.replay(ctx);
-        DataSourceImplementation implementation = (DataSourceImplementation) loader.load(null, null, reader, ctx);
+        DataSourceImplementation implementation = (DataSourceImplementation) loader.load(null, reader, ctx);
         assertEquals("org.foo.MyDriver", implementation.getProviderName());
         assertEquals(getClass().getClassLoader(), implementation.getClassLoader());
         EasyMock.verify(reader);
@@ -59,7 +59,7 @@ public class DataSourceImplementationLoaderTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeValue(null, "provider")).andReturn(null);
         EasyMock.replay(reader);
         try {
-            loader.load(null, null, reader, null);
+            loader.load(null, reader, null);
             fail();
         } catch (LoaderException e) {
             // expected
