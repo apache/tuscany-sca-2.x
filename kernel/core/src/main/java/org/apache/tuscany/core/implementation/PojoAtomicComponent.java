@@ -85,8 +85,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         super(configuration.getName(),
             configuration.getProxyService(),
             configuration.getWorkContext(),
-            configuration.getScheduler(),
-            configuration.getMonitor(),
             configuration.getInitLevel(),
             configuration.getMaxIdleTime(),
             configuration.getMaxAge());

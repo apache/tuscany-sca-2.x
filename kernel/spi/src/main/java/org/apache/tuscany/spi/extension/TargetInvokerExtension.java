@@ -34,18 +34,15 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public abstract class TargetInvokerExtension implements TargetInvoker {
     protected WorkContext workContext;
-    protected ExecutionMonitor monitor;
     protected boolean cacheable;
 
     /**
      * Creates a new invoker
      *
      * @param workContext the work context to use for setting correlation information
-     * @param monitor     the event monitor
      */
-    public TargetInvokerExtension(WorkContext workContext, ExecutionMonitor monitor) {
+    public TargetInvokerExtension(WorkContext workContext) {
         this.workContext = workContext;
-        this.monitor = monitor;
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {

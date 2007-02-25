@@ -343,6 +343,5 @@ public class CallbackInvocationTestCase extends TestCase {
         workContext = new WorkContextImpl();
         builder.setWorkContext(workContext);
         builder.setProxyService(new JDKProxyService(workContext));
-        builder.setWorkScheduler(scheduler);
     }
 }
