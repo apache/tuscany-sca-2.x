@@ -36,7 +36,7 @@ import org.easymock.EasyMock;
 public class DuplicateRegistrationTestCase extends TestCase {
 
     public void testDuplicateServiceRegistration() throws Exception {
-        Component parent = new CompositeComponentImpl(URI.create("parent"), null);
+        Component parent = new CompositeComponentImpl(URI.create("parent"));
         parent.start();
 
         Service service1 = EasyMock.createMock(Service.class);
@@ -60,7 +60,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
     }
 
     public void testDuplicateReferenceRegistration() throws Exception {
-        Component parent = new CompositeComponentImpl(URI.create("parent"), null);
+        Component parent = new CompositeComponentImpl(URI.create("parent"));
         parent.start();
 
         Reference reference1 = EasyMock.createMock(Reference.class);
@@ -85,7 +85,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
     }
 
     public void testDuplicateServiceReferenceRegistration() throws Exception {
-        Component parent = new CompositeComponentImpl(URI.create("parent"), null);
+        Component parent = new CompositeComponentImpl(URI.create("parent"));
         parent.start();
 
         Service service1 = EasyMock.createMock(Service.class);
