@@ -24,7 +24,7 @@ import java.net.URI;
 import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
@@ -57,7 +57,7 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
         return DataSourceImplementation.class;
     }
 
-    public void load(CompositeComponent parent, DataSourceImplementation implementation, DeploymentContext ctx)
+    public void load(Component parent, DataSourceImplementation implementation, DeploymentContext ctx)
         throws LoaderException {
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
