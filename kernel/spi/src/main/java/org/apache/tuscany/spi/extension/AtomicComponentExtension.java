@@ -43,7 +43,6 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     private final int initLevel;
     private final long maxIdleTime;
     private final long maxAge;
-    private boolean allowsPassByReference;
 
     protected AtomicComponentExtension(URI name, ProxyService proxyService, WorkContext workContext, int initLevel) {
         this(name, proxyService, workContext, initLevel, -1, -1);
@@ -87,15 +86,6 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     public long getMaxAge() {
         return maxAge;
     }
-
-    public boolean isAllowsPassByReference() {
-        return allowsPassByReference;
-    }
-
-    public void setAllowsPassByReference(boolean allowsPassByReference) {
-        this.allowsPassByReference = allowsPassByReference;
-    }
-
 
     public void setScopeContainer(ScopeContainer scopeContainer) {
         this.scopeContainer = scopeContainer;
