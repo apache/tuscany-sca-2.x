@@ -25,6 +25,6 @@
 
     <component name="testComponentContext">
         <tuscany:junit class="org.apache.tuscany.sca.test.spec.ComponentContextTestComponent"/>
-        <reference name="tester">ComponentContextTester</reference>
+        <reference name="tester" target="ComponentContextTester"/>
     </component>
 </composite>
