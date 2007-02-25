@@ -40,7 +40,7 @@ public class CompositeBuilder extends AbstractCompositeBuilder<CompositeImplemen
         CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
         URI name = componentDefinition.getUri();
-        CompositeComponentImpl component = new CompositeComponentImpl(name, null);
+        CompositeComponentImpl component = new CompositeComponentImpl(name);
 
         return build(parent, component, componentType, deploymentContext);
     }

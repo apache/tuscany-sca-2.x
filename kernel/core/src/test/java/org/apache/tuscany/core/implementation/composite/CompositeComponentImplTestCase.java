@@ -41,26 +41,26 @@ import static org.easymock.EasyMock.replay;
 public class CompositeComponentImplTestCase extends TestCase {
 
     public void testGetScope() {
-        Component composite = new CompositeComponentImpl(URI.create("parent"), null);
+        Component composite = new CompositeComponentImpl(URI.create("parent"));
         Assert.assertEquals(Scope.SYSTEM, composite.getScope());
     }
 
     public void testRegisterService() throws Exception {
-        Component composite = new CompositeComponentImpl(URI.create("parent"), null);
+        Component composite = new CompositeComponentImpl(URI.create("parent"));
         Service service = new ServiceImpl(URI.create("foo#service"), null);
         composite.register(service);
         assertNotNull(composite.getService("service"));
     }
 
     public void testRegisterReference() throws Exception {
-        Component composite = new CompositeComponentImpl(URI.create("parent"), null);
+        Component composite = new CompositeComponentImpl(URI.create("parent"));
         Reference reference = new ReferenceImpl(URI.create("foo#reference"), null);
         composite.register(reference);
         assertNotNull(composite.getReference("reference"));
     }
 
     public void testOnEvent() {
-        CompositeComponentImpl composite = new CompositeComponentImpl(URI.create("parent"), null);
+        CompositeComponentImpl composite = new CompositeComponentImpl(URI.create("parent"));
         Event event = new Event() {
             public Object getSource() {
                 return null;
