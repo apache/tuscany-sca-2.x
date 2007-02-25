@@ -38,6 +38,8 @@ public class SmokeTestLauncher extends CommandTestCase {
         Process process = pb.start();
         try {
             compareOutput(loadResource("LauncherUsage.txt"), process.getErrorStream());
+            ProcessDrainer drainer = ProcessDrainer.newInstance(process);
+            drainer.drain();
             process.waitFor();
             assertEquals(1, process.exitValue());
         } finally {
@@ -51,6 +53,8 @@ public class SmokeTestLauncher extends CommandTestCase {
         Process process = pb.start();
         try {
             compareOutput("No Args" + LF, process.getInputStream());
+            ProcessDrainer drainer = ProcessDrainer.newInstance(process);
+            drainer.drain();
             process.waitFor();
             assertEquals(0, process.exitValue());
         } finally {
@@ -67,6 +71,8 @@ public class SmokeTestLauncher extends CommandTestCase {
         pb.directory(installDir);
         Process process = pb.start();
         try {
+            ProcessDrainer drainer = ProcessDrainer.newInstance(process);
+            drainer.drain();
             process.waitFor();
             assertEquals(0, process.exitValue());
         } finally {
