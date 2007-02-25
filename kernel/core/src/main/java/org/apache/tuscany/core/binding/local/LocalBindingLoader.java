@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -53,7 +53,7 @@ public class LocalBindingLoader extends LoaderExtension<LocalBindingDefinition> 
         return Wire.LOCAL_BINDING;
     }
 
-    public LocalBindingDefinition load(CompositeComponent parent,
+    public LocalBindingDefinition load(Component parent,
                                        ModelObject object,
                                        XMLStreamReader reader,
                                        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {

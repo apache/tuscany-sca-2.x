@@ -26,7 +26,6 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -72,7 +71,7 @@ public class BootstrapDeployerTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testBoot1Load() throws LoaderException {
-        CompositeComponent parent = createNiceMock(CompositeComponent.class);
+        Component parent = createNiceMock(Component.class);
         URI uri = URI.create("sca://parent");
         EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(parent);
@@ -123,7 +122,7 @@ public class BootstrapDeployerTestCase extends TestCase {
     public void testBoot1Deployment() throws Exception {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        Component parent = EasyMock.createMock(Component.class);
         replay(parent);
         // load the boot1 file using the bootstrap deployer
         componentDefinition.setUri(URI.create("sca://parent/simple"));
@@ -135,7 +134,7 @@ public class BootstrapDeployerTestCase extends TestCase {
     public void testBoot2Deployment() throws Exception {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot2.scdl");
         implementation.setScdlLocation(scdl);
-        CompositeComponent parent = createNiceMock(CompositeComponent.class);
+        Component parent = createNiceMock(Component.class);
         replay(parent);
         // load the boot2 file using the bootstrap deployer
         componentDefinition.setUri(URI.create("newDeployer"));

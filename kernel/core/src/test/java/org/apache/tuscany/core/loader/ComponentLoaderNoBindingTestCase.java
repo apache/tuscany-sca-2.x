@@ -19,15 +19,15 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -50,7 +50,7 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
     private XMLStreamReader reader;
     private ServiceDefinition service;
     private ReferenceDefinition reference;
-    private CompositeComponent parent;
+    private Component parent;
     private DeploymentContext ctx;
 
     public void testNoServiceBinding() throws Exception {
@@ -66,7 +66,7 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         URI componentId = URI.create("sca://localhost/parent/");
-        parent = EasyMock.createMock(CompositeComponent.class);
+        parent = EasyMock.createMock(Component.class);
         EasyMock.expect(parent.getUri()).andReturn(URI.create("parent"));
         EasyMock.replay(parent);
         service = new ServiceDefinition();
@@ -79,13 +79,13 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
         type.add(reference);
         JavaImplementation impl = new JavaImplementation(null, type);
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
-        EasyMock.expect(registry.load(EasyMock.isA(CompositeComponent.class),
+        EasyMock.expect(registry.load(EasyMock.isA(Component.class),
             (ModelObject) EasyMock.isNull(),
             EasyMock.isA(XMLStreamReader.class),
-             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
-        registry.loadComponentType(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(DeploymentContext.class))).andReturn(impl);
+        registry.loadComponentType(EasyMock.isA(Component.class),
             EasyMock.isA(Implementation.class),
-             EasyMock.isA(DeploymentContext.class));
+            EasyMock.isA(DeploymentContext.class));
         EasyMock.replay(registry);
         loader = new ComponentLoader(registry, null);
         reader = EasyMock.createMock(XMLStreamReader.class);

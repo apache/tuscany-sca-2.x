@@ -22,7 +22,7 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -46,7 +46,7 @@ import org.easymock.EasyMock;
  */
 public class JavaBuilderPropertyTestCase extends TestCase {
     private DeploymentContext deploymentContext;
-    private CompositeComponent parent;
+    private Component parent;
     private ScopeRegistry registry;
 
     @SuppressWarnings("unchecked")
@@ -99,7 +99,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         EasyMock.replay(deploymentContext);
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
+        parent = EasyMock.createNiceMock(Component.class);
         ScopeContainer mockContainer = EasyMock.createNiceMock(ScopeContainer.class);
         EasyMock.replay(mockContainer);
         registry = EasyMock.createMock(ScopeRegistry.class);

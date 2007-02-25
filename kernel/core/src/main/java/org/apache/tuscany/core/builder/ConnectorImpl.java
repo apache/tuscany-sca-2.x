@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Invocable;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
@@ -201,12 +200,7 @@ public class ConnectorImpl implements Connector {
         if (source == null) {
             throw new ComponentNotFoundException("Source not found", sourceUri);
         }
-        if (!(source instanceof CompositeComponent)) {
-            // this should not happen
-            throw new InvalidSourceTypeException("Illegal source type", uri, baseTargetUri);
-        }
-        CompositeComponent sourceComposite = (CompositeComponent) source;
-        Service service = sourceComposite.getService(uri.getFragment());
+        Service service = source.getService(uri.getFragment());
         if (service == null) {
             throw new SourceServiceNotFoundException("Service not found on composite", uri);
         }
@@ -240,11 +234,7 @@ public class ConnectorImpl implements Connector {
         if (source == null) {
             throw new ComponentNotFoundException("Source not found", sourceUri);
         }
-        if (!(source instanceof CompositeComponent)) {
-            throw new AssertionError("Illegal source type");
-        }
-        CompositeComponent sourceComposite = (CompositeComponent) source;
-        Reference reference = sourceComposite.getReference(uri.getFragment());
+        Reference reference = source.getReference(uri.getFragment());
         if (reference == null) {
             throw new SourceServiceNotFoundException("Reference not found on composite", uri);
         }

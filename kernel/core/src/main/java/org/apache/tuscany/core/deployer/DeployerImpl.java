@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -112,7 +111,7 @@ public class DeployerImpl implements Deployer {
         this.componentManager = componentManager;
     }
 
-    public <I extends Implementation<?>> Collection<Component> deploy(CompositeComponent parent,
+    public <I extends Implementation<?>> Collection<Component> deploy(Component parent,
                                                                       ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, ResolutionException {
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
@@ -155,7 +154,7 @@ public class DeployerImpl implements Deployer {
      * @param componentDefinition the componentDefinition being deployed
      * @param deploymentContext   the current deployment context
      */
-    protected <I extends Implementation<?>> void load(CompositeComponent parent,
+    protected <I extends Implementation<?>> void load(Component parent,
                                                       ComponentDefinition<I> componentDefinition,
                                                       DeploymentContext deploymentContext) throws LoaderException {
         loader.loadComponentType(parent, componentDefinition.getImplementation(), deploymentContext);
@@ -169,7 +168,7 @@ public class DeployerImpl implements Deployer {
      * @param deploymentContext   the current deployment context
      * @return the new runtime context
      */
-    protected <I extends Implementation<?>> SCAObject build(CompositeComponent parent,
+    protected <I extends Implementation<?>> SCAObject build(Component parent,
                                                             ComponentDefinition<I> componentDefinition,
                                                             DeploymentContext deploymentContext)
         throws BuilderException {

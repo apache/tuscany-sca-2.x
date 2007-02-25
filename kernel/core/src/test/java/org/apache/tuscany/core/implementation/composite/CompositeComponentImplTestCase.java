@@ -20,7 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
@@ -41,26 +41,26 @@ import static org.easymock.EasyMock.replay;
 public class CompositeComponentImplTestCase extends TestCase {
 
     public void testGetScope() {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
+        Component composite = new CompositeComponentImpl(URI.create("parent"), null);
         Assert.assertEquals(Scope.SYSTEM, composite.getScope());
     }
 
     public void testRegisterService() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
+        Component composite = new CompositeComponentImpl(URI.create("parent"), null);
         Service service = new ServiceImpl(URI.create("foo#service"), null);
         composite.register(service);
         assertNotNull(composite.getService("service"));
     }
 
     public void testRegisterReference() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
+        Component composite = new CompositeComponentImpl(URI.create("parent"), null);
         Reference reference = new ReferenceImpl(URI.create("foo#reference"), null);
         composite.register(reference);
         assertNotNull(composite.getReference("reference"));
     }
 
     public void testOnEvent() {
-        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null);
+        CompositeComponentImpl composite = new CompositeComponentImpl(URI.create("parent"), null);
         Event event = new Event() {
             public Object getSource() {
                 return null;

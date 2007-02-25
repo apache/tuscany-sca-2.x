@@ -20,7 +20,7 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.host.ResourceHost;
@@ -64,7 +64,7 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         EasyMock.expect(resourceWire.getTargetInstance()).andReturn("result");
         EasyMock.replay(resourceWire);
 
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        Component parent = EasyMock.createMock(Component.class);
         EasyMock.replay(parent);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, null);
         Foo foo = (Foo) component.createInstance();

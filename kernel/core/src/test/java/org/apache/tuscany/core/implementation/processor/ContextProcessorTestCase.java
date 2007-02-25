@@ -25,7 +25,7 @@ import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
@@ -40,7 +40,7 @@ import org.easymock.EasyMock;
  */
 public class ContextProcessorTestCase extends TestCase {
     private ContextProcessor processor;
-    private CompositeComponent composite;
+    private Component composite;
 
     // FIXME: resurrect to test ComponentContext injection
 /*
@@ -149,7 +149,7 @@ public class ContextProcessorTestCase extends TestCase {
         super.setUp();
         processor = new ContextProcessor();
         processor.setWorkContext(EasyMock.createNiceMock(WorkContext.class));
-        composite = EasyMock.createNiceMock(CompositeComponent.class);
+        composite = EasyMock.createNiceMock(Component.class);
     }
 
     private class Foo {

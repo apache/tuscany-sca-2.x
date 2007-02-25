@@ -28,7 +28,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.Constants;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -63,7 +63,7 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
         return IMPLEMENTATION_COMPOSITE;
     }
 
-    public CompositeImplementation load(CompositeComponent parent,
+    public CompositeImplementation load(Component parent,
                                         ModelObject object, XMLStreamReader reader,
                                         DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {

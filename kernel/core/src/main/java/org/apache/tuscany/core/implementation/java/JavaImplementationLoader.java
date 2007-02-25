@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamReader;
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderUtil;
@@ -47,7 +47,7 @@ public class JavaImplementationLoader extends LoaderExtension {
         return IMPLEMENTATION_JAVA;
     }
 
-    public ModelObject load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+    public ModelObject load(Component parent, ModelObject object, XMLStreamReader reader,
                             DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert IMPLEMENTATION_JAVA.equals(reader.getName());

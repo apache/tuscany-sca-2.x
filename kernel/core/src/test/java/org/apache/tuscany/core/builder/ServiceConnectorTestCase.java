@@ -22,11 +22,11 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.Operation;
@@ -68,7 +68,7 @@ public class ServiceConnectorTestCase extends TestCase {
         Service service = new ServiceImpl(SOURCE, contract);
         service.addServiceBinding(binding);
 
-        CompositeComponent component = new CompositeComponentImpl(PARENT);
+        Component component = new CompositeComponentImpl(PARENT);
         component.register(service);
         manager.register(component);
 
@@ -101,7 +101,7 @@ public class ServiceConnectorTestCase extends TestCase {
         Service service = new ServiceImpl(SOURCE, contract);
         service.addServiceBinding(binding);
 
-        CompositeComponent component = new CompositeComponentImpl(PARENT);
+        Component component = new CompositeComponentImpl(PARENT);
         component.register(service);
 
         ReferenceBinding refBinding = EasyMock.createMock(ReferenceBinding.class);

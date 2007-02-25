@@ -21,7 +21,7 @@ package org.apache.tuscany.spi.loader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ModelObject;
 
@@ -43,6 +43,6 @@ public interface StAXElementLoader<T extends ModelObject> {
      * @param deploymentContext the context for the load operation
      * @return the model object for that element
      */
-    T load(CompositeComponent parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
+    T load(Component parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException;
 }

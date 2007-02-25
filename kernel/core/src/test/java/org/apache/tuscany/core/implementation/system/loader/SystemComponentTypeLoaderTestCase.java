@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.system.loader;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.Property;
@@ -31,7 +32,6 @@ import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
@@ -51,7 +51,7 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
     private SystemComponentTypeLoader loader;
 
     public void testIntrospectUnannotatedClass() throws ProcessingException {
-        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
+        Component parent = EasyMock.createNiceMock(Component.class);
         SystemImplementation impl = new SystemImplementation(BasicInterfaceImpl.class);
         PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(parent, impl, null);
         ServiceDefinition service = componentType.getServices().get(BasicInterface.class.getSimpleName());

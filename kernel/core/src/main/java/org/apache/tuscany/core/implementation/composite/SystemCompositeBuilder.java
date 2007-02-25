@@ -25,7 +25,7 @@ import org.osoa.sca.annotations.Constructor;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -44,13 +44,13 @@ public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompo
         this.builderRegistry = builderRegistry;
     }
 
-    public CompositeComponent build(CompositeComponent parent,
+    public Component build(Component parent,
                                     ComponentDefinition<SystemCompositeImplementation> componentDefinition,
                                     DeploymentContext deploymentContext) throws BuilderException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         URI name = componentDefinition.getUri();
-        CompositeComponent component = new CompositeComponentImpl(name);
+        Component component = new CompositeComponentImpl(name);
         build(parent, component, componentType, deploymentContext);
         return component;
     }

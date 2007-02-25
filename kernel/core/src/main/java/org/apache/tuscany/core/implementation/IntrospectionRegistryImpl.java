@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessor;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -69,7 +69,7 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         cache.remove(processor);
     }
 
-    public PojoComponentType introspect(CompositeComponent parent, Class<?> clazz,
+    public PojoComponentType introspect(Component parent, Class<?> clazz,
                                         PojoComponentType<JavaMappedService, JavaMappedReference,
                                             JavaMappedProperty<?>> type,
                                         DeploymentContext context)
@@ -109,7 +109,7 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         return type;
     }
 
-    private void visitSuperClass(CompositeComponent parent,
+    private void visitSuperClass(Component parent,
                                  Class<?> clazz,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context)

@@ -23,7 +23,7 @@ import java.lang.reflect.Modifier;
 
 import org.osoa.sca.annotations.Init;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class InitProcessor extends ImplementationProcessorExtension {
 
-    public void visitMethod(CompositeComponent parent, Method method,
+    public void visitMethod(Component parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {

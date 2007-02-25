@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -62,7 +62,7 @@ public class LoaderExtensionTestCase extends TestCase {
             return new QName("");
         }
 
-        public ModelObject load(CompositeComponent parent,
+        public ModelObject load(Component parent,
                                 ModelObject object, XMLStreamReader reader,
                                 DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
             throw new AssertionError();

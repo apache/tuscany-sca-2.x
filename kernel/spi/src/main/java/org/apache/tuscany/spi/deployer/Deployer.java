@@ -23,7 +23,6 @@ import java.util.Collection;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
@@ -45,7 +44,7 @@ public interface Deployer {
      * @param componentDefinition the component definition as parsed from an assembly
      * @return the newly deployed component
      */
-    <I extends Implementation<?>> Collection<Component> deploy(CompositeComponent parent,
+    <I extends Implementation<?>> Collection<Component> deploy(Component parent,
                                                    ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, ComponentException, ResolutionException;
 }

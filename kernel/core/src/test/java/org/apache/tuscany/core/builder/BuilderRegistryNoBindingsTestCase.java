@@ -20,15 +20,8 @@ package org.apache.tuscany.core.builder;
 
 import java.net.URI;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
-import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
-import org.apache.tuscany.core.binding.local.LocalServiceBinding;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
@@ -38,12 +31,19 @@ import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import junit.framework.TestCase;
+import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
+import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
+import org.apache.tuscany.core.binding.local.LocalServiceBinding;
+import org.easymock.EasyMock;
+
 /**
  * @version $Rev$ $Date$
  */
 public class BuilderRegistryNoBindingsTestCase extends TestCase {
     private DeploymentContext deploymentContext;
-    private CompositeComponent parent;
+    private Component parent;
     private BuilderRegistry registry;
 
     public void testNoServiceBindings() throws Exception {
@@ -80,7 +80,7 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
+        parent = EasyMock.createNiceMock(Component.class);
         registry = new BuilderRegistryImpl(null);
         registry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
     }

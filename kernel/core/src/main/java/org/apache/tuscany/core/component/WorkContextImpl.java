@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -92,16 +92,16 @@ public class WorkContextImpl implements WorkContext {
         map.put(CALLBACK_URIS, uris);
     }
 
-    public CompositeComponent getRemoteComponent() {
+    public Component getRemoteComponent() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (CompositeComponent) map.get(REMOTE_CONTEXT);
+        return (Component) map.get(REMOTE_CONTEXT);
     }
 
 
-    public void setRemoteComponent(CompositeComponent component) {
+    public void setRemoteComponent(Component component) {
         Map<Object, Object> map = getWorkContextMap();
         map.put(REMOTE_CONTEXT, component);
     }

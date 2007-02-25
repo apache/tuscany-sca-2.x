@@ -33,10 +33,10 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -58,8 +58,8 @@ import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
-import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.host.management.ManagementService;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 
@@ -87,8 +87,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     private ManagementService<?> managementService;
     private ComponentManager componentManager;
 
-    private CompositeComponent systemComponent;
-    private CompositeComponent tuscanySystem;
+    private Component systemComponent;
+    private Component tuscanySystem;
     private AutowireResolver resolver;
     private JavaInterfaceProcessorRegistry interfaceProcessorRegistry;
 
@@ -193,8 +193,10 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         for (Component component : components) {
             component.start();
         }
-        CompositeComponent composite = (CompositeComponent) componentManager.getComponent(name);
-        composite.onEvent(new ComponentStart(this, name));
+        Component composite = componentManager.getComponent(name);
+        if (composite instanceof RuntimeEventListener) {
+            ((RuntimeEventListener) composite).onEvent(new ComponentStart(this, name));
+        }
     }
 
     public void destroy() {
@@ -266,7 +268,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     }
 
     protected Collection<Component> deploySystemScdl(Deployer deployer,
-                                                     CompositeComponent parent,
+                                                     Component parent,
                                                      URI name,
                                                      URL systemScdl,
                                                      ClassLoader systemClassLoader)

@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -84,7 +83,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> Component build(CompositeComponent parent,
+    public <I extends Implementation<?>> Component build(Component parent,
                                                          ComponentDefinition<I> componentDefinition,
                                                          DeploymentContext context) throws BuilderException {
         Class<?> implClass = componentDefinition.getImplementation().getClass();
@@ -135,7 +134,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public Service build(CompositeComponent parent,
+    public Service build(Component parent,
                          ServiceDefinition serviceDefinition,
                          DeploymentContext deploymentContext) throws BuilderException {
         URI uri = serviceDefinition.getUri();
@@ -164,7 +163,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public Reference build(CompositeComponent parent,
+    public Reference build(Component parent,
                            ReferenceDefinition referenceDefinition,
                            DeploymentContext context) throws BuilderException {
         URI uri = referenceDefinition.getUri();

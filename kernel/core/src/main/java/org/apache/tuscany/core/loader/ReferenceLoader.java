@@ -28,7 +28,7 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -58,7 +58,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         return REFERENCE;
     }
 
-    public ReferenceDefinition load(CompositeComponent parent,
+    public ReferenceDefinition load(Component parent,
                                     ModelObject object, XMLStreamReader reader,
                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {

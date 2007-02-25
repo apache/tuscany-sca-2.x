@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -34,7 +34,7 @@ import org.easymock.EasyMock;
  */
 public class ScopeProcessorTestCase extends TestCase {
 
-    CompositeComponent parent;
+    Component parent;
 
     public void testCompositeScope() throws ProcessingException {
         ScopeProcessor processor = new ScopeProcessor();
@@ -95,7 +95,7 @@ public class ScopeProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
+        parent = EasyMock.createNiceMock(Component.class);
     }
 
     @org.osoa.sca.annotations.Scope("COMPOSITE")

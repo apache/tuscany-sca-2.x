@@ -21,8 +21,9 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Field;
 import java.net.URI;
 
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.osoa.sca.annotations.ConversationID;
+
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -32,8 +33,8 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.easymock.EasyMock;
-import org.osoa.sca.annotations.ConversationID;
 
 /**
  * @version $Rev: 473859 $ $Date: 2006-11-11 22:31:55 -0500 (Sat, 11 Nov 2006) $
@@ -51,18 +52,18 @@ public class JavaComponentBuilderConversationIDTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         workContext.setIdentifier(Scope.CONVERSATION, "convID");
         builder.setWorkContext(workContext);
-        
+
         ConstructorDefinition<Foo> ctorDef = new ConstructorDefinition<Foo>(Foo.class.getConstructor());
         PojoComponentType type = new PojoComponentType();
         Field field = Foo.class.getDeclaredField("conversationID");
         type.setConversationIDMember(field);
         type.setImplementationScope(Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);
-        
+
         JavaImplementation impl = new JavaImplementation(Foo.class, type);
         URI uri = URI.create("foo");
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(uri, impl);
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        Component parent = EasyMock.createMock(Component.class);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, null);
         Foo foo = (Foo) component.createInstance();
         assertEquals("convID", foo.conversationID);

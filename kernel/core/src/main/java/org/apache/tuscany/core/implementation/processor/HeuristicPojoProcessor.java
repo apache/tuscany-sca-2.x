@@ -36,7 +36,7 @@ import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -77,7 +77,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
     }
 
     public <T> void visitEnd(
-        CompositeComponent parent,
+        Component parent,
         Class<T> clazz,
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
         DeploymentContext context) throws ProcessingException {

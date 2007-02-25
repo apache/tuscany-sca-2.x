@@ -20,7 +20,7 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URL;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
@@ -39,7 +39,7 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
     public void testPojoComponentTypeCreatedForIntrospection() throws Exception {
         IntrospectionRegistry registry = EasyMock.createMock(IntrospectionRegistry.class);
         registry.introspect(
-            (CompositeComponent) EasyMock.isNull(),
+            (Component) EasyMock.isNull(),
             (Class) EasyMock.isNull(),
             EasyMock.isA(PojoComponentType.class),
             (DeploymentContext) EasyMock.isNull());
@@ -58,7 +58,7 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
     public void testPojoComponentTypeCreatedForSideFileLoadAndReturned() throws Exception {
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
         registry.load(
-            (CompositeComponent) EasyMock.isNull(),
+            (Component) EasyMock.isNull(),
             EasyMock.isA(PojoComponentType.class),
             (URL) EasyMock.isNull(),
             EasyMock.eq(PojoComponentType.class),

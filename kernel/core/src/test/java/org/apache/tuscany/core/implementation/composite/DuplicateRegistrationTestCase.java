@@ -20,10 +20,10 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Component;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -36,7 +36,7 @@ import org.easymock.EasyMock;
 public class DuplicateRegistrationTestCase extends TestCase {
 
     public void testDuplicateServiceRegistration() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null);
+        Component parent = new CompositeComponentImpl(URI.create("parent"), null);
         parent.start();
 
         Service service1 = EasyMock.createMock(Service.class);
@@ -60,7 +60,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
     }
 
     public void testDuplicateReferenceRegistration() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null);
+        Component parent = new CompositeComponentImpl(URI.create("parent"), null);
         parent.start();
 
         Reference reference1 = EasyMock.createMock(Reference.class);
@@ -85,7 +85,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
     }
 
     public void testDuplicateServiceReferenceRegistration() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null);
+        Component parent = new CompositeComponentImpl(URI.create("parent"), null);
         parent.start();
 
         Service service1 = EasyMock.createMock(Service.class);

@@ -29,7 +29,7 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -63,7 +63,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         return INTERFACE_JAVA;
     }
 
-    public JavaServiceContract load(CompositeComponent parent,
+    public JavaServiceContract load(Component parent,
                                     ModelObject object, XMLStreamReader reader,
                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {

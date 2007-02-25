@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
@@ -33,8 +33,8 @@ public class WorkContextTestCase extends TestCase {
 
     public void testRemoteComponent() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        CompositeComponent component = EasyMock.createNiceMock(CompositeComponent.class);
-        CompositeComponent component2 = EasyMock.createNiceMock(CompositeComponent.class);
+        Component component = EasyMock.createNiceMock(Component.class);
+        Component component2 = EasyMock.createNiceMock(Component.class);
         ctx.setRemoteComponent(component);
         assertEquals(component, ctx.getRemoteComponent());
         ctx.setRemoteComponent(component2);
@@ -141,7 +141,7 @@ public class WorkContextTestCase extends TestCase {
     public void testCurrentRemoteComponentDoesNotPropagateToChildThread() throws InterruptedException {
         // NOTE should behaviour be to propagate?
         WorkContext context = new WorkContextImpl();
-        context.setRemoteComponent(EasyMock.createNiceMock(CompositeComponent.class));
+        context.setRemoteComponent(EasyMock.createNiceMock(Component.class));
         TestCurrentRemoteComponentChildThread t = new TestCurrentRemoteComponentChildThread(context);
         t.start();
         t.join();

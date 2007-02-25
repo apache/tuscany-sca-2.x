@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import junit.framework.TestCase;
@@ -135,7 +135,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         @SuppressWarnings("unchecked")
         protected <T> void initProperty(JavaMappedProperty<T> property,
                                         Bar annotation,
-                                        CompositeComponent parent,
+                                        Component parent,
                                         DeploymentContext context) {
             property.setDefaultValueFactory(EasyMock.createMock(ObjectFactory.class));
             property.setName("test");

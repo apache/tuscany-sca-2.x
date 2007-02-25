@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
 import org.apache.tuscany.spi.loader.InvalidConfigurationException;
@@ -71,7 +71,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         loaders.remove(element);
     }
 
-    public ModelObject load(CompositeComponent parent,
+    public ModelObject load(Component parent,
                             ModelObject object,
                             XMLStreamReader reader,
                             DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
@@ -84,7 +84,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         return loader.load(parent, object, reader, deploymentContext);
     }
 
-    public <MO extends ModelObject> MO load(CompositeComponent parent,
+    public <MO extends ModelObject> MO load(Component parent,
                                             ModelObject object,
                                             URL url,
                                             Class<MO> type,
@@ -144,7 +144,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> void loadComponentType(CompositeComponent parent,
+    public <I extends Implementation<?>> void loadComponentType(Component parent,
                                                                 I implementation,
                                                                 DeploymentContext deploymentContext)
         throws LoaderException {

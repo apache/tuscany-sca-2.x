@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidValueException;
@@ -52,7 +52,7 @@ public class DataTypeLoader extends LoaderExtension<DataType> {
         return DATA_BINDING;
     }
 
-    public DataType load(CompositeComponent parent,
+    public DataType load(Component parent,
                          ModelObject object, XMLStreamReader reader,
                          DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert DATA_BINDING.equals(reader.getName());

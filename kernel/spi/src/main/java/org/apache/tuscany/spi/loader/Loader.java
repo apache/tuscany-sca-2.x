@@ -22,7 +22,7 @@ import java.net.URL;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -49,7 +49,7 @@ public interface Loader {
      * @return the model object obtained by parsing the current element on the stream
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    ModelObject load(CompositeComponent parent,
+    ModelObject load(Component parent,
                      ModelObject object,
                      XMLStreamReader reader,
                      DeploymentContext deploymentContext)
@@ -67,7 +67,7 @@ public interface Loader {
      * @return the model ojbect loaded from the document
      * @throws LoaderException if there was a problem loading the document
      */
-    <MO extends ModelObject> MO load(CompositeComponent parent,
+    <MO extends ModelObject> MO load(Component parent,
                                      ModelObject object,
                                      URL url,
                                      Class<MO> type,
@@ -85,7 +85,7 @@ public interface Loader {
      * @param deploymentContext the current deployment context
      * @throws LoaderException if there was a problem loading the component type definition
      */
-    <I extends Implementation<?>> void loadComponentType(CompositeComponent parent,
+    <I extends Implementation<?>> void loadComponentType(Component parent,
                                                          I implementation,
                                                          DeploymentContext deploymentContext)
         throws LoaderException;

@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -46,7 +46,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class SystemComponentBuilderTestCase extends TestCase {
-    CompositeComponent parent;
+    Component parent;
     DeploymentContext deploymentContext;
     SystemComponentBuilder builder = new SystemComponentBuilder();
     CompositeScopeContainer container;
@@ -123,7 +123,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
+        parent = EasyMock.createNiceMock(Component.class);
         container = new CompositeScopeContainer(null);
         container.start();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);

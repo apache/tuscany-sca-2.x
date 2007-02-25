@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.system.loader;
 import java.net.URL;
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -48,7 +48,7 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
         return SystemCompositeImplementation.class;
     }
 
-    public void load(CompositeComponent parent,
+    public void load(Component parent,
                      SystemCompositeImplementation implementation,
                      DeploymentContext deploymentContext)
         throws LoaderException {
@@ -64,7 +64,7 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
     }
 
 
-    protected CompositeComponentType loadFromSidefile(CompositeComponent parent,
+    protected CompositeComponentType loadFromSidefile(Component parent,
                                                       URL url,
                                                       DeploymentContext deploymentContext)
         throws LoaderException {

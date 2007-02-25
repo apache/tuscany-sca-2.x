@@ -48,7 +48,7 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
      * @param propertyValues the values of this composite's Properties
      */
     public AbstractCompositeComponent(URI name, Map<String, Document> propertyValues) {
-        super(name, propertyValues);
+        super(name);
     }
 
     public void start() {

@@ -29,7 +29,7 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -60,7 +60,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         return INCLUDE;
     }
 
-    public Include load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+    public Include load(Component parent, ModelObject object, XMLStreamReader reader,
                         DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
@@ -100,7 +100,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         return include;
     }
 
-    protected CompositeComponentType loadFromSidefile(CompositeComponent parent,
+    protected CompositeComponentType loadFromSidefile(Component parent,
                                                       URL url,
                                                       DeploymentContext deploymentContext)
         throws LoaderException {

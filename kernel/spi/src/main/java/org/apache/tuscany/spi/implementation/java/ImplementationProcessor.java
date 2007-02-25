@@ -22,7 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
@@ -46,7 +46,7 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    <T> void visitClass(CompositeComponent parent,
+    <T> void visitClass(Component parent,
                     Class<T> clazz,
                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                     DeploymentContext context) throws ProcessingException;
@@ -60,7 +60,7 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    <T> void visitSuperClass(CompositeComponent parent,
+    <T> void visitSuperClass(Component parent,
                          Class<T> clazz,
                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                          DeploymentContext context) throws ProcessingException;
@@ -74,7 +74,7 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitMethod(CompositeComponent parent,
+    void visitMethod(Component parent,
                      Method method,
                      PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                      DeploymentContext context) throws ProcessingException;
@@ -90,7 +90,7 @@ public interface ImplementationProcessor {
      * @param context     the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    <T> void visitConstructor(CompositeComponent parent,
+    <T> void visitConstructor(Component parent,
                           Constructor<T> constructor,
                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                           DeploymentContext context)
@@ -105,7 +105,7 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitField(CompositeComponent parent,
+    void visitField(Component parent,
                     Field field,
                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                     DeploymentContext context) throws ProcessingException;
@@ -120,7 +120,7 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    <T> void visitEnd(CompositeComponent parent,
+    <T> void visitEnd(Component parent,
                   Class<T> clazz,
                   PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                   DeploymentContext context) throws ProcessingException;

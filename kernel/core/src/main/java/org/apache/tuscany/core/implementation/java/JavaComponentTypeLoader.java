@@ -23,7 +23,7 @@ import java.net.URL;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -56,7 +56,7 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         return JavaImplementation.class;
     }
 
-    public void load(CompositeComponent parent,
+    public void load(Component parent,
                      JavaImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
@@ -70,7 +70,7 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(CompositeComponent parent,
+    protected PojoComponentType loadByIntrospection(Component parent,
                                                     JavaImplementation implementation,
                                                     DeploymentContext deploymentContext) throws ProcessingException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
@@ -80,7 +80,7 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         return componentType;
     }
 
-    protected PojoComponentType loadFromSidefile(CompositeComponent parent,
+    protected PojoComponentType loadFromSidefile(Component parent,
                                                  URL url,
                                                  DeploymentContext deploymentContext) throws LoaderException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
