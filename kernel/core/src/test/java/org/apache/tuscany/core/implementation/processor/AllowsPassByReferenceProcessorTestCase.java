@@ -36,10 +36,10 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
     AllowsPassByReferenceProcessor processor;
 
     public void testClassAnnotation() throws Exception {
-        processor.visitClass(null, Foo.class, type, null);
+        processor.visitClass(Foo.class, type, null);
         assertEquals(true, type.isAllowsPassByReference());
 
-        processor.visitClass(null, Bar.class, type, null);
+        processor.visitClass(Bar.class, type, null);
         assertEquals(false, type.isAllowsPassByReference());
     }
 

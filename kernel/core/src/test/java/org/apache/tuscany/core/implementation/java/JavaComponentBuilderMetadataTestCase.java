@@ -40,34 +40,34 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
     public void testInitLevel() throws Exception {
         type.setInitLevel(1);
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, deploymentContext);
         assertEquals(1, component.getInitLevel());
     }
 
     public void testMaxAge() throws Exception {
         type.setMaxAge(100);
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, deploymentContext);
         assertEquals(100, component.getMaxAge());
     }
 
     public void testMaxIdleTime() throws Exception {
         type.setMaxIdleTime(100);
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, deploymentContext);
         assertEquals(100, component.getMaxIdleTime());
     }
 
     public void testNoMaxAgeNoMaxIdleTime() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, deploymentContext);
         assertEquals(-1, component.getMaxAge());
         assertEquals(-1, component.getMaxIdleTime());
     }
 
     public void testScope() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, deploymentContext);
         component.setScopeContainer(scopeContainer);
         assertEquals(Scope.COMPOSITE, component.getScope());
     }

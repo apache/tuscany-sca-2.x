@@ -22,7 +22,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -50,7 +49,7 @@ public class ComponentTypeElementLoaderTestCase extends TestCase {
         // verify that the exact component type instance is returned. Some StAXElementLoader implementations may chose
         // to copy the original instance but ComponentTypeElementLoader does not since it has no knowledge of the
         // specialized instance 
-        ModelObject object = loader.load(null, type, reader, null);
+        ModelObject object = loader.load(type, reader, null);
         assertEquals(object, type);
     }
 
@@ -58,7 +57,7 @@ public class ComponentTypeElementLoaderTestCase extends TestCase {
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
-        EasyMock.expect(registry.load((Component) EasyMock.isNull(),
+        EasyMock.expect(registry.load(
             EasyMock.isA(ComponentType.class),
             EasyMock.isA(XMLStreamReader.class),
             (DeploymentContext) EasyMock.isNull())).andReturn(type);
@@ -71,7 +70,7 @@ public class ComponentTypeElementLoaderTestCase extends TestCase {
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
 
-        loader.load(null, type, reader, null);
+        loader.load(type, reader, null);
         EasyMock.verify(registry);
     }
 
@@ -81,7 +80,7 @@ public class ComponentTypeElementLoaderTestCase extends TestCase {
         EasyMock.expect(reader.getName()).andReturn(ComponentTypeElementLoader.COMPONENT_TYPE);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
-        ModelObject object = loader.load(null, null, reader, null);
+        ModelObject object = loader.load(null, reader, null);
         assertEquals(ComponentType.class, object.getClass());
     }
 

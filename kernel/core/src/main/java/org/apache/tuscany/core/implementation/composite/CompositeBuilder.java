@@ -34,15 +34,15 @@ import org.apache.tuscany.spi.model.CompositeImplementation;
  */
 public class CompositeBuilder extends AbstractCompositeBuilder<CompositeImplementation> {
 
-    public Component build(Component parent,
-                           ComponentDefinition<CompositeImplementation> componentDefinition,
-                           DeploymentContext deploymentContext) throws BuilderException {
+    public Component build(ComponentDefinition<CompositeImplementation> componentDefinition,
+        DeploymentContext deploymentContext) throws BuilderException {
+
         CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
         URI name = componentDefinition.getUri();
         CompositeComponentImpl component = new CompositeComponentImpl(name);
 
-        return build(parent, component, componentType, deploymentContext);
+        return build(component, componentType, deploymentContext);
     }
 
     protected Class<CompositeImplementation> getImplementationType() {

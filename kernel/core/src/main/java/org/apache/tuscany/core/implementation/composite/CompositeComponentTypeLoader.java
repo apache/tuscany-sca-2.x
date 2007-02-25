@@ -21,7 +21,6 @@ package org.apache.tuscany.core.implementation.composite;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
@@ -49,21 +48,17 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         return CompositeImplementation.class;
     }
 
-    public void load(Component parent, CompositeImplementation implementation,
-                     DeploymentContext deploymentContext)
-        throws LoaderException {
+    public void load(CompositeImplementation implementation, DeploymentContext context) throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
         ClassLoader cl = new CompositeClassLoader(implementation.getClassLoader());
-        URI componentId = URI.create(deploymentContext.getComponentId().toString() + '/');
-        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation, componentId);
-        CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, childContext);
+        URI componentId = URI.create(context.getComponentId().toString() + '/');
+        DeploymentContext childContext = new ChildDeploymentContext(context, cl, scdlLocation, componentId);
+        CompositeComponentType componentType = loadFromSidefile(scdlLocation, childContext);
         implementation.setComponentType(componentType);
     }
 
-    protected CompositeComponentType loadFromSidefile(Component parent,
-                                                      URL url,
-                                                      DeploymentContext deploymentContext)
+    protected CompositeComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext)
         throws LoaderException {
-        return loaderRegistry.load(parent, null, url, CompositeComponentType.class, deploymentContext);
+        return loaderRegistry.load(null, url, CompositeComponentType.class, deploymentContext);
     }
 }

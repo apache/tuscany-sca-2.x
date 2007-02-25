@@ -31,7 +31,6 @@ import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidWireException;
@@ -59,10 +58,10 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
         return WIRE;
     }
 
-    public WireDefinition load(Component parent,
-                               ModelObject object,
-                               XMLStreamReader reader,
-                               DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public WireDefinition load(
+        ModelObject object,
+        XMLStreamReader reader,
+        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert WIRE.equals(reader.getName());
         WireDefinition wireDefn;
         URI sourceURI = null;

@@ -19,7 +19,7 @@ public class EagerInitProcessorTestCase extends TestCase {
         EagerInitProcessor processor = new EagerInitProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(null, Level.class, type, null);
+        processor.visitClass(Level.class, type, null);
         assertEquals(50, type.getInitLevel());
     }
 
@@ -27,7 +27,7 @@ public class EagerInitProcessorTestCase extends TestCase {
         EagerInitProcessor processor = new EagerInitProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(null, SubClass.class, type, null);
+        processor.visitClass(SubClass.class, type, null);
         assertEquals(50, type.getInitLevel());
     }
 

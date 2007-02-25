@@ -24,12 +24,19 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
- * Responsible for building a {@link Component} from an atomic or composite component configured in an assembly
+ * Responsible for building a {@link Component} from an component definition
  *
  * @version $Rev$ $Date$
  */
 public interface ComponentBuilder<I extends Implementation<?>> {
-    Component build(Component parent,
-                       ComponentDefinition<I> componentDefinition,
-                       DeploymentContext deploymentContext) throws BuilderException;
+
+    /**
+     * Builds the component
+     *
+     * @param componentDefinition the component definition
+     * @param context             the deployment context
+     * @return the built component
+     * @throws BuilderException
+     */
+    Component build(ComponentDefinition<I> componentDefinition, DeploymentContext context) throws BuilderException;
 }

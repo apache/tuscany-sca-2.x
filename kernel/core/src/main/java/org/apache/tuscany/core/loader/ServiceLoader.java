@@ -30,7 +30,6 @@ import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -59,10 +58,10 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         return SERVICE;
     }
 
-    public ServiceDefinition load(Component parent,
-                                  ModelObject object,
-                                  XMLStreamReader reader,
-                                  DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ServiceDefinition load(
+        ModelObject object,
+        XMLStreamReader reader,
+        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         URI targetUri = null;
@@ -82,7 +81,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                         QualifiedName qName = new QualifiedName(target);
                         targetUri = componentBase.resolve(qName.getFragment());
                     } else {
-                        ModelObject o = registry.load(parent, null, reader, deploymentContext);
+                        ModelObject o = registry.load(null, reader, deploymentContext);
                         if (o instanceof ServiceContract) {
                             def.setServiceContract((ServiceContract) o);
                         } else if (o instanceof BindingDefinition) {

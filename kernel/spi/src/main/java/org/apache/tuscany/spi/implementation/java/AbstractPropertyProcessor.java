@@ -26,11 +26,10 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.tuscany.api.annotation.DataType;
-
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+
+import org.apache.tuscany.api.annotation.DataType;
 
 /**
  * Base class for ImplementationProcessors that handle annotations that add Properties.
@@ -46,10 +45,10 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         this.service = service;
     }
 
-    public void visitMethod(Component parent,
-                            Method method,
-                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context) throws ProcessingException {
+    public void visitMethod(
+        Method method,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        DeploymentContext context) throws ProcessingException {
         A annotation = method.getAnnotation(annotationClass);
         if (annotation == null) {
             return;
@@ -82,21 +81,21 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         if (javaType.isArray() || Collection.class.isAssignableFrom(javaType)) {
             property.setMany(true);
         }
-        
+
         //add databinding available as annotations, as extensions
         DataType propertyDataBinding = method.getAnnotation(DataType.class);
         if (propertyDataBinding != null) {
             property.getExtensions().put(DataBinding.class.getName(), propertyDataBinding.name());
         }
-        initProperty(property, annotation, parent, context);
+        initProperty(property, annotation, context);
         properties.put(name, property);
     }
 
-    public void visitField(Component parent,
-                           Field field,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context) throws ProcessingException {
-        
+    public void visitField(
+        Field field,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        DeploymentContext context) throws ProcessingException {
+
         A annotation = field.getAnnotation(annotationClass);
         if (annotation == null) {
             return;
@@ -118,19 +117,19 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         JavaMappedProperty<?> property = createProperty(name, baseType, field);
         if (javaType.isArray() || Collection.class.isAssignableFrom(javaType)) {
             property.setMany(true);
-        }        
-        
+        }
+
         //add databinding available as annotations, as extensions
         DataType propertyDataBinding = field.getAnnotation(DataType.class);
         if (propertyDataBinding != null) {
             property.getExtensions().put(DataBinding.class.getName(), propertyDataBinding.name());
         }
 
-        initProperty(property, annotation, parent, context);
+        initProperty(property, annotation, context);
         properties.put(name, property);
     }
 
-    public <T> void visitConstructor(Component parent, Constructor<T> constructor,
+    public <T> void visitConstructor(Constructor<T> constructor,
                                      PojoComponentType<JavaMappedService,
                                          JavaMappedReference, JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {
@@ -153,13 +152,13 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
                     if (name == null || name.length() == 0) {
                         name = param.getName();
                     }
-                    
+
                     Class<?> baseType = getBaseType(param, constructor.getGenericParameterTypes()[i]);
                     JavaMappedProperty<?> property = createProperty(name, baseType, constructor);
                     if (param.isArray() || Collection.class.isAssignableFrom(param)) {
                         property.setMany(true);
                     }
-                    initProperty(property, monitorAnnot, parent, context);
+                    initProperty(property, monitorAnnot, context);
                     properties.put(name, property);
                     service.addName(definition.getInjectionNames(), i, name);
                 }
@@ -169,10 +168,8 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
 
     protected abstract String getName(A annotation);
 
-    protected <T> void initProperty(JavaMappedProperty<T> property,
-                                    A annotation,
-                                    Component parent,
-                                    DeploymentContext context) throws ProcessingException {
+    protected <T> void initProperty(JavaMappedProperty<T> property, A annotation, DeploymentContext context)
+        throws ProcessingException {
     }
 
     protected <T> JavaMappedProperty<T> createProperty(String name, Class<T> javaType, Member member)
@@ -187,5 +184,5 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         }
         return Character.toLowerCase(name.charAt(3)) + name.substring(4);
     }
-    
+
 }

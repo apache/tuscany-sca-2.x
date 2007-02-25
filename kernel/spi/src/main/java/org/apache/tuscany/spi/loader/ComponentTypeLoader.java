@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.spi.loader;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Implementation;
 
@@ -35,11 +34,9 @@ public interface ComponentTypeLoader<I extends Implementation> {
     /**
      * Load the component type definition for the supplied implementation.
      *
-     * @param parent            the parent composite
-     * @param implementation    the implementation whose component type information should be loaded
-     * @param deploymentContext the current deployment context
+     * @param implementation the implementation whose component type information should be loaded
+     * @param context        the current deployment context
      * @throws LoaderException if there was a problem loading the configuration type
      */
-    void load(Component parent, I implementation, DeploymentContext deploymentContext)
-        throws LoaderException;
+    void load(I implementation, DeploymentContext context) throws LoaderException;
 }

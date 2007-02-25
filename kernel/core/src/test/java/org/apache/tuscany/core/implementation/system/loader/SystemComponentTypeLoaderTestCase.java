@@ -53,7 +53,7 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
     public void testIntrospectUnannotatedClass() throws ProcessingException {
         Component parent = EasyMock.createNiceMock(Component.class);
         SystemImplementation impl = new SystemImplementation(BasicInterfaceImpl.class);
-        PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(parent, impl, null);
+        PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(impl, null);
         ServiceDefinition service = componentType.getServices().get(BasicInterface.class.getSimpleName());
         assertEquals(BasicInterface.class, service.getServiceContract().getInterfaceClass());
         Property<?> property = componentType.getProperties().get("publicProperty");

@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
 import org.apache.tuscany.spi.loader.InvalidConfigurationException;
@@ -71,24 +70,24 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         loaders.remove(element);
     }
 
-    public ModelObject load(Component parent,
-                            ModelObject object,
-                            XMLStreamReader reader,
-                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ModelObject load(
+        ModelObject object,
+        XMLStreamReader reader,
+        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         QName name = reader.getName();
         monitor.elementLoad(name);
         StAXElementLoader<? extends ModelObject> loader = loaders.get(name);
         if (loader == null) {
             throw new UnrecognizedElementException(name);
         }
-        return loader.load(parent, object, reader, deploymentContext);
+        return loader.load(object, reader, deploymentContext);
     }
 
-    public <MO extends ModelObject> MO load(Component parent,
-                                            ModelObject object,
-                                            URL url,
-                                            Class<MO> type,
-                                            DeploymentContext ctx) throws LoaderException {
+    public <MO extends ModelObject> MO load(
+        ModelObject object,
+        URL url,
+        Class<MO> type,
+        DeploymentContext ctx) throws LoaderException {
         try {
             XMLStreamReader reader;
             InputStream is;
@@ -99,7 +98,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
                 try {
                     reader.nextTag();
                     QName name = reader.getName();
-                    ModelObject mo = load(parent, object, reader, ctx);
+                    ModelObject mo = load(object, reader, ctx);
                     if (type.isInstance(mo)) {
                         return type.cast(mo);
                     } else {
@@ -144,8 +143,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> void loadComponentType(Component parent,
-                                                                I implementation,
+    public <I extends Implementation<?>> void loadComponentType(I implementation,
                                                                 DeploymentContext deploymentContext)
         throws LoaderException {
         Class<I> key = (Class<I>) implementation.getClass();
@@ -153,7 +151,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         if (loader == null) {
             throw new UnrecognizedComponentTypeException(key);
         }
-        loader.load(parent, implementation, deploymentContext);
+        loader.load(implementation, deploymentContext);
     }
 
     public static interface Monitor {

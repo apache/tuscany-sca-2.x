@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
@@ -49,7 +48,6 @@ public class MonitorProcessor extends AbstractPropertyProcessor<Monitor> {
 
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     Monitor annotation,
-                                    Component parent,
                                     DeploymentContext context) {
         Class<T> javaType = property.getJavaType();
         property.setDefaultValueFactory(new SingletonObjectFactory<T>(monitorFactory.getMonitor(javaType)));

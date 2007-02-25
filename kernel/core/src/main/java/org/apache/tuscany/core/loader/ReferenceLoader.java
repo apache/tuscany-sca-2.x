@@ -28,7 +28,6 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -58,9 +57,9 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         return REFERENCE;
     }
 
-    public ReferenceDefinition load(Component parent,
-                                    ModelObject object, XMLStreamReader reader,
-                                    DeploymentContext deploymentContext)
+    public ReferenceDefinition load(
+        ModelObject object, XMLStreamReader reader,
+        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert REFERENCE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
@@ -72,7 +71,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, null, reader, deploymentContext);
+                    ModelObject o = registry.load(null, reader, deploymentContext);
                     if (o instanceof ServiceContract) {
                         referenceDefinition.setServiceContract((ServiceContract) o);
                     } else if (o instanceof BindingDefinition) {

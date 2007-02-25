@@ -30,7 +30,6 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -73,7 +72,7 @@ public class PolicySetLoader extends LoaderExtension<PolicySet> {
         return POLICYSET;
     }
 
-    public PolicySet load(Component parent, ModelObject object, XMLStreamReader reader,
+    public PolicySet load(ModelObject object, XMLStreamReader reader,
                           DeploymentContext deploymentContext)
         throws XMLStreamException {
         assert POLICYSET.equals(reader.getName());

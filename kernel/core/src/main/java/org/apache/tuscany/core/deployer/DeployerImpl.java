@@ -157,7 +157,7 @@ public class DeployerImpl implements Deployer {
     protected <I extends Implementation<?>> void load(Component parent,
                                                       ComponentDefinition<I> componentDefinition,
                                                       DeploymentContext deploymentContext) throws LoaderException {
-        loader.loadComponentType(parent, componentDefinition.getImplementation(), deploymentContext);
+        loader.loadComponentType(componentDefinition.getImplementation(), deploymentContext);
     }
 
     /**
@@ -172,7 +172,7 @@ public class DeployerImpl implements Deployer {
                                                             ComponentDefinition<I> componentDefinition,
                                                             DeploymentContext deploymentContext)
         throws BuilderException {
-        return builder.build(parent, componentDefinition, deploymentContext);
+        return builder.build(componentDefinition, deploymentContext);
     }
 
 }

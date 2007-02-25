@@ -2,10 +2,10 @@ package org.apache.tuscany.core.implementation.composite;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
-import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.RegistrationException;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -22,16 +22,16 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public abstract class AbstractCompositeBuilder<T extends Implementation<CompositeComponentType>>
     extends ComponentBuilderExtension<T> {
 
-    public Component build(Component parent,
-                                    Component component,
-                                    CompositeComponentType<?, ?, ?> componentType,
-                                    DeploymentContext deploymentContext) throws BuilderException {
+    public Component build(
+        Component component,
+        CompositeComponentType<?, ?, ?> componentType,
+        DeploymentContext deploymentContext) throws BuilderException {
         for (ComponentDefinition<? extends Implementation<?>> definition : componentType.getComponents().values()) {
-            builderRegistry.build(component, definition, deploymentContext);
+            builderRegistry.build(definition, deploymentContext);
         }
         for (ServiceDefinition definition : componentType.getServices().values()) {
             try {
-                Service service = builderRegistry.build(component, definition, deploymentContext);
+                Service service = builderRegistry.build(definition, deploymentContext);
                 component.register(service);
             } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering service", e);
@@ -39,7 +39,7 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
         }
         for (ReferenceDefinition definition : componentType.getReferences().values()) {
             try {
-                Reference reference = builderRegistry.build(component, definition, deploymentContext);
+                Reference reference = builderRegistry.build(definition, deploymentContext);
                 component.register(reference);
             } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering reference", e);

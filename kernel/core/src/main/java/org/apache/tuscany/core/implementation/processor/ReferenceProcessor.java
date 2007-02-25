@@ -27,7 +27,6 @@ import java.util.Collection;
 import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
@@ -57,10 +56,10 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         this.regsitry = registry;
     }
 
-    public void visitMethod(Component parent,
-                            Method method,
-                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context) throws ProcessingException {
+    public void visitMethod(
+        Method method,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        DeploymentContext context) throws ProcessingException {
         Reference annotation = method.getAnnotation(Reference.class);
         Autowire autowire = method.getAnnotation(Autowire.class);
         boolean isAutowire = autowire != null;
@@ -122,10 +121,10 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         type.getReferences().put(name, reference);
     }
 
-    public void visitField(Component parent,
-                           Field field,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context) throws ProcessingException {
+    public void visitField(
+        Field field,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        DeploymentContext context) throws ProcessingException {
         Reference annotation = field.getAnnotation(Reference.class);
         boolean autowire = field.getAnnotation(Autowire.class) != null;
         if (annotation == null && !autowire) {
@@ -175,11 +174,11 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         type.getReferences().put(name, reference);
     }
 
-    public <T> void visitConstructor(Component parent,
-                                     Constructor<T> constructor,
-                                     PojoComponentType<JavaMappedService,
-                                         JavaMappedReference, JavaMappedProperty<?>> type,
-                                     DeploymentContext context) throws ProcessingException {
+    public <T> void visitConstructor(
+        Constructor<T> constructor,
+        PojoComponentType<JavaMappedService,
+            JavaMappedReference, JavaMappedProperty<?>> type,
+        DeploymentContext context) throws ProcessingException {
 
     }
 }

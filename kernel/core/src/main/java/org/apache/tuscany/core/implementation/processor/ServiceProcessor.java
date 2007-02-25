@@ -26,7 +26,6 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -55,7 +54,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         this.implService = implService;
     }
 
-    public <T> void visitClass(Component parent, Class<T> clazz,
+    public <T> void visitClass(Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
@@ -100,10 +99,10 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
     }
 
 
-    public void visitMethod(Component parent,
-                            Method method,
-                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context) throws ProcessingException {
+    public void visitMethod(
+        Method method,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        DeploymentContext context) throws ProcessingException {
 
         Callback annotation = method.getAnnotation(Callback.class);
         if (annotation == null) {
@@ -128,7 +127,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         callbackService.setCallbackMember(method);
     }
 
-    public void visitField(Component parent, Field field,
+    public void visitField(Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
 

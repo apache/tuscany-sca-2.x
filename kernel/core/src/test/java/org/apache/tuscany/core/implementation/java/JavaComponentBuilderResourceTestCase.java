@@ -66,7 +66,7 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
 
         Component parent = EasyMock.createMock(Component.class);
         EasyMock.replay(parent);
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, null);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, null);
         Foo foo = (Foo) component.createInstance();
         assertEquals("result", foo.resource);
         EasyMock.verify(parent);

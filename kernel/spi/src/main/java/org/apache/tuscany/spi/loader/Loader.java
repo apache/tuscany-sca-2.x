@@ -41,7 +41,6 @@ public interface Loader {
      * This method must be called with the XML cursor positioned on a START_ELEMENT event. When this method returns, the
      * stream will be positioned on the corresponding END_ELEMENT event.
      *
-     * @param parent            the composite in which the model object is contained
      * @param object            the model object to load configuration data into. If null, the loader dispatched to is
      *                          responsible for creating a model object itself
      * @param reader            the XML stream to parse
@@ -49,29 +48,21 @@ public interface Loader {
      * @return the model object obtained by parsing the current element on the stream
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    ModelObject load(Component parent,
-                     ModelObject object,
-                     XMLStreamReader reader,
-                     DeploymentContext deploymentContext)
+    ModelObject load(ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException;
 
     /**
      * Load a model object from a specified location.
      *
-     * @param parent            the composite in which the model object is contained
-     * @param object            the model object to load configuration data into. If null, the loader dispatched to is
-     *                          responsible for creating a model object itself
-     * @param url               the location of an XML document to be loaded
-     * @param type              the type of ModelObject that is expected to be in the document
-     * @param deploymentContext the current deployment context
+     * @param object  the model object to load configuration data into. If null, the loader dispatched to is responsible
+     *                for creating a model object itself
+     * @param url     the location of an XML document to be loaded
+     * @param type    the type of ModelObject that is expected to be in the document
+     * @param context the current deployment context
      * @return the model ojbect loaded from the document
      * @throws LoaderException if there was a problem loading the document
      */
-    <MO extends ModelObject> MO load(Component parent,
-                                     ModelObject object,
-                                     URL url,
-                                     Class<MO> type,
-                                     DeploymentContext deploymentContext)
+    <MO extends ModelObject> MO load(ModelObject object, URL url, Class<MO> type, DeploymentContext context)
         throws LoaderException;
 
     /**
@@ -80,13 +71,10 @@ public interface Loader {
      * artifact related to the implementation, some combination of those techniques or any other implementation-defined
      * mechanism.
      *
-     * @param parent            the parent composite
-     * @param implementation    the implementation whose component type should be loaded
-     * @param deploymentContext the current deployment context
+     * @param implementation the implementation whose component type should be loaded
+     * @param context        the current deployment context
      * @throws LoaderException if there was a problem loading the component type definition
      */
-    <I extends Implementation<?>> void loadComponentType(Component parent,
-                                                         I implementation,
-                                                         DeploymentContext deploymentContext)
+    <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext context)
         throws LoaderException;
 }

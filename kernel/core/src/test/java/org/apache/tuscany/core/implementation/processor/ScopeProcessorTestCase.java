@@ -41,7 +41,7 @@ public class ScopeProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
 
-        processor.visitClass(parent, Composite.class, type, null);
+        processor.visitClass(Composite.class, type, null);
         assertEquals(Scope.COMPOSITE, type.getImplementationScope());
     }
 
@@ -49,7 +49,7 @@ public class ScopeProcessorTestCase extends TestCase {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(parent, Session.class, type, null);
+        processor.visitClass(Session.class, type, null);
         assertEquals(Scope.SESSION, type.getImplementationScope());
     }
 
@@ -57,7 +57,7 @@ public class ScopeProcessorTestCase extends TestCase {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(parent, Conversation.class, type, null);
+        processor.visitClass(Conversation.class, type, null);
         assertEquals(Scope.CONVERSATION, type.getImplementationScope());
     }
 
@@ -65,7 +65,7 @@ public class ScopeProcessorTestCase extends TestCase {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(parent, Request.class, type, null);
+        processor.visitClass(Request.class, type, null);
         assertEquals(Scope.REQUEST, type.getImplementationScope());
     }
 
@@ -73,7 +73,7 @@ public class ScopeProcessorTestCase extends TestCase {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(parent, System.class, type, null);
+        processor.visitClass(System.class, type, null);
         assertEquals(Scope.SYSTEM, type.getImplementationScope());
     }
 
@@ -81,7 +81,7 @@ public class ScopeProcessorTestCase extends TestCase {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(parent, Stateless.class, type, null);
+        processor.visitClass(Stateless.class, type, null);
         assertEquals(Scope.STATELESS, type.getImplementationScope());
     }
 
@@ -89,7 +89,7 @@ public class ScopeProcessorTestCase extends TestCase {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(parent, None.class, type, null);
+        processor.visitClass(None.class, type, null);
         assertEquals(Scope.STATELESS, type.getImplementationScope());
     }
 

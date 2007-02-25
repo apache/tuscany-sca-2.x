@@ -81,7 +81,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         definition.setUri(URI.create("component"));
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setProxyService(proxyService);
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, deploymentContext);
         component.setScopeContainer(scopeContainer);
         component.attachWire(wire);
         deploymentContext.getCompositeScope().start();

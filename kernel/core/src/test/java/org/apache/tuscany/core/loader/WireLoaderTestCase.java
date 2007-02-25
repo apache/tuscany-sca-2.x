@@ -68,7 +68,7 @@ public class WireLoaderTestCase extends TestCase {
         expect(reader.next()).andReturn(END_ELEMENT);
         expect(reader.getName()).andReturn(WIRE).anyTimes();
         replay(registry, reader, context);
-        WireDefinition wireDef = loader.load(composite, null, reader, context);
+        WireDefinition wireDef = loader.load(null, reader, context);
         assertNotNull(wireDef);
         verify(registry, reader, context);
     }
@@ -83,7 +83,7 @@ public class WireLoaderTestCase extends TestCase {
         expect(reader.getName()).andReturn(WIRE).anyTimes();
         replay(registry, reader, context);
         try {
-            loader.load(composite, null, reader, context);
+            loader.load(null, reader, context);
             fail();
         } catch (InvalidWireException e) {
             //expected behaviour
@@ -101,7 +101,7 @@ public class WireLoaderTestCase extends TestCase {
         expect(reader.getName()).andReturn(WIRE).anyTimes();
         replay(registry, reader, context);
         try {
-            loader.load(composite, null, reader, context);
+            loader.load(null, reader, context);
             fail();
         } catch (InvalidWireException e) {
             //expected behaviour
@@ -116,7 +116,7 @@ public class WireLoaderTestCase extends TestCase {
         expect(reader.getElementText()).andReturn("").times(1);
         replay(registry, reader, context);
         try {
-            loader.load(composite, null, reader, context);
+            loader.load(null, reader, context);
             fail();
         } catch (InvalidWireException e) {
             //expected behaviour
@@ -136,7 +136,7 @@ public class WireLoaderTestCase extends TestCase {
         expect(reader.getName()).andReturn(WIRE).anyTimes();
         replay(registry, reader, context);
         try {
-            loader.load(composite, null, reader, context);
+            loader.load(null, reader, context);
             fail();
         } catch (InvalidWireException e) {
             //expected behaviour
@@ -157,7 +157,7 @@ public class WireLoaderTestCase extends TestCase {
         expect(reader.next()).andReturn(END_ELEMENT);
         expect(reader.getName()).andReturn(WIRE).anyTimes();
         replay(registry, reader, context);
-        WireDefinition wireDef = loader.load(composite, null, reader, context);
+        WireDefinition wireDef = loader.load(null, reader, context);
         assertNotNull(wireDef);
         assertEquals("source", wireDef.getSource().getPath());
         assertEquals("reference", wireDef.getSource().getFragment());

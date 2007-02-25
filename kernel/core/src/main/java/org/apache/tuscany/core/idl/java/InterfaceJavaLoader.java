@@ -29,7 +29,6 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -63,9 +62,9 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         return INTERFACE_JAVA;
     }
 
-    public JavaServiceContract load(Component parent,
-                                    ModelObject object, XMLStreamReader reader,
-                                    DeploymentContext deploymentContext)
+    public JavaServiceContract load(
+        ModelObject object, XMLStreamReader reader,
+        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
         assert INTERFACE_JAVA.equals(reader.getName());
@@ -88,7 +87,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         while (true) {
             int event = reader.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
-                ModelObject mo = registry.load(parent, null, reader, deploymentContext);
+                ModelObject mo = registry.load(null, reader, deploymentContext);
                 if (mo != null) {
                     extensions.put(mo.getClass(), mo);
                 }

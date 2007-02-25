@@ -79,7 +79,7 @@ public class CompositeBuilderTestCase extends TestCase {
         builder.setBuilderRegistry(builderRegistry);
 
         Component component =
-            builder.build(null, createTopComponentDef(), deploymentContext);
+            builder.build(createTopComponentDef(), deploymentContext);
         Map<URI, Component> components = deploymentContext.getComponents();
         Component sourceComponent = components.get(SOURCE_COMPONENT);
         assertNotNull(sourceComponent.getService("InnerSourceService"));

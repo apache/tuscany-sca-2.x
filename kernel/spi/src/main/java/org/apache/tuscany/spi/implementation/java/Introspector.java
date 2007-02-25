@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.spi.implementation.java;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
@@ -32,16 +31,13 @@ public interface Introspector {
     /**
      * Walks the given component implementation class
      *
-     * @param parent the parent composite
-     * @param clazz  the component implementation class
-     * @param type   the component type associated with the implementation class
+     * @param clazz the component implementation class
+     * @param type  the component type associated with the implementation class
      * @return the updated component type
      * @throws ProcessingException if an error is encountered evaluating the implementation class
      */
-    PojoComponentType introspect(Component parent,
-                                 Class<?> clazz,
+    PojoComponentType introspect(Class<?> clazz,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                 DeploymentContext context)
-        throws ProcessingException;
+                                 DeploymentContext context) throws ProcessingException;
 
 }

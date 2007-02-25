@@ -41,7 +41,7 @@ public class ConversationProcessorTestCase extends TestCase {
     public void testMaxIdleTime() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(null, FooMaxIdle.class, type, null);
+        processor.visitClass(FooMaxIdle.class, type, null);
         assertEquals(10000L, type.getMaxIdleTime());
         assertEquals(-1, type.getMaxAge());
     }
@@ -49,7 +49,7 @@ public class ConversationProcessorTestCase extends TestCase {
     public void testMaxAge() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(null, FooMaxAge.class, type, null);
+        processor.visitClass(FooMaxAge.class, type, null);
         assertEquals(10000L, type.getMaxAge());
         assertEquals(-1, type.getMaxIdleTime());
     }
@@ -58,7 +58,7 @@ public class ConversationProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitClass(null, BadFooBoth.class, type, null);
+            processor.visitClass(BadFooBoth.class, type, null);
             fail();
         } catch (InvalidConversationalImplementation e) {
             // expected
@@ -68,7 +68,7 @@ public class ConversationProcessorTestCase extends TestCase {
     public void testImplicitScope() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(null, ImplicitFooScope.class, type, null);
+        processor.visitClass(ImplicitFooScope.class, type, null);
         assertEquals(org.apache.tuscany.spi.model.Scope.CONVERSATION, type.getImplementationScope());
     }
 
@@ -76,7 +76,7 @@ public class ConversationProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitClass(null, BadFooScope.class, type, null);
+            processor.visitClass(BadFooScope.class, type, null);
             fail();
         } catch (InvalidConversationalImplementation e) {
             // expected
@@ -87,7 +87,7 @@ public class ConversationProcessorTestCase extends TestCase {
         // TODO do we want these semantics
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(null, FooJustConversation.class, type, null);
+        processor.visitClass(FooJustConversation.class, type, null);
         assertEquals(org.apache.tuscany.spi.model.Scope.CONVERSATION, type.getImplementationScope());
         assertEquals(-1, type.getMaxAge());
         assertEquals(-1, type.getMaxIdleTime());
@@ -97,7 +97,7 @@ public class ConversationProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Field field = FooWithConversationIDField.class.getDeclaredField("conversationID");
-        processor.visitField(null, field, type, null);
+        processor.visitField(field, type, null);
         assertNotNull(type.getConversationIDMember());
         assertEquals(field, type.getConversationIDMember());
     }
@@ -106,7 +106,7 @@ public class ConversationProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = FooWithConversationIDMethod.class.getDeclaredMethods()[0];
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         assertNotNull(type.getConversationIDMember());
         assertEquals(method, type.getConversationIDMember());
     }

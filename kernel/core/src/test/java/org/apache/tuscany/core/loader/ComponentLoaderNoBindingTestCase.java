@@ -54,12 +54,12 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
     private DeploymentContext ctx;
 
     public void testNoServiceBinding() throws Exception {
-        loader.load(parent, null, reader, ctx);
+        loader.load(null, reader, ctx);
         assert service.getBindings().isEmpty();
     }
 
     public void testNoReferenceBinding() throws Exception {
-        loader.load(parent, null, reader, ctx);
+        loader.load(null, reader, ctx);
         assert reference.getBindings().isEmpty();
     }
 
@@ -79,11 +79,11 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
         type.add(reference);
         JavaImplementation impl = new JavaImplementation(null, type);
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
-        EasyMock.expect(registry.load(EasyMock.isA(Component.class),
+        EasyMock.expect(registry.load(
             (ModelObject) EasyMock.isNull(),
             EasyMock.isA(XMLStreamReader.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
-        registry.loadComponentType(EasyMock.isA(Component.class),
+        registry.loadComponentType(
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
         EasyMock.replay(registry);

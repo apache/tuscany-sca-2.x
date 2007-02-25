@@ -22,7 +22,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessor;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -59,27 +58,27 @@ public class IntrospectionRegistryTestCase extends TestCase {
     public void testWalk() throws Exception {
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl(monitor);
         ImplementationProcessor processor = EasyMock.createMock(ImplementationProcessor.class);
-        processor.visitClass(EasyMock.isA(Component.class),
+        processor.visitClass(
             EasyMock.eq(Bar.class),
             EasyMock.isA(PojoComponentType.class),
             EasyMock.isA(DeploymentContext.class));
-        processor.visitConstructor(EasyMock.isA(Component.class),
+        processor.visitConstructor(
             EasyMock.isA(Constructor.class),
             EasyMock.isA(PojoComponentType.class),
             EasyMock.isA(DeploymentContext.class));
-        processor.visitMethod(EasyMock.isA(Component.class),
+        processor.visitMethod(
             EasyMock.isA(Method.class),
             EasyMock.isA(PojoComponentType.class),
             EasyMock.isA(DeploymentContext.class));
-        processor.visitField(EasyMock.isA(Component.class),
+        processor.visitField(
             EasyMock.isA(Field.class),
             EasyMock.isA(PojoComponentType.class),
             EasyMock.isA(DeploymentContext.class));
-        processor.visitSuperClass(EasyMock.isA(Component.class),
+        processor.visitSuperClass(
             EasyMock.isA(Class.class),
             EasyMock.isA(PojoComponentType.class),
             EasyMock.isA(DeploymentContext.class));
-        processor.visitEnd(EasyMock.isA(Component.class),
+        processor.visitEnd(
             EasyMock.isA(Class.class),
             EasyMock.isA(PojoComponentType.class),
             EasyMock.isA(DeploymentContext.class));
@@ -92,7 +91,7 @@ public class IntrospectionRegistryTestCase extends TestCase {
 //        mock.expects(once()).method("visitEnd");
         EasyMock.replay(processor);
         registry.registerProcessor(processor);
-        registry.introspect(EasyMock.createNiceMock(Component.class),
+        registry.introspect(
             Bar.class,
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>(),
             EasyMock.createNiceMock(DeploymentContext.class));

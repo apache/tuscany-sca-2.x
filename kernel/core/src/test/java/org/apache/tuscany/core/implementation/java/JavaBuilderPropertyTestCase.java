@@ -67,7 +67,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         definition.setUri(URI.create("component"));
         PropertyValue propertyValue = new PropertyValue(property.getName(), property.getDefaultValueFactory());
         definition.getPropertyValues().put(property.getName(), propertyValue);
-        AtomicComponent component = builder.build(parent, definition, deploymentContext);
+        AtomicComponent component = builder.build(definition, deploymentContext);
         JavaBuilderPropertyTestCase.Foo foo = (JavaBuilderPropertyTestCase.Foo) component.createInstance();
         assertEquals("foo", foo.getTest());
     }
@@ -90,7 +90,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         ObjectFactory<Integer> defaultValueFactory = property.getDefaultValueFactory();
         PropertyValue<Integer> propertyValue = new PropertyValue<Integer>(property.getName(), defaultValueFactory);
         definition.getPropertyValues().put(property.getName(), propertyValue);
-        AtomicComponent component = builder.build(parent, definition, deploymentContext);
+        AtomicComponent component = builder.build(definition, deploymentContext);
         FooInt foo = (FooInt) component.createInstance();
         assertEquals(1, foo.getTest());
     }

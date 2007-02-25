@@ -58,7 +58,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.replay(mockReader);
-        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, ctx);
+        ServiceDefinition serviceDefinition = loader.load(null, mockReader, ctx);
         assertNotNull(serviceDefinition);
         assertEquals(COMPONENT_NAME + "target", serviceDefinition.getTarget().toString());
     }
@@ -73,7 +73,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.replay(mockReader);
-        ServiceDefinition serviceDefinition = loader.load(parent, null, mockReader, ctx);
+        ServiceDefinition serviceDefinition = loader.load(null, mockReader, ctx);
         assertNotNull(serviceDefinition);
         assertEquals(COMPONENT_NAME + "target#fragment", serviceDefinition.getTarget().toString());
     }

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.ProxyService;
@@ -42,7 +41,6 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  */
 public class PojoConfiguration {
     private URI name;
-    private Component parent;
     //private ScopeContainer scopeContainer;
     private PojoObjectFactory<?> instanceFactory;
     private List<String> constructorParamNames = new ArrayList<String>();
@@ -69,14 +67,6 @@ public class PojoConfiguration {
 
     public void setName(URI name) {
         this.name = name;
-    }
-
-    public Component getParent() {
-        return parent;
-    }
-
-    public void setParent(Component parent) {
-        this.parent = parent;
     }
 
     public PojoObjectFactory<?> getInstanceFactory() {

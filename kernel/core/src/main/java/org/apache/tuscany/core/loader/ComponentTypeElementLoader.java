@@ -28,7 +28,6 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -55,10 +54,10 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
     }
 
     @SuppressWarnings("unchecked")
-    public ComponentType load(Component parent,
-                              ModelObject object,
-                              XMLStreamReader reader,
-                              DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ComponentType load(
+        ModelObject object,
+        XMLStreamReader reader,
+        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert COMPONENT_TYPE.equals(reader.getName());
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType;
         if (object != null) {
@@ -72,7 +71,7 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, componentType, reader, deploymentContext);
+                    ModelObject o = registry.load(componentType, reader, deploymentContext);
                     if (o instanceof ServiceDefinition) {
                         componentType.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {

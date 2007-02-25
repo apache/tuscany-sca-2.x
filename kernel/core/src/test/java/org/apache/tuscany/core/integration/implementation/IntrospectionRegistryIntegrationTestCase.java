@@ -56,7 +56,7 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
     public void testSimpleComponentTypeParsing() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        registry.introspect(null, Foo.class, type, null);
+        registry.introspect(Foo.class, type, null);
         assertEquals(Foo.class.getMethod("init"), type.getInitMethod());
         assertEquals(Foo.class.getMethod("destroy"), type.getDestroyMethod());
         assertEquals(COMPOSITE, type.getImplementationScope());

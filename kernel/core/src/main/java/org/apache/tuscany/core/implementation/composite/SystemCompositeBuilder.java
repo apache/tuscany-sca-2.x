@@ -44,14 +44,13 @@ public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompo
         this.builderRegistry = builderRegistry;
     }
 
-    public Component build(Component parent,
-                                    ComponentDefinition<SystemCompositeImplementation> componentDefinition,
-                                    DeploymentContext deploymentContext) throws BuilderException {
+    public Component build(ComponentDefinition<SystemCompositeImplementation> componentDefinition,
+                           DeploymentContext context) throws BuilderException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         URI name = componentDefinition.getUri();
         Component component = new CompositeComponentImpl(name);
-        build(parent, component, componentType, deploymentContext);
+        build(component, componentType, context);
         return component;
     }
 
