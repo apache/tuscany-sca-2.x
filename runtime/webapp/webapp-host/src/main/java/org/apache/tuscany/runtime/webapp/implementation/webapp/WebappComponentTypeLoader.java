@@ -19,7 +19,7 @@
 package org.apache.tuscany.runtime.webapp.implementation.webapp;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -38,7 +38,7 @@ public class WebappComponentTypeLoader extends ComponentTypeLoaderExtension<Weba
         return WebappImplementation.class;
     }
 
-    public void load(CompositeComponent parent,
+    public void load(Component parent,
                      WebappImplementation implementation,
                      DeploymentContext deploymentContext)
         throws LoaderException {

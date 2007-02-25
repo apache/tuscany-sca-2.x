@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.idl.java.InterfaceJavaIntrospector;
@@ -60,7 +60,7 @@ public class WebappLoader extends LoaderExtension<WebappImplementation> {
         return WEBAPP;
     }
 
-    public WebappImplementation load(CompositeComponent parent,
+    public WebappImplementation load(Component parent,
                                      ModelObject object,
                                      XMLStreamReader reader,
                                      DeploymentContext deploymentContext)

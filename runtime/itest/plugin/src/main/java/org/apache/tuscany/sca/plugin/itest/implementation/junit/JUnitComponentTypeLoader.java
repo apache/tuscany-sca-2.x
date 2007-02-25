@@ -30,7 +30,7 @@ import java.net.URI;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -66,7 +66,7 @@ public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<Imple
         return ImplementationJUnit.class;
     }
 
-    public void load(CompositeComponent parent,
+    public void load(Component parent,
                      ImplementationJUnit implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         String className = implementation.getClassName();
@@ -80,7 +80,7 @@ public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<Imple
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(CompositeComponent parent,
+    protected PojoComponentType loadByIntrospection(Component parent,
                                                     ImplementationJUnit implementation,
                                                     DeploymentContext deploymentContext,
                                                     Class<?> implClass) throws ProcessingException {
