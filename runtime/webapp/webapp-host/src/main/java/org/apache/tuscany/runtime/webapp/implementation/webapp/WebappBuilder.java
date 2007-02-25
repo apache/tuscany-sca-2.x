@@ -39,9 +39,9 @@ public class WebappBuilder extends ComponentBuilderExtension<WebappImplementatio
         return WebappImplementation.class;
     }
 
-    public Component build(Component parent,
-                           ComponentDefinition<WebappImplementation> definition,
-                           DeploymentContext deploymentContext) throws BuilderException {
+    public Component build(ComponentDefinition<WebappImplementation> definition, DeploymentContext context)
+        throws BuilderException {
+
         URI uri = definition.getUri();
         WebappComponentType componentType = definition.getImplementation().getComponentType();
 

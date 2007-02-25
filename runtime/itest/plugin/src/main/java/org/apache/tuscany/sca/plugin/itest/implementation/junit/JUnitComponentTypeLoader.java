@@ -21,16 +21,15 @@ package org.apache.tuscany.sca.plugin.itest.implementation.junit;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Map;
+import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Collections;
-import java.net.URI;
+import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -43,9 +42,9 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.DataType;
 
 /**
  * @version $Rev$ $Date$
@@ -54,7 +53,7 @@ public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<Imple
     private static final URI TEST_SERVICE_NAME = URI.create("#testService");
     private Introspector introspector;
 
-    @Constructor({"registry", "introspector"})
+    @Constructor
     public JUnitComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry,
                                     @Autowire IntrospectionRegistry introspector) {
         super(loaderRegistry);
@@ -66,27 +65,24 @@ public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<Imple
         return ImplementationJUnit.class;
     }
 
-    public void load(Component parent,
-                     ImplementationJUnit implementation,
-                     DeploymentContext deploymentContext) throws LoaderException {
+    public void load(ImplementationJUnit implementation, DeploymentContext context) throws LoaderException {
         String className = implementation.getClassName();
         Class<?> implClass;
         try {
-            implClass = deploymentContext.getClassLoader().loadClass(className);
+            implClass = context.getClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
             throw new MissingResourceException(className, e);
         }
-        PojoComponentType componentType = loadByIntrospection(parent, implementation, deploymentContext, implClass);
+        PojoComponentType componentType = loadByIntrospection(implementation, context, implClass);
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(Component parent,
-                                                    ImplementationJUnit implementation,
+    protected PojoComponentType loadByIntrospection(ImplementationJUnit implementation,
                                                     DeploymentContext deploymentContext,
                                                     Class<?> implClass) throws ProcessingException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>(implClass);
-        introspector.introspect(parent, implClass, componentType, deploymentContext);
+        introspector.introspect(implClass, componentType, deploymentContext);
 
         if (componentType.getInitMethod() == null) {
             componentType.setInitMethod(getCallback(implClass, "setUp"));
@@ -117,6 +113,7 @@ public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<Imple
     private static final DataType<List<DataType<Type>>> INPUT_TYPE;
     private static final DataType<Type> OUTPUT_TYPE;
     private static final List<DataType<Type>> FAULT_TYPE;
+
     static {
         List<DataType<Type>> paramDataTypes = Collections.emptyList();
         INPUT_TYPE = new DataType<List<DataType<Type>>>("idl:input", Object[].class, paramDataTypes);
