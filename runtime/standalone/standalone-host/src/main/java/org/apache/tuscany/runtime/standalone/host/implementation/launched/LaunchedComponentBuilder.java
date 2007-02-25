@@ -92,7 +92,6 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
 
         configuration.setProxyService(proxyService);
         configuration.setWorkContext(workContext);
-        configuration.setScheduler(workScheduler);
         configuration.setImplementationClass(implClass);
 
         // setup property injection sites
@@ -126,7 +125,6 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
         for (Class<?> clazz : constr.getParameterTypes()) {
             configuration.addConstructorParamType(clazz);
         }
-        configuration.setMonitor(monitor);
         configuration.setName(definition.getUri());
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
 
