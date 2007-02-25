@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.Constants;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -38,23 +37,19 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class ServiceLoaderReferenceTestCase extends TestCase {
+public class ServiceLoaderPromoteTestCase extends TestCase {
     private static final QName SERVICE = new QName(Constants.SCA_NS, "service");
-    private static final QName REFERENCE = new QName(Constants.SCA_NS, "reference");
     private static final String COMPONENT_NAME = "sca://domain/someComponent/";
     private URI componentId;
     private ServiceLoader loader;
     private XMLStreamReader mockReader;
-    private Component parent;
     private DeploymentContext ctx;
 
     public void testReferenceNoFragment() throws LoaderException, XMLStreamException {
         String name = "serviceDefinition";
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
-        EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
-        EasyMock.expect(mockReader.getName()).andReturn(REFERENCE);
-        EasyMock.expect(mockReader.getElementText()).andReturn("target");
+        EasyMock.expect(mockReader.getAttributeValue(null, "promote")).andReturn("target");
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.replay(mockReader);
@@ -67,9 +62,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         String name = "serviceDefinition";
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
-        EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
-        EasyMock.expect(mockReader.getName()).andReturn(REFERENCE);
-        EasyMock.expect(mockReader.getElementText()).andReturn("target/fragment");
+        EasyMock.expect(mockReader.getAttributeValue(null, "promote")).andReturn("target/fragment");
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(SERVICE);
         EasyMock.replay(mockReader);
@@ -86,9 +79,6 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         loader = new ServiceLoader(mockRegistry);
 
         componentId = URI.create(COMPONENT_NAME);
-        parent = EasyMock.createMock(Component.class);
-        EasyMock.expect(parent.getUri()).andReturn(componentId).atLeastOnce();
-        EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
         EasyMock.replay(ctx);

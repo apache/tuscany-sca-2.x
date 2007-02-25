@@ -27,7 +27,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -50,21 +49,20 @@ import static org.easymock.EasyMock.replay;
  */
 public class ServiceLoaderTestCase extends TestCase {
     private static final QName SERVICE = new QName(SCA_NS, "service");
-    private static final QName BINDING = new QName(SCA_NS, "binding.foo");
-    private static final QName REFERENCE = new QName(SCA_NS, "reference");
+    //private static final QName REFERENCE = new QName(SCA_NS, "reference");
     private static final QName INTERFACE_JAVA = new QName(SCA_NS, "interface.java");
     private static final String PARENT_NAME = "sca://localhost/parent/";
     private ServiceLoader loader;
     private DeploymentContext deploymentContext;
     private XMLStreamReader mockReader;
     private LoaderRegistry mockRegistry;
-    private Component parent;
     private URI componentId;
 
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
         String name = "serviceDefinition";
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
+        expect(mockReader.getAttributeValue(null, "promote")).andReturn(null);
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         replay(mockReader);
@@ -77,6 +75,7 @@ public class ServiceLoaderTestCase extends TestCase {
         String name = "service";
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
+        expect(mockReader.getAttributeValue(null, "promote")).andReturn(null);
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         replay(mockReader);
@@ -90,10 +89,9 @@ public class ServiceLoaderTestCase extends TestCase {
         String name = "serviceDefinition";
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
+        expect(mockReader.getAttributeValue(null, "promote")).andReturn("component/target");
         expect(mockReader.next()).andReturn(START_ELEMENT);
-        expect(mockReader.getName()).andReturn(BINDING);
         expect(mockReader.next()).andReturn(START_ELEMENT);
-        expect(mockReader.getName()).andReturn(BINDING);
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         replay(mockReader);
@@ -114,14 +112,9 @@ public class ServiceLoaderTestCase extends TestCase {
         };
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
+        expect(mockReader.getAttributeValue(null, "promote")).andReturn(target);
         expect(mockReader.next()).andReturn(START_ELEMENT);
-        expect(mockReader.getName()).andReturn(INTERFACE_JAVA);
         expect(mockRegistry.load(null, mockReader, deploymentContext)).andReturn(sc);
-        expect(mockReader.next()).andReturn(START_ELEMENT);
-        expect(mockReader.getName()).andReturn(REFERENCE);
-        expect(mockReader.getElementText()).andReturn(target);
-        expect(mockReader.next()).andReturn(END_ELEMENT);
-        expect(mockReader.getName()).andReturn(REFERENCE);
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE);
 
@@ -140,8 +133,8 @@ public class ServiceLoaderTestCase extends TestCase {
         };
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
+        expect(mockReader.getAttributeValue(null, "promote")).andReturn(null);
         expect(mockReader.next()).andReturn(START_ELEMENT);
-        expect(mockReader.getName()).andReturn(INTERFACE_JAVA);
         expect(mockRegistry.load(null, mockReader, deploymentContext)).andReturn(sc);
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE);
@@ -160,10 +153,7 @@ public class ServiceLoaderTestCase extends TestCase {
         mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ServiceLoader(mockRegistry);
-        parent = EasyMock.createMock(Component.class);
         componentId = URI.create(PARENT_NAME);
-        EasyMock.expect(parent.getUri()).andReturn(componentId).atLeastOnce();
-        EasyMock.replay(parent);
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(deploymentContext.getComponentId()).andReturn(componentId);
         EasyMock.replay(deploymentContext);

@@ -26,9 +26,8 @@
            name="boot2">
 
     <!-- expose Deployer API as a service -->
-    <service name="deployer">
+    <service name="deployer" promote="deployerImpl">
         <interface.java interface="org.apache.tuscany.spi.deployer.Deployer"/>
-        <reference>deployerImpl</reference>
     </service>
 
     <!-- Component that provides the Deployer service -->
