@@ -25,9 +25,8 @@
         <system:implementation.system class="org.apache.tuscany.core.mock.component.BasicInterfaceImpl"/>
     </component>
 
-    <service name="service2" >
+    <service name="service2" promote = "component2">
         <interface.java interface="org.apache.tuscany.core.mock.component.BasicInterface"/>
-        <reference>component2</reference>
     </service>
     
 </composite>

@@ -47,7 +47,6 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
     private static final QName SERVICE = new QName(SCA_NS, "service");
-    private static final QName REFERENCE = new QName(SCA_NS, "reference");
 
     @Constructor
     public ServiceLoader(@Autowire LoaderRegistry registry) {
@@ -58,37 +57,32 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         return SERVICE;
     }
 
-    public ServiceDefinition load(
-        ModelObject object,
-        XMLStreamReader reader,
-        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ServiceDefinition load(ModelObject object, XMLStreamReader reader, DeploymentContext context)
+        throws XMLStreamException, LoaderException {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
-        URI targetUri = null;
-        URI compositeId = deploymentContext.getComponentId();
+        URI compositeId = context.getComponentId();
         URI componentBase = URI.create(compositeId + "/");
         ServiceDefinition def = new ServiceDefinition();
         def.setUri(compositeId.resolve('#' + name));
 
+        URI targetUri = null;
+        String promote = reader.getAttributeValue(null, "promote");
+        if (promote != null) {
+            QualifiedName qName = new QualifiedName(promote);
+            targetUri = componentBase.resolve(qName.getFragment());
+        }
         while (true) {
             int i = reader.next();
             switch (i) {
                 case START_ELEMENT:
-                    // there is a reference already using this qname which doesn't seem appropriate.
-                    if (REFERENCE.equals(reader.getName())) {
-                        String text = reader.getElementText();
-                        String target = text != null ? text.trim() : null;
-                        QualifiedName qName = new QualifiedName(target);
-                        targetUri = componentBase.resolve(qName.getFragment());
+                    ModelObject o = registry.load(null, reader, context);
+                    if (o instanceof ServiceContract) {
+                        def.setServiceContract((ServiceContract) o);
+                    } else if (o instanceof BindingDefinition) {
+                        def.addBinding((BindingDefinition) o);
                     } else {
-                        ModelObject o = registry.load(null, reader, deploymentContext);
-                        if (o instanceof ServiceContract) {
-                            def.setServiceContract((ServiceContract) o);
-                        } else if (o instanceof BindingDefinition) {
-                            def.addBinding((BindingDefinition) o);
-                        } else {
-                            throw new UnrecognizedElementException(reader.getName());
-                        }
+                        throw new UnrecognizedElementException(reader.getName());
                     }
                     break;
                 case END_ELEMENT:
