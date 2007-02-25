@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  *
  */
-public class InterceptorDefinition extends ModelObject {
+public class PhysicalInterceptorDefinition extends ModelObject {
     
     // The qualified name of the interceptor builder
     private QName builder;
