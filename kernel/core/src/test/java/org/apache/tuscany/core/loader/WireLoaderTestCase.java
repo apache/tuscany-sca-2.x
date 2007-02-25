@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.InvalidWireException;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -53,7 +53,7 @@ public class WireLoaderTestCase extends TestCase {
     private WireLoader loader;
     private XMLStreamReader reader;
     private DeploymentContext context;
-    private CompositeComponent composite;
+    private Component composite;
 
     public void testValidWire() throws LoaderException, XMLStreamException {
         expect(reader.getName()).andReturn(WIRE);
@@ -173,7 +173,7 @@ public class WireLoaderTestCase extends TestCase {
         EasyMock.replay(location);
         EasyMock.expect(reader.getLocation()).andReturn(location).anyTimes();
         context = createMock(DeploymentContext.class);
-        composite = createMock(CompositeComponent.class);
+        composite = createMock(Component.class);
         loader = new WireLoader(registry);
     }
 

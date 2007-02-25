@@ -35,7 +35,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import org.osoa.sca.Constants;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -91,7 +91,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
         expect(context.getComponentId()).andReturn(componentId);
 
-        expect(registry.load((CompositeComponent) isNull(),
+        expect(registry.load((Component) isNull(),
             (ModelObject) isNull(),
             eq(includeURL),
             eq(CompositeComponentType.class),
@@ -117,7 +117,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
         expect(context.getComponentId()).andReturn(componentId);
 
-        expect(registry.load((CompositeComponent) isNull(),
+        expect(registry.load((Component) isNull(),
             (ModelObject) isNull(),
             eq(includeURL),
             eq(CompositeComponentType.class),
@@ -146,7 +146,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
         expect(context.getComponentId()).andReturn(componentId);
 
-        expect(registry.load((CompositeComponent) isNull(),
+        expect(registry.load((Component) isNull(),
             (ModelObject) isNull(),
             eq(includeURL),
             eq(CompositeComponentType.class),

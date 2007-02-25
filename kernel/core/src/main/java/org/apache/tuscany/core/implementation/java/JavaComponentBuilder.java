@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.host.ResourceHost;
@@ -62,7 +62,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     }
 
     @SuppressWarnings("unchecked")
-    public AtomicComponent build(CompositeComponent parent,
+    public AtomicComponent build(Component parent,
                                  ComponentDefinition<JavaImplementation> definition,
                                  DeploymentContext deployment) throws BuilderConfigException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =

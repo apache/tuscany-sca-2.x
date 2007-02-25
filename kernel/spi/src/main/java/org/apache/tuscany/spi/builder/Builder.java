@@ -19,7 +19,6 @@
 package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -43,7 +42,7 @@ public interface Builder {
      * @return the newly created component
      * @throws BuilderException
      */
-    <I extends Implementation<?>> Component build(CompositeComponent parent,
+    <I extends Implementation<?>> Component build(Component parent,
                                                   ComponentDefinition<I> definition,
                                                   DeploymentContext context) throws BuilderException;
 
@@ -56,7 +55,7 @@ public interface Builder {
      * @return the newly created service
      * @throws BuilderException
      */
-    Service build(CompositeComponent parent, ServiceDefinition definition, DeploymentContext context)
+    Service build(Component parent, ServiceDefinition definition, DeploymentContext context)
         throws BuilderException;
 
     /**
@@ -68,7 +67,7 @@ public interface Builder {
      * @return the newly created reference
      * @throws BuilderException
      */
-    Reference build(CompositeComponent parent, ReferenceDefinition definition, DeploymentContext context)
+    Reference build(Component parent, ReferenceDefinition definition, DeploymentContext context)
         throws BuilderException;
 
 }

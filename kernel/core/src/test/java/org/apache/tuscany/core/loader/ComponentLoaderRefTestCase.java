@@ -22,7 +22,7 @@ import java.net.URI;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -118,7 +118,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         super.setUp();
         LoaderRegistry mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ComponentLoader(mockRegistry, null);
-        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
+        Component parent = EasyMock.createNiceMock(Component.class);
         EasyMock.expect(parent.getUri()).andReturn(componentId).atLeastOnce();
         EasyMock.replay(parent);
 

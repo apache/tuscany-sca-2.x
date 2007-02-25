@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -60,7 +60,7 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
         EasyMock.expect(wire.getTargetInstance()).andReturn("result");
         EasyMock.replay(wire);
 
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        Component parent = EasyMock.createMock(Component.class);
         EasyMock.replay(parent);
         AtomicComponent component = builder.build(parent, definition, ctx);
         SystemComponentBuilderResourceTestCase.Foo foo =

@@ -23,7 +23,7 @@ import java.lang.reflect.Constructor;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.TypeInfo;
@@ -55,7 +55,7 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
 
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     Property annotation,
-                                    CompositeComponent parent,
+                                    Component parent,
                                     DeploymentContext context) {
         property.setOverride(OverrideOptions.valueOf(annotation.override().toUpperCase()));
         String xmlType = annotation.xmlType();
@@ -69,7 +69,7 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
         }
     }
 
-    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+    public <T> void visitConstructor(Component parent, Constructor<T> constructor,
                                      PojoComponentType<JavaMappedService, JavaMappedReference,
                                          JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {

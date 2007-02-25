@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.DataType;
@@ -58,7 +57,7 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         Wire outboundWire = createMock(Wire.class);
 
         Component component = createMock(Component.class);
-        CompositeComponent composite = createMock(CompositeComponent.class);
+        Component composite = createMock(Component.class);
 
         Map<Operation<?>, InvocationChain> outboundChains =
             new HashMap<Operation<?>, InvocationChain>();

@@ -24,11 +24,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
 import org.osoa.sca.Constants;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -39,6 +37,9 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * Verifies loading of a reference definition from an XML-based assembly
@@ -52,7 +53,7 @@ public class ReferenceLoaderTestCase extends TestCase {
     private ReferenceLoader loader;
     private XMLStreamReader mockReader;
     private LoaderRegistry mockRegistry;
-    private CompositeComponent parent;
+    private Component parent;
     private DeploymentContext ctx;
 
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
@@ -131,7 +132,7 @@ public class ReferenceLoaderTestCase extends TestCase {
         mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ReferenceLoader(mockRegistry);
-        parent = EasyMock.createMock(CompositeComponent.class);
+        parent = EasyMock.createMock(Component.class);
         EasyMock.expect(parent.getUri()).andReturn(URI.create(COMPONENT_NAME));
         EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);

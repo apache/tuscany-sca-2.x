@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -58,7 +58,7 @@ public class ComponentTypeElementLoaderTestCase extends TestCase {
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
-        EasyMock.expect(registry.load((CompositeComponent) EasyMock.isNull(),
+        EasyMock.expect(registry.load((Component) EasyMock.isNull(),
             EasyMock.isA(ComponentType.class),
             EasyMock.isA(XMLStreamReader.class),
             (DeploymentContext) EasyMock.isNull())).andReturn(type);

@@ -3,9 +3,9 @@ package org.apache.tuscany.core.implementation.composite;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -22,8 +22,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public abstract class AbstractCompositeBuilder<T extends Implementation<CompositeComponentType>>
     extends ComponentBuilderExtension<T> {
 
-    public CompositeComponent build(CompositeComponent parent,
-                                    CompositeComponent component,
+    public Component build(Component parent,
+                                    Component component,
                                     CompositeComponentType<?, ?, ?> componentType,
                                     DeploymentContext deploymentContext) throws BuilderException {
         for (ComponentDefinition<? extends Implementation<?>> definition : componentType.getComponents().values()) {

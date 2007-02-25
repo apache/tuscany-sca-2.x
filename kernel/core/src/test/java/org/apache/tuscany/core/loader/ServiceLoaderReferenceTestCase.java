@@ -24,15 +24,16 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
 import org.osoa.sca.Constants;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -44,7 +45,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
     private URI componentId;
     private ServiceLoader loader;
     private XMLStreamReader mockReader;
-    private CompositeComponent parent;
+    private Component parent;
     private DeploymentContext ctx;
 
     public void testReferenceNoFragment() throws LoaderException, XMLStreamException {
@@ -85,7 +86,7 @@ public class ServiceLoaderReferenceTestCase extends TestCase {
         loader = new ServiceLoader(mockRegistry);
 
         componentId = URI.create(COMPONENT_NAME);
-        parent = EasyMock.createMock(CompositeComponent.class);
+        parent = EasyMock.createMock(Component.class);
         EasyMock.expect(parent.getUri()).andReturn(componentId).atLeastOnce();
         EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);

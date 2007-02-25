@@ -80,12 +80,12 @@ public interface WorkContext {
     /**
      * Returns the composite where a remote request came in
      */
-    CompositeComponent getRemoteComponent();
+    Component getRemoteComponent();
 
     /**
      * Sets the composite where a remote request came in
      */
-    void setRemoteComponent(CompositeComponent component);
+    void setRemoteComponent(Component component);
 
     /**
      * Returns the current atomic component as a request is processed or null if it is not being tracked. Note that the

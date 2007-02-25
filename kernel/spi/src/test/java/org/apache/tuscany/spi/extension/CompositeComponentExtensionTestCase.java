@@ -23,9 +23,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -36,7 +36,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class CompositeComponentExtensionTestCase extends TestCase {
-    private CompositeComponent composite;
+    private Component composite;
 
 
     public void testCreateTargetInvoker() throws Exception {
@@ -59,7 +59,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        composite = new CompositeComponentExtension(new URI("foo"), null) {
+        composite = new CompositeComponentExtension(new URI("foo")) {
 
             public List<Wire> getWires(String name) {
                 throw new UnsupportedOperationException();

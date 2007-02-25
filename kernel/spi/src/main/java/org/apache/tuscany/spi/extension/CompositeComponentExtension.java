@@ -19,17 +19,14 @@
 package org.apache.tuscany.spi.extension;
 
 import java.net.URI;
-import java.util.Map;
 
-import org.w3c.dom.Document;
-
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -39,12 +36,10 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class CompositeComponentExtension extends AbstractComponentExtension implements CompositeComponent {
-    protected final Map<String, Document> propertyValues;
+public abstract class CompositeComponentExtension extends AbstractComponentExtension implements RuntimeEventListener {
 
-    protected CompositeComponentExtension(URI name, Map<String, Document> propertyValues) {
+    protected CompositeComponentExtension(URI name) {
         super(name);
-        this.propertyValues = propertyValues;
     }
 
     public Scope getScope() {
@@ -53,10 +48,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
 
     public void onEvent(Event event) {
         publish(event);
-    }
-
-    public Document getPropertyValue(String name) {
-        return propertyValues.get(name);
     }
 
     public TargetInvoker createTargetInvoker(String name, Operation operation)

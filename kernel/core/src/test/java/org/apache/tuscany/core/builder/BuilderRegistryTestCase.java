@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -58,7 +57,7 @@ public class BuilderRegistryTestCase extends TestCase {
     private Map<URI, Component> components;
 
     //private BuilderRegistryImpl registry;
-    private CompositeComponent parent;
+    private Component parent;
 
     @SuppressWarnings({"unchecked"})
     public void testRegistration() throws Exception {
@@ -68,7 +67,7 @@ public class BuilderRegistryTestCase extends TestCase {
             new ComponentDefinition<CompositeImplementation>(implementation);
         componentDefinition.getImplementation().setComponentType(new CompositeComponentType());
 
-        CompositeComponent component = EasyMock.createMock(CompositeComponent.class);
+        Component component = EasyMock.createMock(Component.class);
         component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
         component.setScopeContainer(scopeContainer);
         EasyMock.expect(component.getUri()).andReturn(componentId);
@@ -98,7 +97,7 @@ public class BuilderRegistryTestCase extends TestCase {
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(CompositeComponent.class),
+        EasyMock.expect(builder.build(EasyMock.isA(Component.class),
             EasyMock.isA(ServiceDefinition.class),
             EasyMock.isA(MockBindingDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(binding).times(2);
@@ -118,7 +117,7 @@ public class BuilderRegistryTestCase extends TestCase {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(CompositeComponent.class),
+        EasyMock.expect(builder.build(EasyMock.isA(Component.class),
             EasyMock.isA(ReferenceDefinition.class),
             EasyMock.isA(MockBindingDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(binding).times(2);
@@ -142,7 +141,7 @@ public class BuilderRegistryTestCase extends TestCase {
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
         ComponentBuilder<FooImplementation> builder = EasyMock.createMock(ComponentBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(CompositeComponent.class),
+        EasyMock.expect(builder.build(EasyMock.isA(Component.class),
             EasyMock.isA(ComponentDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(component);
         EasyMock.replay(builder);
@@ -165,13 +164,13 @@ public class BuilderRegistryTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
+        parent = EasyMock.createNiceMock(Component.class);
         scopeContainer = EasyMock.createMock(ScopeContainer.class);
         components = EasyMock.createMock(Map.class);
     }
 
     private class MockBuilder implements ComponentBuilder<CompositeImplementation> {
-        public Component build(CompositeComponent parent,
+        public Component build(Component parent,
                                ComponentDefinition componentDefinition,
                                DeploymentContext deploymentContext) throws BuilderConfigException {
             return null;

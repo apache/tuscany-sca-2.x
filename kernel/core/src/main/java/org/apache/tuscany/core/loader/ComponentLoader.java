@@ -39,7 +39,7 @@ import org.osoa.sca.annotations.Constructor;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -104,7 +104,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    public ComponentDefinition<?> load(CompositeComponent parent,
+    public ComponentDefinition<?> load(Component parent,
                                        ModelObject object,
                                        XMLStreamReader reader,
                                        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
@@ -175,7 +175,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         }
     }
 
-    protected Implementation<?> loadImplementation(CompositeComponent parent,
+    protected Implementation<?> loadImplementation(Component parent,
                                                    XMLStreamReader reader,
                                                    DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {

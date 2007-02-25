@@ -22,7 +22,6 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -35,7 +34,7 @@ import org.apache.tuscany.spi.model.CompositeImplementation;
  */
 public class CompositeBuilder extends AbstractCompositeBuilder<CompositeImplementation> {
 
-    public Component build(CompositeComponent parent,
+    public Component build(Component parent,
                            ComponentDefinition<CompositeImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderException {
         CompositeImplementation implementation = componentDefinition.getImplementation();

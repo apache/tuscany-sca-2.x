@@ -19,9 +19,9 @@
 package org.apache.tuscany.core.binding.local;
 
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -38,7 +38,7 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
         return LocalBindingDefinition.class;
     }
 
-    public ServiceBinding build(CompositeComponent parent,
+    public ServiceBinding build(Component parent,
                                 ServiceDefinition serviceDefinition,
                                 LocalBindingDefinition bindingDefinition,
                                 DeploymentContext deploymentContext)
@@ -47,7 +47,7 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
     }
 
 
-    public ReferenceBinding build(CompositeComponent parent,
+    public ReferenceBinding build(Component parent,
                                   ReferenceDefinition referenceDefinition,
                                   LocalBindingDefinition bindingDefinition,
                                   DeploymentContext deploymentContext) throws BuilderException {

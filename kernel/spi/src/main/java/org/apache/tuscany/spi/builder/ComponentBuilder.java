@@ -19,7 +19,6 @@
 package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
@@ -30,7 +29,7 @@ import org.apache.tuscany.spi.model.Implementation;
  * @version $Rev$ $Date$
  */
 public interface ComponentBuilder<I extends Implementation<?>> {
-    Component build(CompositeComponent parent,
+    Component build(Component parent,
                        ComponentDefinition<I> componentDefinition,
                        DeploymentContext deploymentContext) throws BuilderException;
 }

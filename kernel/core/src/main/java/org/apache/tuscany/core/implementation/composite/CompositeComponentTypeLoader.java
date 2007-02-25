@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.composite;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
@@ -49,7 +49,7 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         return CompositeImplementation.class;
     }
 
-    public void load(CompositeComponent parent, CompositeImplementation implementation,
+    public void load(Component parent, CompositeImplementation implementation,
                      DeploymentContext deploymentContext)
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
@@ -60,7 +60,7 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         implementation.setComponentType(componentType);
     }
 
-    protected CompositeComponentType loadFromSidefile(CompositeComponent parent,
+    protected CompositeComponentType loadFromSidefile(Component parent,
                                                       URL url,
                                                       DeploymentContext deploymentContext)
         throws LoaderException {

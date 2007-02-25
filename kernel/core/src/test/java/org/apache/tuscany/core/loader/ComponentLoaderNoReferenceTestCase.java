@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -36,7 +36,7 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
     private static final String NAME = "testComponent";
     private ComponentLoader loader;
     private XMLStreamReader reader;
-    private CompositeComponent parent;
+    private Component parent;
     private DeploymentContext ctx;
 
     /**
@@ -75,16 +75,16 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
         LoaderRegistry mockRegistry = EasyMock.createMock(LoaderRegistry.class);
-        mockRegistry.loadComponentType(EasyMock.isA(CompositeComponent.class),
+        mockRegistry.loadComponentType(EasyMock.isA(Component.class),
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
-        EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
+        EasyMock.expect(mockRegistry.load(EasyMock.isA(Component.class),
             (ModelObject) isNull(),
             EasyMock.isA(XMLStreamReader.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         loader = new ComponentLoader(mockRegistry, null);
-        parent = EasyMock.createMock(CompositeComponent.class);
+        parent = EasyMock.createMock(Component.class);
         EasyMock.expect(parent.getUri()).andReturn(URI.create("foo"));
         EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);

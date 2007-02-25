@@ -23,7 +23,7 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -49,7 +49,7 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
         this.service = service;
     }
 
-    public <T> void visitClass(CompositeComponent parent, Class<T> clazz,
+    public <T> void visitClass(Component parent, Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context) throws ProcessingException {
         Constructor[] ctors = clazz.getConstructors();
@@ -65,7 +65,7 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
         }
     }
 
-    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+    public <T> void visitConstructor(Component parent, Constructor<T> constructor,
                                      PojoComponentType<JavaMappedService, JavaMappedReference,
                                          JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {

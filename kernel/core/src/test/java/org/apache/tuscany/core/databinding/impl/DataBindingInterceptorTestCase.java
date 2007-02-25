@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
@@ -71,7 +70,7 @@ public class DataBindingInterceptorTestCase extends TestCase {
             new DataType<DataType>("idl:output", Object.class, operation2.getOutputType());
 
         Wire outboundWire = EasyMock.createMock(Wire.class);
-        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
+        Component composite = EasyMock.createMock(Component.class);
         Component component = EasyMock.createMock(Component.class);
         EasyMock.replay(outboundWire, composite, component);
 

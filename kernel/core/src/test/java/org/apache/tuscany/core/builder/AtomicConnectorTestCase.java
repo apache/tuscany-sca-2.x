@@ -22,11 +22,11 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -120,7 +120,7 @@ public class AtomicConnectorTestCase extends TestCase {
         Reference reference = new ReferenceImpl(TARGET, contract);
         reference.addReferenceBinding(binding);
 
-        CompositeComponent component = new CompositeComponentImpl(PARENT);
+        Component component = new CompositeComponentImpl(PARENT);
         component.register(reference);
         manager.register(component);
 
@@ -161,7 +161,7 @@ public class AtomicConnectorTestCase extends TestCase {
         Service service = new ServiceImpl(TARGET, contract);
         service.addServiceBinding(binding);
 
-        CompositeComponent component = new CompositeComponentImpl(PARENT);
+        Component component = new CompositeComponentImpl(PARENT);
         component.register(service);
         manager.register(component);
 

@@ -30,7 +30,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
@@ -57,38 +57,38 @@ public abstract class ImplementationProcessorExtension implements Implementation
         registry.unregisterProcessor(this);
     }
 
-    public <T> void visitClass(CompositeComponent parent, Class<T> clazz,
+    public <T> void visitClass(Component parent, Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context)
         throws ProcessingException {
     }
 
-    public <T> void visitSuperClass(CompositeComponent parent, Class<T> clazz,
+    public <T> void visitSuperClass(Component parent, Class<T> clazz,
                                     PojoComponentType<JavaMappedService,
                                         JavaMappedReference, JavaMappedProperty<?>> type,
                                     DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitMethod(CompositeComponent parent, Method method,
+    public void visitMethod(Component parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
     }
 
-    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+    public <T> void visitConstructor(Component parent, Constructor<T> constructor,
                                      PojoComponentType<JavaMappedService,
                                          JavaMappedReference, JavaMappedProperty<?>> type,
                                      DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitField(CompositeComponent parent, Field field,
+    public void visitField(Component parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
     }
 
-    public <T> void visitEnd(CompositeComponent parent, Class<T> clazz,
+    public <T> void visitEnd(Component parent, Class<T> clazz,
                              PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                              DeploymentContext context) throws ProcessingException {
 

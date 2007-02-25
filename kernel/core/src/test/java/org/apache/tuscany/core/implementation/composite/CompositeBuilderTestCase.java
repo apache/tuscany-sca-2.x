@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
@@ -79,10 +78,10 @@ public class CompositeBuilderTestCase extends TestCase {
         builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
         builder.setBuilderRegistry(builderRegistry);
 
-        CompositeComponent component =
-            (CompositeComponent) builder.build(null, createTopComponentDef(), deploymentContext);
+        Component component =
+            builder.build(null, createTopComponentDef(), deploymentContext);
         Map<URI, Component> components = deploymentContext.getComponents();
-        CompositeComponent sourceComponent = (CompositeComponent) components.get(SOURCE_COMPONENT);
+        Component sourceComponent = components.get(SOURCE_COMPONENT);
         assertNotNull(sourceComponent.getService("InnerSourceService"));
         AtomicComponent innerSourceComponent = (AtomicComponent) components.get(INNER_SOURCE_COMPONENT);
         assertNotNull(innerSourceComponent);

@@ -27,7 +27,7 @@ import java.util.Collection;
 import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
@@ -57,7 +57,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         this.regsitry = registry;
     }
 
-    public void visitMethod(CompositeComponent parent,
+    public void visitMethod(Component parent,
                             Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context) throws ProcessingException {
@@ -122,7 +122,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         type.getReferences().put(name, reference);
     }
 
-    public void visitField(CompositeComponent parent,
+    public void visitField(Component parent,
                            Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
@@ -175,7 +175,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         type.getReferences().put(name, reference);
     }
 
-    public <T> void visitConstructor(CompositeComponent parent,
+    public <T> void visitConstructor(Component parent,
                                      Constructor<T> constructor,
                                      PojoComponentType<JavaMappedService,
                                          JavaMappedReference, JavaMappedProperty<?>> type,

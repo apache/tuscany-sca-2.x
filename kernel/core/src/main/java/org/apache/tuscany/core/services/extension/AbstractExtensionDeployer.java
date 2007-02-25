@@ -23,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.Deployer;
 
 /**
@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.deployer.Deployer;
  */
 public class AbstractExtensionDeployer {
     protected Deployer deployer;
-    protected CompositeComponent parent;
+    protected Component parent;
 
     @Autowire
     public void setDeployer(Deployer deployer) {

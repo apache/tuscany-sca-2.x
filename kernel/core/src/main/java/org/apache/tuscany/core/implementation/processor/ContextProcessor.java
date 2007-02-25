@@ -26,8 +26,8 @@ import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -54,7 +54,7 @@ public class ContextProcessor extends ImplementationProcessorExtension {
         this.workContext = workContext;
     }
 
-    public void visitMethod(CompositeComponent parent,
+    public void visitMethod(Component parent,
                             Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
@@ -80,7 +80,7 @@ public class ContextProcessor extends ImplementationProcessorExtension {
         }
     }
 
-    public void visitField(CompositeComponent parent, Field field,
+    public void visitField(Component parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         if (field.getAnnotation(Context.class) == null) {

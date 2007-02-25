@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.system.loader;
 import java.net.URL;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -64,7 +64,7 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         this.introspector = introspector;
     }
 
-    public void load(CompositeComponent parent,
+    public void load(Component parent,
                      SystemImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
@@ -84,7 +84,7 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         return SystemImplementation.class;
     }
 
-    protected PojoComponentType loadByIntrospection(CompositeComponent parent,
+    protected PojoComponentType loadByIntrospection(Component parent,
                                                     SystemImplementation implementation,
                                                     DeploymentContext deploymentContext) throws ProcessingException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =

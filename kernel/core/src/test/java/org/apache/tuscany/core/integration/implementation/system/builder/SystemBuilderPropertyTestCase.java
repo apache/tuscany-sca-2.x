@@ -21,7 +21,7 @@ package org.apache.tuscany.core.integration.implementation.system.builder;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -44,7 +44,7 @@ import org.easymock.EasyMock;
 public class SystemBuilderPropertyTestCase extends TestCase {
 
     DeploymentContext deploymentContext;
-    CompositeComponent parent;
+    Component parent;
 
     @SuppressWarnings("unchecked")
     public void testPropertyHandling() throws Exception {
@@ -70,7 +70,7 @@ public class SystemBuilderPropertyTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        parent = EasyMock.createNiceMock(CompositeComponent.class);
+        parent = EasyMock.createNiceMock(Component.class);
     }
 
     private static class Foo {

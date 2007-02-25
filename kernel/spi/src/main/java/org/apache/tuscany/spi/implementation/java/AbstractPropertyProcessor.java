@@ -27,7 +27,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.apache.tuscany.api.annotation.DataType;
-import org.apache.tuscany.spi.component.CompositeComponent;
+
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
@@ -45,7 +46,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         this.service = service;
     }
 
-    public void visitMethod(CompositeComponent parent,
+    public void visitMethod(Component parent,
                             Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context) throws ProcessingException {
@@ -91,7 +92,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         properties.put(name, property);
     }
 
-    public void visitField(CompositeComponent parent,
+    public void visitField(Component parent,
                            Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
@@ -129,7 +130,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         properties.put(name, property);
     }
 
-    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+    public <T> void visitConstructor(Component parent, Constructor<T> constructor,
                                      PojoComponentType<JavaMappedService,
                                          JavaMappedReference, JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {
@@ -170,7 +171,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
 
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     A annotation,
-                                    CompositeComponent parent,
+                                    Component parent,
                                     DeploymentContext context) throws ProcessingException {
     }
 

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -52,7 +52,7 @@ public class ComponentTypeLoaderExtensionTestCase extends TestCase {
             return Implementation.class;
         }
 
-        public void load(CompositeComponent parent, Implementation implementation,
+        public void load(Component parent, Implementation implementation,
                          DeploymentContext deploymentContext) throws LoaderException {
 
         }

@@ -26,7 +26,7 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -55,7 +55,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         this.implService = implService;
     }
 
-    public <T> void visitClass(CompositeComponent parent, Class<T> clazz,
+    public <T> void visitClass(Component parent, Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
@@ -100,7 +100,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
     }
 
 
-    public void visitMethod(CompositeComponent parent,
+    public void visitMethod(Component parent,
                             Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context) throws ProcessingException {
@@ -128,7 +128,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         callbackService.setCallbackMember(method);
     }
 
-    public void visitField(CompositeComponent parent, Field field,
+    public void visitField(Component parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
 
