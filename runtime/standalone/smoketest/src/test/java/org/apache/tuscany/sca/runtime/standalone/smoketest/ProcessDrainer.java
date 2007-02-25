@@ -65,7 +65,7 @@ public class ProcessDrainer {
      * @param process Process to be drained.
      * @return An instance of the stream drainer.
      */
-    public static ProcessDrainer newStreamDrainer(Process process) {
+    public static ProcessDrainer newInstance(Process process) {
         return new ProcessDrainer(process);
     }
     
@@ -75,7 +75,7 @@ public class ProcessDrainer {
      * @param timeout Timeout before which teh drainer stops.
      * @return An instance of the stream drainer.
      */
-    public static ProcessDrainer newStreamDrainer(Process process, int timeout) {
+    public static ProcessDrainer newInstance(Process process, int timeout) {
         return new ProcessDrainer(process, timeout);
     }
     
@@ -123,7 +123,6 @@ public class ProcessDrainer {
                     count = inputStream.read(buffer);
                 }
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         }
         
