@@ -77,7 +77,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
                                     ProxyService proxyService,
                                     Map<String, Document> propertyValues,
                                     ClassLoader loader) {
-        super(uri, propertyValues);
+        super(uri);
         this.resource = resource;
         this.proxyService = proxyService;
         this.loader = loader;
