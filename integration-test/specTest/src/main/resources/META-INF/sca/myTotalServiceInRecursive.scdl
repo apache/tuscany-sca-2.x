@@ -31,14 +31,12 @@
 		<reference name="myListService">MyServiceInComposite/MyListService</reference>
     </component>
     
- 	<service name="MyTotalServiceInCompositeWithRecursiveUseService">
+ 	<service name="MyTotalServiceInCompositeWithRecursiveUseService" promote="MyTotalServiceInCompositeWithRecursive">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceInCompositeWithRecursive</reference>	   
     </service>
    
- 	<service name="MyTotalServiceInCompositeWithComponentServiceUseService">
+ 	<service name="MyTotalServiceInCompositeWithComponentServiceUseService" promote="MyTotalServiceInCompositeWithComponentService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceInCompositeWithComponentService</reference>	   
     </service>
     
     <component name="MyTotalServiceInCompositeWithRecursive">

@@ -21,7 +21,7 @@
 	   xmlns:foo="http://foo" 
            name="MyTotalServiceReferenceOverrideTest">
    
- 	<service name="MyTotalService">
+ 	<service name="MyTotalService" promote="MyTotalServiceComponent">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
         <reference target="MyTotalServiceComponent"/>	   
     </service>

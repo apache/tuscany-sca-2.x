@@ -21,25 +21,21 @@
 	   xmlns:foo="http://foo" 
            name="MySimpleServiceInRecursiveTest">
    
-    <service name="MySimpleService">
+    <service name="MySimpleService" promote="MySimpleServiceInRecursive/MyService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MySimpleServiceInRecursive/MyService</reference>	   
     </service>
 
    
-    <service name="MySimpleServiceNo" override="no">
+    <service name="MySimpleServiceNo" override="no" promote="MySimpleServiceInRecursive/MyService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MySimpleServiceInRecursive/MyService</reference>	   
     </service>
 
-    <service name="MySimpleServiceMay" override="may">
+    <service name="MySimpleServiceMay" override="may" promote="MySimpleServiceInRecursive/MyService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MySimpleServiceInRecursive/MyService</reference>	   
     </service>
 
-    <service name="MySimpleServiceMust" override="must">
+    <service name="MySimpleServiceMust" override="must" promote="MySimpleServiceInRecursive/MyService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MySimpleServiceInRecursive/MyService</reference>	   
     </service>
    
     <component name="MySimpleServiceInRecursive">
