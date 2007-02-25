@@ -25,7 +25,6 @@ import java.util.Map;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -40,7 +39,7 @@ public class WebappBuilder extends ComponentBuilderExtension<WebappImplementatio
         return WebappImplementation.class;
     }
 
-    public Component build(CompositeComponent parent,
+    public Component build(Component parent,
                            ComponentDefinition<WebappImplementation> definition,
                            DeploymentContext deploymentContext) throws BuilderException {
         URI uri = definition.getUri();

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -63,7 +63,7 @@ public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<La
         return Launched.class;
     }
 
-    public void load(CompositeComponent parent,
+    public void load(Component parent,
                      Launched implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         String className = implementation.getClassName();
@@ -77,7 +77,7 @@ public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<La
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(CompositeComponent parent,
+    protected PojoComponentType loadByIntrospection(Component parent,
                                                     Launched implementation,
                                                     DeploymentContext deploymentContext,
                                                     Class<?> implClass) throws ProcessingException {

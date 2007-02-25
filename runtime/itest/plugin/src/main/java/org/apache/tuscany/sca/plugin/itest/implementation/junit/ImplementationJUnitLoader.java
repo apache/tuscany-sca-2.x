@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -44,7 +44,7 @@ public class ImplementationJUnitLoader extends LoaderExtension<ImplementationJUn
         return JUNIT;
     }
 
-    public ImplementationJUnit load(CompositeComponent parent,
+    public ImplementationJUnit load(Component parent,
                                     ModelObject object,
                                     XMLStreamReader reader,
                                     DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {

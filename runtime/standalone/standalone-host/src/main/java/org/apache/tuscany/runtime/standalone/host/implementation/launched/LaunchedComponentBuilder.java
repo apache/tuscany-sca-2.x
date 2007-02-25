@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.host.ResourceHost;
@@ -64,7 +63,7 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
         return Launched.class;
     }
 
-    public Component build(CompositeComponent parent,
+    public Component build(Component parent,
                            ComponentDefinition<Launched> definition,
                            DeploymentContext deployment) throws BuilderConfigException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
@@ -166,7 +165,7 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
     private void handleResources(
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
         JavaAtomicComponent component,
-        CompositeComponent parent) {
+        Component parent) {
         for (Resource resource : componentType.getResources().values()) {
             ObjectFactory<?> objectFactory = resource.getObjectFactory();
             if (objectFactory != null) {

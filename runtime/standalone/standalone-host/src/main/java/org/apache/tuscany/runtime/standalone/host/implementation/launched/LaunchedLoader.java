@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -44,7 +44,7 @@ public class LaunchedLoader extends LoaderExtension<Launched> {
         return LAUNCHED;
     }
 
-    public Launched load(CompositeComponent parent,
+    public Launched load(Component parent,
                          ModelObject object,
                          XMLStreamReader reader,
                          DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
