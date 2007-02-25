@@ -20,6 +20,7 @@ package org.apache.tuscany.core.loader;
 
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -103,19 +104,16 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    public ComponentDefinition<?> load(
-        ModelObject object,
-        XMLStreamReader reader,
-        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ComponentDefinition<?> load(ModelObject object, XMLStreamReader reader, DeploymentContext context)
+        throws XMLStreamException, LoaderException {
         assert COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String initLevel = reader.getAttributeValue(null, "initLevel");
 
-        URI componentId = URI.create(deploymentContext.getComponentId() + "/").resolve(name);
-        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext,
-            deploymentContext.getClassLoader(),
-            deploymentContext.getScdlLocation(),
-            componentId);
+        URI componentId = URI.create(context.getComponentId() + "/").resolve(name);
+        ClassLoader loader = context.getClassLoader();
+        URL location = context.getScdlLocation();
+        DeploymentContext childContext = new ChildDeploymentContext(context, loader, location, componentId);
         Implementation<?> impl = loadImplementation(reader, childContext);
         registry.loadComponentType(impl, childContext);
 
@@ -139,9 +137,9 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 case START_ELEMENT:
                     QName qname = reader.getName();
                     if (PROPERTY.equals(qname)) {
-                        loadProperty(reader, childContext, componentDefinition);
+                        loadProperty(reader, componentDefinition, childContext);
                     } else if (REFERENCE.equals(qname)) {
-                        loadReference(reader, childContext, componentDefinition);
+                        loadReference(reader, componentDefinition, childContext);
                     } else {
                         throw new UnrecognizedElementException(qname);
                     }
@@ -185,12 +183,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    protected void loadProperty(XMLStreamReader reader,
-                                DeploymentContext deploymentContext,
-                                ComponentDefinition<?> componentDefinition) throws XMLStreamException,
-                                                                                   LoaderException {
+    protected void loadProperty(XMLStreamReader reader, ComponentDefinition<?> definition, DeploymentContext context)
+        throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, PROPERTY_NAME_ATTR);
-        Implementation<?> implementation = componentDefinition.getImplementation();
+        Implementation<?> implementation = definition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
         Property<Type> property = (Property<Type>) componentType.getProperties().get(name);
         if (property == null) {
@@ -217,13 +213,12 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         ObjectFactory<Type> objectFactory = propertyFactory.createObjectFactory(property, propertyValue);
         // propertyValue.setValueFactory(new SimplePropertyObjectFactory(property, propertyValue.getValue()));
         propertyValue.setValueFactory(objectFactory);
-        componentDefinition.add(propertyValue);
+        definition.add(propertyValue);
     }
 
     protected void loadReference(XMLStreamReader reader,
-                                 DeploymentContext deploymentContext,
-                                 ComponentDefinition<?> componentDefinition) throws XMLStreamException,
-                                                                                    LoaderException {
+                                 ComponentDefinition<?> componentDefinition,
+                                 DeploymentContext context) throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             throw new InvalidReferenceException("No name specified");
@@ -231,10 +226,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
         String target = reader.getAttributeValue(null, "target");
         if (target == null) {
-            // TODO fix   xcv
+            // TODO fix JFM
             throw new InvalidReferenceException("No target specified", name);
         }
-        URI componentId = deploymentContext.getComponentId();
+        URI componentId = context.getComponentId();
         StringTokenizer tokenizer = new StringTokenizer(target);
         List<URI> uris = new ArrayList<URI>();
         while (tokenizer.hasMoreTokens()) {

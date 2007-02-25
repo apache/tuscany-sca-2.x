@@ -59,7 +59,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target");
         EasyMock.replay(reader);
-        loader.loadReference(reader, context, definition);
+        loader.loadReference(reader, definition, context);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
         assertEquals(1, target.getTargets().size());
         URI uri = target.getTargets().get(0);
@@ -82,7 +82,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target/fragment");
         EasyMock.replay(reader);
-        loader.loadReference(reader, context, definition);
+        loader.loadReference(reader, definition, context);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
         assertEquals(1, target.getTargets().size());
         URI uri = target.getTargets().get(0);
@@ -104,7 +104,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target1/fragment1 target2/fragment2");
         EasyMock.replay(reader);
-        loader.loadReference(reader, context, definition);
+        loader.loadReference(reader, definition, context);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
         assertEquals(2, target.getTargets().size());
         URI uri1 = target.getTargets().get(0);
