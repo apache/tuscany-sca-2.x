@@ -32,14 +32,14 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public class WireDefinition extends ModelObject {
+public class PhysicalWireDefinition extends ModelObject {
     private QName bindingType;
     // The resolved source URI of the wire
     private URI sourceUri;
     // The resolved source URI of the wire
     private URI targetUri;
     // Interceptors defined against the wire
-    private final Set<InterceptorDefinition> interceptors = new HashSet<InterceptorDefinition>();
+    private final Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
 
     /**
      * Returns the wire binding type.
@@ -64,7 +64,7 @@ public class WireDefinition extends ModelObject {
      *
      * @return List of interceptors available on the wire.
      */
-    public Set<InterceptorDefinition> getInterceptors() {
+    public Set<PhysicalInterceptorDefinition> getInterceptors() {
         return Collections.unmodifiableSet(interceptors);
     }
 
@@ -73,7 +73,7 @@ public class WireDefinition extends ModelObject {
      *
      * @param interceptorDefinition Interceptor definition to add to the wire.
      */
-    public void addInterceptor(InterceptorDefinition interceptorDefinition) {
+    public void addInterceptor(PhysicalInterceptorDefinition interceptorDefinition) {
 
         if (interceptorDefinition == null) {
             throw new IllegalArgumentException("Interceptor definition is null");

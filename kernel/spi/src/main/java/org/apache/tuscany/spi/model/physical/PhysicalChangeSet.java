@@ -33,7 +33,7 @@ public class PhysicalChangeSet {
     private Set<PhysicalComponentDefinition> physicalComponentDefinitions = new HashSet<PhysicalComponentDefinition>();
     
     // Set of wire definitions
-    private Set<WireDefinition> wireDefinitions = new HashSet<WireDefinition>();
+    private Set<PhysicalWireDefinition> wireDefinitions = new HashSet<PhysicalWireDefinition>();
 
     /**
      * Get all the physical component definitions.
@@ -55,7 +55,7 @@ public class PhysicalChangeSet {
      * Get all the wire definitions.
      * @return Wire definitions in the changeset.
      */
-    public Set<? extends WireDefinition> getWireDefinitions() {
+    public Set<? extends PhysicalWireDefinition> getWireDefinitions() {
         return wireDefinitions;
     }
 
@@ -63,7 +63,7 @@ public class PhysicalChangeSet {
      * Adds a wire definition to the physical change set.
      * @param wireDefinition Wire definition.
      */
-    public void addWireDefinition(WireDefinition wireDefinition) {
+    public void addWireDefinition(PhysicalWireDefinition wireDefinition) {
         wireDefinitions.add(wireDefinition);
     }
 

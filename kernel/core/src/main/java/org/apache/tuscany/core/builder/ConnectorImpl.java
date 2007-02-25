@@ -48,7 +48,7 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.physical.WireDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -97,7 +97,7 @@ public class ConnectorImpl implements Connector {
      * @param definition the wire definition
      * @throws WiringException
      */
-    public void connect(WireDefinition definition) throws WiringException {
+    public void connect(PhysicalWireDefinition definition) throws WiringException {
         URI sourceUri = definition.getSourceUri();
         assert sourceUri != null;
         URI targetUri = definition.getTargetUri();

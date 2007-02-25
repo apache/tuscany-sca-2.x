@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.physical.WireDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * Implementations are responsible for creating a wires between source and target artifacts
@@ -45,6 +45,6 @@ public interface Connector {
      * @param definition metadata describing the wire to create
      * @throws WiringException
      */
-    void connect(WireDefinition definition) throws WiringException;
+    void connect(PhysicalWireDefinition definition) throws WiringException;
 
 }
