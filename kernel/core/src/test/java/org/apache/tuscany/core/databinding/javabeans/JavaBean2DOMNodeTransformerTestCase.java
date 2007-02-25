@@ -61,7 +61,6 @@ public class JavaBean2DOMNodeTransformerTestCase extends TestCase {
         StringWriter sw = new StringWriter();
         transformer.transform(new DOMSource(aNode), new StreamResult(sw));
 
-        System.out.println(sw.toString());
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><int_collection><int>10</int><int>20</int>"
             + "<int>30</int><int>40</int></int_collection>",
             sw.toString());
