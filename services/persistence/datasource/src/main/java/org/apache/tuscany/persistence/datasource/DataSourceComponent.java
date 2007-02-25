@@ -18,14 +18,17 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
+import java.net.URI;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.extension.SystemAtomicComponentExtension;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * A system component that creates <code>DataSource</code> instances. The component uses a {@link ProviderObjectFactory}
@@ -33,23 +36,21 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $Rev$ $Date$
  */
-public class DataSourceComponent extends SystemAtomicComponentExtension {
+public class DataSourceComponent extends AtomicComponentExtension {
     private ProviderObjectFactory instanceFactory;
 
     /**
      * Creates a <code>DataSourceComponent</code>
      *
-     * @param name            the name of the component
+     * @param uri             the uri of the component
      * @param instanceFactory the provider factory
-     * @param parent          the parent composite
      * @param initLevel       the initialization level
      */
-    public DataSourceComponent(String name,
+    public DataSourceComponent(URI uri,
                                ProviderObjectFactory instanceFactory,
-                               CompositeComponent parent,
                                int initLevel) {
 
-        super(name, parent, initLevel);
+        super(uri, null, null, null, null, initLevel);
         this.instanceFactory = instanceFactory;
     }
 
@@ -71,12 +72,24 @@ public class DataSourceComponent extends SystemAtomicComponentExtension {
         }
     }
 
-    protected void onReferenceWire(OutboundWire wire) {
-        throw new UnsupportedOperationException("Wires not supported for DataSource components");
+    public List<Wire> getWires(String name) {
+        return null;
     }
 
-    protected void onReferenceWires(List<OutboundWire> wires) {
-        throw new UnsupportedOperationException("Wires not supported for DataSource components");
+    public void attachCallbackWire(Wire wire) {
+
     }
 
+    public void attachWire(Wire wire) {
+
+    }
+
+    public void attachWires(List<Wire> wires) {
+
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+        throws TargetInvokerCreationException {
+        return null;
+    }
 }

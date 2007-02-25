@@ -20,6 +20,7 @@ package org.apache.tuscany.persistence.datasource;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URI;
 import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -36,8 +37,8 @@ import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Loads the component type for a DataSource component. Component type information is currently static, although this
@@ -62,7 +63,7 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         componentType.setImplementationScope(Scope.COMPOSITE);
         JavaServiceContract serviceContract = new JavaServiceContract(DataSource.class);
-        ServiceDefinition service = new ServiceDefinition("DataSource", serviceContract, false);
+        ServiceDefinition service = new ServiceDefinition(URI.create("#DataSource"), serviceContract, false);
         componentType.add(service);
         componentType.setInitLevel(1);
         Class<?> provider;
@@ -100,7 +101,7 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
                         throw new AmbiguousPropertyException(propName);
                     }
                     JavaMappedProperty<Type> property =
-                        new JavaMappedProperty<Type>(propName, info.getQName(), type); 
+                        new JavaMappedProperty<Type>(propName, info.getQName(), type);
                     property.setOverride(OverrideOptions.MAY);
                     property.setMember(method);
                     componentType.add(property);
