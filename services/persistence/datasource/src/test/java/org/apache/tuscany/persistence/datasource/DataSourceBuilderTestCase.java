@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
+import java.net.URI;
 import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -50,7 +51,7 @@ public class DataSourceBuilderTestCase extends TestCase {
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         JavaServiceContract serviceContract = new JavaServiceContract(DataSource.class);
-        ServiceDefinition service = new ServiceDefinition("DataSource", serviceContract, false);
+        ServiceDefinition service = new ServiceDefinition(URI.create("DataSource"), serviceContract, false);
         componentType.add(service);
         componentType.setInitLevel(1);
         implementation.setComponentType(componentType);
@@ -58,12 +59,12 @@ public class DataSourceBuilderTestCase extends TestCase {
         implementation.setClassLoader(getClass().getClassLoader());
 
         ComponentDefinition<DataSourceImplementation> def =
-            new ComponentDefinition<DataSourceImplementation>("MyDS", implementation);
+            new ComponentDefinition<DataSourceImplementation>(URI.create("MyDS"), implementation);
 
         DataSourceBuilder builder = new DataSourceBuilder();
 
         DataSourceComponent component = (DataSourceComponent) builder.build(parent, def, ctx);
-        assertEquals("MyDS", component.getName());
+        assertEquals(URI.create("MyDS"), component.getUri());
 
         DataSource ds = (DataSource) component.createInstance();
         assertNotNull(ds);

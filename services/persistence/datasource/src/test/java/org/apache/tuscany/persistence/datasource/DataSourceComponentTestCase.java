@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -30,7 +32,7 @@ public class DataSourceComponentTestCase extends TestCase {
         DataSourceProvider provider = EasyMock.createMock(DataSourceProvider.class);
         provider.close();
         EasyMock.replay(provider);
-        DataSourceComponent component = new DataSourceComponent(null, null, null, 0);
+        DataSourceComponent component = new DataSourceComponent(URI.create("ds"), null, 0);
         component.destroy(provider);
         EasyMock.verify(provider);
     }

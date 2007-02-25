@@ -67,7 +67,7 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
             }
             ProviderObjectFactory providerFactory = new ProviderObjectFactory(beanClass, injectors);
             int initLevel = implementation.getComponentType().getInitLevel();
-            return new DataSourceComponent(definition.getName(), providerFactory, parent, initLevel);
+            return new DataSourceComponent(definition.getUri(), providerFactory, initLevel);
         } catch (ClassNotFoundException e) {
             throw new BuilderConfigException(e);
         }
