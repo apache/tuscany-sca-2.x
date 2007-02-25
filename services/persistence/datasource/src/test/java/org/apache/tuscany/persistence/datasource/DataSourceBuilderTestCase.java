@@ -63,7 +63,7 @@ public class DataSourceBuilderTestCase extends TestCase {
 
         DataSourceBuilder builder = new DataSourceBuilder();
 
-        DataSourceComponent component = (DataSourceComponent) builder.build(parent, def, ctx);
+        DataSourceComponent component = (DataSourceComponent) builder.build(def, ctx);
         assertEquals(URI.create("MyDS"), component.getUri());
 
         DataSource ds = (DataSource) component.createInstance();

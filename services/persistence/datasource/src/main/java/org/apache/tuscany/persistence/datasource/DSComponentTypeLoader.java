@@ -57,7 +57,7 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
         return DataSourceImplementation.class;
     }
 
-    public void load(Component parent, DataSourceImplementation implementation, DeploymentContext ctx)
+    public void load(DataSourceImplementation implementation, DeploymentContext ctx)
         throws LoaderException {
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();

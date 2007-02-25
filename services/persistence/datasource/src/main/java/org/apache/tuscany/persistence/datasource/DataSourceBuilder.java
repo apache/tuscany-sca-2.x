@@ -42,8 +42,7 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
         return DataSourceImplementation.class;
     }
 
-    public Component build(Component parent,
-                           ComponentDefinition<DataSourceImplementation> definition,
+    public Component build(ComponentDefinition<DataSourceImplementation> definition,
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         try {
             DataSourceImplementation implementation = definition.getImplementation();
