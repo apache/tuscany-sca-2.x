@@ -54,10 +54,8 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
     }
 
     @SuppressWarnings("unchecked")
-    public ComponentType load(
-        ModelObject object,
-        XMLStreamReader reader,
-        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ComponentType load(ModelObject object, XMLStreamReader reader, DeploymentContext context)
+        throws XMLStreamException, LoaderException {
         assert COMPONENT_TYPE.equals(reader.getName());
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType;
         if (object != null) {
@@ -71,7 +69,7 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(componentType, reader, deploymentContext);
+                    ModelObject o = registry.load(componentType, reader, context);
                     if (o instanceof ServiceDefinition) {
                         componentType.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {
