@@ -18,15 +18,16 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.Type;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
@@ -35,31 +36,48 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeComponentExtensionTestCase extends TestCase {
-    private CompositeComponent composite;
+public class AbstractComponentExtensionTestCase extends TestCase {
+    private Component composite;
 
-
-    public void testCreateTargetInvoker() throws Exception {
-        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
-        EasyMock.expect(binding.createTargetInvoker(EasyMock.eq("service"), EasyMock.isA(Operation.class)))
-            .andReturn(null);
-        EasyMock.replay(binding);
-        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
-        bindings.add(binding);
+    public void testGetService() throws Exception {
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
-        EasyMock.expect(service.getServiceBindings()).andReturn(bindings).atLeastOnce();
         EasyMock.replay(service);
         composite.register(service);
-        Operation<Type> operation = new Operation<Type>("op", null, null, null);
-        composite.createTargetInvoker("service", operation);
-        EasyMock.verify(binding);
+        assertNotNull(composite.getService("service"));
+    }
 
+    public void testGetDefaultService() throws Exception {
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
+        assertNotNull(composite.getService(null));
+    }
+
+    public void testGetReference() throws Exception {
+        Reference reference = EasyMock.createMock(Reference.class);
+        EasyMock.expect(reference.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
+        EasyMock.replay(reference);
+        composite.register(reference);
+        assertNotNull(composite.getReference("service"));
+    }
+
+    public void testDefaultReference() throws Exception {
+        Reference reference = EasyMock.createMock(Reference.class);
+        EasyMock.expect(reference.getUri()).andReturn(URI.create("composite#service")).atLeastOnce();
+        EasyMock.replay(reference);
+        composite.register(reference);
+        assertNotNull(composite.getReference(null));
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        composite = new CompositeComponentExtension(new URI("foo"), null) {
+        composite = new AbstractComponentExtension(new URI("foo")) {
+
+            public Scope getScope() {
+                return null;
+            }
 
             public List<Wire> getWires(String name) {
                 throw new UnsupportedOperationException();
@@ -75,6 +93,11 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
             public void attachCallbackWire(Wire wire) {
                 throw new UnsupportedOperationException();
+            }
+
+            public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+                throws TargetInvokerCreationException {
+                return null;
             }
         };
     }
