@@ -22,7 +22,6 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -37,7 +36,7 @@ import org.springframework.core.io.Resource;
  */
 public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
 
-    public Component build(CompositeComponent parent,
+    public Component build(Component parent,
                            ComponentDefinition<SpringImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderException {
         URI uri = componentDefinition.getUri();

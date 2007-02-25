@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -62,7 +62,7 @@ public class SpringXMLComponentTypeLoader extends ComponentTypeLoaderExtension<S
         return SpringImplementation.class;
     }
 
-    public void load(CompositeComponent parent,
+    public void load(Component parent,
                      SpringImplementation implementation,
                      DeploymentContext context) throws LoaderException {
         if (implementation.getComponentType() != null) {
