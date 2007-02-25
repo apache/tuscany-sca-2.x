@@ -39,36 +39,4 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      */
     Document getPropertyValue(String name);
 
-    /**
-     * Registers a service of this composite.
-     *
-     * @param service the service to add as a child
-     * @throws RegistrationException
-     */
-    void register(Service service) throws RegistrationException;
-
-    /**
-     * Registers a reference of this composite.
-     *
-     * @param reference the reference to add as a child
-     * @throws RegistrationException
-     */
-    void register(Reference reference) throws RegistrationException;
-
-    /**
-     * Returns the service with the given name or null if not found
-     *
-     * @param name the service name which is relative to the composite
-     * @return the service with the given name or null if not found
-     */
-    Service getService(String name);
-
-    /**
-     * Returns the reference with the given name or null if not found
-     *
-     * @param name the reference name which is relative to the composite
-     * @return the reference with the given name or null if not found
-     */
-    Reference getReference(String name);
-
 }
