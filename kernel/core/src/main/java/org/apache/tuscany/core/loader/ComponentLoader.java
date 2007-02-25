@@ -74,7 +74,6 @@ import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.deployer.ChildDeploymentContext;
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
 
 /**
@@ -147,11 +146,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                     break;
                 case END_ELEMENT:
                     if (reader.getName().equals(COMPONENT)) {
-                        // hack to leave alone SystemImplementation
-                        if (!((Implementation) componentDefinition
-                            .getImplementation() instanceof SystemImplementation)) {
-                            populatePropertyValues(componentDefinition);
-                        }
+                        populatePropertyValues(componentDefinition);
                         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
                             (ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>) componentDefinition
                                 .getImplementation().getComponentType();

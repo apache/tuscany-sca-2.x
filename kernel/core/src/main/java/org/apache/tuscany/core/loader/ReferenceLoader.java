@@ -57,9 +57,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         return REFERENCE;
     }
 
-    public ReferenceDefinition load(
-        ModelObject object, XMLStreamReader reader,
-        DeploymentContext deploymentContext)
+    public ReferenceDefinition load(ModelObject object, XMLStreamReader reader, DeploymentContext context)
         throws XMLStreamException, LoaderException {
         assert REFERENCE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
@@ -67,11 +65,11 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         Multiplicity multiplicity = StaxUtil.multiplicity(multiplicityVal, Multiplicity.ONE_ONE);
         ReferenceDefinition referenceDefinition = new ReferenceDefinition();
         referenceDefinition.setMultiplicity(multiplicity);
-        referenceDefinition.setUri(deploymentContext.getComponentId().resolve('#' + name));
+        referenceDefinition.setUri(context.getComponentId().resolve('#' + name));
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(null, reader, deploymentContext);
+                    ModelObject o = registry.load(null, reader, context);
                     if (o instanceof ServiceContract) {
                         referenceDefinition.setServiceContract((ServiceContract) o);
                     } else if (o instanceof BindingDefinition) {
