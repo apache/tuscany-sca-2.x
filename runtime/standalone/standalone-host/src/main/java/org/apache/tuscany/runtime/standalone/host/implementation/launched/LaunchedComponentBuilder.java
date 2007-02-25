@@ -136,9 +136,6 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
 
         handleCallbackSites(componentType, configuration);
 
-        // FIXME JFM  this should be refactored to be by operation
-        component.setAllowsPassByReference(componentType.isAllowsPassByReference());
-
         if (componentType.getConversationIDMember() != null) {
             component.addConversationIDFactory(componentType.getConversationIDMember());
         }
