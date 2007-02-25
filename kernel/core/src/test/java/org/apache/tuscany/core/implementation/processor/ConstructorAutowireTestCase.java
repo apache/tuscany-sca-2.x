@@ -44,7 +44,7 @@ public class ConstructorAutowireTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(Bar.class);
-        processor.visitConstructor(null, ctor, type, null);
+        processor.visitConstructor(ctor, type, null);
         assertNotNull(type.getReferences().get("myRef"));
     }
 
@@ -52,7 +52,7 @@ public class ConstructorAutowireTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(Bar.class, Bar.class);
-        processor.visitConstructor(null, ctor, type, null);
+        processor.visitConstructor(ctor, type, null);
         assertEquals(2, type.getConstructorDefinition().getInjectionNames().size());
         assertNotNull(type.getReferences().get("myRef1"));
         assertNotNull(type.getReferences().get("myRef2"));
@@ -62,7 +62,7 @@ public class ConstructorAutowireTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo2> ctor = Foo2.class.getConstructor(Bar.class);
-        processor.visitConstructor(null, ctor, type, null);
+        processor.visitConstructor(ctor, type, null);
         assertNotNull(type.getReferences().get(Bar.class.getName() + "0"));
     }
 
@@ -71,7 +71,7 @@ public class ConstructorAutowireTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(Bar.class, Bar.class);
         try {
-            processor.visitConstructor(null, ctor, type, null);
+            processor.visitConstructor(ctor, type, null);
             fail();
         } catch (InvalidAutowireException e) {
             // expected
@@ -83,7 +83,7 @@ public class ConstructorAutowireTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(List.class, List.class);
         try {
-            processor.visitConstructor(null, ctor, type, null);
+            processor.visitConstructor(ctor, type, null);
             fail();
         } catch (InvalidConstructorException e) {
             // expected
@@ -97,7 +97,7 @@ public class ConstructorAutowireTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo3> ctor = Foo3.class.getConstructor(String.class, String.class);
-        processor.visitConstructor(null, ctor, type, null);
+        processor.visitConstructor(ctor, type, null);
         assertEquals(1, type.getProperties().size());
         assertNotNull(type.getProperties().get("prop1"));
     }

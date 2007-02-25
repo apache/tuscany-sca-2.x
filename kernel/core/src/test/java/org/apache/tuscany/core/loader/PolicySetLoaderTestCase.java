@@ -46,7 +46,7 @@ public class PolicySetLoaderTestCase extends TestCase {
                 break;
             }
         }
-        PolicySet policySet = loader.load(null, null, reader, null);
+        PolicySet policySet = loader.load(null, reader, null);
         assertNotNull(policySet);
         assertEquals(2, policySet.getAppliedArtifacts().size());
         assertTrue(policySet.getAppliedArtifacts().contains(new QName(SCA_NS, "binding.ws")));

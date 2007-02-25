@@ -47,7 +47,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitClass(null, BadFoo.class, type, null);
+            processor.visitClass(BadFoo.class, type, null);
             fail();
         } catch (DuplicateConstructorException e) {
             // expected
@@ -58,7 +58,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor1 = Foo.class.getConstructor(String.class);
-        processor.visitConstructor(null, ctor1, type, null);
+        processor.visitConstructor(ctor1, type, null);
         assertEquals("foo", type.getConstructorDefinition().getInjectionNames().get(0));
     }
 
@@ -66,7 +66,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<NoAnnotation> ctor1 = NoAnnotation.class.getConstructor();
-        processor.visitConstructor(null, ctor1, type, null);
+        processor.visitConstructor(ctor1, type, null);
         assertNull(type.getConstructorDefinition());
     }
 
@@ -75,7 +75,7 @@ public class ConstructorProcessorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<BadAnnotation> ctor1 = BadAnnotation.class.getConstructor(String.class, Foo.class);
         try {
-            processor.visitConstructor(null, ctor1, type, null);
+            processor.visitConstructor(ctor1, type, null);
             fail();
         } catch (InvalidConstructorException e) {
             // expected
@@ -86,7 +86,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Mixed> ctor1 = Mixed.class.getConstructor(String.class, String.class, String.class);
-        processor.visitConstructor(null, ctor1, type, null);
+        processor.visitConstructor(ctor1, type, null);
         assertEquals("java.lang.String0", type.getConstructorDefinition().getInjectionNames().get(0));
         assertEquals("foo", type.getConstructorDefinition().getInjectionNames().get(1));
         assertEquals("bar", type.getConstructorDefinition().getInjectionNames().get(2));
@@ -97,7 +97,7 @@ public class ConstructorProcessorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<AllAutowireNoName> ctor1 =
             AllAutowireNoName.class.getConstructor(String.class, String.class, String.class);
-        processor.visitConstructor(null, ctor1, type, null);
+        processor.visitConstructor(ctor1, type, null);
         assertEquals("java.lang.String0", type.getConstructorDefinition().getInjectionNames().get(0));
         assertEquals("java.lang.String1", type.getConstructorDefinition().getInjectionNames().get(1));
         assertEquals("java.lang.String2", type.getConstructorDefinition().getInjectionNames().get(2));
@@ -164,7 +164,7 @@ public class ConstructorProcessorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Multiple> ctor1 =
             Multiple.class.getConstructor(Collection.class, String[].class, List.class, Set.class, String[].class);
-        processor.visitConstructor(null, ctor1, type, null);
+        processor.visitConstructor(ctor1, type, null);
         JavaMappedReference ref0 = type.getReferences().get("java.util.Collection0");
         assertNotNull(ref0);
         assertEquals(Multiplicity.ONE_N, ref0.getMultiplicity());

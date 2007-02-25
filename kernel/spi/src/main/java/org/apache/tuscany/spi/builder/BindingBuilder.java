@@ -20,7 +20,6 @@ package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -38,20 +37,24 @@ public interface BindingBuilder<B extends BindingDefinition> {
     /**
      * Creates a service binding
      *
-     * @param parent            the containing composite component
      * @param serviceDefinition the service the binding is configured for
      * @param bindingDefinition the binding definition
-     * @param deploymentContext the current deployment context
+     * @param context           the current deployment context
      * @return a service binding
      * @throws BuilderException
      */
-    ServiceBinding build(Component parent,
-                         ServiceDefinition serviceDefinition,
-                         B bindingDefinition,
-                         DeploymentContext deploymentContext) throws BuilderException;
+    ServiceBinding build(ServiceDefinition serviceDefinition, B bindingDefinition, DeploymentContext context)
+        throws BuilderException;
 
-    ReferenceBinding build(Component parent,
-                           ReferenceDefinition boundReferenceDefinition,
-                           B bindingDefinition,
-                           DeploymentContext deploymentContext) throws BuilderException;
+    /**
+     * Creates a reference binding
+     *
+     * @param referenceDefinition the reference the binding is configured for
+     * @param bindingDefinition   the binding definition
+     * @param context             the current deployment context
+     * @return a reference binding
+     * @throws BuilderException
+     */
+    ReferenceBinding build(ReferenceDefinition referenceDefinition, B bindingDefinition, DeploymentContext context)
+        throws BuilderException;
 }

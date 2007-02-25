@@ -62,7 +62,7 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
 
         Component parent = EasyMock.createMock(Component.class);
         EasyMock.replay(parent);
-        AtomicComponent component = builder.build(parent, definition, ctx);
+        AtomicComponent component = builder.build(definition, ctx);
         SystemComponentBuilderResourceTestCase.Foo foo =
             (SystemComponentBuilderResourceTestCase.Foo) component.createInstance();
         assertEquals("result", foo.resource);

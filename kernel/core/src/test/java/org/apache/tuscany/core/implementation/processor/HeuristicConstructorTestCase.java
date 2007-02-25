@@ -53,7 +53,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         prop.setName("foo");
         prop.setJavaType(String.class);
         type.getProperties().put("foo", prop);
-        processor.visitEnd(null, Foo1.class, type, null);
+        processor.visitEnd(Foo1.class, type, null);
         assertNotNull(type.getConstructorDefinition().getConstructor());
         assertEquals("foo", type.getConstructorDefinition().getInjectionNames().get(0));
     }
@@ -69,7 +69,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         ServiceContract contract = new JavaServiceContract(String.class);
         ref.setServiceContract(contract);
         type.getReferences().put("foo", ref);
-        processor.visitEnd(null, Foo1.class, type, null);
+        processor.visitEnd(Foo1.class, type, null);
         assertNotNull(type.getConstructorDefinition().getConstructor());
         assertEquals("foo", type.getConstructorDefinition().getInjectionNames().get(0));
     }
@@ -91,7 +91,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         ServiceContract contract = new JavaServiceContract(Foo1.class);
         ref.setServiceContract(contract);
         type.getReferences().put("ref", ref);
-        processor.visitEnd(null, Foo2.class, type, null);
+        processor.visitEnd(Foo2.class, type, null);
         assertNotNull(type.getConstructorDefinition().getConstructor());
         assertEquals(2, type.getConstructorDefinition().getInjectionNames().size());
     }
@@ -100,14 +100,14 @@ public class HeuristicConstructorTestCase extends TestCase {
     public void testSingleConstructorResolvableParam() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo5.class, type, null);
+        processor.visitEnd(Foo5.class, type, null);
         assertEquals(String.class, type.getProperties().get("string").getJavaType());
     }
 
     public void testSingleConstructorResolvableRef() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo6.class, type, null);
+        processor.visitEnd(Foo6.class, type, null);
         assertEquals(Ref.class,
             type.getReferences().get("heuristicconstructortestcase$ref").getServiceContract().getInterfaceClass());
     }
@@ -125,7 +125,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         ref2.setServiceContract(contract);
         type.getReferences().put("ref2", ref2);
         try {
-            processor.visitEnd(null, Foo4.class, type, null);
+            processor.visitEnd(Foo4.class, type, null);
             fail();
         } catch (AmbiguousConstructorException e) {
             // expected
@@ -135,21 +135,21 @@ public class HeuristicConstructorTestCase extends TestCase {
     public void testConstructorPropertyAnnotatedParamsOnly() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo7.class, type, null);
+        processor.visitEnd(Foo7.class, type, null);
         assertNotNull(type.getProperties().get("myProp"));
     }
 
     public void testConstructorReferenceAnnotatedParamsOnly() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo8.class, type, null);
+        processor.visitEnd(Foo8.class, type, null);
         assertNotNull(type.getReferences().get("myRef"));
     }
 
     public void testConstructorAutowireAnnotatedParamsOnly() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo9.class, type, null);
+        processor.visitEnd(Foo9.class, type, null);
         assertNotNull(type.getReferences().get("myAutowire"));
     }
 
@@ -157,14 +157,14 @@ public class HeuristicConstructorTestCase extends TestCase {
     public void testDefaultConstructor() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo3.class, type, null);
+        processor.visitEnd(Foo3.class, type, null);
         assertNotNull(type.getConstructorDefinition().getConstructor());
     }
 
     public void testSameTypesButAnnotated() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo12.class, type, null);
+        processor.visitEnd(Foo12.class, type, null);
         assertEquals(2, type.getProperties().size());
         assertNotNull(type.getProperties().get("prop1"));
         assertNotNull(type.getProperties().get("prop2"));
@@ -176,7 +176,7 @@ public class HeuristicConstructorTestCase extends TestCase {
     public void testRandomAnnotation() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo11.class, type, null);
+        processor.visitEnd(Foo11.class, type, null);
         assertEquals(1, type.getProperties().size());
         assertNotNull(type.getProperties().get("prop1"));
     }
@@ -184,7 +184,7 @@ public class HeuristicConstructorTestCase extends TestCase {
     public void testAutowire() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo13.class, type, null);
+        processor.visitEnd(Foo13.class, type, null);
         assertEquals(1, type.getReferences().size());
         assertNotNull(type.getReferences().get(String.class.getName() + "0"));
     }
@@ -192,7 +192,7 @@ public class HeuristicConstructorTestCase extends TestCase {
     public void testMultipleAutowire() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo15.class, type, null);
+        processor.visitEnd(Foo15.class, type, null);
         assertEquals(2, type.getReferences().size());
         assertNotNull(type.getReferences().get(String.class.getName() + "0"));
         assertNotNull(type.getReferences().get(String.class.getName() + "1"));
@@ -201,7 +201,7 @@ public class HeuristicConstructorTestCase extends TestCase {
     public void testNoAutowireNameInConstructor() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo16.class, type, null);
+        processor.visitEnd(Foo16.class, type, null);
         assertEquals(2, type.getReferences().size());
         assertNotNull(type.getReferences().get(String.class.getName() + "0"));
         assertNotNull(type.getReferences().get("bar"));
@@ -212,7 +212,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitEnd(null, Foo14.class, type, null);
+            processor.visitEnd(Foo14.class, type, null);
             fail();
         } catch (NoConstructorException e) {
             // expected

@@ -29,7 +29,6 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -60,7 +59,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         return INCLUDE;
     }
 
-    public Include load(Component parent, ModelObject object, XMLStreamReader reader,
+    public Include load(ModelObject object, XMLStreamReader reader,
                         DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
@@ -91,7 +90,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         URI componentId = deploymentContext.getComponentId();
         DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url, componentId);
         CompositeComponentType composite;
-        composite = loadFromSidefile(parent, url, childContext);
+        composite = loadFromSidefile(url, childContext);
 
         Include include = new Include();
         include.setName(name);
@@ -100,10 +99,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         return include;
     }
 
-    protected CompositeComponentType loadFromSidefile(Component parent,
-                                                      URL url,
-                                                      DeploymentContext deploymentContext)
-        throws LoaderException {
-        return registry.load(parent, null, url, CompositeComponentType.class, deploymentContext);
+    protected CompositeComponentType loadFromSidefile(URL url, DeploymentContext context) throws LoaderException {
+        return registry.load(null, url, CompositeComponentType.class, context);
     }
 }

@@ -64,7 +64,7 @@ public class JavaComponentBuilderConversationIDTestCase extends TestCase {
         URI uri = URI.create("foo");
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(uri, impl);
         Component parent = EasyMock.createMock(Component.class);
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, null);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, null);
         Foo foo = (Foo) component.createInstance();
         assertEquals("convID", foo.conversationID);
     }

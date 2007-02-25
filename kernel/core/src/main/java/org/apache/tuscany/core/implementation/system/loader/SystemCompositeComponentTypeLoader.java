@@ -18,10 +18,9 @@
  */
 package org.apache.tuscany.core.implementation.system.loader;
 
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -48,9 +47,9 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
         return SystemCompositeImplementation.class;
     }
 
-    public void load(Component parent,
-                     SystemCompositeImplementation implementation,
-                     DeploymentContext deploymentContext)
+    public void load(
+        SystemCompositeImplementation implementation,
+        DeploymentContext deploymentContext)
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
         if (scdlLocation == null) {
@@ -59,15 +58,12 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
         ClassLoader cl = implementation.getClassLoader();
         URI componentId = deploymentContext.getComponentId();
         DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation, componentId);
-        CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, childContext);
+        CompositeComponentType componentType = loadFromSidefile(scdlLocation, childContext);
         implementation.setComponentType(componentType);
     }
 
 
-    protected CompositeComponentType loadFromSidefile(Component parent,
-                                                      URL url,
-                                                      DeploymentContext deploymentContext)
-        throws LoaderException {
-        return loaderRegistry.load(parent, null, url, CompositeComponentType.class, deploymentContext);
+    protected CompositeComponentType loadFromSidefile(URL url, DeploymentContext context) throws LoaderException {
+        return loaderRegistry.load(null, url, CompositeComponentType.class, context);
     }
 }

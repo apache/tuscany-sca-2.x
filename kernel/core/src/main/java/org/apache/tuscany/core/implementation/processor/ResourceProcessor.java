@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -46,10 +45,10 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
     public ResourceProcessor() {
     }
 
-    public void visitMethod(Component parent,
-                            Method method,
-                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context)
+    public void visitMethod(
+        Method method,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        DeploymentContext context)
         throws ProcessingException {
         org.apache.tuscany.api.annotation.Resource annotation =
             method.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
@@ -78,10 +77,10 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         type.add(resource);
     }
 
-    public void visitField(Component parent,
-                           Field field,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context) throws ProcessingException {
+    public void visitField(
+        Field field,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        DeploymentContext context) throws ProcessingException {
 
         org.apache.tuscany.api.annotation.Resource annotation =
             field.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
@@ -111,11 +110,11 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         return new Resource<T>(name, type, member);
     }
 
-    public <T> void visitConstructor(Component parent,
-                                     Constructor<T> constructor,
-                                     PojoComponentType<JavaMappedService, JavaMappedReference,
-                                         JavaMappedProperty<?>> type,
-                                     DeploymentContext context) throws ProcessingException {
+    public <T> void visitConstructor(
+        Constructor<T> constructor,
+        PojoComponentType<JavaMappedService, JavaMappedReference,
+            JavaMappedProperty<?>> type,
+        DeploymentContext context) throws ProcessingException {
 
     }
 

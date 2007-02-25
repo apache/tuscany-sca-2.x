@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamReader;
 import static org.osoa.sca.Constants.SCA_NS;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -75,10 +74,10 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         return COMPOSITE;
     }
 
-    public CompositeComponentType load(Component parent,
-                                       ModelObject object,
-                                       XMLStreamReader reader,
-                                       DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public CompositeComponentType load(
+        ModelObject object,
+        XMLStreamReader reader,
+        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
             new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         composite.setName(reader.getAttributeValue(null, "name"));
@@ -86,7 +85,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         while (!done) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, composite, reader, deploymentContext);
+                    ModelObject o = registry.load(composite, reader, deploymentContext);
                     if (o instanceof ServiceDefinition) {
                         composite.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {

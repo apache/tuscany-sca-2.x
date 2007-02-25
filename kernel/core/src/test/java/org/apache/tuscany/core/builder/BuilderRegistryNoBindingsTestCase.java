@@ -54,7 +54,7 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
         EasyMock.replay(deploymentContext);
         EasyMock.replay(parent);
 
-        Service service = registry.build(parent, definition, deploymentContext);
+        Service service = registry.build(definition, deploymentContext);
 
         assertEquals(1, service.getServiceBindings().size());
         assertTrue(service.getServiceBindings().get(0) instanceof LocalServiceBinding);
@@ -69,7 +69,7 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
         EasyMock.replay(deploymentContext);
         EasyMock.replay(parent);
 
-        Reference reference = registry.build(parent, definition, deploymentContext);
+        Reference reference = registry.build(definition, deploymentContext);
 
         assertEquals(1, reference.getReferenceBindings().size());
         assertTrue(reference.getReferenceBindings().get(0) instanceof LocalReferenceBinding);

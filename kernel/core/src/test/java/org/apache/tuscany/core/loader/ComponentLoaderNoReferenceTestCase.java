@@ -44,7 +44,7 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
      */
     public void testNoReferenceOnComponentType() throws LoaderException, XMLStreamException {
         try {
-            loader.load(parent, null, reader, ctx);
+            loader.load(null, reader, ctx);
             fail();
         } catch (UndefinedReferenceException e) {
             // expected
@@ -75,10 +75,10 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
         LoaderRegistry mockRegistry = EasyMock.createMock(LoaderRegistry.class);
-        mockRegistry.loadComponentType(EasyMock.isA(Component.class),
+        mockRegistry.loadComponentType(
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
-        EasyMock.expect(mockRegistry.load(EasyMock.isA(Component.class),
+        EasyMock.expect(mockRegistry.load(
             (ModelObject) isNull(),
             EasyMock.isA(XMLStreamReader.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);

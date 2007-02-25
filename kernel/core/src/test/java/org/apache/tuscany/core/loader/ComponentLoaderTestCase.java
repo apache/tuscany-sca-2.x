@@ -77,24 +77,24 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.expect(mockReader.nextTag()).andReturn(0);
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(mockReader);
-        mockRegistry.loadComponentType(EasyMock.isA(Component.class),
+        mockRegistry.loadComponentType(
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             @SuppressWarnings("unchecked")
             public Object answer() throws Throwable {
-                Implementation impl = (Implementation) EasyMock.getCurrentArguments()[1];
+                Implementation impl = (Implementation) EasyMock.getCurrentArguments()[0];
                 impl.setComponentType(new PojoComponentType());
                 return impl;
             }
         });
 
-        EasyMock.expect(mockRegistry.load(EasyMock.isA(Component.class),
+        EasyMock.expect(mockRegistry.load(
             (ModelObject) isNull(),
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
-        ComponentDefinition component = loader.load(parent, null, mockReader, ctx);
+        ComponentDefinition component = loader.load(null, mockReader, ctx);
         assertEquals(COMPONENT_NAME + NAME, component.getUri().toString());
         assertNull(component.getInitLevel());
     }
@@ -109,25 +109,25 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(mockReader);
 
-        mockRegistry.loadComponentType(EasyMock.isA(Component.class),
+        mockRegistry.loadComponentType(
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
 
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             @SuppressWarnings("unchecked")
             public Object answer() throws Throwable {
-                Implementation impl = (Implementation) EasyMock.getCurrentArguments()[1];
+                Implementation impl = (Implementation) EasyMock.getCurrentArguments()[0];
                 impl.setComponentType(new PojoComponentType());
                 return impl;
             }
         });
-        EasyMock.expect(mockRegistry.load(EasyMock.isA(Component.class),
+        EasyMock.expect(mockRegistry.load(
             (ModelObject) isNull(),
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
 
-        ComponentDefinition component = loader.load(parent, null, mockReader, ctx);
+        ComponentDefinition component = loader.load(null, mockReader, ctx);
         assertEquals(COMPONENT_NAME + NAME, component.getUri().toString());
         assertEquals(Integer.valueOf(20), component.getInitLevel());
     }
@@ -164,17 +164,17 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
         EasyMock.expect(mockReader.getName()).andReturn(new QName("foo", "bar"));
         EasyMock.replay(mockReader);
-        mockRegistry.loadComponentType(EasyMock.isA(Component.class),
+        mockRegistry.loadComponentType(
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
 
-        EasyMock.expect(mockRegistry.load(EasyMock.isA(Component.class),
+        EasyMock.expect(mockRegistry.load(
             (ModelObject) isNull(),
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         try {
-            loader.load(parent, null, mockReader, ctx);
+            loader.load(null, mockReader, ctx);
             fail();
         } catch (UnrecognizedElementException e) {
             // expected

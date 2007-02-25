@@ -20,7 +20,6 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -36,10 +35,10 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class EagerInitProcessor extends ImplementationProcessorExtension {
 
-    public <T> void visitClass(Component parent, Class<T> clazz,
+    public <T> void visitClass(Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context) throws ProcessingException {
-        super.visitClass(parent, clazz, type, context);
+        super.visitClass(clazz, type, context);
         EagerInit annotation = clazz.getAnnotation(EagerInit.class);
         if (annotation == null) {
             Class<?> superClass = clazz.getSuperclass();

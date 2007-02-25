@@ -44,43 +44,43 @@ public class PropertyProcessorTestCase extends TestCase {
     PropertyProcessor processor;
 
     public void testMethodAnnotation() throws Exception {
-        processor.visitMethod(null, Foo.class.getMethod("setFoo", String.class), type, null);
+        processor.visitMethod(Foo.class.getMethod("setFoo", String.class), type, null);
         assertNotNull(type.getProperties().get("foo"));
     }
 
     public void testMethodRequired() throws Exception {
-        processor.visitMethod(null, Foo.class.getMethod("setFooRequired", String.class), type, null);
+        processor.visitMethod(Foo.class.getMethod("setFooRequired", String.class), type, null);
         JavaMappedProperty prop = type.getProperties().get("fooRequired");
         assertNotNull(prop);
         assertEquals(prop.getOverride(), MUST);
     }
 
     public void testMethodName() throws Exception {
-        processor.visitMethod(null, Foo.class.getMethod("setBarMethod", String.class), type, null);
+        processor.visitMethod(Foo.class.getMethod("setBarMethod", String.class), type, null);
         assertNotNull(type.getProperties().get("bar"));
     }
 
     public void testFieldAnnotation() throws Exception {
-        processor.visitField(null, Foo.class.getDeclaredField("baz"), type, null);
+        processor.visitField(Foo.class.getDeclaredField("baz"), type, null);
         assertNotNull(type.getProperties().get("baz"));
     }
 
     public void testFieldRequired() throws Exception {
-        processor.visitField(null, Foo.class.getDeclaredField("bazRequired"), type, null);
+        processor.visitField(Foo.class.getDeclaredField("bazRequired"), type, null);
         JavaMappedProperty prop = type.getProperties().get("bazRequired");
         assertNotNull(prop);
         assertEquals(prop.getOverride(), OverrideOptions.MUST);
     }
 
     public void testFieldName() throws Exception {
-        processor.visitField(null, Foo.class.getDeclaredField("bazField"), type, null);
+        processor.visitField(Foo.class.getDeclaredField("bazField"), type, null);
         assertNotNull(type.getProperties().get("theBaz"));
     }
 
     public void testDuplicateFields() throws Exception {
-        processor.visitField(null, Bar.class.getDeclaredField("dup"), type, null);
+        processor.visitField(Bar.class.getDeclaredField("dup"), type, null);
         try {
-            processor.visitField(null, Bar.class.getDeclaredField("baz"), type, null);
+            processor.visitField(Bar.class.getDeclaredField("baz"), type, null);
             fail();
         } catch (DuplicatePropertyException e) {
             // expected
@@ -88,9 +88,9 @@ public class PropertyProcessorTestCase extends TestCase {
     }
 
     public void testDuplicateMethods() throws Exception {
-        processor.visitMethod(null, Bar.class.getMethod("dupMethod", String.class), type, null);
+        processor.visitMethod(Bar.class.getMethod("dupMethod", String.class), type, null);
         try {
-            processor.visitMethod(null, Bar.class.getMethod("dupSomeMethod", String.class), type, null);
+            processor.visitMethod(Bar.class.getMethod("dupSomeMethod", String.class), type, null);
             fail();
         } catch (DuplicatePropertyException e) {
             // expected
@@ -99,7 +99,7 @@ public class PropertyProcessorTestCase extends TestCase {
 
     public void testInvalidProperty() throws Exception {
         try {
-            processor.visitMethod(null, Bar.class.getMethod("badMethod"), type, null);
+            processor.visitMethod(Bar.class.getMethod("badMethod"), type, null);
             fail();
         } catch (IllegalPropertyException e) {
             // expected
@@ -176,7 +176,7 @@ public class PropertyProcessorTestCase extends TestCase {
     }
 
     public void testMultiplicityCollection() throws Exception {
-        processor.visitField(null, Multiple.class.getDeclaredField("refs1"), type, null);
+        processor.visitField(Multiple.class.getDeclaredField("refs1"), type, null);
         JavaMappedProperty prop = type.getProperties().get("refs1");
         assertNotNull(prop);
         assertSame(String.class, prop.getJavaType());
@@ -184,7 +184,7 @@ public class PropertyProcessorTestCase extends TestCase {
     }
 
     public void testMultiplicityArray() throws Exception {
-        processor.visitField(null, Multiple.class.getDeclaredField("refs2"), type, null);
+        processor.visitField(Multiple.class.getDeclaredField("refs2"), type, null);
         JavaMappedProperty prop = type.getProperties().get("refs2");
         assertNotNull(prop);
         assertSame(String.class, prop.getJavaType());
@@ -192,7 +192,7 @@ public class PropertyProcessorTestCase extends TestCase {
     }
 
     public void testMultiplicityArrayMethod() throws Exception {
-        processor.visitMethod(null, Multiple.class.getMethod("setRefs3", String[].class), type, null);
+        processor.visitMethod(Multiple.class.getMethod("setRefs3", String[].class), type, null);
         JavaMappedProperty prop = type.getProperties().get("refs3");
         assertNotNull(prop);
         assertSame(String.class, prop.getJavaType());
@@ -200,7 +200,7 @@ public class PropertyProcessorTestCase extends TestCase {
     }
 
     public void testMultiplicityCollectionMethod() throws Exception {
-        processor.visitMethod(null, Multiple.class.getMethod("setRefs4", Collection.class), type, null);
+        processor.visitMethod(Multiple.class.getMethod("setRefs4", Collection.class), type, null);
         JavaMappedProperty prop = type.getProperties().get("refs4");
         assertNotNull(prop);
         assertSame(String.class, prop.getJavaType());

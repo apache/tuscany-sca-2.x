@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import junit.framework.TestCase;
@@ -45,7 +44,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         Method method = Foo.class.getMethod("setBar", String.class);
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         JavaMappedProperty<?> prop = type.getProperties().get("test");
         assertNotNull(prop.getDefaultValueFactory());
     }
@@ -55,7 +54,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitMethod(null, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalPropertyException e) {
             //expected
@@ -67,7 +66,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitMethod(null, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalPropertyException e) {
             //expected
@@ -78,9 +77,9 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         Method method = Foo.class.getMethod("setBar", String.class);
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         try {
-            processor.visitMethod(null, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (DuplicatePropertyException e) {
             //expected
@@ -91,7 +90,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         Field field = Foo.class.getDeclaredField("d");
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitField(null, field, type, null);
+        processor.visitField(field, type, null);
         JavaMappedProperty<?> prop = type.getProperties().get("test");
         assertNotNull(prop.getDefaultValueFactory());
     }
@@ -100,7 +99,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitConstructor(null, ctor, type, null);
+        processor.visitConstructor(ctor, type, null);
         ConstructorDefinition def = type.getConstructorDefinition();
         assertEquals("test", def.getInjectionNames().get(0));
         assertNotNull(type.getProperties().get("test"));
@@ -135,7 +134,6 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         @SuppressWarnings("unchecked")
         protected <T> void initProperty(JavaMappedProperty<T> property,
                                         Bar annotation,
-                                        Component parent,
                                         DeploymentContext context) {
             property.setDefaultValueFactory(EasyMock.createMock(ObjectFactory.class));
             property.setName("test");

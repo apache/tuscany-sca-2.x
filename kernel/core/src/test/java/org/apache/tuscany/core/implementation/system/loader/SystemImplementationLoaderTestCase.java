@@ -52,7 +52,7 @@ public class SystemImplementationLoaderTestCase extends TestCase {
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
         SystemImplementationLoader loader = new SystemImplementationLoader(registry);
-        SystemImplementation impl = loader.load(null, null, reader, context);
+        SystemImplementation impl = loader.load(null, reader, context);
         assertEquals(getClass(), impl.getImplementationClass());
         EasyMock.verify(reader);
         EasyMock.verify(context);
@@ -73,7 +73,7 @@ public class SystemImplementationLoaderTestCase extends TestCase {
         EasyMock.replay(reader);
         SystemImplementationLoader loader = new SystemImplementationLoader(registry);
         try {
-            loader.load(null, null, reader, context);
+            loader.load(null, reader, context);
             fail();
         } catch (UnrecognizedElementException e) {
             // expected

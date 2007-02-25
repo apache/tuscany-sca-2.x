@@ -36,7 +36,7 @@ public class LocalBindingLoaderTestCase extends TestCase {
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "uri")).andReturn("foo");
         EasyMock.replay(reader);
-        LocalBindingDefinition definition = loader.load(null, null, reader, null);
+        LocalBindingDefinition definition = loader.load(null, reader, null);
         assertEquals(new URI("foo"), definition.getTargetUri());
         EasyMock.verify(reader);
     }
@@ -45,7 +45,7 @@ public class LocalBindingLoaderTestCase extends TestCase {
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "uri")).andReturn(null);
         EasyMock.replay(reader);
-        LocalBindingDefinition definition = loader.load(null, null, reader, null);
+        LocalBindingDefinition definition = loader.load(null, reader, null);
         assertNull(definition.getTargetUri());
         EasyMock.verify(reader);
     }
@@ -55,7 +55,7 @@ public class LocalBindingLoaderTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeValue(null, "uri")).andReturn("foo foo");
         EasyMock.replay(reader);
         try {
-            loader.load(null, null, reader, null);
+            loader.load(null, reader, null);
             fail();
         } catch (LoaderException e) {
             // expected

@@ -21,7 +21,7 @@ public class ResourceProcessorTestCase extends TestCase {
 
     public void testVisitField() throws Exception {
         Field field = Foo.class.getDeclaredField("bar");
-        processor.visitField(null, field, type, null);
+        processor.visitField(field, type, null);
         Resource resource = type.getResources().get("bar");
         assertFalse(resource.isOptional());
         assertNull(resource.getMappedName());
@@ -30,7 +30,7 @@ public class ResourceProcessorTestCase extends TestCase {
 
     public void testVisitMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", Bar.class);
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         Resource resource = type.getResources().get("bar");
         assertFalse(resource.isOptional());
         assertNull(resource.getMappedName());
@@ -39,7 +39,7 @@ public class ResourceProcessorTestCase extends TestCase {
 
     public void testVisitNamedMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar2", Bar.class);
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         Resource resource = type.getResources().get("someName");
         assertFalse(resource.isOptional());
         assertEquals("mapped", resource.getMappedName());
@@ -48,7 +48,7 @@ public class ResourceProcessorTestCase extends TestCase {
     public void testVisitBadMethod() throws Exception {
         Method method = Foo.class.getMethod("setBad");
         try {
-            processor.visitMethod(null, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalResourceException e) {
             // expected
@@ -57,9 +57,9 @@ public class ResourceProcessorTestCase extends TestCase {
 
     public void testDuplicateResources() throws Exception {
         Field field = Foo.class.getDeclaredField("bar");
-        processor.visitField(null, field, type, null);
+        processor.visitField(field, type, null);
         try {
-            processor.visitField(null, field, type, null);
+            processor.visitField(field, type, null);
             fail();
         } catch (DuplicateResourceException e) {
             //expected

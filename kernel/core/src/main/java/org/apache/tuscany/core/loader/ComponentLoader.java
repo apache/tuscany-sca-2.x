@@ -39,7 +39,6 @@ import org.osoa.sca.annotations.Constructor;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -104,10 +103,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    public ComponentDefinition<?> load(Component parent,
-                                       ModelObject object,
-                                       XMLStreamReader reader,
-                                       DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ComponentDefinition<?> load(
+        ModelObject object,
+        XMLStreamReader reader,
+        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String initLevel = reader.getAttributeValue(null, "initLevel");
@@ -117,8 +116,8 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             deploymentContext.getClassLoader(),
             deploymentContext.getScdlLocation(),
             componentId);
-        Implementation<?> impl = loadImplementation(parent, reader, childContext);
-        registry.loadComponentType(parent, impl, childContext);
+        Implementation<?> impl = loadImplementation(reader, childContext);
+        registry.loadComponentType(impl, childContext);
 
         ComponentDefinition<Implementation<?>> componentDefinition =
             new ComponentDefinition<Implementation<?>>(componentId, impl);
@@ -175,12 +174,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         }
     }
 
-    protected Implementation<?> loadImplementation(Component parent,
-                                                   XMLStreamReader reader,
-                                                   DeploymentContext deploymentContext)
+    protected Implementation<?> loadImplementation(XMLStreamReader reader, DeploymentContext context)
         throws XMLStreamException, LoaderException {
         reader.nextTag();
-        ModelObject o = registry.load(parent, null, reader, deploymentContext);
+        ModelObject o = registry.load(null, reader, context);
         if (!(o instanceof Implementation)) {
             throw new MissingImplementationException();
         }

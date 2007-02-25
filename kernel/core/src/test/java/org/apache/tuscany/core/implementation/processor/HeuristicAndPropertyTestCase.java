@@ -48,8 +48,8 @@ public class HeuristicAndPropertyTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor ctor = Foo.class.getConstructor(String.class);
         type.setConstructorDefinition(new ConstructorDefinition(ctor));
-        propertyProcessor.visitConstructor(null, ctor, type, null);
-        heuristicProcessor.visitEnd(null, Foo.class, type, null);
+        propertyProcessor.visitConstructor(ctor, type, null);
+        heuristicProcessor.visitEnd(Foo.class, type, null);
         assertEquals(1, type.getProperties().size());
         assertNotNull(type.getProperties().get("foo"));
     }

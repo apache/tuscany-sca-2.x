@@ -52,8 +52,7 @@ public class ComponentTypeLoaderExtensionTestCase extends TestCase {
             return Implementation.class;
         }
 
-        public void load(Component parent, Implementation implementation,
-                         DeploymentContext deploymentContext) throws LoaderException {
+        public void load(Implementation implementation, DeploymentContext context) throws LoaderException {
 
         }
     }

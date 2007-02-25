@@ -24,7 +24,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -57,10 +56,10 @@ public class DependencyLoader extends LoaderExtension<Dependency> {
         return DEPENDENCY;
     }
 
-    public Dependency load(Component parent,
-                           ModelObject object,
-                           XMLStreamReader reader,
-                           DeploymentContext deploymentContext)
+    public Dependency load(
+        ModelObject object,
+        XMLStreamReader reader,
+        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
         Artifact artifact = new Artifact();

@@ -103,8 +103,8 @@ public class XMLChangeSetHandler implements ChangeSetHandler {
         DeploymentContext deploymentContext = new RootDeploymentContext(null, null, null, xmlFactory, null);
         try {
             ComponentDefinition<?> componentDefinition =
-                (ComponentDefinition<?>) loader.load(null, null, xmlReader, deploymentContext);
-            builder.build(null, componentDefinition, deploymentContext);
+                (ComponentDefinition<?>) loader.load(null, xmlReader, deploymentContext);
+            builder.build(componentDefinition, deploymentContext);
         } catch (LoaderException e) {
             // FIXME throw something appropriate
             throw new AssertionError("FIXME");

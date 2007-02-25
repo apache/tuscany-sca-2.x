@@ -68,7 +68,7 @@ public class ContextProcessorTestCase extends TestCase {
         Method method = Foo.class.getMethod("setRequestContext", RequestContext.class);
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitMethod(composite, method, type, null);
+        processor.visitMethod(method, type, null);
         assertNotNull(type.getResources().get("requestContext"));
     }
 
@@ -76,7 +76,7 @@ public class ContextProcessorTestCase extends TestCase {
         Field field = Foo.class.getDeclaredField("requestContext");
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitField(composite, field, type, null);
+        processor.visitField(field, type, null);
         assertNotNull(type.getResources().get("requestContext"));
     }
 
@@ -85,7 +85,7 @@ public class ContextProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitMethod(composite, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (UnknownContextTypeException e) {
             // expected
@@ -97,7 +97,7 @@ public class ContextProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitField(composite, field, type, null);
+            processor.visitField(field, type, null);
             fail();
         } catch (UnknownContextTypeException e) {
             // expected
@@ -110,7 +110,7 @@ public class ContextProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitMethod(composite, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalContextException e) {
             // expected
@@ -122,7 +122,7 @@ public class ContextProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
-            processor.visitMethod(composite, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalContextException e) {
             // expected
@@ -133,7 +133,7 @@ public class ContextProcessorTestCase extends TestCase {
         Method method = Foo.class.getMethod("noContext", ComponentContext.class);
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitMethod(composite, method, type, null);
+        processor.visitMethod(method, type, null);
         assertEquals(0, type.getResources().size());
     }
 
@@ -141,7 +141,7 @@ public class ContextProcessorTestCase extends TestCase {
         Field field = Foo.class.getDeclaredField("noContext");
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitField(composite, field, type, null);
+        processor.visitField(field, type, null);
         assertEquals(0, type.getResources().size());
     }
 

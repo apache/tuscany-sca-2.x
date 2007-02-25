@@ -35,7 +35,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import org.osoa.sca.Constants;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -71,7 +70,7 @@ public class IncludeLoaderTestCase extends TestCase {
         replay(registry, reader, context);
 
         try {
-            loader.load(null, null, reader, context);
+            loader.load(null, reader, context);
             fail();
         } catch (MissingIncludeException e) {
             // OK expected
@@ -91,7 +90,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
         expect(context.getComponentId()).andReturn(componentId);
 
-        expect(registry.load((Component) isNull(),
+        expect(registry.load(
             (ModelObject) isNull(),
             eq(includeURL),
             eq(CompositeComponentType.class),
@@ -99,7 +98,7 @@ public class IncludeLoaderTestCase extends TestCase {
             .andReturn(null);
         replay(registry, reader, context);
 
-        Include include = loader.load(null, null, reader, context);
+        Include include = loader.load(null, reader, context);
         assertEquals(name, include.getName());
         assertEquals(includeURL, include.getScdlLocation());
         verify(registry, reader, context);
@@ -117,7 +116,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
         expect(context.getComponentId()).andReturn(componentId);
 
-        expect(registry.load((Component) isNull(),
+        expect(registry.load(
             (ModelObject) isNull(),
             eq(includeURL),
             eq(CompositeComponentType.class),
@@ -125,7 +124,7 @@ public class IncludeLoaderTestCase extends TestCase {
             .andReturn(null);
         replay(registry, reader, context);
 
-        Include include = loader.load(null, null, reader, context);
+        Include include = loader.load(null, reader, context);
         assertEquals(name, include.getName());
         assertEquals(includeURL, include.getScdlLocation());
         verify(registry, reader, context);
@@ -146,7 +145,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
         expect(context.getComponentId()).andReturn(componentId);
 
-        expect(registry.load((Component) isNull(),
+        expect(registry.load(
             (ModelObject) isNull(),
             eq(includeURL),
             eq(CompositeComponentType.class),
@@ -154,7 +153,7 @@ public class IncludeLoaderTestCase extends TestCase {
             .andReturn(null);
         replay(registry, reader, context);
 
-        Include include = loader.load(null, null, reader, context);
+        Include include = loader.load(null, reader, context);
         assertEquals(name, include.getName());
         assertEquals(includeURL, include.getScdlLocation());
         verify(registry, reader, context);

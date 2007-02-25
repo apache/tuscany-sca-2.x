@@ -39,7 +39,7 @@ public class InitProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = InitProcessorTestCase.Foo.class.getMethod("init");
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         assertNotNull(type.getInitMethod());
         assertEquals(0, type.getInitLevel());
     }
@@ -50,7 +50,7 @@ public class InitProcessorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = InitProcessorTestCase.Bar.class.getMethod("badInit", String.class);
         try {
-            processor.visitMethod(null, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalInitException e) {
             // expected
@@ -63,9 +63,9 @@ public class InitProcessorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = InitProcessorTestCase.Bar.class.getMethod("init");
         Method method2 = InitProcessorTestCase.Bar.class.getMethod("init2");
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         try {
-            processor.visitMethod(null, method2, type, null);
+            processor.visitMethod(method2, type, null);
             fail();
         } catch (DuplicateInitException e) {
             // expected

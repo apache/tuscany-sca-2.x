@@ -54,7 +54,7 @@ public class HeutisticExtensibleConstructorTestCase extends TestCase {
         property.setName("myBar");
         definition.getInjectionNames().add("myBar");
         type.getProperties().put("myBar", property);
-        processor.visitEnd(null, Foo.class, type, null);
+        processor.visitEnd(Foo.class, type, null);
         assertEquals(2, type.getProperties().size());
     }
 
@@ -71,7 +71,7 @@ public class HeutisticExtensibleConstructorTestCase extends TestCase {
     public void testBarAnnotationProcessedLast() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(null, Foo.class, type, null);
+        processor.visitEnd(Foo.class, type, null);
 
         // now simulate process the bar impl
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
@@ -101,7 +101,7 @@ public class HeutisticExtensibleConstructorTestCase extends TestCase {
         property.setName("myBar");
         definition.getInjectionNames().add("myBar");
         type.getProperties().put("myBar", property);
-        processor.visitEnd(null, Foo2.class, type, null);
+        processor.visitEnd(Foo2.class, type, null);
         assertEquals("baz", definition.getInjectionNames().get(0));
         assertEquals(2, type.getProperties().size());
         assertEquals(1, type.getReferences().size());

@@ -23,7 +23,6 @@ import java.net.URL;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -56,35 +55,32 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         return JavaImplementation.class;
     }
 
-    public void load(Component parent,
-                     JavaImplementation implementation,
-                     DeploymentContext deploymentContext) throws LoaderException {
+    public void load(
+        JavaImplementation implementation,
+        DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
         URL resource = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
         PojoComponentType componentType;
         if (resource == null) {
-            componentType = loadByIntrospection(parent, implementation, deploymentContext);
+            componentType = loadByIntrospection(implementation, deploymentContext);
         } else {
-            componentType = loadFromSidefile(parent, resource, deploymentContext);
+            componentType = loadFromSidefile(resource, deploymentContext);
         }
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(Component parent,
-                                                    JavaImplementation implementation,
-                                                    DeploymentContext deploymentContext) throws ProcessingException {
+    protected PojoComponentType loadByIntrospection(JavaImplementation implementation, DeploymentContext context)
+        throws ProcessingException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Class<?> implClass = implementation.getImplementationClass();
-        introspector.introspect(parent, implClass, componentType, deploymentContext);
+        introspector.introspect(implClass, componentType, context);
         return componentType;
     }
 
-    protected PojoComponentType loadFromSidefile(Component parent,
-                                                 URL url,
-                                                 DeploymentContext deploymentContext) throws LoaderException {
+    protected PojoComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        return loaderRegistry.load(parent, componentType, url, PojoComponentType.class, deploymentContext);
+        return loaderRegistry.load(componentType, url, PojoComponentType.class, deploymentContext);
     }
 }

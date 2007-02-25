@@ -40,7 +40,7 @@ public class DestroyProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = Foo.class.getMethod("destroy");
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         assertNotNull(type.getDestroyMethod());
     }
 
@@ -50,7 +50,7 @@ public class DestroyProcessorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = Bar.class.getMethod("badDestroy", String.class);
         try {
-            processor.visitMethod(null, method, type, null);
+            processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalDestructorException e) {
             // expected
@@ -63,9 +63,9 @@ public class DestroyProcessorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = Bar.class.getMethod("destroy");
         Method method2 = Bar.class.getMethod("destroy2");
-        processor.visitMethod(null, method, type, null);
+        processor.visitMethod(method, type, null);
         try {
-            processor.visitMethod(null, method2, type, null);
+            processor.visitMethod(method2, type, null);
             fail();
         } catch (DuplicateDestructorException e) {
             // expected

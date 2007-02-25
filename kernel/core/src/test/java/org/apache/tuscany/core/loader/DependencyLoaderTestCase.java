@@ -64,7 +64,7 @@ public class DependencyLoaderTestCase extends TestCase {
         EasyMock.expect(reader.nextTag()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
         DependencyLoader loader = new DependencyLoader(registry);
-        Dependency dependency = loader.load(null, null, reader, null);
+        Dependency dependency = loader.load(null, reader, null);
         assertEquals("group", dependency.getArtifact().getGroup());
         assertEquals("name", dependency.getArtifact().getName());
         assertEquals("1", dependency.getArtifact().getVersion());
@@ -92,7 +92,7 @@ public class DependencyLoaderTestCase extends TestCase {
         EasyMock.replay(reader);
         DependencyLoader loader = new DependencyLoader(registry);
         try {
-            loader.load(null, null, reader, null);
+            loader.load(null, reader, null);
             fail();
         } catch (UnrecognizedElementException e) {
             // expected

@@ -80,12 +80,12 @@ public class CallbackInvocationTestCase extends TestCase {
      */
     public void testComponentToComponentCallback() throws Exception {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
-        JavaAtomicComponent targetComponent = (JavaAtomicComponent) builder.build(null, targetDefinition, context);
+        JavaAtomicComponent targetComponent = (JavaAtomicComponent) builder.build(targetDefinition, context);
         targetComponent.setScopeContainer(container);
         container.register(targetComponent);
         componentManager.register(targetComponent);
         ComponentDefinition<JavaImplementation> sourceDefinition = createSource(URI.create("fooClient"));
-        JavaAtomicComponent clientComponent = (JavaAtomicComponent) builder.build(null, sourceDefinition, context);
+        JavaAtomicComponent clientComponent = (JavaAtomicComponent) builder.build(sourceDefinition, context);
         clientComponent.setScopeContainer(container);
         container.register(clientComponent);
         componentManager.register(clientComponent);
@@ -113,18 +113,18 @@ public class CallbackInvocationTestCase extends TestCase {
     public void testTwoSourceComponentToComponentCallback() throws Exception {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
         JavaAtomicComponent targetComponent =
-            (JavaAtomicComponent) builder.build(null, targetDefinition, context);
+            (JavaAtomicComponent) builder.build(targetDefinition, context);
         targetComponent.setScopeContainer(container);
         container.register(targetComponent);
         componentManager.register(targetComponent);
 
         ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource(URI.create("client1"));
         ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource(URI.create("client2"));
-        JavaAtomicComponent clientComponent1 = (JavaAtomicComponent) builder.build(null, sourceDefinition1, context);
+        JavaAtomicComponent clientComponent1 = (JavaAtomicComponent) builder.build(sourceDefinition1, context);
         clientComponent1.setScopeContainer(container);
         container.register(clientComponent1);
         componentManager.register(clientComponent1);
-        JavaAtomicComponent clientComponent2 = (JavaAtomicComponent) builder.build(null, sourceDefinition2, context);
+        JavaAtomicComponent clientComponent2 = (JavaAtomicComponent) builder.build(sourceDefinition2, context);
         clientComponent2.setScopeContainer(container);
         container.register(clientComponent2);
         componentManager.register(clientComponent2);

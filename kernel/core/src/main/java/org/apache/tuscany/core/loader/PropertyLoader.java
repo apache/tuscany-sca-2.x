@@ -29,7 +29,6 @@ import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -69,7 +68,7 @@ public class PropertyLoader extends LoaderExtension<Property> {
         return PROPERTY;
     }
 
-    public Property<?> load(Component parent, ModelObject object, XMLStreamReader reader,
+    public Property<?> load(ModelObject object, XMLStreamReader reader,
                             DeploymentContext ctx)
         throws XMLStreamException, LoaderException {
         assert PROPERTY.equals(reader.getName());

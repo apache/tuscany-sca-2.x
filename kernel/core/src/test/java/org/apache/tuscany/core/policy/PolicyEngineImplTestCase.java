@@ -74,7 +74,7 @@ public class PolicyEngineImplTestCase extends TestCase {
                 break;
             }
             if (XMLStreamConstants.START_ELEMENT == state && reader.getName().equals(POLICYSET)) {
-                psc.addPolicySet(loader.load(null, null, reader, null));
+                psc.addPolicySet(loader.load(null, reader, null));
             }
 
         }

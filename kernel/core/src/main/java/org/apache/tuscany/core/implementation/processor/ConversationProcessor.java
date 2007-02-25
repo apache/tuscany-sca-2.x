@@ -25,7 +25,6 @@ import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -44,8 +43,7 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
     private static final String DAYS = " DAYS";
     private static final String YEARS = " YEARS";
 
-    public <T> void visitClass(Component parent,
-                               Class<T> clazz,
+    public <T> void visitClass(Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context) throws ProcessingException {
 
@@ -89,7 +87,7 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
 
     }
 
-    public void visitMethod(Component parent, Method method,
+    public void visitMethod(Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
@@ -100,7 +98,7 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
         type.setConversationIDMember(method);
     }
 
-    public void visitField(Component parent, Field field,
+    public void visitField(Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         ConversationID conversationID = field.getAnnotation(ConversationID.class);

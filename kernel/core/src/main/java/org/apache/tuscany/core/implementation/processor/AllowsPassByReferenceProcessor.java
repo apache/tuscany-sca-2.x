@@ -20,7 +20,6 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.osoa.sca.annotations.AllowsPassByReference;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -36,7 +35,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class AllowsPassByReferenceProcessor extends ImplementationProcessorExtension {
 
-    public <T> void visitClass(Component parent, Class<T> clazz,
+    public <T> void visitClass(Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context)
         throws ProcessingException {

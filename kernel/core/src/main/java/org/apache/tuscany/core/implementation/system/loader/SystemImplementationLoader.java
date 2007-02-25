@@ -24,7 +24,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -48,16 +47,16 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
         super(registry);
     }
 
-    public SystemImplementation load(Component parent,
-                                     ModelObject object, XMLStreamReader reader,
-                                     DeploymentContext deploymentContext)
+    public SystemImplementation load(
+        ModelObject object, XMLStreamReader reader,
+        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert SYSTEM_IMPLEMENTATION.equals(reader.getName());
         SystemImplementation implementation = new SystemImplementation();
         String implClass = reader.getAttributeValue(null, "class");
         Class<?> implementationClass = LoaderUtil.loadClass(implClass, deploymentContext.getClassLoader());
         implementation.setImplementationClass(implementationClass);
-        registry.loadComponentType(parent, implementation, deploymentContext);
+        registry.loadComponentType(implementation, deploymentContext);
         while (true) {
             int code = reader.next();
             if (code == XMLStreamConstants.START_ELEMENT) {

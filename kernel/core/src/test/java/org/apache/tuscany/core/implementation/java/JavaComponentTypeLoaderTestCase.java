@@ -20,7 +20,6 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URL;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
@@ -39,7 +38,6 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
     public void testPojoComponentTypeCreatedForIntrospection() throws Exception {
         IntrospectionRegistry registry = EasyMock.createMock(IntrospectionRegistry.class);
         registry.introspect(
-            (Component) EasyMock.isNull(),
             (Class) EasyMock.isNull(),
             EasyMock.isA(PojoComponentType.class),
             (DeploymentContext) EasyMock.isNull());
@@ -50,7 +48,7 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
         });
         EasyMock.replay(registry);
         JavaComponentTypeLoader loader = new JavaComponentTypeLoader(null, registry);
-        loader.loadByIntrospection(null, new JavaImplementation(), null);
+        loader.loadByIntrospection(new JavaImplementation(), null);
         EasyMock.verify(registry);
     }
 
@@ -58,19 +56,18 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
     public void testPojoComponentTypeCreatedForSideFileLoadAndReturned() throws Exception {
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
         registry.load(
-            (Component) EasyMock.isNull(),
             EasyMock.isA(PojoComponentType.class),
             (URL) EasyMock.isNull(),
             EasyMock.eq(PojoComponentType.class),
             (DeploymentContext) EasyMock.isNull());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
-                return EasyMock.getCurrentArguments()[1];
+                return EasyMock.getCurrentArguments()[0];
             }
         });
         EasyMock.replay(registry);
         JavaComponentTypeLoader loader = new JavaComponentTypeLoader(registry, null);
-        assertEquals(PojoComponentType.class, loader.loadFromSidefile(null, null, null).getClass());
+        assertEquals(PojoComponentType.class, loader.loadFromSidefile(null, null).getClass());
         EasyMock.verify(registry);
     }
 

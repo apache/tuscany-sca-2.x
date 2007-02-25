@@ -21,7 +21,6 @@ package org.apache.tuscany.spi.loader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ModelObject;
 
@@ -35,14 +34,13 @@ public interface StAXElementLoader<T extends ModelObject> {
      * Create the model object for an element in an XML stream. When this method returns the stream will be positioned
      * on the corresponding END_ELEMENT.
      *
-     * @param parent            the composite the model object being loaded is contained within
-     * @param object            the model object to load configuration data into. An implementation may choose to return
-     *                          a different model object than the one passed in, in which case it is responsible for
-     *                          copying data. If null, the loader is responsible for creating a model object itself
-     * @param reader            the XML stream reader positioned on the applicable START_ELEMENT
-     * @param deploymentContext the context for the load operation
+     * @param object  the model object to load configuration data into. An implementation may choose to return a
+     *                different model object than the one passed in, in which case it is responsible for copying data.
+     *                If null, the loader is responsible for creating a model object itself
+     * @param reader  the XML stream reader positioned on the applicable START_ELEMENT
+     * @param context the context for the load operation
      * @return the model object for that element
      */
-    T load(Component parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
+    T load(ModelObject object, XMLStreamReader reader, DeploymentContext context)
         throws XMLStreamException, LoaderException;
 }

@@ -61,7 +61,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private ScopeRegistry scopeRegistry;
 
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>
-    componentBuilders =
+        componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
@@ -83,9 +83,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> Component build(Component parent,
-                                                         ComponentDefinition<I> componentDefinition,
-                                                         DeploymentContext context) throws BuilderException {
+    public <I extends Implementation<?>> Component build(
+        ComponentDefinition<I> componentDefinition,
+        DeploymentContext context) throws BuilderException {
         Class<?> implClass = componentDefinition.getImplementation().getClass();
         // noinspection SuspiciousMethodCalls
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
@@ -93,8 +93,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             String name = implClass.getName();
             throw new NoRegisteredBuilderException("No builder registered for implementation", name);
         }
-
-        Component component = componentBuilder.build(parent, componentDefinition, context);
+        Component component = componentBuilder.build(componentDefinition, context);
         assert component != null;
         component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
         Scope scope = componentDefinition.getImplementation().getComponentType().getImplementationScope();
@@ -134,9 +133,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public Service build(Component parent,
-                         ServiceDefinition serviceDefinition,
-                         DeploymentContext deploymentContext) throws BuilderException {
+    public Service build(ServiceDefinition serviceDefinition, DeploymentContext context) throws BuilderException {
         URI uri = serviceDefinition.getUri();
         ServiceContract<?> serviceContract = serviceDefinition.getServiceContract();
         if (serviceDefinition.getBindings().isEmpty()) {
@@ -156,16 +153,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             if (bindingBuilder == null) {
                 throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
             }
-            ServiceBinding binding = bindingBuilder.build(parent, serviceDefinition, definition, deploymentContext);
+            ServiceBinding binding = bindingBuilder.build(serviceDefinition, definition, context);
             service.addServiceBinding(binding);
         }
         return service;
     }
 
     @SuppressWarnings("unchecked")
-    public Reference build(Component parent,
-                           ReferenceDefinition referenceDefinition,
-                           DeploymentContext context) throws BuilderException {
+    public Reference build(ReferenceDefinition referenceDefinition, DeploymentContext context) throws BuilderException {
         URI uri = referenceDefinition.getUri();
         ServiceContract<?> contract = referenceDefinition.getServiceContract();
         if (referenceDefinition.getBindings().isEmpty()) {
@@ -182,7 +177,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             Class<?> bindingClass = bindingDefinition.getClass();
             // noinspection SuspiciousMethodCalls
             BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
-            ReferenceBinding binding = bindingBuilder.build(parent, referenceDefinition, bindingDefinition, context);
+            ReferenceBinding binding = bindingBuilder.build(referenceDefinition, bindingDefinition, context);
             reference.addReferenceBinding(binding);
 
         }

@@ -34,7 +34,7 @@ public class LocalBindingBuilderTestCase extends TestCase {
         LocalBindingBuilder builder = new LocalBindingBuilder();
         ServiceDefinition def = new ServiceDefinition();
         def.setUri(new URI("#foo"));
-        ServiceBinding binding = builder.build(null, def, null, null);
+        ServiceBinding binding = builder.build(def, null, null);
         assertEquals(LocalServiceBinding.class, binding.getClass());
     }
 }

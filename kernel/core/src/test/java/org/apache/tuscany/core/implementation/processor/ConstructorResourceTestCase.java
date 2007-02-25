@@ -43,7 +43,7 @@ public class ConstructorResourceTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
-        processor.visitConstructor(null, ctor, type, null);
+        processor.visitConstructor(ctor, type, null);
         org.apache.tuscany.spi.implementation.java.Resource resource = type.getResources().get("myResource");
         assertFalse(resource.isOptional());
     }
@@ -52,7 +52,7 @@ public class ConstructorResourceTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
-        processor.visitConstructor(null, ctor, type, null);
+        processor.visitConstructor(ctor, type, null);
         assertNotNull(type.getResources().get("myResource1"));
         assertNotNull(type.getResources().get("myResource2"));
     }
@@ -62,7 +62,7 @@ public class ConstructorResourceTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
         try {
-            processor.visitConstructor(null, ctor, type, null);
+            processor.visitConstructor(ctor, type, null);
             fail();
         } catch (DuplicateResourceException e) {
             // expected
@@ -75,7 +75,7 @@ public class ConstructorResourceTestCase extends TestCase {
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =
             ConstructorResourceTestCase.BadFoo.class.getConstructor(String.class);
         try {
-            processor.visitConstructor(null, ctor, type, null);
+            processor.visitConstructor(ctor, type, null);
             fail();
         } catch (InvalidResourceException e) {
             // expected
@@ -86,7 +86,7 @@ public class ConstructorResourceTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
-        processor.visitConstructor(null, ctor, type, null);
+        processor.visitConstructor(ctor, type, null);
         assertNotNull(type.getResources().get("myResource"));
     }
 
@@ -96,7 +96,7 @@ public class ConstructorResourceTestCase extends TestCase {
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =
             ConstructorResourceTestCase.BadFoo.class.getConstructor(Integer.class, Integer.class);
         try {
-            processor.visitConstructor(null, ctor, type, null);
+            processor.visitConstructor(ctor, type, null);
             fail();
         } catch (InvalidResourceException e) {
             // expected
@@ -109,7 +109,7 @@ public class ConstructorResourceTestCase extends TestCase {
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =
             ConstructorResourceTestCase.BadFoo.class.getConstructor(List.class, List.class);
         try {
-            processor.visitConstructor(null, ctor, type, null);
+            processor.visitConstructor(ctor, type, null);
             fail();
         } catch (InvalidConstructorException e) {
             // expected

@@ -81,13 +81,13 @@ public class BuilderRegistryTestCase extends TestCase {
         EasyMock.replay(components);
 
         ComponentBuilder builder = EasyMock.createMock(ComponentBuilder.class);
-        EasyMock.expect(builder.build(parent, componentDefinition, deploymentContext)).andReturn(component);
+        EasyMock.expect(builder.build(componentDefinition, deploymentContext)).andReturn(component);
         EasyMock.replay(builder);
 
         BuilderRegistry registry = new BuilderRegistryImpl(null);
         registry.register(CompositeImplementation.class, builder);
 
-        assertSame(component, registry.build(parent, componentDefinition, deploymentContext));
+        assertSame(component, registry.build(componentDefinition, deploymentContext));
         EasyMock.verify(builder);
     }
 
@@ -97,7 +97,7 @@ public class BuilderRegistryTestCase extends TestCase {
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(Component.class),
+        EasyMock.expect(builder.build(
             EasyMock.isA(ServiceDefinition.class),
             EasyMock.isA(MockBindingDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(binding).times(2);
@@ -107,7 +107,7 @@ public class BuilderRegistryTestCase extends TestCase {
         definition.addBinding(new MockBindingDefinition());
         definition.addBinding(new MockBindingDefinition());
         definition.setTarget(new URI("foo"));
-        Service service = registry.build(parent, definition, deploymentContext);
+        Service service = registry.build(definition, deploymentContext);
         assertEquals(2, service.getServiceBindings().size());
     }
 
@@ -117,7 +117,7 @@ public class BuilderRegistryTestCase extends TestCase {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(Component.class),
+        EasyMock.expect(builder.build(
             EasyMock.isA(ReferenceDefinition.class),
             EasyMock.isA(MockBindingDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(binding).times(2);
@@ -126,7 +126,7 @@ public class BuilderRegistryTestCase extends TestCase {
         ReferenceDefinition definition = new ReferenceDefinition(URI.create("#foo"), null, ONE_ONE);
         definition.addBinding(new MockBindingDefinition());
         definition.addBinding(new MockBindingDefinition());
-        Reference reference = registry.build(parent, definition, deploymentContext);
+        Reference reference = registry.build(definition, deploymentContext);
         assertEquals(2, reference.getReferenceBindings().size());
     }
 
@@ -141,7 +141,7 @@ public class BuilderRegistryTestCase extends TestCase {
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
         ComponentBuilder<FooImplementation> builder = EasyMock.createMock(ComponentBuilder.class);
-        EasyMock.expect(builder.build(EasyMock.isA(Component.class),
+        EasyMock.expect(builder.build(
             EasyMock.isA(ComponentDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(component);
         EasyMock.replay(builder);
@@ -154,13 +154,14 @@ public class BuilderRegistryTestCase extends TestCase {
         URI uri = URI.create("foo");
         ComponentDefinition<FooImplementation> definition = new ComponentDefinition<FooImplementation>(uri, impl);
         try {
-            registry.build(parent, definition, deploymentContext);
+            registry.build(definition, deploymentContext);
             fail("Should throw NoConversationalContractException");
         } catch (NoConversationalContractException e) {
             // expected
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
@@ -170,9 +171,9 @@ public class BuilderRegistryTestCase extends TestCase {
     }
 
     private class MockBuilder implements ComponentBuilder<CompositeImplementation> {
-        public Component build(Component parent,
-                               ComponentDefinition componentDefinition,
-                               DeploymentContext deploymentContext) throws BuilderConfigException {
+        public Component build(
+            ComponentDefinition componentDefinition,
+            DeploymentContext deploymentContext) throws BuilderConfigException {
             return null;
         }
     }

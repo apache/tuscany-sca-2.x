@@ -54,7 +54,7 @@ public class DataBindingLoaderTestCase extends TestCase {
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
 
-        ModelObject mo = new DataTypeLoader(null).load(null, null, reader, null);
+        ModelObject mo = new DataTypeLoader(null).load(null, reader, null);
         Assert.assertTrue(mo instanceof DataType);
         Assert.assertEquals("ABC", ((DataType<?>)mo).getDataBinding());
         EasyMock.verify(reader);
@@ -68,7 +68,7 @@ public class DataBindingLoaderTestCase extends TestCase {
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
         try {
-            mo = new DataTypeLoader(null).load(null, null, reader, null);
+            mo = new DataTypeLoader(null).load(null, reader, null);
             Assert.fail("InvalidValueException should have been thrown");
         } catch (InvalidValueException e) {
             Assert.assertTrue(true);
