@@ -38,19 +38,20 @@ public class CalculatorClient {
         if(args.length != 3) {
             throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");
         }
-        
+
+        double result;
         if("add".equals(args[0])) {
-            calculatorService.add(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+            result = calculatorService.add(Double.parseDouble(args[1]), Double.parseDouble(args[2]));
         } else if("substract".equals(args[0])) {
-            calculatorService.subtract(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+            result = calculatorService.subtract(Double.parseDouble(args[1]), Double.parseDouble(args[2]));
         } else if("multiply".equals(args[0])) {
-            calculatorService.multiply(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+            result = calculatorService.multiply(Double.parseDouble(args[1]), Double.parseDouble(args[2]));
         } else if("divide".equals(args[0])) {
-            calculatorService.divide(Double.parseDouble((String)args[1]), Double.parseDouble((String)args[2]));
+            result = calculatorService.divide(Double.parseDouble(args[1]), Double.parseDouble(args[2]));
         } else {
             throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");
         }
-        
+        System.out.println("result = " + result);
         return 0;
     }
     
