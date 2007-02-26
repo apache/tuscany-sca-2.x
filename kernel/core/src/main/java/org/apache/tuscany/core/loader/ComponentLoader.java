@@ -234,8 +234,6 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         if (!componentType.getReferences().containsKey(name)) {
             throw new UndefinedReferenceException(name);
         }
-        //xxxx
-            
         if (componentType instanceof CompositeComponentType) {
             if (uris.size() != 1) {
                 // FIXME not yet implemented
