@@ -78,24 +78,26 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         ModelObject object,
         XMLStreamReader reader,
         DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
-        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
+        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        composite.setName(reader.getAttributeValue(null, "name"));
+        type.setName(reader.getAttributeValue(null, "name"));
+        boolean autowire = Boolean.parseBoolean(reader.getAttributeValue(null, "autowire"));
+        type.setAutowire(autowire);
         boolean done = false;
         while (!done) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(composite, reader, deploymentContext);
+                    ModelObject o = registry.load(type, reader, deploymentContext);
                     if (o instanceof ServiceDefinition) {
-                        composite.add((ServiceDefinition) o);
+                        type.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {
-                        composite.add((ReferenceDefinition) o);
+                        type.add((ReferenceDefinition) o);
                     } else if (o instanceof Property<?>) {
-                        composite.add((Property<?>) o);
+                        type.add((Property<?>) o);
                     } else if (o instanceof ComponentDefinition<?>) {
-                        composite.add((ComponentDefinition<?>) o);
+                        type.add((ComponentDefinition<?>) o);
                     } else if (o instanceof Include) {
-                        composite.add((Include) o);
+                        type.add((Include) o);
                     } else if (o instanceof Dependency) {
                         Artifact artifact = ((Dependency) o).getArtifact();
                         if (artifactRepository != null) {
@@ -115,11 +117,11 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                             }
                         }
                     } else if (o instanceof WireDefinition) {
-                        composite.add((WireDefinition) o);
+                        type.add((WireDefinition) o);
                     } else {
                         // add as an unknown model extension
                         if (o != null) {
-                            composite.getExtensions().put(o.getClass(), o);
+                            type.getExtensions().put(o.getClass(), o);
                         }
                     }
                     reader.next();
@@ -127,17 +129,17 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                 case END_ELEMENT:
                     if (COMPOSITE.equals(reader.getName())) {
                         // if there are wire defintions then link them up to the relevant components
-                        resolveWires(composite);
-                        verifyCompositeCompleteness(composite);
+                        resolveWires(type);
+                        verifyCompositeCompleteness(type);
                         done = true;
                         break;
                     }
             }
         }
-        for (ComponentDefinition<? extends Implementation<?>> c : composite.getComponents().values()) {
-            PropertyHelper.processProperties(composite, c, deploymentContext);
+        for (ComponentDefinition<? extends Implementation<?>> c : type.getComponents().values()) {
+            PropertyHelper.processProperties(type, c, deploymentContext);
         }
-        return composite;
+        return type;
     }
 
     protected void resolveWires(CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)

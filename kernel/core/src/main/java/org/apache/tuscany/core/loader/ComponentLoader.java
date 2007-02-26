@@ -86,7 +86,6 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
     private static final String PROPERTY_FILE_ATTR = "file";
     private static final String PROPERTY_NAME_ATTR = "name";
-    private static final String PROPERTY_AUTOWIRE_ATTR = "autowire";
     private static final String PROPERTY_SOURCE_ATTR = "source";
 
     private PropertyObjectFactory propertyFactory;
