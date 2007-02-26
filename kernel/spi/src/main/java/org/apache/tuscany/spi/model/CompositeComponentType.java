@@ -36,6 +36,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     P extends Property<?>> extends ComponentType<S, R, P> {
 
     private String name;
+    private boolean autowire;
     private final Map<String, ComponentDefinition<? extends Implementation<?>>> components =
         new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private final Map<String, Include> includes = new HashMap<String, Include>();
@@ -51,6 +52,24 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns if autowire is set of for composite
+     *
+     * @return true if autowire is set for the composite
+     */
+    public boolean isAutowire() {
+        return autowire;
+    }
+
+    /**
+     * Sets autowire for the composite
+     *
+     * @param autowire true if autowire is enabled for the composite
+     */
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
     }
 
     @Override
