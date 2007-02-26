@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
-import org.apache.tuscany.spi.marshaller.MarshalException;
+import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 
 /**
@@ -65,9 +65,9 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
      * 
      * @param modelObject Component definition object to be serialized.
      * @param writer Stream writer to which the infoset is serialized.
-     * @throws MarshalException In case of any marshalling error.
+     * @throws MarshallException In case of any marshalling error.
      */
-    public void marshall(JavaPhysicalComponentDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
+    public void marshall(JavaPhysicalComponentDefinition modelObject, XMLStreamWriter writer) throws MarshallException {
         
         try {
             
@@ -90,7 +90,7 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
             writer.flush();
             
         } catch (XMLStreamException ex) {
-            throw new MarshalException(ex);
+            throw new MarshallException(ex);
         }
     }
 
@@ -99,9 +99,9 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
      * 
      * @param reader XML stream from where the marshalled XML is read.
      * @return Hydrated component definition object.
-     * @throws MarshalException In case of any unmarshalling error.
+     * @throws MarshallException In case of any unmarshalling error.
      */
-    public JavaPhysicalComponentDefinition unmarshall(XMLStreamReader reader) throws MarshalException {
+    public JavaPhysicalComponentDefinition unmarshall(XMLStreamReader reader) throws MarshallException {
         
         try {
             
@@ -121,15 +121,15 @@ public class JavaPhysicalComponentDefinitionMarshaller implements ModelMarshalle
             }
             
             if (definition.getComponentId() == null || definition.getInstanceFactoryByteCode() == null) {
-                throw new MarshalException("Invalid component definition");
+                throw new MarshallException("Invalid component definition");
             }
             
             return definition;
             
         } catch (XMLStreamException ex) {
-            throw new MarshalException(ex);
+            throw new MarshallException(ex);
         } catch (URISyntaxException ex) {
-            throw new MarshalException(ex);
+            throw new MarshallException(ex);
         }
         
     }

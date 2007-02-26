@@ -18,14 +18,17 @@
  */
 package org.apache.tuscany.core.marshaller;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 
 /**
  * Default map-based implementation of the model marshaller registry.
@@ -33,37 +36,12 @@ import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
  * @version $Rev$ $Date$
  */
 public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
-
-    /**
-     * Gets a marshaller for marshalling.
-     * 
-     * @param <MD> Model object type.
-     * @param modelClass Model obejct class.
-     * @return Model object marshaller.
-     */
-    public <MD extends ModelObject> ModelMarshaller<MD> getMarshaller(Class<MD> modelClass) {
-        return null;
-    }
-
-    /**
-     * Gets a marshaller for unmarshalling.
-     * 
-     * @param <MD> Model object type.
-     * @param qname Qualified name of the root element of the marshalled XML.
-     * @return Model object marshaller.
-     */
-    public <MD extends ModelObject> ModelMarshaller<MD> getMarshaller(QName qname) {
-        return null;
-    }
-
-    /**
-     * Marshalls a physical change set.
-     * 
-     * @param changeSet Physical chaneg set to be marshalled.
-     * @param writer Writer to which marshalled information is written.
-     */
-    public void marshall(PhysicalChangeSet changeSet, XMLStreamWriter writer) {
-    }
+    
+    // Marshaller registry
+    private final Map<Class<? extends ModelObject>, ModelMarshaller> marshallerRegistry = new ConcurrentHashMap<Class<? extends ModelObject>, ModelMarshaller>();
+    
+    // Unmarshaller registry
+    private final Map<QName, ModelMarshaller> unmarshallerRegistry = new ConcurrentHashMap<QName, ModelMarshaller>();
 
     /**
      * Registers a model object marshaller.
@@ -76,16 +54,43 @@ public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
     public <MD extends ModelObject> void registerMarshaller(Class<MD> modelClass,
                                                             QName qname,
                                                             ModelMarshaller<MD> marshaller) {
+        marshallerRegistry.put(modelClass, marshaller);
+        unmarshallerRegistry.put(qname, marshaller);
     }
 
     /**
-     * Unmarshalls an XML stream to a physical change set.
+     * Marshalls a model object.
+     * 
+     * @param modelObject Model object to be marshalled.
+     * @param writer Writer to which marshalled information is written.
+     */
+    @SuppressWarnings("unchecked")
+    public void marshall(ModelObject modelObject, XMLStreamWriter writer) throws MarshallException {
+        
+        ModelMarshaller marshaller = marshallerRegistry.get(modelObject.getClass());
+        if(marshaller == null) {
+            throw new MarshallException("No marshaller defined for " + modelObject.getClass());
+        }
+        marshaller.marshall(modelObject, writer);
+        
+    }
+
+    /**
+     * Unmarshalls an XML stream to a model object.
      * 
      * @param reader Reader from which marshalled information is read.
-     * @return Physical chnage set from the marshalled stream.
+     * @return Model object from the marshalled stream.
      */
-    public PhysicalChangeSet unmarshall(XMLStreamReader reader) {
-        return null;
+    public ModelObject unmarshall(XMLStreamReader reader) throws MarshallException {
+        
+        QName qname = reader.getName();
+        
+        ModelMarshaller marshaller = unmarshallerRegistry.get(qname);
+        if(marshaller == null) {
+            throw new MarshallException("No marshaller defined for " + qname);
+        }
+        return marshaller.unmarshall(reader);
+        
     }
 
 }
