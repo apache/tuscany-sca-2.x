@@ -31,7 +31,6 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
-import org.apache.tuscany.api.annotation.Resource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
@@ -46,9 +45,9 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.Multiplicity;
-import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.ServiceContract;
 
+import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.core.idl.java.IllegalCallbackException;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 
@@ -314,7 +313,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             throw new DuplicatePropertyException(name);
         }
         property.setName(name);
-        property.setOverride(OverrideOptions.valueOf(propAnnot.override().toUpperCase()));
+        property.setRequired(propAnnot.required());
 
         String xmlType = propAnnot.xmlType();
         if (xmlType != null && xmlType.length() != 0) {

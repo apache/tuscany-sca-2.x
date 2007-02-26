@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.model.OverrideOptions;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -47,8 +46,7 @@ public class ConstructorPropertyTestCase extends TestCase {
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         processor.visitConstructor(ctor, type, null);
         JavaMappedProperty<?> property = type.getProperties().get("myProp");
-        //assertTrue(property.isRequired());
-        assertEquals(property.getOverride(), OverrideOptions.MAY);
+        assertTrue(property.isRequired());
         assertEquals("myProp", property.getName());
     }
 
@@ -124,7 +122,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     private static class Foo {
 
         @org.osoa.sca.annotations.Constructor()
-        public Foo(@Property(name = "myProp", override = "may") String prop) {
+        public Foo(@Property(name = "myProp", required = true)String prop) {
 
         }
 
@@ -134,7 +132,7 @@ public class ConstructorPropertyTestCase extends TestCase {
         }
 
         @org.osoa.sca.annotations.Constructor()
-        public Foo(@Property(name = "myProp1") String prop1, @Property(name = "myProp2") String prop2) {
+        public Foo(@Property(name = "myProp1")String prop1, @Property(name = "myProp2")String prop2) {
 
         }
 
@@ -147,7 +145,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     private static class BadFoo {
 
         @org.osoa.sca.annotations.Constructor()
-        public BadFoo(@Property(name = "myProp") String prop1, @Property(name = "myProp") String prop2) {
+        public BadFoo(@Property(name = "myProp")String prop1, @Property(name = "myProp")String prop2) {
 
         }
 
@@ -162,7 +160,7 @@ public class ConstructorPropertyTestCase extends TestCase {
         }
 
         @org.osoa.sca.annotations.Constructor({"myRef", "myRef2"})
-        public BadFoo(@Property List ref, @Property(name = "myOtherRef") List ref2) {
+        public BadFoo(@Property List ref, @Property(name = "myOtherRef")List ref2) {
 
         }
 

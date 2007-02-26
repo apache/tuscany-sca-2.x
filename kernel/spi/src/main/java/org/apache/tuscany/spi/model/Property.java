@@ -31,11 +31,11 @@ import org.apache.tuscany.spi.ObjectFactory;
  */
 public class Property<T> extends ModelObject {
     private String name;
+    private boolean required;
     private ObjectFactory<T> defaultValueFactory;
     private QName xmlType;
     private Class<T> javaType;
     private boolean many;
-    private OverrideOptions override;
     private Document defaultValue;
 
     public Property() {
@@ -53,6 +53,14 @@ public class Property<T> extends ModelObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 
     public ObjectFactory<T> getDefaultValueFactory() {
@@ -85,14 +93,6 @@ public class Property<T> extends ModelObject {
 
     public void setMany(boolean many) {
         this.many = many;
-    }
-
-    public OverrideOptions getOverride() {
-        return override;
-    }
-
-    public void setOverride(OverrideOptions override) {
-        this.override = override;
     }
 
     public Document getDefaultValue() {

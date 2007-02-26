@@ -21,10 +21,10 @@ package org.apache.tuscany.spi.loader;
 /**
  * @version $Rev$ $Date$
  */
-public class NotOverridablePropertyException extends LoaderException {
-    private static final long serialVersionUID = 1483304023970967982L;
+public class MissingRequiredPropertyException extends LoaderException {
 
-    public NotOverridablePropertyException(String name) {
+    public MissingRequiredPropertyException(String name) {
         super(name);
     }
+
 }

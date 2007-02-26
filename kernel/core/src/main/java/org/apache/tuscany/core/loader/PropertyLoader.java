@@ -19,25 +19,24 @@
 package org.apache.tuscany.core.loader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
+import org.w3c.dom.Document;
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
-import org.w3c.dom.Document;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.OverrideOptions;
-import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.util.stax.StaxUtil;
-import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loads a property from an XML-based assembly file
@@ -48,8 +47,8 @@ public class PropertyLoader extends LoaderExtension<Property> {
     public static final String PROPERTY_NAME_ATTR = "name";
     public static final String PROPERTY_TYPE_ATTR = "type";
     public static final String PROPERTY_MANY_ATTR = "many";
-    public static final String PROPERTY_OVERRIDE_ATTR = "override";
-    
+    public static final String REQUIRED_ATTR = "override";
+
     public static final QName PROPERTY = new QName(SCA_NS, "property");
     private final DocumentBuilder documentBuilder;
 
@@ -85,18 +84,15 @@ public class PropertyLoader extends LoaderExtension<Property> {
             }
         }
         boolean many = Boolean.parseBoolean(reader.getAttributeValue(null, PROPERTY_MANY_ATTR));
-        String override = reader.getAttributeValue(null, PROPERTY_OVERRIDE_ATTR);
-        
+        String required = reader.getAttributeValue(null, REQUIRED_ATTR);
         Document value = StaxUtil.createPropertyValue(reader, xmlType, documentBuilder);
 
         Property<?> property = new Property();
+        property.setRequired(Boolean.parseBoolean(required));
         property.setName(name);
         property.setXmlType(xmlType);
         property.setMany(many);
-        
-        if (override != null) {
-            property.setOverride(OverrideOptions.valueOf(override.toUpperCase()));
-        }
+
         property.setDefaultValue(value);
         return property;
     }
