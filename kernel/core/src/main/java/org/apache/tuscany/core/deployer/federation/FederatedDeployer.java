@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.marshaller.MarshalException;
+import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
@@ -65,7 +65,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
             final C component = buildComponent(definition);
             component.start();
 
-        } catch (MarshalException ex) {
+        } catch (MarshallException ex) {
             return null;
         } catch (BuilderException ex) {
             return null;
@@ -136,9 +136,9 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
      *
      * @param content XML content stream.
      * @return Physical component definition.
-     * @throws MarshalException If unable to marshall the component definition.
+     * @throws MarshallException If unable to marshall the component definition.
      */
-    protected abstract PCD unmarshallDefinition(XMLStreamReader content) throws MarshalException;
+    protected abstract PCD unmarshallDefinition(XMLStreamReader content) throws MarshallException;
 
     /**
      * Builds the component from the physical component definition.

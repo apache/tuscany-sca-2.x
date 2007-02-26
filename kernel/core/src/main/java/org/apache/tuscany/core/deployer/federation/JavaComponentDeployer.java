@@ -27,9 +27,7 @@ import org.apache.tuscany.core.marshaller.JavaPhysicalComponentDefinitionMarshal
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
-import org.apache.tuscany.spi.marshaller.MarshalException;
-import org.apache.tuscany.spi.marshaller.ModelMarshaller;
-import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
+import org.apache.tuscany.spi.marshaller.MarshallException;
 
 /**
  * Federated deployer responsible for deploying Java components.
@@ -43,7 +41,7 @@ public class JavaComponentDeployer extends FederatedDeployer<JavaPhysicalCompone
      * 
      * @param content XML content stream.
      * @return Physical component definition.
-     * @throws MarshalException If unable to marshall the component definition.
+     * @throws MarshallException If unable to marshall the component definition.
      */
     @Override
     protected QName getQualifiedName() {
@@ -74,13 +72,8 @@ public class JavaComponentDeployer extends FederatedDeployer<JavaPhysicalCompone
      * @return The qualified name of the document element.
      */
     @Override
-    protected JavaPhysicalComponentDefinition unmarshallDefinition(XMLStreamReader content) throws MarshalException {
-
-        ModelMarshallerRegistry marshallerRegistry = getMarshallerRegistry();
-        ModelMarshaller<JavaPhysicalComponentDefinition> marshaller =
-            marshallerRegistry.getMarshaller(JavaPhysicalComponentDefinition.class);
-        return marshaller.unmarshall(content);
-
+    protected JavaPhysicalComponentDefinition unmarshallDefinition(XMLStreamReader content) throws MarshallException {
+        throw new UnsupportedOperationException();
     }
 
 }
