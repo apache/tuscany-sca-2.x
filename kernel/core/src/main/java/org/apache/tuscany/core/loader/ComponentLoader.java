@@ -86,6 +86,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
     private static final String PROPERTY_FILE_ATTR = "file";
     private static final String PROPERTY_NAME_ATTR = "name";
+    private static final String PROPERTY_AUTOWIRE_ATTR = "autowire";
     private static final String PROPERTY_SOURCE_ATTR = "source";
 
     private PropertyObjectFactory propertyFactory;
@@ -106,6 +107,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         assert COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String initLevel = reader.getAttributeValue(null, "initLevel");
+        String autowire = reader.getAttributeValue(null, "autowire");
 
         URI componentId = URI.create(context.getComponentId() + "/").resolve(name);
         ClassLoader loader = context.getClassLoader();
@@ -116,7 +118,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
         ComponentDefinition<Implementation<?>> componentDefinition =
             new ComponentDefinition<Implementation<?>>(componentId, impl);
-
+        componentDefinition.setAutowire(Boolean.parseBoolean(autowire));
         if (initLevel != null) {
             if (initLevel.length() == 0) {
                 componentDefinition.setInitLevel(0);
