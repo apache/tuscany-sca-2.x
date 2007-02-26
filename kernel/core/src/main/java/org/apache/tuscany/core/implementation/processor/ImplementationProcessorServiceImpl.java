@@ -25,7 +25,6 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Property;
@@ -315,14 +314,9 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         property.setName(name);
         property.setRequired(propAnnot.required());
 
-        String xmlType = propAnnot.xmlType();
-        if (xmlType != null && xmlType.length() != 0) {
-            property.setXmlType(QName.valueOf(xmlType));
-        } else {
-            TypeInfo typeInfo = typeMapper.getXMLType(property.getJavaType());
-            if (typeInfo != null) {
-                property.setXmlType(typeInfo.getQName());
-            }
+        TypeInfo typeInfo = typeMapper.getXMLType(property.getJavaType());
+        if (typeInfo != null) {
+            property.setXmlType(typeInfo.getQName());
         }
         type.getProperties().put(name, property);
         addName(explicitNames, pos, name);
