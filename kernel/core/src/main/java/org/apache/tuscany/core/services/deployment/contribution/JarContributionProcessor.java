@@ -23,19 +23,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl;
+import org.apache.tuscany.core.util.FileHelper;
+import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
 import org.apache.tuscany.spi.model.Contribution;
-
-import org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl;
-import org.apache.tuscany.host.deployment.DeploymentException;
+import org.apache.tuscany.spi.model.DeployedArtifact;
 
 public class JarContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
     public static final String CONTENT_TYPE = "application/x-compressed";
@@ -46,8 +48,8 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
     }
 
     /**
-     * Get a list of selected resources by the extensions
-     *
+     * Get a list of resources inside the jar
+     * 
      * @return
      * @throws IOException
      */
@@ -103,26 +105,38 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
         sourceURL = forceJarURL(sourceURL);
 
         for (URL artifactURL : getArtifacts(sourceURL, inputStream)) {
-            // FIXME
-            // contribution.addArtifact(artifact)
+            URI artifactURI;
+            
+            try {
+                artifactURI = new URI(source.toASCIIString() + "/" + FileHelper.getName(artifactURL.getPath()));
+                DeployedArtifact artifact = new DeployedArtifact(artifactURI);
+                artifact.setLocation(artifactURL);
+                contribution.addArtifact(artifact);
+                
+                
+                ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
+                String contentType = contentTypeDescriber.getContentType(artifactURL, null);
+                System.out.println("Type : " + contentType);
+                
 
-            ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
-            String contentType = contentTypeDescriber.getContentType(artifactURL, null);
-            System.out.println("Type : " + contentType);
-
-            //just process scdl for now
-            if ("application/v.tuscany.scdl".equals(contentType) || "application/java-vm".equals(contentType)) {
-                this.registry.processContent(contribution, source, inputStream);
+                //just process scdl for now
+                if ("application/v.tuscany.scdl".equals(contentType) 
+                        /* || "application/java-vm".equals(contentType) */) {
+                    this.registry.processContent(contribution, artifactURI, artifactURL.openStream());
+                }
+            } catch (URISyntaxException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-            // process each artifact
-            //this.registry.processContent(contribution, artifactURL, inputStream);
+
+ 
 
         }
 
     }
 
     public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
-                                                                                               IOException {
+        IOException {
         // TODO Auto-generated method stub
 
     }

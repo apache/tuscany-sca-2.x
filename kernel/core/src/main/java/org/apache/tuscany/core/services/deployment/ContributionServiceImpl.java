@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tuscany.core.util.IOHelper;
@@ -45,6 +47,11 @@ public class ContributionServiceImpl implements ContributionService {
      * Registry of available processors. Usually set by injection.
      */
     protected ContributionProcessorRegistry processorRegistry;
+    /**
+     * Contribution registry
+     * This is a registry of processed Contributios index by URI
+     */
+    protected Map<URI, Contribution> contributionRegistry = new HashMap<URI, Contribution>();
 
     public ContributionServiceImpl(@Autowire
     ContributionRepository repository, @Autowire
@@ -54,7 +61,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.processorRegistry = processorRegistry;
     }
 
-    public URI contribute(URL contribution) throws DeploymentException, IOException {
+    public URI contribute(URL contribution, boolean storeInRepository) throws DeploymentException, IOException {
         if (contribution == null) {
             throw new IllegalArgumentException("contribution is null");
         }
@@ -68,13 +75,13 @@ public class ContributionServiceImpl implements ContributionService {
 
         InputStream is = contribution.openConnection().getInputStream();
         try {
-            return contribute(source, is);
+            return contribute(source, is, storeInRepository);
         } finally {
             IOHelper.closeQuietly(is);
         }
     }
 
-    public URI contribute(URI source, InputStream contributionStream) throws DeploymentException, IOException {
+    public URI contribute(URI source, InputStream contributionStream, boolean storeInRepository) throws DeploymentException, IOException {
         if (source == null) {
             throw new IllegalArgumentException("source URI for contribution is null");
         }
@@ -85,23 +92,36 @@ public class ContributionServiceImpl implements ContributionService {
 
         // store the contribution in the contribution repository
         URI contributionURI = URI.create("sca://contribution/" + UUID.randomUUID());
-        URL storedURL = this.contributionRepository.store(source, contributionStream);
+        URL locationURL;
+        if(storeInRepository){
+            locationURL = this.contributionRepository.store(source, contributionStream);
+        }else{
+            locationURL = source.toURL();
+        }
+            
         
         Contribution contribution = null;
         contribution = new Contribution(contributionURI);
-        contribution.setLocation(storedURL);
+        contribution.setLocation(locationURL);
 
-        this.processorRegistry.processContent(contribution, contributionURI, storedURL.openStream());
+        //process the contribution
+        this.processorRegistry.processContent(contribution, contributionURI, locationURL.openStream());
 
-        if (contribution == null) {
-            // FIXME throw exception
-        }
-
+        //store the contribution on the registry
+        this.contributionRegistry.put(contribution.getUri(), contribution);
+        
         return contribution.getUri();
     }
 
+    public Contribution getContribution(URI id) {
+        return this.contributionRegistry.get(id);
+    }
+
     public void remove(URI contribution) throws DeploymentException {
-        // TODO Auto-generated method stub
+        //remove from repository
+        this.contributionRegistry.remove(contribution);
+        //remove from registry
+        this.contributionRegistry.remove(contribution);
     }
 
     public <T> T resolve(URI contribution, Class<T> definitionType, String namespace, String name) {

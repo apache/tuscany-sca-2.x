@@ -53,7 +53,10 @@ public class ContributionDirectoryWatcher {
         File[] files = extensionDir.listFiles();
         for (File file : files) {
             try {
-                this.contributionService.contribute(file.toURL());
+                if(file.isDirectory())
+                    this.contributionService.contribute(file.toURL(), false);
+                else
+                    this.contributionService.contribute(file.toURL(), true);
             } catch (DeploymentException de) {
                 //FIXME handle this
                 de.printStackTrace();
