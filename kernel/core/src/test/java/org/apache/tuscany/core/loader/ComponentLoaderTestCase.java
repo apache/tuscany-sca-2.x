@@ -72,6 +72,8 @@ public class ComponentLoaderTestCase extends TestCase {
             .andReturn(NAME);
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("initLevel")))
             .andReturn(null);
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
+            .andReturn(null);
         EasyMock.expect(mockReader.getAttributeValue(EasyMock.isA(String.class), EasyMock.isA(String.class)))
             .andReturn(null);
         EasyMock.expect(mockReader.nextTag()).andReturn(0);
@@ -99,12 +101,49 @@ public class ComponentLoaderTestCase extends TestCase {
         assertNull(component.getInitLevel());
     }
 
+    public void testAutowire() throws LoaderException, XMLStreamException {
+        EasyMock.expect(mockReader.getName()).andReturn(COMPONENT).atLeastOnce();
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.isA(String.class)))
+            .andReturn(NAME);
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("initLevel")))
+            .andReturn(null);
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
+            .andReturn("true");
+        EasyMock.expect(mockReader.nextTag()).andReturn(0);
+        EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
+        EasyMock.replay(mockReader);
+
+        mockRegistry.loadComponentType(
+            EasyMock.isA(Implementation.class),
+            EasyMock.isA(DeploymentContext.class));
+
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            @SuppressWarnings("unchecked")
+            public Object answer() throws Throwable {
+                Implementation impl = (Implementation) EasyMock.getCurrentArguments()[0];
+                impl.setComponentType(new PojoComponentType());
+                return impl;
+            }
+        });
+        EasyMock.expect(mockRegistry.load(
+            (ModelObject) isNull(),
+            EasyMock.eq(mockReader),
+            EasyMock.isA(DeploymentContext.class))).andReturn(impl);
+        EasyMock.replay(mockRegistry);
+
+        ComponentDefinition component = loader.load(null, mockReader, ctx);
+
+        assertTrue(component.isAutowire());
+    }
+
     public void testInitValue20() throws LoaderException, XMLStreamException {
         EasyMock.expect(mockReader.getName()).andReturn(COMPONENT).atLeastOnce();
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.isA(String.class)))
             .andReturn(NAME);
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("initLevel")))
             .andReturn("20");
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
+            .andReturn(null);
         EasyMock.expect(mockReader.nextTag()).andReturn(0);
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(mockReader);
@@ -157,6 +196,8 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.isA(String.class)))
             .andReturn(NAME);
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("initLevel")))
+            .andReturn(null);
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
             .andReturn(null);
         EasyMock.expect(mockReader.getAttributeValue(EasyMock.isA(String.class), EasyMock.isA(String.class)))
             .andReturn(null);

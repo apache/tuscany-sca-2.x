@@ -1,8 +1,6 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -10,7 +8,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -36,7 +33,6 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
     private static final String NAME = "testComponent";
     private ComponentLoader loader;
     private XMLStreamReader reader;
-    private Component parent;
     private DeploymentContext ctx;
 
     /**
@@ -63,6 +59,8 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
             .andReturn(NAME);
         EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("initLevel")))
             .andReturn(null);
+        EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
+            .andReturn(null);
         EasyMock.expect(reader.getAttributeValue(EasyMock.isA(String.class), EasyMock.isA(String.class)))
             .andReturn(null);
         EasyMock.expect(reader.nextTag()).andReturn(0);
@@ -84,14 +82,10 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
             EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         loader = new ComponentLoader(mockRegistry, null);
-        parent = EasyMock.createMock(Component.class);
-        EasyMock.expect(parent.getUri()).andReturn(URI.create("foo"));
-        EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(ctx.getClassLoader()).andReturn(null);
         EasyMock.expect(ctx.getScdlLocation()).andReturn(null);
         EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
-        List<String> names = new ArrayList<String>();
         EasyMock.replay(ctx);
     }
 

@@ -40,6 +40,7 @@ import java.util.Map;
  */
 public class ComponentDefinition<I extends Implementation<?>> extends ModelObject {
     private URI uri;
+    private boolean autowire;
     private Integer initLevel;
     private final I implementation;
     private final Map<String, ReferenceTarget> referenceTargets = new HashMap<String, ReferenceTarget>();
@@ -48,7 +49,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
     /**
      * Constructor specifying the component's name and implementation.
      *
-     * @param uri           the name of this component
+     * @param uri            the name of this component
      * @param implementation the implementation of this component
      */
     public ComponentDefinition(URI uri, I implementation) {
@@ -90,6 +91,24 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      */
     public void setUri(URI uri) {
         this.uri = uri;
+    }
+
+    /**
+     * Returns true if autowire is enabled for the component.
+     *
+     * @return true if autowire is enabled for the component.
+     */
+    public boolean isAutowire() {
+        return autowire;
+    }
+
+    /**
+     * Sets autowire enablement for the component.
+     *
+     * @param autowire true if autowire is enabled.
+     */
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
     }
 
     /**
