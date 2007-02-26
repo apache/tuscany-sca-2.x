@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.spi.model.physical;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**
@@ -27,5 +31,43 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  */
 public class PhysicalServiceDefinition extends ModelObject {
+    
+    // The name of the service
+    private String name;
+    
+    // Operations available on this wire
+    private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
+
+    /**
+     * Returns a read-only view of the available operations.
+     * @return Operations available on the wire.
+     */
+    public Set<PhysicalOperationDefinition> getOperations() {
+        return Collections.unmodifiableSet(operations);
+    }
+
+    /**
+     * Adds an operation definition.
+     * @param operation Operation to be added to the wire.
+     */
+    public void addOperation(PhysicalOperationDefinition operation) {
+        operations.add(operation);
+    }
+
+    /**
+     * Sets the name of the service.
+     * @param name Name of the service.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Gets the name of the service.
+     * @return Name of the service.
+     */
+    public String getName() {
+        return name;
+    }
 
 }

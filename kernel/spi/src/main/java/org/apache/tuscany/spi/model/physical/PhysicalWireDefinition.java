@@ -33,58 +33,47 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 public class PhysicalWireDefinition extends ModelObject {
+    
+    // TODO this should be removed
+    @Deprecated
     private QName bindingType;
+    
     // The resolved source URI of the wire
     private URI sourceUri;
+    
     // The resolved source URI of the wire
     private URI targetUri;
-    // Interceptors defined against the wire
-    private final Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
+    
+    // Operations available on this wire
+    private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
 
     /**
      * Returns the wire binding type.
-     *
      * @return the binding type of the wire.
      */
+    @Deprecated
     public QName getBindingType() {
         return bindingType;
     }
 
     /**
-     * Sets the wire binding type
-     *
-     * @param bindingType the wire binding type
+     * Returns a read-only view of the available operations.
+     * @return Operations available on the wire.
      */
-    public void setBindingType(QName bindingType) {
-        this.bindingType = bindingType;
+    public Set<PhysicalOperationDefinition> getOperations() {
+        return Collections.unmodifiableSet(operations);
     }
 
     /**
-     * Returns a read-only view of the available interceptors.
-     *
-     * @return List of interceptors available on the wire.
+     * Adds an operation definition.
+     * @param operation Operation to be added to the wire.
      */
-    public Set<PhysicalInterceptorDefinition> getInterceptors() {
-        return Collections.unmodifiableSet(interceptors);
-    }
-
-    /**
-     * Adds an interceptor definition.
-     *
-     * @param interceptorDefinition Interceptor definition to add to the wire.
-     */
-    public void addInterceptor(PhysicalInterceptorDefinition interceptorDefinition) {
-
-        if (interceptorDefinition == null) {
-            throw new IllegalArgumentException("Interceptor definition is null");
-        }
-        interceptors.add(interceptorDefinition);
-
+    public void addOperation(PhysicalOperationDefinition operation) {
+        operations.add(operation);
     }
 
     /**
      * Sets the Wire source URI.
-     *
      * @param sourceUri Wire source URI.
      */
     public void setSourceUri(URI sourceUri) {
@@ -93,17 +82,14 @@ public class PhysicalWireDefinition extends ModelObject {
 
     /**
      * Gets the Wire source URI.
-     *
      * @return Wire source URI.
      */
     public URI getSourceUri() {
         return sourceUri;
     }
 
-
     /**
      * Sets the Wire target URI.
-     *
      * @param targetUri Wire source URI.
      */
     public void setTargetUri(URI targetUri) {
@@ -112,7 +98,6 @@ public class PhysicalWireDefinition extends ModelObject {
 
     /**
      * Gets the Wire target URI.
-     *
      * @return Wire target URI.
      */
     public URI getTargetUri() {
