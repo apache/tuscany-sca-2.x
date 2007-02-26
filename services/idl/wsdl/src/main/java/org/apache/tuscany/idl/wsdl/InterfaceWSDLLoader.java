@@ -28,11 +28,10 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -49,7 +48,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 public class InterfaceWSDLLoader extends LoaderExtension {
-    public static final QName INTERFACE_WSDL = new QName(XML_NAMESPACE_1_0, "interface.wsdl");
+    public static final QName INTERFACE_WSDL = new QName(SCA_NS, "interface.wsdl");
 
     private static final String WSDLI = "http://www.w3.org/2006/01/wsdl-instance";
 
@@ -73,7 +72,6 @@ public class InterfaceWSDLLoader extends LoaderExtension {
     }
 
     public WSDLServiceContract load(
-        CompositeComponent parent,
         ModelObject object, XMLStreamReader reader,
         DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert INTERFACE_WSDL.equals(reader.getName());
@@ -90,7 +88,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         while (true) {
             int event = reader.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
-                ModelObject mo = registry.load(parent, null, reader, deploymentContext);
+                ModelObject mo = registry.load(null, reader, deploymentContext);
                 if (mo != null) {
                     extensions.put(mo.getClass(), mo);
                 }
