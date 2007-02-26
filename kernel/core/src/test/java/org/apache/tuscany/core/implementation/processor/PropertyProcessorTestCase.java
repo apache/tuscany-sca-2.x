@@ -29,8 +29,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.model.OverrideOptions;
-import static org.apache.tuscany.spi.model.OverrideOptions.MUST;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -52,7 +50,7 @@ public class PropertyProcessorTestCase extends TestCase {
         processor.visitMethod(Foo.class.getMethod("setFooRequired", String.class), type, null);
         JavaMappedProperty prop = type.getProperties().get("fooRequired");
         assertNotNull(prop);
-        assertEquals(prop.getOverride(), MUST);
+        assertTrue(prop.isRequired());
     }
 
     public void testMethodName() throws Exception {
@@ -69,7 +67,7 @@ public class PropertyProcessorTestCase extends TestCase {
         processor.visitField(Foo.class.getDeclaredField("bazRequired"), type, null);
         JavaMappedProperty prop = type.getProperties().get("bazRequired");
         assertNotNull(prop);
-        assertEquals(prop.getOverride(), OverrideOptions.MUST);
+        assertTrue(prop.isRequired());
     }
 
     public void testFieldName() throws Exception {
@@ -117,7 +115,7 @@ public class PropertyProcessorTestCase extends TestCase {
 
         @Property
         protected String baz;
-        @Property(override = "must")
+        @Property(required = true)
         protected String bazRequired;
         @Property(name = "theBaz")
         protected String bazField;
@@ -126,7 +124,7 @@ public class PropertyProcessorTestCase extends TestCase {
         public void setFoo(String string) {
         }
 
-        @Property(override = "must")
+        @Property(required = true)
         public void setFooRequired(String string) {
         }
 

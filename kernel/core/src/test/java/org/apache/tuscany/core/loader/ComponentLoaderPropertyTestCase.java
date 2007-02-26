@@ -23,11 +23,10 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.MissingMustOverridePropertyException;
+import org.apache.tuscany.spi.loader.MissingRequiredPropertyException;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -52,7 +51,6 @@ public class ComponentLoaderPropertyTestCase extends TestCase {
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         Property property = new Property();
         property.setName("name");
-        property.setOverride(OverrideOptions.MAY);
         type.add(property);
         JavaImplementation impl = new JavaImplementation(null, type);
         impl.setComponentType(type);
@@ -76,7 +74,7 @@ public class ComponentLoaderPropertyTestCase extends TestCase {
 
         @Override
         public void populatePropertyValues(ComponentDefinition<Implementation<?>> componentDefinition)
-            throws MissingMustOverridePropertyException {
+            throws MissingRequiredPropertyException {
             super.populatePropertyValues(componentDefinition);
         }
     }

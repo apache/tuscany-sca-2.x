@@ -19,8 +19,9 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
-
 import javax.xml.namespace.QName;
+
+import org.osoa.sca.annotations.Property;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
@@ -33,8 +34,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.model.OverrideOptions;
-import org.osoa.sca.annotations.Property;
 
 /**
  * Processes an {@link @Property} annotation, updating the component type with corresponding {@link JavaMappedProperty}
@@ -43,7 +42,7 @@ import org.osoa.sca.annotations.Property;
  */
 public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
     private SimpleTypeMapperExtension typeMapper = new SimpleTypeMapperExtension();
-    
+
     public PropertyProcessor(@Autowire ImplementationProcessorService service) {
         super(Property.class, service);
     }
@@ -55,7 +54,7 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     Property annotation,
                                     DeploymentContext context) {
-        property.setOverride(OverrideOptions.valueOf(annotation.override().toUpperCase()));
+        property.setRequired(annotation.required());
         String xmlType = annotation.xmlType();
         if (xmlType != null && xmlType.length() != 0) {
             property.setXmlType(QName.valueOf(annotation.xmlType()));

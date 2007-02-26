@@ -49,9 +49,8 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
-import org.apache.tuscany.spi.loader.MissingMustOverridePropertyException;
+import org.apache.tuscany.spi.loader.MissingRequiredPropertyException;
 import org.apache.tuscany.spi.loader.MissingReferenceException;
-import org.apache.tuscany.spi.loader.NotOverridablePropertyException;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.loader.ReferenceMultiplicityViolationException;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
@@ -64,7 +63,6 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
-import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -186,8 +184,6 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         Property<Type> property = (Property<Type>) componentType.getProperties().get(name);
         if (property == null) {
             throw new UndefinedPropertyException(name);
-        } else if (OverrideOptions.NO.equals(property.getOverride())) {
-            throw new NotOverridablePropertyException(name);
         }
         PropertyValue<Type> propertyValue;
         String source = reader.getAttributeValue(null, PROPERTY_SOURCE_ATTR);
@@ -264,7 +260,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
     @SuppressWarnings("unchecked")
     protected void populatePropertyValues(ComponentDefinition<Implementation<?>> componentDefinition)
-        throws MissingMustOverridePropertyException {
+        throws MissingRequiredPropertyException {
         ComponentType componentType = componentDefinition.getImplementation().getComponentType();
         if (componentType != null) {
             Map<String, Property<?>> properties = componentType.getProperties();
@@ -272,8 +268,8 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
             for (Property<?> aProperty : properties.values()) {
                 if (propertyValues.get(aProperty.getName()) == null) {
-                    if (aProperty.getOverride() == OverrideOptions.MUST) {
-                        throw new MissingMustOverridePropertyException(aProperty.getName());
+                    if (aProperty.isRequired()) {
+                        throw new MissingRequiredPropertyException(aProperty.getName());
                     } else if (aProperty.getDefaultValue() != null) {
                         PropertyValue propertyValue = new PropertyValue();
                         propertyValue.setName(aProperty.getName());

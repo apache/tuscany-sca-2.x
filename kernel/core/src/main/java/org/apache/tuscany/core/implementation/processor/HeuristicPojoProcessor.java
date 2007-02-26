@@ -48,7 +48,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.model.OverrideOptions;
 
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
@@ -440,7 +439,6 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         JavaMappedProperty<T> property = new JavaMappedProperty<T>();
         property.setName(name);
         property.setMember(member);
-        property.setOverride(OverrideOptions.MAY);
         property.setJavaType(paramType);
         TypeInfo xmlType = typeMapper.getXMLType(paramType);
         if (xmlType != null) {
