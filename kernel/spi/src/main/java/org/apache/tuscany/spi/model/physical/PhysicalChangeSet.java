@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.model.physical;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class PhysicalChangeSet {
      * @return Physical component definitions in the changeset.
      */
     public Set<? extends PhysicalComponentDefinition> getPhysicalComponentDefinitions() {
-        return physicalComponentDefinitions;
+        return Collections.unmodifiableSet(physicalComponentDefinitions);
     }
 
     /**
@@ -56,7 +57,7 @@ public class PhysicalChangeSet {
      * @return Wire definitions in the changeset.
      */
     public Set<? extends PhysicalWireDefinition> getWireDefinitions() {
-        return wireDefinitions;
+        return Collections.unmodifiableSet(wireDefinitions);
     }
 
     /**
