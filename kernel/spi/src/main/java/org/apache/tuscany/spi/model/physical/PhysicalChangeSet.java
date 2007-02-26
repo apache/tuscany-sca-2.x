@@ -22,13 +22,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.tuscany.spi.model.ModelObject;
+
 /**
  * Models a physical change set, sent from the master to the slave.
  * 
  * @version $Revsion$ $Date$
  *
  */
-public class PhysicalChangeSet {
+public class PhysicalChangeSet extends ModelObject {
     
     // Set of physical component definitions
     private Set<PhysicalComponentDefinition> physicalComponentDefinitions = new HashSet<PhysicalComponentDefinition>();
