@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndConversation;
+import org.osoa.sca.annotations.EndsConversation;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -129,7 +129,7 @@ public class ConversationIdleExpireTestCase extends AbstractConversationTestCase
 
         void operation2();
 
-        @EndConversation
+        @EndsConversation
         void end();
 
     }
@@ -142,7 +142,7 @@ public class ConversationIdleExpireTestCase extends AbstractConversationTestCase
         public void operation2() {
         }
 
-        @EndConversation
+        @EndsConversation
         public void end() {
         }
     }
