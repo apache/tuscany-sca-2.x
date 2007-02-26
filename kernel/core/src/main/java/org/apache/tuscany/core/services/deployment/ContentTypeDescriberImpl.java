@@ -52,6 +52,7 @@ public class ContentTypeDescriberImpl implements ContentTypeDescriber {
      */
     private void init() {
         contentTypeRegistry.put("SCDL", "application/v.tuscany.scdl");
+        contentTypeRegistry.put("COMPOSITE", "application/v.tuscany.scdl");
         contentTypeRegistry.put("WSDL", "application/v.tuscany.wsdl");
         contentTypeRegistry.put("JAR", "application/x-compressed");
     }
