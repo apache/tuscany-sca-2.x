@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Property;
 
@@ -55,14 +54,9 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
                                     Property annotation,
                                     DeploymentContext context) {
         property.setRequired(annotation.required());
-        String xmlType = annotation.xmlType();
-        if (xmlType != null && xmlType.length() != 0) {
-            property.setXmlType(QName.valueOf(annotation.xmlType()));
-        } else {
-            TypeInfo type = typeMapper.getXMLType(property.getJavaType());
-            if (type != null) {
-                property.setXmlType(type.getQName());
-            }
+        TypeInfo type = typeMapper.getXMLType(property.getJavaType());
+        if (type != null) {
+            property.setXmlType(type.getQName());
         }
     }
 
