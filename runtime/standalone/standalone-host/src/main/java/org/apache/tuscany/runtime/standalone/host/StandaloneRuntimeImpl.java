@@ -66,7 +66,8 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
      */
     public int deployAndRun(URL applicationScdl, ClassLoader applicationClassLoader, String[] args) throws Exception {
 
-        URI compositeUri = new URI("/test/composite/");
+        URI compositeUri = new URI("/test/composite");
+        URI compositeBase = new URI("/test/composite/");
 
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(applicationScdl);
@@ -79,7 +80,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
             for (Component component : components) {
                 component.start();
             }
-            return run(impl, args, compositeUri);
+            return run(impl, args, compositeBase);
         } catch (Exception e) {
             monitor.runError(e);
         }
