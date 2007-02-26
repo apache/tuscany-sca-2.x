@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.idl.java;
 
 import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndConversation;
+import org.osoa.sca.annotations.EndsConversation;
 
 import org.apache.tuscany.spi.idl.InvalidConversationalOperationException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -62,14 +62,14 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     private interface Foo {
         void operation();
 
-        @EndConversation
+        @EndsConversation
         void endOperation();
     }
 
     private interface BadFoo {
         void operation();
 
-        @EndConversation
+        @EndsConversation
         void endOperation();
     }
 

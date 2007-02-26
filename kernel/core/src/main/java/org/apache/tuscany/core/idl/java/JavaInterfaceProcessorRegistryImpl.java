@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndConversation;
+import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
 
@@ -117,7 +117,7 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
             Type[] faultTypes = method.getGenericExceptionTypes();
             boolean nonBlocking = method.isAnnotationPresent(OneWay.class);
             int conversationSequence = NO_CONVERSATION;
-            if (method.isAnnotationPresent(EndConversation.class)) {
+            if (method.isAnnotationPresent(EndsConversation.class)) {
                 if (!conversational) {
                     throw new InvalidConversationalOperationException(
                         "Method is marked as end conversation but contract is not conversational",
