@@ -20,7 +20,7 @@ package loanapplication.provider;
 
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndConversation;
+import org.osoa.sca.annotations.EndsConversation;
 
 import loanapplication.message.Application;
 
@@ -43,13 +43,13 @@ public interface LoanService {
      * Called after the loan has been approved and when the client is read to complete the process. Calling this method
      * will end the conversation.
      */
-    @EndConversation
+    @EndsConversation
     void secureLoan();
 
     /**
      * Called to cancel a loan application. Calling this method will end the conversation.
      */
-    @EndConversation
+    @EndsConversation
     void cancel();
 
 }
