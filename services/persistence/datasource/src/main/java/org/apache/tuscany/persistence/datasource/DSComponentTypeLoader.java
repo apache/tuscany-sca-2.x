@@ -24,7 +24,6 @@ import java.net.URI;
 import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
@@ -34,7 +33,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
@@ -102,7 +100,6 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
                     }
                     JavaMappedProperty<Type> property =
                         new JavaMappedProperty<Type>(propName, info.getQName(), type);
-                    property.setOverride(OverrideOptions.MAY);
                     property.setMember(method);
                     componentType.add(property);
                 }
