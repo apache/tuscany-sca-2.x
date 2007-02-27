@@ -19,12 +19,8 @@
 package org.apache.tuscany.spi.model.physical;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.ModelObject;
+import javax.xml.namespace.QName;
 
 /**
  * Model class representing the portable definition of a wire. This class is used to describe the inbound and outbound
@@ -32,7 +28,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public class PhysicalWireDefinition extends ModelObject {
+public class PhysicalWireDefinition extends Operations {
     
     // TODO this should be removed
     @Deprecated
@@ -43,9 +39,6 @@ public class PhysicalWireDefinition extends ModelObject {
     
     // The resolved source URI of the wire
     private URI targetUri;
-    
-    // Operations available on this wire
-    private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
 
     /**
      * Returns the wire binding type.
@@ -54,22 +47,6 @@ public class PhysicalWireDefinition extends ModelObject {
     @Deprecated
     public QName getBindingType() {
         return bindingType;
-    }
-
-    /**
-     * Returns a read-only view of the available operations.
-     * @return Operations available on the wire.
-     */
-    public Set<PhysicalOperationDefinition> getOperations() {
-        return Collections.unmodifiableSet(operations);
-    }
-
-    /**
-     * Adds an operation definition.
-     * @param operation Operation to be added to the wire.
-     */
-    public void addOperation(PhysicalOperationDefinition operation) {
-        operations.add(operation);
     }
 
     /**
