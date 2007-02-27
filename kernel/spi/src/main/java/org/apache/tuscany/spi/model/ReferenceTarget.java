@@ -29,6 +29,7 @@ import java.util.List;
  */
 public class ReferenceTarget extends ModelObject {
     private URI referenceName;
+    private boolean autowire;
     private List<URI> targets = new ArrayList<URI>();
 
     public URI getReferenceName() {
@@ -37,6 +38,24 @@ public class ReferenceTarget extends ModelObject {
 
     public void setReferenceName(URI referenceName) {
         this.referenceName = referenceName;
+    }
+
+    /**
+     * Returns true if autowire is enabled for the reference.
+     *
+     * @return true if autowire is enabled for the reference.
+     */
+    public boolean isAutowire() {
+        return autowire;
+    }
+
+    /**
+     * Sets autowire enablement for the reference.
+     *
+     * @param autowire true if autowire is enabled.
+     */
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
     }
 
     public List<URI> getTargets() {

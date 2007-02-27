@@ -58,6 +58,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target");
+        EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn(null);
         EasyMock.replay(reader);
         loader.loadReference(reader, definition, context);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
@@ -81,6 +82,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target/fragment");
+        EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn(null);
         EasyMock.replay(reader);
         loader.loadReference(reader, definition, context);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
@@ -103,6 +105,7 @@ public class ComponentLoaderRefTestCase extends TestCase {
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target1/fragment1 target2/fragment2");
+        EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn(null);
         EasyMock.replay(reader);
         loader.loadReference(reader, definition, context);
         ReferenceTarget target = definition.getReferenceTargets().get("reference");
@@ -113,6 +116,29 @@ public class ComponentLoaderRefTestCase extends TestCase {
         assertEquals(componentId.resolve("target2#fragment2"), uri2);
         EasyMock.verify(reader);
     }
+
+    public void testLoadReferenceAutowire() throws LoaderException, XMLStreamException {
+        PojoComponentType<?, MockReferenceDefinition, Property<?>> type =
+            new PojoComponentType<ServiceDefinition, MockReferenceDefinition, Property<?>>();
+        MockReferenceDefinition reference = new MockReferenceDefinition();
+        reference.setUri(URI.create("#reference"));
+        type.add(reference);
+        JavaImplementation impl = new JavaImplementation();
+        impl.setComponentType(type);
+        ComponentDefinition<?> definition = new ComponentDefinition<JavaImplementation>(impl);
+        definition.setUri(URI.create("component"));
+        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
+        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("reference");
+        EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target/fragment");
+        EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn("true");
+        EasyMock.replay(reader);
+        loader.loadReference(reader, definition, context);
+        ReferenceTarget target = definition.getReferenceTargets().get("reference");
+        assertTrue(target.isAutowire());
+        EasyMock.verify(reader);
+    }
+
+
 
     protected void setUp() throws Exception {
         super.setUp();

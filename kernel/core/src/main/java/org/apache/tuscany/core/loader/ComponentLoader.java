@@ -49,8 +49,8 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
-import org.apache.tuscany.spi.loader.MissingRequiredPropertyException;
 import org.apache.tuscany.spi.loader.MissingReferenceException;
+import org.apache.tuscany.spi.loader.MissingRequiredPropertyException;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.loader.ReferenceMultiplicityViolationException;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
@@ -217,13 +217,16 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         }
 
         String target = reader.getAttributeValue(null, "target");
+        boolean autowire = Boolean.parseBoolean(reader.getAttributeValue(null, "autowire"));
         URI componentId = context.getComponentId();
-        StringTokenizer tokenizer = new StringTokenizer(target);
         List<URI> uris = new ArrayList<URI>();
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-            QualifiedName qName = new QualifiedName(token);
-            uris.add(componentId.resolve(qName.getFragment()));
+        if (target != null) {
+            StringTokenizer tokenizer = new StringTokenizer(target);
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                QualifiedName qName = new QualifiedName(token);
+                uris.add(componentId.resolve(qName.getFragment()));
+            }
         }
 
         Implementation<?> impl = componentDefinition.getImplementation();
@@ -251,6 +254,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             if (referenceTarget == null) {
                 referenceTarget = new ReferenceTarget();
                 referenceTarget.setReferenceName(componentId.resolve('#' + name));
+                referenceTarget.setAutowire(autowire);
                 componentDefinition.add(referenceTarget);
             }
             for (URI uri : uris) {
