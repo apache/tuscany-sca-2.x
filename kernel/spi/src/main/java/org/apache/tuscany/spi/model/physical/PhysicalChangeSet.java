@@ -47,14 +47,6 @@ public class PhysicalChangeSet extends ModelObject {
     }
 
     /**
-     * Adds a physical component definition to the physical change set.
-     * @param physicalComponentDefinition Physical component definition.
-     */
-    public void addPhysicalComponentDefinition(PhysicalComponentDefinition physicalComponentDefinition) {
-        physicalComponentDefinitions.add(physicalComponentDefinition);
-    }
-
-    /**
      * Get all the wire definitions.
      * @return Wire definitions in the changeset.
      */
@@ -63,11 +55,17 @@ public class PhysicalChangeSet extends ModelObject {
     }
 
     /**
-     * Adds a wire definition to the physical change set.
-     * @param wireDefinition Wire definition.
+     * Adds a physical component definition to the physical change set.
+     * @param physicalComponentDefinition Physical component definition.
      */
-    public void addWireDefinition(PhysicalWireDefinition wireDefinition) {
-        wireDefinitions.add(wireDefinition);
+    public void addModelObject(ModelObject modelObject) {
+        if(modelObject instanceof PhysicalComponentDefinition) {
+            physicalComponentDefinitions.add((PhysicalComponentDefinition) modelObject);
+        } else if(modelObject instanceof PhysicalWireDefinition) {
+            wireDefinitions.add((PhysicalWireDefinition) modelObject);
+        } else {
+            throw new IllegalArgumentException("Unexpected model object " + modelObject.getClass());
+        }
     }
 
 }

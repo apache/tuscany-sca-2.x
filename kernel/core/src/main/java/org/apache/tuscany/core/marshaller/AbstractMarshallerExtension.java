@@ -19,11 +19,8 @@
 package org.apache.tuscany.core.marshaller;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -31,7 +28,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 public abstract class AbstractMarshallerExtension<MD extends ModelObject> implements ModelMarshaller<MD> {
 
     // Private Model marshaller registry
-    private ModelMarshallerRegistry registry;
+    protected ModelMarshallerRegistry registry;
     
     /**
      * Injects the model marshaller registry.
