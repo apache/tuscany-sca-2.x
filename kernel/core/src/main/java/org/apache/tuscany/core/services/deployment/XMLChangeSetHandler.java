@@ -100,7 +100,7 @@ public class XMLChangeSetHandler implements ChangeSetHandler {
     }
 
     public void createComponent(XMLStreamReader xmlReader) throws XMLStreamException {
-        DeploymentContext deploymentContext = new RootDeploymentContext(null, null, null, xmlFactory, null);
+        DeploymentContext deploymentContext = new RootDeploymentContext(null, null, null, xmlFactory, null, false);
         try {
             ComponentDefinition<?> componentDefinition =
                 (ComponentDefinition<?>) loader.load(null, xmlReader, deploymentContext);

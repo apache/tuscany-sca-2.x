@@ -161,7 +161,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         Bootstrapper bootstrapper =
             new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, connector);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
-        deploymentContext = new RootDeploymentContext(null, null, componentId, xmlFactory, null);
+        deploymentContext = new RootDeploymentContext(null, null, componentId, xmlFactory, null, false);
         implementation = new SystemCompositeImplementation();
         implementation.setClassLoader(getClass().getClassLoader());
         componentDefinition = new ComponentDefinition<SystemCompositeImplementation>(implementation);

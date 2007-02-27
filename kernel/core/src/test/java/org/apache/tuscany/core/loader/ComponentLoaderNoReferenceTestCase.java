@@ -86,6 +86,7 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
         loader = new ComponentLoader(mockRegistry, null);
         ctx = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(ctx.getClassLoader()).andReturn(null);
+        EasyMock.expect(ctx.isAutowire()).andReturn(false);
         EasyMock.expect(ctx.getScdlLocation()).andReturn(null);
         EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
         EasyMock.replay(ctx);

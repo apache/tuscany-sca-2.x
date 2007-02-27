@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.deployer;
 
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -38,18 +38,20 @@ public class RootDeploymentContext extends AbstractDeploymentContext {
     /**
      * Constructor defining properties of this context.
      *
-     * @param classLoader  the classloader for loading application resources
-     * @param scdlLocation the location of the SCDL defining this composite
-     * @param componentId  the id of the component being deployed
+     * @param classLoader    the classloader for loading application resources
+     * @param scdlLocation   the location of the SCDL defining this composite
+     * @param componentId    the id of the component being deployed
      * @param xmlFactory     a factory that can be used to obtain an StAX XMLStreamReader
      * @param scopeContainer the scope context representing this deployment's COMPOSITE scope
+     * @param autowire       if autowire is enabled
      */
     public RootDeploymentContext(ClassLoader classLoader,
                                  URL scdlLocation,
                                  URI componentId,
                                  XMLInputFactory xmlFactory,
-                                 ScopeContainer scopeContainer) {
-        super(classLoader, scdlLocation, componentId);
+                                 ScopeContainer scopeContainer,
+                                 boolean autowire) {
+        super(classLoader, scdlLocation, componentId, autowire);
         this.xmlFactory = xmlFactory;
         this.scopeContainer = scopeContainer;
     }

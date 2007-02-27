@@ -74,7 +74,8 @@ public class ScdlContributionProcessor extends ContributionProcessorExtension im
             CompositeClassLoader cl = new CompositeClassLoader(getClass().getClassLoader());
             cl.addURL(contribution.getLocation());
             
-            DeploymentContext deploymentContext = new RootDeploymentContext(cl, scdlLocation , contributionId, this.xmlFactory, null);
+            DeploymentContext deploymentContext = new RootDeploymentContext(cl, scdlLocation , contributionId, this.xmlFactory, null,
+                false);
 
             CompositeComponentType componentType = this.registry.load(null, scdlLocation, CompositeComponentType.class, deploymentContext);
 
