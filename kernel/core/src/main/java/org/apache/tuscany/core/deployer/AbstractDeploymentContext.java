@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public abstract class AbstractDeploymentContext implements DeploymentContext {
     private final URI componentId;
+    private boolean autowire;
     private final ClassLoader classLoader;
     private final URL scdlLocation;
     private final Map<URI, Component> components = new HashMap<URI, Component>();
@@ -43,8 +44,9 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
      * @param classLoader  the classloader for loading application resources
      * @param scdlLocation the location of the SCDL defining this composite
      * @param componentId  the id of the component being deployed
+     * @param autowire     if autowire is enabled
      */
-    protected AbstractDeploymentContext(ClassLoader classLoader, URL scdlLocation, URI componentId) {
+    protected AbstractDeploymentContext(ClassLoader classLoader, URL scdlLocation, URI componentId, boolean autowire) {
         this.classLoader = classLoader;
         this.scdlLocation = scdlLocation;
         this.componentId = componentId;
@@ -60,6 +62,10 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
 
     public URI getComponentId() {
         return componentId;
+    }
+
+    public boolean isAutowire() {
+        return autowire;
     }
 
     @Deprecated

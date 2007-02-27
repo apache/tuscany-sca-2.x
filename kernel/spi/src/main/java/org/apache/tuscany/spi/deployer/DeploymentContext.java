@@ -75,6 +75,13 @@ public interface DeploymentContext {
      */
     URI getComponentId();
 
+    /**
+     * Returns true if the autowire is enabled for the current deployment.
+     *
+     * @return true if the autowire is enabled for the current deployment
+     */
+    boolean isAutowire();
+
     @Deprecated
     Map<URI, Component> getComponents();
 }

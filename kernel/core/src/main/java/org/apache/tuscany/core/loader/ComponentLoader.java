@@ -106,18 +106,18 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         assert COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String initLevel = reader.getAttributeValue(null, "initLevel");
-        String autowire = reader.getAttributeValue(null, "autowire");
+        boolean autowire = Boolean.parseBoolean(reader.getAttributeValue(null, "autowire")) || context.isAutowire();
 
         URI componentId = URI.create(context.getComponentId() + "/").resolve(name);
         ClassLoader loader = context.getClassLoader();
         URL location = context.getScdlLocation();
-        DeploymentContext childContext = new ChildDeploymentContext(context, loader, location, componentId);
+        DeploymentContext childContext = new ChildDeploymentContext(context, loader, location, componentId, autowire);
         Implementation<?> impl = loadImplementation(reader, childContext);
         registry.loadComponentType(impl, childContext);
 
         ComponentDefinition<Implementation<?>> componentDefinition =
             new ComponentDefinition<Implementation<?>>(componentId, impl);
-        componentDefinition.setAutowire(Boolean.parseBoolean(autowire));
+        componentDefinition.setAutowire(autowire);
         if (initLevel != null) {
             if (initLevel.length() == 0) {
                 componentDefinition.setInitLevel(0);
@@ -150,12 +150,16 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                             (ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>) componentDefinition
                                 .getImplementation().getComponentType();
                         for (ReferenceDefinition ref : type.getReferences().values()) {
-                            if (ref.isAutowire()) {
-                                ReferenceTarget referenceTarget = new ReferenceTarget();
-                                String compName = componentDefinition.getUri().toString();
-                                URI refName = URI.create(compName + ref.getUri().toString());
-                                referenceTarget.setReferenceName(refName);
-                                componentDefinition.add(referenceTarget);
+                            // add reference target definitions if autowire is enabled for references that are not
+                            // explicitly configured with autowire by the component
+                            if (!componentDefinition.getReferenceTargets().containsKey(ref.getUri().getFragment())) {
+                                if (ref.isAutowire() || autowire) {
+                                    ReferenceTarget referenceTarget = new ReferenceTarget();
+                                    String compName = componentDefinition.getUri().toString();
+                                    URI refName = URI.create(compName + ref.getUri().toString());
+                                    referenceTarget.setReferenceName(refName);
+                                    componentDefinition.add(referenceTarget);
+                                }
                             }
                         }
                         validate(componentDefinition);
@@ -203,7 +207,6 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             }
         }
         ObjectFactory<Type> objectFactory = propertyFactory.createObjectFactory(property, propertyValue);
-        // propertyValue.setValueFactory(new SimplePropertyObjectFactory(property, propertyValue.getValue()));
         propertyValue.setValueFactory(objectFactory);
         definition.add(propertyValue);
     }
@@ -215,7 +218,6 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         if (name == null) {
             throw new InvalidReferenceException("No name specified");
         }
-
         String target = reader.getAttributeValue(null, "target");
         boolean autowire = Boolean.parseBoolean(reader.getAttributeValue(null, "autowire"));
         URI componentId = context.getComponentId();

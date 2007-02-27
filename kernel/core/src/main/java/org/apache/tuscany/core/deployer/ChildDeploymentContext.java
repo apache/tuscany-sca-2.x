@@ -41,12 +41,14 @@ public class ChildDeploymentContext extends AbstractDeploymentContext {
      * @param classLoader  the classloader for loading application resources
      * @param scdlLocation the location of the SCDL defining this composite
      * @param componentId  the id of the component being deployed
+     * @param autowire     if autowire is enabled
      */
     public ChildDeploymentContext(DeploymentContext parent,
                                   ClassLoader classLoader,
                                   URL scdlLocation,
-                                  URI componentId) {
-        super(classLoader, scdlLocation, componentId);
+                                  URI componentId,
+                                  boolean autowire) {
+        super(classLoader, scdlLocation, componentId, autowire);
         assert parent != null;
         this.parent = parent;
     }
@@ -62,4 +64,5 @@ public class ChildDeploymentContext extends AbstractDeploymentContext {
     public ScopeContainer getCompositeScope() {
         return parent.getCompositeScope();
     }
+
 }

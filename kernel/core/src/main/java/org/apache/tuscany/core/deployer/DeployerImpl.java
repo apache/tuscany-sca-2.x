@@ -117,7 +117,7 @@ public class DeployerImpl implements Deployer {
         final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
         scopeContainer.start();
         DeploymentContext deploymentContext =
-            new RootDeploymentContext(null, null, componentDefinition.getUri(), xmlFactory, scopeContainer);
+            new RootDeploymentContext(null, null, componentDefinition.getUri(), xmlFactory, scopeContainer, false);
         // load the model
         load(parent, componentDefinition, deploymentContext);
         // resolve autowires

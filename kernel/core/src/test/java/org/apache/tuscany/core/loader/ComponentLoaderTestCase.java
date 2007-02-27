@@ -236,6 +236,7 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.replay(parent);
 
         ctx = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(ctx.isAutowire()).andReturn(false);
         EasyMock.expect(ctx.getClassLoader()).andReturn(null);
         EasyMock.expect(ctx.getScdlLocation()).andReturn(null);
         EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
