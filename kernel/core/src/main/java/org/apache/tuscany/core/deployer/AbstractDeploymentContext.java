@@ -35,7 +35,6 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
     private final URI componentId;
     private final ClassLoader classLoader;
     private final URL scdlLocation;
-    private final Map<String, Object> properties = new HashMap<String, Object>();
     private final Map<URI, Component> components = new HashMap<URI, Component>();
 
     /**
@@ -57,18 +56,6 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
 
     public URL getScdlLocation() {
         return scdlLocation;
-    }
-
-    public Object getExtension(String name) {
-        return properties.get(name);
-    }
-
-    public void putExtension(String name, Object value) {
-        if (value == null) {
-            properties.remove(name);
-        } else {
-            properties.put(name, value);
-        }
     }
 
     public URI getComponentId() {
