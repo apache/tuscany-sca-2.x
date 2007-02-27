@@ -79,10 +79,16 @@ public class ReferenceDefinition extends ModelObject {
         this.multiplicity = multiplicity;
     }
 
+    /**
+     * @deprecated
+     */
     public boolean isAutowire() {
         return autowire;
     }
 
+    /**
+     * @deprecated
+     */
     public void setAutowire(boolean autowire) {
         this.autowire = autowire;
     }

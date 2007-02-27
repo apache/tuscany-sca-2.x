@@ -57,7 +57,7 @@ public class DefaultAutowireResolver implements AutowireResolver {
                     resolve((ComponentDefinition<Implementation<CompositeComponentType<?, ?, ?>>>) definition, child);
                 }
                 for (ReferenceTarget target : child.getReferenceTargets().values()) {
-                    if (target.getTargets().isEmpty()) {
+                    if (target.getTargets().isEmpty()) {  // xcv should be isAutowire
                         String fragment = target.getReferenceName().getFragment();
                         ReferenceDefinition reference = childType.getReferences().get(fragment);
                         assert reference != null;
@@ -69,7 +69,7 @@ public class DefaultAutowireResolver implements AutowireResolver {
         } else {
             // a leaf level component
             for (ReferenceTarget target : definition.getReferenceTargets().values()) {
-                if (target.getTargets().isEmpty()) {
+                if (target.getTargets().isEmpty()) {    // xcv should be isAutowire
                     String fragment = target.getReferenceName().getFragment();
                     ReferenceDefinition reference = type.getReferences().get(fragment);
                     assert reference != null;

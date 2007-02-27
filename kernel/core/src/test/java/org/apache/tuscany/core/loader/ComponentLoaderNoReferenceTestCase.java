@@ -68,6 +68,8 @@ public class ComponentLoaderNoReferenceTestCase extends TestCase {
         EasyMock.expect(reader.getName()).andReturn(REFERENCE);
         EasyMock.expect(reader.getAttributeValue((String) isNull(), EasyMock.eq("name")))
             .andReturn("noreference");
+        EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
+            .andReturn(null);
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("text");
 
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
