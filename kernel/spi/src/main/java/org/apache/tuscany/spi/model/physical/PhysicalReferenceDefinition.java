@@ -18,11 +18,6 @@
  */
 package org.apache.tuscany.spi.model.physical;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Represents a physical reference.
@@ -30,29 +25,10 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Revision$ $Date$
  *
  */
-public class PhysicalReferenceDefinition extends ModelObject {
+public class PhysicalReferenceDefinition extends Operations {
     
     // The name of the reference
     private String name;
-    
-    // Operations available on this wire
-    private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
-
-    /**
-     * Returns a read-only view of the available operations.
-     * @return Operations available on the wire.
-     */
-    public Set<PhysicalOperationDefinition> getOperations() {
-        return Collections.unmodifiableSet(operations);
-    }
-
-    /**
-     * Adds an operation definition.
-     * @param operation Operation to be added to the wire.
-     */
-    public void addOperation(PhysicalOperationDefinition operation) {
-        operations.add(operation);
-    }
 
     /**
      * Sets the name of the reference.
