@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -66,7 +65,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
 
-    public BuilderRegistryImpl(@Autowire ScopeRegistry scopeRegistry) {
+    public BuilderRegistryImpl(@org.osoa.sca.annotations.Reference ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
     }
 

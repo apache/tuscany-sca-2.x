@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -70,7 +70,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
     private SimpleTypeMapperExtension typeMapper = new SimpleTypeMapperExtension();
     private ImplementationProcessorService implService;
 
-    public HeuristicPojoProcessor(@Autowire ImplementationProcessorService service) {
+    public HeuristicPojoProcessor(@Reference ImplementationProcessorService service) {
         this.implService = service;
     }
 

@@ -21,10 +21,10 @@ package org.apache.tuscany.spi.extension;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -47,7 +47,7 @@ public abstract class LoaderExtension<T extends ModelObject> implements StAXElem
      *
      * @param registry the LoaderRegistry this loader should register with
      */
-    protected LoaderExtension(@Autowire LoaderRegistry registry) {
+    protected LoaderExtension(@Reference LoaderRegistry registry) {
         this.registry = registry;
     }
 

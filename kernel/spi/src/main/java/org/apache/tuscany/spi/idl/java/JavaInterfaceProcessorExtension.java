@@ -20,8 +20,7 @@ package org.apache.tuscany.spi.idl.java;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
-
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * A convenience class for <code>JavaInterfaceProcessor</code> extensions that performs autowiring
@@ -33,7 +32,7 @@ public abstract class JavaInterfaceProcessorExtension implements JavaInterfacePr
 
     protected JavaInterfaceProcessorRegistry registry;
 
-    @Autowire
+    @Reference
     public void setRegistry(JavaInterfaceProcessorRegistry registry) {
         this.registry = registry;
     }

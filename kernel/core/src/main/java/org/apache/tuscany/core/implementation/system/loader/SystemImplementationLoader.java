@@ -23,7 +23,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -43,7 +44,7 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
     public static final QName SYSTEM_IMPLEMENTATION =
         new QName("http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT", "implementation.system");
 
-    public SystemImplementationLoader(@Autowire LoaderRegistry registry) {
+    public SystemImplementationLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

@@ -22,7 +22,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.Deployer;
 
@@ -33,16 +34,10 @@ public class AbstractExtensionDeployer {
     protected Deployer deployer;
     protected Component parent;
 
-    @Autowire
+    @Reference
     public void setDeployer(Deployer deployer) {
         this.deployer = deployer;
     }
-
-// JFM cannot autowire parents - need to come up with a better approach
-//    @Autowire
-//    public void setParent(CompositeComponent parent) {
-//        this.parent = parent;
-//    }
 
     protected void deployExtension(File file) {
         // extension name is file name less any extension

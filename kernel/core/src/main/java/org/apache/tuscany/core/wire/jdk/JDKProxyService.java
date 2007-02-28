@@ -27,8 +27,8 @@ import java.util.Map;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
@@ -49,7 +49,7 @@ public class JDKProxyService extends ProxyServiceExtension {
     }
 
     @Constructor
-    public JDKProxyService(@Autowire WorkContext context) {
+    public JDKProxyService(@Reference WorkContext context) {
         super(context);
     }
 

@@ -28,8 +28,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.w3c.dom.Document;
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -52,8 +52,8 @@ public class PropertyLoader extends LoaderExtension<Property> {
     public static final QName PROPERTY = new QName(SCA_NS, "property");
     private final DocumentBuilder documentBuilder;
 
-    @Constructor({"registry"})
-    public PropertyLoader(@Autowire LoaderRegistry registry) {
+    @Constructor
+    public PropertyLoader(@Reference LoaderRegistry registry) {
         super(registry);
         try {
             documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

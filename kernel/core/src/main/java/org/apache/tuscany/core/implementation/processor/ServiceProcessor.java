@@ -23,9 +23,9 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -50,7 +50,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
 
     private ImplementationProcessorService implService;
 
-    public ServiceProcessor(@Autowire ImplementationProcessorService implService) {
+    public ServiceProcessor(@Reference ImplementationProcessorService implService) {
         this.implService = implService;
     }
 

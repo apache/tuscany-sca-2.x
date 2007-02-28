@@ -23,7 +23,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -48,7 +49,7 @@ public class DependencyLoader extends LoaderExtension<Dependency> {
     private static final QName CLASSIFIER = new QName(NS, "classifier");
     private static final QName TYPE = new QName(NS, "type");
 
-    public DependencyLoader(@Autowire LoaderRegistry registry) {
+    public DependencyLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

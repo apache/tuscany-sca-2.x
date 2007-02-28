@@ -21,7 +21,9 @@ package org.apache.tuscany.core.databinding.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.DataPipe;
 import org.apache.tuscany.spi.databinding.Mediator;
@@ -32,7 +34,6 @@ import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.TransformerRegistry;
 import org.apache.tuscany.spi.model.DataType;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * Default Mediator implementation
@@ -44,7 +45,7 @@ public class MediatorImpl implements Mediator {
 
     private TransformerRegistry transformerRegistry;
 
-    @Autowire
+    @Reference
     public void setTransformerRegistry(TransformerRegistry transformerRegistry) {
         this.transformerRegistry = transformerRegistry;
     }
@@ -52,15 +53,14 @@ public class MediatorImpl implements Mediator {
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
-    @Autowire
+    @Reference
     public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.Mediator#mediate(java.lang.Object,
-     *      org.apache.tuscany.spi.model.DataType,
-     *      org.apache.tuscany.spi.model.DataType, Map)
+     * @see org.apache.tuscany.spi.databinding.Mediator#mediate(java.lang.Object,org.apache.tuscany.spi.model.DataType,
+     *org.apache.tuscany.spi.model.DataType,Map)
      */
     @SuppressWarnings("unchecked")
     public Object mediate(Object source,
@@ -88,10 +88,10 @@ public class MediatorImpl implements Mediator {
             // the source and target type
             if (transformer instanceof PullTransformer) {
                 // For intermediate node, set data type to null
-                result = ((PullTransformer)transformer).transform(result, context);
+                result = ((PullTransformer) transformer).transform(result, context);
             } else if (transformer instanceof PushTransformer) {
-                DataPipe dataPipe = (i < size - 1) ? (DataPipe)path.get(++i) : null;
-                ((PushTransformer)transformer).transform(result, dataPipe.getSink(), context);
+                DataPipe dataPipe = (i < size - 1) ? (DataPipe) path.get(++i) : null;
+                ((PushTransformer) transformer).transform(result, dataPipe.getSink(), context);
                 result = dataPipe.getResult();
             }
             i++;
@@ -108,10 +108,10 @@ public class MediatorImpl implements Mediator {
                                                               Map<Class<?>, Object> metadata) {
         DataType sourceType =
             (index == 0) ? sourceDataType : new DataType<Object>(transformer.getSourceDataBinding(),
-                                                                 Object.class, null);
+                Object.class, null);
         DataType targetType =
             (index == size - 1) ? targetDataType : new DataType<Object>(transformer.getTargetDataBinding(),
-                                                                        Object.class, null);
+                Object.class, null);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         TransformationContext context =
             new TransformationContextImpl(sourceType, targetType, classLoader, metadata);
@@ -146,11 +146,11 @@ public class MediatorImpl implements Mediator {
                 createTransformationContext(sourceDataType, targetDataType, size, i, transformer, metadata);
 
             if (transformer instanceof PullTransformer) {
-                result = ((PullTransformer)transformer).transform(result, context);
+                result = ((PullTransformer) transformer).transform(result, context);
             } else if (transformer instanceof PushTransformer) {
-                DataPipe dataPipe = (i < size - 1) ? (DataPipe)path.get(++i) : null;
+                DataPipe dataPipe = (i < size - 1) ? (DataPipe) path.get(++i) : null;
                 Object sink = dataPipe != null ? dataPipe.getSink() : target;
-                ((PushTransformer)transformer).transform(result, sink, context);
+                ((PushTransformer) transformer).transform(result, sink, context);
                 result = (dataPipe != null) ? dataPipe.getResult() : null;
             }
         }

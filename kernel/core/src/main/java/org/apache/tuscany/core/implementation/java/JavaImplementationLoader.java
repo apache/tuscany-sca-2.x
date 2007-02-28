@@ -24,8 +24,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -36,8 +36,8 @@ import org.apache.tuscany.spi.model.ModelObject;
 public class JavaImplementationLoader extends LoaderExtension {
     public static final QName IMPLEMENTATION_JAVA = new QName(SCA_NS, "implementation.java");
 
-    @Constructor({"registry"})
-    public JavaImplementationLoader(@Autowire LoaderRegistry registry) {
+    @Constructor
+    public JavaImplementationLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

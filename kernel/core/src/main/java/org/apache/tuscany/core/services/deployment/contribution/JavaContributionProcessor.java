@@ -25,8 +25,8 @@ import java.net.URI;
 import java.net.URL;
 
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
@@ -39,8 +39,8 @@ public class JavaContributionProcessor extends ContributionProcessorExtension im
     public static final String CONTENT_TYPE = "application/java-vm";
     //private Introspector introspector;
 
-    @Constructor({"introspector"})
-    public JavaContributionProcessor(@Autowire IntrospectionRegistry introspector) {
+    @Constructor
+    public JavaContributionProcessor(@Reference IntrospectionRegistry introspector) {
         //this.introspector = introspector;
     }
 

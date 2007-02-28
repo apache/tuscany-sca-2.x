@@ -26,8 +26,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -49,7 +49,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
     public static final QName REFERENCE = new QName(SCA_NS, "reference");
 
     @Constructor
-    public ReferenceLoader(@Autowire LoaderRegistry registry) {
+    public ReferenceLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

@@ -26,19 +26,21 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
 import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
 import org.apache.tuscany.spi.model.Contribution;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Service;
+
+import org.apache.tuscany.host.deployment.DeploymentException;
+import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
 
 /**
  * Default implementation of ContributionProcessorRegistry
- * 
+ *
  * @version $Rev$ $Date$
  */
 @EagerInit
@@ -49,11 +51,11 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
      */
     private Map<String, ContributionProcessor> registry = new HashMap<String, ContributionProcessor>();
     /**
-     * Helper method to describe contentType for each artifact 
+     * Helper method to describe contentType for each artifact
      */
     private ContentTypeDescriber contentTypeDescriber;
 
-    public ContributionProcessorRegistryImpl(@Autowire ContentTypeDescriber contentTypeDescriber) {
+    public ContributionProcessorRegistryImpl(@Reference ContentTypeDescriber contentTypeDescriber) {
         if (contentTypeDescriber == null) {
             this.contentTypeDescriber = new ContentTypeDescriberImpl();
         } else {
@@ -71,7 +73,7 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
 
     public void processContent(Contribution contribution, URI source, InputStream inputStream)
         throws DeploymentException, IOException {
-        
+
         URL locationURL = contribution.getArtifact(source).getLocation();
         String contentType = this.contentTypeDescriber.getContentType(locationURL, null);
         if (contentType == null) {
@@ -88,6 +90,6 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
     }
 
     public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
-        IOException {
+                                                                                               IOException {
     }
 }

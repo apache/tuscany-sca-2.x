@@ -59,7 +59,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
     private JavaInterfaceProcessorRegistry registry;
     private SimpleTypeMapperExtension typeMapper = new SimpleTypeMapperExtension();
 
-    public ImplementationProcessorServiceImpl(@Autowire JavaInterfaceProcessorRegistry registry) {
+    public ImplementationProcessorServiceImpl(@Reference JavaInterfaceProcessorRegistry registry) {
         this.registry = registry;
     }
 

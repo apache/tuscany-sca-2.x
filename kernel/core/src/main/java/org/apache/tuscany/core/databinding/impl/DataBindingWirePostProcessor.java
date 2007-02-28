@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -42,7 +42,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
     private Mediator mediator;
 
     @Constructor({"mediator"})
-    public DataBindingWirePostProcessor(@Autowire Mediator mediator) {
+    public DataBindingWirePostProcessor(@Reference Mediator mediator) {
         super();
         this.mediator = mediator;
     }

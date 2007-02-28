@@ -30,10 +30,10 @@ import java.io.Serializable;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
@@ -76,7 +76,7 @@ public abstract class DataBindingExtension implements DataBinding {
         this.baseType = baseType;
     }
 
-    @Autowire
+    @Reference
     public void setDataBindingRegistry(DataBindingRegistry registry) {
         this.registry = registry;
     }

@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.services.work.jsr237;
 
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.work.NotificationListener;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.services.work.WorkSchedulerException;
@@ -54,7 +54,7 @@ public class Jsr237WorkScheduler implements WorkScheduler {
      *
      * @param jsr237WorkManager JSR 237 work manager.
      */
-    public Jsr237WorkScheduler(@Autowire WorkManager jsr237WorkManager) {
+    public Jsr237WorkScheduler(@Reference WorkManager jsr237WorkManager) {
         if (jsr237WorkManager == null) {
             throw new IllegalArgumentException("Work manager cannot be null");
         }

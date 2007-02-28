@@ -27,8 +27,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -50,8 +50,8 @@ import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 public class IncludeLoader extends LoaderExtension<Include> {
     private static final QName INCLUDE = new QName(SCA_NS, "include");
 
-    @Constructor({"registry"})
-    public IncludeLoader(@Autowire LoaderRegistry registry) {
+    @Constructor
+    public IncludeLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 
