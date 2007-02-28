@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.Constants;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -53,7 +52,6 @@ public class ReferenceLoaderTestCase extends TestCase {
     private ReferenceLoader loader;
     private XMLStreamReader mockReader;
     private LoaderRegistry mockRegistry;
-    private Component parent;
     private DeploymentContext ctx;
 
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
@@ -132,9 +130,6 @@ public class ReferenceLoaderTestCase extends TestCase {
         mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ReferenceLoader(mockRegistry);
-        parent = EasyMock.createMock(Component.class);
-        EasyMock.expect(parent.getUri()).andReturn(URI.create(COMPONENT_NAME));
-        EasyMock.replay(parent);
         ctx = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(ctx.getComponentId()).andReturn(componentId);
         EasyMock.replay(ctx);

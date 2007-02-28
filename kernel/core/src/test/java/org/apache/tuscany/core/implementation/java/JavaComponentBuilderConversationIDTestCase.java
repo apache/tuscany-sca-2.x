@@ -23,7 +23,6 @@ import java.net.URI;
 
 import org.osoa.sca.annotations.ConversationID;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -63,7 +62,6 @@ public class JavaComponentBuilderConversationIDTestCase extends TestCase {
         JavaImplementation impl = new JavaImplementation(Foo.class, type);
         URI uri = URI.create("foo");
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(uri, impl);
-        Component parent = EasyMock.createMock(Component.class);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, null);
         Foo foo = (Foo) component.createInstance();
         assertEquals("convID", foo.conversationID);
