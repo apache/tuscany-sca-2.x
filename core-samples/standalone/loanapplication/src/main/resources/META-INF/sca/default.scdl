@@ -42,7 +42,7 @@
 
 </composite>
 
-<!-- Alternatively, the following demonstrates the same assembly using autowire instead of direct references -->
+<!-- Alternatively, the following demonstrates the same assembly using autowire instead of direct reference targets -->
 <!--
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
