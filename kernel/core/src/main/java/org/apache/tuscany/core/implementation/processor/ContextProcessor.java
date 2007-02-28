@@ -24,8 +24,8 @@ import java.lang.reflect.Method;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -48,7 +48,7 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 public class ContextProcessor extends ImplementationProcessorExtension {
     private WorkContext workContext;
 
-    @Autowire
+    @Reference
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }

@@ -20,7 +20,8 @@ package org.apache.tuscany.core.marshaller;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -29,31 +30,34 @@ public abstract class AbstractMarshallerExtension<MD extends ModelObject> implem
 
     // Private Model marshaller registry
     protected ModelMarshallerRegistry registry;
-    
+
     /**
      * Injects the model marshaller registry.
+     *
      * @param registry Model marshaller registry.
      */
-    @Autowire
+    @Reference
     public void setRegistry(ModelMarshallerRegistry registry) {
-        
+
         this.registry = registry;
-        
+
         Class<MD> marshallerType = getModelObjectType();
         QName marshallerQName = getModelObjectQName();
-        
+
         registry.registerMarshaller(marshallerType, marshallerQName, this);
-        
+
     }
-    
+
     /**
      * Gets the qualified name of the XML fragment for the marshalled model object.
+     *
      * @return Qualified name of the XML fragment.
      */
     protected abstract QName getModelObjectQName();
-    
+
     /**
      * Retursn the type of the model object.
+     *
      * @return Model object type.
      */
     protected abstract Class<MD> getModelObjectType();

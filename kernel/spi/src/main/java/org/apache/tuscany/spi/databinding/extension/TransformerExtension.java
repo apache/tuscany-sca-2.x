@@ -20,10 +20,10 @@ package org.apache.tuscany.spi.databinding.extension;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.TransformerRegistry;
 
@@ -43,7 +43,7 @@ public abstract class TransformerExtension<S, T> implements Transformer {
         super();
     }
 
-    @Autowire
+    @Reference
     public void setTransformerRegistry(TransformerRegistry registry) {
         this.registry = registry;
     }

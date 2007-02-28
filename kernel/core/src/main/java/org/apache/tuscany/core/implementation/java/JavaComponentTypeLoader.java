@@ -21,8 +21,8 @@ package org.apache.tuscany.core.implementation.java;
 import java.net.URL;
 
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -44,8 +44,8 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
     private Introspector introspector;
 
     @Constructor({"registry", "introspector"})
-    public JavaComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry,
-                                   @Autowire IntrospectionRegistry introspector) {
+    public JavaComponentTypeLoader(@Reference LoaderRegistry loaderRegistry,
+                                   @Reference IntrospectionRegistry introspector) {
         super(loaderRegistry);
         this.introspector = introspector;
     }

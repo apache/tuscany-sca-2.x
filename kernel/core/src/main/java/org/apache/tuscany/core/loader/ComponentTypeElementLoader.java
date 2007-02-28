@@ -26,8 +26,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -45,7 +45,7 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
     public static final QName COMPONENT_TYPE = new QName(SCA_NS, "componentType");
 
     @Constructor
-    public ComponentTypeElementLoader(@Autowire LoaderRegistry registry) {
+    public ComponentTypeElementLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

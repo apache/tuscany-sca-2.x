@@ -28,9 +28,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidWireException;
@@ -50,7 +50,7 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
     private static final QName TARGET_URI = new QName(SCA_NS, "target.uri");
 
     @Constructor
-    public WireLoader(@Autowire LoaderRegistry registry) {
+    public WireLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

@@ -19,10 +19,10 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -42,9 +42,9 @@ public class ConversationalScopeObjectFactory implements ObjectFactory<Conversat
     private Store store;
     private ScopeContainerMonitor monitor;
 
-    public ConversationalScopeObjectFactory(@Autowire ScopeRegistry registry,
-                                            @Autowire WorkContext context,
-                                            @Autowire Store store,
+    public ConversationalScopeObjectFactory(@Reference ScopeRegistry registry,
+                                            @Reference WorkContext context,
+                                            @Reference Store store,
                                             @Monitor ScopeContainerMonitor monitor) {
         registry.registerFactory(Scope.CONVERSATION, this);
         this.context = context;

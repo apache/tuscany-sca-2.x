@@ -19,10 +19,10 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -40,8 +40,8 @@ public class StatelessScopeObjectFactory implements ObjectFactory<StatelessScope
     private WorkContext context;
     private ScopeContainerMonitor monitor;
 
-    public StatelessScopeObjectFactory(@Autowire ScopeRegistry registry,
-                                       @Autowire WorkContext context,
+    public StatelessScopeObjectFactory(@Reference ScopeRegistry registry,
+                                       @Reference WorkContext context,
                                        @Monitor ScopeContainerMonitor monitor) {
         registry.registerFactory(Scope.STATELESS, this);
         this.context = context;

@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
@@ -37,9 +38,9 @@ import org.apache.tuscany.host.MonitorFactory;
 public class MonitorProcessor extends AbstractPropertyProcessor<Monitor> {
     private MonitorFactory monitorFactory;
 
-    public MonitorProcessor(@Autowire MonitorFactory monitorFactory, @Autowire ImplementationProcessorService service) {
+    public MonitorProcessor(@Reference MonitorFactory factory, @Reference ImplementationProcessorService service) {
         super(Monitor.class, service);
-        this.monitorFactory = monitorFactory;
+        this.monitorFactory = factory;
     }
 
     protected String getName(Monitor annotation) {

@@ -28,8 +28,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -61,8 +61,8 @@ public class PolicySetLoader extends LoaderExtension<PolicySet> {
 
     private static final QName WSPOLICYATTACHMENT = new QName(WSPOLICY_NAMESPACE, "PolicyAttachment");
 
-    @Constructor({"registry"})
-    public PolicySetLoader(@Autowire LoaderRegistry registry) {
+    @Constructor
+    public PolicySetLoader(@Reference LoaderRegistry registry) {
         super(registry);
 
     }

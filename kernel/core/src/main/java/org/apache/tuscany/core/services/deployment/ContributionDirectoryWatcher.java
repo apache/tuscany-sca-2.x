@@ -25,8 +25,7 @@ import java.io.IOException;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
-
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.host.deployment.ContributionService;
 import org.apache.tuscany.host.deployment.DeploymentException;
@@ -36,7 +35,7 @@ public class ContributionDirectoryWatcher {
     private final String path;
     private final ContributionService contributionService;
 
-    public ContributionDirectoryWatcher(@Autowire ContributionService contributionService,
+    public ContributionDirectoryWatcher(@Reference ContributionService contributionService,
                                         @Property(name = "path")String path) {
         this.path = path;
         this.contributionService = contributionService;
@@ -53,7 +52,7 @@ public class ContributionDirectoryWatcher {
         File[] files = extensionDir.listFiles();
         for (File file : files) {
             try {
-                if(file.isDirectory())
+                if (file.isDirectory())
                     this.contributionService.contribute(file.toURL(), false);
                 else
                     this.contributionService.contribute(file.toURL(), true);

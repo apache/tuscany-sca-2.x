@@ -21,7 +21,8 @@ package org.apache.tuscany.core.deployer;
 import java.util.Collection;
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
@@ -81,12 +82,12 @@ public class DeployerImpl implements Deployer {
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
     }
 
-    @Autowire
+    @Reference
     public void setLoader(LoaderRegistry loader) {
         this.loader = loader;
     }
 
-    @Autowire
+    @Reference
     public void setBuilder(BuilderRegistry builder) {
         this.builder = builder;
     }
@@ -96,17 +97,17 @@ public class DeployerImpl implements Deployer {
         this.monitor = monitor;
     }
 
-    @Autowire
+    @Reference
     public void setResolver(AutowireResolver resolver) {
         this.resolver = resolver;
     }
 
-    @Autowire
+    @Reference
     public void setConnector(Connector connector) {
         this.connector = connector;
     }
 
-    @Autowire
+    @Reference
     public void setComponentManager(ComponentManager componentManager) {
         this.componentManager = componentManager;
     }

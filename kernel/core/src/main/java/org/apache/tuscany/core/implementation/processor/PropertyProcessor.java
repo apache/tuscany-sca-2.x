@@ -21,8 +21,8 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.TypeInfo;
@@ -42,7 +42,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
     private SimpleTypeMapperExtension typeMapper = new SimpleTypeMapperExtension();
 
-    public PropertyProcessor(@Autowire ImplementationProcessorService service) {
+    public PropertyProcessor(@Reference ImplementationProcessorService service) {
         super(Property.class, service);
     }
 

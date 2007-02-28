@@ -20,7 +20,8 @@ package org.apache.tuscany.core.implementation.system.loader;
 
 import java.net.URL;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -57,8 +58,7 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         this.introspector = introspector;
     }
 
-    //FIXME autowire to support multiple interfaces
-    @Autowire
+    @Reference
     public void setIntrospector(IntrospectionRegistry introspector) {
         this.introspector = introspector;
     }

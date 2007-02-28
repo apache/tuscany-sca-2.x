@@ -22,7 +22,9 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidValueException;
@@ -32,8 +34,6 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.ModelObject;
 
-import org.osoa.sca.annotations.Constructor;
-
 /**
  * The StAX loader for data type
  */
@@ -42,7 +42,7 @@ public class DataTypeLoader extends LoaderExtension<DataType> {
         new QName("http://tuscany.apache.org/xmlns/sca/databinding/1.0", "databinding");
 
     @Constructor({"registry"})
-    public DataTypeLoader(@Autowire LoaderRegistry registry) {
+    public DataTypeLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

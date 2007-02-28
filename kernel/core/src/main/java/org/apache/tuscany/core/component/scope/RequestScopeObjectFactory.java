@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -36,7 +38,7 @@ public class RequestScopeObjectFactory implements ObjectFactory<RequestScopeCont
     private ScopeContainerMonitor monitor;
 
 
-    public RequestScopeObjectFactory(@Autowire WorkContext context, @Monitor ScopeContainerMonitor monitor) {
+    public RequestScopeObjectFactory(@Reference WorkContext context, @Monitor ScopeContainerMonitor monitor) {
         this.context = context;
         this.monitor = monitor;
     }

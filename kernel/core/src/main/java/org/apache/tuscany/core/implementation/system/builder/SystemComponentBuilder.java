@@ -24,8 +24,9 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -59,7 +60,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         return SystemImplementation.class;
     }
 
-    @Autowire
+    @Reference
     public void setHost(ResourceHost host) {
         this.host = host;
     }

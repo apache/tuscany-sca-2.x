@@ -27,13 +27,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.core.util.IOHelper;
-import org.apache.tuscany.host.deployment.ContributionService;
-import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
 import org.apache.tuscany.spi.deployer.ContributionRepository;
 import org.apache.tuscany.spi.model.Contribution;
+
+import org.apache.tuscany.core.util.IOHelper;
+import org.apache.tuscany.host.deployment.ContributionService;
+import org.apache.tuscany.host.deployment.DeploymentException;
 
 /**
  * @version $Rev$ $Date$
@@ -48,14 +50,12 @@ public class ContributionServiceImpl implements ContributionService {
      */
     protected ContributionProcessorRegistry processorRegistry;
     /**
-     * Contribution registry
-     * This is a registry of processed Contributios index by URI
+     * Contribution registry This is a registry of processed Contributios index by URI
      */
     protected Map<URI, Contribution> contributionRegistry = new HashMap<URI, Contribution>();
 
-    public ContributionServiceImpl(@Autowire
-    ContributionRepository repository, @Autowire
-    ContributionProcessorRegistry processorRegistry) {
+    public ContributionServiceImpl(@Reference ContributionRepository repository,
+                                   @Reference ContributionProcessorRegistry processorRegistry) {
         super();
         this.contributionRepository = repository;
         this.processorRegistry = processorRegistry;
@@ -81,7 +81,8 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    public URI contribute(URI source, InputStream contributionStream, boolean storeInRepository) throws DeploymentException, IOException {
+    public URI contribute(URI source, InputStream contributionStream, boolean storeInRepository)
+        throws DeploymentException, IOException {
         if (source == null) {
             throw new IllegalArgumentException("source URI for contribution is null");
         }
@@ -93,13 +94,13 @@ public class ContributionServiceImpl implements ContributionService {
         // store the contribution in the contribution repository
         URI contributionURI = URI.create("sca://contribution/" + UUID.randomUUID());
         URL locationURL;
-        if(storeInRepository){
+        if (storeInRepository) {
             locationURL = this.contributionRepository.store(source, contributionStream);
-        }else{
+        } else {
             locationURL = source.toURL();
         }
-            
-        
+
+
         Contribution contribution = null;
         contribution = new Contribution(contributionURI);
         contribution.setLocation(locationURL);
@@ -109,7 +110,7 @@ public class ContributionServiceImpl implements ContributionService {
 
         //store the contribution on the registry
         this.contributionRegistry.put(contribution.getUri(), contribution);
-        
+
         return contribution.getUri();
     }
 

@@ -21,8 +21,8 @@ package org.apache.tuscany.core.implementation.composite;
 import java.net.URI;
 
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
@@ -40,7 +40,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompositeImplementation> {
 
     @Constructor
-    public SystemCompositeBuilder(@Autowire BuilderRegistry builderRegistry) {
+    public SystemCompositeBuilder(@Reference BuilderRegistry builderRegistry) {
         this.builderRegistry = builderRegistry;
     }
 

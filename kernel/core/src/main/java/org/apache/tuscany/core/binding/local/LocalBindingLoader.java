@@ -24,7 +24,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -44,7 +45,7 @@ public class LocalBindingLoader extends LoaderExtension<LocalBindingDefinition> 
      *
      * @param registry the LoaderRegistry this loader should register with
      */
-    public LocalBindingLoader(@Autowire LoaderRegistry registry) {
+    public LocalBindingLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

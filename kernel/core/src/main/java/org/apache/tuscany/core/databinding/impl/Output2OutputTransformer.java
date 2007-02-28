@@ -20,10 +20,11 @@
 package org.apache.tuscany.core.databinding.impl;
 
 import java.util.List;
-
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.Mediator;
@@ -34,14 +35,12 @@ import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.apache.tuscany.spi.idl.ElementInfo;
-import org.apache.tuscany.spi.model.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
-import org.osoa.sca.annotations.Service;
+import org.apache.tuscany.spi.model.WrapperInfo;
 
 /**
- * This is a special transformer to transform the output from one IDL to the
- * other one
+ * This is a special transformer to transform the output from one IDL to the other one
  */
 @Service(Transformer.class)
 public class Output2OutputTransformer extends TransformerExtension<Object, Object> implements
@@ -53,7 +52,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     protected Mediator mediator;
 
     /**
-     * @param wrapperHandler
+     *
      */
     public Output2OutputTransformer() {
         super();
@@ -62,7 +61,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     /**
      * @param mediator the mediator to set
      */
-    @Autowire
+    @Reference
     public void setMediator(Mediator mediator) {
         this.mediator = mediator;
     }
@@ -70,7 +69,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
-    @Autowire
+    @Reference
     public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }
@@ -115,7 +114,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
         WrapperHandler wrapperHandler = dataBinding == null ? null : dataBinding.getWrapperHandler();
         if (wrapperHandler == null) {
             throw new TransformationException(
-                                              "No wrapper handler is provided for databinding: " + dataBindingId);
+                "No wrapper handler is provided for databinding: " + dataBindingId);
         }
         return wrapperHandler;
     }
@@ -129,7 +128,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     public Object transform(Object response, TransformationContext context) {
         try {
             DataType<DataType> sourceType = context.getSourceDataType();
-            Operation<?> sourceOp = (Operation<?>)sourceType.getOperation();
+            Operation<?> sourceOp = (Operation<?>) sourceType.getOperation();
             boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
             WrapperHandler sourceWrapperHandler = null;
             if (sourceWrapped) {
@@ -137,7 +136,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             }
 
             DataType<DataType> targetType = context.getTargetDataType();
-            Operation<?> targetOp = (Operation<?>)targetType.getOperation();
+            Operation<?> targetOp = (Operation<?>) targetType.getOperation();
             boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
             WrapperHandler targetWrapperHandler = null;
             if (targetWrapped) {
@@ -178,7 +177,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
                     // targetWrapperHandler.create(wrapperElement, context);
                     DataType<QName> targetWrapperType =
                         new DataType<QName>(targetType.getLogical().getDataBinding(), Object.class,
-                                            wrapperElement.getQName());
+                            wrapperElement.getQName());
                     Object targetWrapper =
                         mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context
                             .getMetadata());

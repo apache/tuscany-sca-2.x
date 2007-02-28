@@ -29,8 +29,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -65,7 +65,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
 
     private final ArtifactRepository artifactRepository;
 
-    public CompositeLoader(@Autowire LoaderRegistry registry, @Autowire ArtifactRepository artifactRepository) {
+    public CompositeLoader(@Reference LoaderRegistry registry, @Reference ArtifactRepository artifactRepository) {
         super(registry);
         this.artifactRepository = artifactRepository;
     }

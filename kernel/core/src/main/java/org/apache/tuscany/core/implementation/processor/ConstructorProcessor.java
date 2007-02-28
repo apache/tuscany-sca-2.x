@@ -22,7 +22,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -44,7 +45,7 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
 
     private ImplementationProcessorService service;
 
-    public ConstructorProcessor(@Autowire ImplementationProcessorService service) {
+    public ConstructorProcessor(@Reference ImplementationProcessorService service) {
         this.service = service;
     }
 

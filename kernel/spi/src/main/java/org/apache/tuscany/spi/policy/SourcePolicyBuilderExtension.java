@@ -21,8 +21,7 @@ package org.apache.tuscany.spi.policy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
-
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * A runtime extension point for {@link SourcePolicyBuilder}s
@@ -34,7 +33,7 @@ public abstract class SourcePolicyBuilderExtension implements SourcePolicyBuilde
     protected int phase = PolicyBuilderRegistry.EXTENSION;
     private PolicyBuilderRegistry registry;
 
-    @Autowire
+    @Reference
     public void setRegistry(PolicyBuilderRegistry registry) {
         this.registry = registry;
     }

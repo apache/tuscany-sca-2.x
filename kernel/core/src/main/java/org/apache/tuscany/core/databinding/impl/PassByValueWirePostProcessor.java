@@ -19,7 +19,8 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
@@ -42,7 +43,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
-    @Autowire
+    @Reference
     public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
         //  this.dataBindingRegistry = dataBindingRegistry;
     }

@@ -26,7 +26,6 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Constructor;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -79,10 +78,10 @@ public class ConnectorImpl implements Connector {
 
     @Constructor
     public ConnectorImpl(
-        @Autowire WirePostProcessorRegistry processorRegistry,
-        @Autowire ComponentManager componentManager,
-        @Autowire WorkScheduler scheduler,
-        @Autowire WorkContext workContext) {
+        @org.osoa.sca.annotations.Reference WirePostProcessorRegistry processorRegistry,
+        @org.osoa.sca.annotations.Reference ComponentManager componentManager,
+        @org.osoa.sca.annotations.Reference WorkScheduler scheduler,
+        @org.osoa.sca.annotations.Reference WorkContext workContext) {
         this.postProcessorRegistry = processorRegistry;
         this.componentManager = componentManager;
         this.scheduler = scheduler;

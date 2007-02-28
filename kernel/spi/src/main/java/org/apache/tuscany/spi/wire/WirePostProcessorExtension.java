@@ -20,9 +20,8 @@ package org.apache.tuscany.spi.wire;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
-
-import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * @version $Rev$ $Date$
@@ -32,7 +31,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 public abstract class WirePostProcessorExtension implements WirePostProcessor {
     protected WirePostProcessorRegistry registry;
 
-    @Autowire
+    @Reference
     public void setRegistry(WirePostProcessorRegistry registry) {
         this.registry = registry;
     }

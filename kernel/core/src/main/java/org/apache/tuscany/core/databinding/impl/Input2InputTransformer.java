@@ -39,6 +39,7 @@ import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 
 import org.osoa.sca.annotations.Service;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * This is a special transformer to transform the input from one IDL to the
@@ -71,7 +72,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     /**
      * @param mediator the mediator to set
      */
-    @Autowire
+    @Reference
     public void setMediator(Mediator mediator) {
         this.mediator = mediator;
     }
@@ -79,7 +80,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
-    @Autowire
+    @Reference
     public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }

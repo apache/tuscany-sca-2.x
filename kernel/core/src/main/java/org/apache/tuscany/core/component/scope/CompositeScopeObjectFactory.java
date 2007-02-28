@@ -19,10 +19,10 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
@@ -38,7 +38,7 @@ import org.apache.tuscany.api.annotation.Monitor;
 public class CompositeScopeObjectFactory implements ObjectFactory<CompositeScopeContainer> {
     private ScopeContainerMonitor monitor;
 
-    public CompositeScopeObjectFactory(@Autowire ScopeRegistry registry,
+    public CompositeScopeObjectFactory(@Reference ScopeRegistry registry,
                                        @Monitor ScopeContainerMonitor monitor) {
         registry.registerFactory(Scope.COMPOSITE, this);
         this.monitor = monitor;

@@ -4,8 +4,8 @@ import java.io.PrintWriter;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.LoaderException;
 
 import org.apache.tuscany.host.monitor.ExceptionFormatter;
@@ -20,7 +20,7 @@ import org.apache.tuscany.host.monitor.FormatterRegistry;
 public class LoaderExceptionFormatter implements ExceptionFormatter {
     private FormatterRegistry factory;
 
-    public LoaderExceptionFormatter(@Autowire FormatterRegistry factory) {
+    public LoaderExceptionFormatter(@Reference FormatterRegistry factory) {
         this.factory = factory;
         factory.register(this);
     }
