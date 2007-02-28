@@ -109,7 +109,7 @@ public class ConstructorAutowireTestCase extends TestCase {
     private static class Foo {
 
         @org.osoa.sca.annotations.Constructor()
-        public Foo(@Autowire(name = "myRef") Bar ref) {
+        public Foo(@Autowire(name = "myRef")Bar ref) {
 
         }
 
@@ -135,7 +135,7 @@ public class ConstructorAutowireTestCase extends TestCase {
         }
 
         @org.osoa.sca.annotations.Constructor({"myRef", "myRef2"})
-        public BadFoo(@Autowire List ref, @Autowire(name = "myOtherRef") List ref2) {
+        public BadFoo(@Autowire List ref, @Autowire(name = "myOtherRef")List ref2) {
 
         }
 
@@ -144,7 +144,7 @@ public class ConstructorAutowireTestCase extends TestCase {
     public static class Foo3 {
 
         @org.osoa.sca.annotations.Constructor
-        public Foo3(@Property(name = "prop1") String prop, @Baz String baz) {
+        public Foo3(@Property(name = "prop1")String prop, @Baz String baz) {
         }
     }
 
