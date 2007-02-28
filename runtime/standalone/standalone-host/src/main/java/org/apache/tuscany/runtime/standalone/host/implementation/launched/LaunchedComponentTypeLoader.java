@@ -26,7 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -50,8 +51,8 @@ public class LaunchedComponentTypeLoader extends ComponentTypeLoaderExtension<La
     private static final URI SERVICE_NAME = URI.create("#main");
     private Introspector introspector;
 
-    public LaunchedComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry,
-                                       @Autowire IntrospectionRegistry introspector) {
+    public LaunchedComponentTypeLoader(@Reference LoaderRegistry loaderRegistry,
+                                       @Reference IntrospectionRegistry introspector) {
         super(loaderRegistry);
         this.introspector = introspector;
     }

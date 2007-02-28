@@ -22,7 +22,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -35,7 +36,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 public class LaunchedLoader extends LoaderExtension<Launched> {
     private static final QName LAUNCHED = new QName("http://tuscany.apache.org/xmlns/sca/1.0", "launched");
 
-    public LaunchedLoader(@Autowire LoaderRegistry registry) {
+    public LaunchedLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

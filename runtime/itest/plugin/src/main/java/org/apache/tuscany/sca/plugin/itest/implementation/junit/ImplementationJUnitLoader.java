@@ -22,12 +22,13 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * @version $Rev$ $Date$
@@ -35,7 +36,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 public class ImplementationJUnitLoader extends LoaderExtension<ImplementationJUnit> {
     private static final QName JUNIT = new QName("http://tuscany.apache.org/xmlns/sca/1.0", "junit");
 
-    public ImplementationJUnitLoader(@Autowire LoaderRegistry registry) {
+    public ImplementationJUnitLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 

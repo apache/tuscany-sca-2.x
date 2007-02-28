@@ -22,8 +22,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -53,7 +54,7 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
 
     private ResourceHost host;
 
-    @Autowire
+    @Reference
     public void setHost(ResourceHost host) {
         this.host = host;
     }
@@ -159,7 +160,7 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
     private void handleResources(
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
         JavaAtomicComponent component) {
-        
+
         for (Resource resource : componentType.getResources().values()) {
             ObjectFactory<?> objectFactory = resource.getObjectFactory();
             if (objectFactory != null) {
