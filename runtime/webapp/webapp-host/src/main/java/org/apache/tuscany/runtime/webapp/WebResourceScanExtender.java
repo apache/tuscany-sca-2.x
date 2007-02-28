@@ -25,8 +25,7 @@ import javax.servlet.ServletContext;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
-
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
 
@@ -37,8 +36,8 @@ public class WebResourceScanExtender extends AbstractExtensionDeployer {
     private final WebappRuntimeInfo runtimeInfo;
     private final String path;
 
-    public WebResourceScanExtender(@Autowire WebappRuntimeInfo runtimeInfo,
-                                   @Property(name = "path") String path) {
+    public WebResourceScanExtender(@Reference WebappRuntimeInfo runtimeInfo,
+                                   @Property(name = "path")String path) {
         this.runtimeInfo = runtimeInfo;
         this.path = path;
     }

@@ -24,7 +24,8 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.runtime.webapp.System">
+           name="org.apache.tuscany.runtime.webapp.System"
+			  autowire="true">
 
     <!-- Component that provides the Deployer service -->
     <component name="deployer">
