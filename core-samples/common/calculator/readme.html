@@ -61,42 +61,30 @@ All connections between the components are local and are defined using Java inte
 
   <p>To build the sample&nbsp; issue :</p>
   <pre>
-<code>mvn<br></code>
+<code>mvn install<br></code>
 </pre>
-
-  <p>The result after executing is in the <span style=
-  "font-weight: bold;">target</span> subdirectory the <span style=
-  "font-weight: bold;">sample-calculator.jar</span></p>
 
   <h4>Setup</h4>
 
   <p>Set up the Tuscany standalone runtime environment using the
   following command:</p>
-  <pre>
-<code>mvn dependency:unpack <br></code>
-</pre>
-
-  <p>After completion there should be a <span style=
-  "font-weight: bold;">target\distribution</span> subdirectory
-  created that has the Tuscany standalone runtime.</p>
 
   <h4>Running</h4>
 
-  <p>Execute the following command: (<span style=
-  "font-style: italic;">cut and paste to command line</span>)</p>
+  <p>Boot the Tuscany standalone runtime environment using the
+  following command:</p>
   <pre>
-<code>java -jar target/distribution/bin/launcher.jar target/sample-calculator.jar</code>
+<code>java -jar {path-to-launcher.jar} target/calc.jar {add|subtract|multiply|divide} {param} {param}<br></code>
 </pre>
 
-  <h4>Results</h4>
+  <p>where {path-to-launcher.jar} is the path to the Tuscany launcher jar </p>
+
+  <pre>
 
   <p>The sample when run should simply display to the standard
   output:<br>
 <samp>
-<br>3 + 2=5.0
-<br>3 - 2=1.0
-<br>3 * 2=6.0
-<br>3 / 2=1.5
+<br>result = {result}
 </samp>
 </p>
 </body>

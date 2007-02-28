@@ -42,7 +42,7 @@ public class CalculatorClient {
         double result;
         if("add".equals(args[0])) {
             result = calculatorService.add(Double.parseDouble(args[1]), Double.parseDouble(args[2]));
-        } else if("substract".equals(args[0])) {
+        } else if("subtract".equals(args[0])) {
             result = calculatorService.subtract(Double.parseDouble(args[1]), Double.parseDouble(args[2]));
         } else if("multiply".equals(args[0])) {
             result = calculatorService.multiply(Double.parseDouble(args[1]), Double.parseDouble(args[2]));
