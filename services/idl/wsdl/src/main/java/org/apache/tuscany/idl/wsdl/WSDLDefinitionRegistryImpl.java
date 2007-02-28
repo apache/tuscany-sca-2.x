@@ -36,11 +36,11 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * The default implementation of the runtime WSDL registry
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
@@ -61,7 +61,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         registry = wsdlFactory.newPopulatedExtensionRegistry();
     }
 
-    @Autowire
+    @Reference
     public void setSchemaRegistry(XMLSchemaRegistry schemaRegistry) {
         this.schemaRegistry = schemaRegistry;
     }
@@ -117,7 +117,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         String definitionNamespace = definition.getTargetNamespace();
         if (namespace != null && !namespace.equals(definitionNamespace)) {
             throw new WSDLException(WSDLException.CONFIGURATION_ERROR, namespace + " != "
-                    + definition.getTargetNamespace());
+                + definition.getTargetNamespace());
         }
 
         // Load inline schemas
@@ -178,17 +178,17 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         /**
          * Monitor event emitted immediately before an attempt is made to read WSDL for the supplied namespace from the
          * supplied location.
-         * 
+         *
          * @param namespace the target namespace expected in the WSDL; may be null
-         * @param location the location where we will attempt to read the WSDL definition from
+         * @param location  the location where we will attempt to read the WSDL definition from
          */
         void readingWSDL(String namespace, URL location);
 
         /**
          * Monitor event emitted immediately before registering a WSDL definition in the cache.
-         * 
+         *
          * @param namespace the target namespace for the WSDL
-         * @param location the location where the WSDL definition was read from
+         * @param location  the location where the WSDL definition was read from
          */
         void cachingDefinition(String namespace, URL location);
     }

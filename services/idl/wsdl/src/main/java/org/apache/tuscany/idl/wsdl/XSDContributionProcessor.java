@@ -24,28 +24,29 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
-
 import javax.wsdl.Definition;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 
-import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.ArtifactResolverRegistry;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
 import org.apache.tuscany.spi.model.Contribution;
 import org.apache.tuscany.spi.model.DeployedArtifact;
+
+import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaException;
 import org.apache.ws.commons.schema.resolver.URIResolver;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 
 /**
  * The XSD processor
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class XSDContributionProcessor extends ContributionProcessorExtension {
@@ -101,7 +102,7 @@ public class XSDContributionProcessor extends ContributionProcessorExtension {
             XmlSchemaCollection collection = new XmlSchemaCollection();
             for (Object ext : types.getExtensibilityElements()) {
                 if (ext instanceof Schema) {
-                    Element element = ((Schema)ext).getElement();
+                    Element element = ((Schema) ext).getElement();
                     XmlSchema s = collection.read(element, element.getBaseURI());
                     artifact.addModelObject(XmlSchema.class, s.getTargetNamespace(), s);
                 }
@@ -116,7 +117,7 @@ public class XSDContributionProcessor extends ContributionProcessorExtension {
     /**
      * @param artifactResolverRegistry the artifactResolverRegistry to set
      */
-    @Autowire
+    @Reference
     public void setArtifactResolverRegistry(ArtifactResolverRegistry artifactResolverRegistry) {
         this.artifactResolverRegistry = artifactResolverRegistry;
     }
@@ -127,9 +128,9 @@ public class XSDContributionProcessor extends ContributionProcessorExtension {
     }
 
     public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
-        IOException {
+                                                                                               IOException {
         if (modelObject instanceof Definition) {
-            loadSchemas(contribution, source, (Definition)modelObject);
+            loadSchemas(contribution, source, (Definition) modelObject);
         }
     }
 

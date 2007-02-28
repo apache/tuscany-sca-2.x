@@ -26,7 +26,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -52,7 +53,7 @@ public class SpringXMLComponentTypeLoader extends ComponentTypeLoaderExtension<S
     private static final QName REFERENCE_ELEMENT = new QName(SCA_NS, "reference");
     private static final QName BEANS_ELEMENT = new QName("http://www.springframework.org/schema/beans", "beans");
 
-    public SpringXMLComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry) {
+    public SpringXMLComponentTypeLoader(@Reference LoaderRegistry loaderRegistry) {
         super(loaderRegistry);
     }
 
