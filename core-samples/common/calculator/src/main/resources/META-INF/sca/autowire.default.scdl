@@ -19,10 +19,10 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            name="CalculatorComposite"
-			  autowire="true">
+           autowire="true">
 
     <component name="CalculatorServiceComponent">
-		<implementation.java class="calculator.CalculatorServiceImpl"/>
+        <implementation.java class="calculator.CalculatorServiceImpl"/>
     </component>
 
     <component name="AddServiceComponent">
