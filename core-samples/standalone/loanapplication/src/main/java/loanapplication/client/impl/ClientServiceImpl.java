@@ -57,7 +57,7 @@ public class ClientServiceImpl implements ClientService, LoanServiceCallback {
             System.out.println("Client securing loan");
             loanService.secureLoan();
         } else {
-            System.out.println("Callback:, the loan has been declined");
+            System.out.println("Callback: the loan has been declined");
         }
     }
 
