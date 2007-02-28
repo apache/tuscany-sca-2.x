@@ -24,7 +24,6 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
@@ -146,13 +145,6 @@ public class HeuristicConstructorTestCase extends TestCase {
         assertNotNull(type.getReferences().get("myRef"));
     }
 
-    public void testConstructorAutowireAnnotatedParamsOnly() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(Foo9.class, type, null);
-        assertNotNull(type.getReferences().get("myAutowire"));
-    }
-
     @SuppressWarnings("unchecked")
     public void testDefaultConstructor() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -179,33 +171,6 @@ public class HeuristicConstructorTestCase extends TestCase {
         processor.visitEnd(Foo11.class, type, null);
         assertEquals(1, type.getProperties().size());
         assertNotNull(type.getProperties().get("prop1"));
-    }
-
-    public void testAutowire() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(Foo13.class, type, null);
-        assertEquals(1, type.getReferences().size());
-        assertNotNull(type.getReferences().get(String.class.getName() + "0"));
-    }
-
-    public void testMultipleAutowire() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(Foo15.class, type, null);
-        assertEquals(2, type.getReferences().size());
-        assertNotNull(type.getReferences().get(String.class.getName() + "0"));
-        assertNotNull(type.getReferences().get(String.class.getName() + "1"));
-    }
-
-    public void testNoAutowireNameInConstructor() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(Foo16.class, type, null);
-        assertEquals(2, type.getReferences().size());
-        assertNotNull(type.getReferences().get(String.class.getName() + "0"));
-        assertNotNull(type.getReferences().get("bar"));
-        assertNotNull(type.getProperties().get("foo"));
     }
 
     public void testPrivateConstructor() throws Exception {
@@ -274,7 +239,7 @@ public class HeuristicConstructorTestCase extends TestCase {
     }
 
     public static class Foo9 {
-        public Foo9(@Autowire(name = "myAutowire")String autowire) {
+        public Foo9(@Reference(name = "myRef")String ref) {
         }
     }
 
@@ -308,7 +273,7 @@ public class HeuristicConstructorTestCase extends TestCase {
     }
 
     public static class Foo13 {
-        public Foo13(@Autowire String foo) {
+        public Foo13(@Reference String foo) {
         }
     }
 
@@ -318,12 +283,12 @@ public class HeuristicConstructorTestCase extends TestCase {
     }
 
     public static final class Foo15 {
-        public Foo15(@Autowire String param1, @Autowire String param2) {
+        public Foo15(@Reference String param1, @Reference String param2) {
         }
     }
 
     public static final class Foo16 {
-        public Foo16(@Autowire String param1,
+        public Foo16(@Reference String param1,
                      @Property(name = "foo")String param2,
                      @Reference(name = "bar")String param3) {
         }

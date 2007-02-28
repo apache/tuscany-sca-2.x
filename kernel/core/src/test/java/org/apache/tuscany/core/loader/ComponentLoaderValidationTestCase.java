@@ -130,18 +130,6 @@ public class ComponentLoaderValidationTestCase extends TestCase {
 
     }
 
-    public void testAutowire() throws LoaderException, XMLStreamException {
-        PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
-            new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        ReferenceDefinition refDefinition = new ReferenceDefinition();
-        refDefinition.setUri(URI.create("#name"));
-        refDefinition.setAutowire(true);
-        type.add(refDefinition);
-        JavaImplementation impl = new JavaImplementation(null, type);
-        ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
-        loader.validate(defn);
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
         LoaderRegistry mockRegistry = EasyMock.createMock(LoaderRegistry.class);

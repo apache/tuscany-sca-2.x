@@ -32,7 +32,6 @@ public class ReferenceDefinition extends ModelObject {
     private URI uri;
     private ServiceContract serviceContract;
     private Multiplicity multiplicity;
-    private boolean autowire;
     private boolean required;
     private List<BindingDefinition> bindings;
 
@@ -77,20 +76,6 @@ public class ReferenceDefinition extends ModelObject {
 
     public void setMultiplicity(Multiplicity multiplicity) {
         this.multiplicity = multiplicity;
-    }
-
-    /**
-     * @deprecated
-     */
-    public boolean getAutowire() {
-        return autowire;
-    }
-
-    /**
-     * @deprecated
-     */
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
     }
 
     public boolean isRequired() {

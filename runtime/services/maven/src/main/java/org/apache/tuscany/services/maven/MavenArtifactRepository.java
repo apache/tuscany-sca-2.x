@@ -22,8 +22,8 @@ import java.util.Collection;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
@@ -55,7 +55,7 @@ public class MavenArtifactRepository implements ArtifactRepository {
      * Conctructs a new artifact repository.
      */
     public MavenArtifactRepository(@Property(name = "remoteRepoUrl")
-    String remoteRepoUrl, @Autowire
+    String remoteRepoUrl, @Reference
     RuntimeInfo runtimeInfo) {
         mavenHelper = new MavenHelper(remoteRepoUrl, runtimeInfo.isOnline());
         warRepositoryHelper = new WarRepositoryHelper(runtimeInfo.getBaseURL());

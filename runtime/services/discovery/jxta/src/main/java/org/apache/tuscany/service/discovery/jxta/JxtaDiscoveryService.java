@@ -45,13 +45,13 @@ import net.jxta.resolver.ResolverService;
 
 import org.apache.tuscany.service.discovery.jxta.pdp.PeerListener;
 import org.apache.tuscany.service.discovery.jxta.prp.TuscanyQueryHandler;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
 import org.apache.tuscany.spi.services.discovery.DiscoveryException;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.util.stax.StaxUtil;
 import org.omg.CORBA.Any;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Discovery service implemented using Apple bonjour.
@@ -92,7 +92,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      * Adds a network configurator for this service.
      * @param configurator Network configurator.
      */
-    @Autowire
+    @Reference
     public void setConfigurator(NetworkConfigurator configurator) {
         this.configurator = configurator;
     }
@@ -101,7 +101,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      * Adds a work scheduler for runningbackground discovery operations.
      * @param workScheduler Work scheduler.
      */
-    @Autowire
+    @Reference
     public void setWorkScheduler(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
     }

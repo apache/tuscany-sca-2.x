@@ -130,7 +130,6 @@ public class DefaultAutowireResolverTestCase extends TestCase {
         };
         contract.setInterfaceClass(requiredInterface);
         ReferenceDefinition reference = new ReferenceDefinition(URI.create("#ref"), contract);
-        reference.setAutowire(true);
         reference.setRequired(true);
         MockComponentType type = new MockComponentType();
         type.add(reference);
