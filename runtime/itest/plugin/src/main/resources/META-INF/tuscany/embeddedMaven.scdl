@@ -24,7 +24,8 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.sca.plugins.itest.EmbeddedMaven">
+           name="org.apache.tuscany.sca.plugins.itest.EmbeddedMaven"
+           autowire="true">
 
     <!-- Component that provides the Deployer service -->
     <component name="deployer">
@@ -69,12 +70,12 @@
     <component name="wirePostProcessorRegistry">
         <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
     </component>
-    
+
     <!-- Resource host registry -->
     <component name="resourceHostRegistry">
         <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
     </component>
-    
+
     <!-- Default scopes -->
     <component name="scope.module">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.CompositeScopeObjectFactory"/>
@@ -106,10 +107,12 @@
     <include name="org.apache.tuscany.core.Composite" scdlResource="org/apache/tuscany/core/composite.scdl"/>
 
     <!-- System implementation type -->
-    <include name="org.apache.tuscany.core.SystemImplementation" scdlResource="org/apache/tuscany/core/systemImplementation.scdl"/>
+    <include name="org.apache.tuscany.core.SystemImplementation"
+             scdlResource="org/apache/tuscany/core/systemImplementation.scdl"/>
 
     <!-- Java implementation type -->
-    <include name="org.apache.tuscany.core.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
+    <include name="org.apache.tuscany.core.JavaImplementation"
+             scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
 
     <!-- WorkScheduler service -->
     <component name="workManager">
@@ -145,15 +148,18 @@
     </component>
 
     <component name="org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnitLoader">
-        <system:implementation.system class="org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnitLoader"/>
+        <system:implementation.system
+            class="org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnitLoader"/>
     </component>
 
     <component name="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentTypeLoader"/>
+        <system:implementation.system
+            class="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentTypeLoader"/>
     </component>
 
     <component name="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentBuilder">
-        <system:implementation.system class="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentBuilder"/>
+        <system:implementation.system
+            class="org.apache.tuscany.sca.plugin.itest.implementation.junit.JUnitComponentBuilder"/>
     </component>
 
 
