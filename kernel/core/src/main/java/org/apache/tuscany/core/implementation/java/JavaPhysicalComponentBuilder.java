@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
-import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 

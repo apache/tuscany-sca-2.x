@@ -30,8 +30,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.core.component.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.marshaller.AbstractMarshallerExtension;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
