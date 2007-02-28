@@ -26,20 +26,21 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.idl.java.InterfaceJavaIntrospector;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.InterfaceJavaIntrospector;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.loader.MissingResourceException;
-import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
  * @version $Rev$ $Date$
@@ -49,8 +50,8 @@ public class WebappLoader extends LoaderExtension<WebappImplementation> {
 
     private final InterfaceJavaIntrospector introspector;
 
-    public WebappLoader(@Autowire LoaderRegistry registry,
-                        @Autowire InterfaceJavaIntrospector introspector) {
+    public WebappLoader(@Reference LoaderRegistry registry,
+                        @Reference InterfaceJavaIntrospector introspector) {
         super(registry);
         this.introspector = introspector;
     }
@@ -71,17 +72,17 @@ public class WebappLoader extends LoaderExtension<WebappImplementation> {
 
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                QName qname = reader.getName();
-                if ("reference".equals(qname.getLocalPart())) {
-                    defineReference(componentType, reader, deploymentContext);
-                } else {
-                    throw new UnrecognizedElementException(qname);
-                }
-                reader.next();
-                break;
-            case END_ELEMENT:
-                return impl;
+                case START_ELEMENT:
+                    QName qname = reader.getName();
+                    if ("reference".equals(qname.getLocalPart())) {
+                        defineReference(componentType, reader, deploymentContext);
+                    } else {
+                        throw new UnrecognizedElementException(qname);
+                    }
+                    reader.next();
+                    break;
+                case END_ELEMENT:
+                    return impl;
             }
         }
     }

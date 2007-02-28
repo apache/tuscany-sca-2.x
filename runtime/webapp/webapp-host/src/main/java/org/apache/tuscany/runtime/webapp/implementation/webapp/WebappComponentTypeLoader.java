@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.runtime.webapp.implementation.webapp;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -29,7 +30,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
  */
 public class WebappComponentTypeLoader extends ComponentTypeLoaderExtension<WebappImplementation> {
 
-    public WebappComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry) {
+    public WebappComponentTypeLoader(@Reference LoaderRegistry loaderRegistry) {
         super(loaderRegistry);
     }
 
