@@ -21,7 +21,8 @@ package org.apache.tuscany.core.deployer.federation;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
@@ -79,7 +80,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
      *
      * @param discoveryService Discovery service to be injected.
      */
-    @Autowire
+    @Reference
     public void setDiscoveryService(DiscoveryService discoveryService) {
         QName messageType = getQualifiedName();
         discoveryService.registerRequestListener(messageType, this);
@@ -90,7 +91,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
      *
      * @param marshallerRegistry Marshaller registry.
      */
-    @Autowire
+    @Reference
     public void setMarshallerRegistry(ModelMarshallerRegistry marshallerRegistry) {
         this.marshallerRegistry = marshallerRegistry;
     }
@@ -100,7 +101,7 @@ public abstract class FederatedDeployer<PCD extends PhysicalComponentDefinition,
      *
      * @param builderRegistry Builder registry.
      */
-    @Autowire
+    @Reference
     public void setBuilderRegistry(PhysicalComponentBuilderRegistry builderRegistry) {
         this.builderRegistry = builderRegistry;
     }
