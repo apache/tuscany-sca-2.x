@@ -36,10 +36,10 @@ import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
  * @version $Revision$ $Date$
  *
  */
-public class ChangeSetMarshaller extends AbstractMarshallerExtension<PhysicalChangeSet> {
+public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<PhysicalChangeSet> {
 
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/1.0-SNAPSHOT", "changeSet");
+    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "changeSet");
     
     /**
      * Marshalls a physical change set to the xml writer.

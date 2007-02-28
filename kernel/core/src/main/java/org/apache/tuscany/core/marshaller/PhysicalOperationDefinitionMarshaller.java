@@ -26,27 +26,27 @@ import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
- * Marshaller for physical wire definition.
+ * Marshaller for physical operation definition.
  * 
  * @version $Revision$ $Date$
  */
-public class OperationDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalOperationDefinition> {
+public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalOperationDefinition> {
 
     // Source URI attribute
     private static final String NAME = "name";
 
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/1.0-SNAPSHOT", "operation");
+    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "operation");
 
     /**
-     * Marshalls a physical change set to the xml writer.
+     * Marshalls a physical operation to the xml writer.
      */
     public void marshall(PhysicalOperationDefinition modelObject, XMLStreamWriter writer) throws MarshallException {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * Unmarshalls a physical change set from the xml reader.
+     * Unmarshalls a physical operation from the xml reader.
      */
     public PhysicalOperationDefinition unmarshall(XMLStreamReader reader) throws MarshallException {
 
