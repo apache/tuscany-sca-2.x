@@ -28,9 +28,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -63,12 +63,12 @@ public class ServletHostImpl implements ServletHost, ServletRequestInjector, Eve
         this.servlets = new HashMap<String, Servlet>();
     }
 
-    @Autowire(required = false)
+    @Reference(required = false)
     public void setSessionScopeContainer(ScopeRegistry registry) {
         this.registry = registry;
     }
 
-    @Autowire(required = false)
+    @Reference(required = false)
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }

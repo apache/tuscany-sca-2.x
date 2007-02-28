@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
@@ -54,8 +54,8 @@ public class JUnitComponentTypeLoader extends ComponentTypeLoaderExtension<Imple
     private Introspector introspector;
 
     @Constructor
-    public JUnitComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry,
-                                    @Autowire IntrospectionRegistry introspector) {
+    public JUnitComponentTypeLoader(@Reference LoaderRegistry loaderRegistry,
+                                    @Reference IntrospectionRegistry introspector) {
         super(loaderRegistry);
         this.introspector = introspector;
     }
