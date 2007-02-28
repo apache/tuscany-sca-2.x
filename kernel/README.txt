@@ -10,6 +10,9 @@ A goal of the release has been closer alignment with the SCA specifications, and
 - Improved and simplified non-blocking operations
 - Support for SCA 1.0 conversational callbacks, including synchronous operations 
 - Support for many of the SCA 1.0 Annotations and APIs, including: scopes, conversational annotations, ComponentContext, callback annotations, 
+- Support for SCA 1.0 autowire 
+- Support for service target syntax
+- Support for reference promotion syntax (multiple level promotion is not yet implemented but planned for the next release)
 - Support for exception formatting
 - Improved exception handling
 - Reduced disk and memory footprint
