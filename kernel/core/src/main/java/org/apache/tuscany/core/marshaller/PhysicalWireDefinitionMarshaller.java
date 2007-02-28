@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
  * 
  * @version $Revision$ $Date$
  */
-public class WireDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalWireDefinition> {
+public class PhysicalWireDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalWireDefinition> {
 
     // Source URI attribute
     private static final String SOURCE_URI = "sourceUri";
@@ -47,17 +47,17 @@ public class WireDefinitionMarshaller extends AbstractMarshallerExtension<Physic
     private static final String TARGET_URI = "targetUri";
 
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/1.0-SNAPSHOT", "wire");
+    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "wire");
 
     /**
-     * Marshalls a physical change set to the xml writer.
+     * Marshalls a physical wire to the xml writer.
      */
     public void marshall(PhysicalWireDefinition modelObject, XMLStreamWriter writer) throws MarshallException {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * Unmarshalls a physical change set from the xml reader.
+     * Unmarshalls a physical wire from the xml reader.
      */
     public PhysicalWireDefinition unmarshall(XMLStreamReader reader) throws MarshallException {
 

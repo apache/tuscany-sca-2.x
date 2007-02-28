@@ -85,7 +85,7 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      * Adds a reference definition to the component.
      * @param reference Reference definition to be added to the component.
      */
-    public void addService(PhysicalReferenceDefinition reference) {
+    public void addReference(PhysicalReferenceDefinition reference) {
         references.add(reference);
     }
 
