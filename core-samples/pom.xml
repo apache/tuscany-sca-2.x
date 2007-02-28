@@ -61,4 +61,8 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <modules>
+        <module>common</module>
+    </modules>
 </project>
