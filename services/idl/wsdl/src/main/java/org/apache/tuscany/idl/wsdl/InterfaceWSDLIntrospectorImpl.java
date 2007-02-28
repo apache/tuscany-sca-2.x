@@ -26,8 +26,8 @@ import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 
 /**
@@ -41,8 +41,8 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
     /**
      * @param wsdlDefinitionRegistry
      */
-    @Constructor("wsdlDefinitionRegistry")
-    public InterfaceWSDLIntrospectorImpl(@Autowire WSDLDefinitionRegistry wsdlDefinitionRegistry) {
+    @Constructor
+    public InterfaceWSDLIntrospectorImpl(@Reference WSDLDefinitionRegistry wsdlDefinitionRegistry) {
         super();
         this.wsdlDefinitionRegistry = wsdlDefinitionRegistry;
     }

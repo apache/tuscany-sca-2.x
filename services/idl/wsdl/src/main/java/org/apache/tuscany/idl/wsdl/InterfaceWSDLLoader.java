@@ -30,8 +30,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -58,10 +58,10 @@ public class InterfaceWSDLLoader extends LoaderExtension {
 
     private InterfaceWSDLIntrospector introspector;
 
-    @Constructor({"registry", "wsdlRegistry", "introspector"})
-    public InterfaceWSDLLoader(@Autowire LoaderRegistry registry,
-                               @Autowire WSDLDefinitionRegistry wsdlRegistry,
-                               @Autowire InterfaceWSDLIntrospector introspector) {
+    @Constructor
+    public InterfaceWSDLLoader(@Reference LoaderRegistry registry,
+                               @Reference WSDLDefinitionRegistry wsdlRegistry,
+                               @Reference InterfaceWSDLIntrospector introspector) {
         super(registry);
         this.wsdlRegistry = wsdlRegistry;
         this.introspector = introspector;

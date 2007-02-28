@@ -23,7 +23,8 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import javax.sql.DataSource;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
@@ -47,7 +48,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSourceImplementation> {
     private SimpleTypeMapperExtension extension = new SimpleTypeMapperExtension();
 
-    public DSComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry) {
+    public DSComponentTypeLoader(@Reference LoaderRegistry loaderRegistry) {
         super(loaderRegistry);
     }
 
