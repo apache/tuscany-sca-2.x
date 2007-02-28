@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.component;
+package org.apache.tuscany.core.model.physical.java;
 
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
