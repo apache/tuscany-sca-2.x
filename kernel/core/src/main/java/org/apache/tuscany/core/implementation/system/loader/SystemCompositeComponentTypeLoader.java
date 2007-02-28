@@ -57,8 +57,11 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
         }
         ClassLoader cl = implementation.getClassLoader();
         URI componentId = deploymentContext.getComponentId();
-        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation, componentId,
-            false);
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext,
+            cl,
+            scdlLocation,
+            componentId,
+            deploymentContext.isAutowire());
         CompositeComponentType componentType = loadFromSidefile(scdlLocation, childContext);
         implementation.setComponentType(componentType);
     }

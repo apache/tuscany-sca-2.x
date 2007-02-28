@@ -71,13 +71,9 @@ public class ConstructorReferenceTestCase extends TestCase {
     public void testNoName() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class);
-        try {
-            processor.visitConstructor(ctor, type, null);
-            fail();
-        } catch (InvalidReferenceException e) {
-            // expected
-        }
+        Constructor<NoNameFoo> ctor = NoNameFoo.class.getConstructor(String.class);
+        processor.visitConstructor(ctor, type, null);
+        assertNotNull(type.getReferences().get("_ref0"));
     }
 
     public void testNamesOnConstructor() throws Exception {
@@ -125,12 +121,12 @@ public class ConstructorReferenceTestCase extends TestCase {
     private static class Foo {
 
         @org.osoa.sca.annotations.Constructor()
-        public Foo(@Reference(name = "myRef", required = true) String prop) {
+        public Foo(@Reference(name = "myRef", required = true)String prop) {
 
         }
 
         @org.osoa.sca.annotations.Constructor()
-        public Foo(@Reference(name = "myRef1") String prop1, @Reference(name = "myRef2") String prop2) {
+        public Foo(@Reference(name = "myRef1")String prop1, @Reference(name = "myRef2")String prop2) {
 
         }
 
@@ -145,10 +141,18 @@ public class ConstructorReferenceTestCase extends TestCase {
         }
     }
 
+    private static class NoNameFoo {
+
+        @org.osoa.sca.annotations.Constructor
+        public NoNameFoo(@Reference String prop) {
+
+        }
+    }
+
     private static class BadFoo {
 
         @org.osoa.sca.annotations.Constructor
-        public BadFoo(@Reference(name = "myRef") String prop1, @Reference(name = "myRef") String prop2) {
+        public BadFoo(@Reference(name = "myRef")String prop1, @Reference(name = "myRef")String prop2) {
 
         }
 
@@ -163,7 +167,7 @@ public class ConstructorReferenceTestCase extends TestCase {
         }
 
         @org.osoa.sca.annotations.Constructor({"myRef", "myRef2"})
-        public BadFoo(@Reference List ref, @Reference(name = "myOtherRef") List ref2) {
+        public BadFoo(@Reference List ref, @Reference(name = "myOtherRef")List ref2) {
 
         }
 

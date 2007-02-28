@@ -89,12 +89,12 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
             Annotation[] paramAnnotations = annotations[i];
             try {
                 if (!service.processParam(param,
-                                          constructor.getGenericParameterTypes()[i],
-                                          paramAnnotations,
-                                          names,
-                                          i,
-                                          type,
-                                          injectionNames)) {
+                    constructor.getGenericParameterTypes()[i],
+                    paramAnnotations,
+                    names,
+                    i,
+                    type,
+                    injectionNames)) {
                     String name = (i < names.length) ? names[i] : "";
                     service.addName(injectionNames, i, name);
                 }

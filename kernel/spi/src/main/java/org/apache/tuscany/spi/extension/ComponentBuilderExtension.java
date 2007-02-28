@@ -20,8 +20,8 @@ package org.apache.tuscany.spi.extension;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -44,27 +44,27 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     protected WorkContext workContext;
     protected PolicyBuilderRegistry policyBuilderRegistry;
 
-    @Autowire
+    @Reference
     public void setBuilderRegistry(BuilderRegistry registry) {
         this.builderRegistry = registry;
     }
 
-    @Autowire
+    @Reference
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
     }
 
-    @Autowire
+    @Reference
     public void setProxyService(ProxyService proxyService) {
         this.proxyService = proxyService;
     }
 
-    @Autowire
+    @Reference
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }
 
-    @Autowire
+    @Reference
     public void setPolicyBuilderRegistry(PolicyBuilderRegistry registry) {
         policyBuilderRegistry = registry;
     }

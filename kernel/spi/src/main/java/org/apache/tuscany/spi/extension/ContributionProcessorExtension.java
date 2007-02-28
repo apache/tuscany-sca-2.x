@@ -23,6 +23,7 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Service;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
@@ -45,7 +46,7 @@ public abstract class ContributionProcessorExtension implements ContributionProc
     /**
      * @param registry the registry to set
      */
-    @Autowire
+    @Reference
     public void setContributionProcessorRegistry(ContributionProcessorRegistry registry) {
         this.registry = registry;
     }

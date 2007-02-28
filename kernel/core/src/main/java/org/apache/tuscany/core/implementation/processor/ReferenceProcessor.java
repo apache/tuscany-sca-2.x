@@ -51,8 +51,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
 
     private JavaInterfaceProcessorRegistry regsitry;
 
-    public ReferenceProcessor(@Autowire
-    JavaInterfaceProcessorRegistry registry) {
+    public ReferenceProcessor(@Reference JavaInterfaceProcessorRegistry registry) {
         this.regsitry = registry;
     }
 

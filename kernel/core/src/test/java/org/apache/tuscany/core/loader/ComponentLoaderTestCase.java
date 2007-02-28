@@ -133,7 +133,7 @@ public class ComponentLoaderTestCase extends TestCase {
 
         ComponentDefinition component = loader.load(null, mockReader, ctx);
 
-        assertTrue(component.isAutowire());
+        assertTrue(component.getAutowire());
     }
 
     public void testInitValue20() throws LoaderException, XMLStreamException {

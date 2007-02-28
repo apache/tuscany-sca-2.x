@@ -28,8 +28,8 @@ import java.util.Collection;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
@@ -41,7 +41,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 public abstract class ImplementationProcessorExtension implements ImplementationProcessor {
     private IntrospectionRegistry registry;
 
-    @Autowire
+    @Reference
     public void setRegistry(IntrospectionRegistry registry) {
         this.registry = registry;
     }
@@ -92,7 +92,7 @@ public abstract class ImplementationProcessorExtension implements Implementation
                              DeploymentContext context) throws ProcessingException {
 
     }
-    
+
     protected static Class<?> getBaseType(Class<?> cls, Type genericType) {
         if (cls.isArray()) {
             return cls.getComponentType();
@@ -100,12 +100,12 @@ public abstract class ImplementationProcessorExtension implements Implementation
             if (genericType == cls) {
                 return Object.class;
             } else {
-                ParameterizedType parameterizedType = (ParameterizedType)genericType;
+                ParameterizedType parameterizedType = (ParameterizedType) genericType;
                 Type baseType = parameterizedType.getActualTypeArguments()[0];
                 if (baseType instanceof Class) {
-                    return (Class<?>)baseType;
+                    return (Class<?>) baseType;
                 } else if (baseType instanceof ParameterizedType) {
-                    return (Class<?>)((ParameterizedType)baseType).getRawType();
+                    return (Class<?>) ((ParameterizedType) baseType).getRawType();
                 } else {
                     return null;
                 }
@@ -113,5 +113,5 @@ public abstract class ImplementationProcessorExtension implements Implementation
         } else {
             return cls;
         }
-    }    
+    }
 }

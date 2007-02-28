@@ -349,11 +349,14 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         JavaMappedReference reference = new JavaMappedReference();
         String name = refAnnotation.name();
         if (name == null || name.length() == 0) {
-            if (constructorNames.length < pos + 1 || constructorNames[pos] == null
+            if (constructorNames.length == 0 || constructorNames[0].length() == 0) {
+                name = "_ref" + pos;
+            } else if (constructorNames.length < pos + 1 || constructorNames[pos] == null
                 || constructorNames[pos].length() == 0) {
                 throw new InvalidReferenceException("No name specified for reference parameter " + (pos + 1));
+            } else {
+                name = constructorNames[pos];
             }
-            name = constructorNames[pos];
         } else if (pos < constructorNames.length && constructorNames[pos] != null
             && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
             String paramNum = String.valueOf(pos + 1);
