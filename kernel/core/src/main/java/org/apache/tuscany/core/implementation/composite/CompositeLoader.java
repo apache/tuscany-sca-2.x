@@ -78,6 +78,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         ModelObject object,
         XMLStreamReader reader,
         DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         type.setName(reader.getAttributeValue(null, "name"));
@@ -87,7 +88,10 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         while (!done) {
             switch (reader.next()) {
                 case START_ELEMENT:
+                    boolean oldAutowire = deploymentContext.isAutowire();
+                    deploymentContext.setAutowire(autowire);
                     ModelObject o = registry.load(type, reader, deploymentContext);
+                    deploymentContext.setAutowire(oldAutowire);
                     if (o instanceof ServiceDefinition) {
                         type.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {

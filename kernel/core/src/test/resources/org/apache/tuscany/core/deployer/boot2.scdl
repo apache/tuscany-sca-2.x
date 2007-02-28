@@ -23,7 +23,9 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="boot2">
+           name="boot2"
+           autowire="true">
+
 
     <!-- expose Deployer API as a service -->
     <service name="deployer" promote="deployerImpl">

@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.net.URI;
 
 /**
  * Represents a component reference
@@ -82,7 +82,7 @@ public class ReferenceDefinition extends ModelObject {
     /**
      * @deprecated
      */
-    public boolean isAutowire() {
+    public boolean getAutowire() {
         return autowire;
     }
 

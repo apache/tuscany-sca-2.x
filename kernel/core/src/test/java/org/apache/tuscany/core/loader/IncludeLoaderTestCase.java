@@ -88,6 +88,7 @@ public class IncludeLoaderTestCase extends TestCase {
 
         expect(context.getScdlLocation()).andReturn(base);
         expect(context.getClassLoader()).andReturn(cl);
+        expect(context.isAutowire()).andReturn(false);
         expect(context.getComponentId()).andReturn(componentId);
 
         expect(registry.load(
@@ -114,6 +115,7 @@ public class IncludeLoaderTestCase extends TestCase {
 
         expect(context.getScdlLocation()).andReturn(base);
         expect(context.getClassLoader()).andReturn(cl);
+        expect(context.isAutowire()).andReturn(false);
         expect(context.getComponentId()).andReturn(componentId);
 
         expect(registry.load(
@@ -143,6 +145,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(reader.next()).andReturn(END_ELEMENT);
 
         expect(context.getClassLoader()).andReturn(cl);
+        expect(context.isAutowire()).andReturn(false);
         expect(context.getComponentId()).andReturn(componentId);
 
         expect(registry.load(

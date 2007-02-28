@@ -98,7 +98,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      *
      * @return true if autowire is enabled for the component.
      */
-    public boolean isAutowire() {
+    public boolean getAutowire() {
         return autowire;
     }
 

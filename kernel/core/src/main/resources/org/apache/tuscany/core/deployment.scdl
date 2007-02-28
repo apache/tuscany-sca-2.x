@@ -23,35 +23,40 @@
     $Rev$ $Date$
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-    name="org.apache.tuscany.core.Deployment">
+           name="org.apache.tuscany.core.Deployment"
+           autowire="true">
 
     <!-- Contribution Service -->
     <component name="contributionDirectoryWatcher" initLevel="100">
-        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionDirectoryWatcher" />
-        <property name="path">target/deployables</property>        
+        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionDirectoryWatcher"/>
+        <property name="path">target/deployables</property>
     </component>
     <component name="contributionService" initLevel="90">
-        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionServiceImpl" />
+        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionServiceImpl"/>
     </component>
     <component name="contributionRepository" initLevel="40">
-        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionRepositoryImpl" />
+        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionRepositoryImpl"/>
         <property name="repository">target/repository</property>
     </component>
 
     <component name="contributionProcessorRegistry" initLevel="35">
-        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContributionProcessorRegistryImpl" />
+        <system:implementation.system
+            class="org.apache.tuscany.core.services.deployment.ContributionProcessorRegistryImpl"/>
     </component>
     <component name="contentTypeDescriber" initLevel="30">
-        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl" />
+        <system:implementation.system class="org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl"/>
     </component>
     <component name="JarContributionProcessor" initLevel="30">
-        <system:implementation.system class="org.apache.tuscany.core.services.deployment.contribution.JarContributionProcessor" />
+        <system:implementation.system
+            class="org.apache.tuscany.core.services.deployment.contribution.JarContributionProcessor"/>
     </component>
     <component name="JavaContributionProcessor" initLevel="30">
-        <system:implementation.system class="org.apache.tuscany.core.services.deployment.contribution.JavaContributionProcessor" />
+        <system:implementation.system
+            class="org.apache.tuscany.core.services.deployment.contribution.JavaContributionProcessor"/>
     </component>
     <component name="ScdlContributionProcessor" initLevel="30">
-        <system:implementation.system class="org.apache.tuscany.core.services.deployment.contribution.ScdlContributionProcessor" />
-    </component>    
+        <system:implementation.system
+            class="org.apache.tuscany.core.services.deployment.contribution.ScdlContributionProcessor"/>
+    </component>
 
 </composite>

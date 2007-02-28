@@ -59,8 +59,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         return INCLUDE;
     }
 
-    public Include load(ModelObject object, XMLStreamReader reader,
-                        DeploymentContext deploymentContext)
+    public Include load(ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
         assert INCLUDE.equals(reader.getName());
@@ -88,7 +87,8 @@ public class IncludeLoader extends LoaderExtension<Include> {
 
         // when we include, the componentId remains that of the parent
         URI componentId = deploymentContext.getComponentId();
-        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url, componentId, false);
+        boolean autowire = deploymentContext.isAutowire();
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url, componentId, autowire);
         CompositeComponentType composite;
         composite = loadFromSidefile(url, childContext);
 

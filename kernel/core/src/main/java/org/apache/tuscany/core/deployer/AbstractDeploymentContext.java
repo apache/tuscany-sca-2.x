@@ -50,6 +50,7 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
         this.classLoader = classLoader;
         this.scdlLocation = scdlLocation;
         this.componentId = componentId;
+        this.autowire = autowire;
     }
 
     public ClassLoader getClassLoader() {
@@ -66,6 +67,10 @@ public abstract class AbstractDeploymentContext implements DeploymentContext {
 
     public boolean isAutowire() {
         return autowire;
+    }
+
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
     }
 
     @Deprecated

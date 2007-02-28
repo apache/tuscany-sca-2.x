@@ -22,6 +22,7 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
@@ -43,7 +44,7 @@ public abstract class ComponentTypeLoaderExtension<I extends Implementation> imp
         this.loaderRegistry = loaderRegistry;
     }
 
-    @Autowire
+    @Reference
     public void setLoaderRegistry(LoaderRegistry loaderRegistry) {
         this.loaderRegistry = loaderRegistry;
     }

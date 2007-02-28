@@ -24,20 +24,23 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.core.Composite">
+           name="org.apache.tuscany.core.Composite"
+           autowire="true">
 
     <!-- Composite implementation type -->
     <component name="composite.loader">
         <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeLoader"/>
     </component>
     <component name="composite.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.ImplementationCompositeLoader"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.implementation.composite.ImplementationCompositeLoader"/>
     </component>
     <component name="composite.dependencyLoader">
         <system:implementation.system class="org.apache.tuscany.core.loader.DependencyLoader"/>
     </component>
     <component name="composite.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeComponentTypeLoader"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.implementation.composite.CompositeComponentTypeLoader"/>
     </component>
     <component name="composite.builder">
         <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeBuilder"/>

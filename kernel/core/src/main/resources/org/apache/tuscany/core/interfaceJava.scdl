@@ -24,7 +24,8 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.core.InterfaceJava">
+           name="org.apache.tuscany.core.InterfaceJava"
+           autowire="true">
 
     <component name="interfaceJava.interfaceProcessorRegistry">
         <system:implementation.system class="org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl"/>

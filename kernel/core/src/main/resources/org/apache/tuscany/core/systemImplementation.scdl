@@ -24,21 +24,26 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.core.SystemImplementation">
+           name="org.apache.tuscany.core.SystemImplementation"
+           autowire="true">
 
     <!-- System implementation type -->
     <component name="system.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader"/>
     </component>
 
     <component name="system.compositeComponentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader"/>
     </component>
     <component name="system.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemImplementationLoader"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.implementation.system.loader.SystemImplementationLoader"/>
     </component>
     <component name="system.componentBuilder">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder"/>
     </component>
     <component name="system.compositeBuilder">
         <system:implementation.system class="org.apache.tuscany.core.implementation.composite.SystemCompositeBuilder"/>

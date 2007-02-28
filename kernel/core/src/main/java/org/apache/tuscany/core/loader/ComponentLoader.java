@@ -36,10 +36,10 @@ import javax.xml.stream.XMLStreamReader;
 import org.w3c.dom.Document;
 import static org.osoa.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -91,7 +91,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     private PropertyObjectFactory propertyFactory;
 
     @Constructor
-    public ComponentLoader(@Autowire LoaderRegistry registry, @Autowire PropertyObjectFactory propertyFactory) {
+    public ComponentLoader(@Reference LoaderRegistry registry, @Reference PropertyObjectFactory propertyFactory) {
         super(registry);
         this.propertyFactory = propertyFactory;
     }
@@ -106,11 +106,18 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         assert COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String initLevel = reader.getAttributeValue(null, "initLevel");
-        boolean autowire = Boolean.parseBoolean(reader.getAttributeValue(null, "autowire")) || context.isAutowire();
+        String autowireAttr = reader.getAttributeValue(null, "autowire");
+        boolean autowire;
+        if (autowireAttr == null) {
+            autowire = context.isAutowire();
+        } else {
+            autowire = Boolean.parseBoolean(autowireAttr);
+        }
 
         URI componentId = URI.create(context.getComponentId() + "/").resolve(name);
         ClassLoader loader = context.getClassLoader();
         URL location = context.getScdlLocation();
+        // xcv test
         DeploymentContext childContext = new ChildDeploymentContext(context, loader, location, componentId, autowire);
         Implementation<?> impl = loadImplementation(reader, childContext);
         registry.loadComponentType(impl, childContext);
@@ -149,11 +156,12 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
                             (ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>) componentDefinition
                                 .getImplementation().getComponentType();
+
                         for (ReferenceDefinition ref : type.getReferences().values()) {
                             // add reference target definitions if autowire is enabled for references that are not
                             // explicitly configured with autowire by the component
                             if (!componentDefinition.getReferenceTargets().containsKey(ref.getUri().getFragment())) {
-                                if (ref.isAutowire() || autowire) {
+                                if (ref.getAutowire() || autowire) {
                                     ReferenceTarget referenceTarget = new ReferenceTarget();
                                     String compName = componentDefinition.getUri().toString();
                                     URI refName = URI.create(compName + ref.getUri().toString());
@@ -301,7 +309,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             return;
         }
         for (ReferenceDefinition referenceDef : type.getReferences().values()) {
-            if (referenceDef.isAutowire() || !referenceDef.isRequired()) {
+            if (referenceDef.getAutowire() || !referenceDef.isRequired()) {
                 continue;
             }
             String name = referenceDef.getUri().getFragment();

@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.extension;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
@@ -43,7 +44,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public abstract class BindingBuilderExtension<B extends BindingDefinition> implements BindingBuilder<B> {
     protected BuilderRegistry builderRegistry;
 
-    @Autowire
+    @Reference
     public void setBuilderRegistry(BuilderRegistry registry) {
         this.builderRegistry = registry;
     }
