@@ -26,7 +26,6 @@ import java.util.Collection;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
@@ -60,29 +59,17 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
         DeploymentContext context) throws ProcessingException {
         Reference annotation = method.getAnnotation(Reference.class);
-        Autowire autowire = method.getAnnotation(Autowire.class);
-        boolean isAutowire = autowire != null;
-        if (annotation == null && !isAutowire) {
-            return; // Not a reference or autowire annotation.
+        if (annotation == null) {
+            return; // Not a reference annotation.
         }
         if (method.getParameterTypes().length != 1) {
             throw new IllegalReferenceException("Setter must have one parameter", method.toString());
         }
-        // process autowire required first let reference override. or if
-        // conflicting should this fault?
-        boolean required = false;
-        if (isAutowire) {
-            required = autowire.required();
-        }
-
         String name = null;
-
-        if (annotation != null) {
-            if (annotation.name() != null && annotation.name().length() > 0) {
-                name = annotation.name();
-            }
-            required = annotation.required();
+        if (annotation.name() != null && annotation.name().length() > 0) {
+            name = annotation.name();
         }
+        boolean required = annotation.required();
         if (name == null) {
             name = toPropertyName(method.getName());
         }
@@ -92,7 +79,6 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
 
         JavaMappedReference reference = new JavaMappedReference();
         reference.setMember(method);
-        reference.setAutowire(isAutowire);
         reference.setRequired(required);
         reference.setUri(URI.create("#" + name));
         ServiceContract contract;
@@ -125,18 +111,14 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
         DeploymentContext context) throws ProcessingException {
         Reference annotation = field.getAnnotation(Reference.class);
-        boolean autowire = field.getAnnotation(Autowire.class) != null;
-        if (annotation == null && !autowire) {
+        if (annotation == null) {
             return;
         }
         String name = field.getName();
-        boolean required = false;
-        if (annotation != null) {
-            if (annotation.name() != null) {
-                name = annotation.name();
-            }
-            required = annotation.required();
+        if (annotation.name() != null) {
+            name = annotation.name();
         }
+        boolean required = annotation.required();
         if (name.length() == 0) {
             name = field.getName();
         }
@@ -146,7 +128,6 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         JavaMappedReference reference = new JavaMappedReference();
         reference.setMember(field);
         reference.setRequired(required);
-        reference.setAutowire(autowire);
         reference.setUri(URI.create("#" + name));
         ServiceContract contract;
         try {

@@ -161,7 +161,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                             // add reference target definitions if autowire is enabled for references that are not
                             // explicitly configured with autowire by the component
                             if (!componentDefinition.getReferenceTargets().containsKey(ref.getUri().getFragment())) {
-                                if (ref.getAutowire() || autowire) {
+                                if (autowire) {
                                     ReferenceTarget referenceTarget = new ReferenceTarget();
                                     String compName = componentDefinition.getUri().toString();
                                     URI refName = URI.create(compName + ref.getUri().toString());
@@ -309,7 +309,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             return;
         }
         for (ReferenceDefinition referenceDef : type.getReferences().values()) {
-            if (referenceDef.getAutowire() || !referenceDef.isRequired()) {
+            if (!referenceDef.isRequired()) {
                 continue;
             }
             String name = referenceDef.getUri().getFragment();
