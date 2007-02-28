@@ -20,10 +20,11 @@
 package org.apache.tuscany.core.databinding.impl;
 
 import java.util.List;
-
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.Mediator;
@@ -34,16 +35,12 @@ import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.apache.tuscany.spi.idl.ElementInfo;
-import org.apache.tuscany.spi.model.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
-
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Reference;
+import org.apache.tuscany.spi.model.WrapperInfo;
 
 /**
- * This is a special transformer to transform the input from one IDL to the
- * other one
+ * This is a special transformer to transform the input from one IDL to the other one
  */
 @Service(Transformer.class)
 public class Input2InputTransformer extends TransformerExtension<Object[], Object[]> implements
@@ -111,7 +108,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     @SuppressWarnings("unchecked")
     public Object[] transform(Object[] source, TransformationContext context) {
         DataType<List<DataType<?>>> sourceType = context.getSourceDataType();
-        Operation<?> sourceOp = (Operation<?>)sourceType.getOperation();
+        Operation<?> sourceOp = (Operation<?>) sourceType.getOperation();
         boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
 
         WrapperHandler sourceWrapperHandler = null;
@@ -120,7 +117,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
         }
 
         DataType<List<DataType<QName>>> targetType = context.getTargetDataType();
-        Operation<?> targetOp = (Operation<?>)targetType.getOperation();
+        Operation<?> targetOp = (Operation<?>) targetType.getOperation();
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
         WrapperHandler targetWrapperHandler = null;
         if (targetWrapped) {
@@ -142,7 +139,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             }
             Object targetWrapper = targetWrapperHandler.create(wrapperElement, context);
             if (source == null) {
-                return new Object[] {targetWrapper};
+                return new Object[]{targetWrapper};
             }
             List<DataType<QName>> argTypes = wrapper.getUnwrappedInputType().getLogical();
 
@@ -155,7 +152,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
                         .getMetadata());
                 targetWrapperHandler.setChild(targetWrapper, i, argElement, child);
             }
-            return new Object[] {targetWrapper};
+            return new Object[]{targetWrapper};
         } else if (sourceWrapped && (!targetWrapped)) {
             // Wrapped to Unwrapped
             Object sourceWrapper = source[0];
@@ -169,12 +166,12 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
                 // targetWrapperHandler.create(wrapperElement, context);
                 DataType<QName> targetWrapperType =
                     new DataType<QName>(targetType.getOperation().getDataBinding(), Object.class,
-                                        wrapperElement.getQName());
+                        wrapperElement.getQName());
                 Object targetWrapper =
                     mediator.mediate(sourceWrapper,
-                                     sourceType.getLogical().get(0),
-                                     targetWrapperType,
-                                     context.getMetadata());
+                        sourceType.getLogical().get(0),
+                        targetWrapperType,
+                        context.getMetadata());
                 for (int i = 0; i < childElements.size(); i++) {
                     ElementInfo childElement = childElements.get(i);
                     target[i] = targetWrapperHandler.getChild(targetWrapper, i, childElement);
@@ -210,7 +207,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
         WrapperHandler wrapperHandler = dataBinding == null ? null : dataBinding.getWrapperHandler();
         if (wrapperHandler == null && required) {
             throw new TransformationException(
-                                              "No wrapper handler is provided for databinding: " + dataBindingId);
+                "No wrapper handler is provided for databinding: " + dataBindingId);
         }
         return wrapperHandler;
     }
