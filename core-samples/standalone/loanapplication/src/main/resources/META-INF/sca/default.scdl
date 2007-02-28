@@ -41,3 +41,28 @@
     </component>
 
 </composite>
+
+<!-- Alternatively, the following demonstrates the same assembly using autowire instead of direct references -->
+<!--
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
+           name="LoanApplication"
+           autowire="true">
+    <component name="LoanClient">
+        <launched:launched class="loanapplication.client.impl.ClientServiceImpl"/>
+    </component>
+
+    <component name="LoanService">
+        <implementation.java class="loanapplication.provider.impl.LoanServiceImpl"/>
+    </component>
+
+    <component name="CreditService">
+        <implementation.java class="loanapplication.provider.impl.CreditServiceImpl"/>
+    </component>
+
+    <component name="RateService">
+        <implementation.java class="loanapplication.provider.impl.RateServiceImpl"/>
+    </component>
+
+</composite>
+-->
