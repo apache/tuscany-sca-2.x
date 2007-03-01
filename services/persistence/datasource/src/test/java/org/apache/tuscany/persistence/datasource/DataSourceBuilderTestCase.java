@@ -21,7 +21,6 @@ package org.apache.tuscany.persistence.datasource;
 import java.net.URI;
 import javax.sql.DataSource;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -40,8 +39,6 @@ import org.easymock.EasyMock;
 public class DataSourceBuilderTestCase extends TestCase {
 
     public void testBuild() throws Exception {
-        Component parent = EasyMock.createMock(Component.class);
-        EasyMock.replay(parent);
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         EasyMock.replay(scope);
         DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
@@ -68,7 +65,6 @@ public class DataSourceBuilderTestCase extends TestCase {
 
         DataSource ds = (DataSource) component.createInstance();
         assertNotNull(ds);
-        EasyMock.verify(parent);
         EasyMock.verify(ctx);
         EasyMock.verify(scope);
     }
