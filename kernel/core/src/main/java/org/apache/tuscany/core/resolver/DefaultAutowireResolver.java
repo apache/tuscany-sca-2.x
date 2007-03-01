@@ -56,11 +56,13 @@ public class DefaultAutowireResolver implements AutowireResolver {
                     // recurse decendents for composites
                     resolve((ComponentDefinition<Implementation<CompositeComponentType<?, ?, ?>>>) definition, child);
                 }
-                for (ReferenceTarget target : child.getReferenceTargets().values()) {
-                    if (target.getTargets().isEmpty()) {  // TODO JFM should be isAutowire
-                        String fragment = target.getReferenceName().getFragment();
-                        ReferenceDefinition reference = childType.getReferences().get(fragment);
-                        assert reference != null;
+                Map<String, ReferenceTarget> targets = child.getReferenceTargets();
+                for (ReferenceDefinition reference : childType.getReferences().values()) {
+                    ReferenceTarget target = targets.get(reference.getUri().getFragment());
+                    if (target == null) {
+                        continue;
+                    }
+                    if (target.isAutowire()) {
                         ServiceContract requiredContract = reference.getServiceContract();
                         resolve(compositeType, requiredContract, target, reference.isRequired());
                     }
@@ -68,17 +70,19 @@ public class DefaultAutowireResolver implements AutowireResolver {
             }
         } else {
             // a leaf level component
-            for (ReferenceTarget target : definition.getReferenceTargets().values()) {
-                if (target.getTargets().isEmpty()) {    // TODO JFM should be isAutowire
-                    String fragment = target.getReferenceName().getFragment();
-                    ReferenceDefinition reference = type.getReferences().get(fragment);
-                    assert reference != null;
+            ComponentType<?, ?, ?> componentType = definition.getImplementation().getComponentType();
+            Map<String, ReferenceTarget> targets = definition.getReferenceTargets();
+            for (ReferenceDefinition reference : componentType.getReferences().values()) {
+                ReferenceTarget target = targets.get(reference.getUri().getFragment());
+                if (target == null) {
+                    continue;
+                }
+                if (target.isAutowire()) {
                     ServiceContract requiredContract = reference.getServiceContract();
                     CompositeComponentType<?, ?, ?> ctype = parentDefinition.getImplementation().getComponentType();
                     resolve(ctype, requiredContract, target, reference.isRequired());
                 }
             }
-
         }
     }
 
@@ -115,7 +119,7 @@ public class DefaultAutowireResolver implements AutowireResolver {
             ComponentType<?, ?, ?> candidateType = candidateImpl.getComponentType();
             for (ServiceDefinition service : candidateType.getServices().values()) {
                 Class<?> serviceInterface = service.getServiceContract().getInterfaceClass();
-                if (serviceInterface == null){
+                if (serviceInterface == null) {
                     continue;
                 }
                 if (requiredInterface.equals(serviceInterface)) {
@@ -130,18 +134,17 @@ public class DefaultAutowireResolver implements AutowireResolver {
             }
         }
         if (targetUri == null) {
-            if (candidateUri == null) {
-                candidateUri = resolvePrimordial(requiredContract);
-                if (candidateUri == null && !required) {
-                    return;
-                } else if (candidateUri == null) {
-                    String refName = target.getReferenceName().toString();
-                    throw new AutowireTargetNotFoundException("No matching target found for " + refName, refName);
-                }
-            }
-            target.addTarget(candidateUri);
-        } else {
+            targetUri = resolvePrimordial(requiredContract);
+        }
+        if (candidateUri != null) {
+            targetUri = candidateUri;
+        }
+        if (targetUri != null) {
             target.addTarget(targetUri);
+        }
+        if (targetUri == null && required) {
+            String uri = target.getReferenceName().toString();
+            throw new AutowireTargetNotFoundException("No suitable target found for", uri);
         }
     }
 

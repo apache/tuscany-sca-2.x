@@ -166,6 +166,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                     String compName = componentDefinition.getUri().toString();
                                     URI refName = URI.create(compName + ref.getUri().toString());
                                     referenceTarget.setReferenceName(refName);
+                                    referenceTarget.setAutowire(autowire);
                                     componentDefinition.add(referenceTarget);
                                 }
                             }
@@ -316,6 +317,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             ReferenceTarget target = definition.getReferenceTargets().get(name);
             if (target == null) {
                 throw new MissingReferenceException(name);
+            }
+            if (target.isAutowire()){
+                // autowire targets are not set yet
+                continue;
             }
             int count = target.getTargets().size();
             Multiplicity multiplicity = referenceDef.getMultiplicity();

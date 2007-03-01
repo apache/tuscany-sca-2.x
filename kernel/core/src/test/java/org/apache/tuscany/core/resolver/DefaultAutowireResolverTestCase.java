@@ -138,6 +138,7 @@ public class DefaultAutowireResolverTestCase extends TestCase {
         ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<MockAtomicImpl>(uri, impl);
         ReferenceTarget target = new ReferenceTarget();
         target.setReferenceName(REFERENCE_URI);
+        target.setAutowire(true);
         definition.add(target);
         return definition;
     }
