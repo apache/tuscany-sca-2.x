@@ -67,8 +67,6 @@
                 <include>org.osoa:sca-api-r1.0</include>
                 <include>org.apache.tuscany.sca.kernel:tuscany-api</include>
                 <include>org.apache.tuscany.sca.kernel:tuscany-host-api</include>
-                <!-- servlet api need to be loaded for axis  -->
-                <include>javax.servlet:servlet-api</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
             <outputFileNameMapping>${artifactId}-${baseVersion}.${extension}</outputFileNameMapping>
@@ -80,8 +78,6 @@
                 <include>org.apache.tuscany.sca.runtime.standalone:standalone-host</include>
             </includes>
             <excludes>
-                <exclude>org.apache.tuscany.sca.runtime.standalone:standalone-api</exclude>
-                <exclude>org.apache.tuscany.sca.kernel:tuscany-host-api</exclude>
                 <exclude>junit:junit</exclude>
             </excludes>
             <outputDirectory>profiles/launcher/boot</outputDirectory>
