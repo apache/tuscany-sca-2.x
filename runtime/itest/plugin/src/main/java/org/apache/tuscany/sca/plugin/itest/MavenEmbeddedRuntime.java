@@ -29,8 +29,11 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
+import org.apache.maven.plugin.logging.Log;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.runtime.InitializationException;
+import org.apache.tuscany.sca.plugin.itest.monitor.MavenLoggingMonitorFactory;
 
 /**
  * @version $Rev$ $Date$
@@ -38,8 +41,10 @@ import org.apache.tuscany.host.runtime.InitializationException;
 public class MavenEmbeddedRuntime extends AbstractRuntime<MavenRuntimeInfo> {
     private ArtifactRepository artifactRepository;
 
-    public MavenEmbeddedRuntime() {
+    public MavenEmbeddedRuntime(Log log) {
         super(MavenRuntimeInfo.class);
+        MonitorFactory monitorFactory = new MavenLoggingMonitorFactory(log);
+        setMonitorFactory(monitorFactory);
     }
 
     protected void registerBaselineSystemComponents() throws InitializationException {
