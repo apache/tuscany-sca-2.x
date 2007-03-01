@@ -49,8 +49,8 @@ public class LoanServiceImpl implements LoanService, Serializable {
      * @param creditService the credit service
      * @param rateService   the rate service
      */
-    public LoanServiceImpl(@Reference(name = "creditService")CreditService creditService,
-                           @Reference(name = "rateService")RateService rateService) {
+    public LoanServiceImpl(@Reference(name = "creditService", required = true)CreditService creditService,
+                           @Reference(name = "rateService", required = true)RateService rateService) {
         this.creditService = creditService;
         this.rateService = rateService;
     }
