@@ -20,9 +20,8 @@ package org.apache.tuscany.transaction.geronimo.jta;
 
 import javax.resource.spi.XATerminator;
 
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
-
-import org.apache.tuscany.spi.annotation.Autowire;
 
 import org.apache.geronimo.transaction.ExtendedTransactionManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
@@ -36,7 +35,7 @@ import org.apache.geronimo.transaction.manager.XidImporter;
 @Service(XATerminator.class)
 public class XATerminatorService extends TransactionContextManager {
 
-    public XATerminatorService(@Autowire ExtendedTransactionManager tm, @Autowire XidImporter importer) {
+    public XATerminatorService(@Reference ExtendedTransactionManager tm, @Reference XidImporter importer) {
         super(tm, importer);
     }
 }

@@ -34,8 +34,8 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.host.ResourceHostRegistry;
 
 import org.apache.geronimo.transaction.ExtendedTransactionManager;
@@ -58,8 +58,8 @@ public class GeronimoTransactionManagerService implements TransactionManager, Ex
     private GeronimoTransactionLogService logService;
     private int timeout = 250;
 
-    public GeronimoTransactionManagerService(@Autowire ResourceHostRegistry hostRegistry,
-                                             @Autowire GeronimoTransactionLogService logService) {
+    public GeronimoTransactionManagerService(@Reference ResourceHostRegistry hostRegistry,
+                                             @Reference GeronimoTransactionLogService logService) {
         this.hostRegistry = hostRegistry;
         this.logService = logService;
     }
