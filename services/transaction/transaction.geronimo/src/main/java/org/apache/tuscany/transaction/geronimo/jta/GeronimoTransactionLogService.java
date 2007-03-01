@@ -23,11 +23,10 @@ import java.io.File;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
-
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.geronimo.transaction.manager.XidFactory;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.objectweb.howl.log.Configuration;
 
 /**
@@ -52,7 +51,7 @@ public class GeronimoTransactionLogService {
     private boolean checksumEnabled = true;
     private String bufferClassName = "org.objectweb.howl.log.BlockLogBuffer";
 
-    public GeronimoTransactionLogService(@Autowire StandaloneRuntimeInfo info, @Autowire XidFactory xidFactory) {
+    public GeronimoTransactionLogService(@Reference StandaloneRuntimeInfo info, @Reference XidFactory xidFactory) {
         this.info = info;
         this.xidFactory = xidFactory;
     }
