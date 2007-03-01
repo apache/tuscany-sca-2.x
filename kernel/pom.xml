@@ -69,7 +69,7 @@
             <dependency>
                 <groupId>org.osoa</groupId>
                 <artifactId>sca-api-r${scaSpecVersion}</artifactId>
-                <version>1.0-alpha-incubating-SNAPSHOT</version>
+                <version>1.0-incubating-SNAPSHOT</version>
                 <scope>compile</scope>
             </dependency>
 
