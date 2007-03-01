@@ -23,10 +23,10 @@ import java.net.URI;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -56,20 +56,19 @@ public class PersistenceUnitProcessor extends ImplementationProcessorExtension {
     private ComponentManager componentManager;
     private InterfaceJavaIntrospector introspector;
 
-    @Autowire
+    @Reference
     public void setComponentManager(ComponentManager componentManager) {
         this.componentManager = componentManager;
     }
 
-    @Autowire
+    @Reference
     public void setIntrospector(InterfaceJavaIntrospector introspector) {
         this.introspector = introspector;
     }
 
 
     @SuppressWarnings({"unchecked"})
-    public void visitField(CompositeComponent parent,
-                           Field field,
+    public void visitField(Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
 
@@ -78,7 +77,7 @@ public class PersistenceUnitProcessor extends ImplementationProcessorExtension {
             return;
         }
         String unitName = annotation.unitName();
-        URI unitUri = parent.getUri().resolve(unitName);
+        URI unitUri = context.getComponentId().resolve(unitName);
         AtomicComponent component = (AtomicComponent) componentManager.getComponent(unitUri);
         EntityManagerFactory emf;
         if (component == null) {
