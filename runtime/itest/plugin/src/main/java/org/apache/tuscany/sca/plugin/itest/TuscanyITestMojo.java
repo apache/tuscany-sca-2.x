@@ -54,6 +54,7 @@ import org.apache.maven.surefire.suite.SurefireTestSuite;
 import org.apache.maven.surefire.testset.TestSetFailedException;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
+import org.apache.tuscany.api.annotation.LogLevel;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.sca.plugin.itest.implementation.junit.ImplementationJUnit;
 import org.apache.tuscany.spi.component.Component;
@@ -191,13 +192,16 @@ public class TuscanyITestMojo extends AbstractMojo {
      * @readonly
      */
     public ArtifactFactory artifactFactory;
+    private MojoMonitor monitor;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
         log.info("Starting Tuscany...");
         ClassLoader cl = createHostClassLoader(getClass().getClassLoader(), extensions);
         MavenEmbeddedRuntime runtime = createRuntime(cl);
-        runtime.setMonitorFactory(new MavenMonitorFactory(log));
+        MavenMonitorFactory monitorFactory = new MavenMonitorFactory(log);
+        runtime.setMonitorFactory(monitorFactory);
+        monitor = monitorFactory.getMonitor(MojoMonitor.class);
         try {
             runtime.initialize();
         } catch (InitializationException e) {
@@ -227,6 +231,7 @@ public class TuscanyITestMojo extends AbstractMojo {
                     component.start();
                 }
             } catch (Exception e) {
+                monitor.runError(e);
                 throw new MojoExecutionException("Error deploying test component " + testScdl, e);
             }
             log.info("Executing tests...");
@@ -241,7 +246,7 @@ public class TuscanyITestMojo extends AbstractMojo {
             try {
                 runtime.destroy();
             } catch (TuscanyRuntimeException e) {
-                log.error("Error stopping Tuscany runtime", e);
+                monitor.runError(e);
             }
         }
     }
@@ -345,7 +350,7 @@ public class TuscanyITestMojo extends AbstractMojo {
                                                                                                  metadataSource,
                                                                                                  localRepository,
                                                                                                  remoteRepositories);
-        MavenEmbeddedRuntime runtime = new MavenEmbeddedRuntime();
+        MavenEmbeddedRuntime runtime = new MavenEmbeddedRuntime(getLog());
         runtime.setRuntimeInfo(runtimeInfo);
         runtime.setSystemScdl(systemScdl);
         runtime.setHostClassLoader(hostClassLoader);
@@ -406,4 +411,10 @@ public class TuscanyITestMojo extends AbstractMojo {
         Map<String, ? extends Operation<?>> operations = testService.getServiceContract().getOperations();
         return new SCATestSet(runtime, name, uri, operations.values());
     }
+
+    public interface MojoMonitor {
+        @LogLevel("SEVERE")
+        void runError(Exception e);
+    }
+
 }

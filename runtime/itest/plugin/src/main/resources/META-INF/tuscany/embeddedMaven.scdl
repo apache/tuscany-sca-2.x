@@ -103,8 +103,11 @@
     <!-- Java interface definition language -->
     <include name="org.apache.tuscany.core.InterfaceJava" scdlResource="org/apache/tuscany/core/interfaceJava.scdl"/>
 
-    <!-- include omposite implementation type -->
+    <!-- include composite implementation type -->
     <include name="org.apache.tuscany.core.Composite" scdlResource="org/apache/tuscany/core/composite.scdl"/>
+
+    <!-- include exception formatters  -->
+    <include name="org.apache.tuscany.core.Formatters" scdlResource="org/apache/tuscany/core/formatters.scdl"/>
 
     <!-- System implementation type -->
     <include name="org.apache.tuscany.core.SystemImplementation"
