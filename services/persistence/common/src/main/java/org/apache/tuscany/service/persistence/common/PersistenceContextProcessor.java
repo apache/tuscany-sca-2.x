@@ -29,9 +29,9 @@ import javax.persistence.PersistenceContextType;
 import javax.persistence.PersistenceProperty;
 import javax.transaction.TransactionManager;
 
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -68,21 +68,21 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
      *
      * @param service Implementation processor service.
      */
-    public PersistenceContextProcessor(@Autowire ImplementationProcessorService service) {
+    public PersistenceContextProcessor(@Reference ImplementationProcessorService service) {
         super(PersistenceContext.class, service);
     }
 
-    @Autowire
+    @Reference
     public void setTransactionManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
-    @Autowire
+    @Reference
     public void setComponentManager(ComponentManager componentManager) {
         this.componentManager = componentManager;
     }
 
-    @Autowire
+    @Reference
     public void setIntrospector(InterfaceJavaIntrospector introspector) {
         this.introspector = introspector;
     }
@@ -101,11 +101,10 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
     @SuppressWarnings("unchecked")
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     PersistenceContext annotation,
-                                    CompositeComponent parent,
                                     DeploymentContext context) throws ProcessingException {
 
         String unitName = annotation.unitName();
-        URI unitUri = parent.getUri().resolve(unitName);
+        URI unitUri = context.getComponentId().resolve(unitName);
         EntityManagerFactory emf = (EntityManagerFactory) componentManager.getComponent(unitUri);
 
         if (emf == null) {

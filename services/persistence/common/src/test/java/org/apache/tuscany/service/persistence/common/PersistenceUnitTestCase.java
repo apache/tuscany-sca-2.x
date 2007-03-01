@@ -1,9 +1,5 @@
 package org.apache.tuscany.service.persistence.common;
 
-import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_SYSTEM;
-import org.apache.tuscany.spi.component.CompositeComponent;
-
-import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import junit.framework.TestCase;
 
 public class PersistenceUnitTestCase extends TestCase {
