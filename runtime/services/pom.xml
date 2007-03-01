@@ -34,7 +34,6 @@
     <modules>
         <module>management</module>
         <module>maven</module>
-        <module>discovery</module>
     </modules>
     
 </project>
