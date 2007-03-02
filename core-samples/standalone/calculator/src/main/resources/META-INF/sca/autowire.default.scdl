@@ -20,7 +20,14 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
            name="CalculatorComposite"
-			  autowire="true">
+           autowire="true">
+
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.tuscany.sca.core-samples.common</group>
+        <name>calculator</name>
+        <version>1.0-alpha-incubating-SNAPSHOT</version>
+        <type>composite</type>
+    </dependency>
 
     <component name="CalculatorClient">
 		<launched:launched class="calculator.CalculatorClient"/>
