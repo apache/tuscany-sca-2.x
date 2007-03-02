@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.implementation.composite.SystemSingletonAtomicComponent;
-import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.DuplicateNameException;
@@ -32,6 +30,8 @@ import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
+
+import org.apache.tuscany.core.resolver.AutowireResolver;
 
 /**
  * Default implementation of the component manager
