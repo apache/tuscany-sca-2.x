@@ -19,18 +19,17 @@
 package org.apache.tuscany.core.loader;
 
 import java.io.StringReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.spi.util.stax.StaxUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
@@ -47,7 +46,7 @@ public class PropertyParsingTestCase extends TestCase {
             + "</property>";
 
         XMLStreamReader reader = getReader(xml);
-        StaxUtil.loadPropertyValue(reader, root);
+        PropertyUtils.loadPropertyValue(reader, root);
         NodeList childNodes = root.getChildNodes();
         assertEquals(2, childNodes.getLength());
 

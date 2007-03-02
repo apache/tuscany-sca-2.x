@@ -209,7 +209,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         } else {
             try {
                 DocumentBuilder documentBuilder = DOMHelper.newDocumentBuilder();
-                Document value = StaxUtil.createPropertyValue(reader, property.getXmlType(), documentBuilder);
+                Document value = PropertyUtils.createPropertyValue(reader, property.getXmlType(), documentBuilder);
                 propertyValue = new PropertyValue<Type>(name, value);
             } catch (ParserConfigurationException e) {
                 throw new LoaderException(e);

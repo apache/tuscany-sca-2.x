@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.loader;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -38,7 +40,6 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 /**
  * Loads a reference from an XML-based assembly file
@@ -47,6 +48,14 @@ import org.apache.tuscany.spi.util.stax.StaxUtil;
  */
 public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
     public static final QName REFERENCE = new QName(SCA_NS, "reference");
+    private static final Map<String, Multiplicity> MULTIPLICITY = new HashMap<String, Multiplicity>(4);
+
+    static {
+        MULTIPLICITY.put("0..1", Multiplicity.ZERO_ONE);
+        MULTIPLICITY.put("1..1", Multiplicity.ONE_ONE);
+        MULTIPLICITY.put("0..n", Multiplicity.ZERO_N);
+        MULTIPLICITY.put("1..n", Multiplicity.ONE_N);
+    }
 
     @Constructor
     public ReferenceLoader(@Reference LoaderRegistry registry) {
@@ -62,7 +71,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         assert REFERENCE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String multiplicityVal = reader.getAttributeValue(null, "multiplicity");
-        Multiplicity multiplicity = StaxUtil.multiplicity(multiplicityVal, Multiplicity.ONE_ONE);
+        Multiplicity multiplicity = multiplicity(multiplicityVal, Multiplicity.ONE_ONE);
         ReferenceDefinition referenceDefinition = new ReferenceDefinition();
         referenceDefinition.setMultiplicity(multiplicity);
         referenceDefinition.setUri(context.getComponentId().resolve('#' + name));
@@ -83,4 +92,16 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
             }
         }
     }
+
+    /**
+     * Convert a "multiplicity" attribute to the equivalent enum value.
+     *
+     * @param multiplicity the attribute to convert
+     * @param def          the default value
+     * @return the enum equivalent
+     */
+    private static Multiplicity multiplicity(String multiplicity, Multiplicity def) {
+        return multiplicity == null ? def : MULTIPLICITY.get(multiplicity);
+    }
+
 }
