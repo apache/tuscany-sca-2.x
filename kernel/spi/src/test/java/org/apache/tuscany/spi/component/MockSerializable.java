@@ -16,37 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.util;
+package org.apache.tuscany.spi.component;
 
 import java.io.Serializable;
-
-import org.apache.tuscany.spi.component.ReactivationException;
-import org.apache.tuscany.spi.component.SCAExternalizable;
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * @version $Rev$ $Date$
  */
 @SuppressWarnings({"SerializableHasSerializationMethods"})
-public class MockSCAExternalizable implements Serializable, SCAExternalizable {
-    private static final long serialVersionUID = 5071815222959279772L;
+public class MockSerializable implements Serializable {
+    private static final long serialVersionUID = 4013396228070042469L;
 
-    private WorkContext context;
-    private boolean activated;
+    private MockSCAExternalizable externalizable;
 
-    public void setWorkContext(WorkContext context) {
-        this.context = context;
+    public MockSerializable() {
     }
 
-    public WorkContext getContext() {
-        return context;
+    public MockSCAExternalizable getExternalizable() {
+        return externalizable;
     }
 
-    public void reactivate() throws ReactivationException {
-        activated = true;
-    }
-
-    public boolean isActivated() {
-        return activated;
+    public void setExternalizable(MockSCAExternalizable externalizable) {
+        this.externalizable = externalizable;
     }
 }
