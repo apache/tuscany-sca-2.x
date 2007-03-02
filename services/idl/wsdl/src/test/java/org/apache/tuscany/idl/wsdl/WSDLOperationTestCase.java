@@ -30,7 +30,7 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.model.ElementInfo;
 import org.apache.tuscany.spi.model.DataType;
 
 /**
