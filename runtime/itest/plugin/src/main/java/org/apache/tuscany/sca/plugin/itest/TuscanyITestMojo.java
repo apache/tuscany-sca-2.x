@@ -196,6 +196,11 @@ public class TuscanyITestMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
+        if (!testScdl.exists()) {
+            log.info("No itest SCDL found, skipping integration tests");
+            return;
+        }
+
         log.info("Starting Tuscany...");
         ClassLoader cl = createHostClassLoader(getClass().getClassLoader(), extensions);
         MavenEmbeddedRuntime runtime = createRuntime(cl);
