@@ -36,7 +36,8 @@ public class CalculatorClient {
     public int main(String[] args) throws Exception {
         
         if(args.length != 3) {
-            throw new IllegalArgumentException("Usage <add|substract|multiply|divide> <operand1> <operand2>");
+            System.err.println("usage: <add|substract|multiply|divide> <operand1> <operand2>");
+            return 1;
         }
 
         double result;
