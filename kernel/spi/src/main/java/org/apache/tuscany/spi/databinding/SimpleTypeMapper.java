@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.spi.databinding;
 
-import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.model.TypeInfo;
 
 /**
  * Type Mapper between XML schema simple data types and java objects

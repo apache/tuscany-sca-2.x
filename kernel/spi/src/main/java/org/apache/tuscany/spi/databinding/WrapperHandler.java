@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.spi.databinding;
 
-import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.model.ElementInfo;
 
 /**
  * A contract for transformers to deal with wrapping/unwrapping for WSDL wrapper style operations

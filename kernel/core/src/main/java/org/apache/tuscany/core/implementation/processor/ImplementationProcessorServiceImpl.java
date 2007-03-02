@@ -33,7 +33,7 @@ import org.osoa.sca.annotations.Remotable;
 
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.model.TypeInfo;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
