@@ -36,7 +36,6 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 /**
  * Loads a property from an XML-based assembly file
@@ -85,7 +84,7 @@ public class PropertyLoader extends LoaderExtension<Property> {
         }
         boolean many = Boolean.parseBoolean(reader.getAttributeValue(null, PROPERTY_MANY_ATTR));
         String required = reader.getAttributeValue(null, REQUIRED_ATTR);
-        Document value = StaxUtil.createPropertyValue(reader, xmlType, documentBuilder);
+        Document value = PropertyUtils.createPropertyValue(reader, xmlType, documentBuilder);
 
         Property<?> property = new Property();
         property.setRequired(Boolean.parseBoolean(required));
