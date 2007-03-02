@@ -28,7 +28,7 @@ import org.osoa.sca.annotations.Reference;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
-import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.model.TypeInfo;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.loader.LoaderException;
