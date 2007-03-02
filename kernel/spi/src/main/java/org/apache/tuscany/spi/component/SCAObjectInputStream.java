@@ -16,15 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.util;
+package org.apache.tuscany.spi.component;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-
-import org.apache.tuscany.spi.component.SCAExternalizable;
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Deserializes an object based on the thread context classloader and provides special handling for {@link
