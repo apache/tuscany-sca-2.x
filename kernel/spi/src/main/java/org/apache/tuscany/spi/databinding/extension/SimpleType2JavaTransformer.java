@@ -21,8 +21,8 @@ package org.apache.tuscany.spi.databinding.extension;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.idl.ElementInfo;
-import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.model.ElementInfo;
+import org.apache.tuscany.spi.model.TypeInfo;
 
 /**
  * Transformer to convert data from a databinding's representation of simple types to Java Objects

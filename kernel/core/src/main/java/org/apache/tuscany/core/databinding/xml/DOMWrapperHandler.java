@@ -26,7 +26,8 @@ import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
-import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.model.ElementInfo;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

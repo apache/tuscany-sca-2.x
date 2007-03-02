@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.model.ElementInfo;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.WrapperInfo;

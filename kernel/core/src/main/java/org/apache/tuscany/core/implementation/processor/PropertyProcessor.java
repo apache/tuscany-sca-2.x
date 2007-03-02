@@ -25,7 +25,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.model.TypeInfo;
 import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;

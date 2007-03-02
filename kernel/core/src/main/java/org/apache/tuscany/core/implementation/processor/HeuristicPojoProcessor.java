@@ -39,7 +39,7 @@ import org.osoa.sca.annotations.Service;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.model.TypeInfo;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
