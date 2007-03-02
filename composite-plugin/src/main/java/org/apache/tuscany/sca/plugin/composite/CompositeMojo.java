@@ -30,7 +30,7 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 
 /**
- * Packages an SCA Composite as a JAR file.
+ * Packages an SCA Composite archive.
  *
  * @version $Rev$ $Date$
  * @goal composite
@@ -64,7 +64,7 @@ public class CompositeMojo extends AbstractMojo {
     protected String classifier;
 
     /**
-     * Directory containing the classes.
+     * Directory containing the classes to include in the archive.
      *
      * @parameter expression="${project.build.outputDirectory}"
      * @required
@@ -72,7 +72,7 @@ public class CompositeMojo extends AbstractMojo {
     protected File classesDirectory;
 
     /**
-     * The maven archive configuration to use.
+     * Standard Maven archive configuration.
      *
      * @parameter
      */
@@ -83,6 +83,7 @@ public class CompositeMojo extends AbstractMojo {
      *
      * @parameter expression="${component.org.codehaus.plexus.archiver.Archiver#jar}"
      * @required
+     * @readonly
      */
     protected JarArchiver jarArchiver;
 
@@ -97,6 +98,8 @@ public class CompositeMojo extends AbstractMojo {
 
     /**
      * @component
+     * @required
+     * @readonly
      */
     protected MavenProjectHelper projectHelper;
 
@@ -104,7 +107,7 @@ public class CompositeMojo extends AbstractMojo {
         File composite = createArchive();
 
         if (classifier != null) {
-            projectHelper.attachArtifact(project, "jar", classifier, composite);
+            projectHelper.attachArtifact(project, "composite", classifier, composite);
         } else {
             project.getArtifact().setFile(composite);
         }
@@ -142,6 +145,6 @@ public class CompositeMojo extends AbstractMojo {
                 finalName = finalName + '-' + classifier;
             }
         }
-        return new File(buildDir, finalName + ".jar");
+        return new File(buildDir, finalName + ".composite");
     }
 }

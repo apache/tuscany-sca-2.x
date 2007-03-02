@@ -28,7 +28,7 @@
     <version>1.0-alpha-incubating-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Apache Tuscany Composite Plugin</name>
-    <description>A plugin for Apache Maven for packaging SCA composites.</description>
+    <description>An Apache Maven plugin for packaging SCA composite archives.</description>
 
     <dependencies>
         <dependency>
