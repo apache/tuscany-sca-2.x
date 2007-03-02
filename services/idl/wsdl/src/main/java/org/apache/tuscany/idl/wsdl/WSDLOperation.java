@@ -31,9 +31,9 @@ import javax.wsdl.Output;
 import javax.wsdl.Part;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.model.ElementInfo;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.model.TypeInfo;
 import org.apache.tuscany.spi.model.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
 
