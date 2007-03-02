@@ -19,7 +19,6 @@
 package org.apache.tuscany.launcher;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.MessageFormat;
@@ -28,7 +27,6 @@ import java.util.ResourceBundle;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
-import org.osoa.sca.ComponentContext;
 
 /**
  * Main class for launcher runtime environment. <code>
@@ -55,33 +53,36 @@ public class Main {
             throw new AssertionError();
         }
 
-        StandaloneRuntimeInfo runtimeInfo = DirectoryHelper.createRuntimeInfo("launcher", Main.class);
-        StandaloneRuntime runtime = (StandaloneRuntime)DirectoryHelper.createRuntime(runtimeInfo);
-        runtime.initialize();
+        File applicationFile = new File(args[0]);
+        if (!applicationFile.exists()) {
+            System.err.println(getMessage("org.apache.tuscany.launcher.NoComposite", applicationFile));
+            System.exit(2);
+        }
 
-        int status = deployAndRunApplication(args, runtime);
-        System.exit(status);
-    }
-
-    /**
-     * @deprecated Hack for deployment.
-     */
-    private static int deployAndRunApplication(String[] args, StandaloneRuntime runtime)
-        throws Exception {
-
-        URI compositeUri = new URI("/test/composite");
-        URL applicationJar = new File(args[0]).toURL();
-        ClassLoader applicationClassLoader =
-            new URLClassLoader(new URL[] {applicationJar}, runtime.getHostClassLoader());
-        URL applicationScdl = applicationClassLoader.getResource("META-INF/sca/default.scdl");
-        
         String[] appArgs = new String[0];
         if(args.length > 1) {
             appArgs = new String[args.length - 1];
             System.arraycopy(args, 1, appArgs, 0, appArgs.length);
         }
-        return runtime.deployAndRun(applicationScdl, applicationClassLoader, appArgs);
 
+        StandaloneRuntimeInfo runtimeInfo = DirectoryHelper.createRuntimeInfo("launcher", Main.class);
+        StandaloneRuntime runtime = (StandaloneRuntime)DirectoryHelper.createRuntime(runtimeInfo);
+
+        URL applicationJar = applicationFile.toURL();
+        ClassLoader applicationClassLoader =
+            new URLClassLoader(new URL[] {applicationJar}, runtime.getHostClassLoader());
+        String applicationScdl = System.getProperty("launcher.scdl", "META-INF/sca/default.scdl");
+        URL applicationScdlURL = applicationClassLoader.getResource(applicationScdl);
+        if (applicationScdlURL == null) {
+            System.err.println(getMessage("org.apache.tuscany.launcher.NoApplicationSCDL", applicationScdl));
+            System.exit(2);
+        }
+
+        // boot the runtime
+        runtime.initialize();
+
+        int status = runtime.deployAndRun(applicationScdlURL, applicationClassLoader, appArgs);
+        System.exit(status);
     }
 
     private static void usage() {
