@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.loader.InvalidServiceException;
 import org.apache.tuscany.spi.loader.InvalidWireException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -104,20 +105,26 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                         type.add((Include) o);
                     } else if (o instanceof Dependency) {
                         Artifact artifact = ((Dependency) o).getArtifact();
-                        if (artifactRepository != null) {
-                            // default to jar type if not specified
-                            if (artifact.getType() == null) {
-                                artifact.setType("jar");
-                            }
-                            artifactRepository.resolve(artifact);
+                        if (artifactRepository == null) {
+                            throw new MissingResourceException("No ArtifactRepository configured for this system",
+                                                               artifact.toString()
+                                                               );
                         }
-                        if (artifact.getUrl() != null) {
-                            ClassLoader classLoader = deploymentContext.getClassLoader();
-                            if (classLoader instanceof CompositeClassLoader) {
-                                CompositeClassLoader ccl = (CompositeClassLoader) classLoader;
-                                for (URL dep : artifact.getUrls()) {
-                                    ccl.addURL(dep);
-                                }
+
+                        // default to jar type if not specified
+                        if (artifact.getType() == null) {
+                            artifact.setType("jar");
+                        }
+                        artifactRepository.resolve(artifact);
+                        if (artifact.getUrl() == null) {
+                            throw new MissingResourceException("Dependency not found", artifact.toString());
+                        }
+
+                        ClassLoader classLoader = deploymentContext.getClassLoader();
+                        if (classLoader instanceof CompositeClassLoader) {
+                            CompositeClassLoader ccl = (CompositeClassLoader) classLoader;
+                            for (URL dep : artifact.getUrls()) {
+                                ccl.addURL(dep);
                             }
                         }
                     } else if (o instanceof WireDefinition) {
