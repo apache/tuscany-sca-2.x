@@ -29,17 +29,15 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.marshaller.MarshallException;
-import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
 
 /**
  * Abstract super class for all PCD marshallers.
  * 
  * @version $Revision$ $Date$
  */
-public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends PhysicalComponentDefinition> extends AbstractExtensibleMarshallerExtension<PCD> {
+public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends PhysicalComponentDefinition<?, ?>>
+    extends AbstractExtensibleMarshallerExtension<PCD> {
 
     // Component id attribute
     private static final String COMPONENT_ID = "componentId";
@@ -69,17 +67,18 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
                 switch (reader.next()) {
                     case START_ELEMENT:
                         String name = reader.getName().getLocalPart();
-                        ModelObject modelObject = registry.unmarshall(reader);;
-                        if(REFERENCE.equals(name)) {
-                            componentDefinition.addReference((PhysicalReferenceDefinition) modelObject);
-                        } else if(SERVICE.equals(name)) {
-                            componentDefinition.addService((PhysicalServiceDefinition) modelObject);
+                        if (REFERENCE.equals(name)) {
+                            handleReference(componentDefinition, reader);
+                        } else if (SERVICE.equals(name)) {
+                            handleService(componentDefinition, reader);
                         } else {
-                            handleExtensions(componentDefinition, reader);
+                            handleExtension(componentDefinition, reader);
                         }
                         break;
                     case END_ELEMENT:
-                        return componentDefinition;
+                        if(getModelObjectQName().equals(reader.getName())) {
+                            return componentDefinition;
+                        }
 
                 }
             }
@@ -90,5 +89,21 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
         }
 
     }
+
+    /**
+     * Handles a reference.
+     * 
+     * @param componentDefinition Component definition.
+     * @param reader XML stream.
+     */
+    protected abstract void handleReference(PCD componentDefinition, XMLStreamReader reader) throws MarshallException;
+
+    /**
+     * Handles a reference.
+     * 
+     * @param componentDefinition Component definition.
+     * @param reader XML stream.
+     */
+    protected abstract void handleService(PCD componentDefinition, XMLStreamReader reader) throws MarshallException;
 
 }

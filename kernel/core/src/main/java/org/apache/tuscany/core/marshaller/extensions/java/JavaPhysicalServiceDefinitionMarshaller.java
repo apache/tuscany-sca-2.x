@@ -68,7 +68,7 @@ public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalSer
      * @param reader Reader from which marshalled data is read.
      */
     @Override
-    protected void handleExtensions(JavaPhysicalServiceDefinition modelObject, XMLStreamReader reader) {
+    protected void handleExtension(JavaPhysicalServiceDefinition modelObject, XMLStreamReader reader) {
     }
 
     /**
@@ -77,7 +77,7 @@ public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalSer
      * @param reader Writer to which marshalled data is written.
      */
     @Override
-    protected void handleExtensions(JavaPhysicalServiceDefinition modelObject, XMLStreamWriter writer) {
+    protected void handleExtension(JavaPhysicalServiceDefinition modelObject, XMLStreamWriter writer) {
     }
 
 }

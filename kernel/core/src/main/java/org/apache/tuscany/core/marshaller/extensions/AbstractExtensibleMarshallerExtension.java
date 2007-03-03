@@ -44,13 +44,13 @@ public abstract class AbstractExtensibleMarshallerExtension<MD extends ModelObje
      * @param modelObject Concrete model object.
      * @param reader Reader from which marshalled data is read.
      */
-    protected abstract void handleExtensions(MD modelObject, XMLStreamReader reader);
+    protected abstract void handleExtension(MD modelObject, XMLStreamReader reader);
     
     /**
      * Handles extensions for marshalling.
      * @param modelObject Concrete model object.
      * @param reader Writer to which marshalled data is written.
      */
-    protected abstract void handleExtensions(MD modelObject, XMLStreamWriter writer);
+    protected abstract void handleExtension(MD modelObject, XMLStreamWriter writer);
 
 }
