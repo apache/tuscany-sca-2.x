@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 
 /**
  * A registry for model object marshallers.
@@ -56,5 +57,21 @@ public interface ModelMarshallerRegistry {
      * @return Model object from the marshalled stream.
      */
     ModelObject unmarshall(XMLStreamReader reader) throws MarshallException;
+    
+    /**
+     * Marshalls a physical change set.
+     * 
+     * @param changeSet Model object to be marshalled.
+     * @param writer Writer to which marshalled information is written.
+     */
+    void marshallChangeSet(PhysicalChangeSet changeSet, XMLStreamWriter writer) throws MarshallException;
+
+    /**
+     * Unmarshalls an XML stream to a physical change set.
+     * 
+     * @param reader Reader from which marshalled information is read.
+     * @return Physical change set from the marshalled stream.
+     */
+    PhysicalChangeSet unmarshallChangeSet(XMLStreamReader reader) throws MarshallException;
 
 }

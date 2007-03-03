@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.marshaller;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -67,15 +67,15 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
-                        ModelObject modelObject = registry.unmarshall(reader);
                         String name = reader.getName().getLocalPart();
+                        ModelObject modelObject = registry.unmarshall(reader);
                         if(COMPONENT.equals(name)) {
                             changeSet.addComponentDefinition((PhysicalComponentDefinition) modelObject);
                         } else if(WIRE.equals(name)) {
                             changeSet.addWireDefinition((PhysicalWireDefinition) modelObject);
                         }
                         break;
-                    case END_ELEMENT:
+                    case END_DOCUMENT:
                         return changeSet;
                 }
             }
