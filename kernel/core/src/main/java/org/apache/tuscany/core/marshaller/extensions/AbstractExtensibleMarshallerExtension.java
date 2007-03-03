@@ -16,11 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.marshaller;
+package org.apache.tuscany.core.marshaller.extensions;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.core.marshaller.AbstractMarshallerExtension;
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.marshaller;
+package org.apache.tuscany.core.marshaller.extensions;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -28,16 +28,16 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
 
 /**
- * Marshaller for java physical service definition.
+ * Marshaller for java physical reference definition.
  * 
  * @version $Revision$ $Date$
  */
-public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends PhysicalServiceDefinition> extends AbstractExtensibleMarshallerExtension<PSD> {
+public abstract class AbstractPhysicalReferenceDefinitionMarshaller<PRD extends PhysicalReferenceDefinition> extends AbstractExtensibleMarshallerExtension<PRD> {
 
-//  Local part for operation
+    // Local part for operation
     private static final String OPERATION = "operation";
     
     // Source name attribute
@@ -46,31 +46,31 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
     /**
      * Marshalls a physical java reference definition to the xml writer.
      */
-    public void marshall(PSD modelObject, XMLStreamWriter writer) throws MarshallException {
+    public void marshall(PRD modelObject, XMLStreamWriter writer) throws MarshallException {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Unmarshalls a java physical reference definition from the xml reader.
      */
-    public PSD unmarshall(XMLStreamReader reader) throws MarshallException {
+    public PRD unmarshall(XMLStreamReader reader) throws MarshallException {
         
         try {
-            PSD serviceDefinition = getConcreteModelObject();
-            serviceDefinition.setName(reader.getAttributeValue(null, NAME));
+            PRD referenceDefinition = getConcreteModelObject();
+            referenceDefinition.setName(reader.getAttributeValue(null, NAME));
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
                         ModelObject modelObject = registry.unmarshall(reader);
                         String name = reader.getName().getLocalPart();
                         if(OPERATION.equals(name)) {
-                            serviceDefinition.addOperation((PhysicalOperationDefinition)modelObject);
+                            referenceDefinition.addOperation((PhysicalOperationDefinition)modelObject);
                         } else {
-                            handleExtensions(serviceDefinition, reader);
+                            handleExtensions(referenceDefinition, reader);
                         }
                         break;
                     case END_ELEMENT:
-                        return serviceDefinition;
+                        return referenceDefinition;
 
                 }
             }

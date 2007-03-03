@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.marshaller.java;
+package org.apache.tuscany.core.marshaller.extensions.java;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.core.marshaller.AbstractPhysicalComponentDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 
 /**
