@@ -18,95 +18,73 @@
  */
 package org.apache.tuscany.core.marshaller.java;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.core.marshaller.AbstractMarshallerExtension;
+import org.apache.tuscany.core.marshaller.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
-import org.apache.tuscany.spi.marshaller.MarshallException;
-import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
 
 /**
  * Marshaller for physical wire definition.
  * 
  * @version $Revision$ $Date$
  */
-public class JavaPhysicalComponentDefinitionMarshaller extends AbstractMarshallerExtension<JavaPhysicalComponentDefinition> {
-
-    // Component id attribute
-    private static final String COMPONENT_ID = "componentId";
-
-    // Reference
-    private static final String REFERENCE = "reference";
-
-    // Service
-    private static final String SERVICE = "service";
+public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalComponentDefinitionMarshaller<JavaPhysicalComponentDefinition> {
 
     // Instance factory
     private static final String INSTANCE_FACTORY = "instanceFactory";
 
     // QName for the root element
     private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/component/java/1.0-SNAPSHOT", "component");
-
+    
     /**
-     * Marshalls a physical change set to the xml writer.
+     * Create the concrete PCD.
+     * @return Java physical component definition
      */
-    public void marshall(JavaPhysicalComponentDefinition modelObject, XMLStreamWriter writer) throws MarshallException {
-        throw new UnsupportedOperationException();
+    @Override
+    protected JavaPhysicalComponentDefinition getConcreteModelObject() {
+        return new JavaPhysicalComponentDefinition();
     }
-
+    
     /**
-     * Unmarshalls a physical change set from the xml reader.
+     * Handles extensions for unmarshalling.
+     * @param componentDefinition Physical component definition.
+     * @param reader Reader from which marshalled data is read.
      */
-    public JavaPhysicalComponentDefinition unmarshall(XMLStreamReader reader) throws MarshallException {
-
-        try {
-            JavaPhysicalComponentDefinition javaPhysicalComponentDefinition = new JavaPhysicalComponentDefinition();
-            javaPhysicalComponentDefinition.setComponentId(new URI(reader.getAttributeValue(null, COMPONENT_ID)));
-            while (true) {
-                switch (reader.next()) {
-                    case START_ELEMENT:
-                        String name = reader.getName().getLocalPart();
-                        if(REFERENCE.equals(name)) {
-                            PhysicalReferenceDefinition reference = (PhysicalReferenceDefinition) registry.unmarshall(reader);
-                            javaPhysicalComponentDefinition.addReference(reference);
-                        } else if(SERVICE.equals(name)) {
-                            PhysicalServiceDefinition service = (PhysicalServiceDefinition) registry.unmarshall(reader);
-                            javaPhysicalComponentDefinition.addService(service);
-                        } else if(INSTANCE_FACTORY.equals(name)) {
-                            byte[] base64ByteCode = reader.getText().getBytes();
-                            byte[] byteCode = Base64.decodeBase64(base64ByteCode);
-                            javaPhysicalComponentDefinition.setInstanceFactoryByteCode(byteCode);
-                        }
-                        break;
-                    case END_ELEMENT:
-                        return javaPhysicalComponentDefinition;
-
-                }
-            }
-        } catch (XMLStreamException ex) {
-            throw new MarshallException(ex);
-        } catch (URISyntaxException ex) {
-            throw new MarshallException(ex);
+    @Override
+    protected void handleExtensions(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader) {
+        String name = reader.getName().getLocalPart();
+        if(INSTANCE_FACTORY.equals(name)) {
+            byte[] base64ByteCode = reader.getText().getBytes();
+            byte[] byteCode = Base64.decodeBase64(base64ByteCode);
+            componentDefinition.setInstanceFactoryByteCode(byteCode);
         }
-
+    }
+    
+    /**
+     * Handles extensions for marshalling.
+     * @param componentDefinition Physical component definition.
+     * @param reader Writer to which marshalled data is written.
+     */
+    @Override
+    protected void handleExtensions(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer) {
     }
 
+    /**
+     * Gets the qualified name of the XML fragment for the marshalled model object.
+     * @return Qualified name of the XML fragment.
+     */
     @Override
     protected QName getModelObjectQName() {
         return QNAME;
     }
 
+    /**
+     * Retursn the type of the model object.
+     * @return Model object type.
+     */
     @Override
     protected Class<JavaPhysicalComponentDefinition> getModelObjectType() {
         return JavaPhysicalComponentDefinition.class;

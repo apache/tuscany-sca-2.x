@@ -18,79 +18,70 @@
  */
 package org.apache.tuscany.core.marshaller.java;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.core.marshaller.AbstractMarshallerExtension;
+import org.apache.tuscany.core.marshaller.AbstractPhysicalReferenceDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
-import org.apache.tuscany.spi.marshaller.MarshallException;
-import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  * Marshaller for java physical reference definition.
  * 
  * @version $Revision$ $Date$
  */
-public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractMarshallerExtension<JavaPhysicalReferenceDefinition> {
-
-    // Local part for operation
-    private static final String OPERATION = "operation";
-    
-    // Source name attribute
-    private static final String NAME = "name";
+public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalReferenceDefinitionMarshaller<JavaPhysicalReferenceDefinition> {
     
     // QName for the root element
     private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "service");
 
     /**
-     * Marshalls a physical java reference definition to the xml writer.
+     * Gets the qualified name of the XML fragment for the marshalled model object.
+     * @return Qualified name of the XML fragment.
      */
-    public void marshall(JavaPhysicalReferenceDefinition modelObject, XMLStreamWriter writer) throws MarshallException {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Unmarshalls a java physical reference definition from the xml reader.
-     */
-    public JavaPhysicalReferenceDefinition unmarshall(XMLStreamReader reader) throws MarshallException {
-        
-        try {
-            JavaPhysicalReferenceDefinition referenceDefinition = new JavaPhysicalReferenceDefinition();
-            referenceDefinition.setName(reader.getAttributeValue(null, NAME));
-            while (true) {
-                switch (reader.next()) {
-                    case START_ELEMENT:
-                        ModelObject modelObject = registry.unmarshall(reader);
-                        String name = reader.getName().getLocalPart();
-                        if(OPERATION.equals(name)) {
-                            referenceDefinition.addOperation((PhysicalOperationDefinition)modelObject);
-                        }
-                        break;
-                    case END_ELEMENT:
-                        return referenceDefinition;
-
-                }
-            }
-        } catch (XMLStreamException ex) {
-            throw new MarshallException(ex);
-        }
-        
-    }
-
     @Override
     protected QName getModelObjectQName() {
         return QNAME;
     }
 
+    /**
+     * Retursn the type of the model object.
+     * @return Model object type.
+     */
     @Override
     protected Class<JavaPhysicalReferenceDefinition> getModelObjectType() {
         return JavaPhysicalReferenceDefinition.class;
+    }
+
+    /**
+     * Create the concrete model object.
+     * @return Concrete model object.
+     */
+    @Override
+    protected JavaPhysicalReferenceDefinition getConcreteModelObject() {
+        return new JavaPhysicalReferenceDefinition();
+    }
+
+    /**
+     * Handles extensions for unmarshalling.
+     * @param modelObject Concrete model object.
+     * @param reader Reader from which marshalled data is read.
+     */
+    @Override
+    protected void handleExtensions(JavaPhysicalReferenceDefinition modelObject, XMLStreamReader reader) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /**
+     * Handles extensions for marshalling.
+     * @param modelObject Concrete model object.
+     * @param reader Writer to which marshalled data is written.
+     */
+    @Override
+    protected void handleExtensions(JavaPhysicalReferenceDefinition modelObject, XMLStreamWriter writer) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
