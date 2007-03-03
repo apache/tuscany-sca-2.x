@@ -33,11 +33,11 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefiniti
 public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalReferenceDefinitionMarshaller<JavaPhysicalReferenceDefinition> {
     
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "service");
+    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "reference");
 
     /**
      * Gets the qualified name of the XML fragment for the marshalled model object.
-     * @return Qualified name of the XML fragment.
+     * @return {"http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "service"}.
      */
     @Override
     protected QName getModelObjectQName() {
@@ -46,7 +46,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
 
     /**
      * Retursn the type of the model object.
-     * @return Model object type.
+     * @return <code>JavaPhysicalReferenceDefinition.class</code>.
      */
     @Override
     protected Class<JavaPhysicalReferenceDefinition> getModelObjectType() {
@@ -55,7 +55,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
 
     /**
      * Create the concrete model object.
-     * @return Concrete model object.
+     * @return An instance of <code>JavaPhysicalReferenceDefinition</code>.
      */
     @Override
     protected JavaPhysicalReferenceDefinition getConcreteModelObject() {
@@ -63,25 +63,21 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
     }
 
     /**
-     * Handles extensions for unmarshalling.
+     * Handles extensions for unmarshalling Java physical references.
      * @param modelObject Concrete model object.
      * @param reader Reader from which marshalled data is read.
      */
     @Override
     protected void handleExtensions(JavaPhysicalReferenceDefinition modelObject, XMLStreamReader reader) {
-        // TODO Auto-generated method stub
-        
     }
 
     /**
-     * Handles extensions for marshalling.
+     * Handles extensions for marshalling Java physical references.
      * @param modelObject Concrete model object.
      * @param reader Writer to which marshalled data is written.
      */
     @Override
     protected void handleExtensions(JavaPhysicalReferenceDefinition modelObject, XMLStreamWriter writer) {
-        // TODO Auto-generated method stub
-        
     }
 
 }
