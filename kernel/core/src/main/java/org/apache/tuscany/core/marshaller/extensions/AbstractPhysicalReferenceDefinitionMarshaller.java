@@ -66,7 +66,7 @@ public abstract class AbstractPhysicalReferenceDefinitionMarshaller<PRD extends 
                         if(OPERATION.equals(name)) {
                             referenceDefinition.addOperation((PhysicalOperationDefinition)modelObject);
                         } else {
-                            handleExtensions(referenceDefinition, reader);
+                            handleExtension(referenceDefinition, reader);
                         }
                         break;
                     case END_ELEMENT:

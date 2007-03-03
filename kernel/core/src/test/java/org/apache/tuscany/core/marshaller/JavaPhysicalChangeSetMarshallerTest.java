@@ -97,14 +97,14 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
             }
             
             // TODO Fix defect
-            /*Set<JavaPhysicalServiceDefinition> svs = jpcd.getServices();
+            Set<JavaPhysicalServiceDefinition> svs = jpcd.getServices();
             assertEquals(1, svs.size());
             JavaPhysicalServiceDefinition sv = svs.iterator().next();
             if("cmp1".equals(componentId)) {
-                assertEquals("sv1", ref.getName());
+                assertEquals("sv1", sv.getName());
             } else {
-                assertEquals("sv2", ref.getName());
-            }*/
+                assertEquals("sv2", sv.getName());
+            }
             
         }
         assertEquals(2, changeSet.getWireDefinitions().size());

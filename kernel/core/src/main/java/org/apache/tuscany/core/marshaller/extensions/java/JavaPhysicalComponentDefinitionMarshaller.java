@@ -25,6 +25,9 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
+import org.apache.tuscany.spi.marshaller.MarshallException;
 
 /**
  * Marshaller for Java physical component definitions.
@@ -74,13 +77,34 @@ public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalC
      * @param reader Reader from which marshalled data is read.
      */
     @Override
-    protected void handleExtensions(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader) {
+    protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader) {
         String name = reader.getName().getLocalPart();
         if(INSTANCE_FACTORY.equals(name)) {
             byte[] base64ByteCode = reader.getText().getBytes();
             byte[] byteCode = Base64.decodeBase64(base64ByteCode);
             componentDefinition.setInstanceFactoryByteCode(byteCode);
         }
+    }
+    /**
+     * Handles a reference.
+     * 
+     * @param componentDefinition Component definition.
+     * @param reader XML stream.
+     */
+    protected void handleReference(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader) throws MarshallException {
+        JavaPhysicalReferenceDefinition reference = (JavaPhysicalReferenceDefinition) registry.unmarshall(reader);
+        componentDefinition.addReference(reference);
+    }
+    
+    /**
+     * Handles a reference.
+     * 
+     * @param componentDefinition Component definition.
+     * @param reader XML stream.
+     */
+    protected void handleService(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader) throws MarshallException {
+        JavaPhysicalServiceDefinition service = (JavaPhysicalServiceDefinition) registry.unmarshall(reader);
+        componentDefinition.addService(service); 
     }
     
     /**
@@ -91,7 +115,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalC
      * @param reader Writer to which marshalled data is written.
      */
     @Override
-    protected void handleExtensions(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer) {
+    protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer) {
     }
 
 }

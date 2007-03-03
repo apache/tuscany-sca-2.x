@@ -66,7 +66,7 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
                         if(OPERATION.equals(name)) {
                             serviceDefinition.addOperation((PhysicalOperationDefinition)modelObject);
                         } else {
-                            handleExtensions(serviceDefinition, reader);
+                            handleExtension(serviceDefinition, reader);
                         }
                         break;
                     case END_ELEMENT:

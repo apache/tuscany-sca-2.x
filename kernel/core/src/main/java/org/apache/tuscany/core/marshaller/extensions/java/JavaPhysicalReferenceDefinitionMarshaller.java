@@ -68,7 +68,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
      * @param reader Reader from which marshalled data is read.
      */
     @Override
-    protected void handleExtensions(JavaPhysicalReferenceDefinition modelObject, XMLStreamReader reader) {
+    protected void handleExtension(JavaPhysicalReferenceDefinition modelObject, XMLStreamReader reader) {
     }
 
     /**
@@ -77,7 +77,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
      * @param reader Writer to which marshalled data is written.
      */
     @Override
-    protected void handleExtensions(JavaPhysicalReferenceDefinition modelObject, XMLStreamWriter writer) {
+    protected void handleExtension(JavaPhysicalReferenceDefinition modelObject, XMLStreamWriter writer) {
     }
 
 }
