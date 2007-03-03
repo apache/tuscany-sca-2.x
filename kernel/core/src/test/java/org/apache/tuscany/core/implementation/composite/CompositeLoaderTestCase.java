@@ -40,23 +40,26 @@ import org.easymock.IAnswer;
 public class CompositeLoaderTestCase extends TestCase {
     public static final QName COMPOSITE = new QName(SCA_NS, "composite");
     private CompositeLoader loader;
+    private QName name;
 
     public void testLoadNameAndDefaultAutowire() throws Exception {
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("composite");
+        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
+        EasyMock.expect(reader.getAttributeValue(null, "targetNamespace")).andReturn(name.getNamespaceURI());
         EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn(null);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(reader.getName()).andReturn(COMPOSITE);
         EasyMock.replay(reader);
         CompositeComponentType<?, ?, ?> type = loader.load(null, reader, null);
-        assertEquals("composite", type.getName());
+        assertEquals(name, type.getName());
         assertFalse(type.isAutowire());
         EasyMock.verify(reader);
     }
 
     public void testAutowire() throws Exception {
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("composite");
+        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
+        EasyMock.expect(reader.getAttributeValue(null, "targetNamespace")).andReturn(name.getNamespaceURI());
         EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn("true");
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.expect(reader.getName()).andReturn(COMPOSITE);
@@ -84,7 +87,8 @@ public class CompositeLoaderTestCase extends TestCase {
         EasyMock.replay(registry);
         DeploymentContext context = new RootDeploymentContext(null, null, null, null, null, true);
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("composite");
+        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
+        EasyMock.expect(reader.getAttributeValue(null, "targetNamespace")).andReturn(name.getNamespaceURI());
         EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn("true");
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
@@ -114,7 +118,8 @@ public class CompositeLoaderTestCase extends TestCase {
         EasyMock.replay(registry);
         DeploymentContext context = new RootDeploymentContext(null, null, null, null, null, true);
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("composite");
+        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
+        EasyMock.expect(reader.getAttributeValue(null, "targetNamespace")).andReturn(name.getNamespaceURI());
         EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn(null);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
@@ -143,7 +148,8 @@ public class CompositeLoaderTestCase extends TestCase {
         EasyMock.replay(registry);
         DeploymentContext context = new RootDeploymentContext(null, null, null, null, null, false);
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("composite");
+        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
+        EasyMock.expect(reader.getAttributeValue(null, "targetNamespace")).andReturn(name.getNamespaceURI());
         EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn(null);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
@@ -172,7 +178,8 @@ public class CompositeLoaderTestCase extends TestCase {
         EasyMock.replay(registry);
         DeploymentContext context = new RootDeploymentContext(null, null, null, null, null, true);
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("composite");
+        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
+        EasyMock.expect(reader.getAttributeValue(null, "targetNamespace")).andReturn(name.getNamespaceURI());
         EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn("false");
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
@@ -189,5 +196,6 @@ public class CompositeLoaderTestCase extends TestCase {
         LoaderRegistry registry = EasyMock.createNiceMock(LoaderRegistry.class);
         EasyMock.replay(registry);
         loader = new CompositeLoader(registry, null);
+        name = new QName("http://example.com", "composite");
     }
 }

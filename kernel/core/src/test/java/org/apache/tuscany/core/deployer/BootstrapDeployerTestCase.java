@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
@@ -81,7 +82,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
             implementation.getComponentType();
         assertNotNull(composite);
-        assertEquals("boot1", composite.getName());
+        assertEquals(new QName("http://example.com", "boot1"), composite.getName());
 
         // check parse of <service>
         Map<String, ServiceDefinition> services = composite.getDeclaredServices();
