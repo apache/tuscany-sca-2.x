@@ -22,8 +22,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
@@ -83,13 +85,21 @@ public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
      */
     public ModelObject unmarshall(XMLStreamReader reader) throws MarshallException {
         
-        QName qname = reader.getName();
+        try {
         
-        ModelMarshaller marshaller = unmarshallerRegistry.get(qname);
-        if(marshaller == null) {
-            throw new MarshallException("No marshaller defined for " + qname);
+            while(reader.next() != START_ELEMENT) {
+            }
+            QName qname = reader.getName();
+            
+            ModelMarshaller marshaller = unmarshallerRegistry.get(qname);
+            if(marshaller == null) {
+                throw new MarshallException("No marshaller defined for " + qname);
+            }
+            return marshaller.unmarshall(reader);
+            
+        } catch(XMLStreamException ex) {
+            throw new MarshallException(ex);
         }
-        return marshaller.unmarshall(reader);
         
     }
 
