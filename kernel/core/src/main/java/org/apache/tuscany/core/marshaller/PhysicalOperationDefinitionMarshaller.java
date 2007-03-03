@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
  */
 public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalOperationDefinition> {
 
-    // Source URI attribute
+    // Source name attribute
     private static final String NAME = "name";
 
     // QName for the root element
