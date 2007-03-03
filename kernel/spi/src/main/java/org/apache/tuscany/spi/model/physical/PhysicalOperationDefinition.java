@@ -20,6 +20,8 @@ package org.apache.tuscany.spi.model.physical;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.spi.model.ModelObject;
@@ -29,10 +31,16 @@ import org.apache.tuscany.spi.model.ModelObject;
  * 
  * @version $Revision$ $Date$
  * 
- * TODO Add parameters, return types and fault types
+ * TODO Discuss with Jeremy/Jim on how to model MEPs, INOUT parameters, faults etc
  *
  */
 public class PhysicalOperationDefinition extends ModelObject {
+    
+    // Parameters
+    private List<Class<?>> parameterTypes = new LinkedList<Class<?>>();
+    
+    // Return
+    private Class<?> returnType;
     
     // Name of the operation
     private String name;
@@ -42,6 +50,38 @@ public class PhysicalOperationDefinition extends ModelObject {
     
     // Interceptors defined against the operation
     private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
+    
+    /**
+     * Returns the parameter types for this operation.
+     * @return Parameter types.
+     */
+    public List<Class<?>> getParameters() {
+        return Collections.unmodifiableList(parameterTypes);
+    }
+    
+    /**
+     * Adds a parameter type.
+     * @param parameter Parameter type to be added.
+     */
+    public void addParameter(Class<?> parameter) {
+        parameterTypes.add(parameter);
+    }
+    
+    /**
+     * Gets the return type for this operation.
+     * @return Return type for this operation.
+     */
+    public Class<?> getReturnType() {
+        return returnType;
+    }
+    
+    /**
+     * Sets the return type for this operation.
+     * @param returnType Return type for this operation.
+     */
+    public void setReturnType(Class<?> returnType) {
+        this.returnType = returnType;
+    }
 
     /**
      * Returns the interceptor definitions available for this operation.
