@@ -35,7 +35,8 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * Test case for Java physical change set marshaller.
@@ -92,22 +93,60 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
             JavaPhysicalReferenceDefinition ref = refs.iterator().next();
             if("cmp1".equals(componentId)) {
                 assertEquals("rf1", ref.getName());
+                Set<PhysicalOperationDefinition> pods = ref.getOperations();
+                assertEquals(1, pods.size());
+                PhysicalOperationDefinition pod = pods.iterator().next();
+                assertEquals("op2", pod.getName());
             } else {
                 assertEquals("rf2", ref.getName());
+                Set<PhysicalOperationDefinition> pods = ref.getOperations();
+                assertEquals(1, pods.size());
+                PhysicalOperationDefinition pod = pods.iterator().next();
+                assertEquals("op1", pod.getName());
             }
             
-            // TODO Fix defect
             Set<JavaPhysicalServiceDefinition> svs = jpcd.getServices();
             assertEquals(1, svs.size());
             JavaPhysicalServiceDefinition sv = svs.iterator().next();
             if("cmp1".equals(componentId)) {
                 assertEquals("sv1", sv.getName());
+                Set<PhysicalOperationDefinition> pods = sv.getOperations();
+                assertEquals(1, pods.size());
+                PhysicalOperationDefinition pod = pods.iterator().next();
+                assertEquals("op1", pod.getName());
             } else {
                 assertEquals("sv2", sv.getName());
+                Set<PhysicalOperationDefinition> pods = sv.getOperations();
+                assertEquals(1, pods.size());
+                PhysicalOperationDefinition pod = pods.iterator().next();
+                assertEquals("op2", pod.getName());
             }
             
         }
+        
+        Set<PhysicalWireDefinition> pwds = changeSet.getWireDefinitions();
+        
         assertEquals(2, changeSet.getWireDefinitions().size());
+        for(PhysicalWireDefinition pwd : pwds) {
+            
+            String sourceUri = pwd.getSourceUri().toString();
+            String targetUri = pwd.getTargetUri().toString();
+            
+            assertTrue(("cmp1#rf1".equals(sourceUri) && 
+                       "cmp2#sv2".equals(targetUri)) ||
+                       ("cmp2#rf2".equals(sourceUri) && 
+                           "cmp1#sv1".equals(targetUri)));
+            
+            Set<PhysicalOperationDefinition> pods = pwd.getOperations();
+            assertEquals(1, pods.size());
+            PhysicalOperationDefinition pod = pods.iterator().next();
+            
+            if(sourceUri.equals("cmp1#rf1")) {
+                assertEquals("op2", pod.getName());
+            } else {
+                assertEquals("op1", pod.getName());
+            }
+        }
         
         
     }

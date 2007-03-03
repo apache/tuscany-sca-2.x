@@ -42,7 +42,7 @@ public class PhysicalChangeSet extends ModelObject {
      * Get all the physical component definitions.
      * @return Physical component definitions in the changeset.
      */
-    public Set<? extends PhysicalComponentDefinition> getComponentDefinitions() {
+    public Set<PhysicalComponentDefinition> getComponentDefinitions() {
         return Collections.unmodifiableSet(componentDefinitions);
     }
 
@@ -50,7 +50,7 @@ public class PhysicalChangeSet extends ModelObject {
      * Get all the wire definitions.
      * @return Wire definitions in the changeset.
      */
-    public Set<? extends PhysicalWireDefinition> getWireDefinitions() {
+    public Set<PhysicalWireDefinition> getWireDefinitions() {
         return Collections.unmodifiableSet(wireDefinitions);
     }
 
