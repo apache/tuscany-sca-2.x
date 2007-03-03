@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.util.UriHelper;
 
 /**
@@ -35,7 +37,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     R extends ReferenceDefinition,
     P extends Property<?>> extends ComponentType<S, R, P> {
 
-    private String name;
+    private QName name;
     private boolean autowire;
     private final Map<String, ComponentDefinition<? extends Implementation<?>>> components =
         new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
@@ -46,11 +48,32 @@ public class CompositeComponentType<S extends ServiceDefinition,
         implementationScope = Scope.SYSTEM;
     }
 
-    public String getName() {
+    /**
+     * Constructor defining the composite name.
+     *
+     * @param name the qualified name of this composite
+     */
+    public CompositeComponentType(QName name) {
+        this();
+        this.name = name;
+    }
+
+    /**
+     * Returns the qualified name of this composite.
+     * The namespace portion of this name is the targetNamespace for other qualified names used in the composite.
+     *
+     * @return the qualified name of this composite
+     */
+    public QName getName() {
         return name;
     }
 
-    public void setName(String name) {
+    /**
+     * Set the qualified name of this composite.
+     *
+     * @param name the qualified name of this composite
+     */
+    public void setName(QName name) {
         this.name = name;
     }
 
@@ -191,5 +214,19 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
     public void add(Include include) {
         includes.put(include.getName(), include);
+    }
+
+
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CompositeComponentType that = (CompositeComponentType) o;
+        return name.equals(that.name);
     }
 }

@@ -179,7 +179,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
 
     public void setUp() throws Exception {
         componentType = new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        componentType.setName("TestComposite");
+
         //add a service to the composite
         ServiceDefinition serviceDefn = new ServiceDefinition(URI.create("#compositeService1"), null, true);
         ServiceDefinition boundSvcDefn = new ServiceDefinition(URI.create("#boundSvc"), null, true, null);

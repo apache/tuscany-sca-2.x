@@ -80,10 +80,14 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         XMLStreamReader reader,
         DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
 
-        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
-            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        type.setName(reader.getAttributeValue(null, "name"));
+        String name = reader.getAttributeValue(null, "name");
+        String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
         boolean autowire = Boolean.parseBoolean(reader.getAttributeValue(null, "autowire"));
+
+        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>(
+                new QName(targetNamespace, name)
+            );
         type.setAutowire(autowire);
         boolean done = false;
         while (!done) {
