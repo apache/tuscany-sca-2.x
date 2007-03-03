@@ -18,13 +18,10 @@
  */
 package org.apache.tuscany.core.marshaller;
 
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -32,7 +29,6 @@ import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 
 /**
  * Default map-based implementation of the model marshaller registry.
@@ -94,36 +90,6 @@ public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
             throw new MarshallException("No marshaller defined for " + qname);
         }
         return marshaller.unmarshall(reader);
-        
-    }
-    
-    /**
-     * Marshalls a physical change set.
-     * 
-     * @param changeSet Model object to be marshalled.
-     * @param writer Writer to which marshalled information is written.
-     */
-    public void marshallChangeSet(PhysicalChangeSet changeSet, XMLStreamWriter writer) throws MarshallException {        
-    }
-
-    /**
-     * Unmarshalls an XML stream to a physical change set.
-     * 
-     * @param reader Reader from which marshalled information is read.
-     * @return Physical change set from the marshalled stream.
-     */
-    public PhysicalChangeSet unmarshallChangeSet(XMLStreamReader reader) throws MarshallException {
-        
-        try {
-            while(reader.next() != START_ELEMENT) {
-            }
-            PhysicalChangeSetMarshaller marshaller = new PhysicalChangeSetMarshaller();
-            marshaller.setRegistry(this);
-            return marshaller.unmarshall(reader);
-            
-        } catch(XMLStreamException ex) {
-            throw new MarshallException(ex);
-        }
         
     }
 
