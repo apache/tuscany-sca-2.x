@@ -27,7 +27,7 @@ import org.apache.tuscany.core.marshaller.AbstractPhysicalComponentDefinitionMar
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 
 /**
- * Marshaller for physical wire definition.
+ * Marshaller for Java physical component definitions.
  * 
  * @version $Revision$ $Date$
  */
@@ -38,10 +38,28 @@ public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalC
 
     // QName for the root element
     private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/component/java/1.0-SNAPSHOT", "component");
+
+    /**
+     * Gets the qualified name of the XML fragment for the marshalled model object.
+     * @return {"http://tuscany.apache.org/xmlns/marshaller/component/java/1.0-SNAPSHOT", "component"}
+     */
+    @Override
+    protected QName getModelObjectQName() {
+        return QNAME;
+    }
+
+    /**
+     * Retursn the type of the model object.
+     * @return <code>JavaPhysicalComponentDefinition.class</code>.
+     */
+    @Override
+    protected Class<JavaPhysicalComponentDefinition> getModelObjectType() {
+        return JavaPhysicalComponentDefinition.class;
+    }
     
     /**
      * Create the concrete PCD.
-     * @return Java physical component definition
+     * @return An instance of<code>JavaPhysicalComponentDefinition</code>.
      */
     @Override
     protected JavaPhysicalComponentDefinition getConcreteModelObject() {
@@ -49,7 +67,9 @@ public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalC
     }
     
     /**
-     * Handles extensions for unmarshalling.
+     * Handles extensions for unmarshalling Java physical component definitions 
+     * including the marshalling of base64 encoded instance factory byte code.
+     * 
      * @param componentDefinition Physical component definition.
      * @param reader Reader from which marshalled data is read.
      */
@@ -64,30 +84,14 @@ public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalC
     }
     
     /**
-     * Handles extensions for marshalling.
+     * Handles extensions for marshalling Java physical component definitions 
+     * including the marshalling of base64 encoded instance factory byte code.
+     * 
      * @param componentDefinition Physical component definition.
      * @param reader Writer to which marshalled data is written.
      */
     @Override
     protected void handleExtensions(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer) {
-    }
-
-    /**
-     * Gets the qualified name of the XML fragment for the marshalled model object.
-     * @return Qualified name of the XML fragment.
-     */
-    @Override
-    protected QName getModelObjectQName() {
-        return QNAME;
-    }
-
-    /**
-     * Retursn the type of the model object.
-     * @return Model object type.
-     */
-    @Override
-    protected Class<JavaPhysicalComponentDefinition> getModelObjectType() {
-        return JavaPhysicalComponentDefinition.class;
     }
 
 }

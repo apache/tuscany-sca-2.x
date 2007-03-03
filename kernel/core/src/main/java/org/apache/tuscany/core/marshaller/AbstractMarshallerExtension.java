@@ -42,7 +42,7 @@ public abstract class AbstractMarshallerExtension<MD extends ModelObject> implem
      * @param registry Model marshaller registry.
      */
     @Reference
-    public void setRegistry(ModelMarshallerRegistry registry) {
+    public final void setRegistry(ModelMarshallerRegistry registry) {
 
         this.registry = registry;
 
