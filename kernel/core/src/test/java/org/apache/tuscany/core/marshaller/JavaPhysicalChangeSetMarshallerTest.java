@@ -51,16 +51,13 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         
         AbstractMarshallerExtension<?>[] marshallers = new AbstractMarshallerExtension<?>[6];
         
-        for(int i = 0;i < 6; i++) {
-            marshallers[i] = new JavaPhysicalComponentDefinitionMarshaller();
-            marshallers[i] = new JavaPhysicalServiceDefinitionMarshaller();
-            marshallers[i] = new JavaPhysicalReferenceDefinitionMarshaller();
-            marshallers[i] = new PhysicalOperationDefinitionMarshaller();
-            marshallers[i] = new PhysicalWireDefinitionMarshaller();
-            marshallers[i] = new PhysicalChangeSetMarshaller();
-        }
+        marshallers[0] = new JavaPhysicalComponentDefinitionMarshaller();
+        marshallers[1] = new JavaPhysicalServiceDefinitionMarshaller();
+        marshallers[2] = new JavaPhysicalReferenceDefinitionMarshaller();
+        marshallers[3] = new PhysicalOperationDefinitionMarshaller();
+        marshallers[4] = new PhysicalWireDefinitionMarshaller();
         
-        for(int i = 0;i < 6; i++) {
+        for(int i = 0;i < 5; i++) {
             marshallers[i].setRegistry(registry);
         }
         
@@ -72,8 +69,10 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         InputStream inputStream = cl.getResourceAsStream("marshall/javaChangeSet.xml");
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
         
-        //PhysicalChangeSet changeSet = (PhysicalChangeSet) registry.unmarshall(reader);
-        //assertNotNull(changeSet);
+        PhysicalChangeSet changeSet = registry.unmarshallChangeSet(reader);
+        assertNotNull(changeSet);
+        assertEquals(2, changeSet.getComponentDefinitions().size());
+        assertEquals(2, changeSet.getWireDefinitions().size());
         
         
     }

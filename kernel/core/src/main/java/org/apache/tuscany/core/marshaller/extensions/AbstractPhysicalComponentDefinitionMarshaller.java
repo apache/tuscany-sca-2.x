@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
@@ -68,12 +69,11 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
                 switch (reader.next()) {
                     case START_ELEMENT:
                         String name = reader.getName().getLocalPart();
+                        ModelObject modelObject = registry.unmarshall(reader);;
                         if(REFERENCE.equals(name)) {
-                            PhysicalReferenceDefinition reference = (PhysicalReferenceDefinition) registry.unmarshall(reader);
-                            componentDefinition.addReference(reference);
+                            componentDefinition.addReference((PhysicalReferenceDefinition) modelObject);
                         } else if(SERVICE.equals(name)) {
-                            PhysicalServiceDefinition service = (PhysicalServiceDefinition) registry.unmarshall(reader);
-                            componentDefinition.addService(service);
+                            componentDefinition.addService((PhysicalServiceDefinition) modelObject);
                         } else {
                             handleExtensions(componentDefinition, reader);
                         }
