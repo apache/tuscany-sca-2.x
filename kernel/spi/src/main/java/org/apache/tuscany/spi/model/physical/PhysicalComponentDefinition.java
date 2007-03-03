@@ -30,16 +30,16 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public abstract class PhysicalComponentDefinition extends ModelObject {
+public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDefinition, PRD extends PhysicalReferenceDefinition> extends ModelObject {
 
     // Component Id.
     private URI componentId;
     
     // Services exposed by this component
-    private Set<PhysicalServiceDefinition> services = new HashSet<PhysicalServiceDefinition>();
+    private Set<PSD> services = new HashSet<PSD>();
     
     // References exposed by this component
-    private Set<PhysicalReferenceDefinition> references = new HashSet<PhysicalReferenceDefinition>();
+    private Set<PRD> references = new HashSet<PRD>();
 
     /**
      * Gets the component id.
@@ -61,7 +61,7 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      * Returns the service definitions available for this component.
      * @return Service definitions for this operation.
      */
-    public Set<PhysicalServiceDefinition> getServices() {
+    public Set<PSD> getServices() {
         return Collections.unmodifiableSet(services);
     }
 
@@ -69,7 +69,7 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      * Adds a service definition to the component.
      * @param service Service definition to be added to the component.
      */
-    public void addService(PhysicalServiceDefinition service) {
+    public void addService(PSD service) {
         services.add(service);
     }
     
@@ -77,7 +77,7 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      * Returns the reference definitions available for this component.
      * @return Reference definitions for this operation.
      */
-    public Set<PhysicalReferenceDefinition> getReferences() {
+    public Set<PRD> getReferences() {
         return Collections.unmodifiableSet(references);
     }
 
@@ -85,7 +85,7 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      * Adds a reference definition to the component.
      * @param reference Reference definition to be added to the component.
      */
-    public void addReference(PhysicalReferenceDefinition reference) {
+    public void addReference(PRD reference) {
         references.add(reference);
     }
 

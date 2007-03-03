@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.marshaller;
 
 import java.io.InputStream;
+import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -28,8 +29,13 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalReferenceDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalServiceDefinitionMarshaller;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
+import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
 
 /**
  * Test case for Java physical change set marshaller.
@@ -71,7 +77,36 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         
         PhysicalChangeSet changeSet = registry.unmarshallChangeSet(reader);
         assertNotNull(changeSet);
-        assertEquals(2, changeSet.getComponentDefinitions().size());
+        Set<? extends PhysicalComponentDefinition> pcds = changeSet.getComponentDefinitions();
+        assertEquals(2, pcds.size());
+        for(PhysicalComponentDefinition pcd : pcds) {
+            
+            assertTrue(pcd instanceof JavaPhysicalComponentDefinition);
+            String componentId = pcd.getComponentId().toString();
+            assertTrue("cmp1".equals(componentId) || "cmp2".equals(componentId));
+            
+            JavaPhysicalComponentDefinition jpcd = (JavaPhysicalComponentDefinition) pcd;
+            
+            Set<JavaPhysicalReferenceDefinition> refs = jpcd.getReferences();
+            assertEquals(1, refs.size());
+            JavaPhysicalReferenceDefinition ref = refs.iterator().next();
+            if("cmp1".equals(componentId)) {
+                assertEquals("rf1", ref.getName());
+            } else {
+                assertEquals("rf2", ref.getName());
+            }
+            
+            // TODO Fix defect
+            /*Set<JavaPhysicalServiceDefinition> svs = jpcd.getServices();
+            assertEquals(1, svs.size());
+            JavaPhysicalServiceDefinition sv = svs.iterator().next();
+            if("cmp1".equals(componentId)) {
+                assertEquals("sv1", ref.getName());
+            } else {
+                assertEquals("sv2", ref.getName());
+            }*/
+            
+        }
         assertEquals(2, changeSet.getWireDefinitions().size());
         
         
