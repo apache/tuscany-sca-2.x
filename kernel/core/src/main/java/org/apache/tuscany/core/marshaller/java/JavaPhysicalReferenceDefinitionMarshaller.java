@@ -18,13 +18,19 @@
  */
 package org.apache.tuscany.core.marshaller.java;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.core.marshaller.AbstractMarshallerExtension;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
 import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  * Marshaller for java physical reference definition.
@@ -33,6 +39,12 @@ import org.apache.tuscany.spi.marshaller.MarshallException;
  */
 public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractMarshallerExtension<JavaPhysicalReferenceDefinition> {
 
+    // Local part for operation
+    private static final String OPERATION = "operation";
+    
+    // Source name attribute
+    private static final String NAME = "name";
+    
     // QName for the root element
     private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "service");
 
@@ -47,7 +59,28 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractMarshalle
      * Unmarshalls a java physical reference definition from the xml reader.
      */
     public JavaPhysicalReferenceDefinition unmarshall(XMLStreamReader reader) throws MarshallException {
-        throw new UnsupportedOperationException();
+        
+        try {
+            JavaPhysicalReferenceDefinition referenceDefinition = new JavaPhysicalReferenceDefinition();
+            referenceDefinition.setName(reader.getAttributeValue(null, NAME));
+            while (true) {
+                switch (reader.next()) {
+                    case START_ELEMENT:
+                        ModelObject modelObject = registry.unmarshall(reader);
+                        String name = reader.getName().getLocalPart();
+                        if(OPERATION.equals(name)) {
+                            referenceDefinition.addOperation((PhysicalOperationDefinition)modelObject);
+                        }
+                        break;
+                    case END_ELEMENT:
+                        return referenceDefinition;
+
+                }
+            }
+        } catch (XMLStreamException ex) {
+            throw new MarshallException(ex);
+        }
+        
     }
 
     @Override

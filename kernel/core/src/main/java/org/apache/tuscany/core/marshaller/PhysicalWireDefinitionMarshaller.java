@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 
@@ -68,10 +69,8 @@ public class PhysicalWireDefinitionMarshaller extends AbstractMarshallerExtensio
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
-                        // Marshall the operation definitions
-                        PhysicalOperationDefinition operation =
-                            (PhysicalOperationDefinition)registry.unmarshall(reader);
-                        wireDefinition.addOperation(operation);
+                        ModelObject modelObject = registry.unmarshall(reader);
+                        wireDefinition.addOperation((PhysicalOperationDefinition)modelObject);
                         break;
                     case END_ELEMENT:
                         return wireDefinition;
