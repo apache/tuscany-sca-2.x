@@ -33,7 +33,7 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefiniti
 public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalReferenceDefinitionMarshaller<JavaPhysicalReferenceDefinition> {
     
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "reference");
+    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "reference");
 
     /**
      * Gets the qualified name of the XML fragment for the marshalled model object.
