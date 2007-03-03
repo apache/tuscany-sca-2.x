@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 public class PhysicalChangeSet extends ModelObject {
     
     // Set of physical component definitions
-    private Set<PhysicalComponentDefinition> physicalComponentDefinitions = new HashSet<PhysicalComponentDefinition>();
+    private Set<PhysicalComponentDefinition> componentDefinitions = new HashSet<PhysicalComponentDefinition>();
     
     // Set of wire definitions
     private Set<PhysicalWireDefinition> wireDefinitions = new HashSet<PhysicalWireDefinition>();
@@ -42,8 +42,8 @@ public class PhysicalChangeSet extends ModelObject {
      * Get all the physical component definitions.
      * @return Physical component definitions in the changeset.
      */
-    public Set<? extends PhysicalComponentDefinition> getPhysicalComponentDefinitions() {
-        return Collections.unmodifiableSet(physicalComponentDefinitions);
+    public Set<? extends PhysicalComponentDefinition> getComponentDefinitions() {
+        return Collections.unmodifiableSet(componentDefinitions);
     }
 
     /**
@@ -58,14 +58,16 @@ public class PhysicalChangeSet extends ModelObject {
      * Adds a physical component definition to the physical change set.
      * @param physicalComponentDefinition Physical component definition.
      */
-    public void addModelObject(ModelObject modelObject) {
-        if(modelObject instanceof PhysicalComponentDefinition) {
-            physicalComponentDefinitions.add((PhysicalComponentDefinition) modelObject);
-        } else if(modelObject instanceof PhysicalWireDefinition) {
-            wireDefinitions.add((PhysicalWireDefinition) modelObject);
-        } else {
-            throw new IllegalArgumentException("Unexpected model object " + modelObject.getClass());
-        }
+    public void addComponentDefinition(PhysicalComponentDefinition componentDefinition) {
+        componentDefinitions.add(componentDefinition);
+    }
+
+    /**
+     * Adds a physical wire definition to the physical change set.
+     * @param wireDefinition Physical wire definition.
+     */
+    public void addWireDefinition(PhysicalWireDefinition wireDefinition) {
+        wireDefinitions.add(wireDefinition);
     }
 
 }

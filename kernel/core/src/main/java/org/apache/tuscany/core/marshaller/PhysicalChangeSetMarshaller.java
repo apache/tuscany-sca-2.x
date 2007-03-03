@@ -29,6 +29,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
+import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * Marshaller for physical changeset.
@@ -40,6 +42,13 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
 
     // QName for the root element
     private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "changeSet");
+    
+    // Local part for wire
+    private static final String WIRE = "wire";
+
+    // Local part for component
+    private static final String COMPONENT = "component";
+    
     
     /**
      * Marshalls a physical change set to the xml writer.
@@ -58,9 +67,13 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
-                        // Marshall the wire definitions and component definitions
                         ModelObject modelObject = registry.unmarshall(reader);
-                        changeSet.addModelObject(modelObject);
+                        String name = reader.getName().getLocalPart();
+                        if(COMPONENT.equals(name)) {
+                            changeSet.addComponentDefinition((PhysicalComponentDefinition) modelObject);
+                        } else if(WIRE.equals(name)) {
+                            changeSet.addWireDefinition((PhysicalWireDefinition) modelObject);
+                        }
                         break;
                     case END_ELEMENT:
                         return changeSet;
