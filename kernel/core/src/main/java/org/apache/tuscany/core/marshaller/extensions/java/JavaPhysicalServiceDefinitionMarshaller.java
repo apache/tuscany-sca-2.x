@@ -16,24 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.marshaller.java;
+package org.apache.tuscany.core.marshaller.extensions.java;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.core.marshaller.AbstractPhysicalReferenceDefinitionMarshaller;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
+import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalServiceDefinitionMarshaller;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
 
 /**
- * Marshaller for java physical reference definition.
+ * Marshaller for java physical service definition.
  * 
  * @version $Revision$ $Date$
  */
-public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalReferenceDefinitionMarshaller<JavaPhysicalReferenceDefinition> {
+public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalServiceDefinitionMarshaller<JavaPhysicalServiceDefinition> {
     
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "reference");
+    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "service");
 
     /**
      * Gets the qualified name of the XML fragment for the marshalled model object.
@@ -45,39 +45,39 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
     }
 
     /**
-     * Retursn the type of the model object.
-     * @return <code>JavaPhysicalReferenceDefinition.class</code>.
+     * Returns the type of the model object.
+     * @return <code>JavaPhysicalServiceDefinition.class</code>.
      */
     @Override
-    protected Class<JavaPhysicalReferenceDefinition> getModelObjectType() {
-        return JavaPhysicalReferenceDefinition.class;
+    protected Class<JavaPhysicalServiceDefinition> getModelObjectType() {
+        return JavaPhysicalServiceDefinition.class;
     }
 
     /**
      * Create the concrete model object.
-     * @return An instance of <code>JavaPhysicalReferenceDefinition</code>.
+     * @return An instance of <code>JavaPhysicalServiceDefinition</code>.
      */
     @Override
-    protected JavaPhysicalReferenceDefinition getConcreteModelObject() {
-        return new JavaPhysicalReferenceDefinition();
+    protected JavaPhysicalServiceDefinition getConcreteModelObject() {
+        return new JavaPhysicalServiceDefinition();
     }
 
     /**
-     * Handles extensions for unmarshalling Java physical references.
+     * Handles extensions for unmarshalling Java service definitions.
      * @param modelObject Concrete model object.
      * @param reader Reader from which marshalled data is read.
      */
     @Override
-    protected void handleExtensions(JavaPhysicalReferenceDefinition modelObject, XMLStreamReader reader) {
+    protected void handleExtensions(JavaPhysicalServiceDefinition modelObject, XMLStreamReader reader) {
     }
 
     /**
-     * Handles extensions for marshalling Java physical references.
+     * Handles extensions for marshalling Java service definitions.
      * @param modelObject Concrete model object.
      * @param reader Writer to which marshalled data is written.
      */
     @Override
-    protected void handleExtensions(JavaPhysicalReferenceDefinition modelObject, XMLStreamWriter writer) {
+    protected void handleExtensions(JavaPhysicalServiceDefinition modelObject, XMLStreamWriter writer) {
     }
 
 }
