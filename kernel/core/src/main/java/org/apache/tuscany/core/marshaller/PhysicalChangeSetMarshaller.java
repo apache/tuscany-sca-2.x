@@ -41,7 +41,7 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<PhysicalChangeSet> {
 
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "changeSet");
+    public static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "changeSet");
     
     // Local part for wire
     private static final String WIRE = "wire";
