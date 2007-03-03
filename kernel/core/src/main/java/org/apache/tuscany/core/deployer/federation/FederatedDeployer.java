@@ -24,6 +24,7 @@ import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.RegistrationException;
@@ -78,8 +79,8 @@ public class FederatedDeployer implements RequestListener {
             final PhysicalChangeSet changeSet = (PhysicalChangeSet) marshallerRegistry.unmarshall(content);
             
             for(PhysicalComponentDefinition pcd : changeSet.getComponentDefinitions()) {
-                final Component component = null;
-                // TODO build the components using builder registry
+                final PhysicalComponentBuilder builder = builderRegistry.getBuilder(pcd.getClass());
+                final Component component = builder.build(pcd);
                 componentManager.register(component);
                 component.start();
             }
