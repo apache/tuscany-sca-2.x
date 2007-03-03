@@ -37,7 +37,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalC
     private static final String INSTANCE_FACTORY = "instanceFactory";
 
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/component/java/1.0-SNAPSHOT", "component");
+    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "component");
 
     /**
      * Gets the qualified name of the XML fragment for the marshalled model object.

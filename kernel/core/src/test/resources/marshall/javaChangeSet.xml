@@ -1,19 +1,33 @@
-<changeSet>
+<core:changeSet xmlns:core="http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT">
 	
-	<component>
-		
-	</component>
+	<!-- Component 1 -->
+	<java:component xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp1">
+		<java:reference name="rf1">
+			<core:operation name="op2"/>
+		</java:reference>
+		<java:service name="sv1">
+			<core:operation name="op1"/>
+		</java:service>
+	</java:component>
 	
-	<component>
-		
-	</component>
+	<!-- Component 2 -->
+	<java:component xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp2">
+		<java:reference name="rf2">
+			<core:operation name="op1"/>
+		</java:reference>
+		<java:service name="sv2">
+			<core:operation name="op2"/>
+		</java:service>
+	</java:component>
 	
-	<wire>
-		
-	</wire>
+	<!-- Wire 1 -->
+	<core:wire sourceUri="cmp1#rf1" targetUri="cmp2#sv2">
+			<core:operation name="op2"/>
+	</core:wire>
 	
-	<wire>
-		
-	</wire>
+	<!-- Wire 2 -->
+	<core:wire sourceUri="cmp2#rf2" targetUri="cmp1#sv1">
+			<core:operation name="op1"/>
+	</core:wire>
 	
-</changeSet>
+</core:changeSet>

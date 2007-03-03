@@ -33,7 +33,7 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition
 public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalServiceDefinitionMarshaller<JavaPhysicalServiceDefinition> {
     
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "service");
+    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "service");
 
     /**
      * Gets the qualified name of the XML fragment for the marshalled model object.
