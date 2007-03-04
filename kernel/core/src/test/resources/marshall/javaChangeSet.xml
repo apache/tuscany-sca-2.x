@@ -8,6 +8,7 @@
 		<java:service name="sv1">
 			<core:operation name="op1"/>
 		</java:service>
+		<java:instanceFactory>1234ASF</java:instanceFactory>
 	</java:component>
 	
 	<!-- Component 2 -->
@@ -18,6 +19,7 @@
 		<java:service name="sv2">
 			<core:operation name="op2"/>
 		</java:service>
+		<java:instanceFactory>1234ASF</java:instanceFactory>
 	</java:component>
 	
 	<!-- Wire 1 -->

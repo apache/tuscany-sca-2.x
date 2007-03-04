@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.marshaller.extensions.java;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -32,19 +33,25 @@ import org.apache.tuscany.spi.marshaller.MarshallException;
 /**
  * Marshaller for Java physical component definitions.
  * 
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2007-03-03 16:41:22 +0000 (Sat, 03 Mar
+ *          2007) $
  */
-public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalComponentDefinitionMarshaller<JavaPhysicalComponentDefinition> {
+public class JavaPhysicalComponentDefinitionMarshaller extends
+    AbstractPhysicalComponentDefinitionMarshaller<JavaPhysicalComponentDefinition> {
 
     // Instance factory
     private static final String INSTANCE_FACTORY = "instanceFactory";
 
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "component");
+    private static final QName QNAME =
+        new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "component");
 
     /**
-     * Gets the qualified name of the XML fragment for the marshalled model object.
-     * @return {"http://tuscany.apache.org/xmlns/marshaller/component/java/1.0-SNAPSHOT", "component"}
+     * Gets the qualified name of the XML fragment for the marshalled model
+     * object.
+     * 
+     * @return {"http://tuscany.apache.org/xmlns/marshaller/component/java/1.0-SNAPSHOT",
+     *         "component"}
      */
     @Override
     protected QName getModelObjectQName() {
@@ -53,62 +60,75 @@ public class JavaPhysicalComponentDefinitionMarshaller extends AbstractPhysicalC
 
     /**
      * Retursn the type of the model object.
+     * 
      * @return <code>JavaPhysicalComponentDefinition.class</code>.
      */
     @Override
     protected Class<JavaPhysicalComponentDefinition> getModelObjectType() {
         return JavaPhysicalComponentDefinition.class;
     }
-    
+
     /**
      * Create the concrete PCD.
+     * 
      * @return An instance of<code>JavaPhysicalComponentDefinition</code>.
      */
     @Override
     protected JavaPhysicalComponentDefinition getConcreteModelObject() {
         return new JavaPhysicalComponentDefinition();
     }
-    
+
     /**
-     * Handles extensions for unmarshalling Java physical component definitions 
+     * Handles extensions for unmarshalling Java physical component definitions
      * including the marshalling of base64 encoded instance factory byte code.
      * 
      * @param componentDefinition Physical component definition.
      * @param reader Reader from which marshalled data is read.
      */
     @Override
-    protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader) {
-        String name = reader.getName().getLocalPart();
-        if(INSTANCE_FACTORY.equals(name)) {
-            byte[] base64ByteCode = reader.getText().getBytes();
-            byte[] byteCode = Base64.decodeBase64(base64ByteCode);
-            componentDefinition.setInstanceFactoryByteCode(byteCode);
+    protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
+        throws MarshallException {
+
+        try {
+            String name = reader.getName().getLocalPart();
+            if (INSTANCE_FACTORY.equals(name)) {
+                reader.next();
+                byte[] base64ByteCode = reader.getText().getBytes();
+                byte[] byteCode = Base64.decodeBase64(base64ByteCode);
+                componentDefinition.setInstanceFactoryByteCode(byteCode);
+            }
+        } catch (XMLStreamException ex) {
+            throw new MarshallException(ex);
         }
+        
     }
+
     /**
      * Handles a reference.
      * 
      * @param componentDefinition Component definition.
      * @param reader XML stream.
      */
-    protected void handleReference(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader) throws MarshallException {
-        JavaPhysicalReferenceDefinition reference = (JavaPhysicalReferenceDefinition) registry.unmarshall(reader);
+    protected void handleReference(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
+        throws MarshallException {
+        JavaPhysicalReferenceDefinition reference = (JavaPhysicalReferenceDefinition)registry.unmarshall(reader);
         componentDefinition.addReference(reference);
     }
-    
+
     /**
      * Handles a reference.
      * 
      * @param componentDefinition Component definition.
      * @param reader XML stream.
      */
-    protected void handleService(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader) throws MarshallException {
-        JavaPhysicalServiceDefinition service = (JavaPhysicalServiceDefinition) registry.unmarshall(reader);
-        componentDefinition.addService(service); 
+    protected void handleService(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
+        throws MarshallException {
+        JavaPhysicalServiceDefinition service = (JavaPhysicalServiceDefinition)registry.unmarshall(reader);
+        componentDefinition.addService(service);
     }
-    
+
     /**
-     * Handles extensions for marshalling Java physical component definitions 
+     * Handles extensions for marshalling Java physical component definitions
      * including the marshalling of base64 encoded instance factory byte code.
      * 
      * @param componentDefinition Physical component definition.
