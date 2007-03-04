@@ -22,6 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.core.marshaller.AbstractMarshallerExtension;
+import org.apache.tuscany.spi.marshaller.MarshallException;
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**
@@ -31,26 +32,27 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @param <MD>
  */
-public abstract class AbstractExtensibleMarshallerExtension<MD extends ModelObject> extends AbstractMarshallerExtension<MD> {
+public abstract class AbstractExtensibleMarshallerExtension<MD extends ModelObject> extends
+    AbstractMarshallerExtension<MD> {
 
     /**
      * Create the concrete model object.
      * @return Concrete model object.
      */
     protected abstract MD getConcreteModelObject();
-    
+
     /**
      * Handles extensions for unmarshalling.
      * @param modelObject Concrete model object.
      * @param reader Reader from which marshalled data is read.
      */
-    protected abstract void handleExtension(MD modelObject, XMLStreamReader reader);
-    
+    protected abstract void handleExtension(MD modelObject, XMLStreamReader reader) throws MarshallException;
+
     /**
      * Handles extensions for marshalling.
      * @param modelObject Concrete model object.
      * @param reader Writer to which marshalled data is written.
      */
-    protected abstract void handleExtension(MD modelObject, XMLStreamWriter writer);
+    protected abstract void handleExtension(MD modelObject, XMLStreamWriter writer) throws MarshallException;
 
 }
