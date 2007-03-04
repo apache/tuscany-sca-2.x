@@ -110,12 +110,9 @@
         </dependencies>
     </dependencyManagement>
 
-    <build>
-        <defaultGoal>install</defaultGoal>
-    </build>
-
     <profiles>
         <profile>
+            <!-- default profile that just builds the jar files -->
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -126,9 +123,51 @@
                 <module>spi</module>
                 <module>core</module>
             </modules>
+            <build>
+                <defaultGoal>install</defaultGoal>
+            </build>
         </profile>
 
         <profile>
+            <!-- release profile that prepares artifacts for release -->
+            <id>release</id>
+            <modules>
+                <module>api</module>
+                <module>host-api</module>
+                <module>spi</module>
+                <module>core</module>
+            </modules>
+            <build>
+                <defaultGoal>verify</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- javadoc profile for generating online javadoc -->
             <id>javadoc</id>
             <modules>
                 <module>api</module>
@@ -136,6 +175,7 @@
                 <module>spi</module>
             </modules>
             <build>
+                <defaultGoal>org.apache.maven.plugins:maven-javadoc-plugin:javadoc</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
