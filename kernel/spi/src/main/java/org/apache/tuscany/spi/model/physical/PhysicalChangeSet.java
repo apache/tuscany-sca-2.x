@@ -56,7 +56,7 @@ public class PhysicalChangeSet extends ModelObject {
 
     /**
      * Adds a physical component definition to the physical change set.
-     * @param physicalComponentDefinition Physical component definition.
+     * @param componentDefinition Physical component definition.
      */
     public void addComponentDefinition(PhysicalComponentDefinition componentDefinition) {
         componentDefinitions.add(componentDefinition);

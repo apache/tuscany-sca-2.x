@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.databinding;
 
 /**
  * Data pipe allows a data source pushes data into its sink and pipe the data into its result
- * 
+ *
  * @param <S> The data binding type of the sink
  * @param <R> The data binding type of the result
  */
@@ -29,15 +29,15 @@ public interface DataPipe<S, R> extends Transformer {
     /**
      * Returns a sink (for example, java.io.OutputStream, java.io.Writer or org.xml.sax.ContentHandler) to receive data
      * pushed by the source
-     * 
+     *
      * @return The sink to consume data
      */
     S getSink();
 
     /**
      * Returns the data populated by the sink
-     * 
-     * @return
+     *
+     * @return R the result
      */
     R getResult();
 

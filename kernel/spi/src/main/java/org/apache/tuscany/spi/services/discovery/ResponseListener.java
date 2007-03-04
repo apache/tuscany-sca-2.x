@@ -21,19 +21,18 @@ package org.apache.tuscany.spi.services.discovery;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * Message listener for propogating callbacks. Response listeners handle 
- * async meesages that are received in response to a request message that was 
- * originally sent.
- * 
- * @version $Revision$ $Date$
+ * Message listener for propogating callbacks. Response listeners handle async meesages that are received in response to
+ * a request message that was originally sent.
  *
+ * @version $Revision$ $Date$
  */
 public interface ResponseListener {
-    
+
     /**
      * Callback for propogating async messages.
-     * @param content Message content.
-     * @param An optional message id if this was in response to a message that was sent.
+     *
+     * @param content   Message content.
+     * @param messageId optional message id if this was in response to a message that was sent.
      */
     void onResponse(XMLStreamReader content, int messageId);
 

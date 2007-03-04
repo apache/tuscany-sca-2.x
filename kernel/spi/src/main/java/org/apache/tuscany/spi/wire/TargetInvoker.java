@@ -41,9 +41,9 @@ public interface TargetInvoker extends Cloneable {
      * flowed such as in non-proxied wires.
      *
      * @param payload  the invocation payload, typically an array of parameters
-     * @param sequence if the invocation is part of a conversation, the sequence. Valid values are {@link NONE} for
-     *                 non-conversational, {@link START} to begin a conversation, {@link CONTINUE} to continue a
-     *                 conversation, or {@link END} to end a conversation
+     * @param sequence if the invocation is part of a conversation, the sequence. Valid values are {@link #NONE} for
+     *                 non-conversational, {@link #START} to begin a conversation, {@link #CONTINUE} to continue a
+     *                 conversation, or {@link #END} to end a conversation
      * @throws InvocationTargetException
      */
     Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException;

@@ -24,48 +24,47 @@ import org.apache.tuscany.spi.model.DataType;
 
 /**
  * Context for data transformation
- * 
  */
 public interface TransformationContext {
     /**
      * Get the source data type
-     * 
-     * @return
+     *
+     * @return the source data type
      */
     DataType getSourceDataType();
 
     /**
      * Get the target data type
-     * 
-     * @return
+     *
+     * @return the target datatype
      */
     DataType getTargetDataType();
 
     /**
      * Set the source data type
-     * 
-     * @param sourceDataType
+     *
+     * @param sourceDataType the source data type
      */
     void setSourceDataType(DataType sourceDataType);
 
     /**
      * Set the target data type
-     * 
-     * @param targetDataType
+     *
+     * @param targetDataType the target data type
      */
     void setTargetDataType(DataType targetDataType);
 
     /**
      * Get the classloader
-     * 
-     * @return
+     *
+     * @return the classloader
      */
     ClassLoader getClassLoader();
 
     /**
      * Get a map of metadata
-     * 
-     * @return
+     *
+     * @return the map of metadata
      */
     Map<Class<?>, Object> getMetadata();
 

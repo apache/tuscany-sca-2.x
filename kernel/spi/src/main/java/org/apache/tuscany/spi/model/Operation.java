@@ -72,8 +72,8 @@ public class Operation<T> extends ModelObject implements Cloneable {
      * @param faultTypes  the data type of faults raised by the operation
      * @param nonBlocking if the operation is non-blocking
      * @param dataBinding the data-binding type required by the operation
-     * @param sequence    the conversational attributes of the operation, {@link NO_CONVERSATION}, {@link
-     *                    CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
+     * @param sequence    the conversational attributes of the operation {@link #CONVERSATION_CONTINUE}, or {@link
+     *                    #CONVERSATION_END}
      */
     public Operation(final String name,
                      final DataType<List<DataType<T>>> inputType,
@@ -197,8 +197,8 @@ public class Operation<T> extends ModelObject implements Cloneable {
     }
 
     /**
-     * Returns the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link
-     * CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
+     * Returns the sequence the operation is called in a conversation, {@link #CONVERSATION_CONTINUE}, or {@link
+     * #CONVERSATION_END}
      *
      * @return the sequence the operation is called in a conversation
      */
@@ -207,8 +207,8 @@ public class Operation<T> extends ModelObject implements Cloneable {
     }
 
     /**
-     * Sets the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link
-     * CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
+     * Sets the sequence the operation is called in a conversation, {@link #CONVERSATION_CONTINUE}, or {@link
+     * #CONVERSATION_END}
      */
     public void setConversationSequence(int conversationSequence) {
         this.conversationSequence = conversationSequence;

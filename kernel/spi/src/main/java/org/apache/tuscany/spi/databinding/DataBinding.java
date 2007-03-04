@@ -27,14 +27,14 @@ import org.apache.tuscany.spi.model.DataType;
 public interface DataBinding {
     /**
      * The name of a databinding should be case-insensitive and unique
-     * 
+     *
      * @return The name of the databinding
      */
     String getName();
 
     /**
      * Introspect a java class or interface to create a DataType model
-     * 
+     *
      * @param javaType The java class or interface to be introspected
      * @return The DataType or null if the java type is not supported by this databinding
      */
@@ -42,7 +42,7 @@ public interface DataBinding {
 
     /**
      * Introspect the data to figure out the corresponding data type
-     * 
+     *
      * @param value The object to be checked
      * @return The DataType or null if the java type is not supported by this databinding
      */
@@ -50,19 +50,22 @@ public interface DataBinding {
 
     /**
      * Provide a WrapperHandler for this databinding
+     *
      * @return A wrapper handler which can handle wrapping/wrapping for this databinding
      */
     WrapperHandler getWrapperHandler();
 
     /**
      * Make a copy of the object for "pass-by-value" semantics
-     * @param source object to copy 
+     *
+     * @param object object to copy
      * @return copy of the object passed in as argument
      */
     Object copy(Object object);
-    
+
     /**
      * Get the type mapper for simple types
+     *
      * @return The databinding-specific simple type mapper
      */
     SimpleTypeMapper getSimpleTypeMapper();

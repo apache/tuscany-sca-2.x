@@ -23,14 +23,14 @@ import java.net.URL;
 
 /**
  * Provide content type for a given resource
- * 
+ *
  * @version $Rev$ $Date$
  */
-public interface ContentTypeDescriber  {
+public interface ContentTypeDescriber {
     /**
-     * @param resourceURL
-     * @param defaultContentType
-     * @return
+     * @param resourceURL        the resource url
+     * @param defaultContentType the default content type
+     * @return the content type
      */
     String getContentType(URL resourceURL, String defaultContentType);
 }

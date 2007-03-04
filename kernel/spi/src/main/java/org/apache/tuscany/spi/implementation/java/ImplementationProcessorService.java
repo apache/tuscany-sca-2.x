@@ -84,7 +84,8 @@ public interface ImplementationProcessorService {
                          List<String> injectionNames) throws ProcessingException;
 
     /**
-     * Returns true if {@link @Autowire}, {@link @Property}, or {@link @Reference} are present in the given array
+     * Returns true if <code>@Property</code> or <code>@Reference</code> are present in the given array
+     * @return true if one of the annotations are present
      */
     boolean injectionAnnotationsPresent(Annotation[][] annots);
 
