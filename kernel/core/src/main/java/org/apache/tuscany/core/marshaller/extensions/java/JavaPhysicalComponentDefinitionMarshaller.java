@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.marshaller.extensions.java;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -29,6 +32,7 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefiniti
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
 import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * Marshaller for Java physical component definitions.
@@ -42,6 +46,12 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
     // Instance factory
     private static final String INSTANCE_FACTORY = "instanceFactory";
 
+    // Scope
+    private static final String SCOPE = "scope";
+
+    // Classloader id
+    private static final String CLASSLOADER_ID = "classLoaderId";
+    
     // QName for the root element
     private static final QName QNAME =
         new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "component");
@@ -91,13 +101,19 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
         try {
             String name = reader.getName().getLocalPart();
+            reader.next();
             if (INSTANCE_FACTORY.equals(name)) {
-                reader.next();
                 byte[] base64ByteCode = reader.getText().getBytes();
                 byte[] byteCode = Base64.decodeBase64(base64ByteCode);
                 componentDefinition.setInstanceFactoryByteCode(byteCode);
+            } else if(SCOPE.equals(name)) {
+                componentDefinition.setScope(new Scope(reader.getText()));
+            } else if(CLASSLOADER_ID.equals(name)) {
+                componentDefinition.setClassLoaderId(new URI(reader.getText()));
             }
         } catch (XMLStreamException ex) {
+            throw new MarshallException(ex);
+        } catch (URISyntaxException ex) {
             throw new MarshallException(ex);
         }
         

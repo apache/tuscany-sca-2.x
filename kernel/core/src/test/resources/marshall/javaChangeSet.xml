@@ -9,6 +9,8 @@
 			<core:operation name="op1"/>
 		</java:service>
 		<java:instanceFactory>1234ASF</java:instanceFactory>
+		<java:scope>STATELESS</java:scope>
+		<java:classLoaderId>#123</java:classLoaderId>
 	</java:component>
 	
 	<!-- Component 2 -->
@@ -20,16 +22,18 @@
 			<core:operation name="op2"/>
 		</java:service>
 		<java:instanceFactory>1234ASF</java:instanceFactory>
+		<java:scope>STATELESS</java:scope>
+		<java:classLoaderId>#123</java:classLoaderId>
 	</java:component>
 	
 	<!-- Wire 1 -->
 	<core:wire sourceUri="cmp1#rf1" targetUri="cmp2#sv2">
-			<core:operation name="op2"/>
+		<core:operation name="op2"/>
 	</core:wire>
 	
 	<!-- Wire 2 -->
 	<core:wire sourceUri="cmp2#rf2" targetUri="cmp1#sv1">
-			<core:operation name="op1"/>
+		<core:operation name="op1"/>
 	</core:wire>
 	
 </core:changeSet>
