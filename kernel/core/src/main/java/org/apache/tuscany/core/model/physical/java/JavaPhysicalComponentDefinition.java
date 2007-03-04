@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.model.physical.java;
 
+import java.net.URI;
+
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -29,6 +32,44 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
 
     // The byte code for the instance factory
     private byte[] instanceFactoryByteCode;
+    
+    // Scope
+    private Scope scope;
+    
+    // Class loader id
+    private URI classLoaderId;
+
+    /**
+     * Gets the classloader id.
+     * @return Classloader id.
+     */
+    public URI getClassLoaderId() {
+        return classLoaderId;
+    }
+
+    /**
+     * Set the classloader id.
+     * @param classLoaderId Classloader id.
+     */
+    public void setClassLoaderId(URI classLoaderId) {
+        this.classLoaderId = classLoaderId;
+    }
+
+    /**
+     * Gets the scope for the component.
+     * @return The scope for the component.
+     */
+    public Scope getScope() {
+        return scope;
+    }
+
+    /**
+     * Sets the scope for the component.
+     * @param scope The scope for the component.
+     */
+    public void setScope(Scope scope) {
+        this.scope = scope;
+    }
 
     /**
      * Gets the byte code for the instance factory.
@@ -45,12 +86,7 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
      * @param instanceFactoryByteCode Byte code for the instance factory.
      */
     public void setInstanceFactoryByteCode(byte[] instanceFactoryByteCode) {
-
-        if (instanceFactoryByteCode == null) {
-            throw new IllegalArgumentException("Instance factory byte code is null");
-        }
         this.instanceFactoryByteCode = instanceFactoryByteCode;
-
     }
 
 }

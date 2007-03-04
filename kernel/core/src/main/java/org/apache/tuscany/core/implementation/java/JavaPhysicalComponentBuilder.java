@@ -18,9 +18,17 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.net.URI;
+
+import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Java physical component builder.
@@ -29,7 +37,13 @@ import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
  *
  */
 public class JavaPhysicalComponentBuilder implements
-    PhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaAtomicComponent> {
+    PhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent> {
+    
+    // Classloader registry
+    private ClassLoaderRegistry classLoaderRegistry;
+    
+    // SCope registry
+    private ScopeRegistry scopeRegistry;
 
     /**
      * Builds a component from its physical component definition.
@@ -39,12 +53,42 @@ public class JavaPhysicalComponentBuilder implements
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */
-    public JavaAtomicComponent build(JavaPhysicalComponentDefinition componentDefinition) throws BuilderException {
+    public JavaComponent build(JavaPhysicalComponentDefinition componentDefinition) throws BuilderException {
         
-        JavaAtomicComponent component = new JavaAtomicComponent(null);
+        JavaComponent component = new JavaComponent();
+        
+        Scope scope = componentDefinition.getScope();
+        URI classLoaderId = componentDefinition.getClassLoaderId();
+        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
+        component.setScopeContainer(scopeContainer);
+
+        // TODO use MPCL to load IF class
         byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode();
-        // TODO Add the instance factory byte code to the component
+        ClassLoader appCl = classLoaderRegistry.getClassLoader(classLoaderId);
+        ClassLoader systemCl = getClass().getClassLoader();        
+        ClassLoader mpcl = null;
+        Class<InstanceFactory<?>> instanceFactoryClass = null;        
+        component.setInstanceFactoryClass(instanceFactoryClass);
+        
         return component;
+    }
+
+    /**
+     * Injects classloader registry.
+     * @param classLoaderRegistry Class loader registry.
+     */
+    @Reference
+    public void setClassLoaderRegistry(ClassLoaderRegistry classLoaderRegistry) {
+        this.classLoaderRegistry = classLoaderRegistry;
+    }
+
+    /**
+     * Injects scope registry.
+     * @param scopeRegistry Scope registry.
+     */
+    @Reference
+    public void setScopeRegistry(ScopeRegistry scopeRegistry) {
+        this.scopeRegistry = scopeRegistry;
     }
 
 }
