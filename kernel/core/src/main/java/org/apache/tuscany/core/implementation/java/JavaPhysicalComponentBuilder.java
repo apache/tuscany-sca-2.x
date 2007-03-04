@@ -57,18 +57,9 @@ public class JavaPhysicalComponentBuilder implements
         
         JavaComponent component = new JavaComponent();
         
-        Scope scope = componentDefinition.getScope();
-        URI classLoaderId = componentDefinition.getClassLoaderId();
-        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
-        component.setScopeContainer(scopeContainer);
+        setScopeContainer(componentDefinition, component);
 
-        // TODO use MPCL to load IF class
-        byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode();
-        ClassLoader appCl = classLoaderRegistry.getClassLoader(classLoaderId);
-        ClassLoader systemCl = getClass().getClassLoader();        
-        ClassLoader mpcl = null;
-        Class<InstanceFactory<?>> instanceFactoryClass = null;        
-        component.setInstanceFactoryClass(instanceFactoryClass);
+        setInstanceFactoryClass(componentDefinition, component);
         
         return component;
     }
@@ -89,6 +80,29 @@ public class JavaPhysicalComponentBuilder implements
     @Reference
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
+    }
+
+    /*
+     * Sets the instance factory class.
+     */
+    private void setInstanceFactoryClass(JavaPhysicalComponentDefinition componentDefinition, JavaComponent component) {
+        // TODO use MPCL to load IF class
+        URI classLoaderId = componentDefinition.getClassLoaderId();
+        byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode();
+        ClassLoader appCl = classLoaderRegistry.getClassLoader(classLoaderId);
+        ClassLoader systemCl = getClass().getClassLoader();        
+        ClassLoader mpcl = null;
+        Class<InstanceFactory<?>> instanceFactoryClass = null;        
+        component.setInstanceFactoryClass(instanceFactoryClass);
+    }
+
+    /*
+     * Set the scope container.
+     */
+    private void setScopeContainer(JavaPhysicalComponentDefinition componentDefinition, JavaComponent component) {
+        Scope scope = componentDefinition.getScope();
+        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
+        component.setScopeContainer(scopeContainer);
     }
 
 }
