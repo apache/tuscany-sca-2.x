@@ -41,28 +41,10 @@ public class JavaPhysicalComponentBuilder implements
      */
     public JavaAtomicComponent build(JavaPhysicalComponentDefinition componentDefinition) throws BuilderException {
         
-        //byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode();
-        
-        // TODO I am sure this is not the right classloader.
-        // commented out for PMD
-        //InstanceFactoryLoader cl = new InstanceFactoryLoader();
-        //Class instanceFactoryClass = cl.loadClass(instanceFactoryByteCode);
-        
-        
-        // TODO Do the rest
-        return null;
+        JavaAtomicComponent component = new JavaAtomicComponent(null);
+        byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode();
+        // TODO Add the instance factory byte code to the component
+        return component;
     }
-    
-    /*
-     * Allows to load the class from byte code.
-     * 
-     * TODO Is there a better way to do this?
-     */
-// commented out for PMD
-//    private class InstanceFactoryLoader extends ClassLoader {
-//        public Class loadClass(byte[] byteCode) {
-//            return defineClass(null, byteCode, 0, byteCode.length);
-//        }
-//    }
 
 }
