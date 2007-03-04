@@ -198,6 +198,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <overview>${basedir}/overview.html</overview>
                             <aggregate>true</aggregate>
                         </configuration>
                     </plugin>
