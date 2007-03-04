@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>sca</artifactId>
-        <version>1.0-incubating-SNAPSHOT</version>
+        <version>1.0-incubating</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca</groupId>
@@ -38,17 +38,6 @@
 
     <!-- definition of repositories where the parent pom can be found -->
     <repositories>
-        <repository>
-            <id>apache.snapshots</id>
-            <name>Apache Snapshot Repository</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>apache.incubator</id>
             <name>Apache Incubator Repository</name>
@@ -69,7 +58,7 @@
             <dependency>
                 <groupId>org.osoa</groupId>
                 <artifactId>sca-api-r${scaSpecVersion}</artifactId>
-                <version>1.0-incubating-SNAPSHOT</version>
+                <version>1.0-incubating</version>
                 <scope>compile</scope>
             </dependency>
 
