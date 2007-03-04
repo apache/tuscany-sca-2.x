@@ -24,33 +24,35 @@ import org.apache.tuscany.spi.model.DataType;
 
 /**
  * This interface will be used as a Tuscany system service to perform data mediations
- * 
+ * <p/>
  * Mediate the data from one type to the other one
- *
  */
 public interface Mediator {
 
     /**
      * Mediate the data from the source type to the target type
-     * @param source The data to be mediated
+     *
+     * @param source         The data to be mediated
      * @param sourceDataType Data type for the source data
      * @param targetDataType Data type for the target data
-     * @param context 
-     * @return
+     * @param context        the context for the mediation
+     * @return the result of the mediation
      */
     Object mediate(Object source, DataType sourceDataType, DataType targetDataType, Map<Class<?>, Object> context);
+
     /**
      * Mediate the source data into the target which is a sink to receive the data
-     * @param source The data to be mediated
-     * @param target The sink to receive data
+     *
+     * @param source         The data to be mediated
+     * @param target         The sink to receive data
      * @param sourceDataType Data type for the source data
      * @param targetDataType Data type for the target data
+     * @param context        the context for the mediation
      */
-    void mediate(
-            Object source,
-            Object target,
-            DataType sourceDataType,
-            DataType targetDataType,
-            Map<Class<?>, Object> context);
-    
+    void mediate(Object source,
+                 Object target,
+                 DataType sourceDataType,
+                 DataType targetDataType,
+                 Map<Class<?>, Object> context);
+
 }
