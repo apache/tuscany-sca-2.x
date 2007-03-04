@@ -28,55 +28,58 @@ import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Represents an operation.
- * 
- * @version $Revision$ $Date$
- * 
- * TODO Discuss with Jeremy/Jim on how to model MEPs, INOUT parameters, faults etc
  *
+ * @version $Revision$ $Date$
+ *          <p/>
+ *          TODO Discuss with Jeremy/Jim on how to model MEPs, INOUT parameters, faults etc
  */
 public class PhysicalOperationDefinition extends ModelObject {
-    
+
     // Parameters
     private List<Class<?>> parameterTypes = new LinkedList<Class<?>>();
-    
+
     // Return
     private Class<?> returnType;
-    
+
     // Name of the operation
     private String name;
-    
+
     // Callback
     private boolean callback;
-    
+
     // Interceptors defined against the operation
     private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
-    
+
     /**
      * Returns the parameter types for this operation.
+     *
      * @return Parameter types.
      */
     public List<Class<?>> getParameters() {
         return Collections.unmodifiableList(parameterTypes);
     }
-    
+
     /**
      * Adds a parameter type.
+     *
      * @param parameter Parameter type to be added.
      */
     public void addParameter(Class<?> parameter) {
         parameterTypes.add(parameter);
     }
-    
+
     /**
      * Gets the return type for this operation.
+     *
      * @return Return type for this operation.
      */
     public Class<?> getReturnType() {
         return returnType;
     }
-    
+
     /**
      * Sets the return type for this operation.
+     *
      * @param returnType Return type for this operation.
      */
     public void setReturnType(Class<?> returnType) {
@@ -85,6 +88,7 @@ public class PhysicalOperationDefinition extends ModelObject {
 
     /**
      * Returns the interceptor definitions available for this operation.
+     *
      * @return Inteceptor definitions for this operation.
      */
     public Set<PhysicalInterceptorDefinition> getInterceptors() {
@@ -93,7 +97,8 @@ public class PhysicalOperationDefinition extends ModelObject {
 
     /**
      * Adds an interceptor definition to the operation.
-     * @param interceptors Interceptor definition to be added.
+     *
+     * @param interceptor Interceptor definition to be added.
      */
     public void addInterceptor(PhysicalInterceptorDefinition interceptor) {
         interceptors.add(interceptor);
@@ -101,6 +106,7 @@ public class PhysicalOperationDefinition extends ModelObject {
 
     /**
      * Gets the name of the operation.
+     *
      * @return Operation name.
      */
     public String getName() {
@@ -109,6 +115,7 @@ public class PhysicalOperationDefinition extends ModelObject {
 
     /**
      * Sets the name of the operation.
+     *
      * @param name Operation name.
      */
     public void setName(String name) {
@@ -117,6 +124,7 @@ public class PhysicalOperationDefinition extends ModelObject {
 
     /**
      * Checks whether the operation is a callback.
+     *
      * @return True if this is a callback.
      */
     public boolean isCallback() {
@@ -125,11 +133,12 @@ public class PhysicalOperationDefinition extends ModelObject {
 
     /**
      * Sets whether this is a callback operation or not.
+     *
      * @param callback True if this is a callback.
      */
     public void setCallback(boolean callback) {
         this.callback = callback;
     }
 
-    
+
 }

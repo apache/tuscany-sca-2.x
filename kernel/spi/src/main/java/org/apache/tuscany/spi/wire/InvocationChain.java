@@ -23,13 +23,13 @@ import org.apache.tuscany.spi.model.Operation;
 /**
  * A wire consists of 1..n invocation chains associated with the operations of its source service contract.
  * <p/>
- * Invocation chains may contain {@link Interceptor}s that process invocations in an around-style manner. Invocation
- * chains are also associated with a {@TargetInvoker} which is responsible for dispatching on the target service
- * provider.
+ * Invocation chains may contain </ode>Interceptors</code> that process invocations in an around-style manner.
+ * Invocation chains are also associated with a <code>TargetInvoker</code> which is responsible for dispatching on the
+ * target service provider.
  * <p/>
- * A {@link Message} is used to pass data associated with an invocation through the chain. The TargetInvoker is passed
- * with the Message through the interceptor stack, if one is present. At last interceptor in the stack, must call the
- * TargetInvoker.
+ * A <code>Message</code> is used to pass data associated with an invocation through the chain. The TargetInvoker is
+ * passed with the Message through the interceptor stack, if one is present. At last interceptor in the stack, must call
+ * the TargetInvoker.
  * <p/>
  * In certain circumstances, the TargetInvoker may be cached in the source-side proxy. Caching allows various
  * optimizations such as avoiding target instance resolution when the client-side lifecycle scope is a shorter duration

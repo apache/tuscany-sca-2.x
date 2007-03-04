@@ -26,7 +26,7 @@ import java.util.List;
 public interface TransformerRegistry {
     /**
      * Register a transformer
-     * 
+     *
      * @param sourceDataBinding
      * @param targetDataBinding
      * @param weight
@@ -39,37 +39,35 @@ public interface TransformerRegistry {
 
     /**
      * Register a transformer
-     * 
+     *
      * @param transformer
      */
     void registerTransformer(Transformer transformer);
 
     /**
      * Unregister a transformer
-     * 
+     *
      * @param sourceDataBinding
      * @param targetDataBinding
-     * @return
+     * @return true if sucessfully unregistered
      */
     boolean unregisterTransformer(String sourceDataBinding, String targetDataBinding);
 
     /**
-     * Get the direct Transformer which can transform data from source type to
-     * result type
-     * 
+     * Get the direct Transformer which can transform data from source type to result type
+     *
      * @param sourceDataBinding
      * @param targetDataBinding
-     * @return
+     * @return the transformer
      */
     Transformer getTransformer(String sourceDataBinding, String targetDataBinding);
 
     /**
-     * Get the a chain of Transformers which can transform data from source type
-     * to result type
-     * 
+     * Get the a chain of Transformers which can transform data from source type to result type
+     *
      * @param sourceDataBinding
      * @param targetDataBinding
-     * @return
+     * @return the list of transformers
      */
     List<Transformer> getTransformerChain(String sourceDataBinding, String targetDataBinding);
 }

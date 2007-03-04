@@ -26,7 +26,7 @@ import java.util.Map;
 
 /**
  * Representation of a deployed artifact
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DeployedArtifact extends ModelObject {
@@ -34,14 +34,14 @@ public class DeployedArtifact extends ModelObject {
     protected final URI uri;
     protected URL location;
     /**
-     * The map keeps all the model objects loaded/introspected from this artifact. The objects
-     * are keyed by the java type of the model such as javax.wsdl.ModelObject. The value is also
-     * a map with namespace as the key and the model object as the value.
+     * The map keeps all the model objects loaded/introspected from this artifact. The objects are keyed by the java
+     * type of the model such as javax.wsdl.ModelObject. The value is also a map with namespace as the key and the model
+     * object as the value.
      */
     protected Map<Class, Map<String, Object>> modelObjects = new HashMap<Class, Map<String, Object>>();
 
     /**
-     * @param uri
+     * @param uri the artifact uri
      */
     public DeployedArtifact(URI uri) {
         super();
@@ -58,7 +58,8 @@ public class DeployedArtifact extends ModelObject {
 
     /**
      * Get the absolute URI as the unique id for the artifact
-     * @return
+     *
+     * @return the uri for the artifact
      */
     public URI getUri() {
         return uri;

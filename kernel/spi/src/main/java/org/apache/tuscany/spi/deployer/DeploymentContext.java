@@ -85,7 +85,7 @@ public interface DeploymentContext {
     /**
      * Sets if the autowire is enabled for the current deployment.
      *
-     * @return true Sets if the autowire is enabled for the current deployment
+     * @param autowire true if autowire is enabled
      */
     void setAutowire(boolean autowire);
 

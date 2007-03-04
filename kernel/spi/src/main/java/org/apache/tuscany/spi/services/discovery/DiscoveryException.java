@@ -22,15 +22,15 @@ import org.apache.tuscany.api.TuscanyException;
 
 /**
  * Checked exception thrown during discovery operations.
- * 
- * @version $Revision$ $Date$
  *
+ * @version $Revision$ $Date$
  */
 @SuppressWarnings("serial")
 public class DiscoveryException extends TuscanyException {
 
     /**
      * Initialises the exception message.
+     *
      * @param message Message for the exception.
      */
     public DiscoveryException(String message) {
@@ -39,7 +39,8 @@ public class DiscoveryException extends TuscanyException {
 
     /**
      * Initialises the exception root cause.
-     * @param message Root cause for the exception.
+     *
+     * @param cause Root cause for the exception.
      */
     public DiscoveryException(Throwable cause) {
         super(cause);
