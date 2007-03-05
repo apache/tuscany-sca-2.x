@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-core</artifactId>
-            <version>2.0-alpha-incubating-SNAPSHOT</version>
+            <version>2.0-alpha-incubating</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
