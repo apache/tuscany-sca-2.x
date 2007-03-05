@@ -30,13 +30,6 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany Webapp SCA Runtime</name>
 
-    <modules>
-        <module>webapp-api</module>
-        <module>webapp-host</module>
-        <module>plugin.war</module>
-        <module>smoketest</module>
-    </modules>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -47,4 +40,29 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>webapp-api</module>
+                <module>webapp-host</module>
+                <module>plugin.war</module>
+                <module>smoketest</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <!-- for the release profile exclude the smoketest as the gpg plugin cannot handle war packaging -->
+            <id>release</id>
+            <modules>
+                <module>webapp-api</module>
+                <module>webapp-host</module>
+                <module>plugin.war</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

@@ -129,8 +129,38 @@
         <module>itest</module>
     </modules>
 
-    <build>
-        <defaultGoal>install</defaultGoal>
-    </build>
+    <profiles>
+        <profile>
+            <!-- default profile that just builds the jar files -->
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <defaultGoal>install</defaultGoal>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- release profile that prepares artifacts for release -->
+            <id>release</id>
+            <build>
+                <defaultGoal>verify</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

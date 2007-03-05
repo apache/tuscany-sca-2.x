@@ -29,8 +29,25 @@
     <artifactId>itest</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany Integration Test Runtime</name>
-    <modules>
-        <module>plugin</module>
-        <module>smoketest</module>
-    </modules>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>plugin</module>
+                <module>smoketest</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <!-- for the release profile exclude the smoketest -->
+            <id>release</id>
+            <modules>
+                <module>plugin</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
