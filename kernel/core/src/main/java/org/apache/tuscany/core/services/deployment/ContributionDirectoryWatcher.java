@@ -33,10 +33,11 @@ import org.apache.tuscany.host.deployment.DeploymentException;
 @EagerInit
 public class ContributionDirectoryWatcher {
     private final String path;
+
     private final ContributionService contributionService;
 
-    public ContributionDirectoryWatcher(@Reference ContributionService contributionService,
-                                        @Property(name = "path")String path) {
+    public ContributionDirectoryWatcher(@Reference ContributionService contributionService, 
+                                        @Property(name = "path") String path) {
         this.path = path;
         this.contributionService = contributionService;
     }
@@ -52,15 +53,16 @@ public class ContributionDirectoryWatcher {
         File[] files = extensionDir.listFiles();
         for (File file : files) {
             try {
-                if (file.isDirectory())
+                if (file.isDirectory()) {
                     this.contributionService.contribute(file.toURL(), false);
-                else
+                } else {
                     this.contributionService.contribute(file.toURL(), true);
+                }
             } catch (DeploymentException de) {
-                //FIXME handle this
+                // FIXME handle this
                 de.printStackTrace();
             } catch (IOException ioe) {
-                //FIXME handle this
+                // FIXME handle this
                 ioe.printStackTrace();
             }
         }

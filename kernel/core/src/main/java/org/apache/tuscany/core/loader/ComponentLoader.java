@@ -68,7 +68,6 @@ import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.deployer.ChildDeploymentContext;
@@ -318,7 +317,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
             if (target == null) {
                 throw new MissingReferenceException(name);
             }
-            if (target.isAutowire()){
+            if (target.isAutowire()) {
                 // autowire targets are not set yet
                 continue;
             }
