@@ -21,12 +21,6 @@
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/2.0-alpha"
            name="CalculatorComposite">
 
-    <!--
-        <component name="CalculatorComponent">
-            <implementation.composite name="CalculatorComposite" jarLocation="lib/calculator-1.0-incubator-SNAPSHOT.jar"/>
-        </component>
-    -->
-
     <!-- config that includes the calculator composite -->
     <include name="CalculatorComposite" scdlResource="META-INF/sca/default.scdl"/>
 
