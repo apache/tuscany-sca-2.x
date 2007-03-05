@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>runtime</artifactId>
-    <version>2.0-alpha-incubating-SNAPSHOT</version>
+    <version>2.0-alpha2-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Runtime Environments</name>
     <description>Parent POM for all runtime environments</description>
@@ -36,7 +36,7 @@
         <scaSpecVersion>1.0</scaSpecVersion>
 
         <!-- version the Apache Tuscany kernel that the runtimes work with -->
-        <kernelVersion>2.0-alpha-incubating</kernelVersion>
+        <kernelVersion>2.0-alpha2-incubating-SNAPSHOT</kernelVersion>
     </properties>
 
     <!-- definition of repositories where the parent pom can be found -->
