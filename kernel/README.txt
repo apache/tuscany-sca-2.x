@@ -1,4 +1,4 @@
-This Release of the Tuscany SCA Kernel is designed as a baseline for extension development 
+This Release of the Apache Tuscany SCA Kernel is designed as a baseline for extension development 
 and early access to the Java programming model based on the SCA 1.0 Java Common Annotations
 and API Specification and the Java Component Implementation Specification. Copies of the
 specifications may be obtained from http://www.osoa.org.
