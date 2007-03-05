@@ -50,15 +50,17 @@ public interface ContributionService {
      * @param contribution a stream containing the resource being contributed; the stream will not be closed but the
      *                        read position after the call is undefined
      * @param storeInRepository  flag that identifies if you want to copy the contribution to the repository
+     * @return a URI that uniquely identifies this contribution within the SCA Domain
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException         if there was a problem reading the stream
      */
-    URI contribute(URI source, InputStream contribution,  boolean storeInRepository) throws DeploymentException, IOException;
+    URI contribute(URI source, InputStream contribution,  boolean storeInRepository)
+        throws DeploymentException, IOException;
     
     /**
      * Remove a contribution from the SCA domain
      * @param contribution The URI of the contribution
-     * @throws DeploymentException
+     * @throws DeploymentException if there was a problem with the contribution
      */
     void remove(URI contribution) throws DeploymentException;
     
