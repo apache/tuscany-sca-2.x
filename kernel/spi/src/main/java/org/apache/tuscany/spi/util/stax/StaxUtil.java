@@ -163,13 +163,14 @@ public abstract class StaxUtil {
      * Render the attributes.
      */
     private static void onAttributes(XMLStreamReader reader, StringBuffer xml) {
-        for (int i = 0, n = reader.getAttributeCount(); i < n; ++i) {
-            xml.append(" ");
+        int n = reader.getAttributeCount();
+        for (int i = 0; i < n; ++i) {
+            xml.append(' ');
             xml.append(reader.getAttributeLocalName(i));
-            xml.append("=");
-            xml.append("'");
+            xml.append('=');
+            xml.append('\'');
             xml.append(reader.getAttributeValue(i));
-            xml.append("'");
+            xml.append('\'');
         }
     }
 
@@ -177,15 +178,17 @@ public abstract class StaxUtil {
      * Renedr namespace mappings.
      */
     private static void onNsMappings(XMLStreamReader reader, StringBuffer xml) {
-        for (int i = 0, n = reader.getNamespaceCount(); i < n; ++i) {
+        int n = reader.getNamespaceCount();
+        for (int i = 0; i < n; ++i) {
             String prefix = reader.getNamespacePrefix(i);
-            prefix = prefix == null ? prefix = "xmlns" : "xmlns:" + prefix;
-            xml.append(" ");
-            xml.append(prefix);
-            xml.append("=");
-            xml.append("'");
+            xml.append(" xmlns");
+            if (prefix != null) {
+                xml.append(':').append(prefix);
+            }
+            xml.append('=');
+            xml.append('\'');
             xml.append(reader.getNamespaceURI(i));
-            xml.append("'");
+            xml.append('\'');
         }
     }
 

@@ -21,8 +21,6 @@ package org.apache.tuscany.spi.model;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.TypeInfo;
-
 /**
  * An abstraction of XML schema elements
  */

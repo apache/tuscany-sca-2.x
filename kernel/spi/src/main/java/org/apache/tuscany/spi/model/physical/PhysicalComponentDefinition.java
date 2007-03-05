@@ -30,19 +30,22 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDefinition, PRD extends PhysicalReferenceDefinition> extends ModelObject {
+public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDefinition,
+    PRD extends PhysicalReferenceDefinition>
+    extends ModelObject {
 
     // Component Id.
     private URI componentId;
-    
+
     // Services exposed by this component
     private Set<PSD> services = new HashSet<PSD>();
-    
+
     // References exposed by this component
     private Set<PRD> references = new HashSet<PRD>();
 
     /**
      * Gets the component id.
+     *
      * @return Component id.
      */
     public URI getComponentId() {
@@ -51,14 +54,16 @@ public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDef
 
     /**
      * Sets the component id.
+     *
      * @param componentId
      */
     public void setComponentId(URI componentId) {
         this.componentId = componentId;
     }
-    
+
     /**
      * Returns the service definitions available for this component.
+     *
      * @return Service definitions for this operation.
      */
     public Set<PSD> getServices() {
@@ -67,14 +72,16 @@ public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDef
 
     /**
      * Adds a service definition to the component.
+     *
      * @param service Service definition to be added to the component.
      */
     public void addService(PSD service) {
         services.add(service);
     }
-    
+
     /**
      * Returns the reference definitions available for this component.
+     *
      * @return Reference definitions for this operation.
      */
     public Set<PRD> getReferences() {
@@ -83,6 +90,7 @@ public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDef
 
     /**
      * Adds a reference definition to the component.
+     *
      * @param reference Reference definition to be added to the component.
      */
     public void addReference(PRD reference) {
