@@ -28,7 +28,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 /**
  * Marshaller for physical operation definition.
  * 
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2007-03-03 11:36:03 +0000 (Sat, 03 Mar
+ *          2007) $
  */
 public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalOperationDefinition> {
 
@@ -36,7 +37,8 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
     private static final String NAME = "name";
 
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "operation");
+    private static final QName QNAME =
+        new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "operation");
 
     /**
      * Marshalls a physical operation to the xml writer.

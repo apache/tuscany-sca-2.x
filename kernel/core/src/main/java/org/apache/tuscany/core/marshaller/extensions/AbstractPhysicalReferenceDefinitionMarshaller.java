@@ -35,11 +35,12 @@ import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
  * 
  * @version $Revision$ $Date$
  */
-public abstract class AbstractPhysicalReferenceDefinitionMarshaller<PRD extends PhysicalReferenceDefinition> extends AbstractExtensibleMarshallerExtension<PRD> {
+public abstract class AbstractPhysicalReferenceDefinitionMarshaller<PRD extends PhysicalReferenceDefinition> extends
+    AbstractExtensibleMarshallerExtension<PRD> {
 
     // Local part for operation
     private static final String OPERATION = "operation";
-    
+
     // Source name attribute
     private static final String NAME = "name";
 
@@ -54,7 +55,7 @@ public abstract class AbstractPhysicalReferenceDefinitionMarshaller<PRD extends 
      * Unmarshalls a java physical reference definition from the xml reader.
      */
     public PRD unmarshall(XMLStreamReader reader) throws MarshallException {
-        
+
         try {
             PRD referenceDefinition = getConcreteModelObject();
             referenceDefinition.setName(reader.getAttributeValue(null, NAME));
@@ -63,7 +64,7 @@ public abstract class AbstractPhysicalReferenceDefinitionMarshaller<PRD extends 
                     case START_ELEMENT:
                         ModelObject modelObject = registry.unmarshall(reader);
                         String name = reader.getName().getLocalPart();
-                        if(OPERATION.equals(name)) {
+                        if (OPERATION.equals(name)) {
                             referenceDefinition.addOperation((PhysicalOperationDefinition)modelObject);
                         } else {
                             handleExtension(referenceDefinition, reader);
@@ -77,7 +78,7 @@ public abstract class AbstractPhysicalReferenceDefinitionMarshaller<PRD extends 
         } catch (XMLStreamException ex) {
             throw new MarshallException(ex);
         }
-        
+
     }
 
 }

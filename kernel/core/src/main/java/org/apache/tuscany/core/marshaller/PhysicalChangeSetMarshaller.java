@@ -42,14 +42,13 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
 
     // QName for the root element
     public static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "changeSet");
-    
+
     // Local part for wire
     private static final String WIRE = "wire";
 
     // Local part for component
     private static final String COMPONENT = "component";
-    
-    
+
     /**
      * Marshalls a physical change set to the xml writer.
      */
@@ -61,7 +60,7 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
      * Unmarshalls a physical change set from the xml reader.
      */
     public PhysicalChangeSet unmarshall(XMLStreamReader reader) throws MarshallException {
-        
+
         try {
             PhysicalChangeSet changeSet = new PhysicalChangeSet();
             while (true) {
@@ -69,20 +68,20 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
                     case START_ELEMENT:
                         String name = reader.getName().getLocalPart();
                         ModelObject modelObject = registry.unmarshall(reader);
-                        if(COMPONENT.equals(name)) {
-                            changeSet.addComponentDefinition((PhysicalComponentDefinition) modelObject);
-                        } else if(WIRE.equals(name)) {
-                            changeSet.addWireDefinition((PhysicalWireDefinition) modelObject);
+                        if (COMPONENT.equals(name)) {
+                            changeSet.addComponentDefinition((PhysicalComponentDefinition)modelObject);
+                        } else if (WIRE.equals(name)) {
+                            changeSet.addWireDefinition((PhysicalWireDefinition)modelObject);
                         }
                         break;
                     case END_DOCUMENT:
                         return changeSet;
                 }
             }
-        } catch(XMLStreamException ex) {
+        } catch (XMLStreamException ex) {
             throw new MarshallException(ex);
         }
-        
+
     }
 
     @Override

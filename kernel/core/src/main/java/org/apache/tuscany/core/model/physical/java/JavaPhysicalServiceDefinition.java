@@ -23,8 +23,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
 /**
  * Models a Java physical service definition.
  * 
- * @version $Revision$ $Date$
- *
+ * @version $Revision$ $Date: 2007-02-28 06:29:37 +0000 (Wed, 28 Feb
+ *          2007) $
  */
 public class JavaPhysicalServiceDefinition extends PhysicalServiceDefinition {
 

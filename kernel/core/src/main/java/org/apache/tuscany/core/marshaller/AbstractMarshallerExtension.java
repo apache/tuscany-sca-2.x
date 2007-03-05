@@ -28,8 +28,8 @@ import org.osoa.sca.annotations.Reference;
 /**
  * Abstract marshaller that supports marshaller registry.
  * 
- * @version $Revision$ $Date$
- *
+ * @version $Revision$ $Date: 2007-03-03 12:17:30 +0000 (Sat, 03 Mar
+ *          2007) $
  * @param <MD>
  */
 public abstract class AbstractMarshallerExtension<MD extends ModelObject> implements ModelMarshaller<MD> {
@@ -39,6 +39,7 @@ public abstract class AbstractMarshallerExtension<MD extends ModelObject> implem
 
     /**
      * Injects the model marshaller registry.
+     * 
      * @param registry Model marshaller registry.
      */
     @Reference
@@ -54,13 +55,16 @@ public abstract class AbstractMarshallerExtension<MD extends ModelObject> implem
     }
 
     /**
-     * Gets the qualified name of the XML fragment for the marshalled model object.
+     * Gets the qualified name of the XML fragment for the marshalled model
+     * object.
+     * 
      * @return Qualified name of the XML fragment.
      */
     protected abstract QName getModelObjectQName();
 
     /**
      * Retursn the type of the model object.
+     * 
      * @return Model object type.
      */
     protected abstract Class<MD> getModelObjectType();

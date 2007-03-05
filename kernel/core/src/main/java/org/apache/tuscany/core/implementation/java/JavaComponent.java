@@ -48,10 +48,10 @@ import org.osoa.sca.ComponentContext;
 public class JavaComponent implements Component {
     
     // Instance factory class
-    private Class<InstanceFactory<?>> instanceFactoryClass;
+    private Class<InstanceFactory<?>> instanceFactoryClass; //NOPMD
     
     // Scope container
-    private ScopeContainer scopeContainer;
+    private ScopeContainer scopeContainer; //NOPMD
 
     /**
      * Injects the instance factory class.

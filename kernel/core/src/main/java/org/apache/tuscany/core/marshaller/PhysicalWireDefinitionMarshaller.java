@@ -37,7 +37,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 /**
  * Marshaller for physical wire definition.
  * 
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2007-03-03 11:36:03 +0000 (Sat, 03 Mar
+ *          2007) $
  */
 public class PhysicalWireDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalWireDefinition> {
 

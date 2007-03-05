@@ -34,7 +34,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 /**
  * Abstract super class for all PCD marshallers.
  * 
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2007-03-03 16:41:22 +0000 (Sat, 03 Mar
+ *          2007) $
  */
 public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends PhysicalComponentDefinition<?, ?>>
     extends AbstractExtensibleMarshallerExtension<PCD> {
@@ -76,7 +77,7 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
                         }
                         break;
                     case END_ELEMENT:
-                        if(getModelObjectQName().equals(reader.getName())) {
+                        if (getModelObjectQName().equals(reader.getName())) {
                             return componentDefinition;
                         }
 
