@@ -21,12 +21,12 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>sca</artifactId>
-        <version>1.0-incubating-SNAPSHOT</version>
+        <version>1.0-incubating</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>core-samples</artifactId>
-    <version>1.0-alpha-incubating-SNAPSHOT</version>
+    <version>2.0-alpha-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apache Tuscany Core Samples</name>
     <description>Sample projects that illustrate core concepts for SCA and Tuscany.</description>
@@ -36,7 +36,7 @@
         <scaSpecVersion>1.0</scaSpecVersion>
 
         <!-- version the Apache Tuscany kernel that the runtimes work with -->
-        <kernelVersion>1.0-alpha-incubating-SNAPSHOT</kernelVersion>
+        <kernelVersion>2.0-alpha-incubating-SNAPSHOT</kernelVersion>
     </properties>
 
     <dependencyManagement>
@@ -44,7 +44,7 @@
             <dependency>
                 <groupId>org.osoa</groupId>
                 <artifactId>sca-api-r${scaSpecVersion}</artifactId>
-                <version>1.0-incubating-SNAPSHOT</version>
+                <version>1.0-incubating</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
