@@ -35,11 +35,12 @@ import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
  * 
  * @version $Revision$ $Date$
  */
-public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends PhysicalServiceDefinition> extends AbstractExtensibleMarshallerExtension<PSD> {
+public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends PhysicalServiceDefinition> extends
+    AbstractExtensibleMarshallerExtension<PSD> {
 
-//  Local part for operation
+    //  Local part for operation
     private static final String OPERATION = "operation";
-    
+
     // Source name attribute
     private static final String NAME = "name";
 
@@ -54,7 +55,7 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
      * Unmarshalls a java physical reference definition from the xml reader.
      */
     public PSD unmarshall(XMLStreamReader reader) throws MarshallException {
-        
+
         try {
             PSD serviceDefinition = getConcreteModelObject();
             serviceDefinition.setName(reader.getAttributeValue(null, NAME));
@@ -63,7 +64,7 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
                     case START_ELEMENT:
                         ModelObject modelObject = registry.unmarshall(reader);
                         String name = reader.getName().getLocalPart();
-                        if(OPERATION.equals(name)) {
+                        if (OPERATION.equals(name)) {
                             serviceDefinition.addOperation((PhysicalOperationDefinition)modelObject);
                         } else {
                             handleExtension(serviceDefinition, reader);
@@ -77,7 +78,7 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
         } catch (XMLStreamException ex) {
             throw new MarshallException(ex);
         }
-        
+
     }
 
 }

@@ -28,16 +28,22 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefiniti
 /**
  * Marshaller for java physical reference definition.
  * 
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2007-03-03 16:41:22 +0000 (Sat, 03 Mar
+ *          2007) $
  */
-public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalReferenceDefinitionMarshaller<JavaPhysicalReferenceDefinition> {
-    
+public class JavaPhysicalReferenceDefinitionMarshaller extends
+    AbstractPhysicalReferenceDefinitionMarshaller<JavaPhysicalReferenceDefinition> {
+
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "reference");
+    private static final QName QNAME =
+        new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "reference");
 
     /**
-     * Gets the qualified name of the XML fragment for the marshalled model object.
-     * @return {"http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "service"}.
+     * Gets the qualified name of the XML fragment for the marshalled model
+     * object.
+     * 
+     * @return {"http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT",
+     *         "service"}.
      */
     @Override
     protected QName getModelObjectQName() {
@@ -46,6 +52,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
 
     /**
      * Retursn the type of the model object.
+     * 
      * @return <code>JavaPhysicalReferenceDefinition.class</code>.
      */
     @Override
@@ -55,6 +62,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
 
     /**
      * Create the concrete model object.
+     * 
      * @return An instance of <code>JavaPhysicalReferenceDefinition</code>.
      */
     @Override
@@ -64,6 +72,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
 
     /**
      * Handles extensions for unmarshalling Java physical references.
+     * 
      * @param modelObject Concrete model object.
      * @param reader Reader from which marshalled data is read.
      */
@@ -73,6 +82,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends AbstractPhysicalR
 
     /**
      * Handles extensions for marshalling Java physical references.
+     * 
      * @param modelObject Concrete model object.
      * @param reader Writer to which marshalled data is written.
      */

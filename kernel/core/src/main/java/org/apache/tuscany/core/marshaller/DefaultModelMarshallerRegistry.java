@@ -36,10 +36,11 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
-    
+
     // Marshaller registry
-    private final Map<Class<? extends ModelObject>, ModelMarshaller> marshallerRegistry = new ConcurrentHashMap<Class<? extends ModelObject>, ModelMarshaller>();
-    
+    private final Map<Class<? extends ModelObject>, ModelMarshaller> marshallerRegistry =
+        new ConcurrentHashMap<Class<? extends ModelObject>, ModelMarshaller>();
+
     // Unmarshaller registry
     private final Map<QName, ModelMarshaller> unmarshallerRegistry = new ConcurrentHashMap<QName, ModelMarshaller>();
 
@@ -66,13 +67,13 @@ public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
      */
     @SuppressWarnings("unchecked")
     public void marshall(ModelObject modelObject, XMLStreamWriter writer) throws MarshallException {
-        
+
         ModelMarshaller marshaller = marshallerRegistry.get(modelObject.getClass());
-        if(marshaller == null) {
+        if (marshaller == null) {
             throw new MarshallException("No marshaller defined for " + modelObject.getClass());
         }
         marshaller.marshall(modelObject, writer);
-        
+
     }
 
     /**
@@ -82,15 +83,15 @@ public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
      * @return Model object from the marshalled stream.
      */
     public ModelObject unmarshall(XMLStreamReader reader) throws MarshallException {
-        
+
         QName qname = reader.getName();
-            
+
         ModelMarshaller marshaller = unmarshallerRegistry.get(qname);
-        if(marshaller == null) {
+        if (marshaller == null) {
             throw new MarshallException("No marshaller defined for " + qname);
         }
         return marshaller.unmarshall(reader);
-        
+
     }
 
 }

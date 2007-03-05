@@ -51,7 +51,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
     // Classloader id
     private static final String CLASSLOADER_ID = "classLoaderId";
-    
+
     // QName for the root element
     private static final QName QNAME =
         new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "component");
@@ -106,9 +106,9 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
                 byte[] base64ByteCode = reader.getText().getBytes();
                 byte[] byteCode = Base64.decodeBase64(base64ByteCode);
                 componentDefinition.setInstanceFactoryByteCode(byteCode);
-            } else if(SCOPE.equals(name)) {
+            } else if (SCOPE.equals(name)) {
                 componentDefinition.setScope(new Scope(reader.getText()));
-            } else if(CLASSLOADER_ID.equals(name)) {
+            } else if (CLASSLOADER_ID.equals(name)) {
                 componentDefinition.setClassLoaderId(new URI(reader.getText()));
             }
         } catch (XMLStreamException ex) {
@@ -116,7 +116,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
         } catch (URISyntaxException ex) {
             throw new MarshallException(ex);
         }
-        
+
     }
 
     /**

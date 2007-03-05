@@ -88,10 +88,10 @@ public class JavaPhysicalComponentBuilder implements
     private void setInstanceFactoryClass(JavaPhysicalComponentDefinition componentDefinition, JavaComponent component) {
         // TODO use MPCL to load IF class
         URI classLoaderId = componentDefinition.getClassLoaderId();
-        byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode();
-        ClassLoader appCl = classLoaderRegistry.getClassLoader(classLoaderId);
-        ClassLoader systemCl = getClass().getClassLoader();        
-        ClassLoader mpcl = null;
+        byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode(); //NOPMD
+        ClassLoader appCl = classLoaderRegistry.getClassLoader(classLoaderId); //NOPMD
+        ClassLoader systemCl = getClass().getClassLoader(); //NOPMD        
+        ClassLoader mpcl = null; //NOPMD
         Class<InstanceFactory<?>> instanceFactoryClass = null;        
         component.setInstanceFactoryClass(instanceFactoryClass);
     }

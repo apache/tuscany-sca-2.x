@@ -28,8 +28,8 @@ import org.apache.tuscany.spi.model.ModelObject;
 /**
  * Abstract marshaller that supports extensible model objects.
  * 
- * @version $Revision$ $Date$
- *
+ * @version $Revision$ $Date: 2007-03-04 18:23:24 +0000 (Sun, 04 Mar
+ *          2007) $
  * @param <MD>
  */
 public abstract class AbstractExtensibleMarshallerExtension<MD extends ModelObject> extends
@@ -37,12 +37,14 @@ public abstract class AbstractExtensibleMarshallerExtension<MD extends ModelObje
 
     /**
      * Create the concrete model object.
+     * 
      * @return Concrete model object.
      */
     protected abstract MD getConcreteModelObject();
 
     /**
      * Handles extensions for unmarshalling.
+     * 
      * @param modelObject Concrete model object.
      * @param reader Reader from which marshalled data is read.
      */
@@ -50,6 +52,7 @@ public abstract class AbstractExtensibleMarshallerExtension<MD extends ModelObje
 
     /**
      * Handles extensions for marshalling.
+     * 
      * @param modelObject Concrete model object.
      * @param reader Writer to which marshalled data is written.
      */

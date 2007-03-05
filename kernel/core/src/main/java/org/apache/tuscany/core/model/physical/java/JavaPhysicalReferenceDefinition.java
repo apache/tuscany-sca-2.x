@@ -23,8 +23,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
 /**
  * Models a Java physical reference definition.
  * 
- * @version $Revision$ $Date$
- *
+ * @version $Revision$ $Date: 2007-02-28 06:29:37 +0000 (Wed, 28 Feb
+ *          2007) $
  */
 public class JavaPhysicalReferenceDefinition extends PhysicalReferenceDefinition {
 

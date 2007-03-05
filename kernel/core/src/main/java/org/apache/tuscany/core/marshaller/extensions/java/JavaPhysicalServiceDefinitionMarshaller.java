@@ -28,16 +28,22 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition
 /**
  * Marshaller for java physical service definition.
  * 
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2007-03-03 16:41:22 +0000 (Sat, 03 Mar
+ *          2007) $
  */
-public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalServiceDefinitionMarshaller<JavaPhysicalServiceDefinition> {
-    
+public class JavaPhysicalServiceDefinitionMarshaller extends
+    AbstractPhysicalServiceDefinitionMarshaller<JavaPhysicalServiceDefinition> {
+
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "service");
+    private static final QName QNAME =
+        new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "service");
 
     /**
-     * Gets the qualified name of the XML fragment for the marshalled model object.
-     * @return {"http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT", "service"}.
+     * Gets the qualified name of the XML fragment for the marshalled model
+     * object.
+     * 
+     * @return {"http://tuscany.apache.org/xmlns/marshaller/reference/java/1.0-SNAPSHOT",
+     *         "service"}.
      */
     @Override
     protected QName getModelObjectQName() {
@@ -46,6 +52,7 @@ public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalSer
 
     /**
      * Returns the type of the model object.
+     * 
      * @return <code>JavaPhysicalServiceDefinition.class</code>.
      */
     @Override
@@ -55,6 +62,7 @@ public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalSer
 
     /**
      * Create the concrete model object.
+     * 
      * @return An instance of <code>JavaPhysicalServiceDefinition</code>.
      */
     @Override
@@ -64,6 +72,7 @@ public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalSer
 
     /**
      * Handles extensions for unmarshalling Java service definitions.
+     * 
      * @param modelObject Concrete model object.
      * @param reader Reader from which marshalled data is read.
      */
@@ -73,6 +82,7 @@ public class JavaPhysicalServiceDefinitionMarshaller extends AbstractPhysicalSer
 
     /**
      * Handles extensions for marshalling Java service definitions.
+     * 
      * @param modelObject Concrete model object.
      * @param reader Writer to which marshalled data is written.
      */

@@ -28,14 +28,15 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition<JavaPhysicalServiceDefinition, JavaPhysicalReferenceDefinition> {
+public class JavaPhysicalComponentDefinition extends
+    PhysicalComponentDefinition<JavaPhysicalServiceDefinition, JavaPhysicalReferenceDefinition> {
 
     // The byte code for the instance factory
     private byte[] instanceFactoryByteCode;
-    
+
     // Scope
     private Scope scope;
-    
+
     // Class loader id
     private URI classLoaderId;
 
