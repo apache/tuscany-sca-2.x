@@ -46,19 +46,20 @@ public class ScdlContributionProcessor extends ContributionProcessorExtension im
 
     private final LoaderRegistry registry;
 
-    protected XMLInputFactory xmlFactory;
-
-    @Override
-    public String getContentType() {
-        return CONTENT_TYPE;
-    }
+    private final XMLInputFactory xmlFactory;
 
     public ScdlContributionProcessor(@Reference LoaderRegistry registry) {
         super();
         this.registry = registry;
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
     }
+    
+    @Override
+    public String getContentType() {
+        return CONTENT_TYPE;
+    }
 
+    
     public void processContent(Contribution contribution, URI source, InputStream inputStream)
         throws DeploymentException, IOException {
         if (source == null) {

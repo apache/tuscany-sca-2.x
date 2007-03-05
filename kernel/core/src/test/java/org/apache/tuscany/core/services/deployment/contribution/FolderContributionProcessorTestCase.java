@@ -19,38 +19,32 @@
 package org.apache.tuscany.core.services.deployment.contribution;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
-import org.apache.tuscany.spi.model.Contribution;
-import org.easymock.EasyMock;
-
 public class FolderContributionProcessorTestCase extends TestCase {
-    private static final String DIRECTORY_CONTRIBUTION = "//D:/DEV/Projects/Tuscany/source/java-sca-integration/samples/sca/calculator";
-    
+    private static final String DIRECTORY_CONTRIBUTION = 
+        "//D:/DEV/Projects/Tuscany/source/java-sca-integration/samples/sca/calculator";
+
     private File contributionRoot;
-    
 
     protected void setUp() throws Exception {
         super.setUp();
         this.contributionRoot = new File(DIRECTORY_CONTRIBUTION);
     }
-    
+
     public final void testProcessJarArtifacts() throws Exception {
-//        FolderContributionProcessor folderContribution = new FolderContributionProcessor();
-//        ContributionProcessorRegistry mockRegistry = EasyMock.createMock(ContributionProcessorRegistry.class);
-//        mockRegistry.register(FolderContributionProcessor.CONTENT_TYPE, folderContribution);
-//        EasyMock.expectLastCall().anyTimes();
-//        EasyMock.replay(mockRegistry);
-//        folderContribution.setContributionProcessorRegistry(mockRegistry);
-//        folderContribution.start();
-//        EasyMock.verify(mockRegistry);
-//        
-//        Contribution contribution = new Contribution(URI.create("sca://contributions/001"));
-//        contribution.setLocation(this.contributionRoot.toURL());
-//        folderContribution.processContent(contribution, contribution.getUri(), null);
+        // FolderContributionProcessor folderContribution = new FolderContributionProcessor();
+        // ContributionProcessorRegistry mockRegistry = EasyMock.createMock(ContributionProcessorRegistry.class);
+        // mockRegistry.register(FolderContributionProcessor.CONTENT_TYPE, folderContribution);
+        // EasyMock.expectLastCall().anyTimes();
+        // EasyMock.replay(mockRegistry);
+        // folderContribution.setContributionProcessorRegistry(mockRegistry);
+        // folderContribution.start();
+        // EasyMock.verify(mockRegistry);
+        //        
+        // Contribution contribution = new Contribution(URI.create("sca://contributions/001"));
+        // contribution.setLocation(this.contributionRoot.toURL());
+        // folderContribution.processContent(contribution, contribution.getUri(), null);
     }
 }
