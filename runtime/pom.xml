@@ -36,7 +36,7 @@
         <scaSpecVersion>1.0</scaSpecVersion>
 
         <!-- version the Apache Tuscany kernel that the runtimes work with -->
-        <kernelVersion>2.0-alpha-incubating-SNAPSHOT</kernelVersion>
+        <kernelVersion>2.0-alpha-incubating</kernelVersion>
     </properties>
 
     <!-- definition of repositories where the parent pom can be found -->
