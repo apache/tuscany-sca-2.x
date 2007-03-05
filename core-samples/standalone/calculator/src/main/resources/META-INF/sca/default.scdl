@@ -24,7 +24,7 @@
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
         <group>org.apache.tuscany.sca.core-samples.common</group>
         <name>calculator</name>
-        <version>1.0-alpha-incubating-SNAPSHOT</version>
+        <version>2.0-alpha-incubating-SNAPSHOT</version>
         <type>composite</type>
     </dependency>
 
