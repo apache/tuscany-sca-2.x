@@ -22,8 +22,6 @@ package org.apache.tuscany.spi.model;
 import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.ElementInfo;
-
 /**
  * The "Wrapper Style" WSDL operation is defined by The Java API for XML-Based Web Services (JAX-WS) 2.0 specification,
  * section 2.3.1.2 Wrapper Style.

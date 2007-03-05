@@ -18,16 +18,15 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.Implementation;
-
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
+
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.model.Implementation;
 
 /**
  * @version $Rev$ $Date$

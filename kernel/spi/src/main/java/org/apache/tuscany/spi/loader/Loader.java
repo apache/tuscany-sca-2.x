@@ -22,7 +22,6 @@ import java.net.URL;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -46,6 +45,7 @@ public interface Loader {
      * @param reader            the XML stream to parse
      * @param deploymentContext the current deployment context
      * @return the model object obtained by parsing the current element on the stream
+     * @throws LoaderException if there was a problem loading the document
      * @throws XMLStreamException if there was a problem reading the stream
      */
     ModelObject load(ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
