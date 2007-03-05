@@ -18,11 +18,11 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/2.0-alpha"
            name="CalculatorComposite"
            autowire="true">
 
-    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+    <dependency xmlns="http://tuscany.apache.org/xmlns/sca/2.0-alpha">
         <group>org.apache.tuscany.sca.core-samples.common</group>
         <name>calculator</name>
         <version>2.0-alpha-incubating-SNAPSHOT</version>
@@ -30,7 +30,7 @@
     </dependency>
 
     <component name="CalculatorClient">
-		<launched:launched class="calculator.CalculatorClient"/>
+		<tuscany:launched class="calculator.CalculatorClient"/>
         <reference name="calculatorService" target="CalculatorServiceComponent"/>
     </component>
     

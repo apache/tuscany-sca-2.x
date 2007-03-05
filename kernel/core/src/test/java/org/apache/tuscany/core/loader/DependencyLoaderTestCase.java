@@ -34,7 +34,7 @@ import org.apache.tuscany.core.implementation.composite.Dependency;
  * @version $Rev$ $Date$
  */
 public class DependencyLoaderTestCase extends TestCase {
-    private static final String NS = "http://tuscany.apache.org/xmlns/1.0-SNAPSHOT";
+    private static final String NS = "http://tuscany.apache.org/xmlns/sca/2.0-alpha";
     private static final QName DEPENDENCY = new QName(NS, "dependency");
     private static final QName GROUP = new QName(NS, "group");
     private static final QName NAME = new QName(NS, "name");

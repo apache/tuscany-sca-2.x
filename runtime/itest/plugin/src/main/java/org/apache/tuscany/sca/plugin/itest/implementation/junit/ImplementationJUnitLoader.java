@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 public class ImplementationJUnitLoader extends LoaderExtension<ImplementationJUnit> {
-    private static final QName JUNIT = new QName("http://tuscany.apache.org/xmlns/sca/1.0", "junit");
+    private static final QName JUNIT = new QName("http://tuscany.apache.org/xmlns/sca/2.0-alpha", "junit");
 
     public ImplementationJUnitLoader(@Reference LoaderRegistry registry) {
         super(registry);

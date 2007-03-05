@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 public class LaunchedLoader extends LoaderExtension<Launched> {
-    private static final QName LAUNCHED = new QName("http://tuscany.apache.org/xmlns/sca/1.0", "launched");
+    private static final QName LAUNCHED = new QName("http://tuscany.apache.org/xmlns/sca/2.0-alpha", "launched");
 
     public LaunchedLoader(@Reference LoaderRegistry registry) {
         super(registry);

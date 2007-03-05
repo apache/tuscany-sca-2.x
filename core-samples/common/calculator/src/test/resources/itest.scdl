@@ -18,7 +18,7 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/2.0-alpha"
            name="CalculatorTestHarnessComposite">
 
 	 <!-- To use autowire instead of manually specifying reference targets, comment out the default.scdl include and uncomment the autowre.default.scdl include -->

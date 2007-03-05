@@ -18,11 +18,11 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/2.0-alpha"
            name="LoanApplication">
 
     <component name="LoanClient">
-        <launched:launched class="loanapplication.client.impl.ClientServiceImpl"/>
+        <tuscany:launched class="loanapplication.client.impl.ClientServiceImpl"/>
         <reference name="loanService" target="LoanService"/>
     </component>
 
@@ -45,11 +45,11 @@
 <!-- Alternatively, the following demonstrates the same assembly using autowire instead of direct reference targets -->
 <!--
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:launched="http://tuscany.apache.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/2.0-alpha"
            name="LoanApplication"
            autowire="true">
     <component name="LoanClient">
-        <launched:launched class="loanapplication.client.impl.ClientServiceImpl"/>
+        <tuscany:launched class="loanapplication.client.impl.ClientServiceImpl"/>
     </component>
 
     <component name="LoanService">

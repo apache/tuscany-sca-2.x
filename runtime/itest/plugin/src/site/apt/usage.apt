@@ -94,7 +94,7 @@ public class ServiceTestComponent extends TestCase {
 
 +---+
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/2.0-alpha"
            name="PropertyTestHarnessComposite">
 
     <include name="ProductionComposite" scdlResource="META-INF/sca/default.scdl"/>
@@ -114,7 +114,7 @@ public class ServiceTestComponent extends TestCase {
 
 +---+
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/2.0-alpha"
            name="PropertyTestHarnessComposite">
 
     <component name="ProductionComponent">

@@ -23,7 +23,7 @@
     $Rev: 476250 $ $Date: 2006-11-17 10:56:22 -0800 (Fri, 17 Nov 2006) $
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+           xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
            name="org.apache.tuscany.core.Formatters"
            autowire="true">
 
