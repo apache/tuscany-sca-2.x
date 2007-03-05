@@ -42,7 +42,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
  */
 public class SystemImplementationLoader extends LoaderExtension<SystemImplementation> {
     public static final QName SYSTEM_IMPLEMENTATION =
-        new QName("http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT", "implementation.system");
+        new QName("http://tuscany.apache.org/xmlns/sca/system/2.0-alpha", "implementation.system");
 
     public SystemImplementationLoader(@Reference LoaderRegistry registry) {
         super(registry);

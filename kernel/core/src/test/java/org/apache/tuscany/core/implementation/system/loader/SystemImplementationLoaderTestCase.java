@@ -37,7 +37,7 @@ import org.easymock.EasyMock;
 public class SystemImplementationLoaderTestCase extends TestCase {
 
     public static final QName SYSTEM_IMPLEMENTATION =
-        new QName("http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT", "implementation.system");
+        new QName("http://tuscany.apache.org/xmlns/sca/system/2.0-alpha", "implementation.system");
 
     public void testLoad() throws Exception {
         LoaderRegistry registry = EasyMock.createNiceMock(LoaderRegistry.class);

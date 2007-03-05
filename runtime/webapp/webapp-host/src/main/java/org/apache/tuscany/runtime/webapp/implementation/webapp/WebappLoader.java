@@ -46,7 +46,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * @version $Rev$ $Date$
  */
 public class WebappLoader extends LoaderExtension<WebappImplementation> {
-    private static final QName WEBAPP = new QName("http://tuscany.apache.org/xmlns/sca/1.0", "webapp");
+    private static final QName WEBAPP = new QName("http://tuscany.apache.org/xmlns/sca/2.0-alpha", "webapp");
 
     private final InterfaceJavaIntrospector introspector;
 
