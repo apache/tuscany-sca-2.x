@@ -81,6 +81,11 @@
         <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl"/>
     </component>
 
+    <component name="interceptorBuilderRegistry">
+        <system:implementation.system
+            class="org.apache.tuscany.core.builder.interceptor.InterceptorBuilderRegistryImpl"/>
+    </component>
+
     <component name="wirePostProcess">
         <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
     </component>
