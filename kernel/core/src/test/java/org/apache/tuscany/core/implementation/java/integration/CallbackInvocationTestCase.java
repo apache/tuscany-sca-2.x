@@ -320,7 +320,7 @@ public class CallbackInvocationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         componentManager = new ComponentManagerImpl();
-        connector = new ConnectorImpl(null, componentManager, scheduler, workContext);
+        connector = new ConnectorImpl(null, null, componentManager, scheduler, workContext);
         container = new CompositeScopeContainer(null);
         container.start();
         context = createMock(DeploymentContext.class);
