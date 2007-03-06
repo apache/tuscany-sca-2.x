@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  * The base wire type used to connect references and serviceBindings
@@ -142,6 +143,14 @@ public interface Wire {
     void addInvocationChain(Operation<?> operation, InvocationChain chain);
 
     /**
+     * Adds the invocation chain associated with the given operation
+     *
+     * @param operation the service operation
+     * @param chain     the invocation chain
+     */
+    void addInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain);
+
+    /**
      * Returns the invocation chains for callback service operations associated with the wire
      *
      * @return the invocation chains for callback service operations associated with the wire
@@ -155,6 +164,8 @@ public interface Wire {
      * @param chain     the invocation chain
      */
     void addCallbackInvocationChain(Operation<?> operation, InvocationChain chain);
+
+    void addCallbackInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain);
 
 
 }

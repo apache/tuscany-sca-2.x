@@ -26,17 +26,18 @@ import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Aggregates a collection of operations.
- * 
- * @version $Revison$ $Date$
  *
+ * @version $Revison$ $Date$
  */
 public class Operations extends ModelObject {
-    
+
     // Collection of operations
     private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
+    private Set<PhysicalOperationDefinition> callbackOperations = new HashSet<PhysicalOperationDefinition>();
 
     /**
      * Returns a read-only view of the available operations.
+     *
      * @return Collection of operations.
      */
     public Set<PhysicalOperationDefinition> getOperations() {
@@ -45,10 +46,30 @@ public class Operations extends ModelObject {
 
     /**
      * Adds an operation definition.
+     *
      * @param operation Operation to be added.
      */
     public void addOperation(PhysicalOperationDefinition operation) {
         operations.add(operation);
+    }
+
+
+    /**
+     * Returns a read-only view of the available callback operations.
+     *
+     * @return Collection of callback operations.
+     */
+    public Set<PhysicalOperationDefinition> getCallbackOperations() {
+        return callbackOperations;
+    }
+
+    /**
+     * Adds an callback operation definition.
+     *
+     * @param operation Operation to be added.
+     */
+    public void addCallbackOperation(PhysicalOperationDefinition operation) {
+        callbackOperations.add(operation);
     }
 
 }
