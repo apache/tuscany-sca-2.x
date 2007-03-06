@@ -45,6 +45,6 @@ public interface Connector {
      * @param definition metadata describing the wire to create
      * @throws WiringException
      */
-    void connect(PhysicalWireDefinition definition) throws WiringException;
+    void connect(PhysicalWireDefinition definition) throws BuilderException;
 
 }

@@ -104,7 +104,7 @@ public class ConnectorImpl implements Connector {
      * @param definition the wire definition
      * @throws WiringException
      */
-    public void connect(PhysicalWireDefinition definition) throws WiringException {
+    public void connect(PhysicalWireDefinition definition) throws BuilderException {
         URI sourceUri = definition.getSourceUri();
         assert sourceUri != null;
         URI targetUri = definition.getTargetUri();
@@ -120,15 +120,13 @@ public class ConnectorImpl implements Connector {
         if (target == null) {
             throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
         }
-        //ServiceContract<?> contract = null;
-        Wire wire = null; //createWire(sourceUri, targetUri);
+        Wire wire = createWire(sourceUri, targetUri, definition);
         try {
             attachInvokers(targetFragment, wire, source, target);
         } catch (TargetInvokerCreationException e) {
             throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
         }
         source.attachWire(wire);
-        throw new UnsupportedOperationException();
     }
 
     public void connect(ComponentDefinition<? extends Implementation<?>> definition) throws WiringException {
