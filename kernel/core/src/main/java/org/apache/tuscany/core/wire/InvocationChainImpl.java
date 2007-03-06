@@ -34,6 +34,9 @@ public class InvocationChainImpl implements InvocationChain {
     protected Interceptor interceptorChainHead;
     protected Interceptor interceptorChainTail;
 
+    public InvocationChainImpl() {
+    }
+
     public InvocationChainImpl(Operation operation) {
         assert operation != null;
         this.operation = operation;

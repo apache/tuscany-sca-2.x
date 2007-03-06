@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Constructor;
 
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.builder.interceptor.InterceptorBuilderRegistry;
@@ -48,9 +49,12 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.util.UriHelper;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
@@ -270,8 +274,29 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    protected Wire createWire(URI sourceURI, URI targetUri, PhysicalWireDefinition definition) {
-        throw new UnsupportedOperationException();
+    protected Wire createWire(URI sourceURI, URI targetUri, PhysicalWireDefinition definition) throws BuilderException {
+        Wire wire = new WireImpl();
+        wire.setSourceUri(sourceURI);
+        wire.setTargetUri(targetUri);
+        for (PhysicalOperationDefinition operation : definition.getOperations()) {
+            InvocationChain chain = new InvocationChainImpl();
+            for (PhysicalInterceptorDefinition interceptorDefinition : operation.getInterceptors()) {
+                Interceptor interceptor = interceptorBuilderRegistry.build(interceptorDefinition);
+                chain.addInterceptor(interceptor);
+            }
+            chain.addInterceptor(new InvokerInterceptor());
+            wire.addInvocationChain(operation, chain);
+        }
+        for (PhysicalOperationDefinition operation : definition.getCallbackOperations()) {
+            InvocationChain chain = new InvocationChainImpl();
+            for (PhysicalInterceptorDefinition interceptorDefinition : operation.getInterceptors()) {
+                Interceptor interceptor = interceptorBuilderRegistry.build(interceptorDefinition);
+                chain.addInterceptor(interceptor);
+            }
+            chain.addInterceptor(new InvokerInterceptor());
+            wire.addInvocationChain(operation, chain);
+        }
+        return wire;
     }
 
     protected Wire createWire(URI sourceURI, URI targetUri, ServiceContract<?> contract, QName bindingType) {

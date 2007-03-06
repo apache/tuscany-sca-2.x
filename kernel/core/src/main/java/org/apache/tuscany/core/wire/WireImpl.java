@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -45,6 +46,10 @@ public class WireImpl implements Wire {
     private boolean optimizable;
     private Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
     private Map<Operation<?>, InvocationChain> callbackChains = new HashMap<Operation<?>, InvocationChain>();
+    private Map<PhysicalOperationDefinition, InvocationChain> pchains =
+        new HashMap<PhysicalOperationDefinition, InvocationChain>();
+    private Map<PhysicalOperationDefinition, InvocationChain> pcallbackChains =
+        new HashMap<PhysicalOperationDefinition, InvocationChain>();
     private AtomicComponent target;
 
     /**
@@ -127,6 +132,10 @@ public class WireImpl implements Wire {
         chains.put(operation, chain);
     }
 
+    public void addInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain) {
+        pchains.put(operation, chain);
+    }
+
     public Map<Operation<?>, InvocationChain> getCallbackInvocationChains() {
         return Collections.unmodifiableMap(callbackChains);
     }
@@ -134,4 +143,9 @@ public class WireImpl implements Wire {
     public void addCallbackInvocationChain(Operation<?> operation, InvocationChain chain) {
         callbackChains.put(operation, chain);
     }
+
+    public void addCallbackInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain) {
+        pcallbackChains.put(operation, chain);
+    }
+
 }
