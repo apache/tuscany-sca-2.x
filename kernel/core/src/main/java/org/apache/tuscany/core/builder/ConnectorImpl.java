@@ -112,8 +112,8 @@ public class ConnectorImpl implements Connector {
         if (target == null) {
             throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
         }
-        ServiceContract<?> contract = null;
-        Wire wire = createWire(sourceUri, targetUri, contract, definition.getBindingType());
+        //ServiceContract<?> contract = null;
+        Wire wire = null; //createWire(sourceUri, targetUri);
         try {
             attachInvokers(targetFragment, wire, source, target);
         } catch (TargetInvokerCreationException e) {
@@ -264,6 +264,10 @@ public class ConnectorImpl implements Connector {
                 binding.setWire(wire);
             }
         }
+    }
+
+    protected Wire createWire(URI sourceURI, URI targetUri, PhysicalWireDefinition definition) {
+        throw new UnsupportedOperationException();
     }
 
     protected Wire createWire(URI sourceURI, URI targetUri, ServiceContract<?> contract, QName bindingType) {
