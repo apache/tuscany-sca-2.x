@@ -23,8 +23,8 @@ import javax.xml.namespace.QName;
 import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.builder.interceptor.InterceptorBuilder;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.InterceptorBuilderExtension;
 import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.wire.Interceptor;
  *
  * @version $Rev$ $Date$
  */
-public class NonBlockingInterceptorBuilder implements InterceptorBuilder {
+public class NonBlockingInterceptorBuilder extends InterceptorBuilderExtension {
     public static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/sca/system/2.0-alpha", "nonblocking");
     private WorkContext workContext;
     private WorkScheduler scheduler;
@@ -47,5 +47,9 @@ public class NonBlockingInterceptorBuilder implements InterceptorBuilder {
 
     public Interceptor build(PhysicalInterceptorDefinition definition) throws BuilderException {
         return new NonBlockingInterceptor(scheduler, workContext);
+    }
+
+    protected QName getName() {
+        return QNAME;
     }
 }
