@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.wire;
 
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  * A wire consists of 1..n invocation chains associated with the operations of its source service contract.
@@ -39,22 +40,37 @@ import org.apache.tuscany.spi.model.Operation;
  */
 public interface InvocationChain {
     /**
-     * Returns the target operation for this invocation chain
+     * Returns the target operation for this invocation chain.
+     *
+     * @return the target operation for this invocation chain
      */
     Operation getOperation();
 
     /**
+     * Returns the target physical operation for this invocation chain.
+     *
+     * @return the target physical operation for this invocation chain
+     */
+    PhysicalOperationDefinition getPhysicalOperation();
+
+    /**
      * Sets the target invoker to pass down the chain
+     *
+     * @param invoker the invoker
      */
     void setTargetInvoker(TargetInvoker invoker);
 
     /**
      * Returns the target invoker that is passed down the chain
+     *
+     * @return the target invoker
      */
     TargetInvoker getTargetInvoker();
 
     /**
      * Adds an interceptor to the chain
+     *
+     * @param interceptor the interceptor to add
      */
     void addInterceptor(Interceptor interceptor);
 
@@ -67,12 +83,16 @@ public interface InvocationChain {
     void addInterceptor(int index, Interceptor interceptor);
 
     /**
-     * Returns the first interceptor in the chain
+     * Returns the first interceptor in the chain.
+     *
+     * @return the first interceptor in the chain
      */
     Interceptor getHeadInterceptor();
 
     /**
-     * Returns the last interceptor in the chain
+     * Returns the last interceptor in the chain.
+     *
+     * @return the last interceptor in the chain
      */
     Interceptor getTailInterceptor();
 

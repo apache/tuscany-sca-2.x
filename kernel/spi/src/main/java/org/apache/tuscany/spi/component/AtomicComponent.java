@@ -101,4 +101,13 @@ public interface AtomicComponent extends Component {
      */
     Object getTargetInstance() throws TargetResolutionException;
 
+    /**
+     * Returns the target instance associated with the component or throws a TargetResolutionException if an instance is
+     * not associated with the current invocation context;
+     *
+     * @throws TargetResolutionException
+     */
+    public Object getAssociatedTargetInstance() throws TargetResolutionException;
+
+
 }

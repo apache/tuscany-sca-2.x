@@ -36,10 +36,10 @@ import org.apache.tuscany.spi.model.ModelObject;
 public class PhysicalOperationDefinition extends ModelObject {
 
     // Parameters
-    private List<Class<?>> parameterTypes = new LinkedList<Class<?>>();
+    private List<String> parameterTypes = new LinkedList<String>();
 
     // Return
-    private Class<?> returnType;
+    private String returnType;
 
     // Name of the operation
     private String name;
@@ -51,38 +51,38 @@ public class PhysicalOperationDefinition extends ModelObject {
     private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
 
     /**
-     * Returns the parameter types for this operation.
+     * Returns the fully qualified parameter types for this operation.
      *
      * @return Parameter types.
      */
-    public List<Class<?>> getParameters() {
+    public List<String> getParameters() {
         return Collections.unmodifiableList(parameterTypes);
     }
 
     /**
-     * Adds a parameter type.
+     * Add the fully qualified parameter type to the operation.
      *
      * @param parameter Parameter type to be added.
      */
-    public void addParameter(Class<?> parameter) {
+    public void addParameter(String parameter) {
         parameterTypes.add(parameter);
     }
 
     /**
-     * Gets the return type for this operation.
+     * Gets the fuly qualified return type for this operation.
      *
      * @return Return type for this operation.
      */
-    public Class<?> getReturnType() {
+    public String getReturnType() {
         return returnType;
     }
 
     /**
-     * Sets the return type for this operation.
+     * Sets the fully qualified return type for this operation.
      *
      * @param returnType Return type for this operation.
      */
-    public void setReturnType(Class<?> returnType) {
+    public void setReturnType(String returnType) {
         this.returnType = returnType;
     }
 

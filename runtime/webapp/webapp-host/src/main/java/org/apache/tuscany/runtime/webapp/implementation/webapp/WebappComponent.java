@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
-import org.osoa.sca.CallableReference;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -34,17 +34,16 @@ import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
-import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.ProxyService;
 
-import org.apache.tuscany.core.wire.WireObjectFactory;
-import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ComponentContextImpl;
+import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
+import org.apache.tuscany.core.wire.WireObjectFactory;
 import org.apache.tuscany.runtime.webapp.Constants;
 
 /**
@@ -109,11 +108,20 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
         throw new UnsupportedOperationException();
     }
 
+    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+        throws TargetInvokerCreationException {
+        throw new UnsupportedOperationException();
+    }
+
     public Object createInstance() throws ObjectCreationException {
         throw new UnsupportedOperationException();
     }
 
     public Object getTargetInstance() throws TargetResolutionException {
+        throw new UnsupportedOperationException();
+    }
+
+    public Object getAssociatedTargetInstance() throws TargetResolutionException {
         throw new UnsupportedOperationException();
     }
 

@@ -22,8 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.osoa.sca.NoRegisteredCallbackException;
-
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.spi.component.TargetException;
@@ -41,32 +40,21 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniqueP
  */
 public class JavaTargetInvoker extends TargetInvokerExtension {
     protected Method operation;
-    protected JavaAtomicComponent component;
+    protected AtomicComponent component;
     protected Object target;
-    protected Class callbackClass;
     protected boolean stateless;
 
-    public JavaTargetInvoker(Method operation, JavaAtomicComponent component, Class clazz, WorkContext context) {
+    public JavaTargetInvoker(Method operation, AtomicComponent component, WorkContext context) {
         super(context);
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
         stateless = Scope.STATELESS == component.getScope();
-        this.callbackClass = clazz;
-    }
-
-    public JavaTargetInvoker(Method operation, JavaAtomicComponent component, WorkContext context) {
-        this(operation, component, null, context);
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         try {
             Object instance = getInstance(sequence);
-            if (callbackClass != null && !callbackClass.isInstance(instance)) {
-                throw new InvocationTargetException(
-                    new NoRegisteredCallbackException("Instance is does not implement callback ["
-                        + callbackClass.toString() + "]"));
-            }
             if (!operation.getDeclaringClass().isInstance(instance)) {
                 Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
                 Method newOperation = findClosestMatchingMethod(operation.getName(),

@@ -19,31 +19,20 @@
 package org.apache.tuscany.core.implementation.java;
 
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
-public class TargetMethodNotFoundException extends TargetInvokerCreationException {
-    private Operation operation;
-    private PhysicalOperationDefinition pOperation;
+public class TypeNotFoundException extends TargetInvokerCreationException {
+    private PhysicalOperationDefinition operation;
 
-    /**
-     * @deprecated
-     * @param operation
-     */
-    public TargetMethodNotFoundException(Operation operation) {
-        super("Target method not found for operation");
+    public TypeNotFoundException(PhysicalOperationDefinition operation, Throwable cause) {
+        super("Type not found for operation", cause);
         this.operation = operation;
     }
 
-    public TargetMethodNotFoundException(PhysicalOperationDefinition operation) {
-        super("Target method not found for operation");
-        this.pOperation = operation;
-    }
-
-    public Operation getOperation() {
+    public PhysicalOperationDefinition getOperation() {
         return operation;
     }
 }

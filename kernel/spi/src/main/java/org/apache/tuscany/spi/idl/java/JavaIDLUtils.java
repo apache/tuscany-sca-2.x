@@ -42,6 +42,7 @@ public final class JavaIDLUtils {
      * @param operation the operation to match
      * @param methods   the methods to match against
      * @return a matching method or null
+     * @deprecated
      */
     public static Method findMethod(Operation<?> operation, Method[] methods) {
         for (Method method : methods) {

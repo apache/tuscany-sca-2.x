@@ -37,7 +37,7 @@ public class JavaTargetInvokerTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(new Echo());
         EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, null, null);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, null);
         invoker.setCacheable(false);
         assertEquals("foo", invoker.invokeTarget("foo", JavaTargetInvoker.NONE));
         EasyMock.verify(component);

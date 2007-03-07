@@ -150,6 +150,8 @@ public interface Wire {
      */
     void addInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain);
 
+    Map<PhysicalOperationDefinition, InvocationChain> getPhysicalInvocationChains();
+
     /**
      * Returns the invocation chains for callback service operations associated with the wire
      *
@@ -164,6 +166,8 @@ public interface Wire {
      * @param chain     the invocation chain
      */
     void addCallbackInvocationChain(Operation<?> operation, InvocationChain chain);
+
+    Map<PhysicalOperationDefinition, InvocationChain> getCallbackPhysicalInvocationChains();
 
     void addCallbackInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain);
 

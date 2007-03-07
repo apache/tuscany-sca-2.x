@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -74,4 +75,30 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         }
         return null;
     }
+
+    public TargetInvoker createTargetInvoker(String name, PhysicalOperationDefinition operation)
+        throws TargetInvokerCreationException {
+        Service service = getService(name);
+        if (service != null) {
+            if (service.getServiceBindings().isEmpty()) {
+                // for now, throw an assertion exception.
+                // We will need to choose bindings during allocation
+                throw new AssertionError();
+            }
+            ServiceBinding binding = service.getServiceBindings().get(0);
+            return binding.createTargetInvoker(name, operation);
+        }
+        Reference reference = getReference(name);
+        if (reference != null) {
+            if (reference.getReferenceBindings().isEmpty()) {
+                // for now, throw an assertion exception.
+                // We will need to choose bindings during allocation
+                throw new AssertionError();
+            }
+            ReferenceBinding binding = reference.getReferenceBindings().get(0);
+            binding.createTargetInvoker(name, operation);
+        }
+        return null;
+    }
+
 }

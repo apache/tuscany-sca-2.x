@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -50,6 +51,11 @@ public class LocalReferenceBinding extends ReferenceBindingExtension {
         } else {
             return new LocalTargetInvoker(operation, wire);
         }
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+        throws TargetInvokerCreationException {
+        return null;
     }
 
 }

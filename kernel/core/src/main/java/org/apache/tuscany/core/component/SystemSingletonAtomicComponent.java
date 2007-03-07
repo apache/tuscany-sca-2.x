@@ -27,10 +27,12 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.AbstractComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -86,6 +88,10 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         return instance;
     }
 
+    public Object getAssociatedTargetInstance() throws TargetResolutionException {
+        return instance;
+    }
+
     public void init(Object instance) throws TargetInitializationException {
 
     }
@@ -124,6 +130,11 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+        return null;
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+        throws TargetInvokerCreationException {
         return null;
     }
 

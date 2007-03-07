@@ -42,7 +42,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(foo);
         EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null);
         Message msg = new MessageImpl();
         msg.setConversationSequence(TargetInvoker.NONE);
         invoker.invoke(msg);
@@ -61,7 +61,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(foo);
         EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null);
         Message msg = new MessageImpl();
         msg.setConversationSequence(TargetInvoker.START);
         invoker.invoke(msg);
@@ -80,7 +80,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.expect(component.getAssociatedTargetInstance()).andReturn(foo);
         EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null);
         Message msg = new MessageImpl();
         msg.setConversationSequence(TargetInvoker.CONTINUE);
         invoker.invoke(msg);
@@ -102,7 +102,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         component.removeInstance();
         component.destroy(EasyMock.eq(foo));
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null);
         Message msg = new MessageImpl();
         msg.setConversationSequence(TargetInvoker.END);
         invoker.invoke(msg);

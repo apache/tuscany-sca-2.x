@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.component;
 
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -34,7 +35,20 @@ public interface Invocable extends SCAObject {
      * @param operation  the operation to invoke
      * @return the target invoker
      * @throws TargetInvokerCreationException
+     * @deprecated
      */
     TargetInvoker createTargetInvoker(String targetName, Operation operation) throws TargetInvokerCreationException;
+
+    /**
+     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service offered this
+     * artifact
+     *
+     * @param targetName the service name
+     * @param operation  the operation to invoke
+     * @return the target invoker
+     * @throws TargetInvokerCreationException if an error is encountered creating the invoker
+     */
+    TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+        throws TargetInvokerCreationException;
 
 }

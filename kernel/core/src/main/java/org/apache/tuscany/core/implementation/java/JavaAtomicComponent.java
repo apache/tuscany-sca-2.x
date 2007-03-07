@@ -19,11 +19,13 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -57,7 +59,12 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         if (method == null) {
             throw new TargetMethodNotFoundException(operation);
         }
-        return new JavaTargetInvoker(method, this, callbackClass, workContext);
+        return new JavaTargetInvoker(method, this, workContext);
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+        throws TargetInvokerCreationException {
+        throw new UnsupportedOperationException();
     }
 
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
