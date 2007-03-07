@@ -120,7 +120,7 @@ public class ConnectorImpl implements Connector {
         if (target == null) {
             throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
         }
-        Wire wire = createWire(sourceUri, targetUri, definition);
+        Wire wire = createWire(definition);
         try {
             attachInvokers(targetFragment, wire, source, target);
         } catch (TargetInvokerCreationException e) {
@@ -272,12 +272,14 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    protected Wire createWire(URI sourceURI, URI targetUri, PhysicalWireDefinition definition) throws BuilderException {
+    protected Wire createWire(PhysicalWireDefinition definition) throws BuilderException {
+        URI sourceURI = definition.getSourceUri();
+        URI targetUri = definition.getTargetUri();
         Wire wire = new WireImpl();
         wire.setSourceUri(sourceURI);
         wire.setTargetUri(targetUri);
         for (PhysicalOperationDefinition operation : definition.getOperations()) {
-            InvocationChain chain = new InvocationChainImpl();
+            InvocationChain chain = new InvocationChainImpl(operation);
             for (PhysicalInterceptorDefinition interceptorDefinition : operation.getInterceptors()) {
                 Interceptor interceptor = interceptorBuilderRegistry.build(interceptorDefinition);
                 chain.addInterceptor(interceptor);
@@ -286,7 +288,7 @@ public class ConnectorImpl implements Connector {
             wire.addInvocationChain(operation, chain);
         }
         for (PhysicalOperationDefinition operation : definition.getCallbackOperations()) {
-            InvocationChain chain = new InvocationChainImpl();
+            InvocationChain chain = new InvocationChainImpl(operation);
             for (PhysicalInterceptorDefinition interceptorDefinition : operation.getInterceptors()) {
                 Interceptor interceptor = interceptorBuilderRegistry.build(interceptorDefinition);
                 chain.addInterceptor(interceptor);
@@ -324,12 +326,19 @@ public class ConnectorImpl implements Connector {
 
     private void attachInvokers(String name, Wire wire, Invocable source, Invocable target)
         throws TargetInvokerCreationException {
+        // TODO section will deleted be replaced when we cut-over to the physical marshallers
         for (InvocationChain chain : wire.getInvocationChains().values()) {
-            //String name = target.getUri().getFragment();
             chain.setTargetInvoker(target.createTargetInvoker(name, chain.getOperation()));
         }
         for (InvocationChain chain : wire.getCallbackInvocationChains().values()) {
             chain.setTargetInvoker(source.createTargetInvoker(null, chain.getOperation()));
+        }
+        // TODO the above will deleted be replaced when we cut-over to the physical marshallers
+        for (InvocationChain chain : wire.getPhysicalInvocationChains().values()) {
+            chain.setTargetInvoker(target.createTargetInvoker(name, chain.getPhysicalOperation()));
+        }
+        for (InvocationChain chain : wire.getCallbackPhysicalInvocationChains().values()) {
+            chain.setTargetInvoker(source.createTargetInvoker(null, chain.getPhysicalOperation()));
         }
     }
 

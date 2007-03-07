@@ -36,6 +36,7 @@ import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
@@ -84,6 +85,11 @@ public class ReferenceWiringTestCase extends TestCase {
             public TargetInvoker createTargetInvoker(String targetName, Operation operation)
             throws TargetInvokerCreationException {
                 throw new UnsupportedOperationException();
+            }
+
+            public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+                throws TargetInvokerCreationException {
+                return null;
             }
         };
         binding.setWire(wire);

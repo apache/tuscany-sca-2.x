@@ -47,7 +47,7 @@ public class JavaTargetInvokerMediationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(target);
         EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(hello, component, null, null);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(hello, component, null);
         assertEquals("foo", invoker.invokeTarget("foo", NONE));
     }
 

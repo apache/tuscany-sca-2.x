@@ -18,24 +18,57 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConnectorImplWireTestCase extends TestCase {
+    private static final URI SOURCE_URI = URI.create("source");
+    private static final URI TARGET_URI = URI.create("target");
     private ComponentManager manager;
     private Connector connector;
     private ServiceContract<?> contract;
 
     public void testConnectWireDefinition() throws Exception {
+
+        AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(source.getUri()).andReturn(SOURCE_URI).atLeastOnce();
+        source.attachWire(EasyMock.isA(Wire.class));
+        EasyMock.replay(source);
+        manager.register(source);
+
+        AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
+        //EasyMock.expect(target.getScope()).andReturn(Scope.COMPOSITE);
+        //EasyMock.expect(target.isOptimizable()).andReturn(false);
+        EasyMock.expect(target.getUri()).andReturn(TARGET_URI).atLeastOnce();
+        target.createTargetInvoker((String) EasyMock.isNull(), EasyMock.isA(PhysicalOperationDefinition.class));
+        EasyMock.expectLastCall().andReturn(null);
+        EasyMock.replay(target);
+        manager.register(target);
+
+        PhysicalWireDefinition definition = new PhysicalWireDefinition();
+        definition.setSourceUri(SOURCE_URI);
+        definition.setTargetUri(TARGET_URI);
+        PhysicalOperationDefinition op = new PhysicalOperationDefinition();
+        definition.addOperation(op);
+        connector.connect(definition);
+        EasyMock.verify(source);
+        EasyMock.verify(target);
     }
 
 

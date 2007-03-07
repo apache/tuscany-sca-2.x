@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -72,6 +73,11 @@ public class AtomicComponentExtensionTestCase extends TestCase {
             throw new AssertionFailedError();
         }
 
+        public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+            throws TargetInvokerCreationException {
+            throw new AssertionFailedError();
+        }
+
         public List<Wire> getWires(String name) {
             throw new AssertionFailedError();
         }
@@ -93,6 +99,10 @@ public class AtomicComponentExtensionTestCase extends TestCase {
         }
 
         public Object getTargetInstance() throws TargetResolutionException {
+            throw new AssertionFailedError();
+        }
+
+        public Object getAssociatedTargetInstance() throws TargetResolutionException {
             throw new AssertionFailedError();
         }
     }

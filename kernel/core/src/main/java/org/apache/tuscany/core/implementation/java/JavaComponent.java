@@ -18,59 +18,88 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.component.InstanceFactory;
+import org.osoa.sca.ComponentContext;
+
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-import org.osoa.sca.ComponentContext;
+
+import org.apache.tuscany.core.component.InstanceFactory;
 
 /**
- * 
  * @version $Revision$ $Date$
- *
  */
-public class JavaComponent implements Component {
-    
+public class JavaComponent<T> implements AtomicComponent {
+
     // Instance factory class
-    private Class<InstanceFactory<?>> instanceFactoryClass; //NOPMD
-    
+    private Class<InstanceFactory<T>> instanceFactoryClass; //NOPMD
+    private Class<T> implementationClass;
+    private WorkContext workContext;
+
     // Scope container
     private ScopeContainer scopeContainer; //NOPMD
 
     /**
      * Injects the instance factory class.
+     *
      * @param instanceFactoryClass Instance factory class.
      */
-    public void setInstanceFactoryClass(Class<InstanceFactory<?>> instanceFactoryClass) {
+    public void setInstanceFactoryClass(Class<InstanceFactory<T>> instanceFactoryClass) {
         this.instanceFactoryClass = instanceFactoryClass;
     }
 
     /**
      * Injects the scope container.
+     *
      * @param scopeContainer Scope container.
      */
     public void setScopeContainer(ScopeContainer scopeContainer) {
         throw new UnsupportedOperationException();
     }
-    
-    
 
+
+    /**
+     * Injects the work context.
+     *
+     * @param workContext the work context.
+     */
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
+    }
+
+    /**
+     * Sets the component implementation class.
+     *
+     * @param implementationClass the component implementation class.
+     */
+    public void setImplementationClass(Class<T> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
+    
     public void attachCallbackWire(Wire wire) {
         throw new UnsupportedOperationException();
     }
@@ -128,6 +157,29 @@ public class JavaComponent implements Component {
         throw new UnsupportedOperationException();
     }
 
+    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+        throws TargetInvokerCreationException {
+        List<String> params = operation.getParameters();
+        Class<?>[] paramTypes = new Class<?>[params.size()];
+        ClassLoader loader = implementationClass.getClassLoader();
+        assert loader != null;
+        for (int i = 0; i < params.size(); i++) {
+            String param = params.get(i);
+            try {
+                paramTypes[i] = loader.loadClass(param);
+            } catch (ClassNotFoundException e) {
+                throw new TypeNotFoundException(operation, e);
+            }
+        }
+        Method method;
+        try {
+            method = implementationClass.getMethod(operation.getName(), paramTypes);
+        } catch (NoSuchMethodException e) {
+            throw new TargetMethodNotFoundException(operation);
+        }
+        return new JavaTargetInvoker(method, this, workContext);
+    }
+
     public URI getUri() {
         throw new UnsupportedOperationException();
     }
@@ -160,4 +212,47 @@ public class JavaComponent implements Component {
         throw new UnsupportedOperationException();
     }
 
+    public boolean isEagerInit() {
+        return false;
+    }
+
+    public boolean isDestroyable() {
+        return false;
+    }
+
+    public int getInitLevel() {
+        return 0;
+    }
+
+    public long getMaxIdleTime() {
+        return 0;
+    }
+
+    public long getMaxAge() {
+        return 0;
+    }
+
+    public void init(Object instance) throws TargetInitializationException {
+
+    }
+
+    public void destroy(Object instance) throws TargetDestructionException {
+
+    }
+
+    public Object createInstance() throws ObjectCreationException {
+        return null;
+    }
+
+    public void removeInstance() throws ComponentException {
+
+    }
+
+    public Object getTargetInstance() throws TargetResolutionException {
+        return scopeContainer.getInstance(this);
+    }
+
+    public Object getAssociatedTargetInstance() throws TargetResolutionException {
+        return scopeContainer.getAssociatedInstance(this);
+    }
 }

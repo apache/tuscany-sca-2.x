@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -96,6 +97,11 @@ public class AbstractComponentExtensionTestCase extends TestCase {
             }
 
             public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+                throws TargetInvokerCreationException {
+                return null;
+            }
+
+            public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
                 throws TargetInvokerCreationException {
                 return null;
             }

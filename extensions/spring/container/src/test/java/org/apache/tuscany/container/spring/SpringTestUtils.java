@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
@@ -50,6 +51,11 @@ public final class SpringTestUtils {
             }
 
             public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+                throws TargetInvokerCreationException {
+                return null;
+            }
+
+            public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
                 throws TargetInvokerCreationException {
                 return null;
             }

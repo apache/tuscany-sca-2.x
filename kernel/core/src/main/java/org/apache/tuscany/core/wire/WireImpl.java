@@ -46,9 +46,9 @@ public class WireImpl implements Wire {
     private boolean optimizable;
     private Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
     private Map<Operation<?>, InvocationChain> callbackChains = new HashMap<Operation<?>, InvocationChain>();
-    private Map<PhysicalOperationDefinition, InvocationChain> pchains =
+    private Map<PhysicalOperationDefinition, InvocationChain> pChains =
         new HashMap<PhysicalOperationDefinition, InvocationChain>();
-    private Map<PhysicalOperationDefinition, InvocationChain> pcallbackChains =
+    private Map<PhysicalOperationDefinition, InvocationChain> pCallbackChains =
         new HashMap<PhysicalOperationDefinition, InvocationChain>();
     private AtomicComponent target;
 
@@ -133,7 +133,11 @@ public class WireImpl implements Wire {
     }
 
     public void addInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain) {
-        pchains.put(operation, chain);
+        pChains.put(operation, chain);
+    }
+
+    public Map<PhysicalOperationDefinition, InvocationChain> getPhysicalInvocationChains() {
+        return Collections.unmodifiableMap(pChains);
     }
 
     public Map<Operation<?>, InvocationChain> getCallbackInvocationChains() {
@@ -144,8 +148,12 @@ public class WireImpl implements Wire {
         callbackChains.put(operation, chain);
     }
 
+    public Map<PhysicalOperationDefinition, InvocationChain> getCallbackPhysicalInvocationChains() {
+        return Collections.unmodifiableMap(pCallbackChains);
+    }
+
     public void addCallbackInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain) {
-        pcallbackChains.put(operation, chain);
+        pCallbackChains.put(operation, chain);
     }
 
 }
