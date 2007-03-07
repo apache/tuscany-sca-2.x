@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
@@ -54,14 +54,14 @@ public class PhysicalWireDefinitionMarshaller extends AbstractMarshallerExtensio
     /**
      * Marshalls a physical wire to the xml writer.
      */
-    public void marshall(PhysicalWireDefinition modelObject, XMLStreamWriter writer) throws MarshallException {
+    public void marshal(PhysicalWireDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Unmarshalls a physical wire from the xml reader.
      */
-    public PhysicalWireDefinition unmarshall(XMLStreamReader reader) throws MarshallException {
+    public PhysicalWireDefinition unmarshal(XMLStreamReader reader) throws MarshalException {
 
         try {
             PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition();
@@ -79,9 +79,9 @@ public class PhysicalWireDefinitionMarshaller extends AbstractMarshallerExtensio
                 }
             }
         } catch (XMLStreamException ex) {
-            throw new MarshallException(ex);
+            throw new MarshalException(ex);
         } catch (URISyntaxException ex) {
-            throw new MarshallException(ex);
+            throw new MarshalException(ex);
         }
 
     }

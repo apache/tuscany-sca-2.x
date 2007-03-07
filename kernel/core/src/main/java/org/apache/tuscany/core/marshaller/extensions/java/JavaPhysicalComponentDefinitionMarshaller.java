@@ -31,7 +31,7 @@ import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDe
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
-import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
@@ -97,7 +97,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
      */
     @Override
     protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
-        throws MarshallException {
+        throws MarshalException {
 
         try {
             String name = reader.getName().getLocalPart();
@@ -112,9 +112,9 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
                 componentDefinition.setClassLoaderId(new URI(reader.getText()));
             }
         } catch (XMLStreamException ex) {
-            throw new MarshallException(ex);
+            throw new MarshalException(ex);
         } catch (URISyntaxException ex) {
-            throw new MarshallException(ex);
+            throw new MarshalException(ex);
         }
 
     }
@@ -126,7 +126,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
      * @param reader XML stream.
      */
     protected void handleReference(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
-        throws MarshallException {
+        throws MarshalException {
         JavaPhysicalReferenceDefinition reference = (JavaPhysicalReferenceDefinition)registry.unmarshall(reader);
         componentDefinition.addReference(reference);
     }
@@ -138,7 +138,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
      * @param reader XML stream.
      */
     protected void handleService(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
-        throws MarshallException {
+        throws MarshalException {
         JavaPhysicalServiceDefinition service = (JavaPhysicalServiceDefinition)registry.unmarshall(reader);
         componentDefinition.addService(service);
     }

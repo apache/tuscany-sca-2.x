@@ -36,17 +36,17 @@ public interface ModelMarshaller<MD extends ModelObject> {
      * 
      * @param modelObject Physical component definition to be serialized.
      * @param writer Stream writer to which the infoset is serialized.
-     * @throws MarshallException In case of any marshalling error.
+     * @throws MarshalException In case of any marshalling error.
      */
-    void marshall(MD modelObject, XMLStreamWriter writer) throws MarshallException;
+    void marshal(MD modelObject, XMLStreamWriter writer) throws MarshalException;
 
     /**
      * Unmarshalls an XML stream to a model object.
      * 
      * @param reader XML stream from where the marshalled XML is read.
      * @return Physical component definition.
-     * @throws MarshallException In case of any unmarshalling error.
+     * @throws MarshalException In case of any unmarshalling error.
      */
-    MD unmarshall(XMLStreamReader reader) throws MarshallException;
+    MD unmarshal(XMLStreamReader reader) throws MarshalException;
 
 }

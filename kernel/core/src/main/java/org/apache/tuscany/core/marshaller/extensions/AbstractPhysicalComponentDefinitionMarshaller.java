@@ -28,7 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -52,14 +52,14 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
     /**
      * Marshalls a physical change set to the xml writer.
      */
-    public final void marshall(PCD modelObject, XMLStreamWriter writer) throws MarshallException {
+    public final void marshal(PCD modelObject, XMLStreamWriter writer) throws MarshalException {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Unmarshalls a physical change set from the xml reader.
      */
-    public final PCD unmarshall(XMLStreamReader reader) throws MarshallException {
+    public final PCD unmarshal(XMLStreamReader reader) throws MarshalException {
 
         try {
             PCD componentDefinition = getConcreteModelObject();
@@ -84,9 +84,9 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
                 }
             }
         } catch (XMLStreamException ex) {
-            throw new MarshallException(ex);
+            throw new MarshalException(ex);
         } catch (URISyntaxException ex) {
-            throw new MarshallException(ex);
+            throw new MarshalException(ex);
         }
 
     }
@@ -97,7 +97,7 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
      * @param componentDefinition Component definition.
      * @param reader XML stream.
      */
-    protected abstract void handleReference(PCD componentDefinition, XMLStreamReader reader) throws MarshallException;
+    protected abstract void handleReference(PCD componentDefinition, XMLStreamReader reader) throws MarshalException;
 
     /**
      * Handles a reference.
@@ -105,6 +105,6 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
      * @param componentDefinition Component definition.
      * @param reader XML stream.
      */
-    protected abstract void handleService(PCD componentDefinition, XMLStreamReader reader) throws MarshallException;
+    protected abstract void handleService(PCD componentDefinition, XMLStreamReader reader) throws MarshalException;
 
 }

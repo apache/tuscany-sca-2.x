@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
@@ -47,14 +47,14 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
     /**
      * Marshalls a physical java reference definition to the xml writer.
      */
-    public void marshall(PSD modelObject, XMLStreamWriter writer) throws MarshallException {
+    public void marshal(PSD modelObject, XMLStreamWriter writer) throws MarshalException {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Unmarshalls a java physical reference definition from the xml reader.
      */
-    public PSD unmarshall(XMLStreamReader reader) throws MarshallException {
+    public PSD unmarshal(XMLStreamReader reader) throws MarshalException {
 
         try {
             PSD serviceDefinition = getConcreteModelObject();
@@ -76,7 +76,7 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
                 }
             }
         } catch (XMLStreamException ex) {
-            throw new MarshallException(ex);
+            throw new MarshalException(ex);
         }
 
     }
