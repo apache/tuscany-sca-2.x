@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -66,13 +66,13 @@ public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
      * @param writer Writer to which marshalled information is written.
      */
     @SuppressWarnings("unchecked")
-    public void marshall(ModelObject modelObject, XMLStreamWriter writer) throws MarshallException {
+    public void marshall(ModelObject modelObject, XMLStreamWriter writer) throws MarshalException {
 
         ModelMarshaller marshaller = marshallerRegistry.get(modelObject.getClass());
         if (marshaller == null) {
-            throw new MarshallException("No marshaller defined for " + modelObject.getClass());
+            throw new MarshalException("No marshaller defined for " + modelObject.getClass());
         }
-        marshaller.marshall(modelObject, writer);
+        marshaller.marshal(modelObject, writer);
 
     }
 
@@ -82,15 +82,15 @@ public class DefaultModelMarshallerRegistry implements ModelMarshallerRegistry {
      * @param reader Reader from which marshalled information is read.
      * @return Model object from the marshalled stream.
      */
-    public ModelObject unmarshall(XMLStreamReader reader) throws MarshallException {
+    public ModelObject unmarshall(XMLStreamReader reader) throws MarshalException {
 
         QName qname = reader.getName();
 
         ModelMarshaller marshaller = unmarshallerRegistry.get(qname);
         if (marshaller == null) {
-            throw new MarshallException("No marshaller defined for " + qname);
+            throw new MarshalException("No marshaller defined for " + qname);
         }
-        return marshaller.unmarshall(reader);
+        return marshaller.unmarshal(reader);
 
     }
 

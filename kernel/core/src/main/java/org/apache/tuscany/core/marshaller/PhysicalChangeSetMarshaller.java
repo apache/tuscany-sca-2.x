@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
@@ -52,14 +52,14 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
     /**
      * Marshalls a physical change set to the xml writer.
      */
-    public void marshall(PhysicalChangeSet modelObject, XMLStreamWriter writer) throws MarshallException {
+    public void marshal(PhysicalChangeSet modelObject, XMLStreamWriter writer) throws MarshalException {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Unmarshalls a physical change set from the xml reader.
      */
-    public PhysicalChangeSet unmarshall(XMLStreamReader reader) throws MarshallException {
+    public PhysicalChangeSet unmarshal(XMLStreamReader reader) throws MarshalException {
 
         try {
             PhysicalChangeSet changeSet = new PhysicalChangeSet();
@@ -79,7 +79,7 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
                 }
             }
         } catch (XMLStreamException ex) {
-            throw new MarshallException(ex);
+            throw new MarshalException(ex);
         }
 
     }

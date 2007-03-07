@@ -26,14 +26,14 @@ import org.apache.tuscany.api.TuscanyException;
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("serial")
-public class MarshallException extends TuscanyException {
+public class MarshalException extends TuscanyException {
 
     /**
      * Initializes the exception message.
      * 
      * @param message Message for the exception.
      */
-    public MarshallException(String message) {
+    public MarshalException(String message) {
         super(message);
     }
 
@@ -42,7 +42,7 @@ public class MarshallException extends TuscanyException {
      * 
      * @param cause Root cause for the exception.
      */
-    public MarshallException(Throwable cause) {
+    public MarshalException(Throwable cause) {
         super(cause);
     }
 

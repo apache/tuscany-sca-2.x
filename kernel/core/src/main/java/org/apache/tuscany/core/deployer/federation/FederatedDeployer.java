@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
@@ -86,7 +86,7 @@ public class FederatedDeployer implements RequestListener {
                 connector.connect(pwd);
             }
 
-        } catch (MarshallException ex) {
+        } catch (MarshalException ex) {
             return null;
         } catch (BuilderException ex) {
             return null;

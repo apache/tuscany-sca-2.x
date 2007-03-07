@@ -47,7 +47,7 @@ public interface ModelMarshallerRegistry {
      * @param modelObject Model object to be marshalled.
      * @param writer Writer to which marshalled information is written.
      */
-    void marshall(ModelObject modelObject, XMLStreamWriter writer) throws MarshallException;
+    void marshall(ModelObject modelObject, XMLStreamWriter writer) throws MarshalException;
 
     /**
      * Unmarshalls an XML stream to a model object.
@@ -55,6 +55,6 @@ public interface ModelMarshallerRegistry {
      * @param reader Reader from which marshalled information is read.
      * @return Model object from the marshalled stream.
      */
-    ModelObject unmarshall(XMLStreamReader reader) throws MarshallException;
+    ModelObject unmarshall(XMLStreamReader reader) throws MarshalException;
 
 }

@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.marshaller;
 
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import java.io.InputStream;
 import java.util.Set;
 
@@ -77,7 +78,8 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         InputStream inputStream = cl.getResourceAsStream("marshall/javaChangeSet.xml");
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
 
-        reader.next();
+        while(reader.next() != START_ELEMENT) {            
+        }
         PhysicalChangeSet changeSet = (PhysicalChangeSet)registry.unmarshall(reader);
         assertNotNull(changeSet);
         Set<? extends PhysicalComponentDefinition> pcds = changeSet.getComponentDefinitions();

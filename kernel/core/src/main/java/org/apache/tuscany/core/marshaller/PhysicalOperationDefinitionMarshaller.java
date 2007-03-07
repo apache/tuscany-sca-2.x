@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.spi.marshaller.MarshallException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
@@ -43,14 +43,14 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
     /**
      * Marshalls a physical operation to the xml writer.
      */
-    public void marshall(PhysicalOperationDefinition modelObject, XMLStreamWriter writer) throws MarshallException {
+    public void marshal(PhysicalOperationDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Unmarshalls a physical operation from the xml reader.
      */
-    public PhysicalOperationDefinition unmarshall(XMLStreamReader reader) throws MarshallException {
+    public PhysicalOperationDefinition unmarshal(XMLStreamReader reader) throws MarshalException {
 
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
         operation.setName(reader.getAttributeValue(null, NAME));
