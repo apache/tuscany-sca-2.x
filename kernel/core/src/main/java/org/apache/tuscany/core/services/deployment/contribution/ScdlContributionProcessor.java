@@ -73,7 +73,7 @@ public class ScdlContributionProcessor extends ContributionProcessorExtension im
         try {
             URI contributionId = contribution.getUri();
             URL scdlLocation = contribution.getArtifact(source).getLocation();
-            CompositeClassLoader cl = new CompositeClassLoader(getClass().getClassLoader());
+            CompositeClassLoader cl = new CompositeClassLoader(null, getClass().getClassLoader());
             cl.addURL(contribution.getLocation());
 
             DeploymentContext deploymentContext =

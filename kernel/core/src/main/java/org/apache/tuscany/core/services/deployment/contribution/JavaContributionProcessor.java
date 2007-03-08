@@ -73,7 +73,7 @@ public class JavaContributionProcessor extends ContributionProcessorExtension im
         // TODO Auto-generated method stub
 
         //try {
-        CompositeClassLoader cl = new CompositeClassLoader(getClass().getClassLoader());
+        CompositeClassLoader cl = new CompositeClassLoader(null, getClass().getClassLoader());
         cl.addURL(contribution.getLocation());
 
         String clazzName = getClazzName(contribution.getArtifact(source).getLocation());

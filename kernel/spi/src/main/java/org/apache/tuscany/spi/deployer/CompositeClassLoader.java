@@ -19,9 +19,9 @@
 package org.apache.tuscany.spi.deployer;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLStreamHandlerFactory;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
@@ -31,32 +31,50 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * ClassLoader associated with a composite.
+ * Each classloader has a name that can be used to reference it in the runtime.
+ * The classloader supports multiple parents allowing application code to share selected
+ * libraries with the runtime infrastructure as determined by the component's implementation type.
  *
  * @version $Rev$ $Date$
  */
-public class CompositeClassLoader extends URLClassLoader  {
+public class CompositeClassLoader extends URLClassLoader {
     private static final URL[] NOURLS = {};
+
+    private final URI name;
     private final List<ClassLoader> parents = new CopyOnWriteArrayList<ClassLoader>();
 
-    public CompositeClassLoader(ClassLoader parent) {
-        super(NOURLS);
-        parents.add(parent);
+    /**
+     * Constructs a classloader with a name and a single parent.
+     *
+     * @param name   a name used to identify this classloader
+     * @param parent the initial parent
+     */
+    public CompositeClassLoader(URI name, ClassLoader parent) {
+        this(name, NOURLS, parent);
     }
 
-    public CompositeClassLoader(URL[] urls, ClassLoader parent) {
+    /**
+     * Constructs a classloader with a name, a set of resources and a single parent.
+     *
+     * @param name   a name used to identify this classloader
+     * @param urls   the URLs from which to load classes and resources
+     * @param parent the initial parent
+     */
+    public CompositeClassLoader(URI name, URL[] urls, ClassLoader parent) {
         super(urls);
-        parents.add(parent);
+        this.name = name;
+        if (parent != null) {
+            parents.add(parent);
+        }
     }
 
-    public CompositeClassLoader(URL[] urls) {
-        super(urls);
-    }
 
-    public CompositeClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory urlStreamHandlerFactory) {
-        super(urls, null, urlStreamHandlerFactory);
-        parents.add(parent);
-    }
-
+    /**
+     * Add a resource URL to this classloader's classpath.
+     * The "createClassLoader" RuntimePermission is required.
+     *
+     * @param url an additional URL from which to load classes and resources
+     */
     public void addURL(URL url) {
         // Require RuntimePermission("createClassLoader")
         SecurityManager sm = System.getSecurityManager();
@@ -66,15 +84,31 @@ public class CompositeClassLoader extends URLClassLoader  {
         super.addURL(url);
     }
 
+    /**
+     * Add a parent to this classloader.
+     * The "createClassLoader" RuntimePermission is required.
+     *
+     * @param parent an additional parent classloader
+     */
     public void addParent(ClassLoader parent) {
         // Require RuntimePermission("createClassLoader")
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkCreateClassLoader();
         }
-        parents.add(parent);
+        if (parent != null) {
+            parents.add(parent);
+        }
     }
 
+    /**
+     * Returns the name of this classloader.
+     *
+     * @return the name of this classloader
+     */
+    public URI getName() {
+        return name;
+    }
 
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         // look for already loaded classes
@@ -138,5 +172,10 @@ public class CompositeClassLoader extends URLClassLoader  {
             resources.add(myResources.nextElement());
         }
         return Collections.enumeration(resources);
+    }
+
+
+    public String toString() {
+        return name.toString();
     }
 }
