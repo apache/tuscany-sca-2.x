@@ -96,7 +96,7 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
             } catch (MalformedURLException e) {
                 throw new AssertionError("Could not convert URL to a jar: url");
             }
-            impl.setClassLoader(new CompositeClassLoader(new URL[]{jarUrl}, deploymentContext.getClassLoader()));
+            impl.setClassLoader(new CompositeClassLoader(null, new URL[]{jarUrl}, deploymentContext.getClassLoader()));
         } else if (artifactRepository != null && group != null && version != null) {
             Artifact artifact = new Artifact();
             artifact.setGroup(group);
@@ -118,7 +118,7 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
             for (URL artifactURL : artifactURLs) {
                 urls[i++] = artifactURL;
             }
-            impl.setClassLoader(new CompositeClassLoader(urls, deploymentContext.getClassLoader()));
+            impl.setClassLoader(new CompositeClassLoader(null, urls, deploymentContext.getClassLoader()));
         }
         return impl;
     }
