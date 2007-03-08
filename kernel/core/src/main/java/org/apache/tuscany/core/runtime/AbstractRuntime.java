@@ -39,9 +39,9 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
@@ -244,11 +244,10 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         registerSystemComponent(AUTOWIRE_RESOLVER_URI, AutowireResolver.class, resolver);
     }
 
-    @SuppressWarnings({"unchecked"})
     protected <S, I extends S> void registerSystemComponent(URI uri, Class<S> type, I component)
         throws InitializationException {
         try {
-            ServiceContract contract = interfaceProcessorRegistry.introspect(type);
+            JavaServiceContract<S> contract = interfaceProcessorRegistry.introspect(type);
             componentManager.registerJavaObject(uri, contract, component);
         } catch (RegistrationException e) {
             throw new InitializationException(e);
@@ -260,9 +259,9 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected <I> void registerSystemComponent(URI uri, List<Class<?>> types, I component)
         throws InitializationException {
         try {
-            List<ServiceContract<?>> contracts = new ArrayList<ServiceContract<?>>();
+            List<JavaServiceContract<?>> contracts = new ArrayList<JavaServiceContract<?>>();
             for (Class<?> type : types) {
-                contracts.add(this.interfaceProcessorRegistry.introspect(type));
+                contracts.add(interfaceProcessorRegistry.introspect(type));
 
             }
             componentManager.registerJavaObject(uri, contracts, component);

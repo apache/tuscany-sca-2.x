@@ -23,7 +23,7 @@ import java.net.URI;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.DuplicateNameException;
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import junit.framework.TestCase;
 
@@ -36,7 +36,7 @@ public class JavaObjectRegistrationTestCase extends TestCase {
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         URI uri = URI.create("foo");
-        ServiceContract<MockComponent> contract = new ServiceContract<MockComponent>(MockComponent.class) {
+        JavaServiceContract<MockComponent> contract = new JavaServiceContract<MockComponent>(MockComponent.class) {
         };
         componentManager.registerJavaObject(uri, contract, instance);
         Component component = componentManager.getComponent(URI.create("foo"));
@@ -48,7 +48,7 @@ public class JavaObjectRegistrationTestCase extends TestCase {
     public void testDuplicateRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         URI uri = URI.create("foo");
-        ServiceContract<MockComponent> contract = new ServiceContract<MockComponent>(MockComponent.class) {
+        JavaServiceContract<MockComponent> contract = new JavaServiceContract<MockComponent>(MockComponent.class) {
         };
         componentManager.registerJavaObject(uri, contract, instance);
         try {

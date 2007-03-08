@@ -27,12 +27,12 @@ import org.apache.tuscany.spi.model.ServiceContract;
  *
  * @version $Rev$ $Date$
  */
-public class JavaServiceContract extends ServiceContract<Type> {
+public class JavaServiceContract<I> extends ServiceContract<Type> {
 
     public JavaServiceContract() {
     }
 
-    public JavaServiceContract(Class<?> interfaceClass) {
+    public JavaServiceContract(Class<I> interfaceClass) {
         super(interfaceClass);
     }
 

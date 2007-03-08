@@ -47,7 +47,7 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
      */
     public void testDifferentInterface() throws Throwable {
         Wire wire = new WireImpl();
-        JavaServiceContract contract = registry.introspect(Target.class);
+        JavaServiceContract<Target> contract = registry.introspect(Target.class);
         for (Operation<?> operation : contract.getOperations().values()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             wire.addInvocationChain(operation, chain);

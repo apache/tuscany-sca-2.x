@@ -67,7 +67,7 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         processors.remove(processor);
     }
 
-    public <T> JavaServiceContract introspect(Class<T> type) throws InvalidServiceContractException {
+    public <T> JavaServiceContract<T> introspect(Class<T> type) throws InvalidServiceContractException {
         Class<?> callbackClass = null;
         Callback callback = type.getAnnotation(Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
@@ -78,9 +78,9 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         return introspect(type, callbackClass);
     }
 
-    public <I, C> JavaServiceContract introspect(Class<I> type, Class<C> callback)
+    public <I, C> JavaServiceContract<I> introspect(Class<I> type, Class<C> callback)
         throws InvalidServiceContractException {
-        JavaServiceContract contract = new JavaServiceContract();
+        JavaServiceContract<I> contract = new JavaServiceContract<I>();
         contract.setInterfaceName(getBaseName(type));
         contract.setInterfaceClass(type);
         boolean remotable = type.isAnnotationPresent(Remotable.class);
