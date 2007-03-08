@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import junit.framework.TestCase;
 
@@ -33,7 +33,7 @@ import junit.framework.TestCase;
 public class SystemSingletonAtomicComponentTestCase extends TestCase {
 
     public void testGetInstance() throws TargetException {
-        ServiceContract<Foo> contract = new ServiceContract<Foo>(Foo.class) {
+        JavaServiceContract<Foo> contract = new JavaServiceContract<Foo>(Foo.class) {
 
         };
         FooImpl foo = new FooImpl();
@@ -44,10 +44,10 @@ public class SystemSingletonAtomicComponentTestCase extends TestCase {
 
     public void testGetInstanceMultipleServices() throws TargetException {
         FooImpl foo = new FooImpl();
-        List<ServiceContract<?>> services = new ArrayList<ServiceContract<?>>();
-        services.add(new ServiceContract<Foo>(Foo.class) {
+        List<JavaServiceContract<?>> services = new ArrayList<JavaServiceContract<?>>();
+        services.add(new JavaServiceContract<Foo>(Foo.class) {
         });
-        services.add(new ServiceContract<Bar>(Bar.class) {
+        services.add(new JavaServiceContract<Bar>(Bar.class) {
         });
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
             new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), services, foo);
@@ -55,7 +55,7 @@ public class SystemSingletonAtomicComponentTestCase extends TestCase {
     }
 
     public void testOptimizable() {
-        ServiceContract<Foo> contract = new ServiceContract<Foo>(Foo.class) {
+        JavaServiceContract<Foo> contract = new JavaServiceContract<Foo>(Foo.class) {
         };
         FooImpl foo = new FooImpl();
         SystemSingletonAtomicComponent<Foo, FooImpl> component =

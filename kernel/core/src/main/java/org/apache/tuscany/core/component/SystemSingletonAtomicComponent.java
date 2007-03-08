@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
@@ -46,13 +47,13 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     private T instance;
     private List<ServiceContract> serviceContracts = new ArrayList<ServiceContract>();
 
-    public SystemSingletonAtomicComponent(URI name, ServiceContract<S> contract, T instance) {
+    public SystemSingletonAtomicComponent(URI name, JavaServiceContract<S> contract, T instance) {
         super(name);
         this.instance = instance;
         this.serviceContracts.add(contract);
     }
 
-    public SystemSingletonAtomicComponent(URI name, List<ServiceContract<?>> services, T instance) {
+    public SystemSingletonAtomicComponent(URI name, List<JavaServiceContract<?>> services, T instance) {
         super(name);
         this.instance = instance;
         for (ServiceContract<?> contract : services) {

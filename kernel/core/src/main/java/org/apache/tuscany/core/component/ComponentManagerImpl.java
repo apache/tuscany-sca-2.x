@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import org.apache.tuscany.core.resolver.AutowireResolver;
 
@@ -68,7 +69,7 @@ public class ComponentManagerImpl implements ComponentManager {
         }
     }
 
-    public <S, I extends S> void registerJavaObject(URI uri, ServiceContract<S> service, I instance)
+    public <S, I extends S> void registerJavaObject(URI uri, JavaServiceContract<S> service, I instance)
         throws RegistrationException {
         SystemSingletonAtomicComponent<S, I> component =
             new SystemSingletonAtomicComponent<S, I>(uri, service, instance);
@@ -80,7 +81,7 @@ public class ComponentManagerImpl implements ComponentManager {
         }
     }
 
-    public <S, I extends S> void registerJavaObject(URI uri, List<ServiceContract<?>> services, I instance)
+    public <S, I extends S> void registerJavaObject(URI uri, List<JavaServiceContract<?>> services, I instance)
         throws RegistrationException {
         SystemSingletonAtomicComponent<S, I> component =
             new SystemSingletonAtomicComponent<S, I>(uri, services, instance);

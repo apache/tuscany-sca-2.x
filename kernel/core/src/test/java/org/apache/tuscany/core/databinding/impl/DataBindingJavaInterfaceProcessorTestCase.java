@@ -49,11 +49,11 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
     }
 
     /**
-     * @throws InvalidServiceContractException
+     * @throws InvalidServiceContractException indicates an error occurs
      */
     public final void testVisitInterface() throws InvalidServiceContractException {
         DataBindingJavaInterfaceProcessor processor = new DataBindingJavaInterfaceProcessor();
-        JavaServiceContract contract = new JavaServiceContract(MockInterface.class);
+        JavaServiceContract<MockInterface> contract = new JavaServiceContract<MockInterface>(MockInterface.class);
         Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
         Operation<Type> operation = new Operation<Type>("call", null, null, null, false, null, NO_CONVERSATION);
         Operation<Type> operation1 = new Operation<Type>("call1", null, null, null, false, null, NO_CONVERSATION);

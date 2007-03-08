@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -39,7 +40,6 @@ import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
@@ -156,7 +156,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         ComponentManager manager = new ComponentManagerImpl(null, resolver);
         Connector connector = new ConnectorImpl(manager);
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
-        ServiceContract contract = registry.introspect(ComponentManager.class);
+        JavaServiceContract<ComponentManager> contract = registry.introspect(ComponentManager.class);
         manager.registerJavaObject(URI.create("ComponentManager"), contract, manager);
         NullMonitorFactory monitorFactory = new NullMonitorFactory();
         Bootstrapper bootstrapper =
