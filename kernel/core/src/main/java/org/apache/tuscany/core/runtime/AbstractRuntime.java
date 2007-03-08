@@ -228,13 +228,19 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     }
 
     protected void registerBaselineSystemComponents() throws InitializationException {
+        // register the RuntimeInfo provided by the host
         registerSystemComponent(RUNTIME_INFO_URI, runtimeInfoType, runtimeInfo);
+
+        // register the MonitorFactory provided by the host
         List<Class<?>> monitorServices = new ArrayList<Class<?>>();
         monitorServices.add(MonitorFactory.class);
         monitorServices.add(FormatterRegistry.class);
         registerSystemComponent(MONITOR_URI, monitorServices, getMonitorFactory());
-        // register the component manager with itself so it can be autowired
+
+        // register the ComponentManager to that the fabric can wire to it
         registerSystemComponent(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
+
+        // register the AutowireResolver
         registerSystemComponent(AUTOWIRE_RESOLVER_URI, AutowireResolver.class, resolver);
     }
 
