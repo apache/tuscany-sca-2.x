@@ -306,7 +306,7 @@ public class TuscanyITestMojo extends AbstractMojo {
             }
         }
 
-        return new CompositeClassLoader(urls, parent);
+        return new CompositeClassLoader(null, urls, parent);
     }
 
     public boolean runSurefire(SurefireTestSuite testSuite) throws MojoExecutionException {
