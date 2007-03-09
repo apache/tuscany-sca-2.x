@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.core-samples.common</groupId>
     <artifactId>calculator</artifactId>
-    <packaging>composite</packaging>
+    <packaging>jar</packaging>
     <name>Apache Tuscany Calculator Common Composite</name>
     <description>A sample Calculator made of several SCA components wired together.</description>
 
@@ -47,8 +47,14 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.tuscany</groupId>
-                <artifactId>tuscany-composite-plugin</artifactId>
-                <extensions>true</extensions>
+                <artifactId>tuscany-itest-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
