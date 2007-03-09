@@ -27,7 +27,8 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.ComponentContext;
 
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_SYSTEM_ROOT;
+import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_DEPLOYER;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -44,6 +45,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
+import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -56,6 +58,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
+import org.apache.tuscany.core.services.classloading.ClassLoaderRegistryImpl;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
@@ -67,29 +70,51 @@ import org.apache.tuscany.host.runtime.TuscanyRuntime;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyRuntime<I> {
-    private static final URI MONITOR_URI = ComponentNames.TUSCANY_SYSTEM_ROOT.resolve("MonitorFactory");
+    private static final URI MONITOR_URI = TUSCANY_SYSTEM_ROOT.resolve("MonitorFactory");
 
-    private static final URI COMPONENT_MGR_URI = ComponentNames.TUSCANY_SYSTEM_ROOT.resolve("ComponentManager");
+    private static final URI COMPONENT_MGR_URI = TUSCANY_SYSTEM_ROOT.resolve("ComponentManager");
 
-    private static final URI AUTOWIRE_RESOLVER_URI = ComponentNames.TUSCANY_SYSTEM_ROOT.resolve("AutowireResolver");
+    private static final URI AUTOWIRE_RESOLVER_URI = TUSCANY_SYSTEM_ROOT.resolve("AutowireResolver");
 
-    private static final URI RUNTIME_INFO_URI = ComponentNames.TUSCANY_SYSTEM_ROOT.resolve("RuntimeInfo");
+    private static final URI RUNTIME_INFO_URI = TUSCANY_SYSTEM_ROOT.resolve("RuntimeInfo");
+
+    private static final URI CLASSLOADER_REGISTRY_URI = TUSCANY_SYSTEM_ROOT.resolve("ClassLoaderRegsitry");
+
+    private static final URI HOST_CLASSLOADER_ID = URI.create("sca://./hostClassLoader");
 
     private final XMLInputFactory xmlFactory;
     private URL systemScdl;
     private String applicationName;
     private URL applicationScdl;
-    private ClassLoader hostClassLoader;
-    private ClassLoader applicationClassLoader;
     private Class<I> runtimeInfoType;
-    private I runtimeInfo;
-    private MonitorFactory monitorFactory;
     private ManagementService<?> managementService;
+
+    // primorial components automatically registered with the runtime
+    /**
+     * Information provided by the host about its runtime environment.
+     */
+    private I runtimeInfo;
+
+    /**
+     * MonitorFactory provided by the host for directing events to its management framework.
+     */
+    private MonitorFactory monitorFactory;
+
+    /**
+     * The ComponentManager that manages all components in this runtime.
+     */
     private ComponentManager componentManager;
+
+    /**
+     * Registry for ClassLoaders used by this runtime.
+     */
+    private ClassLoaderRegistry classLoaderRegistry;
+
+    private AutowireResolver resolver;
 
     private Component systemComponent;
     private Component tuscanySystem;
-    private AutowireResolver resolver;
+
     private JavaInterfaceProcessorRegistry interfaceProcessorRegistry;
 
     protected AbstractRuntime(Class<I> runtimeInfoType) {
@@ -100,7 +125,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         this.runtimeInfoType = runtimeInfoType;
         this.monitorFactory = monitorFactory;
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
-        this.interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
+        interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
+        classLoaderRegistry = new ClassLoaderRegistryImpl();
     }
 
     public URL getSystemScdl() {
@@ -127,20 +153,12 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         this.applicationScdl = applicationScdl;
     }
 
-    public ClassLoader getApplicationClassLoader() {
-        return applicationClassLoader;
-    }
-
-    public void setApplicationClassLoader(ClassLoader applicationClassLoader) {
-        this.applicationClassLoader = applicationClassLoader;
-    }
-
     public ClassLoader getHostClassLoader() {
-        return hostClassLoader;
+        return classLoaderRegistry.getClassLoader(HOST_CLASSLOADER_ID);
     }
 
     public void setHostClassLoader(ClassLoader hostClassLoader) {
-        this.hostClassLoader = hostClassLoader;
+        classLoaderRegistry.register(HOST_CLASSLOADER_ID, hostClassLoader);
     }
 
     public I getRuntimeInfo() {
@@ -168,7 +186,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     }
 
     public void initialize() throws InitializationException {
-        URI name = ComponentNames.TUSCANY_SYSTEM_ROOT.resolve("main");
+        URI name = TUSCANY_SYSTEM_ROOT.resolve("main");
         Bootstrapper bootstrapper = createBootstrapper();
 
         registerBaselineSystemComponents();
@@ -237,6 +255,9 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         monitorServices.add(FormatterRegistry.class);
         registerSystemComponent(MONITOR_URI, monitorServices, getMonitorFactory());
 
+        // register the ClassLoaderRegistry
+        registerSystemComponent(CLASSLOADER_REGISTRY_URI, ClassLoaderRegistry.class, classLoaderRegistry);
+
         // register the ComponentManager to that the fabric can wire to it
         registerSystemComponent(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
 
@@ -297,7 +318,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected Deployer getDeployer() {
         try {
             AtomicComponent component =
-                (AtomicComponent) getComponentManager().getComponent(ComponentNames.TUSCANY_DEPLOYER);
+                (AtomicComponent) getComponentManager().getComponent(TUSCANY_DEPLOYER);
             return (Deployer) component.getTargetInstance();
         } catch (TargetResolutionException e) {
             throw new AssertionError(e);
