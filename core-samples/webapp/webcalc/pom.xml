@@ -35,6 +35,7 @@
             <groupId>org.apache.tuscany.sca.core-samples.common</groupId>
             <artifactId>calculator</artifactId>
             <version>${project.version}</version>
+            <type>composite</type>
         </dependency>
 
         <dependency>
