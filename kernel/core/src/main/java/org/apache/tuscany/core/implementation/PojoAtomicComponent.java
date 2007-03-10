@@ -46,6 +46,7 @@ import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.core.component.InstanceFactory;
+import org.apache.tuscany.core.component.scope.ReflectiveInstanceWrapper;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory;
 import org.apache.tuscany.core.injection.ConversationIDObjectFactory;
@@ -161,7 +162,11 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
+/* FIXME make this work
         return instanceFactory2.newInstance();
+*/
+        Object instance = createInstance();
+        return new ReflectiveInstanceWrapper<Object>(instance, initInvoker, destroyInvoker);
     }
 
     public List<Wire> getWires(String name) {

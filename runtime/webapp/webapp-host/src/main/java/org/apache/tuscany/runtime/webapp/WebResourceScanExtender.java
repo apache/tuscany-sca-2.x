@@ -26,12 +26,14 @@ import javax.servlet.ServletContext;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
 
 /**
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class WebResourceScanExtender extends AbstractExtensionDeployer {
     private final WebappRuntimeInfo runtimeInfo;
     private final String path;

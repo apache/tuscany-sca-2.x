@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
@@ -45,17 +46,24 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
      * Verifies the scope container properly creates an instance
      */
     public void testNotYetPersistedInMemory() throws Exception {
+        Foo comp = new Foo();
+        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
+        wrapper.start();
+        EasyMock.expect(wrapper.getInstance()).andReturn(comp);
+        EasyMock.replay(wrapper);
+
         String id = UUID.randomUUID().toString();
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
-        EasyMock.expect(component.createInstance()).andReturn(new Foo());
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.expect(component.getMaxAge()).andReturn(600000L).atLeastOnce();
-        component.init(EasyMock.isA(Object.class));
         EasyMock.replay(component);
+
         container.register(component);
-        assertTrue(container.getInstance(component) instanceof Foo);
+        assertSame(comp, container.getInstance(component));
         EasyMock.verify(component);
+        EasyMock.verify(wrapper);
     }
 
     public void testPersistNewInMemory() throws Exception {
@@ -116,15 +124,21 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     }
 
     public void testRecreateAfterRemoveInMemory() throws Exception {
+        Foo comp = new Foo();
+        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
+        wrapper.start();
+        EasyMock.expect(wrapper.getInstance()).andReturn(comp);
+        EasyMock.replay(wrapper);
+
         String id = UUID.randomUUID().toString();
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
         EasyMock.expect(component.getMaxAge()).andReturn(600000L).atLeastOnce();
-        component.init(EasyMock.isA(Object.class));
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
-        EasyMock.expect(component.createInstance()).andReturn(new Foo());
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.replay(component);
+
         container.register(component);
         Foo foo = new Foo();
         container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
