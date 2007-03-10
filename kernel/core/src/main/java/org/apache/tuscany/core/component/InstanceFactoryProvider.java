@@ -16,24 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.core.component;
 
-import java.net.URI;
+import java.util.List;
 
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
-import org.apache.tuscany.core.implementation.PojoComponent;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
- * @param <T> the implementation class for the defined component
  */
-public abstract class SystemComponent<T> extends PojoComponent<T> {
-    public SystemComponent(URI componentId,
-                           InstanceFactoryProvider<T> provider,
-                           int initLevel,
-                           int maxIdleTime,
-                           int maxAge) {
-        super(componentId, provider, initLevel, maxIdleTime, maxAge);
-    }
+public interface InstanceFactoryProvider<T> {
+    /**
+     * Attach the outbound wire for a single-valued reference.
+     *
+     * @param wire the outbound wire to attach
+     */
+    void attachWire(Wire wire);
 
+    /**
+     * Attach the outbound wires for a multi-valued reference.
+     *
+     * @param wires the outbound wires to attach
+     */
+    void attachWires(List<Wire> wires);
+
+    /**
+     * Create an instance factory that can be used to create component instances.
+     *
+     * @return a new instance factory
+     */
+    InstanceFactory<T> createFactory();
 }

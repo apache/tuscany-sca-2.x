@@ -16,24 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.core.implementation.system.builder;
 
-import java.net.URI;
-
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
-import org.apache.tuscany.core.implementation.PojoComponent;
+import org.apache.tuscany.core.implementation.system.component.SystemComponent;
+import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
 
 /**
  * @version $Rev$ $Date$
- * @param <T> the implementation class for the defined component
  */
-public abstract class SystemComponent<T> extends PojoComponent<T> {
-    public SystemComponent(URI componentId,
-                           InstanceFactoryProvider<T> provider,
-                           int initLevel,
-                           int maxIdleTime,
-                           int maxAge) {
-        super(componentId, provider, initLevel, maxIdleTime, maxAge);
+public class SystemPhysicalComponentBuilder {
+    <T> SystemComponent<T> build(SystemPhysicalComponentDefinition<T> definition) {
+        throw new UnsupportedOperationException();
+/*
+        SystemComponent<T> component = new SystemComponent<T>();
+        return component;
+*/
     }
-
 }

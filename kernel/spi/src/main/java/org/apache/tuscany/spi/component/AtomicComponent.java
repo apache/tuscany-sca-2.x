@@ -68,6 +68,7 @@ public interface AtomicComponent extends Component {
      *
      * @throws TargetInitializationException
      */
+    @Deprecated
     void init(Object instance) throws TargetInitializationException;
 
     /**
@@ -75,6 +76,7 @@ public interface AtomicComponent extends Component {
      *
      * @throws TargetDestructionException
      */
+    @Deprecated
     void destroy(Object instance) throws TargetDestructionException;
 
     /**
@@ -119,6 +121,4 @@ public interface AtomicComponent extends Component {
      * @throws TargetResolutionException
      */
     public Object getAssociatedTargetInstance() throws TargetResolutionException;
-
-
 }
