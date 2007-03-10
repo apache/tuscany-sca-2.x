@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 /**
  * @version $Rev$ $Date$
  */
-public class InstanceWrapperBaseTestClass extends TestCase {
+public class InstanceWrapperBaseTestCase extends TestCase {
     private static final Object INSTANCE = new Object();
     private InstanceWrapperBase<Object> wrapper;
 
