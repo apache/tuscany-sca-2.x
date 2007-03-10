@@ -37,6 +37,8 @@ import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 
 /**
@@ -92,9 +94,9 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
 
             JavaPhysicalComponentDefinition jpcd = (JavaPhysicalComponentDefinition)pcd;
 
-            Set<JavaPhysicalReferenceDefinition> refs = jpcd.getReferences();
+            Set<PhysicalReferenceDefinition> refs = jpcd.getReferences();
             assertEquals(1, refs.size());
-            JavaPhysicalReferenceDefinition ref = refs.iterator().next();
+            JavaPhysicalReferenceDefinition ref = (JavaPhysicalReferenceDefinition) refs.iterator().next();
             if ("cmp1".equals(componentId)) {
                 assertEquals("rf1", ref.getName());
                 Set<PhysicalOperationDefinition> pods = ref.getOperations();
@@ -109,9 +111,9 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
                 assertEquals("op1", pod.getName());
             }
 
-            Set<JavaPhysicalServiceDefinition> svs = jpcd.getServices();
+            Set<PhysicalServiceDefinition> svs = jpcd.getServices();
             assertEquals(1, svs.size());
-            JavaPhysicalServiceDefinition sv = svs.iterator().next();
+            JavaPhysicalServiceDefinition sv = (JavaPhysicalServiceDefinition)svs.iterator().next();
             if ("cmp1".equals(componentId)) {
                 assertEquals("sv1", sv.getName());
                 Set<PhysicalOperationDefinition> pods = sv.getOperations();

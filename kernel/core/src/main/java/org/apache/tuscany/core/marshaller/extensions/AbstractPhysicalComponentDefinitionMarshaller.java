@@ -30,6 +30,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
 
 /**
  * Abstract super class for all PCD marshallers.
@@ -37,7 +39,7 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  * @version $Revision$ $Date: 2007-03-03 16:41:22 +0000 (Sat, 03 Mar
  *          2007) $
  */
-public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends PhysicalComponentDefinition<?, ?>>
+public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends PhysicalComponentDefinition>
     extends AbstractExtensibleMarshallerExtension<PCD> {
 
     // Component id attribute
@@ -69,9 +71,11 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
                     case START_ELEMENT:
                         String name = reader.getName().getLocalPart();
                         if (REFERENCE.equals(name)) {
-                            handleReference(componentDefinition, reader);
+                            PhysicalReferenceDefinition reference = (PhysicalReferenceDefinition)registry.unmarshall(reader);
+                            componentDefinition.addReference(reference);
                         } else if (SERVICE.equals(name)) {
-                            handleService(componentDefinition, reader);
+                            PhysicalServiceDefinition service = (PhysicalServiceDefinition)registry.unmarshall(reader);
+                            componentDefinition.addService(service);
                         } else {
                             handleExtension(componentDefinition, reader);
                         }
@@ -90,21 +94,5 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
         }
 
     }
-
-    /**
-     * Handles a reference.
-     * 
-     * @param componentDefinition Component definition.
-     * @param reader XML stream.
-     */
-    protected abstract void handleReference(PCD componentDefinition, XMLStreamReader reader) throws MarshalException;
-
-    /**
-     * Handles a reference.
-     * 
-     * @param componentDefinition Component definition.
-     * @param reader XML stream.
-     */
-    protected abstract void handleService(PCD componentDefinition, XMLStreamReader reader) throws MarshalException;
 
 }
