@@ -29,8 +29,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -43,6 +41,12 @@ import org.apache.tuscany.spi.model.Scope;
 public class JavaPhysicalComponentDefinitionMarshaller extends
     AbstractPhysicalComponentDefinitionMarshaller<JavaPhysicalComponentDefinition> {
 
+    // Core marshaller namespace
+    public static final String JAVA_NS = "http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT";
+    
+    // Core marshaller prefix
+    public static final String JAVA_PREFIX = "java";
+    
     // Instance factory
     private static final String INSTANCE_FACTORY = "instanceFactory";
 
@@ -54,7 +58,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
     // QName for the root element
     private static final QName QNAME =
-        new QName("http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT", "component");
+        new QName(JAVA_NS, "component", JAVA_PREFIX);
 
     /**
      * Gets the qualified name of the XML fragment for the marshalled model
@@ -120,30 +124,6 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
     }
 
     /**
-     * Handles a reference.
-     * 
-     * @param componentDefinition Component definition.
-     * @param reader XML stream.
-     */
-    protected void handleReference(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
-        throws MarshalException {
-        JavaPhysicalReferenceDefinition reference = (JavaPhysicalReferenceDefinition)registry.unmarshall(reader);
-        componentDefinition.addReference(reference);
-    }
-
-    /**
-     * Handles a reference.
-     * 
-     * @param componentDefinition Component definition.
-     * @param reader XML stream.
-     */
-    protected void handleService(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
-        throws MarshalException {
-        JavaPhysicalServiceDefinition service = (JavaPhysicalServiceDefinition)registry.unmarshall(reader);
-        componentDefinition.addService(service);
-    }
-
-    /**
      * Handles extensions for marshalling Java physical component definitions
      * including the marshalling of base64 encoded instance factory byte code.
      * 
@@ -151,7 +131,24 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
      * @param reader Writer to which marshalled data is written.
      */
     @Override
-    protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer) {
+    protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer)
+        throws MarshalException {
+        try {
+            
+            writer.writeStartElement(QNAME.getPrefix(), INSTANCE_FACTORY, QNAME.getNamespaceURI());
+            writer.writeCharacters(new String(Base64.encodeBase64(componentDefinition.getInstanceFactoryByteCode())));
+            writer.writeEndElement();
+            writer.writeStartElement(QNAME.getPrefix(), SCOPE, QNAME.getNamespaceURI());
+            writer.writeCharacters(componentDefinition.getScope().toString());
+            writer.writeEndElement();
+            writer.writeStartElement(QNAME.getPrefix(), CLASSLOADER_ID, QNAME.getNamespaceURI());
+            writer.writeCharacters(componentDefinition.getClassLoaderId().toASCIIString());
+            writer.writeEndElement();
+            
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
+        
     }
 
 }

@@ -24,6 +24,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -55,7 +56,29 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
      * Marshalls a physical change set to the xml writer.
      */
     public final void marshal(PCD modelObject, XMLStreamWriter writer) throws MarshalException {
-        throw new UnsupportedOperationException();
+
+        try {
+            
+            QName qname = getModelObjectQName();
+            writer.writeStartElement(qname.getPrefix(), qname.getLocalPart(), qname.getNamespaceURI());
+            writer.writeAttribute(COMPONENT_ID, modelObject.getComponentId().toASCIIString());
+            writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
+            
+            for(PhysicalReferenceDefinition prd : modelObject.getReferences()) {
+                registry.marshall(prd, writer);
+            }
+            for(PhysicalServiceDefinition psd : modelObject.getServices()) {
+                registry.marshall(psd, writer);
+            }
+            
+            handleExtension(modelObject, writer);
+            
+            writer.writeEndElement();
+            
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
+        
     }
 
     /**

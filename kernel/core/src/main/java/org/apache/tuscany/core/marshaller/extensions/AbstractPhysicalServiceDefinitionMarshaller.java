@@ -21,6 +21,7 @@ package org.apache.tuscany.core.marshaller.extensions;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -48,7 +49,25 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
      * Marshalls a physical java reference definition to the xml writer.
      */
     public void marshal(PSD modelObject, XMLStreamWriter writer) throws MarshalException {
-        throw new UnsupportedOperationException();
+
+        try {
+            
+            QName qname = getModelObjectQName();
+            writer.writeStartElement(qname.getPrefix(), qname.getLocalPart(), qname.getNamespaceURI());
+            writer.writeAttribute(NAME, modelObject.getName());
+            
+            for(PhysicalOperationDefinition pod : modelObject.getOperations()) {
+                registry.marshall(pod, writer);
+            }
+            
+            handleExtension(modelObject, writer);
+            
+            writer.writeEndElement();
+            
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
+        
     }
 
     /**
