@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.core.marshaller;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -33,8 +37,15 @@ import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
  */
 public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalOperationDefinition> {
 
-    // Source name attribute
+    // Operation name attribute
     private static final String NAME = "name";
+
+    // Return
+    private static final String RETURN_TYPE = "returnType";
+
+    // argument
+    private static final String PARAMETER = "parameter";
+
 
     // QName for the root element
     private static final QName QNAME =
@@ -52,10 +63,31 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
      */
     public PhysicalOperationDefinition unmarshal(XMLStreamReader reader) throws MarshalException {
 
-        PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
-        operation.setName(reader.getAttributeValue(null, NAME));
-        operation.setCallback(Boolean.valueOf(reader.getAttributeValue(null, NAME)));
-        return operation;
+        try {
+            PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
+            operation.setName(reader.getAttributeValue(null, NAME));
+            operation.setCallback(Boolean.valueOf(reader.getAttributeValue(null, NAME)));
+            while (true) {
+                switch (reader.next()) {
+                    case START_ELEMENT:
+                        String name = reader.getName().getLocalPart();
+                        String textContent = reader.getElementText();
+                        if (PARAMETER.equals(name)) {
+                            operation.addParameter(textContent);
+                        } else if (RETURN_TYPE.equals(name)) {
+                            operation.setReturnType(textContent);
+                        }
+                        break;
+                    case END_ELEMENT:
+                        if (getModelObjectQName().equals(reader.getName())) {
+                            return operation;
+                        }
+
+                }
+            }
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
 
     }
 
