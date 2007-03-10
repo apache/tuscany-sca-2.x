@@ -100,20 +100,25 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
      * Resolves the target service instance or returns a cached one
      */
     protected Object getInstance(short sequence) throws TargetException {
-        if (!cacheable) {
-            if (sequence == START || sequence == NONE) {
-                return component.getTargetInstance();
-            } else if (sequence == CONTINUE || sequence == END) {
-                return component.getAssociatedTargetInstance();
+        switch (sequence) {
+        case NONE:
+            if (cacheable) {
+                if (target == null) {
+                    target = component.getTargetInstance();
+                }
+                return target;
             } else {
-                throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
+                return component.getTargetInstance();
             }
-        } else {
-            assert sequence == NONE;  // conversations are not cacheable
-            if (target == null) {
-                target = component.getTargetInstance();
-            }
-            return target;
+        case START:
+            assert !cacheable;
+            return component.getTargetInstance();
+        case CONTINUE:
+        case END:
+            assert !cacheable;
+            return component.getAssociatedTargetInstance();
+        default:
+            throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
         }
     }
 
