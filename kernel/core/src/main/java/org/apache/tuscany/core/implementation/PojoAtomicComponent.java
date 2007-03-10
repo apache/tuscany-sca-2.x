@@ -37,6 +37,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.Wire;
@@ -44,6 +45,7 @@ import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
+import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory;
 import org.apache.tuscany.core.injection.ConversationIDObjectFactory;
@@ -67,6 +69,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
     protected PojoObjectFactory<?> instanceFactory;
+    protected InstanceFactory<?> instanceFactory2;
     protected List<String> constructorParamNames;
     protected Map<String, Member> referenceSites;
     protected Map<String, Member> resourceSites;
@@ -92,6 +95,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
         instanceFactory = configuration.getInstanceFactory();
+        instanceFactory2 = configuration.getInstanceFactory2();
         constructorParamNames = configuration.getConstructorParamNames();
         constructorParamTypes = configuration.getConstructorParamTypes();
         injectors = new ArrayList<Injector<Object>>();
@@ -154,6 +158,10 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             injector.inject(instance);
         }
         return instance;
+    }
+
+    public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
+        return instanceFactory2.newInstance();
     }
 
     public List<Wire> getWires(String name) {

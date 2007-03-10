@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.extension.AbstractComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
@@ -106,6 +107,10 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     }
 
     public void removeInstance() {
+        throw new UnsupportedOperationException();
+    }
+
+    public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
         throw new UnsupportedOperationException();
     }
 

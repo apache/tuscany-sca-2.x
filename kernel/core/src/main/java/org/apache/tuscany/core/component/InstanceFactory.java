@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.component;
 
-import org.apache.tuscany.core.component.scope.InstanceWrapper;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 /**
  * Interface for a factory that returns an injected component instance.

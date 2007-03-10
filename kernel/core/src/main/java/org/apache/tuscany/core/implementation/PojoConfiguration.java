@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.component.InstanceFactory;
 
 /**
  * Encapsulates confuration for a Java-based atomic component
@@ -39,7 +40,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  */
 public class PojoConfiguration {
     private URI name;
-    //private ScopeContainer scopeContainer;
+    private InstanceFactory<?> instanceFactory2;
     private PojoObjectFactory<?> instanceFactory;
     private List<String> constructorParamNames = new ArrayList<String>();
     private List<Class<?>> constructorParamTypes = new ArrayList<Class<?>>();
@@ -65,12 +66,22 @@ public class PojoConfiguration {
         this.name = name;
     }
 
+    @Deprecated
     public PojoObjectFactory<?> getInstanceFactory() {
         return instanceFactory;
     }
 
+    @Deprecated
     public void setInstanceFactory(PojoObjectFactory<?> objectFactory) {
         this.instanceFactory = objectFactory;
+    }
+
+    public InstanceFactory<?> getInstanceFactory2() {
+        return instanceFactory2;
+    }
+
+    public void setInstanceFactory2(InstanceFactory<?> instanceFactory2) {
+        this.instanceFactory2 = instanceFactory2;
     }
 
     public List<String> getConstructorParamNames() {

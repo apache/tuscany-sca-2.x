@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.core.component.InstanceFactory;
-import org.apache.tuscany.core.component.scope.InstanceWrapper;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 /**
  * @version $Rev$ $Date$
