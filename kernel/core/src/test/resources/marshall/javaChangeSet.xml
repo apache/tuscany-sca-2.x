@@ -63,12 +63,20 @@
 	
 	<!-- Wire 1 -->
 	<core:wire sourceUri="cmp1#rf1" targetUri="cmp2#sv2">
-		<core:operation name="op2"/>
+		<core:operation name="op2">
+			<core:parameter>java.lang.String</core:parameter>
+			<core:parameter>java.lang.Long</core:parameter>
+			<core:returnType>java.lang.Object</core:returnType>
+		</core:operation>
 	</core:wire>
 	
 	<!-- Wire 2 -->
 	<core:wire sourceUri="cmp2#rf2" targetUri="cmp1#sv1">
-		<core:operation name="op1"/>
+		<core:operation name="op1">
+			<core:parameter>java.lang.String</core:parameter>
+			<core:parameter>java.lang.Long</core:parameter>
+			<core:returnType>java.lang.Object</core:returnType>
+		</core:operation>
 	</core:wire>
 	
 </core:changeSet>

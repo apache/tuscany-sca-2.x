@@ -40,8 +40,14 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
  */
 public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<PhysicalChangeSet> {
 
+    // Core marshaller namespace
+    public static final String CORE_NS = "http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT";
+    
+    // Core marshaller prefix
+    public static final String CORE_PREFIX = "core";
+    
     // QName for the root element
-    public static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "changeSet");
+    public static final QName QNAME = new QName(CORE_NS, "changeSet", CORE_PREFIX);
 
     // Local part for wire
     private static final String WIRE = "wire";
@@ -53,7 +59,23 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
      * Marshalls a physical change set to the xml writer.
      */
     public void marshal(PhysicalChangeSet modelObject, XMLStreamWriter writer) throws MarshalException {
-        throw new UnsupportedOperationException();
+        
+        try {
+            writer.writeStartDocument();
+            writer.writeStartElement(QNAME.getPrefix(), QNAME.getLocalPart(), QNAME.getNamespaceURI());
+            writer.writeNamespace(CORE_PREFIX, CORE_NS);
+            for(PhysicalComponentDefinition pcd : modelObject.getComponentDefinitions()) {
+                registry.marshall(pcd, writer);
+            }
+            for(PhysicalWireDefinition pcd : modelObject.getWireDefinitions()) {
+                registry.marshall(pcd, writer);
+            }
+            writer.writeEndElement();
+            writer.writeEndDocument();
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
+        
     }
 
     /**

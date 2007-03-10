@@ -29,6 +29,9 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
+import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.CORE_NS;
+import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.CORE_PREFIX;
+
 /**
  * Marshaller for physical operation definition.
  * 
@@ -40,6 +43,9 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
     // Operation name attribute
     private static final String NAME = "name";
 
+    // Callback attribute
+    private static final String CALLBACK = "callback";
+    
     // Return
     private static final String RETURN_TYPE = "returnType";
 
@@ -48,14 +54,30 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
 
 
     // QName for the root element
-    private static final QName QNAME =
-        new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "operation");
+    private static final QName QNAME = new QName(CORE_NS, "operation", CORE_PREFIX);
 
     /**
      * Marshalls a physical operation to the xml writer.
      */
     public void marshal(PhysicalOperationDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
-        throw new UnsupportedOperationException();
+        
+        try {
+            writer.writeStartElement(QNAME.getPrefix(), QNAME.getLocalPart(), QNAME.getNamespaceURI());
+            writer.writeAttribute(NAME, modelObject.getName());
+            writer.writeAttribute(CALLBACK, String.valueOf(modelObject.isCallback()));
+            writer.writeStartElement(QNAME.getPrefix(), RETURN_TYPE, QNAME.getNamespaceURI());
+            writer.writeCharacters(modelObject.getReturnType());
+            writer.writeEndElement();
+            for(String parameter : modelObject.getParameters()) {
+                writer.writeStartElement(QNAME.getPrefix(), PARAMETER, QNAME.getNamespaceURI());
+                writer.writeCharacters(parameter);
+                writer.writeEndElement();
+            }
+            writer.writeEndElement();
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
+        
     }
 
     /**
@@ -66,7 +88,7 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
         try {
             PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
             operation.setName(reader.getAttributeValue(null, NAME));
-            operation.setCallback(Boolean.valueOf(reader.getAttributeValue(null, NAME)));
+            operation.setCallback(Boolean.valueOf(reader.getAttributeValue(null, CALLBACK)));
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:

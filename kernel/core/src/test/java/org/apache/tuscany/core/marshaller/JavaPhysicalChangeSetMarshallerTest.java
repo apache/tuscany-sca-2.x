@@ -19,11 +19,16 @@
 package org.apache.tuscany.core.marshaller;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
@@ -73,6 +78,31 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         }
 
     }
+    
+    public void testMarshall() throws Exception {
+
+        ClassLoader cl = getClass().getClassLoader();
+        InputStream inputStream = cl.getResourceAsStream("marshall/javaChangeSet.xml");
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
+
+        while(reader.next() != START_ELEMENT) {            
+        }
+        PhysicalChangeSet changeSet = (PhysicalChangeSet)registry.unmarshall(reader);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out);
+        registry.marshall(changeSet, writer);
+        
+        byte[] xml = out.toByteArray();
+        inputStream = new ByteArrayInputStream(xml);
+        reader = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
+
+        while(reader.next() != START_ELEMENT) {            
+        }
+        changeSet = (PhysicalChangeSet)registry.unmarshall(reader);
+        verifyChangeSet(changeSet);
+        
+    }
 
     public void testUnmarshall() throws Exception {
 
@@ -83,6 +113,13 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         while(reader.next() != START_ELEMENT) {            
         }
         PhysicalChangeSet changeSet = (PhysicalChangeSet)registry.unmarshall(reader);
+        verifyChangeSet(changeSet);
+        
+
+    }
+    
+    private void verifyChangeSet(PhysicalChangeSet changeSet) {
+        
         assertNotNull(changeSet);
         Set<? extends PhysicalComponentDefinition> pcds = changeSet.getComponentDefinitions();
         assertEquals(2, pcds.size());
@@ -161,7 +198,6 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
                 assertEquals("op1", pod.getName());
             }
         }
-
     }
 
 }

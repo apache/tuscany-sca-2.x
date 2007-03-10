@@ -34,6 +34,9 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 
+import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.CORE_NS;
+import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.CORE_PREFIX;
+
 /**
  * Marshaller for physical wire definition.
  * 
@@ -49,13 +52,25 @@ public class PhysicalWireDefinitionMarshaller extends AbstractMarshallerExtensio
     private static final String TARGET_URI = "targetUri";
 
     // QName for the root element
-    private static final QName QNAME = new QName("http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT", "wire");
+    private static final QName QNAME = new QName(CORE_NS, "wire", CORE_PREFIX);
 
     /**
      * Marshalls a physical wire to the xml writer.
      */
     public void marshal(PhysicalWireDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
-        throw new UnsupportedOperationException();
+        
+        try {
+            writer.writeStartElement(QNAME.getPrefix(), QNAME.getLocalPart(), QNAME.getNamespaceURI());
+            writer.writeAttribute(SOURCE_URI, modelObject.getSourceUri().toASCIIString());
+            writer.writeAttribute(TARGET_URI, modelObject.getTargetUri().toASCIIString());
+            for(PhysicalOperationDefinition pod : modelObject.getOperations()) {
+                registry.marshall(pod, writer);
+            }
+            writer.writeEndElement();
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
+        
     }
 
     /**
