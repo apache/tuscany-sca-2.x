@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.idl.java;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,20 +38,32 @@ public final class JavaIDLUtils {
     }
 
     /**
-     * Searches an array of methods for a match against the given operation
+     * Return the method on the implementation class that matches the operation.
      *
+     * @param implClass the implementation class or interface
      * @param operation the operation to match
-     * @param methods   the methods to match against
-     * @return a matching method or null
-     * @deprecated
+     * @return the method described by the operation
+     * @throws NoSuchMethodException if no such method exists
      */
-    public static Method findMethod(Operation<?> operation, Method[] methods) {
-        for (Method method : methods) {
-            if (match(operation, method)) {
-                return method;
+    public static <T> Method findMethod(Class<?> implClass, Operation<T> operation) throws NoSuchMethodException {
+        String name = operation.getName();
+        Class<?>[] paramTypes = getPhysicalTypes(operation);
+        return implClass.getMethod(name, paramTypes);
+    }
+
+    private static <T> Class<?>[] getPhysicalTypes(Operation<T> operation) {
+        DataType<List<DataType<T>>> inputType = operation.getInputType();
+        List<DataType<T>> types = inputType.getLogical();
+        Class<?>[] javaTypes = new Class<?>[types.size()];
+        for (int i = 0; i < javaTypes.length ; i++) {
+            Type physical = types.get(i).getPhysical();
+            if (physical instanceof Class<?>) {
+                javaTypes[i] = (Class<?>) physical;
+            } else {
+                throw new UnsupportedOperationException();
             }
         }
-        return null;
+        return javaTypes;
     }
 
     /**

@@ -58,29 +58,6 @@ public class WireUtilsTestCase extends TestCase {
         }
     }
 
-    public void testCreateMapping() throws Exception {
-        Wire wire = new WireImpl();
-        Operation<Type> op = new Operation<Type>("hello", null, null, null);
-        InvocationChain chain = new InvocationChainImpl(op);
-        wire.addInvocationChain(op, chain);
-        Map<Method, InvocationChain> chains = WireUtils.createInboundMapping(wire, new Method[]{m});
-        assertEquals(1, chains.size());
-        assertNotNull(chains.get(m));
-    }
-
-    public void testCreateMappingNoOperation() throws Exception {
-        Wire wire = new WireImpl();
-        Operation<Type> op = new Operation<Type>("goodbye", null, null, null);
-        InvocationChain chain = new InvocationChainImpl(op);
-        wire.addInvocationChain(op, chain);
-        try {
-            WireUtils.createInboundMapping(wire, new Method[]{m});
-            fail();
-        } catch (NoMethodForOperationException e) {
-            // expected
-        }
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
         m = Foo.class.getMethod("hello");
