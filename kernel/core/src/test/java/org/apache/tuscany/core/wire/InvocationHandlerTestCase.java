@@ -113,8 +113,7 @@ public class InvocationHandlerTestCase extends TestCase {
         chain.addInterceptor(targetInterceptor);
         chain.addInterceptor(new InvokerInterceptor());
 
-        Method method = JavaIDLUtils.findMethod(operation, SimpleTarget.class.getMethods());
-        MockStaticInvoker invoker = new MockStaticInvoker(method, new SimpleTargetImpl());
+        MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         chain.setTargetInvoker(invoker);
         return chain;
     }

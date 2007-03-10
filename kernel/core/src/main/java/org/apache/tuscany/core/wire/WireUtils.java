@@ -39,29 +39,6 @@ public final class WireUtils {
     private WireUtils() {
     }
 
-    /**
-     * Maps invocation chains on a wire to corresponding methods
-     *
-     * @param wire    the wire containing the invocation chains to map
-     * @param methods the methods to map to
-     * @return a collection containing the method to invocation chain mapping
-     * @throws NoMethodForOperationException
-     */
-    public static Map<Method, InvocationChain> createInboundMapping(Wire wire, Method[] methods)
-        throws NoMethodForOperationException {
-        Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>();
-        for (Map.Entry<Operation<?>, InvocationChain> entry : wire.getInvocationChains().entrySet()) {
-            Operation<?> operation = entry.getKey();
-            InvocationChain chain = entry.getValue();
-            Method method = findMethod(operation, methods);
-            if (method == null) {
-                throw new NoMethodForOperationException(operation.getName());
-            }
-            chains.put(method, chain);
-        }
-        return chains;
-    }
-
 
     /**
      * Maps methods on an interface to operations on a wire
@@ -75,14 +52,14 @@ public final class WireUtils {
         throws NoMethodForOperationException {
         Map<Operation<?>, InvocationChain> invocationChains = wire.getInvocationChains();
         Map<Method, ChainHolder> chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        Method[] methods = interfaze.getMethods();
         for (Map.Entry<Operation<?>, InvocationChain> entry : invocationChains.entrySet()) {
             Operation operation = entry.getKey();
-            Method method = findMethod(operation, methods);
-            if (method == null) {
+            try {
+                Method method = findMethod(interfaze, operation);
+                chains.put(method, new ChainHolder(entry.getValue()));
+            } catch (NoSuchMethodException e) {
                 throw new NoMethodForOperationException(operation.getName());
             }
-            chains.put(method, new ChainHolder(entry.getValue()));
         }
         return chains;
     }
