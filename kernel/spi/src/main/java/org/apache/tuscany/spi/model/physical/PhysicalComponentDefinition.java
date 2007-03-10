@@ -30,18 +30,16 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDefinition,
-    PRD extends PhysicalReferenceDefinition>
-    extends ModelObject {
+public abstract class PhysicalComponentDefinition extends ModelObject {
 
     // Component Id.
     private URI componentId;
 
     // Services exposed by this component
-    private Set<PSD> services = new HashSet<PSD>();
+    private Set<PhysicalServiceDefinition> services = new HashSet<PhysicalServiceDefinition>();
 
     // References exposed by this component
-    private Set<PRD> references = new HashSet<PRD>();
+    private Set<PhysicalReferenceDefinition> references = new HashSet<PhysicalReferenceDefinition>();
 
     /**
      * Gets the component id.
@@ -66,7 +64,7 @@ public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDef
      *
      * @return Service definitions for this operation.
      */
-    public Set<PSD> getServices() {
+    public Set<PhysicalServiceDefinition> getServices() {
         return Collections.unmodifiableSet(services);
     }
 
@@ -75,7 +73,7 @@ public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDef
      *
      * @param service Service definition to be added to the component.
      */
-    public void addService(PSD service) {
+    public void addService(PhysicalServiceDefinition service) {
         services.add(service);
     }
 
@@ -84,7 +82,7 @@ public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDef
      *
      * @return Reference definitions for this operation.
      */
-    public Set<PRD> getReferences() {
+    public Set<PhysicalReferenceDefinition> getReferences() {
         return Collections.unmodifiableSet(references);
     }
 
@@ -93,7 +91,7 @@ public abstract class PhysicalComponentDefinition<PSD extends PhysicalServiceDef
      *
      * @param reference Reference definition to be added to the component.
      */
-    public void addReference(PRD reference) {
+    public void addReference(PhysicalReferenceDefinition reference) {
         references.add(reference);
     }
 
