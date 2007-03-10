@@ -19,12 +19,14 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
@@ -46,20 +48,36 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation)
         throws TargetInvokerCreationException {
-        Method[] methods;
-        Class callbackClass = null;
-        if (operation.isCallback()) {
-            callbackClass = operation.getServiceContract().getCallbackClass();
-            methods = callbackClass.getMethods();
 
-        } else {
-            methods = implementationClass.getMethods();
-        }
-        Method method = findMethod(operation, methods);
-        if (method == null) {
+        String name = operation.getName();
+        Class<?>[] paramTypes = getPhysicalTypes(operation);
+        Method method;
+        try {
+            if (!operation.isCallback()) {
+                method = implementationClass.getMethod(name, paramTypes);
+            } else {
+                Class<?> callbackClass = operation.getServiceContract().getCallbackClass();
+                method = callbackClass.getMethod(name, paramTypes);
+            }
+        } catch (NoSuchMethodException e) {
             throw new TargetMethodNotFoundException(operation);
         }
         return new JavaTargetInvoker(method, this, workContext);
+    }
+
+    private <T> Class<?>[] getPhysicalTypes(Operation<T> operation) {
+        DataType<List<DataType<T>>> inputType = operation.getInputType();
+        List<DataType<T>> types = inputType.getLogical();
+        Class<?>[] javaTypes = new Class<?>[types.size()];
+        for (int i = 0; i < javaTypes.length ; i++) {
+            Type physical = types.get(i).getPhysical();
+            if (physical instanceof Class<?>) {
+                javaTypes[i] = (Class<?>) physical;
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+        return javaTypes;
     }
 
     public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
