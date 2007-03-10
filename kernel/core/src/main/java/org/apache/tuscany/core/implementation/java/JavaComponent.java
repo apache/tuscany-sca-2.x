@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -246,6 +247,10 @@ public class JavaComponent<T> implements AtomicComponent {
 
     public void removeInstance() throws ComponentException {
 
+    }
+
+    public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
+        throw new UnsupportedOperationException();
     }
 
     public Object getTargetInstance() throws TargetResolutionException {

@@ -23,7 +23,7 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.core.component.InstanceFactory;
-import org.apache.tuscany.core.component.scope.InstanceWrapper;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;

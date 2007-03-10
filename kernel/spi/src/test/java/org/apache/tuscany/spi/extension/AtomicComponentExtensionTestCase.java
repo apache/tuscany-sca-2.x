@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
@@ -103,6 +104,10 @@ public class AtomicComponentExtensionTestCase extends TestCase {
         }
 
         public Object getAssociatedTargetInstance() throws TargetResolutionException {
+            throw new AssertionFailedError();
+        }
+
+        public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
             throw new AssertionFailedError();
         }
     }

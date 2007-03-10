@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation;
 import java.net.URI;
 
 import org.apache.tuscany.spi.extension.AbstractComponentExtension;
-import org.apache.tuscany.core.component.scope.InstanceWrapper;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.core.component.InstanceFactory;
 
 /**

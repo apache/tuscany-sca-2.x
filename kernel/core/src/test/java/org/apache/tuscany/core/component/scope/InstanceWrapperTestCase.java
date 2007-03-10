@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

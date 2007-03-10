@@ -84,6 +84,7 @@ public interface AtomicComponent extends Component {
      * @return the instance
      * @throws ObjectCreationException
      */
+    @Deprecated
     Object createInstance() throws ObjectCreationException;
 
     /**
@@ -91,7 +92,17 @@ public interface AtomicComponent extends Component {
      *
      * @throws ComponentException
      */
+    @Deprecated
     void removeInstance() throws ComponentException;
+
+    /**
+     * Create a new implementation instance, fully injected with all property and reference values.
+     * The instance's lifecycle callbacks must not have been called.
+     *
+     * @return a wrapper for a new implementation instance
+     * @throws ObjectCreationException if there was a problem instantiating the implementation
+     */
+    InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException;
 
     /**
      * Returns the target instance associated with the component. A target instance is the actual object a request is

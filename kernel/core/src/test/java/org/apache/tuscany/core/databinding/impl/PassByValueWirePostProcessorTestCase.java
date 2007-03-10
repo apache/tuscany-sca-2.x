@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
@@ -161,6 +162,10 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         }
 
         public Object createInstance() throws ObjectCreationException {
+            return null;
+        }
+
+        public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
             return null;
         }
 
