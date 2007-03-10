@@ -33,16 +33,6 @@ public class Operations extends ModelObject {
 
     // Collection of operations
     private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
-    private Set<PhysicalOperationDefinition> callbackOperations = new HashSet<PhysicalOperationDefinition>();
-
-    /**
-     * Returns a read-only view of the available operations.
-     *
-     * @return Collection of operations.
-     */
-    public Set<PhysicalOperationDefinition> getOperations() {
-        return Collections.unmodifiableSet(operations);
-    }
 
     /**
      * Adds an operation definition.
@@ -55,21 +45,43 @@ public class Operations extends ModelObject {
 
 
     /**
+     * Returns a read-only view of the available operations.
+     *
+     * @return Collection of operations.
+     */
+    public Set<PhysicalOperationDefinition> getOperations() {
+        return Collections.unmodifiableSet(operations);
+    }
+
+
+    /**
+     * Returns a read-only view of the available non callback operations.
+     *
+     * @return Collection of non-callback operations.
+     */
+    public Set<PhysicalOperationDefinition> getNonCallbackOperations() {
+        Set<PhysicalOperationDefinition> nonCallbackOperations = new HashSet<PhysicalOperationDefinition>();
+        for(PhysicalOperationDefinition operation : operations) {
+            if(!operation.isCallback()) {
+                nonCallbackOperations.add(operation);
+            }
+        }
+        return nonCallbackOperations;
+    }
+
+    /**
      * Returns a read-only view of the available callback operations.
      *
      * @return Collection of callback operations.
      */
     public Set<PhysicalOperationDefinition> getCallbackOperations() {
+        Set<PhysicalOperationDefinition> callbackOperations = new HashSet<PhysicalOperationDefinition>();
+        for(PhysicalOperationDefinition operation : operations) {
+            if(operation.isCallback()) {
+                callbackOperations.add(operation);
+            }
+        }
         return callbackOperations;
-    }
-
-    /**
-     * Adds an callback operation definition.
-     *
-     * @param operation Operation to be added.
-     */
-    public void addCallbackOperation(PhysicalOperationDefinition operation) {
-        callbackOperations.add(operation);
     }
 
 }
