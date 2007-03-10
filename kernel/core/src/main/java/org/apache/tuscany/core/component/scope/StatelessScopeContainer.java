@@ -68,7 +68,7 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         if (!create) {
             return null;
         }
-        InstanceWrapper ctx = new InstanceWrapperImpl(component, component.createInstance());
+        InstanceWrapper ctx = component.createInstanceWrapper();
         ctx.start();
         return ctx;
     }

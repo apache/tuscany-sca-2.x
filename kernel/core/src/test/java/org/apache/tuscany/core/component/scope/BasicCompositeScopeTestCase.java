@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -39,8 +39,8 @@ import org.apache.tuscany.core.mock.component.CompositeScopeInitDestroyComponent
  */
 public class BasicCompositeScopeTestCase extends TestCase {
 
-    private EventInvoker<Object> initInvoker;
-    private EventInvoker<Object> destroyInvoker;
+    private EventInvoker initInvoker;
+    private EventInvoker destroyInvoker;
     private PojoObjectFactory<?> factory;
 
     public void testLifecycleManagement() throws Exception {
@@ -106,10 +106,10 @@ public class BasicCompositeScopeTestCase extends TestCase {
         super.setUp();
         factory = new PojoObjectFactory<CompositeScopeInitDestroyComponent>(
             CompositeScopeInitDestroyComponent.class.getConstructor((Class[]) null));
-        initInvoker = new MethodEventInvoker<Object>(CompositeScopeInitDestroyComponent.class.getMethod(
-            "init", (Class[]) null));
-        destroyInvoker = new MethodEventInvoker<Object>(CompositeScopeInitDestroyComponent.class.getMethod(
-            "destroy", (Class[]) null));
+        initInvoker = new MethodEventInvoker<CompositeScopeInitDestroyComponent>(
+            CompositeScopeInitDestroyComponent.class.getMethod("init"));
+        destroyInvoker = new MethodEventInvoker<CompositeScopeInitDestroyComponent>(
+            CompositeScopeInitDestroyComponent.class.getMethod("destroy"));
     }
 
     protected void tearDown() throws Exception {
@@ -121,11 +121,7 @@ public class BasicCompositeScopeTestCase extends TestCase {
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
-        try {
-            configuration.setName(new URI("foo"));
-        } catch (URISyntaxException e) {
-            // will not happen
-        }
+        configuration.setName(URI.create("foo"));
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scopeContainer);
         component.start();

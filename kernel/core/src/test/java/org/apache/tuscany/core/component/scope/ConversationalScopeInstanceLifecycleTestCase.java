@@ -20,6 +20,7 @@ package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
@@ -46,9 +47,15 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         scope.start();
 
         Foo comp = new Foo();
+        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
+        wrapper.start();
+        EasyMock.expect(wrapper.isStarted()).andReturn(true);
+        EasyMock.expect(wrapper.getInstance()).andReturn(comp);
+        wrapper.stop();
+        EasyMock.replay(wrapper);
+
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.createInstance()).andReturn(comp);
-        component.init(EasyMock.eq(comp));
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.expect(component.getMaxAge()).andReturn(1L).anyTimes();
         component.addListener(EasyMock.isA(RuntimeEventListener.class));
         EasyMock.replay(component);

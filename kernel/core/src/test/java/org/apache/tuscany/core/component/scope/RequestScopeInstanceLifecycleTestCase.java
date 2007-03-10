@@ -21,6 +21,7 @@ package org.apache.tuscany.core.component.scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -28,6 +29,9 @@ import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.EventInvoker;
+
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
@@ -37,16 +41,23 @@ import org.easymock.IAnswer;
  * @version $Rev$ $Date$
  */
 public class RequestScopeInstanceLifecycleTestCase extends TestCase {
+    private EventInvoker<OrderedInitPojoImpl> initInvoker;
+    private EventInvoker<OrderedInitPojoImpl> destroyInvoker;
+    private RequestScopeContainer scope;
 
     public void testInitDestroy() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        RequestScopeContainer scope = new RequestScopeContainer(ctx, null);
         scope.start();
+
         Foo comp = new Foo();
+        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
+        wrapper.start();
+        EasyMock.expect(wrapper.isStarted()).andReturn(true);
+        EasyMock.expect(wrapper.getInstance()).andReturn(comp);
+        wrapper.stop();
+        EasyMock.replay(wrapper);
+
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.createInstance()).andReturn(comp);
-        component.init(EasyMock.eq(comp));
-        component.destroy(EasyMock.eq(comp));
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.replay(component);
         scope.register(component);
         scope.onEvent(new RequestStart(this));
@@ -54,13 +65,12 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         // expire
         scope.onEvent(new RequestEnd(this));
         scope.stop();
-        EasyMock.verify(component);
         scope.stop();
+        EasyMock.verify(component);
+        EasyMock.verify(wrapper);
     }
 
     public void testDestroyOrder() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        RequestScopeContainer scope = new RequestScopeContainer(ctx, null);
         scope.start();
 
         AtomicComponent oneComponent = createComponent();
@@ -94,28 +104,23 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         EasyMock.verify(threeComponent);
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        WorkContext ctx = new WorkContextImpl();
+        scope = new RequestScopeContainer(ctx, null);
+        initInvoker = new MethodEventInvoker<OrderedInitPojoImpl>(OrderedInitPojoImpl.class.getMethod("init"));
+        destroyInvoker = new MethodEventInvoker<OrderedInitPojoImpl>(OrderedInitPojoImpl.class.getMethod("destroy"));
+    }
+
     @SuppressWarnings("unchecked")
     private AtomicComponent createComponent() throws TargetException {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.createInstance()).andStubAnswer(new IAnswer() {
+        EasyMock.expect(component.createInstanceWrapper()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
-                return new OrderedInitPojoImpl();
-            }
-        });
-        component.init(EasyMock.isA(OrderedInitPojoImpl.class));
-        EasyMock.expectLastCall().andAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                OrderedInitPojoImpl pojo = (OrderedInitPojoImpl) EasyMock.getCurrentArguments()[0];
-                pojo.init();
-                return null;
-            }
-        });
-        component.destroy(EasyMock.isA(OrderedInitPojoImpl.class));
-        EasyMock.expectLastCall().andAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                OrderedInitPojoImpl pojo = (OrderedInitPojoImpl) EasyMock.getCurrentArguments()[0];
-                pojo.destroy();
-                return null;
+                return new ReflectiveInstanceWrapper<OrderedInitPojoImpl>(new OrderedInitPojoImpl(),
+                                                                          initInvoker,
+                                                                          destroyInvoker);
             }
         });
         EasyMock.replay(component);

@@ -129,7 +129,7 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
             return null;
         }
         if (ctx == EMPTY) {
-            ctx = new InstanceWrapperImpl(component, component.createInstance());
+            ctx = component.createInstanceWrapper();
             ctx.start();
             instanceWrappers.put(component, ctx);
             synchronized (destroyQueue) {
@@ -151,7 +151,7 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
             // the instance could have been created from a depth-first traversal
             InstanceWrapper ctx = instanceWrappers.get(component);
             if (ctx == EMPTY) {
-                ctx = new InstanceWrapperImpl(component, component.createInstance());
+                ctx = component.createInstanceWrapper();
                 ctx.start();
                 instanceWrappers.put(component, ctx);
                 destroyQueue.add(ctx);

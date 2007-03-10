@@ -24,6 +24,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.ComponentStart;
@@ -42,9 +43,10 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.replay(monitor);
         CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
         scope.start();
+
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getUri()).andReturn(URI.create("foo")).atLeastOnce();
-        EasyMock.expect(component.createInstance()).andThrow(new ObjectCreationException(""));
+        EasyMock.expect(component.createInstanceWrapper()).andThrow(new ObjectCreationException(""));
         EasyMock.expect(component.getInitLevel()).andReturn(1);
         EasyMock.replay(component);
         scope.register(component);
@@ -53,6 +55,13 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
     }
 
     public void testDestroyErrorMonitor() throws Exception {
+        Object comp = new Object();
+        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
+        wrapper.start();
+        wrapper.stop();
+        EasyMock.expectLastCall().andThrow(new TargetDestructionException("", ""));
+        EasyMock.replay(wrapper);
+
         ScopeContainerMonitor monitor;
         monitor = EasyMock.createMock(ScopeContainerMonitor.class);
         monitor.destructionError(EasyMock.isA(TargetDestructionException.class));
@@ -60,16 +69,15 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
         scope.start();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.createInstance()).andReturn(new Object());
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.expect(component.getInitLevel()).andReturn(1);
-        component.init(EasyMock.isA(Object.class));
-        component.destroy(EasyMock.isA(Object.class));
-        EasyMock.expectLastCall().andThrow(new TargetDestructionException("", ""));
         EasyMock.replay(component);
         scope.register(component);
         scope.onEvent(new ComponentStart(this, null));
         scope.onEvent(new ComponentStop(this, null));
         EasyMock.verify(monitor);
+        EasyMock.verify(component);
+        EasyMock.verify(wrapper);
     }
 
 

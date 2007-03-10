@@ -22,21 +22,23 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import org.easymock.classextension.EasyMock;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 
-import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.core.component.InstanceFactory;
+import org.apache.tuscany.core.component.scope.ReflectiveInstanceWrapper;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
+import org.apache.tuscany.core.integration.mock.MockFactory;
+import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
-
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.integration.mock.MockFactory;
-import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
-import org.easymock.classextension.EasyMock;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
  * Verifies conversational resources are cleaned up if the maximum age is exceeded
@@ -109,7 +111,7 @@ public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCa
         configuration.setName(new URI("target"));
         configuration.setMaxAge(50);
         Constructor<FooImpl> ctor = FooImpl.class.getConstructor();
-        configuration.setInstanceFactory(new ConversationMaxAgeExpireTestCase.MockPojoFactory(ctor));
+        configuration.setInstanceFactory(new MockPojoFactory(ctor));
         configuration.setImplementationClass(FooImpl.class);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(container);

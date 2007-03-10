@@ -89,7 +89,7 @@ public class RequestScopeContainer extends AbstractScopeContainer {
             return null;
         }
         if (ctx == null) {
-            ctx = new InstanceWrapperImpl(component, component.createInstance());
+            ctx = component.createInstanceWrapper();
             ctx.start();
             instanceContextMap.put(Thread.currentThread(), ctx);
             List<InstanceWrapper> destroyQueue = destroyQueues.get(Thread.currentThread());

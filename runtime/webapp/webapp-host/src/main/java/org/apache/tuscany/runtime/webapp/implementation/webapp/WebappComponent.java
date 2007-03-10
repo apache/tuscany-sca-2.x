@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
@@ -114,6 +115,10 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
     }
 
     public Object createInstance() throws ObjectCreationException {
+        throw new UnsupportedOperationException();
+    }
+
+    public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
         throw new UnsupportedOperationException();
     }
 

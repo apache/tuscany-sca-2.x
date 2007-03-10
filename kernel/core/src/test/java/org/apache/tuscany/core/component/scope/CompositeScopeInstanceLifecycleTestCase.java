@@ -21,12 +21,18 @@ package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.ComponentStart;
 import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.EventInvoker;
+
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
@@ -36,6 +42,8 @@ import org.easymock.IAnswer;
  * @version $Rev$ $Date$
  */
 public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
+    private EventInvoker<OrderedInitPojoImpl> initInvoker;
+    private EventInvoker<OrderedInitPojoImpl> destroyInvoker;
 
     /**
      * Verify init and stop by scope container on an atomic component
@@ -43,15 +51,16 @@ public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
      * @throws Exception
      */
     public void testInitDestroy() throws Exception {
+        Foo comp = new Foo();
+        InstanceWrapper wrapper = createWrapper(comp);
+
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
-        Foo comp = new Foo();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.createInstance()).andReturn(comp);
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.expect(component.getInitLevel()).andReturn(1).atLeastOnce();
-        component.init(EasyMock.eq(comp));
-        component.destroy(EasyMock.eq(comp));
         EasyMock.replay(component);
+
         scope.register(component);
         scope.onEvent(new ComponentStart(this, null));
         assertNotNull(scope.getInstance(component));
@@ -67,21 +76,22 @@ public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
      * @throws Exception
      */
     public void testEagerInitDestroy() throws Exception {
+        Foo comp = new Foo();
+        InstanceWrapper wrapper = createWrapper(comp);
+
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
-        Foo comp = new Foo();
-        AtomicComponent initDestroyComponent = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(initDestroyComponent.createInstance()).andReturn(comp);
-        EasyMock.expect(initDestroyComponent.getInitLevel()).andReturn(1).atLeastOnce();
-        initDestroyComponent.init(EasyMock.eq(comp));
-        initDestroyComponent.destroy(EasyMock.eq(comp));
-        EasyMock.replay(initDestroyComponent);
-        scope.register(initDestroyComponent);
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.expect(component.getInitLevel()).andReturn(1).atLeastOnce();
+        EasyMock.replay(component);
+
+        scope.register(component);
         scope.onEvent(new ComponentStart(this, null));
         // expire composite
         scope.onEvent(new ComponentStop(this, null));
         scope.stop();
-        EasyMock.verify(initDestroyComponent);
+        EasyMock.verify(component);
     }
 
 
@@ -151,33 +161,37 @@ public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
         EasyMock.verify(threeComponent);
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        initInvoker = new MethodEventInvoker<OrderedInitPojoImpl>(OrderedInitPojoImpl.class.getMethod("init"));
+        destroyInvoker = new MethodEventInvoker<OrderedInitPojoImpl>(OrderedInitPojoImpl.class.getMethod("destroy"));
+
+    }
+
     @SuppressWarnings("unchecked")
     private AtomicComponent createComponent(int init) throws TargetException {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.createInstance()).andStubAnswer(new IAnswer() {
+        EasyMock.expect(component.createInstanceWrapper()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
-                return new OrderedInitPojoImpl();
+                return new ReflectiveInstanceWrapper<OrderedInitPojoImpl>(new OrderedInitPojoImpl(),
+                                                                          initInvoker,
+                                                                          destroyInvoker);
             }
         });
         EasyMock.expect(component.getInitLevel()).andReturn(init).atLeastOnce();
-        component.init(EasyMock.isA(OrderedInitPojoImpl.class));
-        EasyMock.expectLastCall().andAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                OrderedInitPojoImpl pojo = (OrderedInitPojoImpl) EasyMock.getCurrentArguments()[0];
-                pojo.init();
-                return null;
-            }
-        });
-        component.destroy(EasyMock.isA(OrderedInitPojoImpl.class));
-        EasyMock.expectLastCall().andAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                OrderedInitPojoImpl pojo = (OrderedInitPojoImpl) EasyMock.getCurrentArguments()[0];
-                pojo.destroy();
-                return null;
-            }
-        });
         EasyMock.replay(component);
         return component;
+    }
+
+
+    private InstanceWrapper createWrapper(Foo comp) throws TargetInitializationException, TargetDestructionException {
+        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
+        wrapper.start();
+        EasyMock.expect(wrapper.isStarted()).andReturn(true);
+        EasyMock.expect(wrapper.getInstance()).andReturn(comp);
+        wrapper.stop();
+        EasyMock.replay(wrapper);
+        return wrapper;
     }
 
     private class Foo {

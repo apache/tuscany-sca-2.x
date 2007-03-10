@@ -74,8 +74,10 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
             throw new ObjectCreationException("Exception thrown by constructor", name, e);
         }
 
-        for (Injector<T> injector : injectors) {
-            injector.inject(instance);
+        if (injectors != null) {
+            for (Injector<T> injector : injectors) {
+                injector.inject(instance);
+            }
         }
 
         return new ReflectiveInstanceWrapper<T>(instance, initInvoker, destroyInvoker);

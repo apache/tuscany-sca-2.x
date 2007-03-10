@@ -98,7 +98,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
             return null;
         }
         if (ctx == null) {
-            ctx = new InstanceWrapperImpl(component, component.createInstance());
+            ctx = component.createInstanceWrapper();
             ctx.start();
             wrappers.put(key, ctx);
             List<InstanceWrapper> destroyQueue = destroyQueues.get(key);

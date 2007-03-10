@@ -94,10 +94,12 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                     nonDurableStore.updateRecord(component, conversationId, instance, expire);
                 }
             } else {
-                instance = component.createInstance();
+                // FIXME should the store really be persisting the wrappers
+                InstanceWrapper wrapper = component.createInstanceWrapper();
+                wrapper.start();
+                instance = wrapper.getInstance();
                 long expire = calculateExpiration(component);
                 nonDurableStore.insertRecord(component, conversationId, instance, expire);
-                component.init(instance);
             }
             return instance;
         } catch (StoreReadException e) {

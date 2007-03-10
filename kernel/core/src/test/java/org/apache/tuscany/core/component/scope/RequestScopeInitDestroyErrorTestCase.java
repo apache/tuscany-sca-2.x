@@ -21,6 +21,7 @@ package org.apache.tuscany.core.component.scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 import junit.framework.TestCase;
@@ -39,24 +40,27 @@ public class RequestScopeInitDestroyErrorTestCase extends TestCase {
         monitor = EasyMock.createMock(ScopeContainerMonitor.class);
         monitor.destructionError(EasyMock.isA(TargetDestructionException.class));
         EasyMock.replay(monitor);
+
+        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
+        wrapper.start();
+        EasyMock.expect(wrapper.isStarted()).andReturn(true);
+        EasyMock.expect(wrapper.getInstance()).andReturn(null);
+        wrapper.stop();
+        EasyMock.expectLastCall().andThrow(new TargetDestructionException("", ""));
+        EasyMock.replay(wrapper);
+
         RequestScopeContainer scope = new RequestScopeContainer(new WorkContextImpl(), monitor);
         scope.start();
+
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        component.addListener(EasyMock.isA(RuntimeEventListener.class));
-        EasyMock.expect(component.createInstance()).andReturn(new Object());
-        component.init(EasyMock.isA(Object.class));
-        component.destroy(EasyMock.isA(Object.class));
-        EasyMock.expectLastCall().andThrow(new TargetDestructionException("", ""));
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.replay(component);
+
         scope.register(component);
         scope.onEvent(new RequestStart(this));
         scope.getInstance(component);
         scope.onEvent(new RequestEnd(this));
         EasyMock.verify(monitor);
-    }
-
-
-    protected void setUp() throws Exception {
-        super.setUp();
+        EasyMock.verify(component);
     }
 }
