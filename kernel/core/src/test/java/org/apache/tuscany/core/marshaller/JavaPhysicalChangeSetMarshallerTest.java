@@ -97,12 +97,18 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
             Set<PhysicalReferenceDefinition> refs = jpcd.getReferences();
             assertEquals(1, refs.size());
             JavaPhysicalReferenceDefinition ref = (JavaPhysicalReferenceDefinition) refs.iterator().next();
+            assertEquals(1, ref.getOperations().size());
+            assertEquals(1, ref.getNonCallbackOperations().size());
+            assertEquals(0, ref.getCallbackOperations().size());
+            
             if ("cmp1".equals(componentId)) {
                 assertEquals("rf1", ref.getName());
                 Set<PhysicalOperationDefinition> pods = ref.getOperations();
                 assertEquals(1, pods.size());
                 PhysicalOperationDefinition pod = pods.iterator().next();
                 assertEquals("op2", pod.getName());
+                assertEquals("java.lang.Object", pod.getReturnType());
+                assertEquals(2, pod.getParameters().size());
             } else {
                 assertEquals("rf2", ref.getName());
                 Set<PhysicalOperationDefinition> pods = ref.getOperations();
@@ -114,6 +120,9 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
             Set<PhysicalServiceDefinition> svs = jpcd.getServices();
             assertEquals(1, svs.size());
             JavaPhysicalServiceDefinition sv = (JavaPhysicalServiceDefinition)svs.iterator().next();
+            assertEquals(1, sv.getOperations().size());
+            assertEquals(1, sv.getNonCallbackOperations().size());
+            assertEquals(0, sv.getCallbackOperations().size());
             if ("cmp1".equals(componentId)) {
                 assertEquals("sv1", sv.getName());
                 Set<PhysicalOperationDefinition> pods = sv.getOperations();

@@ -22,10 +22,18 @@
 	<!-- Component 1 -->
 	<java:component xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp1">
 		<java:reference name="rf1">
-			<core:operation name="op2"/>
+			<core:operation name="op2">
+				<core:parameter>java.lang.String</core:parameter>
+				<core:parameter>java.lang.Long</core:parameter>
+				<core:returnType>java.lang.Object</core:returnType>
+			</core:operation>
 		</java:reference>
 		<java:service name="sv1">
-			<core:operation name="op1"/>
+			<core:operation name="op1">
+				<core:parameter>java.lang.String</core:parameter>
+				<core:parameter>java.lang.Long</core:parameter>
+				<core:returnType>java.lang.Object</core:returnType>
+			</core:operation>
 		</java:service>
 		<java:instanceFactory>1234ASF</java:instanceFactory>
 		<java:scope>STATELESS</java:scope>
@@ -35,10 +43,18 @@
 	<!-- Component 2 -->
 	<java:component xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp2">
 		<java:reference name="rf2">
-			<core:operation name="op1"/>
+			<core:operation name="op1">
+				<core:parameter>java.lang.String</core:parameter>
+				<core:parameter>java.lang.Long</core:parameter>
+				<core:returnType>java.lang.Object</core:returnType>
+			</core:operation>
 		</java:reference>
 		<java:service name="sv2">
-			<core:operation name="op2"/>
+			<core:operation name="op2">
+				<core:parameter>java.lang.String</core:parameter>
+				<core:parameter>java.lang.Long</core:parameter>
+				<core:returnType>java.lang.Object</core:returnType>
+			</core:operation>
 		</java:service>
 		<java:instanceFactory>1234ASF</java:instanceFactory>
 		<java:scope>STATELESS</java:scope>
