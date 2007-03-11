@@ -41,26 +41,25 @@ import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.COR
 public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalOperationDefinition> {
 
     // Operation name attribute
-    private static final String NAME = "name";
+    public static final String NAME = "name";
 
     // Callback attribute
-    private static final String CALLBACK = "callback";
-    
+    public static final String CALLBACK = "callback";
+
     // Return
-    private static final String RETURN_TYPE = "returnType";
+    public static final String RETURN_TYPE = "returnType";
 
     // argument
-    private static final String PARAMETER = "parameter";
-
+    public static final String PARAMETER = "parameter";
 
     // QName for the root element
-    private static final QName QNAME = new QName(CORE_NS, "operation", CORE_PREFIX);
+    public static final QName QNAME = new QName(CORE_NS, "operation", CORE_PREFIX);
 
     /**
      * Marshalls a physical operation to the xml writer.
      */
     public void marshal(PhysicalOperationDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
-        
+
         try {
             writer.writeStartElement(QNAME.getPrefix(), QNAME.getLocalPart(), QNAME.getNamespaceURI());
             writer.writeAttribute(NAME, modelObject.getName());
@@ -68,7 +67,7 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
             writer.writeStartElement(QNAME.getPrefix(), RETURN_TYPE, QNAME.getNamespaceURI());
             writer.writeCharacters(modelObject.getReturnType());
             writer.writeEndElement();
-            for(String parameter : modelObject.getParameters()) {
+            for (String parameter : modelObject.getParameters()) {
                 writer.writeStartElement(QNAME.getPrefix(), PARAMETER, QNAME.getNamespaceURI());
                 writer.writeCharacters(parameter);
                 writer.writeEndElement();
@@ -77,7 +76,7 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
         } catch (XMLStreamException ex) {
             throw new MarshalException(ex);
         }
-        
+
     }
 
     /**
@@ -101,7 +100,7 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
                         }
                         break;
                     case END_ELEMENT:
-                        if (getModelObjectQName().equals(reader.getName())) {
+                        if (QNAME.equals(reader.getName())) {
                             return operation;
                         }
 

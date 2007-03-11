@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
@@ -58,7 +59,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
     // QName for the root element
     private static final QName QNAME =
-        new QName(JAVA_NS, "component", JAVA_PREFIX);
+        new QName(JAVA_NS, PhysicalChangeSetMarshaller.COMPONENT, JAVA_PREFIX);
 
     /**
      * Gets the qualified name of the XML fragment for the marshalled model

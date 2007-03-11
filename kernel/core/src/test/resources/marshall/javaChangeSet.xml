@@ -62,7 +62,9 @@
 	</java:component>
 	
 	<!-- Wire 1 -->
-	<core:wire sourceUri="cmp1#rf1" targetUri="cmp2#sv2">
+	<core:wire>
+		<java:wireSource uri="cmp1#rf1" xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
+		<java:wireTarget uri="cmp2#sv2" xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
 		<core:operation name="op2">
 			<core:parameter>java.lang.String</core:parameter>
 			<core:parameter>java.lang.Long</core:parameter>
@@ -71,7 +73,9 @@
 	</core:wire>
 	
 	<!-- Wire 2 -->
-	<core:wire sourceUri="cmp2#rf2" targetUri="cmp1#sv1">
+	<core:wire>
+		<java:wireSource uri="cmp2#rf2" xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
+		<java:wireTarget uri="cmp1#sv1" xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
 		<core:operation name="op1">
 			<core:parameter>java.lang.String</core:parameter>
 			<core:parameter>java.lang.Long</core:parameter>

@@ -44,13 +44,13 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
     extends AbstractExtensibleMarshallerExtension<PCD> {
 
     // Component id attribute
-    private static final String COMPONENT_ID = "componentId";
+    public static final String COMPONENT_ID = "componentId";
 
     // Reference
-    private static final String REFERENCE = "reference";
+    public static final String REFERENCE = "reference";
 
     // Service
-    private static final String SERVICE = "service";
+    public static final String SERVICE = "service";
 
     /**
      * Marshalls a physical change set to the xml writer.

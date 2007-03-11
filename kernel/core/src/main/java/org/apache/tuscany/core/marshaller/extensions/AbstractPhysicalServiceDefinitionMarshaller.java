@@ -40,10 +40,10 @@ public abstract class AbstractPhysicalServiceDefinitionMarshaller<PSD extends Ph
     AbstractExtensibleMarshallerExtension<PSD> {
 
     //  Local part for operation
-    private static final String OPERATION = "operation";
+    public static final String OPERATION = "operation";
 
     // Source name attribute
-    private static final String NAME = "name";
+    public static final String NAME = "name";
 
     /**
      * Marshalls a physical java reference definition to the xml writer.
