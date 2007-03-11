@@ -35,14 +35,6 @@ import org.apache.tuscany.spi.wire.Wire;
 public interface Component extends Invocable {
 
     /**
-     * Returns the component scope
-     *
-     * @return the component scope
-     */
-    @Deprecated
-    Scope getScope();
-
-    /**
      * Returns the SCA ComponentContext for this component.
      *
      * @return the SCA ComponentContext for this component
@@ -50,16 +42,10 @@ public interface Component extends Invocable {
     ComponentContext getComponentContext();
 
     /**
-     * Sets the scope container associated with the component
+     * Returns a collection of wires for the component associated with a reference.
      *
-     * @param scopeContainer the scope container associated with the component
-     */
-    void setScopeContainer(ScopeContainer scopeContainer);
-
-    /**
-     * Returns a collection of wires for the component associated with a reference name
-     *
-     * @return a collection of wires for the component associated with a reference name
+     * @param name the reference name
+     * @return a collection of wires for the component associated with the reference
      */
     List<Wire> getWires(String name);
 
@@ -76,6 +62,22 @@ public interface Component extends Invocable {
      * @param defaultPropertyValues Default property values associated with the component.
      */
     void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues);
+
+    /**
+     * Returns the component scope
+     *
+     * @return the component scope
+     */
+    @Deprecated
+    Scope getScope();
+
+    /**
+     * Sets the scope container associated with the component
+     *
+     * @param scopeContainer the scope container associated with the component
+     */
+    @Deprecated
+    void setScopeContainer(ScopeContainer scopeContainer);
 
     /**
      * Returns true if invocation dispatching can be optimized, i.e. invocation chains are not required
