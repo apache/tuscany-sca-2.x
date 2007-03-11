@@ -20,14 +20,19 @@ package org.apache.tuscany.service.jetty;
 
 import java.io.File;
 import java.io.IOException;
-
 import javax.resource.spi.work.Work;
 import javax.servlet.Servlet;
 
-import org.apache.tuscany.api.annotation.Monitor;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
+
+import org.apache.tuscany.api.annotation.Monitor;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandler;
@@ -41,18 +46,12 @@ import org.mortbay.log.Log;
 import org.mortbay.log.Logger;
 import org.mortbay.thread.BoundedThreadPool;
 import org.mortbay.thread.ThreadPool;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Implements an HTTP transport service using Jetty.
  *
  * @version $$Rev$$ $$Date$$
  */
-@Scope("COMPOSITE")
 @Service(ServletHost.class)
 public class JettyServiceImpl implements JettyService {
 
@@ -86,7 +85,7 @@ public class JettyServiceImpl implements JettyService {
     }
 
     public JettyServiceImpl(@Monitor TransportMonitor monitor,
-                            @Autowire WorkScheduler scheduler) {
+                            @Reference WorkScheduler scheduler) {
         this.monitor = monitor;
         this.scheduler = scheduler;
         // Jetty uses a static logger, so jam in the monitor into a static reference
