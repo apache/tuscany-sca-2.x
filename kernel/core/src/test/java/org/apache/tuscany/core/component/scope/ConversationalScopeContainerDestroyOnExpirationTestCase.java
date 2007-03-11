@@ -18,29 +18,26 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
+
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.services.store.RecoveryListener;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
-import org.apache.tuscany.spi.services.store.StoreReadException;
-import org.apache.tuscany.spi.services.store.StoreWriteException;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConversationalScopeContainerDestroyOnExpirationTestCase extends TestCase {
-    private ScopeContainer container;
-    private TestStore store;
+    private Store store;
+    private RuntimeEventListener listener;
+    private WorkContext context;
+    private InstanceWrapper wrapper;
     private AtomicComponent component;
 
     /**
@@ -48,74 +45,28 @@ public class ConversationalScopeContainerDestroyOnExpirationTestCase extends Tes
      * conversational instance expires
      */
     public void testDestroyNotification() throws Exception {
-        store.getListener().onEvent(new StoreExpirationEvent(this, component, new Object()));
-        EasyMock.verify(component);
+        store.addListener(EasyMock.isA(RuntimeEventListener.class));
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>(){
+            public Object answer() throws Throwable {
+                listener = (RuntimeEventListener) EasyMock.getCurrentArguments()[0];
+                return null;
+            }
+        });
+        wrapper.stop();
+        EasyMock.replay(store);
+        EasyMock.replay(wrapper);
+
+        new ConversationalScopeContainer(store, context, null);
+        listener.onEvent(new StoreExpirationEvent(this, component, wrapper));
+        EasyMock.verify(store);
+        EasyMock.verify(wrapper);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        store = EasyMock.createMock(Store.class);
+        wrapper = EasyMock.createMock(InstanceWrapper.class);
         component = EasyMock.createMock(AtomicComponent.class);
-        component.destroy(EasyMock.isA(Object.class));
-        EasyMock.replay(component);
-        store = new TestStore();
-        WorkContext context = new WorkContextImpl();
-        container = new ConversationalScopeContainer(store, context, null);
-        container.start();
+        context = new WorkContextImpl();
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        container.stop();
-    }
-
-    private class TestStore implements Store {
-        private RuntimeEventListener listener;
-
-        public RuntimeEventListener getListener() {
-            return listener;
-        }
-
-        public void insertRecord(SCAObject owner, String id, Object object, long expiration)
-            throws StoreWriteException {
-
-        }
-
-        public void updateRecord(SCAObject owner, String id, Object object, long expiration)
-            throws StoreWriteException {
-
-        }
-
-        public Object readRecord(SCAObject owner, String id) throws StoreReadException {
-            return null;
-        }
-
-        public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
-
-        }
-
-        public void removeRecords() throws StoreWriteException {
-
-        }
-
-        public void recover(RecoveryListener listener) throws StoreReadException {
-
-        }
-
-        public void publish(Event object) {
-
-        }
-
-        public void addListener(RuntimeEventListener listener) {
-            this.listener = listener;
-        }
-
-        public void addListener(EventFilter filter, RuntimeEventListener listener) {
-
-        }
-
-        public void removeListener(RuntimeEventListener listener) {
-
-        }
-    }
-
 }

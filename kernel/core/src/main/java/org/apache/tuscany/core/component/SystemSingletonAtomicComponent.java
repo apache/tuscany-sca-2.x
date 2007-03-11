@@ -25,8 +25,6 @@ import java.util.List;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
@@ -92,14 +90,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
 
     public Object getAssociatedTargetInstance() throws TargetResolutionException {
         return instance;
-    }
-
-    public void init(Object instance) throws TargetInitializationException {
-
-    }
-
-    public void destroy(Object instance) throws TargetDestructionException {
-
     }
 
     public Object createInstance() throws ObjectCreationException {

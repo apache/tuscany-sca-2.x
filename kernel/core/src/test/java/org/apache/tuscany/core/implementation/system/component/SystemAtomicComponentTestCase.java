@@ -40,18 +40,6 @@ public class SystemAtomicComponentTestCase extends TestCase {
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
 
-    public void testDefaultCreationAndInit() throws Exception {
-        PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null));
-        PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setInstanceFactory(factory);
-        configuration.setInitInvoker(initInvoker);
-        configuration.setName(new URI("foo"));
-        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
-        Foo foo = (Foo) component.createInstance();
-        component.init(foo);
-        assertTrue(foo.initialized);
-    }
-
     public void testDestroy() throws Exception {
         PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null));
         PojoConfiguration configuration = new PojoConfiguration();
