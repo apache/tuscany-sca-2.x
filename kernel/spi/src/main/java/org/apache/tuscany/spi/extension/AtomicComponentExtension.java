@@ -73,10 +73,6 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         return initLevel > 0;
     }
 
-    public boolean isDestroyable() {
-        return false;
-    }
-
     public long getMaxIdleTime() {
         return maxIdleTime;
     }

@@ -68,10 +68,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         return false;
     }
 
-    public boolean isDestroyable() {
-        return false;
-    }
-
     public int getInitLevel() {
         return 0;
     }
