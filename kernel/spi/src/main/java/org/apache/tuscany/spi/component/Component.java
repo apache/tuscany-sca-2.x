@@ -39,6 +39,7 @@ public interface Component extends Invocable {
      *
      * @return the component scope
      */
+    @Deprecated
     Scope getScope();
 
     /**
@@ -81,6 +82,7 @@ public interface Component extends Invocable {
      *
      * @return true if invocation dispatching can be optimized, i.e. invocation chains are not required
      */
+    @Deprecated
     boolean isOptimizable();
 
     /**
@@ -89,6 +91,7 @@ public interface Component extends Invocable {
      * @param service the service to add as a child
      * @throws RegistrationException
      */
+    @Deprecated
     void register(Service service) throws RegistrationException;
 
     /**
@@ -97,6 +100,7 @@ public interface Component extends Invocable {
      * @param reference the reference to add as a child
      * @throws RegistrationException
      */
+    @Deprecated
     void register(Reference reference) throws RegistrationException;
 
     /**
@@ -105,6 +109,7 @@ public interface Component extends Invocable {
      * @param name the service name which is relative to the composite
      * @return the service with the given name or null if not found
      */
+    @Deprecated
     Service getService(String name);
 
     /**
@@ -113,6 +118,7 @@ public interface Component extends Invocable {
      * @param name the reference name which is relative to the composite
      * @return the reference with the given name or null if not found
      */
+    @Deprecated
     Reference getReference(String name);
 
     /**
@@ -130,7 +136,7 @@ public interface Component extends Invocable {
     void attachWire(Wire wire);
 
     /**
-     * Attaches a set of wires to a comoponent reference. Used for multiplicity.
+     * Attaches a set of wires to a component reference. Used for multiplicity.
      *
      * @param wires the wire to attach
      */
