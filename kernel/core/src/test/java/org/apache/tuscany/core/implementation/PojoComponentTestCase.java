@@ -19,14 +19,21 @@
 package org.apache.tuscany.core.implementation;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
 
 import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
@@ -38,6 +45,8 @@ public class PojoComponentTestCase<T> extends TestCase {
     private InstanceFactory<T> instanceFactory;
     private InstanceWrapper<T> wrapper;
     private ScopeContainer scopeContainer;
+    private Wire wire;
+    private List<Wire> wires;
 
     public void testConversationAttributes() {
         TestComponent<T> component = new TestComponent<T>(componentId, null, null, 0, 12, 34);
@@ -57,36 +66,59 @@ public class PojoComponentTestCase<T> extends TestCase {
 
     public void testLifecycleAndWrapperCreation() {
         // test start method creates the factory
-        EasyMock.expect(provider.createFactory()).andReturn(instanceFactory);
+        expect(provider.createFactory()).andReturn(instanceFactory);
         scopeContainer.register(component);
-        EasyMock.replay(provider, instanceFactory, wrapper, scopeContainer);
+        replay(provider, instanceFactory, wrapper, scopeContainer);
         component.start();
-        EasyMock.verify(provider, instanceFactory, wrapper, scopeContainer);
+        verify(provider, instanceFactory, wrapper, scopeContainer);
 
         // test creating an wrapper calls the factory
         // we piggyback this here has the component needs to be started for the factory to be active
-        EasyMock.reset(provider, instanceFactory, wrapper, scopeContainer);
-        EasyMock.expect(instanceFactory.newInstance()).andReturn(wrapper);
-        EasyMock.replay(provider, instanceFactory, wrapper, scopeContainer);
+        reset(provider, instanceFactory, wrapper, scopeContainer);
+        expect(instanceFactory.newInstance()).andReturn(wrapper);
+        replay(provider, instanceFactory, wrapper, scopeContainer);
         component.createInstanceWrapper();
-        EasyMock.verify(provider, instanceFactory, wrapper, scopeContainer);
+        verify(provider, instanceFactory, wrapper, scopeContainer);
 
         // test stop method
-        EasyMock.reset(provider, instanceFactory, wrapper, scopeContainer);
+        reset(provider, instanceFactory, wrapper, scopeContainer);
         scopeContainer.unregister(component);
-        EasyMock.replay(provider, instanceFactory, wrapper, scopeContainer);
+        replay(provider, instanceFactory, wrapper, scopeContainer);
         component.stop();
-        EasyMock.verify(provider, instanceFactory, wrapper, scopeContainer);
+        verify(provider, instanceFactory, wrapper, scopeContainer);
+    }
+
+    public void testAttachSingleReferenceWire() {
+        provider.attachWire(wire);
+        replay(provider);
+        component.attachWire(wire);
+        verify(provider);
+    }
+
+    public void testAttachMultipleReferenceWire() {
+        provider.attachWires(wires);
+        replay(provider);
+        component.attachWires(wires);
+        verify(provider);
+    }
+
+    public void testAttachCallbackWire() {
+        provider.attachCallbackWire(wire);
+        replay(provider);
+        component.attachCallbackWire(wire);
+        verify(provider);
     }
 
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         componentId = URI.create("sca://./component");
-        provider = EasyMock.createNiceMock(InstanceFactoryProvider.class);
-        instanceFactory = EasyMock.createNiceMock(InstanceFactory.class);
-        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
-        scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
+        provider = createNiceMock(InstanceFactoryProvider.class);
+        instanceFactory = createNiceMock(InstanceFactory.class);
+        wrapper = createNiceMock(InstanceWrapper.class);
+        scopeContainer = createNiceMock(ScopeContainer.class);
+        wire = createNiceMock(Wire.class);
+        wires = Collections.singletonList(wire);
         component = new TestComponent<T>(componentId, provider, scopeContainer, 0, -1, -1);
     }
 
