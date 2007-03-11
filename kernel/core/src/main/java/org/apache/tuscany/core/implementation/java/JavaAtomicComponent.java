@@ -19,14 +19,11 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
@@ -57,7 +54,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         }
         try {
             Method method = JavaIDLUtils.findMethod(implClass, operation);
-            return new JavaTargetInvoker(method, this, workContext);
+            return new JavaTargetInvoker(method, this, null, workContext);
         } catch (NoSuchMethodException e) {
             throw new TargetMethodNotFoundException(operation);
         }
