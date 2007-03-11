@@ -56,6 +56,13 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
         this.monitor = monitor;
     }
 
+    public void register(AtomicComponent component) {
+        checkInit();
+    }
+
+    public void unregister(AtomicComponent component) {
+    }
+
     public void addListener(RuntimeEventListener listener) {
         addListener(TRUE_FILTER, listener);
     }

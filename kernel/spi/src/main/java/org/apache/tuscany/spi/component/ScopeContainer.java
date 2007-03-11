@@ -36,9 +36,16 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
     Scope getScope();
 
     /**
-     * Registers a component with the scope component
+     * Registers a component with the scope.
+     * @param component the component to register
      */
     void register(AtomicComponent component);
+
+    /**
+     * Unregisters a component with the scope.
+     * @param component the component to unregister
+     */
+    void unregister(AtomicComponent component);
 
     /**
      * Returns an instance wrapper associated with the current scope context, creating one if necessary

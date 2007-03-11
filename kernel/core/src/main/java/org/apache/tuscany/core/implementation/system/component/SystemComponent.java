@@ -22,18 +22,20 @@ import java.net.URI;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.implementation.PojoComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
  */
-public abstract class SystemComponent<T> extends PojoComponent<T> {
+public class SystemComponent<T> extends PojoComponent<T> {
     public SystemComponent(URI componentId,
                            InstanceFactoryProvider<T> provider,
+                           ScopeContainer scopeContainer,
                            int initLevel,
                            int maxIdleTime,
                            int maxAge) {
-        super(componentId, provider, initLevel, maxIdleTime, maxAge);
+        super(componentId, provider, initLevel, maxIdleTime, maxAge, scopeContainer);
     }
 
 }

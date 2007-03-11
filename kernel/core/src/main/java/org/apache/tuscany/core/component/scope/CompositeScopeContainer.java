@@ -116,8 +116,15 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
     }
 
     public void register(AtomicComponent component) {
-        checkInit();
+        super.register(component);
         instanceWrappers.put(component, EMPTY);
+    }
+
+
+    public void unregister(AtomicComponent component) {
+        // FIXME should this component be destroyed already?
+        instanceWrappers.remove(component);
+        super.unregister(component);
     }
 
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)

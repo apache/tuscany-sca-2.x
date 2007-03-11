@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
@@ -44,7 +41,6 @@ import org.apache.tuscany.spi.services.store.StoreWriteException;
  */
 public class ConversationalScopeContainer extends AbstractScopeContainer implements ScopeContainer {
     private Store nonDurableStore;
-    private Map<AtomicComponent, AtomicComponent> components;
 
     public ConversationalScopeContainer(Store store, WorkContext workContext, final ScopeContainerMonitor monitor) {
         super(workContext, monitor);
@@ -52,7 +48,6 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         if (store != null) {
             store.addListener(new ExpirationListener(monitor));
         }
-        components = new ConcurrentHashMap<AtomicComponent, AtomicComponent>();
     }
 
     public Scope getScope() {
@@ -75,8 +70,14 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     }
 
     public void register(AtomicComponent component) {
-        components.put(component, component);
+        super.register(component);
         component.addListener(this);
+    }
+
+    public void unregister(AtomicComponent component) {
+        // FIXME should all the instances associated with this component be remove already
+        component.removeListener(this);
+        super.unregister(component);
     }
 
     public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
@@ -143,6 +144,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
 
     /**
      * Returns the conversation id associated with the current invocation context
+     * @return the conversation id
      */
     private String getConversationId() {
         String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
