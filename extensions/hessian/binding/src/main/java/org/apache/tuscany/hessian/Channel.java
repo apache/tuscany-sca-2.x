@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,29 +6,37 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
--->
-<project>
+ * under the License.
+ */
+package org.apache.tuscany.hessian;
 
-    <parent>
-        <groupId>org.apache.tuscany.sca.hessian</groupId>
-        <artifactId>hessian</artifactId>
-		   <version>2.0-alpha2-incubating-SNAPSHOT</version>
-    </parent>
+import org.apache.tuscany.spi.wire.Message;
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.hessian</groupId>
-    <artifactId>hessian-binding</artifactId>
-	 <version>2.0-alpha2-incubating-SNAPSHOT</version>
-    <name>Apache Tuscany Hessian Binding</name>
-    <description></description>
-    <packaging>jar</packaging>
-</project>
+/**
+ * Channels dispatch service invocations over a transport
+ *
+ * @version $Rev$ $Date$
+ */
+public interface Channel {
+
+    /**
+     * Dispatches the service invocation
+     *
+     * @param operation  the service operation to invoke
+     * @param returnType the expected return type or null
+     * @param message    the message containing the invocation payload
+     * @return the response message
+     * @throws InvocationException if an error occurs during the invocation
+     */
+    Message send(String operation, Class<?> returnType, Message message) throws InvocationException;
+
+
+}
