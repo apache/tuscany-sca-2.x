@@ -35,8 +35,8 @@ public interface Invocable extends SCAObject {
      * @param operation  the operation to invoke
      * @return the target invoker
      * @throws TargetInvokerCreationException
-     * @deprecated
      */
+    @Deprecated
     TargetInvoker createTargetInvoker(String targetName, Operation operation) throws TargetInvokerCreationException;
 
     /**
