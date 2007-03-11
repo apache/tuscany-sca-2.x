@@ -27,18 +27,25 @@ import org.apache.tuscany.spi.wire.Wire;
  */
 public interface InstanceFactoryProvider<T> {
     /**
-     * Attach the outbound wire for a single-valued reference.
+     * Attach the wire for a single-valued reference.
      *
-     * @param wire the outbound wire to attach
+     * @param wire the reference wire to attach
      */
     void attachWire(Wire wire);
 
     /**
-     * Attach the outbound wires for a multi-valued reference.
+     * Attach the wires for a multi-valued reference.
      *
-     * @param wires the outbound wires to attach
+     * @param wires the reference wires to attach
      */
     void attachWires(List<Wire> wires);
+
+    /**
+     * Attach the wire for a callback.
+     *
+     * @param wire the callback wire to attach
+     */
+    void attachCallbackWire(Wire wire);
 
     /**
      * Create an instance factory that can be used to create component instances.
