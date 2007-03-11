@@ -23,11 +23,14 @@ import java.net.URI;
 import org.apache.tuscany.core.builder.physical.AbstractPhysicalComponentBuilder;
 import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
+import org.apache.tuscany.spi.wire.physical.WireAttacher;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -37,7 +40,8 @@ import org.osoa.sca.annotations.Reference;
  *
  */
 public class JavaPhysicalComponentBuilder extends
-    AbstractPhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent> {
+    AbstractPhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent>
+    implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition>{
     
     // Classloader registry
     private ClassLoaderRegistry classLoaderRegistry;
@@ -112,5 +116,23 @@ public class JavaPhysicalComponentBuilder extends
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
         component.setScopeContainer(scopeContainer);
     }
+
+    /**
+     * Attaches the source to the component.
+     * 
+     * @param component Component.
+     * @param source Source.
+     */
+    public void attach(JavaComponent component, JavaPhysicalWireSourceDefinition source) {
+    }
+
+    /**
+     * Attaches the target to the component.
+     * 
+     * @param component Component.
+     * @param target Target.
+     */
+    public void attach(JavaComponent component, JavaPhysicalWireTargetDefinition target) {
+   }
 
 }
