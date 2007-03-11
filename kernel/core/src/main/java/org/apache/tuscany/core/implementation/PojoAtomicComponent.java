@@ -112,10 +112,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         componentContext = new ComponentContextImpl(this);
     }
 
-    public boolean isDestroyable() {
-        return destroyInvoker != null;
-    }
-
     public void destroy(Object instance) throws TargetDestructionException {
         if (destroyInvoker != null) {
             try {
@@ -129,7 +125,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     public boolean isOptimizable() {
         // stateless implementations that require a destroy callback cannot be optimized since the callback is
         // performed by the JavaTargetInvoker
-        return !(getScope() == Scope.STATELESS && isDestroyable());
+        return !(getScope() == Scope.STATELESS && destroyInvoker != null);
     }
 
     public Object getTargetInstance() throws TargetResolutionException {

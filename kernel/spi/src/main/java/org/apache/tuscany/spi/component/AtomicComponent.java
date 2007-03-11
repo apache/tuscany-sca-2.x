@@ -35,13 +35,6 @@ public interface AtomicComponent extends Component {
     boolean isEagerInit();
 
     /**
-     * Returns true if component instances receive destroy events.
-     *
-     * @return true if component instances receive destroy events
-     */
-    boolean isDestroyable();
-
-    /**
      * Returns the initialization level for this component.
      *
      * @return the initialization level for this component
