@@ -91,6 +91,11 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         scopeContainer.register(this);
     }
 
+    public void stop() {
+        scopeContainer.unregister(this);
+        super.stop();
+    }
+
     public void removeInstance() throws ComponentException {
         scopeContainer.remove(this);
     }
