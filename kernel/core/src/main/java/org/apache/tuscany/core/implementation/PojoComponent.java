@@ -20,13 +20,29 @@ package org.apache.tuscany.core.implementation;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+
+import org.osoa.sca.ComponentContext;
 
 import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.RegistrationException;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.model.PropertyValue;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
  * Base class for Component implementations based on Java objects.
@@ -36,6 +52,7 @@ import org.apache.tuscany.spi.wire.Wire;
  */
 public abstract class PojoComponent<T> extends AbstractSCAObject implements AtomicComponent {
     private final InstanceFactoryProvider<T> provider;
+    private final ScopeContainer scopeContainer;
     private final int initLevel;
     private final long maxIdleTime;
     private final long maxAge;
@@ -45,36 +62,15 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
                          InstanceFactoryProvider<T> provider,
                          int initLevel,
                          long maxIdleTime,
-                         long maxAge) {
+                         long maxAge,
+                         ScopeContainer scopeContainer) {
         super(componentId);
         this.provider = provider;
+        this.scopeContainer = scopeContainer;
         this.initLevel = initLevel;
         this.maxIdleTime = maxIdleTime;
         this.maxAge = maxAge;
     }
-
-    public void attachWire(Wire wire) {
-        provider.attachWire(wire);
-    }
-
-    public void attachWires(List<Wire> wires) {
-        provider.attachWires(wires);
-    }
-
-    public void start() {
-        super.start();
-        instanceFactory = provider.createFactory();
-    }
-
-    public void stop() {
-        instanceFactory = null;
-        super.stop();
-    }
-
-    public InstanceWrapper<T> createInstanceWrapper() {
-        return instanceFactory.newInstance();
-    }
-
 
     public boolean isEagerInit() {
         return initLevel > 0;
@@ -90,5 +86,113 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
 
     public long getMaxAge() {
         return maxAge;
+    }
+
+    public void attachWire(Wire wire) {
+        provider.attachWire(wire);
+    }
+
+    public void attachWires(List<Wire> wires) {
+        provider.attachWires(wires);
+    }
+
+    public void attachCallbackWire(Wire wire) {
+    }
+
+    public void start() {
+        super.start();
+        scopeContainer.register(this);
+        instanceFactory = provider.createFactory();
+    }
+
+    public void stop() {
+        instanceFactory = null;
+        scopeContainer.unregister(this);
+        super.stop();
+    }
+
+    public InstanceWrapper<T> createInstanceWrapper() {
+        return instanceFactory.newInstance();
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+        throws TargetInvokerCreationException {
+        return null;
+    }
+
+    public ComponentContext getComponentContext() {
+        return null;
+    }
+
+    public List<Wire> getWires(String name) {
+        return null;
+    }
+
+    public Map<String, PropertyValue<?>> getDefaultPropertyValues() {
+        return null;
+    }
+
+    public void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues) {
+    }
+
+    @Deprecated
+    public Object createInstance() throws ObjectCreationException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public void removeInstance() throws ComponentException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public Object getTargetInstance() throws TargetResolutionException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public Object getAssociatedTargetInstance() throws TargetResolutionException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public Scope getScope() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public void setScopeContainer(ScopeContainer scopeContainer) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public boolean isOptimizable() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public void register(Service service) throws RegistrationException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public void register(Reference reference) throws RegistrationException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public Service getService(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public Reference getReference(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) 
+        throws TargetInvokerCreationException {
+        throw new UnsupportedOperationException();
     }
 }

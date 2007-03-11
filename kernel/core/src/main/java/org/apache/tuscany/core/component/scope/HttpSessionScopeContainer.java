@@ -83,6 +83,13 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
         component.addListener(this);
     }
 
+    public void unregister(AtomicComponent component) {
+        // FIXME should all the instances associated with this component be destroyed already
+        contexts.remove(component);
+        component.removeListener(this);
+        super.unregister(component);
+    }
+
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
         throws TargetResolutionException {
         Object key = workContext.getIdentifier(Scope.SESSION);

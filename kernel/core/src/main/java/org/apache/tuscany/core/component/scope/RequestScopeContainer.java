@@ -77,7 +77,14 @@ public class RequestScopeContainer extends AbstractScopeContainer {
     }
 
     public void register(AtomicComponent component) {
+        super.register(component);
         contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
+    }
+
+    public void unregister(AtomicComponent component) {
+        // FIXME should all the instances associated with this component be destroyed already
+        contexts.remove(component);
+        super.unregister(component);
     }
 
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)

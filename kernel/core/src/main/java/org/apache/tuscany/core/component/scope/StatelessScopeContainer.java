@@ -59,10 +59,6 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
     public void onEvent(Event event) {
     }
 
-    public void register(AtomicComponent component) {
-        checkInit();
-    }
-
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
         throws TargetResolutionException {
         // there never is a previously associated instance, return null
