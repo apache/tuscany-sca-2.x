@@ -178,7 +178,7 @@ public class JavaComponent<T> implements AtomicComponent {
         } catch (NoSuchMethodException e) {
             throw new TargetMethodNotFoundException(operation);
         }
-        return new JavaTargetInvoker(method, this, workContext);
+        return new JavaTargetInvoker(method, this, scopeContainer, workContext);
     }
 
     public URI getUri() {

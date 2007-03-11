@@ -83,7 +83,7 @@ public class OneWayWireToJavaInvocationTestCase extends TestCase {
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
-        invoker = new JavaTargetInvoker(method, component, context);
+        invoker = new JavaTargetInvoker(method, component, null, context);
         Operation<Type> operation = new Operation<Type>("invoke", null, null, null, false, null, TargetInvoker.NONE);
         ochain = new InvocationChainImpl(operation);
         NonBlockingInterceptor bridgeInterceptor = new NonBlockingInterceptor(scheduler, context);

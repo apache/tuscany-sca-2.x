@@ -72,7 +72,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.replay(context);
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, null, context);
         invoker.invoke(msg);
         EasyMock.verify(target);
         EasyMock.verify(component);
@@ -98,7 +98,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, null, context);
         Object ret = invoker.invokeTarget("foo", NONE);
         assertEquals("foo", ret);
     }
@@ -109,7 +109,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(arrayMethod, component, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(arrayMethod, component, null, context);
 
         String[] args = new String[]{"foo", "bar"};
         Object ret = invoker.invokeTarget(new Object[]{args}, NONE);
@@ -126,7 +126,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(nullParamMethod, component, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(nullParamMethod, component, null, context);
         Object ret = invoker.invokeTarget(null, NONE);
         String retS = (String) ret;
         assertEquals("foo", retS);
@@ -138,7 +138,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(primitiveMethod, component, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(primitiveMethod, component, null, context);
         Object ret = invoker.invokeTarget(new Integer[]{1}, NONE);
         Integer retI = (Integer) ret;
         assertEquals(1, retI.intValue());
@@ -150,7 +150,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(checkedMethod, component, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(checkedMethod, component, null, context);
         try {
             invoker.invokeTarget(null, NONE);
         } catch (InvocationTargetException e) {
@@ -169,7 +169,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(runtimeMethod, component, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(runtimeMethod, component, null, context);
         try {
             invoker.invokeTarget(null, NONE);
         } catch (InvocationTargetException e) {
