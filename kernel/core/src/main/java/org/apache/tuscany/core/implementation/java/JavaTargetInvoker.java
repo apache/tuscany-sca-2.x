@@ -20,19 +20,16 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Set;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.model.Scope;
-
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.findClosestMatchingMethod;
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
 
 /**
  * Responsible for synchronously dispatching an invocation to a Java component implementation instance
@@ -43,7 +40,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     protected Method operation;
     private final AtomicComponent component;
     private final ScopeContainer scopeContainer;
-    protected Object target;
+    protected InstanceWrapper<?> target;
     protected boolean stateless;
 
     public JavaTargetInvoker(Method operation,
@@ -55,25 +52,23 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
         this.operation = operation;
         this.component = component;
         this.scopeContainer = scopeContainer;
-        stateless = Scope.STATELESS == component.getScope();
+        stateless = Scope.STATELESS == scopeContainer.getScope();
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         try {
-            Object instance = getInstance(sequence);
+            InstanceWrapper<?> wrapper = getInstance(sequence);
+            Object instance = wrapper.getInstance();
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
                 ret = operation.invoke(instance, payload);
             } else {
                 ret = operation.invoke(instance, (Object[]) payload);
             }
-            if (stateless) {
-                // notify a stateless instance of a destruction event after the invoke
-                component.destroy(instance);
-            } else if (sequence == END) {
-                component.destroy(instance);
+            scopeContainer.returnWrapper(component, wrapper);
+            if (sequence == END) {
                 // if end conversation, remove resource
-                component.removeInstance();
+                scopeContainer.remove(component);
             }
             return ret;
         } catch (IllegalAccessException e) {
@@ -97,24 +92,24 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     /**
      * Resolves the target service instance or returns a cached one
      */
-    protected Object getInstance(short sequence) throws TargetException {
+    protected InstanceWrapper<?> getInstance(short sequence) throws TargetException {
         switch (sequence) {
         case NONE:
             if (cacheable) {
                 if (target == null) {
-                    target = component.getTargetInstance();
+                    target = scopeContainer.getWrapper(component);
                 }
                 return target;
             } else {
-                return component.getTargetInstance();
+                return scopeContainer.getWrapper(component);
             }
         case START:
             assert !cacheable;
-            return component.getTargetInstance();
+            return scopeContainer.getWrapper(component);
         case CONTINUE:
         case END:
             assert !cacheable;
-            return component.getAssociatedTargetInstance();
+            return scopeContainer.getAssociatedWrapper(component);
         default:
             throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
         }

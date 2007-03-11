@@ -41,10 +41,34 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
     void register(AtomicComponent component);
 
     /**
+     * Returns an instance wrapper associated with the current scope context, creating one if necessary
+     *
+     * @param component the component
+     * @throws TargetResolutionException
+     */
+    <T> InstanceWrapper<T> getWrapper(AtomicComponent component) throws TargetResolutionException;
+
+    /**
+     * Returns an implementation instance associated with the current scope context.
+     * If no instance is found, a {@link TargetNotFoundException} is thrown.
+     *
+     * @throws TargetResolutionException
+     */
+    <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component) throws TargetResolutionException;
+
+    /**
+     * Return a wrapper after use (for example, after invoking the instance).
+     *  
+     * @param component the component
+     */
+    <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException;
+
+    /**
      * Returns an implementation instance associated with the current request context, creating one if necessary
      *
      * @throws TargetResolutionException
      */
+    @Deprecated
     Object getInstance(AtomicComponent component) throws TargetResolutionException;
 
     /**
@@ -53,6 +77,7 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
      *
      * @throws TargetResolutionException
      */
+    @Deprecated
     Object getAssociatedInstance(AtomicComponent component) throws TargetResolutionException;
 
     /**

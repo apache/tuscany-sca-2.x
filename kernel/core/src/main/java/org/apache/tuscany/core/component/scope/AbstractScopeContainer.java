@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -94,6 +95,21 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
                 }
             }
         }
+    }
+
+    public <T> InstanceWrapper<T> getWrapper(AtomicComponent component) throws TargetResolutionException {
+        return getInstanceWrapper(component, true);
+    }
+
+    public <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component) throws TargetResolutionException {
+        InstanceWrapper wrapper = getInstanceWrapper(component, false);
+        if (wrapper == null) {
+            throw new TargetNotFoundException(component.getUri().toString());
+        }
+        return wrapper;
+    }
+
+    public <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException {
     }
 
     public Object getInstance(AtomicComponent component) throws TargetResolutionException {

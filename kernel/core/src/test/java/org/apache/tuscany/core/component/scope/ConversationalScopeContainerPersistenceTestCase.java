@@ -42,14 +42,9 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     private ScopeContainer container;
     private WorkContext context;
 
-    /**
-     * Verifies the scope container properly creates an instance
-     */
     public void testNotYetPersistedInMemory() throws Exception {
-        Foo comp = new Foo();
         InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
         wrapper.start();
-        EasyMock.expect(wrapper.getInstance()).andReturn(comp);
         EasyMock.replay(wrapper);
 
         String id = UUID.randomUUID().toString();
@@ -61,7 +56,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.replay(component);
 
         container.register(component);
-        assertSame(comp, container.getInstance(component));
+        assertSame(wrapper, container.getWrapper(component));
         EasyMock.verify(component);
         EasyMock.verify(wrapper);
     }
@@ -75,13 +70,13 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.replay(component);
         container.register(component);
-        Foo foo = new Foo();
-        Foo foo2 = new Foo();
-        container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
-        assertEquals(foo, container.getInstance(component));
-        container.persistNew(component, id2, foo2, System.currentTimeMillis() + 100000);
+        InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
+        InstanceWrapper fooWrapper2 = EasyMock.createMock(InstanceWrapper.class);
+        container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
+        assertEquals(fooWrapper, container.getWrapper(component));
+        container.persistNew(component, id2, fooWrapper2, System.currentTimeMillis() + 100000);
         context.setIdentifier(Scope.CONVERSATION, id2);
-        assertEquals(foo2, container.getInstance(component));
+        assertEquals(fooWrapper2, container.getWrapper(component));
         EasyMock.verify(component);
     }
 
@@ -93,11 +88,11 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.replay(component);
         container.register(component);
-        Foo foo = new Foo();
-        container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
-        assertEquals(foo, container.getInstance(component));
-        container.persist(component, id, foo, System.currentTimeMillis() + 100000);
-        assertEquals(foo, container.getInstance(component));
+        InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
+        container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
+        assertEquals(fooWrapper, container.getWrapper(component));
+        container.persist(component, id, fooWrapper, System.currentTimeMillis() + 100000);
+        assertEquals(fooWrapper, container.getWrapper(component));
         EasyMock.verify(component);
     }
 
@@ -110,12 +105,12 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.expect(component.getUri()).andReturn(URI.create("foo")).atLeastOnce();
         EasyMock.replay(component);
         container.register(component);
-        Foo foo = new Foo();
-        container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
-        assertEquals(foo, container.getInstance(component));
+        InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
+        container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
+        assertEquals(fooWrapper, container.getWrapper(component));
         container.remove(component);
         try {
-            container.getAssociatedInstance(component);
+            container.getAssociatedWrapper(component);
             fail();
         } catch (TargetNotFoundException e) {
             //expected
@@ -124,10 +119,8 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     }
 
     public void testRecreateAfterRemoveInMemory() throws Exception {
-        Foo comp = new Foo();
         InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
         wrapper.start();
-        EasyMock.expect(wrapper.getInstance()).andReturn(comp);
         EasyMock.replay(wrapper);
 
         String id = UUID.randomUUID().toString();
@@ -140,13 +133,11 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.replay(component);
 
         container.register(component);
-        Foo foo = new Foo();
-        container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
-        assertEquals(foo, container.getInstance(component));
+        InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
+        container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
+        assertEquals(fooWrapper, container.getWrapper(component));
         container.remove(component);
-        Foo foo2 = (Foo) container.getInstance(component);
-        assertNotNull(foo2);
-        assertNotSame(foo, foo2);
+        assertSame(wrapper, container.getWrapper(component));
         EasyMock.verify(component);
     }
 
@@ -160,13 +151,14 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         component.addListener(EasyMock.eq(container));
         EasyMock.replay(component);
         container.register(component);
-        Foo foo = new Foo();
-        container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
-        assertEquals(foo, container.getAssociatedInstance(component));
-        assertEquals(foo, container.getAssociatedInstance(component));
+
+        InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
+        container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
+        assertEquals(fooWrapper, container.getAssociatedWrapper(component));
+        assertEquals(fooWrapper, container.getAssociatedWrapper(component));
         context.setIdentifier(Scope.CONVERSATION, id2);
         try {
-            container.getAssociatedInstance(component);
+            container.getAssociatedWrapper(component);
             fail();
         } catch (TargetNotFoundException e) {
             //expected
@@ -188,9 +180,5 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         super.tearDown();
         context.clearIdentifier(Scope.CONVERSATION);
         container.stop();
-    }
-
-    private class Foo {
-
     }
 }

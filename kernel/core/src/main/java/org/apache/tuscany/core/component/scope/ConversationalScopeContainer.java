@@ -81,6 +81,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         component.addListener(this);
     }
 
+/*
     @Override
     public Object getInstance(AtomicComponent component) throws TargetResolutionException {
         String conversationId = getConversationId();
@@ -134,6 +135,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
             workContext.setCurrentAtomicComponent(null);
         }
     }
+*/
 
     public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
@@ -168,8 +170,33 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         }
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) {
-        throw new UnsupportedOperationException();
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+        throws TargetResolutionException {
+        String conversationId = getConversationId();
+        try {
+            workContext.setCurrentAtomicComponent(component);
+            InstanceWrapper wrapper = (InstanceWrapper) nonDurableStore.readRecord(component, conversationId);
+            if (wrapper != null) {
+                if (component.getMaxIdleTime() > 0) {
+                    // update expiration
+                    long expire = System.currentTimeMillis() + component.getMaxIdleTime();
+                    nonDurableStore.updateRecord(component, conversationId, wrapper, expire);
+                }
+            } else if (create) {
+                // FIXME should the store really be persisting the wrappers
+                wrapper = component.createInstanceWrapper();
+                wrapper.start();
+                long expire = calculateExpiration(component);
+                nonDurableStore.insertRecord(component, conversationId, wrapper, expire);
+            }
+            return wrapper;
+        } catch (StoreReadException e) {
+            throw new TargetResolutionException("Error retrieving target instance", e);
+        } catch (StoreWriteException e) {
+            throw new TargetResolutionException("Error persisting target instance", e);
+        } finally {
+            workContext.setCurrentAtomicComponent(null);
+        }
     }
 
     /**
