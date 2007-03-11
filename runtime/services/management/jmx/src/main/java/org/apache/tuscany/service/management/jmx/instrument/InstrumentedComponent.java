@@ -98,15 +98,18 @@ public class InstrumentedComponent implements DynamicMBean {
         final MBeanConstructorInfo[] constructors = null;
         final MBeanOperationInfo[] operations = null;
         final MBeanNotificationInfo[] notifications = null;
-
-        final MBeanAttributeInfo[] attributes = new MBeanAttributeInfo[properties.size()];
-
-        int i = 0;
-        for (PropertyValue<?> propertyValue : properties.values()) {
-            attributes[i++] =
-                new MBeanAttributeInfo(propertyValue.getName(), String.class.getName(), null, true, false, false);
+    
+        int size = properties != null ? properties.size() : 0;
+        final MBeanAttributeInfo[] attributes = new MBeanAttributeInfo[size];
+    
+        if(properties != null) {
+            int i = 0;
+            for (PropertyValue<?> propertyValue : properties.values()) {
+                attributes[i++] =
+                    new MBeanAttributeInfo(propertyValue.getName(), String.class.getName(), null, true, false, false);
+            }
         }
-
+    
         return new MBeanInfo(componentId.toString(), null, attributes, constructors, operations, notifications);
 
     }

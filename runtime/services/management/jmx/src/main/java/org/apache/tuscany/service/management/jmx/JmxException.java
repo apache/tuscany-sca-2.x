@@ -36,4 +36,13 @@ public class JmxException extends TuscanyRuntimeException {
         super(cause);
     }
 
+    /**
+     * Initializes the root cause.
+     * @param message Message for the exception.
+     * @param cause Initializes the root cause.
+     */
+    public JmxException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
