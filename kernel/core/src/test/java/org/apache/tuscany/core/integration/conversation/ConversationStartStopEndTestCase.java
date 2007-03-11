@@ -27,6 +27,7 @@ import org.osoa.sca.annotations.EndsConversation;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import static org.apache.tuscany.spi.model.Scope.CONVERSATION;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
@@ -59,11 +60,11 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
         // start the conversation
         handler.invoke(operation1, null);
         // verify the instance was persisted
-        assertEquals(targetInstance, store.readRecord(target, "12345A"));
+        assertEquals(targetInstance, ((InstanceWrapper)store.readRecord(target, "12345A")).getInstance());
         // continue the conversation
         handler.invoke(operation2, null);
         // verify the instance was persisted
-        assertEquals(targetInstance, store.readRecord(target, "12345A"));
+        assertEquals(targetInstance, ((InstanceWrapper)store.readRecord(target, "12345A")).getInstance());
         // end the conversation
         handler.invoke(endOperation, null);
         workContext.clearIdentifier(CONVERSATION);

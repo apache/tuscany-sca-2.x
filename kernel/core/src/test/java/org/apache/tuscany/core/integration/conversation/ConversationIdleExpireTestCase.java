@@ -28,6 +28,7 @@ import org.osoa.sca.annotations.EndsConversation;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -56,7 +57,7 @@ public class ConversationIdleExpireTestCase extends AbstractConversationTestCase
         // start the conversation
         handler.invoke(operation1, null);
         // verify the instance was persisted
-        assertEquals(targetInstance, store.readRecord(target, "12345A"));
+        assertEquals(targetInstance, ((InstanceWrapper)store.readRecord(target, "12345A")).getInstance());
         synchronized (mutex) {
             mutex.wait(100);
         }

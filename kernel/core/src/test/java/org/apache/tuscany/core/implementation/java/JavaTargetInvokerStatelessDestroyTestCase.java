@@ -21,27 +21,40 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
 public class JavaTargetInvokerStatelessDestroyTestCase extends TestCase {
-
-    public JavaTargetInvokerStatelessDestroyTestCase(String arg0) {
-        super(arg0);
-    }
+    private JavaAtomicComponent component;
+    private ScopeContainer scopeContainer;
+    private InstanceWrapper wrapper;
+    private Method echoMethod;
 
     public void testDestroy() throws Exception {
-        Method echoMethod = Echo.class.getDeclaredMethod("echo", String.class);
-        JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(component.getTargetInstance()).andReturn(new JavaTargetInvokerStatelessDestroyTestCase.Echo());
-        EasyMock.expect(component.getScope()).andReturn(Scope.STATELESS);
-        component.destroy(EasyMock.isA(Echo.class));
+        EasyMock.expect(scopeContainer.getWrapper(component)).andReturn(wrapper);
+        EasyMock.expect(wrapper.getInstance()).andReturn(new Echo());
+        scopeContainer.returnWrapper(component, wrapper);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, null, null);
+        EasyMock.replay(scopeContainer);
+        EasyMock.replay(wrapper);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, scopeContainer, null);
         invoker.setCacheable(false);
         assertEquals("foo", invoker.invokeTarget("foo", JavaTargetInvoker.NONE));
         EasyMock.verify(component);
+        EasyMock.verify(scopeContainer);
+        EasyMock.verify(wrapper);
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        echoMethod = Echo.class.getDeclaredMethod("echo", String.class);
+        component = EasyMock.createMock(JavaAtomicComponent.class);
+        scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.STATELESS);
+        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
     }
 
     public static class Echo {

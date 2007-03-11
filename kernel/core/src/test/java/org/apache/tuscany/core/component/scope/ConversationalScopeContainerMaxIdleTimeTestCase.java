@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.Store;
@@ -39,26 +40,27 @@ public class ConversationalScopeContainerMaxIdleTimeTestCase extends TestCase {
     private WorkContext context;
     private Store store;
     private AtomicComponent component;
+    private InstanceWrapper wrapper;
 
     public void testMaxIdleTimeUpdate() throws Exception {
         context.setIdentifier(Scope.CONVERSATION, "12345");
-        container.getInstance(component);
+        assertSame(wrapper, container.getWrapper(component));
         EasyMock.verify(store);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        Foo foo = new Foo();
+        wrapper = EasyMock.createMock(InstanceWrapper.class);
         context = new WorkContextImpl();
         component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getMaxIdleTime()).andReturn(600000L).atLeastOnce();
         EasyMock.replay(component);
         store = EasyMock.createMock(Store.class);
-        EasyMock.expect(store.readRecord(EasyMock.isA(SCAObject.class), EasyMock.isA(String.class))).andReturn(foo);
+        EasyMock.expect(store.readRecord(EasyMock.isA(SCAObject.class), EasyMock.isA(String.class))).andReturn(wrapper);
         store.addListener(EasyMock.isA(RuntimeEventListener.class));
         store.updateRecord(EasyMock.isA(SCAObject.class),
             EasyMock.isA(String.class),
-            EasyMock.eq(foo),
+            EasyMock.eq(wrapper),
             EasyMock.anyLong());
         EasyMock.replay(store);
         container = new ConversationalScopeContainer(store, context, null);
@@ -69,10 +71,6 @@ public class ConversationalScopeContainerMaxIdleTimeTestCase extends TestCase {
         super.tearDown();
         context.clearIdentifier(Scope.CONVERSATION);
         container.stop();
-    }
-
-    private class Foo {
-
     }
 
 }

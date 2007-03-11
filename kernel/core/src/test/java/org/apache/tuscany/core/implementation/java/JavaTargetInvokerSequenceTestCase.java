@@ -18,10 +18,14 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.lang.reflect.Method;
+
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
@@ -30,62 +34,80 @@ import org.easymock.classextension.EasyMock;
  * @version $Rev$ $Date$
  */
 public class JavaTargetInvokerSequenceTestCase extends TestCase {
+    private Method method;
+    private Foo foo;
+    private JavaAtomicComponent component;
+    private ScopeContainer scopeContainer;
+    private InstanceWrapper wrapper;
+
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        method = Foo.class.getMethod("invoke");
+        foo = EasyMock.createMock(Foo.class);
+        foo.invoke();
+        EasyMock.replay(foo);
+
+        component = EasyMock.createMock(JavaAtomicComponent.class);
+        scopeContainer = EasyMock.createMock(ScopeContainer.class);
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.CONVERSATION);
+        wrapper = EasyMock.createMock(InstanceWrapper.class);
+        EasyMock.expect(wrapper.getInstance()).andReturn(foo);
+        EasyMock.replay(wrapper);
+    }
 
     /**
      * Verifies an invocation marked as non-conversational has an existing or new instance returned
      */
     public void testNoSequence() throws Exception {
-        Foo foo = EasyMock.createMock(Foo.class);
-        foo.invoke();
-        EasyMock.replay(foo);
-        JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(component.getTargetInstance()).andReturn(foo);
-        EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
+        EasyMock.expect(scopeContainer.getWrapper(component)).andReturn(wrapper);
+        scopeContainer.returnWrapper(component, wrapper);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null);
+        EasyMock.replay(scopeContainer);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, scopeContainer, null);
         Message msg = new MessageImpl();
         msg.setConversationSequence(TargetInvoker.NONE);
         invoker.invoke(msg);
         EasyMock.verify(foo);
         EasyMock.verify(component);
+        EasyMock.verify(scopeContainer);
+        EasyMock.verify(wrapper);
     }
 
     /**
      * Verifies that an invocation marked as starting a conversation has a new instance returned
      */
     public void testStartSequence() throws Exception {
-        Foo foo = EasyMock.createMock(Foo.class);
-        foo.invoke();
-        EasyMock.replay(foo);
-        JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(component.getTargetInstance()).andReturn(foo);
-        EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null);
+        EasyMock.expect(scopeContainer.getWrapper(component)).andReturn(wrapper);
+        scopeContainer.returnWrapper(component, wrapper);
+        EasyMock.replay(scopeContainer);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, scopeContainer, null);
         Message msg = new MessageImpl();
         msg.setConversationSequence(TargetInvoker.START);
         invoker.invoke(msg);
         EasyMock.verify(foo);
         EasyMock.verify(component);
+        EasyMock.verify(scopeContainer);
+        EasyMock.verify(wrapper);
     }
 
     /**
      * Verifies that an invocation marked as continuing a conversation has an associated instance returned
      */
     public void testContinueSequence() throws Exception {
-        Foo foo = EasyMock.createMock(Foo.class);
-        foo.invoke();
-        EasyMock.replay(foo);
-        JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(component.getAssociatedTargetInstance()).andReturn(foo);
-        EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null);
+        EasyMock.expect(scopeContainer.getAssociatedWrapper(component)).andReturn(wrapper);
+        scopeContainer.returnWrapper(component, wrapper);
+        EasyMock.replay(scopeContainer);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, scopeContainer, null);
         Message msg = new MessageImpl();
         msg.setConversationSequence(TargetInvoker.CONTINUE);
         invoker.invoke(msg);
         EasyMock.verify(foo);
         EasyMock.verify(component);
+        EasyMock.verify(scopeContainer);
+        EasyMock.verify(wrapper);
     }
 
     /**
@@ -93,21 +115,19 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
      * following the dispatch to the instance
      */
     public void testEndSequence() throws Exception {
-        Foo foo = EasyMock.createMock(Foo.class);
-        foo.invoke();
-        EasyMock.replay(foo);
-        JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(component.getAssociatedTargetInstance()).andReturn(foo);
-        EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
-        component.removeInstance();
-        component.destroy(EasyMock.eq(foo));
         EasyMock.replay(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null);
+        EasyMock.expect(scopeContainer.getAssociatedWrapper(component)).andReturn(wrapper);
+        scopeContainer.returnWrapper(component, wrapper);
+        scopeContainer.remove(component);
+        EasyMock.replay(scopeContainer);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, scopeContainer, null);
         Message msg = new MessageImpl();
         msg.setConversationSequence(TargetInvoker.END);
         invoker.invoke(msg);
         EasyMock.verify(foo);
         EasyMock.verify(component);
+        EasyMock.verify(scopeContainer);
+        EasyMock.verify(wrapper);
     }
 
 

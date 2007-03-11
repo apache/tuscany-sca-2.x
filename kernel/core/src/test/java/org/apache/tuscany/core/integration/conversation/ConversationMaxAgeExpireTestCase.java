@@ -58,7 +58,7 @@ public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCa
         // start the conversation
         handler.invoke(operation1, null);
         // verify the instance was persisted
-        assertEquals(targetInstance, store.readRecord(target, "12345A"));
+        assertEquals(targetInstance, ((InstanceWrapper)store.readRecord(target, "12345A")).getInstance());
         synchronized (mutex) {
             mutex.wait(100);
         }

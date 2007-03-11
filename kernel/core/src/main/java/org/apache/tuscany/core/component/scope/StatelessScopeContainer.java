@@ -23,6 +23,7 @@ import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -73,4 +74,9 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         return ctx;
     }
 
+    public <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper)
+        throws TargetDestructionException {
+        super.returnWrapper(component, wrapper);
+        wrapper.stop();
+    }
 }
