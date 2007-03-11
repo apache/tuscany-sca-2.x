@@ -20,10 +20,10 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URI;
 
+import org.apache.tuscany.core.builder.physical.AbstractPhysicalComponentBuilder;
 import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
@@ -36,14 +36,22 @@ import org.osoa.sca.annotations.Reference;
  * @version $Rev$ $Date$
  *
  */
-public class JavaPhysicalComponentBuilder implements
-    PhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent> {
+public class JavaPhysicalComponentBuilder extends
+    AbstractPhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent> {
     
     // Classloader registry
     private ClassLoaderRegistry classLoaderRegistry;
     
     // SCope registry
     private ScopeRegistry scopeRegistry;
+    
+    /**
+     * Gets the physical component definition this builder expects.
+     * @return Physical component definition class.
+     */
+    protected Class<JavaPhysicalComponentDefinition> getComponentType() {
+        return JavaPhysicalComponentDefinition.class;
+    }
 
     /**
      * Builds a component from its physical component definition.
