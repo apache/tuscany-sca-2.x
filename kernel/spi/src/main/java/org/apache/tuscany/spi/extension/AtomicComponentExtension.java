@@ -24,8 +24,6 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.ProxyService;
@@ -95,14 +93,6 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     public void start() throws CoreRuntimeException {
         super.start();
         scopeContainer.register(this);
-    }
-
-    public void init(Object instance) throws TargetInitializationException {
-
-    }
-
-    public void destroy(Object instance) throws TargetDestructionException {
-
     }
 
     public void removeInstance() throws ComponentException {

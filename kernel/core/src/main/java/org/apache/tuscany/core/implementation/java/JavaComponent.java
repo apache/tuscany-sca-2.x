@@ -33,8 +33,6 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -231,14 +229,6 @@ public class JavaComponent<T> implements AtomicComponent {
 
     public long getMaxAge() {
         return 0;
-    }
-
-    public void init(Object instance) throws TargetInitializationException {
-
-    }
-
-    public void destroy(Object instance) throws TargetDestructionException {
-
     }
 
     public Object createInstance() throws ObjectCreationException {

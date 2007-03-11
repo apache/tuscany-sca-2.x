@@ -42,18 +42,6 @@ public class PojoAtomicComponentTestCase extends TestCase {
     private PojoConfiguration config;
 
     @SuppressWarnings({"unchecked"})
-    public void testDestroy() throws Exception {
-        EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
-        invoker.invokeEvent(EasyMock.notNull());
-        EasyMock.replay(invoker);
-        config.setDestroyInvoker(invoker);
-        AtomicComponent component = new TestAtomicComponent(config);
-        assertTrue(component.isDestroyable());
-        component.destroy(new Object());
-        EasyMock.verify(invoker);
-    }
-
-    @SuppressWarnings({"unchecked"})
     public void testNoCallbackWires() throws Exception {
         ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
         EasyMock.expect(container.getScope()).andReturn(Scope.CONVERSATION);
@@ -64,17 +52,6 @@ public class PojoAtomicComponentTestCase extends TestCase {
         component.setScopeContainer(container);
         component.start();
         EasyMock.verify(container);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testInit() throws Exception {
-        EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
-        invoker.invokeEvent(EasyMock.notNull());
-        EasyMock.replay(invoker);
-        config.setInitInvoker(invoker);
-        AtomicComponent component = new TestAtomicComponent(config);
-        component.init(new Object());
-        EasyMock.verify(invoker);
     }
 
     public void testOptimizable() throws Exception {

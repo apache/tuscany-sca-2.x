@@ -22,15 +22,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
@@ -80,62 +78,6 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         components.put(component, component);
         component.addListener(this);
     }
-
-/*
-    @Override
-    public Object getInstance(AtomicComponent component) throws TargetResolutionException {
-        String conversationId = getConversationId();
-        try {
-            workContext.setCurrentAtomicComponent(component);
-            Object instance = nonDurableStore.readRecord(component, conversationId);
-            if (instance != null) {
-                if (component.getMaxIdleTime() > 0) {
-                    // update expiration
-                    long expire = System.currentTimeMillis() + component.getMaxIdleTime();
-                    nonDurableStore.updateRecord(component, conversationId, instance, expire);
-                }
-            } else {
-                // FIXME should the store really be persisting the wrappers
-                InstanceWrapper wrapper = component.createInstanceWrapper();
-                wrapper.start();
-                instance = wrapper.getInstance();
-                long expire = calculateExpiration(component);
-                nonDurableStore.insertRecord(component, conversationId, instance, expire);
-            }
-            return instance;
-        } catch (StoreReadException e) {
-            throw new TargetResolutionException("Error retrieving target instance", e);
-        } catch (StoreWriteException e) {
-            throw new TargetResolutionException("Error persisting target instance", e);
-        } finally {
-            workContext.setCurrentAtomicComponent(null);
-        }
-    }
-
-    public Object getAssociatedInstance(AtomicComponent component) throws TargetResolutionException {
-        String conversationId = getConversationId();
-        try {
-            workContext.setCurrentAtomicComponent(component);
-            Object instance = nonDurableStore.readRecord(component, conversationId);
-            if (instance != null) {
-                if (component.getMaxIdleTime() > 0) {
-                    // update expiration
-                    long expire = System.currentTimeMillis() + component.getMaxIdleTime();
-                    nonDurableStore.updateRecord(component, conversationId, instance, expire);
-                }
-                return instance;
-            } else {
-                throw new TargetNotFoundException(component.getUri().toString());
-            }
-        } catch (StoreReadException e) {
-            throw new TargetResolutionException("Error retrieving target instance", e);
-        } catch (StoreWriteException e) {
-            throw new TargetResolutionException("Error persisting target instance", e);
-        } finally {
-            workContext.setCurrentAtomicComponent(null);
-        }
-    }
-*/
 
     public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
@@ -233,11 +175,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         public void onEvent(Event event) {
             if (event instanceof StoreExpirationEvent) {
                 StoreExpirationEvent expiration = (StoreExpirationEvent) event;
-                SCAObject object = expiration.getOwner();
-                assert object instanceof AtomicComponent;
-                AtomicComponent owner = (AtomicComponent) object;
+                InstanceWrapper wrapper = (InstanceWrapper) expiration.getInstance();
                 try {
-                    owner.destroy(expiration.getInstance());
+                    wrapper.stop();
                 } catch (TargetDestructionException e) {
                     monitor.destructionError(e);
                 }

@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.net.URI;
-import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;

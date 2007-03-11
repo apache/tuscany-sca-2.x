@@ -64,22 +64,6 @@ public interface AtomicComponent extends Component {
     long getMaxAge();
 
     /**
-     * Notifies the given instance of an initialization event.
-     *
-     * @throws TargetInitializationException
-     */
-    @Deprecated
-    void init(Object instance) throws TargetInitializationException;
-
-    /**
-     * Notifies the given instance of a destroy event.
-     *
-     * @throws TargetDestructionException
-     */
-    @Deprecated
-    void destroy(Object instance) throws TargetDestructionException;
-
-    /**
      * Creates a new implementation instance, generally used as a callback by a {@link
      * org.apache.tuscany.spi.component.ScopeContainer}.
      *

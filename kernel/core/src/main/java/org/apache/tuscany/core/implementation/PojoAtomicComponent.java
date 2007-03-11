@@ -35,7 +35,6 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
@@ -115,17 +114,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     public boolean isDestroyable() {
         return destroyInvoker != null;
-    }
-
-    public void init(Object instance) throws TargetInitializationException {
-        if (initInvoker != null) {
-            try {
-                initInvoker.invokeEvent(instance);
-            } catch (ObjectCallbackException e) {
-                String uri = getUri().toString();
-                throw new TargetInitializationException("Error initializing component instance", uri, e);
-            }
-        }
     }
 
     public void destroy(Object instance) throws TargetDestructionException {
