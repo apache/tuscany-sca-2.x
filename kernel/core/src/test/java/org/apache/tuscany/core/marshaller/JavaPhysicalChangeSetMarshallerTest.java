@@ -35,6 +35,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalReferenceDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalServiceDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalWireSourceDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalWireTargetDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
@@ -64,7 +66,7 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
 
         registry = new DefaultModelMarshallerRegistry();
 
-        AbstractMarshallerExtension<?>[] marshallers = new AbstractMarshallerExtension<?>[6];
+        AbstractMarshallerExtension<?>[] marshallers = new AbstractMarshallerExtension<?>[8];
 
         marshallers[0] = new JavaPhysicalComponentDefinitionMarshaller();
         marshallers[1] = new JavaPhysicalServiceDefinitionMarshaller();
@@ -72,8 +74,10 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         marshallers[3] = new PhysicalOperationDefinitionMarshaller();
         marshallers[4] = new PhysicalWireDefinitionMarshaller();
         marshallers[5] = new PhysicalChangeSetMarshaller();
+        marshallers[6] = new JavaPhysicalWireSourceDefinitionMarshaller();
+        marshallers[7] = new JavaPhysicalWireTargetDefinitionMarshaller();
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8; i++) {
             marshallers[i].setMarshallerRegistry(registry);
         }
 

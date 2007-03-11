@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalReferenceDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
 
@@ -38,7 +39,7 @@ public class JavaPhysicalReferenceDefinitionMarshaller extends
     AbstractPhysicalReferenceDefinitionMarshaller<JavaPhysicalReferenceDefinition> {
 
     // QName for the root element
-    private static final QName QNAME = new QName(JAVA_NS, "reference", JAVA_PREFIX);
+    private static final QName QNAME = new QName(JAVA_NS, AbstractPhysicalComponentDefinitionMarshaller.REFERENCE, JAVA_PREFIX);
 
     /**
      * Gets the qualified name of the XML fragment for the marshalled model

@@ -35,39 +35,39 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 /**
  * Marshaller for physical changeset.
  * 
- * @version $Revision$ $Date$
- *
+ * @version $Revision$ $Date: 2007-03-10 13:21:21 +0000 (Sat, 10 Mar
+ *          2007) $
  */
 public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<PhysicalChangeSet> {
 
     // Core marshaller namespace
     public static final String CORE_NS = "http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT";
-    
+
     // Core marshaller prefix
     public static final String CORE_PREFIX = "core";
-    
+
     // QName for the root element
     public static final QName QNAME = new QName(CORE_NS, "changeSet", CORE_PREFIX);
 
     // Local part for wire
-    private static final String WIRE = "wire";
+    public static final String WIRE = "wire";
 
     // Local part for component
-    private static final String COMPONENT = "component";
+    public static final String COMPONENT = "component";
 
     /**
      * Marshalls a physical change set to the xml writer.
      */
     public void marshal(PhysicalChangeSet modelObject, XMLStreamWriter writer) throws MarshalException {
-        
+
         try {
             writer.writeStartDocument();
             writer.writeStartElement(QNAME.getPrefix(), QNAME.getLocalPart(), QNAME.getNamespaceURI());
             writer.writeNamespace(CORE_PREFIX, CORE_NS);
-            for(PhysicalComponentDefinition pcd : modelObject.getComponentDefinitions()) {
+            for (PhysicalComponentDefinition pcd : modelObject.getComponentDefinitions()) {
                 registry.marshall(pcd, writer);
             }
-            for(PhysicalWireDefinition pcd : modelObject.getWireDefinitions()) {
+            for (PhysicalWireDefinition pcd : modelObject.getWireDefinitions()) {
                 registry.marshall(pcd, writer);
             }
             writer.writeEndElement();
@@ -75,7 +75,7 @@ public class PhysicalChangeSetMarshaller extends AbstractMarshallerExtension<Phy
         } catch (XMLStreamException ex) {
             throw new MarshalException(ex);
         }
-        
+
     }
 
     /**

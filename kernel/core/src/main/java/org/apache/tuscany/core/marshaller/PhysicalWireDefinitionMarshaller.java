@@ -18,11 +18,10 @@
  */
 package org.apache.tuscany.core.marshaller;
 
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.CORE_NS;
+import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.CORE_PREFIX;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -33,9 +32,8 @@ import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
-
-import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.CORE_NS;
-import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.CORE_PREFIX;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * Marshaller for physical wire definition.
@@ -45,32 +43,35 @@ import static org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller.COR
  */
 public class PhysicalWireDefinitionMarshaller extends AbstractMarshallerExtension<PhysicalWireDefinition> {
 
-    // Source URI attribute
-    private static final String SOURCE_URI = "sourceUri";
+    // Source
+    public static final String SOURCE = "wireSource";
 
-    // Source URI attribute
-    private static final String TARGET_URI = "targetUri";
+    // Target
+    public static final String TARGET = "wireTarget";
+
+    // Operation
+    public static final String OPERATION = "operation";
 
     // QName for the root element
-    private static final QName QNAME = new QName(CORE_NS, "wire", CORE_PREFIX);
+    public static final QName QNAME = new QName(CORE_NS, "wire", CORE_PREFIX);
 
     /**
      * Marshalls a physical wire to the xml writer.
      */
     public void marshal(PhysicalWireDefinition modelObject, XMLStreamWriter writer) throws MarshalException {
-        
+
         try {
             writer.writeStartElement(QNAME.getPrefix(), QNAME.getLocalPart(), QNAME.getNamespaceURI());
-            writer.writeAttribute(SOURCE_URI, modelObject.getSourceUri().toASCIIString());
-            writer.writeAttribute(TARGET_URI, modelObject.getTargetUri().toASCIIString());
-            for(PhysicalOperationDefinition pod : modelObject.getOperations()) {
+            for (PhysicalOperationDefinition pod : modelObject.getOperations()) {
                 registry.marshall(pod, writer);
             }
+            registry.marshall(modelObject.getSource(), writer);
+            registry.marshall(modelObject.getTarget(), writer);
             writer.writeEndElement();
         } catch (XMLStreamException ex) {
             throw new MarshalException(ex);
         }
-        
+
     }
 
     /**
@@ -80,22 +81,26 @@ public class PhysicalWireDefinitionMarshaller extends AbstractMarshallerExtensio
 
         try {
             PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition();
-            wireDefinition.setSourceUri(new URI(reader.getAttributeValue(null, SOURCE_URI)));
-            wireDefinition.setTargetUri(new URI(reader.getAttributeValue(null, TARGET_URI)));
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
+                        String name = reader.getName().getLocalPart();
                         ModelObject modelObject = registry.unmarshall(reader);
-                        wireDefinition.addOperation((PhysicalOperationDefinition)modelObject);
+                        if (OPERATION.equals(name)) {
+                            wireDefinition.addOperation((PhysicalOperationDefinition)modelObject);
+                        } else if (SOURCE.equals(name)) {
+                            wireDefinition.setSource((PhysicalWireSourceDefinition)modelObject);
+                        } else if (TARGET.equals(name)) {
+                            wireDefinition.setTarget((PhysicalWireTargetDefinition)modelObject);
+                        }
                         break;
                     case END_ELEMENT:
-                        return wireDefinition;
-
+                        if (QNAME.equals(reader.getName())) {
+                            return wireDefinition;
+                        }
                 }
             }
         } catch (XMLStreamException ex) {
-            throw new MarshalException(ex);
-        } catch (URISyntaxException ex) {
             throw new MarshalException(ex);
         }
 

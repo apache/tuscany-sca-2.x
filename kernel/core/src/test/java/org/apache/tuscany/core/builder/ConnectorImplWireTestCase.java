@@ -25,6 +25,8 @@ import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -62,8 +64,12 @@ public class ConnectorImplWireTestCase extends TestCase {
         manager.register(target);
 
         PhysicalWireDefinition definition = new PhysicalWireDefinition();
-        definition.setSourceUri(SOURCE_URI);
-        definition.setTargetUri(TARGET_URI);
+        PhysicalWireSourceDefinition pwsd = new PhysicalWireSourceDefinition();
+        pwsd.setUri(SOURCE_URI);
+        definition.setSource(pwsd);
+        PhysicalWireTargetDefinition pwtd = new PhysicalWireTargetDefinition();
+        pwtd.setUri(TARGET_URI);
+        definition.setTarget(pwtd);
         PhysicalOperationDefinition op = new PhysicalOperationDefinition();
         definition.addOperation(op);
         connector.connect(definition);

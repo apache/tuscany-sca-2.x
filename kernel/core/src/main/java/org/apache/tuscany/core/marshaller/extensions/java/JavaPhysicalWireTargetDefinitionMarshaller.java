@@ -25,9 +25,9 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
-import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalServiceDefinitionMarshaller;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
+import org.apache.tuscany.core.marshaller.PhysicalWireDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalWireTargetDefinitionMarshaller;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 
 /**
  * Marshaller for java physical service definition.
@@ -35,11 +35,11 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition
  * @version $Revision$ $Date: 2007-03-03 16:41:22 +0000 (Sat, 03 Mar
  *          2007) $
  */
-public class JavaPhysicalServiceDefinitionMarshaller extends
-    AbstractPhysicalServiceDefinitionMarshaller<JavaPhysicalServiceDefinition> {
+public class JavaPhysicalWireTargetDefinitionMarshaller extends
+    AbstractPhysicalWireTargetDefinitionMarshaller<JavaPhysicalWireTargetDefinition> {
 
     // QName for the root element
-    private static final QName QNAME = new QName(JAVA_NS, AbstractPhysicalComponentDefinitionMarshaller.SERVICE, JAVA_PREFIX);
+    private static final QName QNAME = new QName(JAVA_NS, PhysicalWireDefinitionMarshaller.TARGET, JAVA_PREFIX);
     
     /**
      * Gets the qualified name of the XML fragment for the marshalled model
@@ -56,41 +56,41 @@ public class JavaPhysicalServiceDefinitionMarshaller extends
     /**
      * Returns the type of the model object.
      * 
-     * @return <code>JavaPhysicalServiceDefinition.class</code>.
+     * @return <code>JavaPhysicalWireTargetDefinition.class</code>.
      */
     @Override
-    protected Class<JavaPhysicalServiceDefinition> getModelObjectType() {
-        return JavaPhysicalServiceDefinition.class;
+    protected Class<JavaPhysicalWireTargetDefinition> getModelObjectType() {
+        return JavaPhysicalWireTargetDefinition.class;
     }
 
     /**
      * Create the concrete model object.
      * 
-     * @return An instance of <code>JavaPhysicalServiceDefinition</code>.
+     * @return An instance of <code>JavaPhysicalWireTargetDefinition</code>.
      */
     @Override
-    protected JavaPhysicalServiceDefinition getConcreteModelObject() {
-        return new JavaPhysicalServiceDefinition();
+    protected JavaPhysicalWireTargetDefinition getConcreteModelObject() {
+        return new JavaPhysicalWireTargetDefinition();
     }
 
     /**
-     * Handles extensions for unmarshalling Java service definitions.
+     * Handles extensions for unmarshalling Java wire target definitions.
      * 
      * @param modelObject Concrete model object.
      * @param reader Reader from which marshalled data is read.
      */
     @Override
-    protected void handleExtension(JavaPhysicalServiceDefinition modelObject, XMLStreamReader reader) {
+    protected void handleExtension(JavaPhysicalWireTargetDefinition modelObject, XMLStreamReader reader) {
     }
 
     /**
-     * Handles extensions for marshalling Java service definitions.
+     * Handles extensions for marshalling Java wire target definitions.
      * 
      * @param modelObject Concrete model object.
      * @param reader Writer to which marshalled data is written.
      */
     @Override
-    protected void handleExtension(JavaPhysicalServiceDefinition modelObject, XMLStreamWriter writer) {
+    protected void handleExtension(JavaPhysicalWireTargetDefinition modelObject, XMLStreamWriter writer) {
     }
 
 }

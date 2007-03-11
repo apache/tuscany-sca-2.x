@@ -20,8 +20,6 @@ package org.apache.tuscany.spi.model.physical;
 
 import java.net.URI;
 
-import javax.xml.namespace.QName;
-
 /**
  * Model class representing the portable definition of a wire. This class is used to describe the inbound and outbound
  * wires on a physical component definition.
@@ -30,47 +28,18 @@ import javax.xml.namespace.QName;
  */
 public class PhysicalWireDefinition extends Operations {
     
-    // TODO this should be removed
-    @Deprecated
-    private QName bindingType;
+    // Target definition
+    private PhysicalWireTargetDefinition target;
     
-    // The resolved source URI of the wire
-    private URI sourceUri;
-    
-    // The resolved source URI of the wire
-    private URI targetUri;
-
-    /**
-     * Returns the wire binding type.
-     * @return the binding type of the wire.
-     */
-    @Deprecated
-    public QName getBindingType() {
-        return bindingType;
-    }
-
-    /**
-     * Sets the Wire source URI.
-     * @param sourceUri Wire source URI.
-     */
-    public void setSourceUri(URI sourceUri) {
-        this.sourceUri = sourceUri;
-    }
+    // Source definition
+    private PhysicalWireSourceDefinition source;
 
     /**
      * Gets the Wire source URI.
      * @return Wire source URI.
      */
     public URI getSourceUri() {
-        return sourceUri;
-    }
-
-    /**
-     * Sets the Wire target URI.
-     * @param targetUri Wire source URI.
-     */
-    public void setTargetUri(URI targetUri) {
-        this.targetUri = targetUri;
+        return source.getUri();
     }
 
     /**
@@ -78,7 +47,39 @@ public class PhysicalWireDefinition extends Operations {
      * @return Wire target URI.
      */
     public URI getTargetUri() {
-        return targetUri;
+        return target.getUri();
+    }
+
+    /**
+     * Gets the wire source.
+     * @return Wire source.
+     */
+    public PhysicalWireSourceDefinition getSource() {
+        return source;
+    }
+
+    /**
+     * Sets the wire source.
+     * @param source Wire source.
+     */
+    public void setSource(PhysicalWireSourceDefinition source) {
+        this.source = source;
+    }
+
+    /**
+     * Gets the wire target.
+     * @return Wire target.
+     */
+    public PhysicalWireTargetDefinition getTarget() {
+        return target;
+    }
+
+    /**
+     * Sets the wire target.
+     * @param target Wire target.
+     */
+    public void setTarget(PhysicalWireTargetDefinition target) {
+        this.target = target;
     }
 
 }
