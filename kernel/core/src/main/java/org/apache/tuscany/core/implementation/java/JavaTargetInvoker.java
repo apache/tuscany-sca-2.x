@@ -61,14 +61,6 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         try {
             Object instance = getInstance(sequence);
-            if (!operation.getDeclaringClass().isInstance(instance)) {
-                Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
-                Method newOperation = findClosestMatchingMethod(operation.getName(),
-                    operation.getParameterTypes(), methods);
-                if (newOperation != null) {
-                    operation = newOperation;
-                }
-            }
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
                 ret = operation.invoke(instance, payload);
