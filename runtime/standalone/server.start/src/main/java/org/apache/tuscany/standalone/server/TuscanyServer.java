@@ -35,6 +35,7 @@ import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.ShutdownException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
 import org.apache.tuscany.service.management.jmx.JmxManagementService;
@@ -90,7 +91,13 @@ public class TuscanyServer implements TuscanyServerMBean {
      * @param args Commandline arguments.
      */
     public static void main(String[] args) throws Exception {
-        new TuscanyServer().start();
+        TuscanyServer server = new TuscanyServer();
+        server.start();
+        
+        // Start any runtimes specified in the cli
+        for(String profile : args) {
+            server.startRuntime(profile);
+        }
     }
 
     /**
@@ -118,7 +125,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             final MBeanServer mBeanServer = agent.getMBeanServer();            
             final StandaloneRuntimeInfo runtimeInfo = createRuntimeInfo(profileName);
             final ManagementService<?> managementService = new JmxManagementService(mBeanServer, profileName);
-            final TuscanyRuntime runtime = createRuntime(bootDirectory, runtimeInfo);
+            final TuscanyRuntime<?> runtime = createRuntime(bootDirectory, runtimeInfo);
             runtime.setManagementService(managementService);
             runtime.initialize();
 
@@ -226,7 +233,7 @@ public class TuscanyServer implements TuscanyServerMBean {
         final String className =
             runtimeInfo.getProperty("tuscany.launcherClass",
                                "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
-        final TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
+        final StandaloneRuntime runtime = (StandaloneRuntime) Beans.instantiate(bootClassLoader, className);
         runtime.setSystemScdl(systemScdl);
         runtime.setHostClassLoader(hostClassLoader);
 
