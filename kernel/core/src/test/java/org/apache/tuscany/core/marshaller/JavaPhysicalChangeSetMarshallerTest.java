@@ -74,7 +74,7 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         marshallers[5] = new PhysicalChangeSetMarshaller();
 
         for (int i = 0; i < 6; i++) {
-            marshallers[i].setRegistry(registry);
+            marshallers[i].setMarshallerRegistry(registry);
         }
 
     }
