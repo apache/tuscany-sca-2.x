@@ -60,10 +60,10 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
 
     public PojoComponent(URI componentId,
                          InstanceFactoryProvider<T> provider,
-                         int initLevel,
+                         ScopeContainer scopeContainer, int initLevel,
                          long maxIdleTime,
-                         long maxAge,
-                         ScopeContainer scopeContainer) {
+                         long maxAge
+    ) {
         super(componentId);
         this.provider = provider;
         this.scopeContainer = scopeContainer;

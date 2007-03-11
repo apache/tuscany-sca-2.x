@@ -130,7 +130,7 @@ public class PojoComponentTestCase<T> extends TestCase {
                              int initLevel,
                              long maxIdleTime,
                              long maxAge) {
-            super(componentId, instanceFactoryProvider, initLevel, maxIdleTime, maxAge, scopeContainer);
+            super(componentId, instanceFactoryProvider, scopeContainer, initLevel, maxIdleTime, maxAge);
         }
     }
 }
