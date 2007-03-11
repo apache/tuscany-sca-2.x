@@ -62,12 +62,13 @@ public class JmxManagementService implements TuscanyManagementService {
      */
     public final void registerComponent(String name, Component component) throws JmxException {
 
-        try {            
+        try {   
+            name = name.replace(":", "-");
             ObjectName on = new ObjectName(managementDomain + ":" + "type=component,name=" + name);
             InstrumentedComponent mbean = new InstrumentedComponent(component);
             mBeanServer.registerMBean(mbean, on);
         } catch (JMException ex) {
-            throw new JmxException(ex);
+            throw new JmxException("Unable to register " + name, ex);
         }
 
     }
