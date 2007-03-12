@@ -33,19 +33,13 @@ import javax.xml.stream.XMLStreamWriter;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalComponentDefinitionMarshaller;
-import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalReferenceDefinitionMarshaller;
-import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalServiceDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalWireSourceDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalWireTargetDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalReferenceDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalServiceDefinition;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 
 /**
@@ -66,18 +60,16 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
 
         registry = new DefaultModelMarshallerRegistry();
 
-        AbstractMarshallerExtension<?>[] marshallers = new AbstractMarshallerExtension<?>[8];
+        AbstractMarshallerExtension<?>[] marshallers = new AbstractMarshallerExtension<?>[6];
 
         marshallers[0] = new JavaPhysicalComponentDefinitionMarshaller();
-        marshallers[1] = new JavaPhysicalServiceDefinitionMarshaller();
-        marshallers[2] = new JavaPhysicalReferenceDefinitionMarshaller();
-        marshallers[3] = new PhysicalOperationDefinitionMarshaller();
-        marshallers[4] = new PhysicalWireDefinitionMarshaller();
-        marshallers[5] = new PhysicalChangeSetMarshaller();
-        marshallers[6] = new JavaPhysicalWireSourceDefinitionMarshaller();
-        marshallers[7] = new JavaPhysicalWireTargetDefinitionMarshaller();
+        marshallers[1] = new PhysicalOperationDefinitionMarshaller();
+        marshallers[2] = new PhysicalWireDefinitionMarshaller();
+        marshallers[3] = new PhysicalChangeSetMarshaller();
+        marshallers[4] = new JavaPhysicalWireSourceDefinitionMarshaller();
+        marshallers[5] = new JavaPhysicalWireTargetDefinitionMarshaller();
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 6; i++) {
             marshallers[i].setMarshallerRegistry(registry);
         }
 
@@ -132,51 +124,7 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
             assertTrue(pcd instanceof JavaPhysicalComponentDefinition);
             String componentId = pcd.getComponentId().toString();
             assertTrue("cmp1".equals(componentId) || "cmp2".equals(componentId));
-
-            JavaPhysicalComponentDefinition jpcd = (JavaPhysicalComponentDefinition)pcd;
-
-            Set<PhysicalReferenceDefinition> refs = jpcd.getReferences();
-            assertEquals(1, refs.size());
-            JavaPhysicalReferenceDefinition ref = (JavaPhysicalReferenceDefinition) refs.iterator().next();
-            assertEquals(1, ref.getOperations().size());
-            assertEquals(1, ref.getNonCallbackOperations().size());
-            assertEquals(0, ref.getCallbackOperations().size());
-            
-            if ("cmp1".equals(componentId)) {
-                assertEquals("rf1", ref.getName());
-                Set<PhysicalOperationDefinition> pods = ref.getOperations();
-                assertEquals(1, pods.size());
-                PhysicalOperationDefinition pod = pods.iterator().next();
-                assertEquals("op2", pod.getName());
-                assertEquals("java.lang.Object", pod.getReturnType());
-                assertEquals(2, pod.getParameters().size());
-            } else {
-                assertEquals("rf2", ref.getName());
-                Set<PhysicalOperationDefinition> pods = ref.getOperations();
-                assertEquals(1, pods.size());
-                PhysicalOperationDefinition pod = pods.iterator().next();
-                assertEquals("op1", pod.getName());
-            }
-
-            Set<PhysicalServiceDefinition> svs = jpcd.getServices();
-            assertEquals(1, svs.size());
-            JavaPhysicalServiceDefinition sv = (JavaPhysicalServiceDefinition)svs.iterator().next();
-            assertEquals(1, sv.getOperations().size());
-            assertEquals(1, sv.getNonCallbackOperations().size());
-            assertEquals(0, sv.getCallbackOperations().size());
-            if ("cmp1".equals(componentId)) {
-                assertEquals("sv1", sv.getName());
-                Set<PhysicalOperationDefinition> pods = sv.getOperations();
-                assertEquals(1, pods.size());
-                PhysicalOperationDefinition pod = pods.iterator().next();
-                assertEquals("op1", pod.getName());
-            } else {
-                assertEquals("sv2", sv.getName());
-                Set<PhysicalOperationDefinition> pods = sv.getOperations();
-                assertEquals(1, pods.size());
-                PhysicalOperationDefinition pod = pods.iterator().next();
-                assertEquals("op2", pod.getName());
-            }
+            assertTrue(pcd instanceof JavaPhysicalComponentDefinition);
 
         }
 

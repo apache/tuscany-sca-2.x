@@ -31,8 +31,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalReferenceDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalServiceDefinition;
 
 /**
  * Abstract super class for all PCD marshallers.
@@ -46,12 +44,6 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
     // Component id attribute
     public static final String COMPONENT_ID = "componentId";
 
-    // Reference
-    public static final String REFERENCE = "reference";
-
-    // Service
-    public static final String SERVICE = "service";
-
     /**
      * Marshalls a physical change set to the xml writer.
      */
@@ -63,13 +55,6 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             writer.writeStartElement(qname.getPrefix(), qname.getLocalPart(), qname.getNamespaceURI());
             writer.writeAttribute(COMPONENT_ID, modelObject.getComponentId().toASCIIString());
             writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
-            
-            for(PhysicalReferenceDefinition prd : modelObject.getReferences()) {
-                registry.marshall(prd, writer);
-            }
-            for(PhysicalServiceDefinition psd : modelObject.getServices()) {
-                registry.marshall(psd, writer);
-            }
             
             handleExtension(modelObject, writer);
             
@@ -92,16 +77,7 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
-                        String name = reader.getName().getLocalPart();
-                        if (REFERENCE.equals(name)) {
-                            PhysicalReferenceDefinition reference = (PhysicalReferenceDefinition)registry.unmarshall(reader);
-                            componentDefinition.addReference(reference);
-                        } else if (SERVICE.equals(name)) {
-                            PhysicalServiceDefinition service = (PhysicalServiceDefinition)registry.unmarshall(reader);
-                            componentDefinition.addService(service);
-                        } else {
-                            handleExtension(componentDefinition, reader);
-                        }
+                        handleExtension(componentDefinition, reader);
                         break;
                     case END_ELEMENT:
                         if (getModelObjectQName().equals(reader.getName())) {

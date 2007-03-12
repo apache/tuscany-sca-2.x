@@ -19,9 +19,6 @@
 package org.apache.tuscany.spi.model.physical;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.tuscany.spi.model.ModelObject;
 
@@ -34,12 +31,6 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
 
     // Component Id.
     private URI componentId;
-
-    // Services exposed by this component
-    private Set<PhysicalServiceDefinition> services = new HashSet<PhysicalServiceDefinition>();
-
-    // References exposed by this component
-    private Set<PhysicalReferenceDefinition> references = new HashSet<PhysicalReferenceDefinition>();
 
     /**
      * Gets the component id.
@@ -57,42 +48,6 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      */
     public void setComponentId(URI componentId) {
         this.componentId = componentId;
-    }
-
-    /**
-     * Returns the service definitions available for this component.
-     *
-     * @return Service definitions for this operation.
-     */
-    public Set<PhysicalServiceDefinition> getServices() {
-        return Collections.unmodifiableSet(services);
-    }
-
-    /**
-     * Adds a service definition to the component.
-     *
-     * @param service Service definition to be added to the component.
-     */
-    public void addService(PhysicalServiceDefinition service) {
-        services.add(service);
-    }
-
-    /**
-     * Returns the reference definitions available for this component.
-     *
-     * @return Reference definitions for this operation.
-     */
-    public Set<PhysicalReferenceDefinition> getReferences() {
-        return Collections.unmodifiableSet(references);
-    }
-
-    /**
-     * Adds a reference definition to the component.
-     *
-     * @param reference Reference definition to be added to the component.
-     */
-    public void addReference(PhysicalReferenceDefinition reference) {
-        references.add(reference);
     }
 
 }
