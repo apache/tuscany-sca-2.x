@@ -18,8 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.system.model;
 
-import java.lang.reflect.Method;
-
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -27,38 +26,25 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  * @param <T> the implementation class for the defined component
  */
 public class SystemPhysicalComponentDefinition<T> extends PhysicalComponentDefinition {
-
-    // we can use an actual class as system components cannot be marshalled
-    private Class<T> implClass;
-
-    private Method initMethod;
-
-    private Method destroyMethod;
-
     private int initLevel;
+    private InstanceFactoryProvider<T> provider;
 
-    public Class<T> getImplClass() {
-        return implClass;
+    /**
+     * Return the provider for the component's instance factory.
+     *
+     * @return the provider for the component's instance factory
+     */
+    public InstanceFactoryProvider<T> getProvider() {
+        return provider;
     }
 
-    public void setImplClass(Class<T> implClass) {
-        this.implClass = implClass;
-    }
-
-    public Method getInitMethod() {
-        return initMethod;
-    }
-
-    public void setInitMethod(Method initMethod) {
-        this.initMethod = initMethod;
-    }
-
-    public Method getDestroyMethod() {
-        return destroyMethod;
-    }
-
-    public void setDestroyMethod(Method destroyMethod) {
-        this.destroyMethod = destroyMethod;
+    /**
+     * Sets the provider for the component's instance factory.
+     *
+     * @param provider the provider for the component's instance factory
+     */
+    public void setProvider(InstanceFactoryProvider<T> provider) {
+        this.provider = provider;
     }
 
     public int getInitLevel() {
