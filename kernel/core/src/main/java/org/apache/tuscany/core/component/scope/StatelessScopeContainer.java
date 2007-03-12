@@ -28,11 +28,11 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
- * A scope context which manages stateless atomic component instances in a non-pooled fashion
+ * A scope context which manages stateless atomic component instances in a non-pooled fashion.
  *
  * @version $Rev$ $Date$
  */
-public class StatelessScopeContainer extends AbstractScopeContainer {
+public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
 
     public StatelessScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
         super(workContext, monitor);

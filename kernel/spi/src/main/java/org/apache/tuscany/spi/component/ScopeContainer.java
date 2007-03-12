@@ -27,22 +27,43 @@ import org.apache.tuscany.spi.model.Scope;
  * Manages the lifecycle and visibility of instances associated with a an {@link AtomicComponent}.
  *
  * @version $Rev$ $Date$
+ * @param <KEY> the type of IDs that this container uses to identify its contexts.
+ * For example, for COMPOSITE scope this could be the URI of the composite component,
+ * or for HTTP Session scope it might be the HTTP session ID.
  */
-public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
+public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
 
     /**
-     * Returns the scope value representing the scope context
+     * Returns the Scope that this container supports.
+     *
+     * @return the Scope that this container supports
      */
     Scope getScope();
 
     /**
+     * Start a new context with the supplied ID.
+     *
+     * @param contextId an ID that uniquely identifies the context.
+     */
+    void startContext(KEY contextId);
+
+    /**
+     * Stop the context with the supplied ID.
+     *
+     * @param contextId an ID that uniquely identifies the context.
+     */
+    void stopContext(KEY contextId);
+
+    /**
      * Registers a component with the scope.
+     *
      * @param component the component to register
      */
     void register(AtomicComponent component);
 
     /**
      * Unregisters a component with the scope.
+     *
      * @param component the component to unregister
      */
     void unregister(AtomicComponent component);
@@ -65,7 +86,7 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
 
     /**
      * Return a wrapper after use (for example, after invoking the instance).
-     *  
+     *
      * @param component the component
      */
     <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException;

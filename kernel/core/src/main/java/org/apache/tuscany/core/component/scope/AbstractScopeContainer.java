@@ -44,7 +44,7 @@ import org.apache.tuscany.spi.event.TrueFilter;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContainer extends AbstractLifecycle implements ScopeContainer {
+public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle implements ScopeContainer<KEY> {
     private static final EventFilter TRUE_FILTER = new TrueFilter();
 
     protected WorkContext workContext;
@@ -61,6 +61,12 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public void unregister(AtomicComponent component) {
+    }
+
+    public void startContext(KEY contextId) {
+    }
+
+    public void stopContext(KEY contextId) {
     }
 
     public void addListener(RuntimeEventListener listener) {
