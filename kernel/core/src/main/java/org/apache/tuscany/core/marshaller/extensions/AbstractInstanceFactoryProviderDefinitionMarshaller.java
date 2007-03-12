@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.marshaller.extensions;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -60,9 +63,23 @@ public abstract class AbstractInstanceFactoryProviderDefinitionMarshaller<IFPD e
      */
     public IFPD unmarshal(XMLStreamReader reader) throws MarshalException {
 
-        IFPD targetDefinition = getConcreteModelObject();
-        handleExtension(targetDefinition, reader);
-        return targetDefinition;
+        try {
+            IFPD ifpd = getConcreteModelObject();
+            while (true) {
+                switch (reader.next()) {
+                    case START_ELEMENT:
+                        handleExtension(ifpd, reader);
+                        break;
+                    case END_ELEMENT:
+                        if (getModelObjectQName().equals(reader.getName())) {
+                            return ifpd;
+                        }
+
+                }
+            }
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
 
     }
 

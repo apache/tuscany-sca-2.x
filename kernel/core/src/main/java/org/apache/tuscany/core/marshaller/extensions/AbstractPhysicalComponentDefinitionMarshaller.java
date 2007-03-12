@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.marshaller.MarshalException;
+import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -43,6 +44,9 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
 
     // Component id attribute
     public static final String COMPONENT_ID = "componentId";
+    
+    // Instance factory provider
+    public static final String INSTANCE_FACTORY_PROVIDER = "instanceFactoryProvider";
 
     /**
      * Marshalls a physical change set to the xml writer.
@@ -55,6 +59,8 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             writer.writeStartElement(qname.getPrefix(), qname.getLocalPart(), qname.getNamespaceURI());
             writer.writeAttribute(COMPONENT_ID, modelObject.getComponentId().toASCIIString());
             writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
+            
+            registry.marshall(modelObject.getInstanceFactoryProviderDefinition(), writer);
             
             handleExtension(modelObject, writer);
             
@@ -77,6 +83,12 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
+                        String name = reader.getName().getLocalPart();
+                        if(INSTANCE_FACTORY_PROVIDER.equals(name)) {
+                            InstanceFactoryProviderDefinition ipcd = 
+                                (InstanceFactoryProviderDefinition) registry.unmarshall(reader);
+                            componentDefinition.setInstanceFactoryProviderDefinition(ipcd);
+                        }
                         handleExtension(componentDefinition, reader);
                         break;
                     case END_ELEMENT:
