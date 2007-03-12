@@ -19,21 +19,20 @@
 package org.apache.tuscany.core.component;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.FieldInjector;
+import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.InstanceWrapper;
@@ -43,9 +42,6 @@ import org.apache.tuscany.spi.component.TargetInitializationException;
  * @version $Rev$ $Date$
  */
 public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
-    private EventInvoker<Foo> initInvoker;
-    private EventInvoker<Foo> destroyInvoker;
-    private Constructor<Foo> noArgConstructor;
     private Constructor<Foo> argConstructor;
     private List<URI> ctrNames;
     private Map<URI, Member> sites;
@@ -70,8 +66,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
         provider = new ReflectiveInstanceFactoryProvider<Foo>(argConstructor,
                                                               ctrNames,
                                                               sites,
-                                                              initInvoker,
-                                                              destroyInvoker);
+                                                              null,
+                                                              null);
         provider.setObjectFactory(intURI, intFactory);
         provider.setObjectFactory(stringURI, stringFactory);
         ObjectFactory<?>[] args = provider.getConstructorArgs();
@@ -131,9 +127,7 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        initInvoker = EasyMock.createMock(EventInvoker.class);
-        destroyInvoker = EasyMock.createMock(EventInvoker.class);
-        noArgConstructor = Foo.class.getConstructor();
+        Constructor<Foo> noArgConstructor = Foo.class.getConstructor();
         argConstructor = Foo.class.getConstructor(int.class, String.class);
         intField = Foo.class.getField("intField");
         stringField = Foo.class.getField("stringField");
@@ -144,8 +138,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
         provider = new ReflectiveInstanceFactoryProvider<Foo>(noArgConstructor,
                                                               ctrNames,
                                                               sites,
-                                                              initInvoker,
-                                                              destroyInvoker);
+                                                              null,
+                                                              null);
         intFactory = EasyMock.createMock(ObjectFactory.class);
         stringFactory = EasyMock.createMock(ObjectFactory.class);
         EasyMock.expect(intFactory.getInstance()).andReturn(34);
