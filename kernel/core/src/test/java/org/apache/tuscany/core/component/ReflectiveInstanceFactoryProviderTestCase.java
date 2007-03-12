@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -46,8 +47,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     private EventInvoker<Foo> destroyInvoker;
     private Constructor<Foo> noArgConstructor;
     private Constructor<Foo> argConstructor;
-    private List<String> ctrNames;
-    private Map<String, Member> sites;
+    private List<URI> ctrNames;
+    private Map<URI, Member> sites;
     private ObjectFactory intFactory;
     private ObjectFactory stringFactory;
     private ReflectiveInstanceFactoryProvider<Foo> provider;
@@ -55,6 +56,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     private Field stringField;
     private Method intSetter;
     private Method stringSetter;
+    private URI intURI = URI.create("int");
+    private URI stringURI = URI.create("string");
 
     public void testNoConstructorArgs() {
         ObjectFactory<?>[] args = provider.getConstructorArgs();
@@ -62,15 +65,15 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     }
 
     public void testConstructorArgs() {
-        ctrNames.add("int");
-        ctrNames.add("string");
+        ctrNames.add(intURI);
+        ctrNames.add(stringURI);
         provider = new ReflectiveInstanceFactoryProvider<Foo>(argConstructor,
                                                               ctrNames,
                                                               sites,
                                                               initInvoker,
                                                               destroyInvoker);
-        provider.setObjectFactory("int", intFactory);
-        provider.setObjectFactory("string", stringFactory);
+        provider.setObjectFactory(intURI, intFactory);
+        provider.setObjectFactory(stringURI, stringFactory);
         ObjectFactory<?>[] args = provider.getConstructorArgs();
         assertEquals(2, args.length);
         assertSame(intFactory, args[0]);
@@ -78,8 +81,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     }
 
     public void testFieldInjectors() {
-        sites.put("int", intField);
-        sites.put("string", stringField);
+        sites.put(intURI, intField);
+        sites.put(stringURI, stringField);
         Injector<Foo>[] injectors = provider.getInjectors();
         assertEquals(2, injectors.length);
 
@@ -94,8 +97,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     }
 
     public void testMethodInjectors() {
-        sites.put("int", intSetter);
-        sites.put("string", stringSetter);
+        sites.put(intURI, intSetter);
+        sites.put(stringURI, stringSetter);
         Injector<Foo>[] injectors = provider.getInjectors();
         assertEquals(2, injectors.length);
 
@@ -110,8 +113,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     }
 
     public void testFactory() {
-        sites.put("int", intSetter);
-        sites.put("string", stringField);
+        sites.put(intURI, intSetter);
+        sites.put(stringURI, stringField);
         InstanceFactory<Foo> instanceFactory = provider.createFactory();
         InstanceWrapper<Foo> instanceWrapper = instanceFactory.newInstance();
         try {
@@ -136,8 +139,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
         stringField = Foo.class.getField("stringField");
         intSetter = Foo.class.getMethod("setIntField", int.class);
         stringSetter = Foo.class.getMethod("setStringField", String.class);
-        ctrNames = new ArrayList<String>();
-        sites = new HashMap<String, Member>();
+        ctrNames = new ArrayList<URI>();
+        sites = new HashMap<URI, Member>();
         provider = new ReflectiveInstanceFactoryProvider<Foo>(noArgConstructor,
                                                               ctrNames,
                                                               sites,
@@ -149,8 +152,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
         EasyMock.expect(stringFactory.getInstance()).andReturn("Hello");
         EasyMock.replay(intFactory, stringFactory);
 
-        provider.setObjectFactory("int", intFactory);
-        provider.setObjectFactory("string", stringFactory);
+        provider.setObjectFactory(intURI, intFactory);
+        provider.setObjectFactory(stringURI, stringFactory);
     }
 
     public static class Foo {
