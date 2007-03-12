@@ -125,13 +125,19 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
             writer.writeCharacters(modelObject.getImplementationClass());
             writer.writeEndElement();
             
-            writer.writeStartElement(QNAME.getPrefix(), INIT_METHOD, QNAME.getNamespaceURI());
-            writer.writeCharacters(modelObject.getInitMethod());
-            writer.writeEndElement();
+            String initMethod = modelObject.getInitMethod();
+            if(initMethod != null) {
+                writer.writeStartElement(QNAME.getPrefix(), INIT_METHOD, QNAME.getNamespaceURI());
+                writer.writeCharacters(initMethod);
+                writer.writeEndElement();
+            }
             
-            writer.writeStartElement(QNAME.getPrefix(), DESTROY_METHOD, QNAME.getNamespaceURI());
-            writer.writeCharacters(modelObject.getDestroyMethod());
-            writer.writeEndElement();
+            String destroyMethod = modelObject.getDestroyMethod();
+            if(destroyMethod != null) {
+                writer.writeStartElement(QNAME.getPrefix(), DESTROY_METHOD, QNAME.getNamespaceURI());
+                writer.writeCharacters(modelObject.getDestroyMethod());
+                writer.writeEndElement();
+            }
             
             for(String constructorArgument : modelObject.getConstructorArguments()) {
                 writer.writeStartElement(QNAME.getPrefix(), CONSTRUCTOR_ARGUMENT, QNAME.getNamespaceURI());
