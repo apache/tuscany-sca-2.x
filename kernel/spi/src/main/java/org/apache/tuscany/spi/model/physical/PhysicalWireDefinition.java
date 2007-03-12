@@ -19,6 +19,11 @@
 package org.apache.tuscany.spi.model.physical;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Model class representing the portable definition of a wire. This class is used to describe the inbound and outbound
@@ -26,13 +31,66 @@ import java.net.URI;
  *
  * @version $Rev$ $Date$
  */
-public class PhysicalWireDefinition extends Operations {
+public class PhysicalWireDefinition extends ModelObject {
     
     // Target definition
     private PhysicalWireTargetDefinition target;
     
     // Source definition
     private PhysicalWireSourceDefinition source;
+
+    // Collection of operations
+    private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
+
+    /**
+     * Adds an operation definition.
+     *
+     * @param operation Operation to be added.
+     */
+    public void addOperation(PhysicalOperationDefinition operation) {
+        operations.add(operation);
+    }
+
+
+    /**
+     * Returns a read-only view of the available operations.
+     *
+     * @return Collection of operations.
+     */
+    public Set<PhysicalOperationDefinition> getOperations() {
+        return Collections.unmodifiableSet(operations);
+    }
+
+
+    /**
+     * Returns a read-only view of the available non callback operations.
+     *
+     * @return Collection of non-callback operations.
+     */
+    public Set<PhysicalOperationDefinition> getNonCallbackOperations() {
+        Set<PhysicalOperationDefinition> nonCallbackOperations = new HashSet<PhysicalOperationDefinition>();
+        for(PhysicalOperationDefinition operation : operations) {
+            if(!operation.isCallback()) {
+                nonCallbackOperations.add(operation);
+            }
+        }
+        return nonCallbackOperations;
+    }
+
+    /**
+     * Returns a read-only view of the available callback operations.
+     *
+     * @return Collection of callback operations.
+     */
+    public Set<PhysicalOperationDefinition> getCallbackOperations() {
+        Set<PhysicalOperationDefinition> callbackOperations = new HashSet<PhysicalOperationDefinition>();
+        for(PhysicalOperationDefinition operation : operations) {
+            if(operation.isCallback()) {
+                callbackOperations.add(operation);
+            }
+        }
+        return callbackOperations;
+    }
 
     /**
      * Gets the Wire source URI.
