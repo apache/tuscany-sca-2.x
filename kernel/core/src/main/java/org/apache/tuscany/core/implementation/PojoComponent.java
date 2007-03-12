@@ -89,15 +89,12 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
     }
 
     public void attachWire(Wire wire) {
-        provider.attachWire(wire);
     }
 
     public void attachWires(List<Wire> wires) {
-        provider.attachWires(wires);
     }
 
     public void attachCallbackWire(Wire wire) {
-        provider.attachCallbackWire(wire);
     }
 
     public void start() {
