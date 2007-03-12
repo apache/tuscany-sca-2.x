@@ -23,7 +23,6 @@ import java.net.URI;
 import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.core.builder.physical.AbstractPhysicalComponentBuilder;
-import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
@@ -38,9 +37,10 @@ import org.apache.tuscany.spi.wire.physical.WireAttacher;
  * Java physical component builder.
  *
  * @version $Rev$ $Date$
+ * @param <T> the implementation class for the defined component
  */
-public class JavaPhysicalComponentBuilder extends
-    AbstractPhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent>
+public class JavaPhysicalComponentBuilder<T> extends
+    AbstractPhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent<T>>
     implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
 
     // Classloader registry
@@ -66,9 +66,10 @@ public class JavaPhysicalComponentBuilder extends
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */
-    public JavaComponent build(JavaPhysicalComponentDefinition componentDefinition) throws BuilderException {
+    public JavaComponent<T> build(JavaPhysicalComponentDefinition componentDefinition) throws BuilderException {
 
-        JavaComponent component = new JavaComponent();
+        URI componentId = componentDefinition.getComponentId();
+        JavaComponent<T> component = new JavaComponent<T>(componentId, null, null, 0, -1, -1);
 
         setScopeContainer(componentDefinition, component);
 
@@ -101,16 +102,16 @@ public class JavaPhysicalComponentBuilder extends
      * Sets the instance factory class.
      */
     private void setInstanceFactoryClass(JavaPhysicalComponentDefinition componentDefinition, JavaComponent component) {
+/*
         // TODO use MPCL to load IF class
         URI classLoaderId = componentDefinition.getClassLoaderId();
-/*
         byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode(); //NOPMD
-*/
         ClassLoader appCl = classLoaderRegistry.getClassLoader(classLoaderId); //NOPMD
         ClassLoader systemCl = getClass().getClassLoader(); //NOPMD        
         ClassLoader mpcl = null; //NOPMD
         Class<InstanceFactory<?>> instanceFactoryClass = null;
         component.setInstanceFactoryClass(instanceFactoryClass);
+*/
     }
 
     /*
