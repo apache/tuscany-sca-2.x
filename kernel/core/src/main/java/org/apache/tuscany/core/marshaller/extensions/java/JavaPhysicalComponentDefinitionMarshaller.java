@@ -46,11 +46,6 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
     // Core marshaller prefix
     public static final String JAVA_PREFIX = "java";
 
-/*
-    // Instance factory
-    private static final String INSTANCE_FACTORY = "instanceFactory";
-*/
-
     // Scope
     private static final String SCOPE = "scope";
 
@@ -106,21 +101,14 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
         try {
             String name = reader.getName().getLocalPart();
-            reader.next();
-/*            if (INSTANCE_FACTORY.equals(name)) {
-                byte[] base64ByteCode = reader.getText().getBytes();
-                byte[] byteCode = Base64.decodeBase64(base64ByteCode);
-                componentDefinition.setInstanceFactoryByteCode(byteCode);
-            } else
-*/
             if (SCOPE.equals(name)) {
-                componentDefinition.setScope(new Scope(reader.getText()));
+                componentDefinition.setScope(new Scope(reader.getElementText()));
             } else if (CLASSLOADER_ID.equals(name)) {
-                componentDefinition.setClassLoaderId(new URI(reader.getText()));
+                componentDefinition.setClassLoaderId(new URI(reader.getElementText()));
             }
-        } catch (XMLStreamException ex) {
-            throw new MarshalException(ex);
         } catch (URISyntaxException ex) {
+            throw new MarshalException(ex);
+        } catch (XMLStreamException ex) {
             throw new MarshalException(ex);
         }
 
@@ -138,11 +126,6 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
         throws MarshalException {
         try {
 
-/*
-            writer.writeStartElement(QNAME.getPrefix(), INSTANCE_FACTORY, QNAME.getNamespaceURI());
-            writer.writeCharacters(new String(Base64.encodeBase64(componentDefinition.getInstanceFactoryByteCode())));
-            writer.writeEndElement();
-*/
             writer.writeStartElement(QNAME.getPrefix(), SCOPE, QNAME.getNamespaceURI());
             writer.writeCharacters(componentDefinition.getScope().toString());
             writer.writeEndElement();

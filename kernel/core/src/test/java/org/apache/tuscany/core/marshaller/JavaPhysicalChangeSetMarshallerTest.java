@@ -32,6 +32,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.marshaller.extensions.instancefactory.ByteCodeInstanceFactoryProviderDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.instancefactory.ReflectiveInstanceFactoryProviderDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalWireSourceDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalWireTargetDefinitionMarshaller;
@@ -60,7 +62,7 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
 
         registry = new DefaultModelMarshallerRegistry();
 
-        AbstractMarshallerExtension<?>[] marshallers = new AbstractMarshallerExtension<?>[6];
+        AbstractMarshallerExtension<?>[] marshallers = new AbstractMarshallerExtension<?>[8];
 
         marshallers[0] = new JavaPhysicalComponentDefinitionMarshaller();
         marshallers[1] = new PhysicalOperationDefinitionMarshaller();
@@ -68,8 +70,10 @@ public class JavaPhysicalChangeSetMarshallerTest extends TestCase {
         marshallers[3] = new PhysicalChangeSetMarshaller();
         marshallers[4] = new JavaPhysicalWireSourceDefinitionMarshaller();
         marshallers[5] = new JavaPhysicalWireTargetDefinitionMarshaller();
+        marshallers[6] = new ByteCodeInstanceFactoryProviderDefinitionMarshaller();
+        marshallers[7] = new ReflectiveInstanceFactoryProviderDefinitionMarshaller();
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8; i++) {
             marshallers[i].setMarshallerRegistry(registry);
         }
 
