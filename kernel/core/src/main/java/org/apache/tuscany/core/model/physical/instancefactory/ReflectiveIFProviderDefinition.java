@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
  * 
  * @version $Revision$ $Date$
  */
-public class ReflectiveInstanceFactoryProviderDefinition extends InstanceFactoryProviderDefinition {
+public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefinition {
     
     // Implementation class
     private String implementationClass;

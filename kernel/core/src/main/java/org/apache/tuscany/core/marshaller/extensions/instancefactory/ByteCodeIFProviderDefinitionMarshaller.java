@@ -25,9 +25,9 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.core.marshaller.extensions.AbstractInstanceFactoryProviderDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.AbstractIFProviderDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
-import org.apache.tuscany.core.model.physical.instancefactory.ByteCodeInstanceFactoryProviderDefinition;
+import org.apache.tuscany.core.model.physical.instancefactory.ByteCodeIFProviderDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 
 /**
@@ -35,8 +35,8 @@ import org.apache.tuscany.spi.marshaller.MarshalException;
  * 
  * @version $Revision$ $Date$
  */
-public class ByteCodeInstanceFactoryProviderDefinitionMarshaller extends
-    AbstractInstanceFactoryProviderDefinitionMarshaller<ByteCodeInstanceFactoryProviderDefinition> {
+public class ByteCodeIFProviderDefinitionMarshaller extends
+    AbstractIFProviderDefinitionMarshaller<ByteCodeIFProviderDefinition> {
 
     // Byte code extension NS
     public static final String BYTE_CODE_NS = "http://tuscany.apache.org/xmlns/marshaller/byteCode/1.0-SNAPSHOT";
@@ -52,12 +52,12 @@ public class ByteCodeInstanceFactoryProviderDefinitionMarshaller extends
         new QName(BYTE_CODE_NS, AbstractPhysicalComponentDefinitionMarshaller.INSTANCE_FACTORY_PROVIDER, BYTE_CODE_PREFIX);
 
     @Override
-    protected ByteCodeInstanceFactoryProviderDefinition getConcreteModelObject() {
-        return new ByteCodeInstanceFactoryProviderDefinition();
+    protected ByteCodeIFProviderDefinition getConcreteModelObject() {
+        return new ByteCodeIFProviderDefinition();
     }
 
     @Override
-    protected void handleExtension(ByteCodeInstanceFactoryProviderDefinition modelObject, XMLStreamReader reader)
+    protected void handleExtension(ByteCodeIFProviderDefinition modelObject, XMLStreamReader reader)
         throws MarshalException {
         
         try {
@@ -74,7 +74,7 @@ public class ByteCodeInstanceFactoryProviderDefinitionMarshaller extends
     }
 
     @Override
-    protected void handleExtension(ByteCodeInstanceFactoryProviderDefinition modelObject, XMLStreamWriter writer)
+    protected void handleExtension(ByteCodeIFProviderDefinition modelObject, XMLStreamWriter writer)
         throws MarshalException {
         
         try {
@@ -94,8 +94,8 @@ public class ByteCodeInstanceFactoryProviderDefinitionMarshaller extends
     }
 
     @Override
-    protected Class<ByteCodeInstanceFactoryProviderDefinition> getModelObjectType() {
-        return ByteCodeInstanceFactoryProviderDefinition.class;
+    protected Class<ByteCodeIFProviderDefinition> getModelObjectType() {
+        return ByteCodeIFProviderDefinition.class;
     }
 
 }

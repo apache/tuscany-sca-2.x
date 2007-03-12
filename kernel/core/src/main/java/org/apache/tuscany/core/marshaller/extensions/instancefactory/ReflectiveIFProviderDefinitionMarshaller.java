@@ -27,11 +27,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.core.marshaller.extensions.AbstractInstanceFactoryProviderDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.AbstractIFProviderDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSite;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteType;
-import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveInstanceFactoryProviderDefinition;
+import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProviderDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 
 /**
@@ -39,8 +39,8 @@ import org.apache.tuscany.spi.marshaller.MarshalException;
  * 
  * @version $Revision$ $Date$
  */
-public class ReflectiveInstanceFactoryProviderDefinitionMarshaller extends
-    AbstractInstanceFactoryProviderDefinitionMarshaller<ReflectiveInstanceFactoryProviderDefinition> {
+public class ReflectiveIFProviderDefinitionMarshaller extends
+    AbstractIFProviderDefinitionMarshaller<ReflectiveIFProviderDefinition> {
     
     // Byte code extension NS
     public static final String REFLECTIVE_NS = "http://tuscany.apache.org/xmlns/marshaller/reflect/1.0-SNAPSHOT";
@@ -80,12 +80,12 @@ public class ReflectiveInstanceFactoryProviderDefinitionMarshaller extends
         new QName(REFLECTIVE_NS, AbstractPhysicalComponentDefinitionMarshaller.INSTANCE_FACTORY_PROVIDER, REFLECTIVE_PREFIX);
 
     @Override
-    protected ReflectiveInstanceFactoryProviderDefinition getConcreteModelObject() {
-        return new ReflectiveInstanceFactoryProviderDefinition();
+    protected ReflectiveIFProviderDefinition getConcreteModelObject() {
+        return new ReflectiveIFProviderDefinition();
     }
 
     @Override
-    protected void handleExtension(ReflectiveInstanceFactoryProviderDefinition modelObject, XMLStreamReader reader)
+    protected void handleExtension(ReflectiveIFProviderDefinition modelObject, XMLStreamReader reader)
         throws MarshalException {
         
         try {
@@ -116,7 +116,7 @@ public class ReflectiveInstanceFactoryProviderDefinitionMarshaller extends
     }
 
     @Override
-    protected void handleExtension(ReflectiveInstanceFactoryProviderDefinition modelObject, XMLStreamWriter writer)
+    protected void handleExtension(ReflectiveIFProviderDefinition modelObject, XMLStreamWriter writer)
         throws MarshalException {
         
         try {
@@ -164,8 +164,8 @@ public class ReflectiveInstanceFactoryProviderDefinitionMarshaller extends
     }
 
     @Override
-    protected Class<ReflectiveInstanceFactoryProviderDefinition> getModelObjectType() {
-        return ReflectiveInstanceFactoryProviderDefinition.class;
+    protected Class<ReflectiveIFProviderDefinition> getModelObjectType() {
+        return ReflectiveIFProviderDefinition.class;
     }
 
 }

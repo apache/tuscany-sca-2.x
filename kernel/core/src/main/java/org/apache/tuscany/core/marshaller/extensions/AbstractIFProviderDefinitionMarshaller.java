@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
  * 
  * @version $Revision$ $Date$
  */
-public abstract class AbstractInstanceFactoryProviderDefinitionMarshaller<IFPD extends InstanceFactoryProviderDefinition> extends
+public abstract class AbstractIFProviderDefinitionMarshaller<IFPD extends InstanceFactoryProviderDefinition> extends
     AbstractExtensibleMarshallerExtension<IFPD> {
 
     /**

@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
  * 
  * @version $Revision$ $Date$
  */
-public class ByteCodeInstanceFactoryProviderDefinition extends InstanceFactoryProviderDefinition {
+public class ByteCodeIFProviderDefinition extends InstanceFactoryProviderDefinition {
 
     // Byte code
     byte[] byteCode;
