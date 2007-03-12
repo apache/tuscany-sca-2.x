@@ -31,6 +31,9 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
 
     // Component Id.
     private URI componentId;
+    
+    // Instance factory provider
+    private InstanceFactoryProviderDefinition instanceFactoryProviderDefinition;
 
     /**
      * Gets the component id.
@@ -48,6 +51,22 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      */
     public void setComponentId(URI componentId) {
         this.componentId = componentId;
+    }
+
+    /**
+     * Gets the instance factory provider definition.
+     * @return Instance factory provider definition.
+     */
+    public InstanceFactoryProviderDefinition getInstanceFactoryProviderDefinition() {
+        return instanceFactoryProviderDefinition;
+    }
+
+    /**
+     * Sets the instance factory provider definition.
+     * @param instanceFactoryProviderDefinition Instance factory provider definition.
+     */
+    public void setInstanceFactoryProviderDefinition(InstanceFactoryProviderDefinition instanceFactoryProviderDefinition) {
+        this.instanceFactoryProviderDefinition = instanceFactoryProviderDefinition;
     }
 
 }
