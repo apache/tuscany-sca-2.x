@@ -22,11 +22,13 @@ import java.net.URI;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.core.builder.physical.AbstractPhysicalComponentBuilder;
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
+import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
@@ -39,9 +41,9 @@ import org.apache.tuscany.spi.wire.physical.WireAttacher;
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
  */
-public class JavaPhysicalComponentBuilder<T> extends
-    AbstractPhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent<T>>
-    implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
+public class JavaPhysicalComponentBuilder<T>
+    implements PhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>,
+    WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
 
     // Classloader registry
     private ClassLoaderRegistry classLoaderRegistry;
@@ -50,12 +52,12 @@ public class JavaPhysicalComponentBuilder<T> extends
     private ScopeRegistry scopeRegistry;
 
     /**
-     * Gets the physical component definition this builder expects.
-     *
-     * @return Physical component definition class.
+     * Injects builder registry.
+     * @param registry PhysicalComponentBuilder registry.
      */
-    protected Class<JavaPhysicalComponentDefinition> getComponentType() {
-        return JavaPhysicalComponentDefinition.class;
+    @Reference
+    public void setBuilderRegistry(PhysicalComponentBuilderRegistry registry) {
+        registry.register(JavaPhysicalComponentDefinition.class, this);
     }
 
     /**
@@ -66,10 +68,11 @@ public class JavaPhysicalComponentBuilder<T> extends
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */
-    public JavaComponent<T> build(JavaPhysicalComponentDefinition componentDefinition) throws BuilderException {
+    public JavaComponent<T> build(JavaPhysicalComponentDefinition<T> componentDefinition) throws BuilderException {
 
         URI componentId = componentDefinition.getComponentId();
-        JavaComponent<T> component = new JavaComponent<T>(componentId, null, null, 0, -1, -1);
+        InstanceFactoryProvider<T> provider = componentDefinition.getProvider();
+        JavaComponent<T> component = new JavaComponent<T>(componentId, provider, null, 0, -1, -1);
 
         setScopeContainer(componentDefinition, component);
 

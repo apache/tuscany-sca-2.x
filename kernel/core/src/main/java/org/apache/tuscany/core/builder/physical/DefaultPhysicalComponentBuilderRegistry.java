@@ -37,9 +37,9 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 public class DefaultPhysicalComponentBuilderRegistry implements PhysicalComponentBuilderRegistry {
 
     // Internal cache
-    private Map<Class<? extends PhysicalComponentDefinition>,
+    private Map<Class<?>,
         PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>> registry =
-        new ConcurrentHashMap<Class<? extends PhysicalComponentDefinition>,
+        new ConcurrentHashMap<Class<?>,
             PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>>();
 
     /**
@@ -50,21 +50,22 @@ public class DefaultPhysicalComponentBuilderRegistry implements PhysicalComponen
      * @param builder         Builder for the physical component definition.
      */
     public <PCD extends PhysicalComponentDefinition,
-        C extends Component> void register(Class<PCD> definitionClass, PhysicalComponentBuilder<PCD, C> builder) {
+        C extends Component> void register(Class<?> definitionClass, PhysicalComponentBuilder<PCD, C> builder) {
         registry.put(definitionClass, builder);
     }
-    
+
     /**
      * Builds a physical component from component definition.
+     *
      * @param componentDefinition Component definition.
      * @return Component to be built.
      */
     @SuppressWarnings("unchecked")
     public Component build(PhysicalComponentDefinition componentDefinition) throws BuilderException {
-        
+
         PhysicalComponentBuilder builder = registry.get(componentDefinition.getClass());
         return builder.build(componentDefinition);
-        
+
     }
 
 }
