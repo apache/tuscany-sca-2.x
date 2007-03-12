@@ -16,5 +16,5 @@ public interface IFProviderBuilder<IFP extends InstanceFactoryProvider,
      * @param cl Classloader to use.
      * @return Instance factory provider.
      */
-    IFP build(IFPD ifpd, ClassLoader cl);
+    IFP build(IFPD ifpd, ClassLoader cl) throws IFProviderBuilderException;
 }

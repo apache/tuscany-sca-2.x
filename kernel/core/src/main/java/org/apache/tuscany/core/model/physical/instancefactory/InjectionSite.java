@@ -34,6 +34,9 @@ public class InjectionSite {
     
     // URI
     private URI uri;
+    
+    // Name
+    private String name;
 
     /**
      * Gets the class of the injected reference.
@@ -81,6 +84,22 @@ public class InjectionSite {
      */
     public void setUri(URI uri) {
         this.uri = uri;
+    }
+
+    /**
+     * Gets the name.
+     * @return Name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name.
+     * @param name Name.
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

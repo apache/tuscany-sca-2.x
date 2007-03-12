@@ -74,6 +74,9 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
     
     // Injection site URI
     public static final String INJECTION_SITE_URI = "uri";
+    
+    // Injection site name
+    public static final String INJECTION_SITE_NAME = "name";
 
     // QName for the root element
     private static final QName QNAME =
@@ -103,6 +106,7 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
             } else if(INJECTION_SITE.equals(name)) {
                 InjectionSite injectionSite = new InjectionSite();
                 injectionSite.setType(InjectionSiteType.valueOf(reader.getAttributeValue(null, INJECTION_SITE_TYPE)));
+                injectionSite.setName(reader.getAttributeValue(null, INJECTION_SITE_NAME));
                 injectionSite.setInjectionClass(reader.getAttributeValue(null, INJECTION_SITE_CLASS));
                 injectionSite.setUri(new URI(reader.getAttributeValue(null, INJECTION_SITE_URI)));
                 modelObject.addInjectionSite(injectionSite);
@@ -154,6 +158,7 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
             for(InjectionSite injectionSite : modelObject.getInjectionSites()) {
                 writer.writeStartElement(QNAME.getPrefix(), INJECTION_SITE, QNAME.getNamespaceURI());
                 writer.writeAttribute(INJECTION_SITE_TYPE, injectionSite.getType().name());
+                writer.writeAttribute(INJECTION_SITE_NAME, injectionSite.getName());
                 writer.writeAttribute(INJECTION_SITE_CLASS, injectionSite.getInjectionClass());
                 writer.writeAttribute(INJECTION_SITE_URI, injectionSite.getUri().toASCIIString());
                 writer.writeEndElement();

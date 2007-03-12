@@ -5,11 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilder;
+import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderException;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
-import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * Default implementation of the registry.
@@ -23,11 +21,22 @@ public class DefaultIFProviderBuilderRegistry implements IFProviderBuilderRegist
         new ConcurrentHashMap<Class<?>, IFProviderBuilder<? extends InstanceFactoryProvider, ? extends InstanceFactoryProviderDefinition>>();
 
     /**
-     * Builds the IF provider.
+     * Builds an instnace factory provider from a definition.
+     * 
+     * @param providerDefinition Provider definition.
+     * @param cl Clasloader to use.
+     * @return Instance factory provider.
      */
-    public InstanceFactoryProvider build(InstanceFactoryProviderDefinition providerDefinition) {
+    @SuppressWarnings("unchecked")
+    public InstanceFactoryProvider build(InstanceFactoryProviderDefinition providerDefinition, ClassLoader cl)
+        throws IFProviderBuilderException {
+        
+        IFProviderBuilder builder = registry.get(providerDefinition.getClass());
+        if(builder == null) {
+            throw new IFProviderBuilderException("No registered builder for " + providerDefinition.getClass());
+        }
         // TODO Auto-generated method stub
-        return null;
+        return builder.build(providerDefinition, cl);
     }
 
     /**

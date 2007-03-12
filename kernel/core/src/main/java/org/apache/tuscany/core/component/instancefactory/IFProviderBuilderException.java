@@ -9,5 +9,21 @@ import org.apache.tuscany.api.TuscanyException;
  */
 @SuppressWarnings("serial")
 public class IFProviderBuilderException extends TuscanyException {
+    
+    /**
+     * Initializes the message.
+     * @param message Initializes the message.
+     */
+    public IFProviderBuilderException(String message) {
+        super(message);
+    }
+    
+    /**
+     * Initializes the causer.
+     * @param cause Initializes the cause.
+     */
+    public IFProviderBuilderException(Throwable cause) {
+        super(cause);
+    }
 
 }
