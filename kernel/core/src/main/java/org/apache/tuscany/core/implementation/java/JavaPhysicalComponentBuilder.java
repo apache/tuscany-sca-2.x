@@ -20,6 +20,8 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URI;
 
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.core.builder.physical.AbstractPhysicalComponentBuilder;
 import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
@@ -31,26 +33,25 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.physical.WireAttacher;
-import org.osoa.sca.annotations.Reference;
 
 /**
  * Java physical component builder.
- * 
- * @version $Rev$ $Date$
  *
+ * @version $Rev$ $Date$
  */
 public class JavaPhysicalComponentBuilder extends
     AbstractPhysicalComponentBuilder<JavaPhysicalComponentDefinition, JavaComponent>
-    implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition>{
-    
+    implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
+
     // Classloader registry
     private ClassLoaderRegistry classLoaderRegistry;
-    
+
     // SCope registry
     private ScopeRegistry scopeRegistry;
-    
+
     /**
      * Gets the physical component definition this builder expects.
+     *
      * @return Physical component definition class.
      */
     protected Class<JavaPhysicalComponentDefinition> getComponentType() {
@@ -59,25 +60,26 @@ public class JavaPhysicalComponentBuilder extends
 
     /**
      * Builds a component from its physical component definition.
-     * 
+     *
      * @param componentDefinition Physical component definition of the component
-     *            to be built.
+     *                            to be built.
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */
     public JavaComponent build(JavaPhysicalComponentDefinition componentDefinition) throws BuilderException {
-        
+
         JavaComponent component = new JavaComponent();
-        
+
         setScopeContainer(componentDefinition, component);
 
         setInstanceFactoryClass(componentDefinition, component);
-        
+
         return component;
     }
 
     /**
      * Injects classloader registry.
+     *
      * @param classLoaderRegistry Class loader registry.
      */
     @Reference
@@ -87,6 +89,7 @@ public class JavaPhysicalComponentBuilder extends
 
     /**
      * Injects scope registry.
+     *
      * @param scopeRegistry Scope registry.
      */
     @Reference
@@ -100,11 +103,13 @@ public class JavaPhysicalComponentBuilder extends
     private void setInstanceFactoryClass(JavaPhysicalComponentDefinition componentDefinition, JavaComponent component) {
         // TODO use MPCL to load IF class
         URI classLoaderId = componentDefinition.getClassLoaderId();
+/*
         byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode(); //NOPMD
+*/
         ClassLoader appCl = classLoaderRegistry.getClassLoader(classLoaderId); //NOPMD
         ClassLoader systemCl = getClass().getClassLoader(); //NOPMD        
         ClassLoader mpcl = null; //NOPMD
-        Class<InstanceFactory<?>> instanceFactoryClass = null;        
+        Class<InstanceFactory<?>> instanceFactoryClass = null;
         component.setInstanceFactoryClass(instanceFactoryClass);
     }
 
@@ -119,20 +124,20 @@ public class JavaPhysicalComponentBuilder extends
 
     /**
      * Attaches the source to the component.
-     * 
+     *
      * @param component Component.
-     * @param source Source.
+     * @param source    Source.
      */
     public void attach(JavaComponent component, JavaPhysicalWireSourceDefinition source) {
     }
 
     /**
      * Attaches the target to the component.
-     * 
+     *
      * @param component Component.
-     * @param target Target.
+     * @param target    Target.
      */
     public void attach(JavaComponent component, JavaPhysicalWireTargetDefinition target) {
-   }
+    }
 
 }

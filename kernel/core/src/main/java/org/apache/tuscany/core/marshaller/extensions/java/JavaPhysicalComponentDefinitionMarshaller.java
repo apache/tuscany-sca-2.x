@@ -20,13 +20,11 @@ package org.apache.tuscany.core.marshaller.extensions.java;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
@@ -35,7 +33,7 @@ import org.apache.tuscany.spi.model.Scope;
 
 /**
  * Marshaller for Java physical component definitions.
- * 
+ *
  * @version $Revision$ $Date: 2007-03-03 16:41:22 +0000 (Sat, 03 Mar
  *          2007) $
  */
@@ -44,12 +42,14 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
     // Core marshaller namespace
     public static final String JAVA_NS = "http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT";
-    
+
     // Core marshaller prefix
     public static final String JAVA_PREFIX = "java";
-    
+
+/*
     // Instance factory
     private static final String INSTANCE_FACTORY = "instanceFactory";
+*/
 
     // Scope
     private static final String SCOPE = "scope";
@@ -64,7 +64,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
     /**
      * Gets the qualified name of the XML fragment for the marshalled model
      * object.
-     * 
+     *
      * @return {"http://tuscany.apache.org/xmlns/marshaller/component/java/1.0-SNAPSHOT",
      *         "component"}
      */
@@ -75,7 +75,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
     /**
      * Retursn the type of the model object.
-     * 
+     *
      * @return <code>JavaPhysicalComponentDefinition.class</code>.
      */
     @Override
@@ -85,7 +85,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
     /**
      * Create the concrete PCD.
-     * 
+     *
      * @return An instance of<code>JavaPhysicalComponentDefinition</code>.
      */
     @Override
@@ -96,9 +96,9 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
     /**
      * Handles extensions for unmarshalling Java physical component definitions
      * including the marshalling of base64 encoded instance factory byte code.
-     * 
+     *
      * @param componentDefinition Physical component definition.
-     * @param reader Reader from which marshalled data is read.
+     * @param reader              Reader from which marshalled data is read.
      */
     @Override
     protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
@@ -107,11 +107,13 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
         try {
             String name = reader.getName().getLocalPart();
             reader.next();
-            if (INSTANCE_FACTORY.equals(name)) {
+/*            if (INSTANCE_FACTORY.equals(name)) {
                 byte[] base64ByteCode = reader.getText().getBytes();
                 byte[] byteCode = Base64.decodeBase64(base64ByteCode);
                 componentDefinition.setInstanceFactoryByteCode(byteCode);
-            } else if (SCOPE.equals(name)) {
+            } else
+*/
+            if (SCOPE.equals(name)) {
                 componentDefinition.setScope(new Scope(reader.getText()));
             } else if (CLASSLOADER_ID.equals(name)) {
                 componentDefinition.setClassLoaderId(new URI(reader.getText()));
@@ -127,29 +129,31 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
     /**
      * Handles extensions for marshalling Java physical component definitions
      * including the marshalling of base64 encoded instance factory byte code.
-     * 
+     *
      * @param componentDefinition Physical component definition.
-     * @param reader Writer to which marshalled data is written.
+     * @param writer              Writer to which marshalled data is written.
      */
     @Override
     protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer)
         throws MarshalException {
         try {
-            
+
+/*
             writer.writeStartElement(QNAME.getPrefix(), INSTANCE_FACTORY, QNAME.getNamespaceURI());
             writer.writeCharacters(new String(Base64.encodeBase64(componentDefinition.getInstanceFactoryByteCode())));
             writer.writeEndElement();
+*/
             writer.writeStartElement(QNAME.getPrefix(), SCOPE, QNAME.getNamespaceURI());
             writer.writeCharacters(componentDefinition.getScope().toString());
             writer.writeEndElement();
             writer.writeStartElement(QNAME.getPrefix(), CLASSLOADER_ID, QNAME.getNamespaceURI());
             writer.writeCharacters(componentDefinition.getClassLoaderId().toASCIIString());
             writer.writeEndElement();
-            
+
         } catch (XMLStreamException ex) {
             throw new MarshalException(ex);
         }
-        
+
     }
 
 }

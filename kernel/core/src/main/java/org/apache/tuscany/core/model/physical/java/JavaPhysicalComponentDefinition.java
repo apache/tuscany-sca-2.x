@@ -20,6 +20,7 @@ package org.apache.tuscany.core.model.physical.java;
 
 import java.net.URI;
 
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
@@ -27,11 +28,11 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  * Represents the physical component definition for a Java implementation.
  *
  * @version $Rev$ $Date$
+ * @param <T> the implementation class (if known)
  */
-public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition {
+public class JavaPhysicalComponentDefinition<T> extends PhysicalComponentDefinition {
 
-    // The byte code for the instance factory
-    private byte[] instanceFactoryByteCode;
+    private InstanceFactoryProvider<T> provider;
 
     // Scope
     private Scope scope;
@@ -41,6 +42,7 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
 
     /**
      * Gets the classloader id.
+     *
      * @return Classloader id.
      */
     public URI getClassLoaderId() {
@@ -49,6 +51,7 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
 
     /**
      * Set the classloader id.
+     *
      * @param classLoaderId Classloader id.
      */
     public void setClassLoaderId(URI classLoaderId) {
@@ -57,6 +60,7 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
 
     /**
      * Gets the scope for the component.
+     *
      * @return The scope for the component.
      */
     public Scope getScope() {
@@ -65,6 +69,7 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
 
     /**
      * Sets the scope for the component.
+     *
      * @param scope The scope for the component.
      */
     public void setScope(Scope scope) {
@@ -72,21 +77,20 @@ public class JavaPhysicalComponentDefinition extends PhysicalComponentDefinition
     }
 
     /**
-     * Gets the byte code for the instance factory.
+     * Return the provider for the component's instance factory.
      *
-     * @return Byte code for the instance factory.
+     * @return the provider for the component's instance factory
      */
-    public byte[] getInstanceFactoryByteCode() {
-        return instanceFactoryByteCode;
+    public InstanceFactoryProvider<T> getProvider() {
+        return provider;
     }
 
     /**
-     * Sets the byte code for the instance factory.
+     * Sets the provider for the component's instance factory.
      *
-     * @param instanceFactoryByteCode Byte code for the instance factory.
+     * @param provider the provider for the component's instance factory
      */
-    public void setInstanceFactoryByteCode(byte[] instanceFactoryByteCode) {
-        this.instanceFactoryByteCode = instanceFactoryByteCode;
+    public void setProvider(InstanceFactoryProvider<T> provider) {
+        this.provider = provider;
     }
-
 }
