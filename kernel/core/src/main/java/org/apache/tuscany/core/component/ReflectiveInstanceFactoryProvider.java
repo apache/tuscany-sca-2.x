@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
@@ -37,15 +38,15 @@ import org.apache.tuscany.spi.ObjectFactory;
  */
 public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProvider<T> {
     private final Constructor<T> constructor;
-    private final List<String> constructorNames;
-    private final Map<String, Member> injectionSites;
+    private final List<URI> constructorNames;
+    private final Map<URI, Member> injectionSites;
     private final EventInvoker<T> initInvoker;
     private final EventInvoker<T> destroyInvoker;
-    private final Map<String, ObjectFactory<?>> factories = new HashMap<String, ObjectFactory<?>>();
+    private final Map<URI, ObjectFactory<?>> factories = new HashMap<URI, ObjectFactory<?>>();
 
     public ReflectiveInstanceFactoryProvider(Constructor<T> constructor,
-                                             List<String> constructorNames,
-                                             Map<String, Member> injectionSites,
+                                             List<URI> constructorNames,
+                                             Map<URI, Member> injectionSites,
                                              EventInvoker<T> initInvoker,
                                              EventInvoker<T> destroyInvoker) {
         this.constructor = constructor;
@@ -55,7 +56,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         this.destroyInvoker = destroyInvoker;
     }
 
-    public void setObjectFactory(String name, ObjectFactory<?> objectFactory) {
+    public void setObjectFactory(URI name, ObjectFactory<?> objectFactory) {
         factories.put(name, objectFactory);
     }
 
@@ -68,7 +69,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
     protected ObjectFactory<?>[] getConstructorArgs() {
         ObjectFactory<?>[] initArgs = new ObjectFactory<?>[constructorNames.size()];
         for (int i = 0; i < initArgs.length; i++) {
-            String name = constructorNames.get(i);
+            URI name = constructorNames.get(i);
             ObjectFactory<?> factory = factories.get(name);
             assert factory != null;
             initArgs[i] = factory;
@@ -82,8 +83,8 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         Injector<T>[] injectors = (Injector<T>[]) new Injector[injectionSites.size()];
 
         int i = 0;
-        for (Map.Entry<String, Member> entry : injectionSites.entrySet()) {
-            String name = entry.getKey();
+        for (Map.Entry<URI, Member> entry : injectionSites.entrySet()) {
+            URI name = entry.getKey();
             Member site = entry.getValue();
             ObjectFactory<?> factory = factories.get(name);
             assert factory != null;
