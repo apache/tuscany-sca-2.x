@@ -15,7 +15,6 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  * Default implementation of the registry.
  * 
  * @version $Revison$ $Date$
- *
  */
 public class DefaultIFProviderBuilderRegistry implements IFProviderBuilderRegistry {
 
@@ -34,8 +33,7 @@ public class DefaultIFProviderBuilderRegistry implements IFProviderBuilderRegist
     /**
      * Registers the builder.
      */
-    public <IFPD extends InstanceFactoryProviderDefinition, IFP extends InstanceFactoryProvider> void register(Class<IFPD> ifpdClass,
-                                                                                                               IFProviderBuilder<IFP, IFPD> builder) {
+    public <IFPD extends InstanceFactoryProviderDefinition> void register(Class<IFPD> ifpdClass, IFProviderBuilder<?, IFPD> builder) {
         registry.put(ifpdClass, builder);
     }
 
