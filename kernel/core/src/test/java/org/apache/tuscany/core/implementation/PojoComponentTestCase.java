@@ -88,6 +88,7 @@ public class PojoComponentTestCase<T> extends TestCase {
         verify(provider, instanceFactory, wrapper, scopeContainer);
     }
 
+/*
     public void testAttachSingleReferenceWire() {
         provider.attachWire(wire);
         replay(provider);
@@ -108,6 +109,7 @@ public class PojoComponentTestCase<T> extends TestCase {
         component.attachCallbackWire(wire);
         verify(provider);
     }
+*/
 
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
