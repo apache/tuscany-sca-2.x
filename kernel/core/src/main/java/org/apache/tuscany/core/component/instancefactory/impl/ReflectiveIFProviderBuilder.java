@@ -29,55 +29,26 @@ public class ReflectiveIFProviderBuilder extends
     }
 
     @SuppressWarnings("unchecked")
-    public ReflectiveInstanceFactoryProvider build(ReflectiveIFProviderDefinition ifpd, ClassLoader cl) throws IFProviderBuilderException {
-        
+    public ReflectiveInstanceFactoryProvider build(ReflectiveIFProviderDefinition ifpd, ClassLoader cl)
+        throws IFProviderBuilderException {
+
         try {
-            
+
             Class implClass = cl.loadClass(ifpd.getImplementationClass());
-            
-            Class[] ctrArgs = new Class[ifpd.getConstructorArguments().size()];
-            int i = 0;
-            for(String ctrArgClass : ifpd.getConstructorArguments()) {
-                ctrArgs[i++] = cl.loadClass(ctrArgClass);
-            }
-            Constructor ctr = implClass.getDeclaredConstructor(ctrArgs);
-            
-            Method initMethod = null;
-            String initMethodName = ifpd.getInitMethod();
-            if(initMethodName != null) {
-                initMethod = implClass.getDeclaredMethod(initMethodName);
-            }
-            
-            Method destroyMethod = null;
-            String destroyMethodName = ifpd.getDestroyMethod();
-            if(destroyMethod != null) {
-                destroyMethod = implClass.getDeclaredMethod(destroyMethodName);
-            }
-            
+
+            Constructor ctr = getConstructor(ifpd, cl, implClass);
+
+            Method initMethod = getInitMethod(ifpd, implClass);
+
+            Method destroyMethod = getDestroyMethod(ifpd, implClass);
+
             List<URI> ctrInjectSites = ifpd.getConstructorNames();
-            
-            Map<URI, Member> injectionSites = new HashMap<URI, Member>();
-            for(InjectionSite injectionSite : ifpd.getInjectionSites()) {
-                String name = injectionSite.getName();
-                Member member = null;
-                if(injectionSite.getType() == InjectionSiteType.FIELD) {
-                    member = implClass.getDeclaredField(name);
-                } else if(injectionSite.getType() == InjectionSiteType.METHOD) {
-                    for(PropertyDescriptor  pd : Introspector.getBeanInfo(implClass).getPropertyDescriptors()) {
-                        if(name.equals(pd.getName())) {
-                            member = pd.getWriteMethod();
-                        }
-                    }
-                }
-                if(member == null) {
-                    throw new IFProviderBuilderException("Unknown injection site " + name);
-                }
-                injectionSites.put(injectionSite.getUri(), member);
-            }
-            
+
+            Map<URI, Member> injectionSites = getInjectionSites(ifpd, implClass);
+
             return new ReflectiveInstanceFactoryProvider(ctr, ctrInjectSites, injectionSites, initMethod, destroyMethod);
-            
-        } catch(ClassNotFoundException ex) {
+
+        } catch (ClassNotFoundException ex) {
             throw new IFProviderBuilderException(ex);
         } catch (NoSuchMethodException ex) {
             throw new IFProviderBuilderException(ex);
@@ -86,6 +57,70 @@ public class ReflectiveIFProviderBuilder extends
         } catch (IntrospectionException ex) {
             throw new IFProviderBuilderException(ex);
         }
+    }
+
+    /*
+     * Get injection sites.
+     */
+    private Map<URI, Member> getInjectionSites(ReflectiveIFProviderDefinition ifpd, Class implClass)
+        throws NoSuchFieldException, IntrospectionException, IFProviderBuilderException {
+        Map<URI, Member> injectionSites = new HashMap<URI, Member>();
+        for (InjectionSite injectionSite : ifpd.getInjectionSites()) {
+            String name = injectionSite.getName();
+            Member member = null;
+            if (injectionSite.getType() == InjectionSiteType.FIELD) {
+                member = implClass.getDeclaredField(name);
+            } else if (injectionSite.getType() == InjectionSiteType.METHOD) {
+                for (PropertyDescriptor pd : Introspector.getBeanInfo(implClass).getPropertyDescriptors()) {
+                    if (name.equals(pd.getName())) {
+                        member = pd.getWriteMethod();
+                    }
+                }
+            }
+            if (member == null) {
+                throw new IFProviderBuilderException("Unknown injection site " + name);
+            }
+            injectionSites.put(injectionSite.getUri(), member);
+        }
+        return injectionSites;
+    }
+
+    /*
+     * Get destroy method.
+     */
+    private Method getDestroyMethod(ReflectiveIFProviderDefinition ifpd, Class implClass) throws NoSuchMethodException {
+        Method destroyMethod = null;
+        String destroyMethodName = ifpd.getDestroyMethod();
+        if (destroyMethod != null) {
+            destroyMethod = implClass.getDeclaredMethod(destroyMethodName);
+        }
+        return destroyMethod;
+    }
+
+    /*
+     * Get init method.
+     */
+    private Method getInitMethod(ReflectiveIFProviderDefinition ifpd, Class implClass) throws NoSuchMethodException {
+        Method initMethod = null;
+        String initMethodName = ifpd.getInitMethod();
+        if (initMethodName != null) {
+            initMethod = implClass.getDeclaredMethod(initMethodName);
+        }
+        return initMethod;
+    }
+
+    /*
+     * Gets the matching constructor.
+     */
+    private Constructor getConstructor(ReflectiveIFProviderDefinition ifpd, ClassLoader cl, Class implClass)
+        throws ClassNotFoundException, NoSuchMethodException {
+        Class[] ctrArgs = new Class[ifpd.getConstructorArguments().size()];
+        int i = 0;
+        for (String ctrArgClass : ifpd.getConstructorArguments()) {
+            ctrArgs[i++] = cl.loadClass(ctrArgClass);
+        }
+        Constructor ctr = implClass.getDeclaredConstructor(ctrArgs);
+        return ctr;
     }
 
 }
