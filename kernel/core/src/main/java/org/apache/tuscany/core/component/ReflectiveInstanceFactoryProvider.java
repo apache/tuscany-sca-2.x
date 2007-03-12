@@ -31,7 +31,6 @@ import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
