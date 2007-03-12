@@ -18,21 +18,18 @@
  */
 package org.apache.tuscany.core.implementation.system.builder;
 
-import java.net.URI;
-import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.implementation.system.component.SystemComponent;
-import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.component.ReflectiveInstanceFactoryProvider;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.implementation.system.component.SystemComponent;
+import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
-import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
@@ -50,11 +47,11 @@ public class SystemPhysicalComponentBuilder<T>
         List<URI> constructorNames = null;
         Map<URI, Member> injectionSites = null;
         ScopeContainer scopeContainer = null;
-        InstanceFactoryProvider<T> provider = new ReflectiveInstanceFactoryProvider(constructor,
-                                                                                    constructorNames,
-                                                                                    injectionSites,
-                                                                                    initMethod,
-                                                                                    destroyMethod);
+        InstanceFactoryProvider<T> provider = new ReflectiveInstanceFactoryProvider<T>(constructor,
+                                                                                       constructorNames,
+                                                                                       injectionSites,
+                                                                                       initMethod,
+                                                                                       destroyMethod);
         SystemComponent<T> component = new SystemComponent<T>(componentId, provider, scopeContainer, initLevel, -1, -1);
         return component;
     }
