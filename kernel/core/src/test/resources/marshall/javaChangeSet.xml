@@ -40,8 +40,8 @@
 			<reflect:constructorArgument>java.lang.Long</reflect:constructorArgument>
 			<reflect:constructorInjectionName>xy#z</reflect:constructorInjectionName>
 			<reflect:constructorInjectionName>ab#c</reflect:constructorInjectionName>
-			<reflect:injectionSite type="FIELD" class="com.acme.Bar" uri="A#B"/>
-			<reflect:injectionSite type="METHOD" class="com.acme.Bar" uri="D#E"/>
+			<reflect:injectionSite type="FIELD" class="com.acme.Bar" uri="A#B" name="abc"/>
+			<reflect:injectionSite type="METHOD" class="com.acme.Bar" uri="D#E" name="xyz"/>
 		</reflect:instanceFactoryProvider>
 	</java:component>
 	

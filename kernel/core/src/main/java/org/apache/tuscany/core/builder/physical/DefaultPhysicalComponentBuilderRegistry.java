@@ -29,32 +29,34 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * Default map-based implementation of the physical component builder registry.
- * <p/> TODO may be we can factor out all the registries into a parameterized
- * one.
- * 
+ * <p/>
+ * TODO may be we can factor out all the registries into a parameterized one.
+ *
  * @version $Rev$ $Date$
  */
 public class DefaultPhysicalComponentBuilderRegistry implements PhysicalComponentBuilderRegistry {
 
     // Internal cache
-    private Map<Class<?>, PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>> registry =
-        new ConcurrentHashMap<Class<?>, PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>>();
+    private Map<Class<?>,
+        PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>> registry =
+        new ConcurrentHashMap<Class<?>,
+            PhysicalComponentBuilder<? extends PhysicalComponentDefinition, ? extends Component>>();
 
     /**
      * Registers a physical component builder.
-     * 
-     * @param <PCD> Type of the physical component definition.
+     *
+     * @param <PCD>           Type of the physical component definition.
      * @param definitionClass Class of the physical component definition.
-     * @param builder Builder for the physical component definition.
+     * @param builder         Builder for the physical component definition.
      */
-    public <PCD extends PhysicalComponentDefinition> void register(Class<PCD> definitionClass,
-                                                                   PhysicalComponentBuilder<PCD, ?> builder) {
+    public <PCD extends PhysicalComponentDefinition,
+        C extends Component> void register(Class<?> definitionClass, PhysicalComponentBuilder<PCD, C> builder) {
         registry.put(definitionClass, builder);
     }
 
     /**
      * Builds a physical component from component definition.
-     * 
+     *
      * @param componentDefinition Component definition.
      * @return Component to be built.
      */
