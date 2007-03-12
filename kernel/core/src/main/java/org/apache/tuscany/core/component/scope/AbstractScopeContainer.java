@@ -115,7 +115,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     }
 
     public <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component) throws TargetResolutionException {
-        InstanceWrapper wrapper = getInstanceWrapper(component, false);
+        InstanceWrapper<T> wrapper = getInstanceWrapper(component, false);
         if (wrapper == null) {
             throw new TargetNotFoundException(component.getUri().toString());
         }
@@ -183,6 +183,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         return "In state [" + super.toString() + ']';
     }
 
-    protected abstract InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+    protected abstract <T> InstanceWrapper<T> getInstanceWrapper(AtomicComponent component, boolean create)
         throws TargetResolutionException;
 }

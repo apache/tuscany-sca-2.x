@@ -59,13 +59,15 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
     public void onEvent(Event event) {
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+    protected <T> InstanceWrapper<T> getInstanceWrapper(AtomicComponent component, boolean create)
         throws TargetResolutionException {
         // there never is a previously associated instance, return null
         if (!create) {
             return null;
         }
-        InstanceWrapper ctx = component.createInstanceWrapper();
+        // FIXME remove when AtomicComponent has a type param
+        @SuppressWarnings("unchecked")
+        InstanceWrapper<T> ctx = (InstanceWrapper<T>) component.createInstanceWrapper();
         ctx.start();
         return ctx;
     }
