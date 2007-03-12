@@ -31,6 +31,7 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
@@ -47,13 +48,13 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
     public ReflectiveInstanceFactoryProvider(Constructor<T> constructor,
                                              List<URI> constructorNames,
                                              Map<URI, Member> injectionSites,
-                                             EventInvoker<T> initInvoker,
-                                             EventInvoker<T> destroyInvoker) {
+                                             Method initMethod,
+                                             Method destroyMethod) {
         this.constructor = constructor;
         this.constructorNames = constructorNames;
         this.injectionSites = injectionSites;
-        this.initInvoker = initInvoker;
-        this.destroyInvoker = destroyInvoker;
+        this.initInvoker = initMethod == null ? null : new MethodEventInvoker<T>(initMethod);
+        this.destroyInvoker = destroyMethod == null ? null : new MethodEventInvoker<T>(destroyMethod);
     }
 
     public void setObjectFactory(URI name, ObjectFactory<?> objectFactory) {

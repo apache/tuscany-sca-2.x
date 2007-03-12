@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.system.model;
 
+import java.lang.reflect.Method;
+
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -28,4 +30,42 @@ public class SystemPhysicalComponentDefinition<T> extends PhysicalComponentDefin
 
     // we can use an actual class as system components cannot be marshalled
     private Class<T> implClass;
+
+    private Method initMethod;
+
+    private Method destroyMethod;
+
+    private int initLevel;
+
+    public Class<T> getImplClass() {
+        return implClass;
+    }
+
+    public void setImplClass(Class<T> implClass) {
+        this.implClass = implClass;
+    }
+
+    public Method getInitMethod() {
+        return initMethod;
+    }
+
+    public void setInitMethod(Method initMethod) {
+        this.initMethod = initMethod;
+    }
+
+    public Method getDestroyMethod() {
+        return destroyMethod;
+    }
+
+    public void setDestroyMethod(Method destroyMethod) {
+        this.destroyMethod = destroyMethod;
+    }
+
+    public int getInitLevel() {
+        return initLevel;
+    }
+
+    public void setInitLevel(int initLevel) {
+        this.initLevel = initLevel;
+    }
 }
