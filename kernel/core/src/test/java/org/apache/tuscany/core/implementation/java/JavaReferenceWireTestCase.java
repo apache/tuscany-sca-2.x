@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -93,15 +94,15 @@ public class JavaReferenceWireTestCase extends TestCase {
         scope.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
         EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
-        scope.getInstance(EasyMock.isA(AtomicComponent.class));
+        scope.getWrapper(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
-            private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
+            private Map<AtomicComponent, InstanceWrapper> cache = new HashMap<AtomicComponent, InstanceWrapper>();
 
             public Object answer() throws Throwable {
                 AtomicComponent component = (AtomicComponent) EasyMock.getCurrentArguments()[0];
-                Object instance = cache.get(component);
+                InstanceWrapper instance = cache.get(component);
                 if (instance == null) {
-                    instance = component.createInstance();
+                    instance = component.createInstanceWrapper();
                     cache.put(component, instance);
                 }
                 return instance;

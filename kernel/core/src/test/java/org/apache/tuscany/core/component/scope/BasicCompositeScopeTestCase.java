@@ -20,110 +20,86 @@ package org.apache.tuscany.core.component.scope;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
-
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.ComponentStop;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.mock.component.CompositeScopeInitDestroyComponent;
+import org.easymock.EasyMock;
+
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class BasicCompositeScopeTestCase extends TestCase {
 
-    private EventInvoker initInvoker;
-    private EventInvoker destroyInvoker;
-    private PojoObjectFactory<?> factory;
+    private CompositeScopeContainer scopeContext;
+    private AtomicComponent component;
+    private InstanceWrapper wrapper;
 
-    public void testLifecycleManagement() throws Exception {
-        CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
-        // start the request
-        CompositeScopeInitDestroyComponent o1 =
-            (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
-        assertTrue(o1.isInitialized());
-        assertFalse(o1.isDestroyed());
-        CompositeScopeInitDestroyComponent o2 =
-            (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
-        assertEquals(o1, o2);
-        scopeContext.onEvent(new ComponentStop(this, null));
-        assertTrue(o1.isDestroyed());
-        scopeContext.stop();
+    public void testWrapperCreation() throws Exception {
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContext.getWrapper(component));
+        EasyMock.verify(component, wrapper);
     }
 
+    public void testWrapperRetrieve() throws Exception {
+        // first create a wrapper in the context's cache
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContext.getWrapper(component));
+        EasyMock.verify(component, wrapper);
+        EasyMock.reset(component, wrapper);
 
-    public void testGetAssociatedInstance() throws Exception {
-        CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
-        // start the request
-        scopeContext.getInstance(component);
-        scopeContext.getAssociatedInstance(component);
+        // fetch again and check that the component and wrapper are not called
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContext.getWrapper(component));
+        EasyMock.verify(component, wrapper);
+    }
+
+    public void testAssociatedWrapperRetrieve() throws Exception {
+        // first create a wrapper in the context's cache
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContext.getWrapper(component));
+        EasyMock.verify(component, wrapper);
+        EasyMock.reset(component, wrapper);
+
+        // fetch again and check that the component and wrapper are not called
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContext.getAssociatedWrapper(component));
+        EasyMock.verify(component, wrapper);
     }
 
     public void testGetAssociatedInstanceNonExistent() throws Exception {
-        CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
-        // start the request
+        URI uri = URI.create("oops");
+        EasyMock.expect(component.getUri()).andReturn(uri);
+        EasyMock.replay(component, wrapper);
         try {
-            scopeContext.getAssociatedInstance(component);
+            scopeContext.getAssociatedWrapper(component);
             fail();
-        } catch (TargetNotFoundException e) {
-            // expected
+        } catch (TargetResolutionException e) {
+            assertEquals(uri.toString(), e.getMessage());
         }
+        EasyMock.verify(component, wrapper);
     }
 
-    public void testCompositeIsolation() throws Exception {
-        CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
-        scopeContext.start();
-
-        AtomicComponent component = createComponent(scopeContext);
-
-        CompositeScopeInitDestroyComponent o1 =
-            (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
-        assertTrue(o1.isInitialized());
-        assertFalse(o1.isDestroyed());
-
-        CompositeScopeInitDestroyComponent o2 =
-            (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
-        assertSame(o1, o2);
-        scopeContext.onEvent(new ComponentStop(this, null));
-        assertTrue(o1.isDestroyed());
-        scopeContext.stop();
+    public void testWrapperReturn() throws Exception{
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContext.getWrapper(component));
+        scopeContext.returnWrapper(component, wrapper);
+        EasyMock.verify(component, wrapper);
     }
 
+    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<CompositeScopeInitDestroyComponent>(
-            CompositeScopeInitDestroyComponent.class.getConstructor((Class[]) null));
-        initInvoker = new MethodEventInvoker<CompositeScopeInitDestroyComponent>(
-            CompositeScopeInitDestroyComponent.class.getMethod("init"));
-        destroyInvoker = new MethodEventInvoker<CompositeScopeInitDestroyComponent>(
-            CompositeScopeInitDestroyComponent.class.getMethod("destroy"));
-    }
+        component = EasyMock.createNiceMock(AtomicComponent.class);
+        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    private AtomicComponent createComponent(ScopeContainer scopeContainer) {
-        PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setInstanceFactory(factory);
-        configuration.setInitInvoker(initInvoker);
-        configuration.setDestroyInvoker(destroyInvoker);
-        configuration.setName(URI.create("foo"));
-        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
-        component.setScopeContainer(scopeContainer);
-        component.start();
-        return component;
+        scopeContext = new CompositeScopeContainer(null);
+        scopeContext.start();
+        scopeContext.register(component);
     }
 }

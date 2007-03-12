@@ -129,11 +129,16 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public Object getTargetInstance() throws TargetResolutionException {
-        return scopeContainer.getInstance(this);
+        InstanceWrapper wrapper = scopeContainer.getWrapper(this);
+        if (!wrapper.isStarted()) {
+            wrapper.start();
+        }
+        return wrapper.getInstance();
     }
 
     public Object getAssociatedTargetInstance() throws TargetResolutionException {
-        return scopeContainer.getAssociatedInstance(this);
+        InstanceWrapper wrapper = scopeContainer.getAssociatedWrapper(this);
+        return wrapper.getInstance();
     }
 
     public Object createInstance() throws ObjectCreationException {

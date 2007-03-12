@@ -27,6 +27,7 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -108,15 +109,15 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         scopeContainer.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
         EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
-        scopeContainer.getInstance(EasyMock.isA(AtomicComponent.class));
+        scopeContainer.getWrapper(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
-            private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
+            private Map<AtomicComponent, InstanceWrapper> cache = new HashMap<AtomicComponent, InstanceWrapper>();
 
             public Object answer() throws Throwable {
                 AtomicComponent component = (AtomicComponent) EasyMock.getCurrentArguments()[0];
-                Object instance = cache.get(component);
+                InstanceWrapper instance = cache.get(component);
                 if (instance == null) {
-                    instance = component.createInstance();
+                    instance = component.createInstanceWrapper();
                     cache.put(component, instance);
                 }
                 return instance;
