@@ -1,5 +1,8 @@
 package org.apache.tuscany.core.component.instancefactory.impl;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -25,6 +28,7 @@ public class ReflectiveIFProviderBuilder extends
         return ReflectiveIFProviderDefinition.class;
     }
 
+    @SuppressWarnings("unchecked")
     public ReflectiveInstanceFactoryProvider build(ReflectiveIFProviderDefinition ifpd, ClassLoader cl) throws IFProviderBuilderException {
         
         try {
@@ -54,18 +58,32 @@ public class ReflectiveIFProviderBuilder extends
             
             Map<URI, Member> injectionSites = new HashMap<URI, Member>();
             for(InjectionSite injectionSite : ifpd.getInjectionSites()) {
+                String name = injectionSite.getName();
+                Member member = null;
                 if(injectionSite.getType() == InjectionSiteType.FIELD) {
+                    member = implClass.getDeclaredField(name);
                 } else if(injectionSite.getType() == InjectionSiteType.METHOD) {
-                    
+                    for(PropertyDescriptor  pd : Introspector.getBeanInfo(implClass).getPropertyDescriptors()) {
+                        if(name.equals(pd.getName())) {
+                            member = pd.getWriteMethod();
+                        }
+                    }
                 }
+                if(member == null) {
+                    throw new IFProviderBuilderException("Unknown injection site " + name);
+                }
+                injectionSites.put(injectionSite.getUri(), member);
             }
             
-            // TODO Auto-generated method stub
-            return null;
+            return new ReflectiveInstanceFactoryProvider(ctr, ctrInjectSites, injectionSites, initMethod, destroyMethod);
             
         } catch(ClassNotFoundException ex) {
             throw new IFProviderBuilderException(ex);
         } catch (NoSuchMethodException ex) {
+            throw new IFProviderBuilderException(ex);
+        } catch (NoSuchFieldException ex) {
+            throw new IFProviderBuilderException(ex);
+        } catch (IntrospectionException ex) {
             throw new IFProviderBuilderException(ex);
         }
     }

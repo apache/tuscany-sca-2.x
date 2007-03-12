@@ -26,8 +26,6 @@ public enum InjectionSiteType {
     
     FIELD,
     
-    METHOD,
-    
-    CONSTRUCTOR;
+    METHOD;
 
 }
