@@ -24,6 +24,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public interface Invocable extends SCAObject {
 
