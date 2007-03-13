@@ -22,18 +22,19 @@ import java.net.URI;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
+import org.apache.tuscany.spi.builder.physical.WireAttacher;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
-import org.apache.tuscany.spi.wire.physical.WireAttacher;
+
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 
 /**
  * Java physical component builder.
@@ -53,6 +54,7 @@ public class JavaPhysicalComponentBuilder<T>
 
     /**
      * Injects builder registry.
+     *
      * @param registry PhysicalComponentBuilder registry.
      */
     @Reference
@@ -63,8 +65,7 @@ public class JavaPhysicalComponentBuilder<T>
     /**
      * Builds a component from its physical component definition.
      *
-     * @param componentDefinition Physical component definition of the component
-     *                            to be built.
+     * @param componentDefinition Physical component definition of the component to be built.
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */
@@ -133,6 +134,8 @@ public class JavaPhysicalComponentBuilder<T>
      * @param source    Source.
      */
     public void attach(JavaComponent component, JavaPhysicalWireSourceDefinition source) {
+
+
     }
 
     /**
