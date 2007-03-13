@@ -27,7 +27,7 @@ public class InjectionSiteMapping {
     private InjectionSource source;
     
     // Site of the mapping
-    private Site site;
+    private MemberSite site;
 
     /**
      * Gets the source of the injection.
@@ -49,7 +49,7 @@ public class InjectionSiteMapping {
      * Gets the site of the injection.
      * @return Injection site.
      */
-    public Site getSite() {
+    public MemberSite getSite() {
         return site;
     }
 
@@ -57,7 +57,7 @@ public class InjectionSiteMapping {
      * Set the size of the injection.
      * @param site Injection site.
      */
-    public void setSite(Site site) {
+    public void setSite(MemberSite site) {
         this.site = site;
     }
 }
