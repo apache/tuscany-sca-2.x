@@ -6,7 +6,7 @@ package org.apache.tuscany.core.model.physical.instancefactory;
  * @version $Revision$ $Date$
  *
  */
-public class ValueSource {
+public class InjectionSource {
 
     // Type
     private ValueSourceType valueType;

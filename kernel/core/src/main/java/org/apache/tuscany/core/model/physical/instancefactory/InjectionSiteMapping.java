@@ -24,7 +24,7 @@ package org.apache.tuscany.core.model.physical.instancefactory;
 public class InjectionSiteMapping {
 
     // SOurce of the mapping
-    private ValueSource source;
+    private InjectionSource source;
     
     // Site of the mapping
     private Site site;
@@ -33,7 +33,7 @@ public class InjectionSiteMapping {
      * Gets the source of the injection.
      * @return Injection source.
      */
-    public ValueSource getSource() {
+    public InjectionSource getSource() {
         return source;
     }
 
@@ -41,7 +41,7 @@ public class InjectionSiteMapping {
      * Sets the source of the injection.
      * @param source Injection source.
      */
-    public void setSource(ValueSource source) {
+    public void setSource(InjectionSource source) {
         this.source = source;
     }
 
