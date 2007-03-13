@@ -77,7 +77,7 @@ public class ConnectorImplWireTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         manager = new ComponentManagerImpl();
-        connector = new ConnectorImpl(null, null, manager, null, null);
+        connector = new ConnectorImpl(null, null, null, manager, null, null);
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         contract = registry.introspect(Foo.class);
     }

@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.builder.interceptor.InterceptorBuilderRegistry;
+import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Invocable;
@@ -77,6 +78,7 @@ public class ConnectorImpl implements Connector {
     private WorkContext workContext;
     private WorkScheduler scheduler;
     private InterceptorBuilderRegistry interceptorBuilderRegistry;
+    private WireAttacherRegistry attacherRegistry;
 
     public ConnectorImpl(ComponentManager componentManager) {
         this.componentManager = componentManager;
@@ -85,10 +87,12 @@ public class ConnectorImpl implements Connector {
     @Constructor
     public ConnectorImpl(
         @org.osoa.sca.annotations.Reference InterceptorBuilderRegistry interceptorBuilderRegistry,
+        @org.osoa.sca.annotations.Reference WireAttacherRegistry attacherRegistry,
         @org.osoa.sca.annotations.Reference WirePostProcessorRegistry processorRegistry,
         @org.osoa.sca.annotations.Reference ComponentManager componentManager,
         @org.osoa.sca.annotations.Reference WorkScheduler scheduler,
         @org.osoa.sca.annotations.Reference WorkContext workContext) {
+        this.attacherRegistry = attacherRegistry;
         this.interceptorBuilderRegistry = interceptorBuilderRegistry;
         this.postProcessorRegistry = processorRegistry;
         this.componentManager = componentManager;
