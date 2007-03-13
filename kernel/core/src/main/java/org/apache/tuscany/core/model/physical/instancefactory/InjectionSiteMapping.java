@@ -22,93 +22,41 @@ package org.apache.tuscany.core.model.physical.instancefactory;
  * @version $Rev$ $Date$
  */
 public class InjectionSiteMapping {
-    /**
-     * Identifier in SCA terms of the source of the value that will be injected.
-     */
-    public static class ValueSource {
-        public static enum ValueSourceType {
-            CALLBACK,
-            REFERENCE,
-            PROPERTY
-        }
 
-        private ValueSourceType valueType;
-        private String name;
-
-        public ValueSourceType getValueType() {
-            return valueType;
-        }
-
-        public void setValueType(ValueSourceType valueType) {
-            this.valueType = valueType;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
-    /**
-     * Abstraction for a site where a value can be injected.
-     */
-    public static abstract class Site {
-    }
-
-    public static class FieldSite extends Site {
-        private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
-    public static class MethodSite {
-        private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
-    public static class ConstructorSite extends Site {
-        private int paramIndex;
-
-        public int getParamIndex() {
-            return paramIndex;
-        }
-
-        public void setParamIndex(int paramIndex) {
-            this.paramIndex = paramIndex;
-        }
-    }
-
+    // SOurce of the mapping
     private ValueSource source;
+    
+    // Site of the mapping
     private Site site;
 
+    /**
+     * Gets the source of the injection.
+     * @return Injection source.
+     */
     public ValueSource getSource() {
         return source;
     }
 
+    /**
+     * Sets the source of the injection.
+     * @param source Injection source.
+     */
     public void setSource(ValueSource source) {
         this.source = source;
     }
 
+    /**
+     * Gets the site of the injection.
+     * @return Injection site.
+     */
     public Site getSite() {
         return site;
     }
 
+    /**
+     * Set the size of the injection.
+     * @param site Injection site.
+     */
     public void setSite(Site site) {
         this.site = site;
     }
