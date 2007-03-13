@@ -25,6 +25,8 @@ import org.osoa.sca.ComponentContext;
 
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
@@ -143,5 +145,21 @@ public interface Component extends Invocable {
      * @param wires the wire to attach
      */
     void attachWires(List<Wire> wires);
+
+    /**
+     * Attaches a wire to the component acting as a source
+     *
+     * @param wire      the wire to attach
+     * @param defintion metadata for attaching the wire
+     */
+    void attachWire(Wire wire, PhysicalWireSourceDefinition defintion);
+
+    /**
+     * Attaches a wire to the component acting as a target
+     *
+     * @param wire      the wire to attach
+     * @param defintion metadata for attaching the wire
+     */
+    void attachWire(Wire wire, PhysicalWireTargetDefinition defintion);
 
 }

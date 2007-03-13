@@ -39,6 +39,8 @@ import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.component.ComponentContextImpl;
@@ -225,6 +227,14 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             callBackwires.put(callbackName, wireList);
         }
         wireList.add(wire);
+    }
+
+    public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
+        throw new UnsupportedOperationException();
     }
 
     public void start() throws CoreRuntimeException {
