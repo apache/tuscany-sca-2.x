@@ -36,8 +36,8 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.ProxyService;
+import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.builder.physical.WireAttachException;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
@@ -165,6 +165,9 @@ public class JavaPhysicalComponentBuilder<T>
         Class<?> type = component.getMemberType(wire.getSourceUri());
         WireObjectFactory<?> factory = new WireObjectFactory(type, wire, proxyService);
         component.setObjectFactory(wire.getSourceUri(), factory);
+        if (!wire.getCallbackInvocationChains().isEmpty()) {
+            // TODO handle callbacks
+        }
     }
 
     /**

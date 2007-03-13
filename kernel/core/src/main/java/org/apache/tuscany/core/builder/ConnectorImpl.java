@@ -126,11 +126,6 @@ public class ConnectorImpl implements Connector {
         Wire wire = createWire(definition);
         attacherRegistry.attach(source, wire, definition.getSource());
         attacherRegistry.attach(target, wire, definition.getTarget());
-        if (!wire.getCallbackPhysicalInvocationChains().isEmpty()) {
-            // attach callbacks
-            attacherRegistry.attach(target, wire, definition.getCallbackSource());
-            attacherRegistry.attach(source, wire, definition.getCallbackTarget());
-        }
     }
 
     public void connect(ComponentDefinition<? extends Implementation<?>> definition) throws WiringException {
