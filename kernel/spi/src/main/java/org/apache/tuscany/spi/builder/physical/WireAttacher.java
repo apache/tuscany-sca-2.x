@@ -26,7 +26,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
- * Abstraction for the wire attacher.
+ * Responsible for attaching a wire to a source and target component. The mechanism for perforing the attach is specific
+ * to the component implementation type.
  *
  * @version $Date$ $Revision$
  */
@@ -35,21 +36,23 @@ public interface WireAttacher<C extends Component,
     PWTD extends PhysicalWireTargetDefinition> {
 
     /**
-     * Attaches the source to the component.
+     * Attaches a wire to a source component.
      *
-     * @param component Component.
-     * @param wire
-     * @param source    Source.
+     * @param component  the component.
+     * @param wire       the wire
+     * @param definition metadata for performing the attach.
+     * @throws WiringException if an exception occurs during the attach operation
      */
-    void attach(C component, Wire wire, PWSD source) throws WiringException;
+    void attach(C component, Wire wire, PWSD definition) throws WiringException;
 
     /**
-     * Attaches the target to the component.
+     * Attaches a wire to a target component.
      *
-     * @param component Component.
-     * @param wire
-     * @param target    Target.
+     * @param component  the component.
+     * @param wire       the wire
+     * @param definition metadata for performing the attach.
+     * @throws WiringException if an exception occurs during the attach operation
      */
-    void attach(C component, Wire wire, PWTD target) throws WiringException;
+    void attach(C component, Wire wire, PWTD definition) throws WiringException;
 
 }
