@@ -24,20 +24,25 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.component.event.HttpSessionStart;
+import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class BasicHttpSessionScopeTestCase extends TestCase {
+    private ScopeContainerMonitor monitor;
+    private ScopeContainer scopeContainer;
     private AtomicComponent component;
     private InstanceWrapper wrapper;
-    private ScopeContainer scopeContainer;
     private WorkContext workContext;
 
     public void testLifecycleManagement() throws Exception {
@@ -100,13 +105,30 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         EasyMock.verify(component, wrapper);
     }
 
+    public void testDestroyErrorMonitor() throws Exception {
+        TargetDestructionException ex = new TargetDestructionException("oops", "again");
+        monitor.destructionError(ex);
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        wrapper.stop();
+        EasyMock.expectLastCall().andThrow(ex);
+        EasyMock.replay(component, wrapper, monitor);
+
+        Object id = new Object();
+        scopeContainer.onEvent(new HttpSessionStart(this, id));
+        workContext.setIdentifier(Scope.SESSION, id);
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        scopeContainer.onEvent(new HttpSessionEnd(this, id));
+        EasyMock.verify(component, wrapper, monitor);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         component = EasyMock.createNiceMock(AtomicComponent.class);
         wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
 
         workContext = new WorkContextImpl();
-        scopeContainer = new HttpSessionScopeContainer(workContext, null);
+        monitor = EasyMock.createMock(ScopeContainerMonitor.class);
+        scopeContainer = new HttpSessionScopeContainer(workContext, monitor);
         scopeContainer.start();
 
         component.addListener(scopeContainer);
