@@ -71,7 +71,12 @@
         <system:implementation.system
             class="org.apache.tuscany.core.builder.interceptor.InterceptorBuilderRegistryImpl"/>
     </component>
-    
+
+    <component name="wireAttacherRegistry">
+        <system:implementation.system
+            class="org.apache.tuscany.core.builder.physical.WireAttacherRegistryImpl"/>
+    </component>
+
     <component name="wirePostProcessorRegistry">
         <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
     </component>
