@@ -139,28 +139,6 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
     <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException;
 
     /**
-     * Persists a new component implementation instance, equivalent to an insert or append operation
-     *
-     * @param component  the owning component
-     * @param id         the id associated with the instance
-     * @param instance   the instance to persist
-     * @param expiration the expiration in milliseconds
-     * @throws PersistenceException if there was a problem persisting the instance
-     */
-    void persistNew(AtomicComponent component, String id, Object instance, long expiration) throws PersistenceException;
-
-    /**
-     * Persists a component implementation instance, equivalent to an update operation
-     *
-     * @param component  the owning component
-     * @param id         the id associated with the instance
-     * @param instance   the instance to persist
-     * @param expiration the expiration in milliseconds
-     * @throws PersistenceException if there was a problem persisting the instance
-     */
-    void persist(AtomicComponent component, String id, Object instance, long expiration) throws PersistenceException;
-
-    /**
      * Removes a component implementation instance associated with the current context from persistent storage
      *
      * @param component the owning component
