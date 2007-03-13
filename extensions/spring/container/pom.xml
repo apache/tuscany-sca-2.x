@@ -22,13 +22,13 @@
     <parent>
         <groupId>org.apache.tuscany.sca.spring</groupId>
         <artifactId>spring</artifactId>
-        <version>1.0-incubating-SNAPSHOT</version>
+        <version>2.0-alpha2-incubating-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.spring</groupId>
     <artifactId>spring-container</artifactId>
-    <version>1.0-alpha-incubating-SNAPSHOT</version>
+    <version>2.0-alpha2-incubating-SNAPSHOT</version>
     <name>Apache Tuscany Spring Framework Container</name>
     <description>Container for managing Spring composites</description>
     <packaging>jar</packaging>

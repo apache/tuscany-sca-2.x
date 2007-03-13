@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca.spring</groupId>
         <artifactId>spring-integration-test</artifactId>
-        <version>1.0-alpha-incubating-SNAPSHOT</version>
+        <version>2.0-alpha2-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.extensions.spring.spring-integration-test</groupId>
@@ -41,7 +41,7 @@
                     <dependency>
                         <groupId>org.apache.tuscany.sca.spring</groupId>
                         <artifactId>spring-container</artifactId>
-                        <version>1.0-alpha-incubating-SNAPSHOT</version>
+                        <version>2.0-alpha2-incubating-SNAPSHOT</version>
                         <scope>compile</scope>
                     </dependency>
                 </dependencies>
