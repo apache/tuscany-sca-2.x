@@ -111,8 +111,8 @@ public final class MockFactory {
             chain.setTargetInvoker(targetComponent.createTargetInvoker(targetName, chain.getOperation()));
         }
         sourceComponent.attachWire(wire);
-        targetScope.register(targetComponent);
-        sourceScope.register(sourceComponent);
+        targetScope.register(null, targetComponent);
+        sourceScope.register(null, sourceComponent);
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         components.put(sourceName, sourceComponent);
         components.put(targetName, targetComponent);
@@ -153,8 +153,8 @@ public final class MockFactory {
         List<Wire> wires = new ArrayList<Wire>();
         wires.add(wire);
         sourceComponent.attachWires(wires);
-        targetScope.register(targetComponent);
-        sourceScope.register(sourceComponent);
+        targetScope.register(null, targetComponent);
+        sourceScope.register(null, sourceComponent);
 
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         components.put(sourceName, sourceComponent);

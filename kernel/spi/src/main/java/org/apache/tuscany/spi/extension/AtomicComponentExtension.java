@@ -88,7 +88,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     public void start() throws CoreRuntimeException {
         super.start();
-        scopeContainer.register(this);
+        scopeContainer.register(null, this);
     }
 
     public void stop() {

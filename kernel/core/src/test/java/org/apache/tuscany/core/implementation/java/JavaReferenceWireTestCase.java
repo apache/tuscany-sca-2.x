@@ -91,7 +91,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         scope.start();
         scope.stop();
-        scope.register(EasyMock.isA(AtomicComponent.class));
+        scope.register(EasyMock.isNull(), EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
         EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         scope.getWrapper(EasyMock.isA(AtomicComponent.class));
