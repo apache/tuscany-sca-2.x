@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.ObjectFactory;
  * @version $Rev$ $Date$
  */
 public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProvider<T> {
+    private final Class<T> implementationClass;
     private final Constructor<T> constructor;
     private final List<URI> constructorNames;
     private final Map<URI, Member> injectionSites;
@@ -50,6 +51,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
                                              Map<URI, Member> injectionSites,
                                              Method initMethod,
                                              Method destroyMethod) {
+        this.implementationClass = constructor.getDeclaringClass();
         this.constructor = constructor;
         this.constructorNames = constructorNames;
         this.injectionSites = injectionSites;
@@ -59,6 +61,10 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
 
     public void setObjectFactory(URI name, ObjectFactory<?> objectFactory) {
         factories.put(name, objectFactory);
+    }
+
+    public Class<T> getImplementationClass() {
+        return implementationClass;
     }
 
     public InstanceFactory<T> createFactory() {

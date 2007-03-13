@@ -61,7 +61,8 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
 
     public PojoComponent(URI componentId,
                          InstanceFactoryProvider<T> provider,
-                         ScopeContainer scopeContainer, int initLevel,
+                         ScopeContainer scopeContainer,
+                         int initLevel,
                          long maxIdleTime,
                          long maxAge) {
         super(componentId);
@@ -131,6 +132,14 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
     }
 
     public void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues) {
+    }
+
+    public ScopeContainer getScopeContainer() {
+        return scopeContainer;
+    }
+
+    public Class<T> getImplementationClass() {
+        return provider.getImplementationClass();
     }
 
     @Deprecated

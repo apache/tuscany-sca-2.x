@@ -159,21 +159,20 @@ public class JavaPhysicalComponentBuilder<T>
      * Attaches the target to the component.
      *
      * @param component Component.
-     * @param wire
+     * @param wire      the wire to attach
      * @param target    Target.
      */
     public void attach(JavaComponent component, Wire wire, JavaPhysicalWireTargetDefinition target)
         throws WireAttachException {
-        //TODO get impl class
-        Class<?> implementationClass = null;
-
+        ScopeContainer scopeContainer = component.getScopeContainer();
+        Class<?> implementationClass = component.getImplementationClass();
+        ClassLoader loader = implementationClass.getClassLoader();
         for (Map.Entry<PhysicalOperationDefinition, InvocationChain> entry : wire.getPhysicalInvocationChains()
             .entrySet()) {
             PhysicalOperationDefinition operation = entry.getKey();
             InvocationChain chain = entry.getValue();
             List<String> params = operation.getParameters();
             Class<?>[] paramTypes = new Class<?>[params.size()];
-            ClassLoader loader = implementationClass.getClassLoader();
             assert loader != null;
             for (int i = 0; i < params.size(); i++) {
                 String param = params.get(i);
@@ -193,8 +192,7 @@ public class JavaPhysicalComponentBuilder<T>
                 URI targetUri = wire.getTargetUri();
                 throw new WireAttachException("No matching method found", sourceUri, targetUri, e);
             }
-            // TODO deal with scope  container
-            chain.addInterceptor(new JavaInvokerInterceptor(method, component, null, workContext));
+            chain.addInterceptor(new JavaInvokerInterceptor(method, component, scopeContainer, workContext));
         }
     }
 
