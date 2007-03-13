@@ -24,6 +24,8 @@ import java.net.URISyntaxException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.RequestEnd;
@@ -38,13 +40,16 @@ import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
  * @version $$Rev$$ $$Date$$
  */
 public class BasicRequestScopeTestCase extends TestCase {
+    private AtomicComponent component;
+    private InstanceWrapper wrapper;
+    private ScopeContainer scopeContainer;
+    private WorkContext workContext;
+
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
     private PojoObjectFactory<?> factory;
 
     public void testLifecycleManagement() throws Exception {
-        RequestScopeContainer scopeContainer = new RequestScopeContainer(null, null);
-        scopeContainer.start();
         AtomicComponent component = createComponent(scopeContainer);
         // start the request
         RequestScopeInitDestroyComponent o1 =
@@ -60,8 +65,6 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     public void testGetAssociatedInstance() throws Exception {
-        RequestScopeContainer scopeContainer = new RequestScopeContainer(null, null);
-        scopeContainer.start();
         AtomicComponent component = createComponent(scopeContainer);
         // start the request
         scopeContainer.getInstance(component);
@@ -70,8 +73,6 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     public void testGetAssociatedInstanceNonExistent() throws Exception {
-        RequestScopeContainer scopeContainer = new RequestScopeContainer(null, null);
-        scopeContainer.start();
         AtomicComponent component = createComponent(scopeContainer);
         // start the request
         try {
@@ -84,9 +85,6 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     public void testRequestIsolation() throws Exception {
-        RequestScopeContainer scopeContainer = new RequestScopeContainer(null, null);
-        scopeContainer.start();
-
         AtomicComponent component = createComponent(scopeContainer);
 
         RequestScopeInitDestroyComponent o1 =
@@ -105,6 +103,9 @@ public class BasicRequestScopeTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        scopeContainer = new RequestScopeContainer(null, null);
+        scopeContainer.start();
+
         factory = new PojoObjectFactory<RequestScopeInitDestroyComponent>(
             RequestScopeInitDestroyComponent.class.getConstructor((Class[]) null));
         initInvoker = new MethodEventInvoker<Object>(

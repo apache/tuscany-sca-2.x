@@ -19,21 +19,14 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.component.WorkContext;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.mock.component.StatelessComponent;
-import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
 
 /**
  * Unit tests for the composite scope container
@@ -41,87 +34,46 @@ import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
  * @version $Rev$ $Date$
  */
 public class BasicStatelessScopeTestCase extends TestCase {
-    private PojoObjectFactory<StatelessComponentImpl> factory;
+    private AtomicComponent component;
+    private InstanceWrapper wrapper;
+    private ScopeContainer scopeContainer;
 
-    /**
-     * Verfies instance identity is properly maintained
-     */
     public void testInstanceManagement() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
-        scope.start();
-        AtomicComponent component1 = createComponent(scope);
-        scope.register(component1);
-        AtomicComponent component2 = createComponent(scope);
-        scope.register(component2);
-        StatelessComponentImpl comp1 = (StatelessComponentImpl) scope.getInstance(component1);
-        Assert.assertNotNull(comp1);
-        StatelessComponentImpl comp2 = (StatelessComponentImpl) scope.getInstance(component2);
-        Assert.assertNotNull(comp2);
-        Assert.assertNotSame(comp1, comp2);
-        scope.stop();
+        InstanceWrapper wrapper2 = EasyMock.createNiceMock(InstanceWrapper.class);
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper).andReturn(wrapper2);
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        assertSame(wrapper2, scopeContainer.getWrapper(component));
+        EasyMock.verify(component, wrapper);
     }
 
     public void testGetAssociatedInstance() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
-        scope.start();
-        AtomicComponent component1 = createComponent(scope);
-        scope.register(component1);
+        URI uri = URI.create("oops");
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.expect(component.getUri()).andReturn(uri);
+        EasyMock.replay(component, wrapper);
+
+        assertSame(wrapper, scopeContainer.getWrapper(component));
         try {
             // always throws an exception, which is the semantic for stateless implementations
-            scope.getAssociatedInstance(component1);
+            scopeContainer.getAssociatedWrapper(component);
             fail();
         } catch (TargetNotFoundException e) {
-            // expected
+            assertEquals(uri.toString(), e.getMessage());
+            EasyMock.verify(component, wrapper);
         }
-        scope.stop();
-    }
-
-    public void testRegisterContextAfterRequest() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
-
-        scope.start();
-        AtomicComponent component1 = createComponent(scope);
-        scope.register(component1);
-        StatelessComponent comp1 = (StatelessComponentImpl) scope.getInstance(component1);
-        Assert.assertNotNull(comp1);
-        AtomicComponent component2 = createComponent(scope);
-        scope.register(component2);
-        StatelessComponentImpl comp2 = (StatelessComponentImpl) scope.getInstance(component2);
-        Assert.assertNotNull(comp2);
-        scope.stop();
-    }
-
-
-    /**
-     * Tests setting no components in the scope
-     */
-    public void testSetNullComponents() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
-        scope.start();
-        scope.stop();
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory =
-            new PojoObjectFactory<StatelessComponentImpl>(StatelessComponentImpl.class.getConstructor((Class[]) null));
 
-    }
+        component = EasyMock.createNiceMock(AtomicComponent.class);
+        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
 
-    private AtomicComponent createComponent(ScopeContainer scopeContainer) {
-        PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setInstanceFactory(factory);
-        try {
-            configuration.setName(new URI("foo"));
-        } catch (URISyntaxException e) {
-            // will not happen
-        }
-        AtomicComponent component = new SystemAtomicComponentImpl(configuration);
-        component.setScopeContainer(scopeContainer);
-        return component;
+        scopeContainer = new StatelessScopeContainer(null, null);
+        scopeContainer.start();
+        EasyMock.replay(component);
+        scopeContainer.register(component);
+        EasyMock.reset(component);
     }
 }
