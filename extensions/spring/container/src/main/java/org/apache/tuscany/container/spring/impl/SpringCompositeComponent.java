@@ -35,6 +35,8 @@ import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
@@ -91,9 +93,10 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         }
         // no service found, wire to a bean using the service name as the bean name
         ServiceContract contract = operation.getServiceContract();
-        Method[] methods = contract.getInterfaceClass().getMethods();
-        Method method = findMethod(operation, methods);
-        if (method == null) {
+        Method method;
+        try {
+            method = findMethod(contract.getInterfaceClass(), operation);
+        } catch (NoSuchMethodException e) {
             throw new BeanMethodNotFound(operation);
         }
         return new SpringInvoker(targetName, method, this);
@@ -112,6 +115,14 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     }
 
     public void attachWires(List<Wire> wires) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
         throw new UnsupportedOperationException();
     }
 
@@ -158,7 +169,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     void setSpringContext(AbstractApplicationContext springContext) {
         this.springContext = springContext;
     }
-    
+
     /**
      * TODO remove need for inner class as SCA.getParent() has been removed and no longer clashes with
      * ApplicaitonContext.getParent
