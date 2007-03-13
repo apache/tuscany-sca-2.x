@@ -19,25 +19,16 @@
 package org.apache.tuscany.core.component.scope;
 
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.event.EventFilter;
-import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.event.TrueFilter;
 
 /**
  * Implements functionality common to scope contexts.
@@ -45,11 +36,8 @@ import org.apache.tuscany.spi.event.TrueFilter;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle implements ScopeContainer<KEY> {
-    private static final EventFilter TRUE_FILTER = new TrueFilter();
-
     protected WorkContext workContext;
     protected ScopeContainerMonitor monitor;
-    private Map<EventFilter, List<RuntimeEventListener>> listeners;
 
     public AbstractScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
         this.workContext = workContext;
@@ -67,47 +55,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     }
 
     public void stopContext(KEY contextId) {
-    }
-
-    public void addListener(RuntimeEventListener listener) {
-        addListener(TRUE_FILTER, listener);
-    }
-
-    public void removeListener(RuntimeEventListener listener) {
-        assert listener != null;
-        synchronized (getListeners()) {
-            for (List<RuntimeEventListener> currentList : getListeners().values()) {
-                for (RuntimeEventListener current : currentList) {
-                    if (current == listener) {
-                        currentList.remove(current);
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    public void addListener(EventFilter filter, RuntimeEventListener listener) {
-        assert listener != null;
-        synchronized (getListeners()) {
-            List<RuntimeEventListener> list = getListeners().get(filter);
-            if (list == null) {
-                list = new CopyOnWriteArrayList<RuntimeEventListener>();
-                listeners.put(filter, list);
-            }
-            list.add(listener);
-        }
-    }
-
-    public void publish(Event event) {
-        assert event != null;
-        for (Map.Entry<EventFilter, List<RuntimeEventListener>> entry : getListeners().entrySet()) {
-            if (entry.getKey().match(event)) {
-                for (RuntimeEventListener listener : entry.getValue()) {
-                    listener.onEvent(event);
-                }
-            }
-        }
     }
 
     public <T> InstanceWrapper<T> getWrapper(AtomicComponent component, KEY contextId)
@@ -153,13 +100,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
 
     public void remove(AtomicComponent component) throws PersistenceException {
         throw new UnsupportedOperationException("Scope does not support persistence");
-    }
-
-    protected Map<EventFilter, List<RuntimeEventListener>> getListeners() {
-        if (listeners == null) {
-            listeners = new ConcurrentHashMap<EventFilter, List<RuntimeEventListener>>();
-        }
-        return listeners;
     }
 
     protected void checkInit() {
