@@ -39,8 +39,6 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -65,8 +63,7 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
                          InstanceFactoryProvider<T> provider,
                          ScopeContainer scopeContainer, int initLevel,
                          long maxIdleTime,
-                         long maxAge
-    ) {
+                         long maxAge) {
         super(componentId);
         this.provider = provider;
         this.scopeContainer = scopeContainer;
@@ -98,12 +95,6 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
     }
 
     public void attachCallbackWire(Wire wire) {
-    }
-
-    public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
-    }
-
-    public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
     }
 
     public void start() {

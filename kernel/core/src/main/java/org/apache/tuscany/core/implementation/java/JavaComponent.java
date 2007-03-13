@@ -34,8 +34,7 @@ public class JavaComponent<T> extends PojoComponent<T> {
                          ScopeContainer scopeContainer,
                          int initLevel,
                          long maxIdleTime,
-                         long maxAge
-    ) {
+                         long maxAge) {
         super(componentId, instanceFactoryProvider, scopeContainer, initLevel, maxIdleTime, maxAge);
     }
 

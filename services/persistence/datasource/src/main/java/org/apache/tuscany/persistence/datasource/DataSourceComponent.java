@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -55,17 +56,21 @@ public class DataSourceComponent extends AtomicComponentExtension {
         this.instanceFactory = instanceFactory;
     }
 
+    public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
+        return null;
+    }
+
     public Object createInstance() throws ObjectCreationException {
         return instanceFactory.getInstance();
     }
 
     public Object getTargetInstance() throws TargetResolutionException {
-        return scopeContainer.getInstance(this);
+        return null;
     }
 
 
     public Object getAssociatedTargetInstance() throws TargetResolutionException {
-        return scopeContainer.getAssociatedInstance(this);
+        return null;
     }
 
     public void destroy(Object instance) throws TargetDestructionException {

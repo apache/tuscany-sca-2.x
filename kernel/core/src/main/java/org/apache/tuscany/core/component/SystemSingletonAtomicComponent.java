@@ -114,14 +114,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         throw new UnsupportedOperationException();
     }
 
-    public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
-        throw new UnsupportedOperationException();
-    }
-
     public List<Wire> getWires(String name) {
         throw new UnsupportedOperationException();
     }

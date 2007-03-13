@@ -21,14 +21,13 @@ package org.apache.tuscany.core.builder;
 import java.net.URI;
 
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.ComponentManager;
@@ -50,7 +49,6 @@ public class ConnectorImplWireTestCase extends TestCase {
 
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getUri()).andReturn(SOURCE_URI).atLeastOnce();
-        source.attachWire(EasyMock.isA(Wire.class), (PhysicalWireSourceDefinition)EasyMock.anyObject());
         EasyMock.replay(source);
         manager.register(source);
 
