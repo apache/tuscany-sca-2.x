@@ -45,7 +45,8 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinit
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 
 /**
- * Java physical component builder.
+ * The physical component builder for Java implementation types. Responsible for creating the Component runtime artifact
+ * from a physical component definition
  *
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
