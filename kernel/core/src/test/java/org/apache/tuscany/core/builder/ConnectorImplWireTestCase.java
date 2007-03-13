@@ -21,6 +21,7 @@ package org.apache.tuscany.core.builder;
 import java.net.URI;
 
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -54,8 +55,6 @@ public class ConnectorImplWireTestCase extends TestCase {
 
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(target.getUri()).andReturn(TARGET_URI).atLeastOnce();
-        target.createTargetInvoker((String) EasyMock.isNull(), EasyMock.isA(PhysicalOperationDefinition.class));
-        EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(target);
         manager.register(target);
 
@@ -77,7 +76,9 @@ public class ConnectorImplWireTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         manager = new ComponentManagerImpl();
-        connector = new ConnectorImpl(null, null, null, manager, null, null);
+        WireAttacherRegistry attacherRegistry = EasyMock.createNiceMock(WireAttacherRegistry.class);
+        EasyMock.replay(attacherRegistry);
+        connector = new ConnectorImpl(null, attacherRegistry, null, manager, null, null);
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         contract = registry.introspect(Foo.class);
     }

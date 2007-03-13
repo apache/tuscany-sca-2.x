@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
@@ -47,24 +48,28 @@ public class WireAttacherRegistryImpl implements WireAttacherRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C component, PWSD source)
+    public <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C component,
+                                                                                        Wire wire,
+                                                                                        PWSD source)
         throws WiringException {
         Class<? extends Component> type = component.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
-            throw new WireAttacherNotRegistered(type, component.getUri(), null);
+            throw new WireAttacherNotRegistered(type, component.getUri(), wire.getTargetUri());
         }
-        attacher.attach(component, source);
+        attacher.attach(component, wire, source);
     }
 
     @SuppressWarnings("unchecked")
-    public <C extends Component, PWTD extends PhysicalWireTargetDefinition> void attach(C component, PWTD target)
+    public <C extends Component, PWTD extends PhysicalWireTargetDefinition> void attach(C component,
+                                                                                        Wire wire,
+                                                                                        PWTD target)
         throws WiringException {
         Class<? extends Component> type = component.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
             throw new WireAttacherNotRegistered(type, component.getUri(), target.getUri());
         }
-        attacher.attach(component, target);
+        attacher.attach(component, wire, target);
     }
 }

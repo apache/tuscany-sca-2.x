@@ -23,6 +23,7 @@ import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Abstraction for the wire attacher.
@@ -37,16 +38,18 @@ public interface WireAttacher<C extends Component,
      * Attaches the source to the component.
      *
      * @param component Component.
+     * @param wire
      * @param source    Source.
      */
-    void attach(C component, PWSD source) throws WiringException;
+    void attach(C component, Wire wire, PWSD source) throws WiringException;
 
     /**
      * Attaches the target to the component.
      *
      * @param component Component.
+     * @param wire
      * @param target    Target.
      */
-    void attach(C component, PWTD target) throws WiringException;
+    void attach(C component, Wire wire, PWTD target) throws WiringException;
 
 }
