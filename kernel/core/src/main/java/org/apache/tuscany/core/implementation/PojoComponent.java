@@ -101,7 +101,7 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
 
     public void start() {
         super.start();
-        scopeContainer.register(this);
+        scopeContainer.register(null, this);
         instanceFactory = provider.createFactory();
     }
 

@@ -156,9 +156,9 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         wrapper1.stop();
         control.replay();
 
-        scopeContainer.register(component1);
-        scopeContainer.register(component2);
-        scopeContainer.register(component3);
+        scopeContainer.register(null, component1);
+        scopeContainer.register(null, component2);
+        scopeContainer.register(null, component3);
         scopeContainer.onEvent(new HttpSessionStart(this, session));
         assertSame(wrapper1, scopeContainer.getWrapper(component1));
         assertSame(wrapper2, scopeContainer.getWrapper(component2));
@@ -185,7 +185,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         wrapper2.stop();
         control.replay();
 
-        scopeContainer.register(component1);
+        scopeContainer.register(null, component1);
         scopeContainer.onEvent(new HttpSessionStart(this, session));
         assertSame(wrapper1, scopeContainer.getWrapper(component1));
         scopeContainer.onEvent(new HttpSessionEnd(this, session));
@@ -208,7 +208,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
         component.addListener(scopeContainer);
         EasyMock.replay(component);
-        scopeContainer.register(component);
+        scopeContainer.register(null, component);
         EasyMock.reset(component);
     }
 }

@@ -115,8 +115,8 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    public void register(AtomicComponent component) {
-        super.register(component);
+    public void register(Object groupId, AtomicComponent component) {
+        super.register(groupId, component);
         instanceWrappers.put(component, EMPTY);
     }
 

@@ -45,7 +45,7 @@ public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecyc
         this.monitor = monitor;
     }
 
-    public void register(AtomicComponent component) {
+    public void register(GROUP groupId, AtomicComponent component) {
         checkInit();
     }
 

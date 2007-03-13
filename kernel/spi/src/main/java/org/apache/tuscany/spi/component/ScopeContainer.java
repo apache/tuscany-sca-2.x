@@ -72,9 +72,10 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
     /**
      * Registers a component with the scope.
      *
+     * @param groupId the id for the group that this component is associated with
      * @param component the component to register
      */
-    void register(AtomicComponent component);
+    void register(GROUP groupId, AtomicComponent component);
 
     /**
      * Unregisters a component with the scope.

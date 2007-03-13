@@ -82,12 +82,12 @@ public class CallbackInvocationTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
         JavaAtomicComponent targetComponent = (JavaAtomicComponent) builder.build(targetDefinition, context);
         targetComponent.setScopeContainer(container);
-        container.register(targetComponent);
+        container.register(null, targetComponent);
         componentManager.register(targetComponent);
         ComponentDefinition<JavaImplementation> sourceDefinition = createSource(URI.create("fooClient"));
         JavaAtomicComponent clientComponent = (JavaAtomicComponent) builder.build(sourceDefinition, context);
         clientComponent.setScopeContainer(container);
-        container.register(clientComponent);
+        container.register(null, clientComponent);
         componentManager.register(clientComponent);
         connector.connect(sourceDefinition);
         targetComponent.start();
@@ -115,18 +115,18 @@ public class CallbackInvocationTestCase extends TestCase {
         JavaAtomicComponent targetComponent =
             (JavaAtomicComponent) builder.build(targetDefinition, context);
         targetComponent.setScopeContainer(container);
-        container.register(targetComponent);
+        container.register(null, targetComponent);
         componentManager.register(targetComponent);
 
         ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource(URI.create("client1"));
         ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource(URI.create("client2"));
         JavaAtomicComponent clientComponent1 = (JavaAtomicComponent) builder.build(sourceDefinition1, context);
         clientComponent1.setScopeContainer(container);
-        container.register(clientComponent1);
+        container.register(null, clientComponent1);
         componentManager.register(clientComponent1);
         JavaAtomicComponent clientComponent2 = (JavaAtomicComponent) builder.build(sourceDefinition2, context);
         clientComponent2.setScopeContainer(container);
-        container.register(clientComponent2);
+        container.register(null, clientComponent2);
         componentManager.register(clientComponent2);
 
         connector.connect(sourceDefinition1);

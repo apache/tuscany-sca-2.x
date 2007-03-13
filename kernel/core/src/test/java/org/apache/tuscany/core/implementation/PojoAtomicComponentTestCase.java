@@ -45,7 +45,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
     public void testNoCallbackWires() throws Exception {
         ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
         EasyMock.expect(container.getScope()).andReturn(Scope.CONVERSATION);
-        container.register(EasyMock.isA(AtomicComponent.class));
+        container.register(EasyMock.isNull(), EasyMock.isA(AtomicComponent.class));
         EasyMock.replay(container);
         config.addCallbackSite("callback", Foo.class.getMethod("setCallback", Object.class));
         AtomicComponent component = new TestAtomicComponent(config);

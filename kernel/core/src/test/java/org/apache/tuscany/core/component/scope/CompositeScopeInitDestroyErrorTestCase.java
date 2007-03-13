@@ -49,7 +49,7 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.expect(component.createInstanceWrapper()).andThrow(new ObjectCreationException(""));
         EasyMock.expect(component.getInitLevel()).andReturn(1);
         EasyMock.replay(component);
-        scope.register(component);
+        scope.register(null, component);
         scope.onEvent(new ComponentStart(this, null));
         EasyMock.verify(monitor);
     }
@@ -72,7 +72,7 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.expect(component.getInitLevel()).andReturn(1);
         EasyMock.replay(component);
-        scope.register(component);
+        scope.register(null, component);
         scope.onEvent(new ComponentStart(this, null));
         scope.onEvent(new ComponentStop(this, null));
         EasyMock.verify(monitor);

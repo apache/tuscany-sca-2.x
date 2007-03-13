@@ -29,8 +29,6 @@ import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.core.component.event.ComponentStart;
 import org.apache.tuscany.core.component.event.ComponentStop;
-import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -147,9 +145,9 @@ public class BasicCompositeScopeTestCase extends TestCase {
         wrapper2.stop();
         control.replay();
 
-        scopeContainer.register(component1);
-        scopeContainer.register(component2);
-        scopeContainer.register(component3);
+        scopeContainer.register(null, component1);
+        scopeContainer.register(null, component2);
+        scopeContainer.register(null, component3);
         scopeContainer.onEvent(new ComponentStart(this, null));
         assertSame(wrapper1, scopeContainer.getWrapper(component1));
         assertSame(wrapper2, scopeContainer.getWrapper(component2));
@@ -165,6 +163,6 @@ public class BasicCompositeScopeTestCase extends TestCase {
 
         scopeContainer = new CompositeScopeContainer(null);
         scopeContainer.start();
-        scopeContainer.register(component);
+        scopeContainer.register(null, component);
     }
 }

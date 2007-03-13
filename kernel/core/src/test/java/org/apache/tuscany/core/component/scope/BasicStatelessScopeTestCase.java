@@ -73,7 +73,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
         scopeContainer = new StatelessScopeContainer(null, null);
         scopeContainer.start();
         EasyMock.replay(component);
-        scopeContainer.register(component);
+        scopeContainer.register(null, component);
         EasyMock.reset(component);
     }
 }

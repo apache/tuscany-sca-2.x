@@ -78,7 +78,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
         lifecycleState = STOPPED;
     }
 
-    public void register(AtomicComponent component) {
+    public void register(Object groupId, AtomicComponent component) {
         contexts.put(component, new ConcurrentHashMap<Object, InstanceWrapper>());
         component.addListener(this);
     }

@@ -106,7 +106,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
     private void createDeploymentContext() throws Exception {
         scopeContainer = EasyMock.createMock(ScopeContainer.class);
         scopeContainer.start();
-        scopeContainer.register(EasyMock.isA(AtomicComponent.class));
+        scopeContainer.register(EasyMock.isNull(), EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
         EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         scopeContainer.getWrapper(EasyMock.isA(AtomicComponent.class));
