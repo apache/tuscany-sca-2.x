@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * instances.
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  * @see org.apache.tuscany.spi.wire.TargetInvoker
  */
 public class InvokerInterceptor implements Interceptor {
