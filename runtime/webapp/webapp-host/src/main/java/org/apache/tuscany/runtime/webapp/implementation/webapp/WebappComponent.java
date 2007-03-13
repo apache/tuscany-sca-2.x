@@ -37,6 +37,8 @@ import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
@@ -82,6 +84,14 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
     }
 
     public void attachWires(List<Wire> wires) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
         throw new UnsupportedOperationException();
     }
 
