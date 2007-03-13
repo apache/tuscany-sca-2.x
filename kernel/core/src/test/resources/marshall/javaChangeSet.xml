@@ -38,10 +38,9 @@
 			<reflect:destroyMethod>destroy</reflect:destroyMethod>
 			<reflect:constructorArgument>java.lang.String</reflect:constructorArgument>
 			<reflect:constructorArgument>java.lang.Long</reflect:constructorArgument>
-			<reflect:constructorInjectionName>xy#z</reflect:constructorInjectionName>
-			<reflect:constructorInjectionName>ab#c</reflect:constructorInjectionName>
-			<reflect:injectionSite type="FIELD" class="com.acme.Bar" uri="A#B" name="abc"/>
-			<reflect:injectionSite type="METHOD" class="com.acme.Bar" uri="D#E" name="xyz"/>
+			<reflect:cdiSource type="REFERENCE" name="abc"/>
+			<reflect:injectionSite elementType="FIELD" type="PROPERTY" name="xyz" physicalName="xyz"/>
+			<reflect:injectionSite elementType="METHOD" type="CALLBACK" name="abc" physicalName="abc"/>
 		</reflect:instanceFactoryProvider>
 	</java:component>
 	

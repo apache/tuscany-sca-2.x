@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.core.model.physical.instancefactory;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,10 +45,10 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
     private String destroyMethod;
     
     // Constructor injection sites
-    private List<URI> constructorNames = new LinkedList<URI>();
+    private List<InjectionSource> cdiSources = new LinkedList<InjectionSource>();
     
     // Injection sites
-    private List<InjectionSite> injectionSites = new LinkedList<InjectionSite>();
+    private List<InjectionSiteMapping> injectionSites = new LinkedList<InjectionSiteMapping>();
 
     /**
      * returns the constructor argument.
@@ -72,16 +71,16 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
      * Returns constructor injection names.
      * @return the constructorNames Constructor injection names.
      */
-    public List<URI> getConstructorNames() {
-        return Collections.unmodifiableList(constructorNames);
+    public List<InjectionSource> getCdiSources() {
+        return Collections.unmodifiableList(cdiSources);
     }
 
     /**
      * Adds a constructor injection name.
      * @param constructorName Constructor injection name.
      */
-    public void addConstructorNames(URI constructorName) {
-        constructorNames.add(constructorName);
+    public void addCdiSource(InjectionSource cdiSource) {
+        cdiSources.add(cdiSource);
     }
 
     /**
@@ -136,7 +135,7 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
      * Gets the injection sites.
      * @return Injection sites.
      */
-    public List<InjectionSite> getInjectionSites() {
+    public List<InjectionSiteMapping> getInjectionSites() {
         return Collections.unmodifiableList(injectionSites);
     }
 
@@ -144,7 +143,7 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
      * Adds an injection site.
      * @param injectionSiteInjection site.
      */
-    public void addInjectionSite(InjectionSite injectionSite) {
+    public void addInjectionSite(InjectionSiteMapping injectionSite) {
         injectionSites.add(injectionSite);
     }
 
