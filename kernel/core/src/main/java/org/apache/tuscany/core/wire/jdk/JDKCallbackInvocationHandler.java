@@ -44,7 +44,6 @@ import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 
 /**
@@ -55,7 +54,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  * @version $Rev$ $Date$
  */
 public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
-    implements WireInvocationHandler, InvocationHandler, Externalizable, SCAExternalizable {
+    implements InvocationHandler, Externalizable, SCAExternalizable {
     private transient WorkContext context;
     private transient Map<URI, Wire> wires;
     private List<String> sourceWireNames;

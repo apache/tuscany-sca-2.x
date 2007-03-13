@@ -42,7 +42,6 @@ import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 import org.apache.tuscany.core.wire.NoMethodForOperationException;
 import org.apache.tuscany.core.wire.WireUtils;
@@ -54,7 +53,7 @@ import org.apache.tuscany.core.wire.WireUtils;
  * @version $Rev$ $Date$
  */
 public final class JDKInvocationHandler extends AbstractInvocationHandler
-    implements WireInvocationHandler, InvocationHandler, Externalizable, SCAExternalizable {
+    implements InvocationHandler, Externalizable, SCAExternalizable {
     private static final long serialVersionUID = -6155278451964527325L;
 
     // the wire this handler fronts
