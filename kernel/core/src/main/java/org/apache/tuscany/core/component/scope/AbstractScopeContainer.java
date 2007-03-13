@@ -110,6 +110,20 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         }
     }
 
+    public <T> InstanceWrapper<T> getWrapper(AtomicComponent component, KEY contextId)
+        throws TargetResolutionException {
+        return null;
+    }
+
+    public <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component, KEY contextId)
+        throws TargetResolutionException {
+        return null;
+    }
+
+    public <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper, KEY contextId)
+        throws TargetDestructionException {
+    }
+
     public <T> InstanceWrapper<T> getWrapper(AtomicComponent component) throws TargetResolutionException {
         return getInstanceWrapper(component, true);
     }
@@ -122,7 +136,8 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         return wrapper;
     }
 
-    public <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException {
+    public <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper)
+        throws TargetDestructionException {
     }
 
     public void persistNew(AtomicComponent component, String id, Object instance, long expiration)

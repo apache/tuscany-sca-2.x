@@ -73,9 +73,46 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      *
      * @param <T> the type of the target instance
      * @param component the component
+     * @param contextId the id for the scope context
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
+    <T> InstanceWrapper<T> getWrapper(AtomicComponent component, KEY contextId) throws TargetResolutionException;
+
+    /**
+     * Returns an implementation instance associated with the current scope context.
+     * If no instance is found, a {@link TargetNotFoundException} is thrown.
+     *
+     * @param <T> the type of the target instance
+     * @param component the component
+     * @param contextId the id for the scope context
+     * @return the wrapper for the target instance
+     * @throws TargetResolutionException if there was a problem instantiating the target instance
+     */
+    <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component, KEY contextId)
+        throws TargetResolutionException;
+
+    /**
+     * Return a wrapper after use (for example, after invoking the instance).
+     *
+     * @param <T> the type of the target instance
+     * @param component the component
+     * @param contextId the id for the scope context
+     * @param wrapper the wrapper for the target instance being returned
+     * @throws TargetDestructionException if there was a problem returning the target instance
+     */
+    <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper, KEY contextId)
+        throws TargetDestructionException;
+
+    /**
+     * Returns an instance wrapper associated with the current scope context, creating one if necessary
+     *
+     * @param <T> the type of the target instance
+     * @param component the component
+     * @return the wrapper for the target instance
+     * @throws TargetResolutionException if there was a problem instantiating the target instance
+     */
+    @Deprecated
     <T> InstanceWrapper<T> getWrapper(AtomicComponent component) throws TargetResolutionException;
 
     /**
@@ -87,6 +124,7 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
+    @Deprecated
     <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component) throws TargetResolutionException;
 
     /**
@@ -97,6 +135,7 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * @param wrapper the wrapper for the target instance being returned
      * @throws TargetDestructionException if there was a problem returning the target instance
      */
+    @Deprecated
     <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException;
 
     /**
