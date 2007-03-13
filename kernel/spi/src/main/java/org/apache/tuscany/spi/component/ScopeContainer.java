@@ -71,8 +71,10 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
     /**
      * Returns an instance wrapper associated with the current scope context, creating one if necessary
      *
+     * @param <T> the type of the target instance
      * @param component the component
-     * @throws TargetResolutionException
+     * @return the wrapper for the target instance
+     * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
     <T> InstanceWrapper<T> getWrapper(AtomicComponent component) throws TargetResolutionException;
 
@@ -80,33 +82,22 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * Returns an implementation instance associated with the current scope context.
      * If no instance is found, a {@link TargetNotFoundException} is thrown.
      *
-     * @throws TargetResolutionException
+     * @param <T> the type of the target instance
+     * @param component the component
+     * @return the wrapper for the target instance
+     * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
     <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component) throws TargetResolutionException;
 
     /**
      * Return a wrapper after use (for example, after invoking the instance).
      *
+     * @param <T> the type of the target instance
      * @param component the component
+     * @param wrapper the wrapper for the target instance being returned
+     * @throws TargetDestructionException if there was a problem returning the target instance
      */
     <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException;
-
-    /**
-     * Returns an implementation instance associated with the current request context, creating one if necessary
-     *
-     * @throws TargetResolutionException
-     */
-    @Deprecated
-    Object getInstance(AtomicComponent component) throws TargetResolutionException;
-
-    /**
-     * Returns an implementation instance associated with the current context. If no instance is found, a {@link
-     * TargetNotFoundException} is thrown
-     *
-     * @throws TargetResolutionException
-     */
-    @Deprecated
-    Object getAssociatedInstance(AtomicComponent component) throws TargetResolutionException;
 
     /**
      * Persists a new component implementation instance, equivalent to an insert or append operation
@@ -115,7 +106,7 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * @param id         the id associated with the instance
      * @param instance   the instance to persist
      * @param expiration the expiration in milliseconds
-     * @throws PersistenceException
+     * @throws PersistenceException if there was a problem persisting the instance
      */
     void persistNew(AtomicComponent component, String id, Object instance, long expiration) throws PersistenceException;
 
@@ -126,7 +117,7 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * @param id         the id associated with the instance
      * @param instance   the instance to persist
      * @param expiration the expiration in milliseconds
-     * @throws PersistenceException
+     * @throws PersistenceException if there was a problem persisting the instance
      */
     void persist(AtomicComponent component, String id, Object instance, long expiration) throws PersistenceException;
 
@@ -134,7 +125,7 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * Removes a component implementation instance associated with the current context from persistent storage
      *
      * @param component the owning component
-     * @throws PersistenceException
+     * @throws PersistenceException if there was a problem removing the instance
      */
     void remove(AtomicComponent component) throws PersistenceException;
 }
