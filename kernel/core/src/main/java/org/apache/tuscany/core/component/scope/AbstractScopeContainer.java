@@ -87,17 +87,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         throws TargetDestructionException {
     }
 
-    public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
-        throws PersistenceException {
-        throw new UnsupportedOperationException("Scope does not support persistence");
-
-    }
-
-    public void persist(AtomicComponent component, String id, Object instance, long expiration)
-        throws PersistenceException {
-        throw new UnsupportedOperationException("Scope does not support persistence");
-    }
-
     public void remove(AtomicComponent component) throws PersistenceException {
         throw new UnsupportedOperationException("Scope does not support persistence");
     }

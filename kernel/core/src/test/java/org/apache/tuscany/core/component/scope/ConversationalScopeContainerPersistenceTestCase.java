@@ -22,7 +22,6 @@ import java.util.UUID;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.InstanceWrapper;
@@ -39,7 +38,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
-    private ScopeContainer container;
+    private ConversationalScopeContainer container;
     private WorkContext context;
 
     public void testNotYetPersistedInMemory() throws Exception {
