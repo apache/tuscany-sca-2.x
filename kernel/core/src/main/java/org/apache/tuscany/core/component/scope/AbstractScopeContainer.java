@@ -125,28 +125,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     public <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException {
     }
 
-    public Object getInstance(AtomicComponent component) throws TargetResolutionException {
-        InstanceWrapper ctx = getInstanceWrapper(component, true);
-        if (ctx != null) {
-            if (!ctx.isStarted()) {
-                ctx.start();
-            }
-            return ctx.getInstance();
-        }
-        return null;
-    }
-
-    public Object getAssociatedInstance(AtomicComponent component) throws TargetResolutionException {
-        InstanceWrapper ctx = getInstanceWrapper(component, false);
-        if (ctx != null) {
-            if (!ctx.isStarted()) {
-                ctx.start();
-            }
-            return ctx.getInstance();
-        }
-        throw new TargetNotFoundException(component.getUri().toString());
-    }
-
     public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
         throw new UnsupportedOperationException("Scope does not support persistence");
