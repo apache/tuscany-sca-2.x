@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $Rev$ $Date$
  */
-public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
+public class StatelessScopeContainer<GROUP, KEY> extends AbstractScopeContainer<GROUP, KEY> {
 
     public StatelessScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
         super(workContext, monitor);

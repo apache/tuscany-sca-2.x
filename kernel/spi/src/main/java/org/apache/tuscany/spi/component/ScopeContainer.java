@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.model.Scope;
  * For example, for COMPOSITE scope this could be the URI of the composite component,
  * or for HTTP Session scope it might be the HTTP session ID.
  */
-public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
+public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListener {
 
     /**
      * Returns the Scope that this container supports.
@@ -39,6 +39,20 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * @return the Scope that this container supports
      */
     Scope getScope();
+
+    /**
+     * Create a group for associating components together.
+     *
+     * @param groupId an identifier for the group
+     */
+    void createGroup(GROUP groupId);
+
+    /**
+     * Remove a group that associates components together.
+     *
+     * @param groupId an identifier for the group
+     */
+    void removeGroup(GROUP groupId);
 
     /**
      * Start a new context with the supplied ID.

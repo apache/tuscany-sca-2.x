@@ -35,7 +35,8 @@ import org.apache.tuscany.spi.component.WorkContext;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle implements ScopeContainer<KEY> {
+public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecycle
+    implements ScopeContainer<GROUP, KEY> {
     protected WorkContext workContext;
     protected ScopeContainerMonitor monitor;
 
@@ -49,6 +50,12 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     }
 
     public void unregister(AtomicComponent component) {
+    }
+
+    public void createGroup(GROUP groupId) {
+    }
+
+    public void removeGroup(GROUP groupId) {
     }
 
     public void startContext(KEY contextId) {
