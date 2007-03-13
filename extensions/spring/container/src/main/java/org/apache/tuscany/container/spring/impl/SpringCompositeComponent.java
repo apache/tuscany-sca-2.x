@@ -118,14 +118,6 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         throw new UnsupportedOperationException();
     }
 
-    public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
-        throw new UnsupportedOperationException();
-    }
-
     public ConfigurableApplicationContext getApplicationContext() {
         return springContext;
     }

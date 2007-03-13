@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.core.component;
 
-import java.util.List;
-
-import org.apache.tuscany.spi.wire.Wire;
-
 /**
  * @version $Rev$ $Date$
  */
