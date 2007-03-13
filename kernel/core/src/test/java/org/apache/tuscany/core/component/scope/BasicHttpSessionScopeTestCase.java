@@ -22,6 +22,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
@@ -51,9 +52,12 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         workContext.setIdentifier(Scope.SESSION, session);
 
         EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        wrapper.start();
+        wrapper.stop();
         EasyMock.replay(component, wrapper);
         assertSame(wrapper, scopeContainer.getWrapper(component));
         assertSame(wrapper, scopeContainer.getWrapper(component));
+        scopeContainer.onEvent(new HttpSessionEnd(this, session));
         EasyMock.verify(component, wrapper);
     }
 
@@ -63,6 +67,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         workContext.setIdentifier(Scope.SESSION, session);
 
         EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        wrapper.start();
         EasyMock.replay(component, wrapper);
         assertSame(wrapper, scopeContainer.getWrapper(component));
         assertSame(wrapper, scopeContainer.getAssociatedWrapper(component));
@@ -92,7 +97,10 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         Object session2 = new Object();
 
         InstanceWrapper wrapper2 = EasyMock.createNiceMock(InstanceWrapper.class);
-        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper).andReturn(wrapper2);
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        wrapper.start();
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper2);
+        wrapper2.start();
         EasyMock.replay(component, wrapper);
         workContext.setIdentifier(Scope.SESSION, session1);
         assertSame(wrapper, scopeContainer.getWrapper(component));
@@ -109,6 +117,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         TargetDestructionException ex = new TargetDestructionException("oops", "again");
         monitor.destructionError(ex);
         EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        wrapper.start();
         wrapper.stop();
         EasyMock.expectLastCall().andThrow(ex);
         EasyMock.replay(component, wrapper, monitor);
@@ -121,13 +130,79 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         EasyMock.verify(component, wrapper, monitor);
     }
 
+    public void testDestroyOrder() throws Exception {
+        Object session = new Object();
+        workContext.setIdentifier(Scope.SESSION, session);
+
+        IMocksControl control = EasyMock.createStrictControl();
+        InstanceWrapper wrapper1 = control.createMock(InstanceWrapper.class);
+        InstanceWrapper wrapper2 = control.createMock(InstanceWrapper.class);
+        InstanceWrapper wrapper3 = control.createMock(InstanceWrapper.class);
+        AtomicComponent component1 = control.createMock(AtomicComponent.class);
+        AtomicComponent component2 = control.createMock(AtomicComponent.class);
+        AtomicComponent component3 = control.createMock(AtomicComponent.class);
+
+        component1.addListener(scopeContainer);
+        component2.addListener(scopeContainer);
+        component3.addListener(scopeContainer);
+        EasyMock.expect(component1.createInstanceWrapper()).andReturn(wrapper1);
+        wrapper1.start();
+        EasyMock.expect(component2.createInstanceWrapper()).andReturn(wrapper2);
+        wrapper2.start();
+        EasyMock.expect(component3.createInstanceWrapper()).andReturn(wrapper3);
+        wrapper3.start();
+        wrapper3.stop();
+        wrapper2.stop();
+        wrapper1.stop();
+        control.replay();
+
+        scopeContainer.register(component1);
+        scopeContainer.register(component2);
+        scopeContainer.register(component3);
+        scopeContainer.onEvent(new HttpSessionStart(this, session));
+        assertSame(wrapper1, scopeContainer.getWrapper(component1));
+        assertSame(wrapper2, scopeContainer.getWrapper(component2));
+        assertSame(wrapper3, scopeContainer.getWrapper(component3));
+        scopeContainer.onEvent(new HttpSessionEnd(this, session));
+        control.verify();
+    }
+
+    public void testReuseSession() throws Exception {
+        Object session = new Object();
+        workContext.setIdentifier(Scope.SESSION, session);
+
+        IMocksControl control = EasyMock.createStrictControl();
+        InstanceWrapper wrapper1 = control.createMock(InstanceWrapper.class);
+        InstanceWrapper wrapper2 = control.createMock(InstanceWrapper.class);
+        AtomicComponent component1 = control.createMock(AtomicComponent.class);
+
+        component1.addListener(scopeContainer);
+        EasyMock.expect(component1.createInstanceWrapper()).andReturn(wrapper1);
+        wrapper1.start();
+        wrapper1.stop();
+        EasyMock.expect(component1.createInstanceWrapper()).andReturn(wrapper2);
+        wrapper2.start();
+        wrapper2.stop();
+        control.replay();
+
+        scopeContainer.register(component1);
+        scopeContainer.onEvent(new HttpSessionStart(this, session));
+        assertSame(wrapper1, scopeContainer.getWrapper(component1));
+        scopeContainer.onEvent(new HttpSessionEnd(this, session));
+
+        scopeContainer.onEvent(new HttpSessionStart(this, session));
+        assertSame(wrapper2, scopeContainer.getWrapper(component1));
+        scopeContainer.onEvent(new HttpSessionEnd(this, session));
+        control.verify();
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
-        component = EasyMock.createNiceMock(AtomicComponent.class);
-        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
+        component = EasyMock.createStrictMock(AtomicComponent.class);
+        wrapper = EasyMock.createStrictMock(InstanceWrapper.class);
 
         workContext = new WorkContextImpl();
-        monitor = EasyMock.createMock(ScopeContainerMonitor.class);
+        monitor = EasyMock.createStrictMock(ScopeContainerMonitor.class);
         scopeContainer = new HttpSessionScopeContainer(workContext, monitor);
         scopeContainer.start();
 
