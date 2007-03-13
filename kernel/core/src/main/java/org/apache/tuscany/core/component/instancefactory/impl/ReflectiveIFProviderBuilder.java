@@ -21,18 +21,19 @@ package org.apache.tuscany.core.component.instancefactory.impl;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.component.ReflectiveInstanceFactoryProvider;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderException;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSite;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteType;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteMapping;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
+import org.apache.tuscany.core.model.physical.instancefactory.MemberSite;
 import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProviderDefinition;
 
 /**
@@ -62,9 +63,9 @@ public class ReflectiveIFProviderBuilder extends
 
             Method destroyMethod = getDestroyMethod(ifpd, implClass);
 
-            List<URI> ctrInjectSites = ifpd.getConstructorNames();
+            List<InjectionSource> ctrInjectSites = ifpd.getCdiSources();
 
-            Map<URI, Member> injectionSites = getInjectionSites(ifpd, implClass);
+            Map<InjectionSource, Member> injectionSites = getInjectionSites(ifpd, implClass);
 
             return new ReflectiveInstanceFactoryProvider(ctr, ctrInjectSites, injectionSites, initMethod, destroyMethod);
 
@@ -82,15 +83,21 @@ public class ReflectiveIFProviderBuilder extends
     /*
      * Get injection sites.
      */
-    private Map<URI, Member> getInjectionSites(ReflectiveIFProviderDefinition ifpd, Class implClass)
+    private Map<InjectionSource, Member> getInjectionSites(ReflectiveIFProviderDefinition ifpd, Class implClass)
         throws NoSuchFieldException, IntrospectionException, IFProviderBuilderException {
-        Map<URI, Member> injectionSites = new HashMap<URI, Member>();
-        for (InjectionSite injectionSite : ifpd.getInjectionSites()) {
-            String name = injectionSite.getName();
+        
+        Map<InjectionSource, Member> injectionSites = new HashMap<InjectionSource, Member>();
+        for (InjectionSiteMapping injectionSite : ifpd.getInjectionSites()) {
+            
+            InjectionSource source = injectionSite.getSource();
+            MemberSite memberSite = injectionSite.getSite();
+            ElementType elementType = memberSite.getElementType();
+            String name = memberSite.getName();
+            
             Member member = null;
-            if (injectionSite.getType() == InjectionSiteType.FIELD) {
+            if (memberSite.getElementType() == ElementType.FIELD) {
                 member = implClass.getDeclaredField(name);
-            } else if (injectionSite.getType() == InjectionSiteType.METHOD) {
+            } else if (elementType == ElementType.METHOD) {
                 for (PropertyDescriptor pd : Introspector.getBeanInfo(implClass).getPropertyDescriptors()) {
                     if (name.equals(pd.getName())) {
                         member = pd.getWriteMethod();
@@ -100,7 +107,7 @@ public class ReflectiveIFProviderBuilder extends
             if (member == null) {
                 throw new IFProviderBuilderException("Unknown injection site " + name);
             }
-            injectionSites.put(injectionSite.getUri(), member);
+            injectionSites.put(source, member);
         }
         return injectionSites;
     }

@@ -19,8 +19,7 @@
 
 package org.apache.tuscany.core.marshaller.extensions.instancefactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.lang.annotation.ElementType;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -29,9 +28,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.core.marshaller.extensions.AbstractIFProviderDefinitionMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSite;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteType;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteMapping;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
+import org.apache.tuscany.core.model.physical.instancefactory.MemberSite;
 import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProviderDefinition;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 
 /**
@@ -61,22 +62,22 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
     public static final String CONSTRUCTOR_ARGUMENT = "constructorArgument";
     
     // Constructor injection name
-    public static final String CONSTRUCTOR_INJECTION_NAME = "constructorInjectionName";
+    public static final String CDI_SOURCE = "cdiSOurce";
     
     // Injection site
     public static final String INJECTION_SITE = "injectionSite";
     
     // Injection site type
-    public static final String INJECTION_SITE_TYPE = "type";
+    public static final String TYPE = "type";
     
     // Injection site class
-    public static final String INJECTION_SITE_CLASS = "class";
+    public static final String ELEMENT_TYPE = "elementType";
     
     // Injection site URI
-    public static final String INJECTION_SITE_URI = "uri";
+    public static final String NAME = "name";
     
     // Injection site name
-    public static final String INJECTION_SITE_NAME = "name";
+    public static final String PHYSICAL_NAME = "physicalName";
 
     // QName for the root element
     private static final QName QNAME =
@@ -92,27 +93,51 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
         throws MarshalException {
         
         try {
+            
             String name = reader.getName().getLocalPart();
+            
             if(IMPL_CLASS.equals(name)) {
+                
                 modelObject.setImplementationClass(reader.getElementText());
+                
             } else if(INIT_METHOD.equals(name)) {
+                
                 modelObject.setInitMethod(reader.getElementText());
+                
             } else if(DESTROY_METHOD.equals(name)) {
+                
                 modelObject.setDestroyMethod(reader.getElementText());
+                
             } else if(CONSTRUCTOR_ARGUMENT.equals(name)) {
+                
                 modelObject.addConstructorArgument(reader.getElementText());
-            } else if(CONSTRUCTOR_INJECTION_NAME.equals(name)) {
-                modelObject.addConstructorNames(new URI(reader.getElementText()));
+                
+            } else if(CDI_SOURCE.equals(name)) {
+                
+                InjectionSource injectionSource = new InjectionSource();
+                injectionSource.setName(reader.getAttributeValue(null, NAME));
+                injectionSource.setValueType(ValueSourceType.valueOf(reader.getAttributeValue(null, ELEMENT_TYPE)));
+                modelObject.addCdiSource(injectionSource);
+                
             } else if(INJECTION_SITE.equals(name)) {
-                InjectionSite injectionSite = new InjectionSite();
-                injectionSite.setType(InjectionSiteType.valueOf(reader.getAttributeValue(null, INJECTION_SITE_TYPE)));
-                injectionSite.setName(reader.getAttributeValue(null, INJECTION_SITE_NAME));
-                injectionSite.setInjectionClass(reader.getAttributeValue(null, INJECTION_SITE_CLASS));
-                injectionSite.setUri(new URI(reader.getAttributeValue(null, INJECTION_SITE_URI)));
+                
+                InjectionSiteMapping injectionSite = new InjectionSiteMapping();
+
+                InjectionSource injectionSource = new InjectionSource();
+                injectionSource.setName(reader.getAttributeValue(null, NAME));
+                injectionSource.setValueType(ValueSourceType.valueOf(reader.getAttributeValue(null, TYPE)));
+                
+                MemberSite memberSite = new MemberSite();
+                memberSite.setElementType(ElementType.valueOf(reader.getAttributeValue(null, ELEMENT_TYPE)));
+                memberSite.setName(reader.getAttributeValue(null, PHYSICAL_NAME));
+                
+                injectionSite.setSite(memberSite);
+                injectionSite.setSource(injectionSource);
+                
                 modelObject.addInjectionSite(injectionSite);
+                
             }
-        } catch(URISyntaxException ex) {
-            throw new MarshalException(ex);
+            
         } catch (XMLStreamException ex) {
             throw new MarshalException(ex);
         }
@@ -149,18 +174,23 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
                 writer.writeEndElement();
             }
             
-            for(URI conctructorName : modelObject.getConstructorNames()) {
-                writer.writeStartElement(QNAME.getPrefix(), CONSTRUCTOR_INJECTION_NAME, QNAME.getNamespaceURI());
-                writer.writeCharacters(conctructorName.toASCIIString());
+            for(InjectionSource cdiSource : modelObject.getCdiSources()) {
+                writer.writeStartElement(QNAME.getPrefix(), CDI_SOURCE, QNAME.getNamespaceURI());
+                writer.writeAttribute(NAME, cdiSource.getName());
+                writer.writeAttribute(TYPE, cdiSource.getValueType().name());
                 writer.writeEndElement();
             }
             
-            for(InjectionSite injectionSite : modelObject.getInjectionSites()) {
+            for(InjectionSiteMapping injectionSite : modelObject.getInjectionSites()) {
+                
+                MemberSite memberSite = injectionSite.getSite();
+                InjectionSource source = injectionSite.getSource();
+                
                 writer.writeStartElement(QNAME.getPrefix(), INJECTION_SITE, QNAME.getNamespaceURI());
-                writer.writeAttribute(INJECTION_SITE_TYPE, injectionSite.getType().name());
-                writer.writeAttribute(INJECTION_SITE_NAME, injectionSite.getName());
-                writer.writeAttribute(INJECTION_SITE_CLASS, injectionSite.getInjectionClass());
-                writer.writeAttribute(INJECTION_SITE_URI, injectionSite.getUri().toASCIIString());
+                writer.writeAttribute(TYPE, source.getValueType().name());
+                writer.writeAttribute(ELEMENT_TYPE, memberSite.getElementType().name());
+                writer.writeAttribute(NAME, source.getName());
+                writer.writeAttribute(PHYSICAL_NAME, memberSite.getName());
                 writer.writeEndElement();
             }
             
