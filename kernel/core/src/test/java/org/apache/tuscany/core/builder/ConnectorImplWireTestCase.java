@@ -50,13 +50,11 @@ public class ConnectorImplWireTestCase extends TestCase {
 
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getUri()).andReturn(SOURCE_URI).atLeastOnce();
-        source.attachWire(EasyMock.isA(Wire.class));
+        source.attachWire(EasyMock.isA(Wire.class), (PhysicalWireSourceDefinition)EasyMock.anyObject());
         EasyMock.replay(source);
         manager.register(source);
 
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
-        //EasyMock.expect(target.getScope()).andReturn(Scope.COMPOSITE);
-        //EasyMock.expect(target.isOptimizable()).andReturn(false);
         EasyMock.expect(target.getUri()).andReturn(TARGET_URI).atLeastOnce();
         target.createTargetInvoker((String) EasyMock.isNull(), EasyMock.isA(PhysicalOperationDefinition.class));
         EasyMock.expectLastCall().andReturn(null);

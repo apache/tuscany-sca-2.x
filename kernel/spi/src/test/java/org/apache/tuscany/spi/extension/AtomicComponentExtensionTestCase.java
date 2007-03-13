@@ -29,6 +29,8 @@ import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -92,6 +94,14 @@ public class AtomicComponentExtensionTestCase extends TestCase {
         }
 
         public void attachCallbackWire(Wire wire) {
+            throw new AssertionFailedError();
+        }
+
+        public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
+            throw new AssertionFailedError();
+        }
+
+        public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
             throw new AssertionFailedError();
         }
 

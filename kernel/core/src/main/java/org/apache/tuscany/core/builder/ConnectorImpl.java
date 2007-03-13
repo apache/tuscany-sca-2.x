@@ -126,7 +126,7 @@ public class ConnectorImpl implements Connector {
         } catch (TargetInvokerCreationException e) {
             throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
         }
-        source.attachWire(wire);
+        source.attachWire(wire, definition.getSource());
     }
 
     public void connect(ComponentDefinition<? extends Implementation<?>> definition) throws WiringException {

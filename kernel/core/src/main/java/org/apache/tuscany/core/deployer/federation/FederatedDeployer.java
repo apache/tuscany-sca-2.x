@@ -76,7 +76,6 @@ public class FederatedDeployer implements RequestListener {
         try {
 
             final PhysicalChangeSet changeSet = (PhysicalChangeSet) marshallerRegistry.unmarshall(content);
-            
             for (PhysicalComponentDefinition pcd : changeSet.getComponentDefinitions()) {
                 final Component component = builderRegistry.build(pcd);
                 componentManager.register(component);

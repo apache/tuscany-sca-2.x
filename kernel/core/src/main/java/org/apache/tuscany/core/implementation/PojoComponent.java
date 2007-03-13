@@ -24,25 +24,28 @@ import java.util.Map;
 
 import org.osoa.sca.ComponentContext;
 
-import org.apache.tuscany.core.component.InstanceFactory;
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.ObjectCreationException;
+
+import org.apache.tuscany.core.component.InstanceFactory;
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
 
 /**
  * Base class for Component implementations based on Java objects.
@@ -95,6 +98,12 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
     }
 
     public void attachCallbackWire(Wire wire) {
+    }
+
+    public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
+    }
+
+    public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
     }
 
     public void start() {
@@ -189,7 +198,7 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
     }
 
     @Deprecated
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) 
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
         throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }

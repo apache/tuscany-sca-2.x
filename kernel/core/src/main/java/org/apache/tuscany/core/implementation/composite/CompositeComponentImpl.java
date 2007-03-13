@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
 import org.apache.tuscany.core.component.event.ComponentStop;
 
@@ -56,6 +58,14 @@ public class CompositeComponentImpl extends CompositeComponentExtension {
     }
 
     public void attachWires(List<Wire> wires) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire, PhysicalWireSourceDefinition defintion) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attachWire(Wire wire, PhysicalWireTargetDefinition defintion) {
         throw new UnsupportedOperationException();
     }
 
