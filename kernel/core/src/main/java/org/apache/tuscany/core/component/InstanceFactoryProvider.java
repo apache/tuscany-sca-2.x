@@ -23,6 +23,12 @@ package org.apache.tuscany.core.component;
  */
 public interface InstanceFactoryProvider<T> {
     /**
+     * Return the implementation class.
+     * @return the implementation class.
+     */
+    Class<T> getImplementationClass();
+
+    /**
      * Create an instance factory that can be used to create component instances.
      *
      * @return a new instance factory
