@@ -19,134 +19,99 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.mock.component.SessionScopeInitDestroyComponent;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class BasicHttpSessionScopeTestCase extends TestCase {
-    private EventInvoker<Object> initInvoker;
-    private EventInvoker<Object> destroyInvoker;
-    private PojoObjectFactory<?> factory;
+    private AtomicComponent component;
+    private InstanceWrapper wrapper;
+    private ScopeContainer scopeContainer;
+    private WorkContext workContext;
 
     public void testLifecycleManagement() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
         // start the request
         Object session = new Object();
         workContext.setIdentifier(Scope.SESSION, session);
-        SessionScopeInitDestroyComponent o1 =
-            (SessionScopeInitDestroyComponent) scopeContext.getInstance(component);
-        assertTrue(o1.isInitialized());
-        assertFalse(o1.isDestroyed());
-        SessionScopeInitDestroyComponent o2 =
-            (SessionScopeInitDestroyComponent) scopeContext.getInstance(component);
-        assertSame(o1, o2);
-        scopeContext.onEvent(new HttpSessionEnd(this, session));
-        assertTrue(o1.isDestroyed());
-        scopeContext.stop();
+
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        EasyMock.verify(component, wrapper);
     }
 
     public void testGetAssociatedInstance() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
         // start the request
         Object session = new Object();
         workContext.setIdentifier(Scope.SESSION, session);
-        scopeContext.getInstance(component);
-        scopeContext.getAssociatedInstance(component);
+
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        assertSame(wrapper, scopeContainer.getAssociatedWrapper(component));
+        EasyMock.verify(component, wrapper);
     }
 
     public void testGetAssociatedInstanceNonExistent() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
+        URI id = URI.create("oops");
+        EasyMock.expect(component.getUri()).andReturn(id);
+        EasyMock.replay(component);
+
         // start the request
         Object session = new Object();
         workContext.setIdentifier(Scope.SESSION, session);
         try {
-            scopeContext.getAssociatedInstance(component);
+            scopeContainer.getAssociatedWrapper(component);
             fail();
         } catch (TargetNotFoundException e) {
-            // expected
+            assertEquals(id.toString(), e.getMessage());
+            EasyMock.verify(component);
         }
     }
 
     public void testSessionIsolation() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
-        scopeContext.start();
-
-        AtomicComponent component = createComponent(scopeContext);
-
+        // start the request
         Object session1 = new Object();
-        workContext.setIdentifier(Scope.SESSION, session1);
-        SessionScopeInitDestroyComponent o1 =
-            (SessionScopeInitDestroyComponent) scopeContext.getInstance(component);
-        assertTrue(o1.isInitialized());
-
         Object session2 = new Object();
-        workContext.setIdentifier(Scope.SESSION, session2);
-        SessionScopeInitDestroyComponent o2 =
-            (SessionScopeInitDestroyComponent) scopeContext.getInstance(component);
-        assertNotSame(o1, o2);
 
-        scopeContext.onEvent(new HttpSessionEnd(this, session1));
-        assertTrue(o1.isDestroyed());
-        assertFalse(o2.isDestroyed());
-        scopeContext.onEvent(new HttpSessionEnd(this, session2));
-        assertTrue(o2.isDestroyed());
-        scopeContext.stop();
+        InstanceWrapper wrapper2 = EasyMock.createNiceMock(InstanceWrapper.class);
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper).andReturn(wrapper2);
+        EasyMock.replay(component, wrapper);
+        workContext.setIdentifier(Scope.SESSION, session1);
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        assertSame(wrapper, scopeContainer.getAssociatedWrapper(component));
+        workContext.setIdentifier(Scope.SESSION, session2);
+        assertSame(wrapper2, scopeContainer.getWrapper(component));
+        assertSame(wrapper2, scopeContainer.getAssociatedWrapper(component));
+        workContext.setIdentifier(Scope.SESSION, session1);
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        EasyMock.verify(component, wrapper);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<SessionScopeInitDestroyComponent>(
-            SessionScopeInitDestroyComponent.class.getConstructor((Class[]) null));
-        initInvoker = new MethodEventInvoker<Object>(
-            SessionScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
-        destroyInvoker = new MethodEventInvoker<Object>(
-            SessionScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
-    }
+        component = EasyMock.createNiceMock(AtomicComponent.class);
+        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+        workContext = new WorkContextImpl();
+        scopeContainer = new HttpSessionScopeContainer(workContext, null);
+        scopeContainer.start();
 
-    private AtomicComponent createComponent(ScopeContainer scopeContainer) {
-        PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setInstanceFactory(factory);
-        configuration.setInitInvoker(initInvoker);
-        configuration.setDestroyInvoker(destroyInvoker);
-        try {
-            configuration.setName(new URI("foo"));
-        } catch (URISyntaxException e) {
-            // will not happen
-        }
-        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
-        component.setScopeContainer(scopeContainer);
-        component.start();
-        return component;
+        component.addListener(scopeContainer);
+        EasyMock.replay(component);
+        scopeContainer.register(component);
+        EasyMock.reset(component);
     }
 }

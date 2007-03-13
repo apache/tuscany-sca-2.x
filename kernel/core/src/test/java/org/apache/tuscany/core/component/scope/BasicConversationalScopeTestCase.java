@@ -18,24 +18,15 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.event.ConversationEnd;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.mock.component.ConversationalScopeInitDestroyComponent;
 import org.apache.tuscany.core.services.store.memory.MemoryStore;
 import org.easymock.EasyMock;
 
@@ -43,94 +34,48 @@ import org.easymock.EasyMock;
  * @version $$Rev: 471111 $$ $$Date: 2006-11-03 23:06:48 -0500 (Fri, 03 Nov 2006) $$
  */
 public class BasicConversationalScopeTestCase extends TestCase {
-
-    private EventInvoker<Object> initInvoker;
-    private EventInvoker<Object> destroyInvoker;
-    private PojoObjectFactory<?> factory;
+    private AtomicComponent component;
+    private InstanceWrapper wrapper;
+    private ScopeContainer scopeContainer;
+    private WorkContext workContext;
 
     public void testLifecycleManagement() throws Exception {
-        StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
-        monitor.start(EasyMock.isA(String.class));
-        monitor.stop(EasyMock.isA(String.class));
-        MemoryStore store = new MemoryStore(monitor);
-        WorkContext workContext = new WorkContextImpl();
-        ConversationalScopeContainer scopeContext = new ConversationalScopeContainer(store, workContext, null);
-        scopeContext.start();
-        AtomicComponent atomicContext = createContext(scopeContext);
         // start the request
         String conversation = "conv";
         workContext.setIdentifier(Scope.CONVERSATION, conversation);
-        ConversationalScopeInitDestroyComponent o1 =
-            (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
-        //assertTrue(o1.isInitialized());
-        assertFalse(o1.isDestroyed());
-        ConversationalScopeInitDestroyComponent o2 =
-            (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
-        assertSame(o1, o2);
-        scopeContext.onEvent(new ConversationEnd(this, conversation));
-        //assertTrue(o1.isDestroyed());
-        scopeContext.stop();
+
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.replay(component, wrapper);
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        EasyMock.verify(component, wrapper);
     }
 
-    public void testCompositeIsolation() throws Exception {
-        StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
-        monitor.start(EasyMock.isA(String.class));
-        monitor.stop(EasyMock.isA(String.class));
-        MemoryStore store = new MemoryStore(monitor);
-        WorkContext workContext = new WorkContextImpl();
-        ConversationalScopeContainer scopeContext = new ConversationalScopeContainer(store, workContext, null);
-        scopeContext.start();
-
-        AtomicComponent atomicContext = createContext(scopeContext);
-
+    public void testCoversationIsolation() throws Exception {
         String conversation1 = "conv";
-        workContext.setIdentifier(Scope.CONVERSATION, conversation1);
-        ConversationalScopeInitDestroyComponent o1 =
-            (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
-        //assertTrue(o1.isInitialized());
-        assertFalse(o1.isDestroyed());
-
         String conversation2 = "conv2";
-        workContext.setIdentifier(Scope.CONVERSATION, conversation2);
-        ConversationalScopeInitDestroyComponent o2 =
-            (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
-        assertNotSame(o1, o2);
 
-        scopeContext.onEvent(new ConversationEnd(this, conversation1));
-        //assertTrue(o1.isDestroyed());
-        assertFalse(o2.isDestroyed());
-        scopeContext.onEvent(new ConversationEnd(this, conversation2));
-        //assertTrue(o2.isDestroyed());
-        scopeContext.stop();
+        InstanceWrapper wrapper2 = EasyMock.createNiceMock(InstanceWrapper.class);
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper).andReturn(wrapper2);
+        EasyMock.replay(component, wrapper);
+        workContext.setIdentifier(Scope.CONVERSATION, conversation1);
+        assertSame(wrapper, scopeContainer.getWrapper(component));
+        workContext.setIdentifier(Scope.CONVERSATION, conversation2);
+        assertSame(wrapper2, scopeContainer.getWrapper(component));
+        EasyMock.verify(component, wrapper);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<ConversationalScopeInitDestroyComponent>(
-            ConversationalScopeInitDestroyComponent.class.getConstructor((Class[]) null));
-        initInvoker = new MethodEventInvoker<Object>(
-            ConversationalScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
-        destroyInvoker = new MethodEventInvoker<Object>(
-            ConversationalScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
-    }
+        component = EasyMock.createNiceMock(AtomicComponent.class);
+        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    private AtomicComponent createContext(ScopeContainer scopeContainer) {
-        PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setInstanceFactory(factory);
-        configuration.setInitInvoker(initInvoker);
-        configuration.setDestroyInvoker(destroyInvoker);
-        try {
-            configuration.setName(new URI("foo"));
-        } catch (URISyntaxException e) {
-            // will not happen
-        }
-        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
-        component.setScopeContainer(scopeContainer);
-        component.start();
-        return component;
+        StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
+        monitor.start(EasyMock.isA(String.class));
+        monitor.stop(EasyMock.isA(String.class));
+        MemoryStore store = new MemoryStore(monitor);
+        workContext = new WorkContextImpl();
+        scopeContainer = new ConversationalScopeContainer(store, workContext, null);
+        scopeContainer.start();
     }
 }
