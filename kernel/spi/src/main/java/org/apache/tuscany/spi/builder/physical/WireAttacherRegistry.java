@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * A registry for wire attachers
@@ -34,17 +35,19 @@ public interface WireAttacherRegistry {
         PWSD extends PhysicalWireSourceDefinition,
         PWTD extends PhysicalWireTargetDefinition> void register(Class<?> clazz, WireAttacher<C, PWSD, PWTD> attacher);
 
-    <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C component, PWSD source)
+    <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C component, Wire wire, PWSD source)
         throws WiringException;
 
     /**
      * Attaches the wire to the target component.
      *
      * @param component  Component.
-     * @param definition Target wire definition.
-     * @throws WiringException
+     * @param wire
+     * @param definition Target wire definition. @throws WiringException
      */
-    <C extends Component, PWTD extends PhysicalWireTargetDefinition> void attach(C component, PWTD definition)
+    <C extends Component, PWTD extends PhysicalWireTargetDefinition> void attach(C component, 
+                                                                                 Wire wire,
+                                                                                 PWTD definition)
         throws WiringException;
 
 }

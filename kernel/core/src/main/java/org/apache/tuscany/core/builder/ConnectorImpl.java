@@ -115,7 +115,6 @@ public class ConnectorImpl implements Connector {
         assert targetUri != null;
         URI baseSourceUri = UriHelper.getDefragmentedName(sourceUri);
         URI baseTargetUri = UriHelper.getDefragmentedName(targetUri);
-        String targetFragment = targetUri.getFragment();
         Component source = componentManager.getComponent(baseSourceUri);
         if (source == null) {
             throw new ComponentNotFoundException("Wire source component not found", baseSourceUri);
@@ -125,11 +124,8 @@ public class ConnectorImpl implements Connector {
             throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
         }
         Wire wire = createWire(definition);
-        try {
-            attachInvokers(targetFragment, wire, source, target);
-        } catch (TargetInvokerCreationException e) {
-            throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-        }
+        attacherRegistry.attach(source, wire, definition.getSource());
+        attacherRegistry.attach(source, wire, definition.getTarget());
     }
 
     public void connect(ComponentDefinition<? extends Implementation<?>> definition) throws WiringException {

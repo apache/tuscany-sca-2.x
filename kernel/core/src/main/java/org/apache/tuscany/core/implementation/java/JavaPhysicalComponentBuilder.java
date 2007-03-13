@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
+import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
@@ -131,10 +132,10 @@ public class JavaPhysicalComponentBuilder<T>
      * Attaches the source to the component.
      *
      * @param component Component.
+     * @param wire
      * @param source    Source.
      */
-    public void attach(JavaComponent component, JavaPhysicalWireSourceDefinition source) {
-
+    public void attach(JavaComponent component, Wire wire, JavaPhysicalWireSourceDefinition source) {
 
     }
 
@@ -142,9 +143,10 @@ public class JavaPhysicalComponentBuilder<T>
      * Attaches the target to the component.
      *
      * @param component Component.
+     * @param wire
      * @param target    Target.
      */
-    public void attach(JavaComponent component, JavaPhysicalWireTargetDefinition target) {
+    public void attach(JavaComponent component, Wire wire, JavaPhysicalWireTargetDefinition target) {
     }
 
 }

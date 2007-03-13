@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.builder.physical.WireAttacher;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -36,11 +37,15 @@ public class WireAttacherRegistryTestCase extends TestCase {
     public void testSourceAttachDispatch() throws Exception {
         Component component = EasyMock.createMock(Component.class);
         EasyMock.replay(component);
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.replay(wire);
         WireAttacher attacher = EasyMock.createMock(WireAttacher.class);
-        attacher.attach(EasyMock.isA(Component.class), EasyMock.isA(PhysicalWireSourceDefinition.class));
+        attacher.attach(EasyMock.isA(Component.class),
+            EasyMock.isA(Wire.class),
+            EasyMock.isA(PhysicalWireSourceDefinition.class));
         EasyMock.replay(attacher);
         registry.register(component.getClass(), attacher);
-        registry.attach(component, new PhysicalWireSourceDefinition());
+        registry.attach(component, wire, new PhysicalWireSourceDefinition());
         EasyMock.verify(attacher);
     }
 
@@ -48,12 +53,16 @@ public class WireAttacherRegistryTestCase extends TestCase {
     public void testTargetAttachDispatch() throws Exception {
         Component component = EasyMock.createMock(Component.class);
         EasyMock.replay(component);
+        Wire wire = EasyMock.createMock(Wire.class);
+        EasyMock.replay(wire);
         WireAttacher attacher = EasyMock.createMock(WireAttacher.class);
-        attacher.attach(EasyMock.isA(Component.class), EasyMock.isA(PhysicalWireTargetDefinition.class));
+        attacher.attach(EasyMock.isA(Component.class),
+            EasyMock.isA(Wire.class),
+            EasyMock.isA(PhysicalWireTargetDefinition.class));
         EasyMock.replay(attacher);
 
         registry.register(component.getClass(), attacher);
-        registry.attach(component, new PhysicalWireTargetDefinition());
+        registry.attach(component, wire, new PhysicalWireTargetDefinition());
         EasyMock.verify(attacher);
     }
 
