@@ -23,6 +23,8 @@ import java.net.URI;
 
 /**
  * Represents an injection site.
+ * 
+ * @version $Revision$ $Date$
  */
 public class InjectionSite {
     

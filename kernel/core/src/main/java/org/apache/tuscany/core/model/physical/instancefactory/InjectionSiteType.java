@@ -21,6 +21,8 @@ package org.apache.tuscany.core.model.physical.instancefactory;
 
 /**
  * Represents an injection site type.
+ * 
+ * @version $Revision$ $Date$
  */
 public enum InjectionSiteType {
     
