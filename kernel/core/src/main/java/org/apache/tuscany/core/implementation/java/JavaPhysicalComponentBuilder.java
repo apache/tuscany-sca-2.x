@@ -18,7 +18,10 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -28,10 +31,14 @@ import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.builder.physical.WireAttacher;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 
+import org.apache.tuscany.core.builder.physical.WireAttachException;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
@@ -50,8 +57,10 @@ public class JavaPhysicalComponentBuilder<T>
     // Classloader registry
     private ClassLoaderRegistry classLoaderRegistry;
 
-    // SCope registry
+    // Scope registry
     private ScopeRegistry scopeRegistry;
+
+    private WorkContext workContext;
 
     /**
      * Injects builder registry.
@@ -61,6 +70,12 @@ public class JavaPhysicalComponentBuilder<T>
     @Reference
     public void setBuilderRegistry(PhysicalComponentBuilderRegistry registry) {
         registry.register(JavaPhysicalComponentDefinition.class, this);
+    }
+
+
+    @Reference
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
     }
 
     /**
@@ -136,7 +151,7 @@ public class JavaPhysicalComponentBuilder<T>
      * @param source    Source.
      */
     public void attach(JavaComponent component, Wire wire, JavaPhysicalWireSourceDefinition source) {
-
+        // TODO
     }
 
     /**
@@ -146,7 +161,40 @@ public class JavaPhysicalComponentBuilder<T>
      * @param wire
      * @param target    Target.
      */
-    public void attach(JavaComponent component, Wire wire, JavaPhysicalWireTargetDefinition target) {
+    public void attach(JavaComponent component, Wire wire, JavaPhysicalWireTargetDefinition target)
+        throws WireAttachException {
+        //TODO get impl class
+        Class<?> implementationClass = null;
+
+        for (Map.Entry<PhysicalOperationDefinition, InvocationChain> entry : wire.getPhysicalInvocationChains()
+            .entrySet()) {
+            PhysicalOperationDefinition operation = entry.getKey();
+            InvocationChain chain = entry.getValue();
+            List<String> params = operation.getParameters();
+            Class<?>[] paramTypes = new Class<?>[params.size()];
+            ClassLoader loader = implementationClass.getClassLoader();
+            assert loader != null;
+            for (int i = 0; i < params.size(); i++) {
+                String param = params.get(i);
+                try {
+                    paramTypes[i] = loader.loadClass(param);
+                } catch (ClassNotFoundException e) {
+                    URI sourceUri = wire.getSourceUri();
+                    URI targetUri = wire.getTargetUri();
+                    throw new WireAttachException("Implementation class not found", sourceUri, targetUri, e);
+                }
+            }
+            Method method;
+            try {
+                method = implementationClass.getMethod(operation.getName(), paramTypes);
+            } catch (NoSuchMethodException e) {
+                URI sourceUri = wire.getSourceUri();
+                URI targetUri = wire.getTargetUri();
+                throw new WireAttachException("No matching method found", sourceUri, targetUri, e);
+            }
+            // TODO deal with scope  container
+            chain.addInterceptor(new JavaInvokerInterceptor(method, component, null, workContext));
+        }
     }
 
 }

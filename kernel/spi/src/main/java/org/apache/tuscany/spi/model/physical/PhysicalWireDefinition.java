@@ -39,6 +39,11 @@ public class PhysicalWireDefinition extends ModelObject {
     // Source definition
     private PhysicalWireSourceDefinition source;
 
+    private PhysicalWireTargetDefinition callbackTarget;
+
+    // Source definition
+    private PhysicalWireSourceDefinition callbackSource;
+
     // Collection of operations
     private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
 
@@ -138,6 +143,22 @@ public class PhysicalWireDefinition extends ModelObject {
      */
     public void setTarget(PhysicalWireTargetDefinition target) {
         this.target = target;
+
     }
 
+    public PhysicalWireTargetDefinition getCallbackTarget() {
+        return callbackTarget;
+    }
+
+    public void setCallbackTarget(PhysicalWireTargetDefinition callbackTarget) {
+        this.callbackTarget = callbackTarget;
+    }
+
+    public PhysicalWireSourceDefinition getCallbackSource() {
+        return callbackSource;
+    }
+
+    public void setCallbackSource(PhysicalWireSourceDefinition callbackSource) {
+        this.callbackSource = callbackSource;
+    }
 }

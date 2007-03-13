@@ -38,28 +38,4 @@ public class JavaComponent<T> extends PojoComponent<T> {
         super(componentId, instanceFactoryProvider, scopeContainer, initLevel, maxIdleTime, maxAge);
     }
 
-/*
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
-        throws TargetInvokerCreationException {
-        List<String> params = operation.getParameters();
-        Class<?>[] paramTypes = new Class<?>[params.size()];
-        ClassLoader loader = implementationClass.getClassLoader();
-        assert loader != null;
-        for (int i = 0; i < params.size(); i++) {
-            String param = params.get(i);
-            try {
-                paramTypes[i] = loader.loadClass(param);
-            } catch (ClassNotFoundException e) {
-                throw new TypeNotFoundException(operation, e);
-            }
-        }
-        Method method;
-        try {
-            method = implementationClass.getMethod(operation.getName(), paramTypes);
-        } catch (NoSuchMethodException e) {
-            throw new TargetMethodNotFoundException(operation);
-        }
-        return new JavaTargetInvoker(method, this, scopeContainer, workContext);
-    }
-*/
 }
