@@ -17,35 +17,36 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.wire.physical;
+package org.apache.tuscany.spi.builder.physical;
 
+import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * Abstraction for the wire attacher.
- * 
+ *
  * @version $Date$ $Revision$
  */
-public interface WireAttacher<C extends Component, 
-                              PWSD extends PhysicalWireSourceDefinition, 
-                              PWTD extends PhysicalWireTargetDefinition> {
-    
+public interface WireAttacher<C extends Component,
+    PWSD extends PhysicalWireSourceDefinition,
+    PWTD extends PhysicalWireTargetDefinition> {
+
     /**
      * Attaches the source to the component.
-     * 
+     *
      * @param component Component.
-     * @param source Source.
+     * @param source    Source.
      */
-    void attach(C component, PWSD source);
-    
+    void attach(C component, PWSD source) throws WiringException;
+
     /**
      * Attaches the target to the component.
-     * 
+     *
      * @param component Component.
-     * @param target Target.
+     * @param target    Target.
      */
-    void attach(C component, PWTD target);
+    void attach(C component, PWTD target) throws WiringException;
 
 }
