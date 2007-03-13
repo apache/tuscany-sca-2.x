@@ -102,6 +102,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         String conversationId = getConversationId();
         try {
             workContext.setCurrentAtomicComponent(component);
+            // FIXME this should be an InstanceWrapper and shouldn't we stop it? 
             Object instance = nonDurableStore.readRecord(component, conversationId);
             if (instance != null) {
                 nonDurableStore.removeRecord(component, conversationId);
