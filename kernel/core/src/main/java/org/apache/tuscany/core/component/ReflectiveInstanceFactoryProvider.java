@@ -63,6 +63,10 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         factories.put(name, objectFactory);
     }
 
+    public Class<?> getMemberType(URI injectionSite) {
+        return null;
+    }
+
     public Class<T> getImplementationClass() {
         return implementationClass;
     }

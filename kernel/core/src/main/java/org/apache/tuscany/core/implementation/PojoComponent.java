@@ -25,6 +25,7 @@ import java.util.Map;
 import org.osoa.sca.ComponentContext;
 
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
@@ -140,6 +141,14 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
 
     public Class<T> getImplementationClass() {
         return provider.getImplementationClass();
+    }
+
+    public void setObjectFactory(URI name, ObjectFactory<?> objectFactory) {
+        provider.setObjectFactory(name, objectFactory);
+    }
+
+    public Class<?> getMemberType(URI injectionSite) {
+        return provider.getMemberType(injectionSite);
     }
 
     @Deprecated

@@ -18,15 +18,36 @@
  */
 package org.apache.tuscany.core.component;
 
+import java.net.URI;
+
+import org.apache.tuscany.spi.ObjectFactory;
+
 /**
  * @version $Rev$ $Date$
  */
 public interface InstanceFactoryProvider<T> {
     /**
      * Return the implementation class.
+     *
      * @return the implementation class.
      */
     Class<T> getImplementationClass();
+
+    /**
+     * Sets an object factory for an injection site
+     *
+     * @param name          the injection site name
+     * @param objectFactory the object factory
+     */
+    void setObjectFactory(URI name, ObjectFactory<?> objectFactory);
+
+    /**
+     * Returns the type for the injection site
+     *
+     * @param injectionSite the injection site name
+     * @return the required type
+     */
+    Class<?> getMemberType(URI injectionSite);
 
     /**
      * Create an instance factory that can be used to create component instances.

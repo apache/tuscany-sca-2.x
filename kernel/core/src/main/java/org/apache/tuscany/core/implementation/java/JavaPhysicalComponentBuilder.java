@@ -37,12 +37,14 @@ import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 import org.apache.tuscany.core.builder.physical.WireAttachException;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
+import org.apache.tuscany.core.wire.WireObjectFactory;
 
 /**
  * The physical component builder for Java implementation types. Responsible for creating the Component runtime artifact
@@ -63,6 +65,8 @@ public class JavaPhysicalComponentBuilder<T>
 
     private WorkContext workContext;
 
+    private ProxyService proxyService;
+
     /**
      * Injects builder registry.
      *
@@ -77,6 +81,11 @@ public class JavaPhysicalComponentBuilder<T>
     @Reference
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
+    }
+
+    @Reference
+    public void setProxyService(ProxyService proxyService) {
+        this.proxyService = proxyService;
     }
 
     /**
@@ -151,8 +160,11 @@ public class JavaPhysicalComponentBuilder<T>
      * @param wire
      * @param source    Source.
      */
+    @SuppressWarnings({"unchecked"})
     public void attach(JavaComponent component, Wire wire, JavaPhysicalWireSourceDefinition source) {
-        // TODO
+        Class<?> type = component.getMemberType(wire.getSourceUri());
+        WireObjectFactory<?> factory = new WireObjectFactory(type, wire, proxyService);
+        component.setObjectFactory(wire.getSourceUri(), factory);
     }
 
     /**
@@ -167,6 +179,7 @@ public class JavaPhysicalComponentBuilder<T>
         ScopeContainer scopeContainer = component.getScopeContainer();
         Class<?> implementationClass = component.getImplementationClass();
         ClassLoader loader = implementationClass.getClassLoader();
+        // attach the invoker interceptor to forward invocation chains
         for (Map.Entry<PhysicalOperationDefinition, InvocationChain> entry : wire.getPhysicalInvocationChains()
             .entrySet()) {
             PhysicalOperationDefinition operation = entry.getKey();
