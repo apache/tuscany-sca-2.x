@@ -288,7 +288,6 @@ public class ConnectorImpl implements Connector {
                 Interceptor interceptor = interceptorBuilderRegistry.build(interceptorDefinition);
                 chain.addInterceptor(interceptor);
             }
-            chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(operation, chain);
         }
         for (PhysicalOperationDefinition operation : definition.getCallbackOperations()) {
@@ -297,7 +296,6 @@ public class ConnectorImpl implements Connector {
                 Interceptor interceptor = interceptorBuilderRegistry.build(interceptorDefinition);
                 chain.addInterceptor(interceptor);
             }
-            chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(operation, chain);
         }
         return wire;
