@@ -40,11 +40,15 @@ public interface Message {
 
     /**
      * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
+     *
+     * @Deprecated
      */
     void setTargetInvoker(TargetInvoker invoker);
 
     /**
      * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
+     *
+     * @Deprecated
      */
     TargetInvoker getTargetInvoker();
 
