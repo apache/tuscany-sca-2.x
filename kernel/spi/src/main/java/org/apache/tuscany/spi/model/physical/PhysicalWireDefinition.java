@@ -32,17 +32,12 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 public class PhysicalWireDefinition extends ModelObject {
-    
+
     // Target definition
     private PhysicalWireTargetDefinition target;
-    
+
     // Source definition
     private PhysicalWireSourceDefinition source;
-
-    private PhysicalWireTargetDefinition callbackTarget;
-
-    // Source definition
-    private PhysicalWireSourceDefinition callbackSource;
 
     // Collection of operations
     private Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
@@ -74,8 +69,8 @@ public class PhysicalWireDefinition extends ModelObject {
      */
     public Set<PhysicalOperationDefinition> getNonCallbackOperations() {
         Set<PhysicalOperationDefinition> nonCallbackOperations = new HashSet<PhysicalOperationDefinition>();
-        for(PhysicalOperationDefinition operation : operations) {
-            if(!operation.isCallback()) {
+        for (PhysicalOperationDefinition operation : operations) {
+            if (!operation.isCallback()) {
                 nonCallbackOperations.add(operation);
             }
         }
@@ -89,8 +84,8 @@ public class PhysicalWireDefinition extends ModelObject {
      */
     public Set<PhysicalOperationDefinition> getCallbackOperations() {
         Set<PhysicalOperationDefinition> callbackOperations = new HashSet<PhysicalOperationDefinition>();
-        for(PhysicalOperationDefinition operation : operations) {
-            if(operation.isCallback()) {
+        for (PhysicalOperationDefinition operation : operations) {
+            if (operation.isCallback()) {
                 callbackOperations.add(operation);
             }
         }
@@ -99,6 +94,7 @@ public class PhysicalWireDefinition extends ModelObject {
 
     /**
      * Gets the Wire source URI.
+     *
      * @return Wire source URI.
      */
     public URI getSourceUri() {
@@ -107,6 +103,7 @@ public class PhysicalWireDefinition extends ModelObject {
 
     /**
      * Gets the Wire target URI.
+     *
      * @return Wire target URI.
      */
     public URI getTargetUri() {
@@ -115,6 +112,7 @@ public class PhysicalWireDefinition extends ModelObject {
 
     /**
      * Gets the wire source.
+     *
      * @return Wire source.
      */
     public PhysicalWireSourceDefinition getSource() {
@@ -123,6 +121,7 @@ public class PhysicalWireDefinition extends ModelObject {
 
     /**
      * Sets the wire source.
+     *
      * @param source Wire source.
      */
     public void setSource(PhysicalWireSourceDefinition source) {
@@ -131,6 +130,7 @@ public class PhysicalWireDefinition extends ModelObject {
 
     /**
      * Gets the wire target.
+     *
      * @return Wire target.
      */
     public PhysicalWireTargetDefinition getTarget() {
@@ -139,6 +139,7 @@ public class PhysicalWireDefinition extends ModelObject {
 
     /**
      * Sets the wire target.
+     *
      * @param target Wire target.
      */
     public void setTarget(PhysicalWireTargetDefinition target) {
@@ -146,19 +147,4 @@ public class PhysicalWireDefinition extends ModelObject {
 
     }
 
-    public PhysicalWireTargetDefinition getCallbackTarget() {
-        return callbackTarget;
-    }
-
-    public void setCallbackTarget(PhysicalWireTargetDefinition callbackTarget) {
-        this.callbackTarget = callbackTarget;
-    }
-
-    public PhysicalWireSourceDefinition getCallbackSource() {
-        return callbackSource;
-    }
-
-    public void setCallbackSource(PhysicalWireSourceDefinition callbackSource) {
-        this.callbackSource = callbackSource;
-    }
 }
