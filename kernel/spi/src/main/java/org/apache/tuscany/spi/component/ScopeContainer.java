@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.model.Scope;
  * @param <KEY> the type of IDs that this container uses to identify its contexts.
  * For example, for COMPOSITE scope this could be the URI of the composite component,
  * or for HTTP Session scope it might be the HTTP session ID.
+ * @param <GROUP> the type of IDs that identify groups of components
  */
 public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListener {
 
