@@ -45,9 +45,13 @@ public class BasicConversationalScopeTestCase extends TestCase {
         workContext.setIdentifier(Scope.CONVERSATION, conversation);
 
         EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        wrapper.start();
+        // FIXME shouldn't stop be called when the component is removed?
+//        wrapper.stop();
         EasyMock.replay(component, wrapper);
         assertSame(wrapper, scopeContainer.getWrapper(component));
         assertSame(wrapper, scopeContainer.getWrapper(component));
+        scopeContainer.remove(component);
         EasyMock.verify(component, wrapper);
     }
 
@@ -55,9 +59,12 @@ public class BasicConversationalScopeTestCase extends TestCase {
         String conversation1 = "conv";
         String conversation2 = "conv2";
 
-        InstanceWrapper wrapper2 = EasyMock.createNiceMock(InstanceWrapper.class);
-        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper).andReturn(wrapper2);
-        EasyMock.replay(component, wrapper);
+        InstanceWrapper wrapper2 = EasyMock.createStrictMock(InstanceWrapper.class);
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        wrapper.start();
+        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper2);
+        wrapper2.start();
+        EasyMock.replay(component, wrapper, wrapper2);
         workContext.setIdentifier(Scope.CONVERSATION, conversation1);
         assertSame(wrapper, scopeContainer.getWrapper(component));
         workContext.setIdentifier(Scope.CONVERSATION, conversation2);
@@ -67,8 +74,10 @@ public class BasicConversationalScopeTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        component = EasyMock.createNiceMock(AtomicComponent.class);
-        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
+        component = EasyMock.createStrictMock(AtomicComponent.class);
+        EasyMock.expect(component.getMaxAge()).andStubReturn(-1);
+        EasyMock.expect(component.getMaxIdleTime()).andStubReturn(-1);
+        wrapper = EasyMock.createStrictMock(InstanceWrapper.class);
 
         StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
         monitor.start(EasyMock.isA(String.class));
