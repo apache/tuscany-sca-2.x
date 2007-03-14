@@ -86,4 +86,6 @@ public interface WSDLDefinitionRegistry {
      * @return
      */
     XMLSchemaRegistry getSchemaRegistry();
+
+    Definition getDefinition(String wsdlNamespace);
 }
