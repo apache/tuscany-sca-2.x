@@ -19,13 +19,14 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany</groupId>
+        <artifactId>sca</artifactId>
+        <version>1.0-incubating</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.services</groupId>
     <artifactId>parent</artifactId>
+    <version>2.0-alpha2-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Tuscany SCA Services</name>
 

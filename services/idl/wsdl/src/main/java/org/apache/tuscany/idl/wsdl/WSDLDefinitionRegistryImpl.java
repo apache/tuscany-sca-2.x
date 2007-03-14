@@ -201,4 +201,13 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         return schemaRegistry;
     }
 
+    public Definition getDefinition(String wsdlNamespace) {
+        List<Definition> definitions = definitionsByNamespace.get(wsdlNamespace);
+        if (definitions == null || definitions.size() < 1) {
+            return null;
+        } else {
+            return definitions.get(0);
+        }
+    }
+
 }
