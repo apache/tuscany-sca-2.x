@@ -48,16 +48,17 @@ public class WireAttacherRegistryImpl implements WireAttacherRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C component,
+    public <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C source,
+                                                                                        Component target,
                                                                                         Wire wire,
-                                                                                        PWSD source)
+                                                                                        PWSD definition)
         throws WiringException {
-        Class<? extends Component> type = component.getClass();
+        Class<? extends Component> type = source.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
-            throw new WireAttacherNotRegistered(type, component.getUri(), wire.getTargetUri());
+            throw new WireAttacherNotRegistered(type, source.getUri(), wire.getTargetUri());
         }
-        attacher.attach(component, wire, source);
+        attacher.attach(source, target, wire, definition);
     }
 
     @SuppressWarnings("unchecked")

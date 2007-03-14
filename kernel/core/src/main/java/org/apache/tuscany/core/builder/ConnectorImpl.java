@@ -124,7 +124,7 @@ public class ConnectorImpl implements Connector {
             throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
         }
         Wire wire = createWire(definition);
-        attacherRegistry.attach(source, wire, definition.getSource());
+        attacherRegistry.attach(source, target, wire, definition.getSource());
         attacherRegistry.attach(target, wire, definition.getTarget());
     }
 

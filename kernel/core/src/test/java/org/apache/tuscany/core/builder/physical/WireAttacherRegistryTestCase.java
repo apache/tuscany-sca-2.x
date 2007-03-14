@@ -35,17 +35,21 @@ public class WireAttacherRegistryTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testSourceAttachDispatch() throws Exception {
-        Component component = EasyMock.createMock(Component.class);
-        EasyMock.replay(component);
+        Component source = EasyMock.createMock(Component.class);
+        EasyMock.replay(source);
+        Component target = EasyMock.createMock(Component.class);
+        EasyMock.replay(target);
+
         Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.replay(wire);
         WireAttacher attacher = EasyMock.createMock(WireAttacher.class);
         attacher.attach(EasyMock.isA(Component.class),
+            EasyMock.isA(Component.class),
             EasyMock.isA(Wire.class),
             EasyMock.isA(PhysicalWireSourceDefinition.class));
         EasyMock.replay(attacher);
-        registry.register(component.getClass(), attacher);
-        registry.attach(component, wire, new PhysicalWireSourceDefinition());
+        registry.register(source.getClass(), attacher);
+        registry.attach(source, target, wire, new PhysicalWireSourceDefinition());
         EasyMock.verify(attacher);
     }
 
