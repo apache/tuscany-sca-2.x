@@ -38,11 +38,11 @@ import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProvid
 
 /**
  * IF provider builder for reflective IF provider.
- * 
+ *
  * @version $Date$ $Revision$
  */
-public class ReflectiveIFProviderBuilder extends
-    AbstractIFProviderBuilder<ReflectiveInstanceFactoryProvider, ReflectiveIFProviderDefinition> {
+public class ReflectiveIFProviderBuilder<T> extends
+    AbstractIFProviderBuilder<ReflectiveInstanceFactoryProvider<T>, ReflectiveIFProviderDefinition> {
 
     @Override
     protected Class<ReflectiveIFProviderDefinition> getIfpdClass() {
@@ -50,7 +50,7 @@ public class ReflectiveIFProviderBuilder extends
     }
 
     @SuppressWarnings("unchecked")
-    public ReflectiveInstanceFactoryProvider build(ReflectiveIFProviderDefinition ifpd, ClassLoader cl)
+    public ReflectiveInstanceFactoryProvider<T> build(ReflectiveIFProviderDefinition ifpd, ClassLoader cl)
         throws IFProviderBuilderException {
 
         try {
@@ -66,8 +66,11 @@ public class ReflectiveIFProviderBuilder extends
             List<InjectionSource> ctrInjectSites = ifpd.getCdiSources();
 
             Map<InjectionSource, Member> injectionSites = getInjectionSites(ifpd, implClass);
-
-            return new ReflectiveInstanceFactoryProvider(ctr, ctrInjectSites, injectionSites, initMethod, destroyMethod);
+            return new ReflectiveInstanceFactoryProvider<T>(ctr,
+                ctrInjectSites,
+                injectionSites,
+                initMethod,
+                destroyMethod);
 
         } catch (ClassNotFoundException ex) {
             throw new IFProviderBuilderException(ex);
@@ -85,15 +88,15 @@ public class ReflectiveIFProviderBuilder extends
      */
     private Map<InjectionSource, Member> getInjectionSites(ReflectiveIFProviderDefinition ifpd, Class implClass)
         throws NoSuchFieldException, IntrospectionException, IFProviderBuilderException {
-        
+
         Map<InjectionSource, Member> injectionSites = new HashMap<InjectionSource, Member>();
         for (InjectionSiteMapping injectionSite : ifpd.getInjectionSites()) {
-            
+
             InjectionSource source = injectionSite.getSource();
             MemberSite memberSite = injectionSite.getSite();
             ElementType elementType = memberSite.getElementType();
             String name = memberSite.getName();
-            
+
             Member member = null;
             if (memberSite.getElementType() == ElementType.FIELD) {
                 member = implClass.getDeclaredField(name);
