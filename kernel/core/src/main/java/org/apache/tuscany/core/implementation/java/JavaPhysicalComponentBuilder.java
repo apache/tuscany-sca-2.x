@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
@@ -41,11 +42,11 @@ import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.builder.physical.WireAttachException;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 import org.apache.tuscany.core.wire.WireObjectFactory;
-import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
 
 /**
  * The physical component builder for Java implementation types. Responsible for creating the Component runtime artifact
@@ -157,20 +158,24 @@ public class JavaPhysicalComponentBuilder<T>
     /**
      * Attaches the source to the component.
      *
-     * @param component Component.
-     * @param wire
-     * @param source    Source.
+     * @param component the source component
+     * @param wire      the wire for the callback
+     * @param source    the attach metadata
      */
     @SuppressWarnings({"unchecked"})
     public void attach(JavaComponent component, Wire wire, JavaPhysicalWireSourceDefinition source) {
-        Class<?> type = component.getMemberType(wire.getSourceUri());
-        WireObjectFactory<?> factory = new WireObjectFactory(type, wire, proxyService);
-        component.setObjectFactory(wire.getSourceUri(), factory);
+        URI sourceUri = wire.getSourceUri();
+        Class<?> type = component.getMemberType(sourceUri);
+        ObjectFactory<?> factory = new WireObjectFactory(type, wire, proxyService);
+        component.setObjectFactory(sourceUri, factory);
         if (!wire.getCallbackInvocationChains().isEmpty()) {
-            // TODO handle callbacks
+            URI callbackUri = source.getCallbackUri();
+            Class<?> callbackType = component.getMemberType(callbackUri);
+            ObjectFactory<?> callbackFactory = new CallbackWireObjectFactory2(callbackType, proxyService);
+            component.setObjectFactory(callbackUri, callbackFactory);
         }
     }
-
+                                    
     /**
      * Attaches the target to the component.
      *

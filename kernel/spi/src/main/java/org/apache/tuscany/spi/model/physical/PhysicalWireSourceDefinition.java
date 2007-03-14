@@ -32,12 +32,13 @@ public class PhysicalWireSourceDefinition extends ModelObject {
 
     // URI
     private URI uri;
+    private URI callbackUri;
     private boolean optimizable;
 
     /**
      * Gets the URI.
      *
-     * @return Gets the URI.
+     * @return the URI.
      */
     public URI getUri() {
         return uri;
@@ -46,10 +47,28 @@ public class PhysicalWireSourceDefinition extends ModelObject {
     /**
      * Sets the URI.
      *
-     * @param uri Sets the URI.
+     * @param uri the URI.
      */
     public void setUri(URI uri) {
         this.uri = uri;
+    }
+
+    /**
+     * Gets the callback URI.
+     *
+     * @return the callback URI.
+     */
+    public URI getCallbackUri() {
+        return callbackUri;
+    }
+
+    /**
+     * Sets the URI.
+     *
+     * @param uri the callback URI.
+     */
+    public void setCallbackUri(URI uri) {
+        this.callbackUri = uri;
     }
 
 
