@@ -30,6 +30,7 @@ public class MessageImpl implements Message {
     private Object body;
     private TargetInvoker invoker;
     private LinkedList<URI> callbackUris;
+    private LinkedList<Wire> callbackWires;
     private Object messageId;
     private Object correlationId;
     private boolean isFault;
@@ -68,6 +69,21 @@ public class MessageImpl implements Message {
 
     public void setCallbackUris(LinkedList<URI> callbackRoutingChain) {
         this.callbackUris = callbackRoutingChain;
+    }
+
+    public void pushCallbackWire(Wire wire) {
+        if (callbackWires == null) {
+            callbackWires = new LinkedList<Wire>();
+        }
+        callbackWires.add(wire);
+    }
+
+    public LinkedList<Wire> getCallbackWires() {
+        return callbackWires;
+    }
+
+    public void setCallbackWires(LinkedList<Wire> wires) {
+        this.callbackWires = wires;
     }
 
     public Object getMessageId() {

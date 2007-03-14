@@ -359,6 +359,10 @@ public class ContractCompatibilityTestCase extends TestCase {
             return null;
         }
 
+        public Object createCallbackProxy(Class<?> interfaze) throws ProxyCreationException {
+            return null;
+        }
+
         public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract,
                                 QualifiedName targetName) {
             throw new UnsupportedOperationException();

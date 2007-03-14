@@ -45,6 +45,7 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefiniti
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 import org.apache.tuscany.core.wire.WireObjectFactory;
+import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
 
 /**
  * The physical component builder for Java implementation types. Responsible for creating the Component runtime artifact

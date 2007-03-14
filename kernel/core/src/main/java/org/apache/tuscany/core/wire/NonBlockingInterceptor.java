@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Adds non-blocking behavior to an invocation chain
@@ -133,6 +134,18 @@ public class NonBlockingInterceptor implements Interceptor {
 
         public void setCallbackUris(LinkedList<URI> uris) {
             throw new UnsupportedOperationException();
+        }
+
+        public void pushCallbackWire(Wire wire) {
+
+        }
+
+        public LinkedList<Wire> getCallbackWires() {
+            return null;
+        }
+
+        public void setCallbackWires(LinkedList<Wire> wires) {
+
         }
 
         public Object getMessageId() {

@@ -34,6 +34,9 @@ import org.apache.tuscany.spi.model.ServiceContract;
 public abstract class AbstractInvocationHandler {
     private boolean conversationStarted;
 
+    /**
+     * @Deprecated
+     */
     protected Object invoke(InvocationChain chain,
                             TargetInvoker invoker,
                             Object[] args,
@@ -62,6 +65,62 @@ public abstract class AbstractInvocationHandler {
             }
             if (callbackUris != null) {
                 msg.setCallbackUris(callbackUris);
+            }
+            Operation operation = chain.getOperation();
+            ServiceContract contract = operation.getServiceContract();
+            if (contract.isConversational()) {
+                int sequence = chain.getOperation().getConversationSequence();
+                if (sequence == Operation.CONVERSATION_END) {
+                    msg.setConversationSequence(TargetInvoker.END);
+                    conversationStarted = false;
+                } else if (sequence == Operation.CONVERSATION_CONTINUE) {
+                    if (conversationStarted) {
+                        msg.setConversationSequence(TargetInvoker.CONTINUE);
+                    } else {
+                        conversationStarted = true;
+                        msg.setConversationSequence(TargetInvoker.START);
+                    }
+                }
+            }
+            msg.setBody(args);
+            // dispatch the wire down the chain and get the response
+            Message resp = headInterceptor.invoke(msg);
+            Object body = resp.getBody();
+            if (resp.isFault()) {
+                throw (Throwable) body;
+            }
+            return body;
+        }
+    }
+
+    protected Object invokeTarget(InvocationChain chain,
+                            TargetInvoker invoker,
+                            Object[] args,
+                            Object correlationId,
+                            LinkedList<Wire> callbackWires)
+        throws Throwable {
+        Interceptor headInterceptor = chain.getHeadInterceptor();
+        if (headInterceptor == null) {
+            try {
+                // short-circuit the dispatch and invoke the target directly
+                TargetInvoker targetInvoker = chain.getTargetInvoker();
+                if (targetInvoker == null) {
+                    String name = chain.getOperation().getName();
+                    throw new AssertionError("No target invoker [" + name + "]");
+                }
+                return targetInvoker.invokeTarget(args, TargetInvoker.NONE);
+            } catch (InvocationTargetException e) {
+                // the cause was thrown by the target so throw it
+                throw e.getCause();
+            }
+        } else {
+            Message msg = new MessageImpl();
+            msg.setTargetInvoker(invoker);
+            if (correlationId != null) {
+                msg.setCorrelationId(correlationId);
+            }
+            if (callbackWires != null) {
+                msg.setCallbackWires(callbackWires);
             }
             Operation operation = chain.getOperation();
             ServiceContract contract = operation.getServiceContract();

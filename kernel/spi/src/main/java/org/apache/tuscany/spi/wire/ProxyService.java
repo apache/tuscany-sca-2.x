@@ -61,8 +61,18 @@ public interface ProxyService {
      * @param interfaze the interface the proxy should implement
      * @return the proxy
      * @throws ProxyCreationException
+     * @Deprecated
      */
     Object createCallbackProxy(Class<?> interfaze, List<Wire> wires) throws ProxyCreationException;
+
+    /**
+     * Creates a Java proxy for the service contract callback
+     *
+     * @param interfaze the interface the proxy should implement
+     * @return the proxy
+     * @throws ProxyCreationException if an error is encountered during proxy generation
+     */
+    Object createCallbackProxy(Class<?> interfaze) throws ProxyCreationException;
 
     /**
      * Cast a proxy to a CallableReference.
@@ -96,13 +106,12 @@ public interface ProxyService {
      * @return true if the service contracts are compatible
      * @throws IncompatibleServiceContractException
      *          If the source service contract is not compatible with the target one
-     * <p>
-     * TODO JFM this method should be moved from this interface to the allocator phase
+     *          <p/>
+     *          TODO JFM this method should be moved from this interface to the allocator phase
      */
     boolean checkCompatibility(ServiceContract<?> source,
                                ServiceContract<?> target,
                                boolean ignoreCallback,
-                               boolean silent)
-        throws IncompatibleServiceContractException;
+                               boolean silent) throws IncompatibleServiceContractException;
 
 }

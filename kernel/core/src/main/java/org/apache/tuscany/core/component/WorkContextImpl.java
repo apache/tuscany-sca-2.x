@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * An implementation of an {@link org.apache.tuscany.spi.component.WorkContext} that handles event-to-thread
@@ -41,6 +42,7 @@ public class WorkContextImpl implements WorkContext {
     private static final Object CALLBACK_URIS = new Object();
     private static final Object CURRENT_ATOMIC = new Object();
     private static final Object CURRENT_SERVICE_NAMES = new Object();
+    private static final Object CALLBACK_WIRES = new Object();
 
     // [rfeng] We cannot use InheritableThreadLocal for message ids here since it's shared by parent and children
     private ThreadLocal<Map<Object, Object>> workContext = new ThreadLocal<Map<Object, Object>>();
@@ -90,6 +92,21 @@ public class WorkContextImpl implements WorkContext {
     public void setCallbackUris(LinkedList<URI> uris) {
         Map<Object, Object> map = getWorkContextMap();
         map.put(CALLBACK_URIS, uris);
+    }
+
+
+    @SuppressWarnings({"unchecked"})
+    public LinkedList<Wire> getCallbackWires() {
+        Map<Object, Object> map = workContext.get();
+        if (map == null) {
+            return null;
+        }
+        return (LinkedList<Wire>) map.get(CALLBACK_WIRES);
+    }
+
+    public void setCallbackWires(LinkedList<Wire> wires) {
+        Map<Object, Object> map = getWorkContextMap();
+        map.put(CALLBACK_WIRES, wires);
     }
 
     public Component getRemoteComponent() {
