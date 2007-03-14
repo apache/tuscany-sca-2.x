@@ -77,6 +77,12 @@ public class JDKProxyService extends ProxyServiceExtension {
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
+    public Object createCallbackProxy(Class<?> interfaze) throws ProxyCreationException {
+        ClassLoader cl = interfaze.getClassLoader();
+        JDKCallbackInvocationHandler2 handler = new JDKCallbackInvocationHandler2(context);
+        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
+    }
+
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         InvocationHandler handler = Proxy.getInvocationHandler(target);
         if (handler instanceof JDKInvocationHandler) {

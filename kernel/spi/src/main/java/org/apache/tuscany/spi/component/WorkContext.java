@@ -21,6 +21,8 @@ package org.apache.tuscany.spi.component;
 import java.net.URI;
 import java.util.LinkedList;
 
+import org.apache.tuscany.spi.wire.Wire;
+
 /**
  * Implementations track information associated with a request as it is processed by the runtime
  *
@@ -53,14 +55,31 @@ public interface WorkContext {
      * invocations for collocated components
      *
      * @return the current list of callback URIs
+     * @Deprecated
      */
     LinkedList<URI> getCallbackUris();
 
     /**
      * Sets an ordered list of callback URIs for the current context. Ordering is based on the sequence of service
      * invocations for collocated components
+     *
+     * @Deprecated
      */
     void setCallbackUris(LinkedList<URI> uris);
+
+    /**
+     * Returns an ordered list of callback wures for the current context. Ordering is based on the sequence of service
+     * invocations for collocated components
+     *
+     * @return the current list of callback wires
+     */
+    LinkedList<Wire> getCallbackWires();
+
+    /**
+     * Sets an ordered list of callback wires for the current context. Ordering is based on the sequence of service
+     * invocations for collocated components
+     */
+    void setCallbackWires(LinkedList<Wire> wires);
 
     /**
      * Returns the correlation id for the current invocation or null if not available. Transports may use correlation

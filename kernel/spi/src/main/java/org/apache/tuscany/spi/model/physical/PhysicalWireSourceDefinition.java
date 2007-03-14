@@ -25,16 +25,18 @@ import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Represents a physical wire source definition.
- * 
+ *
  * @version $Revision$ $Date$
  */
 public class PhysicalWireSourceDefinition extends ModelObject {
-    
+
     // URI
     private URI uri;
+    private boolean optimizable;
 
     /**
      * Gets the URI.
+     *
      * @return Gets the URI.
      */
     public URI getUri() {
@@ -43,10 +45,29 @@ public class PhysicalWireSourceDefinition extends ModelObject {
 
     /**
      * Sets the URI.
+     *
      * @param uri Sets the URI.
      */
     public void setUri(URI uri) {
         this.uri = uri;
     }
 
+
+    /**
+     * Returns true if the wire may be optimized
+     *
+     * @return true if the wire may be optimized
+     */
+    public boolean isOptimizable() {
+        return optimizable;
+    }
+
+    /**
+     * Setting to true indicates the wire may be optimized
+     *
+     * @param optimizable if the wire can be optimized
+     */
+    public void setOptimizable(boolean optimizable) {
+        this.optimizable = optimizable;
+    }
 }

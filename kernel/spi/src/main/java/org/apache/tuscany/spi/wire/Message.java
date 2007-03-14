@@ -55,18 +55,45 @@ public interface Message {
     /**
      * Adds a URI to the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a
      * callback.
+     *
+     * @Deprecated
      */
     void pushCallbackUri(URI uri);
 
     /**
      * Returns the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a callback.
+     *
+     * @Deprecated
      */
     LinkedList<URI> getCallbackUris();
 
     /**
      * Sets the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a callback.
+     *
+     * @Deprecated
      */
     void setCallbackUris(LinkedList<URI> uris);
+
+    /**
+     * Adds a callback wire to the ordered list of callbacks for the current invocation
+     *
+     * @param wire the callback wire
+     */
+    void pushCallbackWire(Wire wire);
+
+    /**
+     * Returns the ordered list of callback wires for the current invocation
+     *
+     * @return the ordered list of callback wires for the current invocation
+     */
+    LinkedList<Wire> getCallbackWires();
+
+    /**
+     * Sets the ordered list of callback wires for the current invocation
+     *
+     * @param wires the ordered list of callback wires for the current invocation
+     */
+    void setCallbackWires(LinkedList<Wire> wires);
 
     /**
      * Returns the id of the message
