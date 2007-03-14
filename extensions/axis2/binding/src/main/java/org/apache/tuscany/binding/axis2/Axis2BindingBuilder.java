@@ -18,12 +18,20 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.net.URI;
+
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.axiom.om.OMElement;
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -31,17 +39,10 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
-import org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector;
-import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.ReferenceBinding} configured
@@ -49,8 +50,12 @@ import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
  *
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("deprecation")
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindingDefinition> {
     private static final String OM_DATA_BINDING = OMElement.class.getName();
+
+    // TODO: what to do about the base URI?
+    private static final String BASE_URI = "http://localhost:8080/";
 
     private ServletHost servletHost;
 
@@ -60,11 +65,13 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
 
     private WorkContext workContext;
 
+    private WSDLDefinitionRegistry wsdlReg;
+
     public Axis2BindingBuilder() throws BuilderConfigException {
         initAxis();
     }
 
-    @Autowire(required = false)
+    @Reference(required = false)
     public void setServletHost(ServletHost servletHost) {
         this.servletHost = servletHost;
     }
@@ -72,28 +79,41 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     /**
      * @param introspector the introspector to set
      */
-    @Autowire
+    @Reference
     public void setIntrospector(InterfaceWSDLIntrospector introspector) {
         this.introspector = introspector;
     }
 
-    @Autowire
+    @Reference
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }
 
+    @Reference
+    public void setWSDLDefinitionRegistry(WSDLDefinitionRegistry wsdlReg) {
+        this.wsdlReg = wsdlReg;
+    }
 
     @SuppressWarnings("unchecked")
     public ServiceBinding build(
-        CompositeComponent parent,
-        BoundServiceDefinition serviceDefinition,
+        ServiceDefinition serviceDefinition,
         WebServiceBindingDefinition wsBinding, DeploymentContext deploymentContext) {
 
         try {
             // Set the default databinding
-            ServiceContract<?> outboundContract = serviceDefinition.getServiceContract();
-            if (WSDLServiceContract.class.isInstance(outboundContract)) {
+            ServiceContract outboundContract = serviceDefinition.getServiceContract();
+            if (outboundContract instanceof WSDLServiceContract) {
                 outboundContract.setDataBinding(OM_DATA_BINDING);
+            }
+
+            // TODO: TUSCANY-1148, <binding.ws> with no wsdl only works with <interface.wsdl>
+            if (wsBinding.getWSDLDefinition() == null) {
+                if (outboundContract instanceof WSDLServiceContract) {
+                    String ns = ((WSDLServiceContract)outboundContract).getPortType().getQName().getNamespaceURI();
+                    wsBinding.setWSDLDefinition(wsdlReg.getDefinition(ns));
+                } else {
+                    throw new IllegalStateException("<binding.ws> with no WSDL requires using <interface.wsdl>");
+                }
             }
 
             // FIXME: We need to define how the WSDL PortType is honored in the case that
@@ -116,15 +136,30 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             inboundContract.setInterfaceClass(serviceDefinition.getServiceContract().getInterfaceClass());
             inboundContract.setDataBinding(OM_DATA_BINDING);
             inboundContract.setCallbackName(serviceDefinition.getServiceContract().getCallbackName());
-            inboundContract.setInteractionScope(serviceDefinition.getServiceContract().getInteractionScope());
-            try {
-                wireService.checkCompatibility(inboundContract, outboundContract, true);
-            } catch (IncompatibleServiceContractException e) {
-                throw new Axis2BindingBuilderRuntimeException(e);
+            
+//            inboundContract.setInteractionScope(serviceDefinition.getServiceContract().getInteractionScope()); // TODO: gone
+
+// TODO: gone            
+//            try {
+//                wireService.checkCompatibility(inboundContract, outboundContract, true);
+//            } catch (IncompatibleServiceContractException e) {
+//                throw new Axis2BindingBuilderRuntimeException(e);
+//            }
+
+            URI axisServiceName;
+            if (wsBinding.isSpec10Compliant()) {
+                wsBinding.setActualURI(computeActualURI(wsBinding, BASE_URI, serviceDefinition.getTarget(), serviceDefinition.getUri()));
+                String name = wsBinding.getActualURI().getPath();
+                if (name != null && name.length() > 1 && name.startsWith("/")) {
+                    name = name.substring(1);
+                }
+                axisServiceName = URI.create(name);
+            } else {
+                axisServiceName = serviceDefinition.getUri();  // TODO: verify name
             }
 
             ServiceBinding serviceBinding =
-                new Axis2ServiceBinding(serviceDefinition.getName(), outboundContract, inboundContract, parent, wsBinding,
+                new Axis2ServiceBinding(axisServiceName, outboundContract, inboundContract, wsBinding,
                     servletHost, configContext, workContext);
             return serviceBinding;
 
@@ -135,49 +170,63 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
 
     @SuppressWarnings("unchecked")
     public ReferenceBinding build(
-        CompositeComponent parent,
-        BoundReferenceDefinition boundReferenceDefinition,
+        ReferenceDefinition boundReferenceDefinition,
         WebServiceBindingDefinition wsBinding,
         DeploymentContext deploymentContext) {
 
-        try {
-            // Set the default binding
-            ServiceContract<?> inboundContract = boundReferenceDefinition.getServiceContract();
-            if (WSDLServiceContract.class.isInstance(inboundContract)) {
-                inboundContract.setDataBinding(OM_DATA_BINDING);
-            }
-
-            // FIXME: We need to define how the WSDL PortType is honored in the case that
-            // both the binding.ws and interface.wsdl are in place
-            // The WSDL portType from the WSDL Port decides the incoming SOAP message format
-
-            ServiceContract<?> outboundContract = inboundContract;
-            Port port = wsBinding.getWSDLPort();
-            if (port == null) {
-                // FIXME: [rfeng] No WSDL is referenced by binding.ws, we need to create one from
-                // the inbound service contract if it's JavaServiceContract
-                outboundContract = inboundContract;
-            }
-            PortType portType = port.getBinding().getPortType();
-            outboundContract = introspector.introspect(portType);
-
-            // Set the default databinding
-            outboundContract.setDataBinding(OM_DATA_BINDING);
-            //FIXME ... need to figure out how to specify scope on wsdl.
-            outboundContract.setInteractionScope(inboundContract.getInteractionScope());
-
-            try {
-                wireService.checkCompatibility(inboundContract, outboundContract, true);
-            } catch (IncompatibleServiceContractException e) {
-                throw new Axis2BindingBuilderRuntimeException(e);
-            }
-
-            return new Axis2ReferenceBinding(boundReferenceDefinition.getName(), parent, wsBinding,
-                inboundContract, outboundContract, workContext);
-
-        } catch (InvalidServiceContractException e) {
-            throw new Axis2BindingBuilderRuntimeException(e);
+        // Set the default binding
+        ServiceContract inboundContract = boundReferenceDefinition.getServiceContract();
+        if (inboundContract instanceof WSDLServiceContract) {
+            inboundContract.setDataBinding(OM_DATA_BINDING);
         }
+
+        // TODO: TUSCANY-1148, <binding.ws> with no wsdl only works with <interface.wsdl>
+        if (wsBinding.getWSDLDefinition() == null) {
+            if (inboundContract instanceof WSDLServiceContract) {
+                String ns = ((WSDLServiceContract)inboundContract).getPortType().getQName().getNamespaceURI();
+                wsBinding.setWSDLDefinition(wsdlReg.getDefinition(ns));
+            } else {
+                throw new IllegalStateException("<binding.ws> with no WSDL requires using <interface.wsdl>");
+            }
+        }
+
+        // FIXME: We need to define how the WSDL PortType is honored in the case that
+        // both the binding.ws and interface.wsdl are in place
+        // The WSDL portType from the WSDL Port decides the incoming SOAP message format
+
+        ServiceContract<?> outboundContract = inboundContract;
+        Port port = wsBinding.getWSDLPort();
+        if (port == null) {
+            // FIXME: [rfeng] No WSDL is referenced by binding.ws, we need to create one from
+            // the inbound service contract if it's JavaServiceContract
+            outboundContract = inboundContract;
+        }
+        PortType portType = port.getBinding().getPortType();
+        try {
+            outboundContract = introspector.introspect(portType);
+        } catch (InvalidServiceContractException e) {
+            new Axis2BindingBuilderRuntimeException(e);
+        }
+
+        // Set the default databinding
+        outboundContract.setDataBinding(OM_DATA_BINDING);
+        //FIXME ... need to figure out how to specify scope on wsdl.
+//        outboundContract.setInteractionScope(inboundContract.getInteractionScope()); // methdod gone
+
+// TODO: gone        
+//        try {
+//            wireService.checkCompatibility(inboundContract, outboundContract, true);
+//        } catch (IncompatibleServiceContractException e) {
+//            throw new Axis2BindingBuilderRuntimeException(e);
+//        }
+
+        if (wsBinding.isSpec10Compliant()) {
+            wsBinding.setActualURI(computeActualURI(wsBinding, BASE_URI, null, boundReferenceDefinition.getUri()));
+        }
+
+        return new Axis2ReferenceBinding(boundReferenceDefinition.getUri(), wsBinding,
+            inboundContract, outboundContract, workContext);
+
     }
 
     protected Class<WebServiceBindingDefinition> getBindingType() {
@@ -191,6 +240,94 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         } catch (AxisFault e) {
             throw new BuilderConfigException(e);
         }
+    }
+    
+    /**
+     * Compute the endpoint URI based on section 2.1.1 of the WS binding spec
+     * 1. The URIs in the endpoint(s) of the referenced WSDL, which may be relative
+     * 2. The URI specified by the wsa:Address element of the wsa:EndpointReference, which may be relative
+     * 3. The explicitly stated URI in the "uri" attribute of the binding.ws element, which may be relative,
+     * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly spec 
+     * If the <binding.ws> has no wsdlElement but does have a uri attribute then the uri takes precidence
+     * over any implicitly used WSDL.
+     * @param parent 
+     */
+    protected URI computeActualURI(WebServiceBindingDefinition wsBinding, String baseURI, URI componentURI, URI bindingName) {
+        URI wsdlURI = null;         
+        if (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null) {
+            // <binding.ws> explicitly points at a wsdl port, may be a relative URI
+            wsdlURI = wsBinding.getPortURI();
+        }
+        if (wsdlURI != null && wsdlURI.isAbsolute()) {
+            if (wsBinding.getURI() != null && (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null)) {
+                throw new IllegalArgumentException("binding URI cannot be used with absolute WSDL endpoint URI");
+            }
+            return URI.create(wsdlURI.toString());
+        }
+        
+        // there is no wsdl port endpoint URI or that URI is relative
+        
+        URI bindingURI = null;
+        if (wsBinding.getURI() != null) {
+            bindingURI = URI.create(wsBinding.getURI());
+        }
+
+        if (bindingURI != null && bindingURI.isAbsolute()) {
+            if (wsdlURI != null) {
+                return URI.create(bindingURI + "/" + wsdlURI).normalize();
+            } else {
+                return bindingURI;
+            }
+        }
+        
+        if (componentURI == null) { // null for references
+            wsdlURI = wsBinding.getPortURI();
+            if (bindingURI != null) {
+                return URI.create(wsdlURI + "/" + bindingURI).normalize();
+            } else {
+                return wsdlURI;
+            }
+        }
+        
+
+        // TODO: TUSCANY-xxx, how to tell if component has multiple services using <binding.ws>?
+        //        boolean singleService = (parent != null) && (((Component)parent.getChild(componentURI.toString())).getInboundWires().size() == 1);
+        //        if (bindingURI == null && !singleService) {
+
+        if (bindingURI == null) {
+            bindingURI = bindingName;
+        }
+
+        if (componentURI.isAbsolute()) {
+            if (bindingURI == null && wsdlURI == null) {
+                return componentURI;
+            } else if (wsdlURI == null) {
+                return URI.create(componentURI + "/" + bindingURI).normalize();
+            } else if (bindingURI == null) {
+                return URI.create(componentURI + "/" + wsdlURI).normalize();
+            } else {
+                return URI.create(componentURI + "/" + bindingURI + "/" + wsdlURI).normalize();
+            }
+        }
+                
+        String actualURI = "";
+
+        if (bindingURI == null) {
+            actualURI = baseURI + "/" + componentURI + "/";
+        } else {
+            actualURI = baseURI + "/" + componentURI + "/" + bindingURI + "/";
+        }
+
+        if (wsdlURI != null) {
+            actualURI = actualURI + wsdlURI.toString();
+        }
+
+        if (actualURI.endsWith("/")) {
+            actualURI = actualURI.substring(0, actualURI.length() -1);
+        }
+        
+        // normalize to handle any . or .. occurances 
+        return URI.create(actualURI).normalize();
     }
 
 }

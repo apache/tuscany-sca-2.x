@@ -20,14 +20,15 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany.sca.extensions</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany</groupId>
+        <artifactId>sca</artifactId>
+        <version>1.0-incubating</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
+    <groupId>org.apache.tuscany.sca.axis2</groupId>
     <artifactId>parent</artifactId>
+    <version>2.0-alpha2-incubating-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Tuscany SCA Extensions for Axis2</name>
 
@@ -37,6 +38,28 @@
             <name>Apache WebServices Repository</name>
             <url>http://ws.zones.apache.org/repository/</url>
             <layout>legacy</layout>
+        </repository>
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>apache.incubator</id>
+            <name>Apache Incubator Repository</name>
+            <url>http://people.apache.org/repo/m2-incubating-repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -50,6 +73,12 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+               <groupId>org.apache.tuscany.sca.kernel</groupId>
+               <artifactId>tuscany-spi</artifactId>
+               <version>2.0-alpha2-incubating-SNAPSHOT</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.axis2</groupId>
