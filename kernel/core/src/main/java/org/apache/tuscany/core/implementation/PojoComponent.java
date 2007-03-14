@@ -45,6 +45,7 @@ import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 
 /**
  * Base class for Component implementations based on Java objects.
@@ -143,11 +144,11 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
         return provider.getImplementationClass();
     }
 
-    public void setObjectFactory(URI name, ObjectFactory<?> objectFactory) {
+    public void setObjectFactory(InjectionSource name, ObjectFactory<?> objectFactory) {
         provider.setObjectFactory(name, objectFactory);
     }
 
-    public Class<?> getMemberType(URI injectionSite) {
+    public Class<?> getMemberType(InjectionSource injectionSite) {
         return provider.getMemberType(injectionSite);
     }
 

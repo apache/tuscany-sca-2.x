@@ -22,7 +22,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +33,7 @@ import org.easymock.EasyMock;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetInitializationException;
@@ -43,8 +43,8 @@ import org.apache.tuscany.spi.component.TargetInitializationException;
  */
 public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     private Constructor<Foo> argConstructor;
-    private List<URI> ctrNames;
-    private Map<URI, Member> sites;
+    private List<InjectionSource> ctrNames;
+    private Map<InjectionSource, Member> sites;
     private ObjectFactory intFactory;
     private ObjectFactory stringFactory;
     private ReflectiveInstanceFactoryProvider<Foo> provider;
@@ -52,8 +52,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     private Field stringField;
     private Method intSetter;
     private Method stringSetter;
-    private URI intURI = URI.create("int");
-    private URI stringURI = URI.create("string");
+    private InjectionSource intProperty = new InjectionSource(InjectionSource.ValueSourceType.PROPERTY, "int");
+    private InjectionSource stringProperty = new InjectionSource(InjectionSource.ValueSourceType.PROPERTY, "string");
 
     public void testNoConstructorArgs() {
         ObjectFactory<?>[] args = provider.getConstructorArgs();
@@ -61,15 +61,15 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     }
 
     public void testConstructorArgs() {
-        ctrNames.add(intURI);
-        ctrNames.add(stringURI);
+        ctrNames.add(intProperty);
+        ctrNames.add(stringProperty);
         provider = new ReflectiveInstanceFactoryProvider<Foo>(argConstructor,
                                                               ctrNames,
                                                               sites,
                                                               null,
                                                               null);
-        provider.setObjectFactory(intURI, intFactory);
-        provider.setObjectFactory(stringURI, stringFactory);
+        provider.setObjectFactory(intProperty, intFactory);
+        provider.setObjectFactory(stringProperty, stringFactory);
         ObjectFactory<?>[] args = provider.getConstructorArgs();
         assertEquals(2, args.length);
         assertSame(intFactory, args[0]);
@@ -77,8 +77,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     }
 
     public void testFieldInjectors() {
-        sites.put(intURI, intField);
-        sites.put(stringURI, stringField);
+        sites.put(intProperty, intField);
+        sites.put(stringProperty, stringField);
         Injector<Foo>[] injectors = provider.getInjectors();
         assertEquals(2, injectors.length);
 
@@ -93,8 +93,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     }
 
     public void testMethodInjectors() {
-        sites.put(intURI, intSetter);
-        sites.put(stringURI, stringSetter);
+        sites.put(intProperty, intSetter);
+        sites.put(stringProperty, stringSetter);
         Injector<Foo>[] injectors = provider.getInjectors();
         assertEquals(2, injectors.length);
 
@@ -109,8 +109,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     }
 
     public void testFactory() {
-        sites.put(intURI, intSetter);
-        sites.put(stringURI, stringField);
+        sites.put(intProperty, intSetter);
+        sites.put(stringProperty, stringField);
         InstanceFactory<Foo> instanceFactory = provider.createFactory();
         InstanceWrapper<Foo> instanceWrapper = instanceFactory.newInstance();
         try {
@@ -133,8 +133,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
         stringField = Foo.class.getField("stringField");
         intSetter = Foo.class.getMethod("setIntField", int.class);
         stringSetter = Foo.class.getMethod("setStringField", String.class);
-        ctrNames = new ArrayList<URI>();
-        sites = new HashMap<URI, Member>();
+        ctrNames = new ArrayList<InjectionSource>();
+        sites = new HashMap<InjectionSource, Member>();
         provider = new ReflectiveInstanceFactoryProvider<Foo>(noArgConstructor,
                                                               ctrNames,
                                                               sites,
@@ -146,8 +146,8 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
         EasyMock.expect(stringFactory.getInstance()).andReturn("Hello");
         EasyMock.replay(intFactory, stringFactory);
 
-        provider.setObjectFactory(intURI, intFactory);
-        provider.setObjectFactory(stringURI, stringFactory);
+        provider.setObjectFactory(intProperty, intFactory);
+        provider.setObjectFactory(stringProperty, stringFactory);
     }
 
     public static class Foo {
