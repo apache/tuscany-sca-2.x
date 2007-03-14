@@ -161,7 +161,7 @@ public class JavaPhysicalComponentBuilder<T>
     /**
      * Attaches the source to the component.
      *
-     * @param definition the attach metadata
+     * @param source     the source component to attach to
      * @param target     the source component
      * @param wire       the wire for the callback
      * @param definition the attach metadata
