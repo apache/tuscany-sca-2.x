@@ -43,15 +43,11 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     private Store nonDurableStore;
 
     public ConversationalScopeContainer(Store store, WorkContext workContext, final ScopeContainerMonitor monitor) {
-        super(workContext, monitor);
+        super(Scope.CONVERSATION, workContext, monitor);
         this.nonDurableStore = store;
         if (store != null) {
             store.addListener(new ExpirationListener(monitor));
         }
-    }
-
-    public Scope getScope() {
-        return Scope.CONVERSATION;
     }
 
     public void onEvent(Event event) {

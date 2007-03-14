@@ -45,13 +45,9 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
     public HttpSessionScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
-        super(workContext, monitor);
+        super(Scope.SESSION, workContext, monitor);
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Object, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();
-    }
-
-    public Scope getScope() {
-        return Scope.SESSION;
     }
 
     public void onEvent(Event event) {

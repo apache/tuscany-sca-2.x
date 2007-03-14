@@ -45,13 +45,9 @@ public class RequestScopeContainer extends AbstractScopeContainer {
     private final Map<Thread, List<InstanceWrapper>> destroyQueues;
 
     public RequestScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
-        super(workContext, monitor);
+        super(Scope.REQUEST, workContext, monitor);
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Thread, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Thread, List<InstanceWrapper>>();
-    }
-
-    public Scope getScope() {
-        return Scope.REQUEST;
     }
 
     public void onEvent(Event event) {
