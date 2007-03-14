@@ -64,6 +64,14 @@ public interface Component extends Invocable {
     void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues);
 
     /**
+     * Returns the ScopeContainer responsible for managing implementation instance or null if a ScopeContainer is not
+     * associated with the Component
+     *
+     * @return the scope container
+     */
+    ScopeContainer getScopeContainer();
+
+    /**
      * Returns the component scope
      *
      * @return the component scope

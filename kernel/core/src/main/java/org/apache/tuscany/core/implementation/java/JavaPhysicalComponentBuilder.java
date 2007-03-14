@@ -30,6 +30,8 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.builder.physical.WireAttacher;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -43,6 +45,7 @@ import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.core.builder.physical.WireAttachException;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
+import org.apache.tuscany.core.injection.InstanceObjectFactory;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
@@ -158,24 +161,36 @@ public class JavaPhysicalComponentBuilder<T>
     /**
      * Attaches the source to the component.
      *
-     * @param component the source component
-     * @param wire      the wire for the callback
-     * @param source    the attach metadata
+     * @param definition the attach metadata
+     * @param target     the source component
+     * @param wire       the wire for the callback
+     * @param definition the attach metadata
      */
     @SuppressWarnings({"unchecked"})
-    public void attach(JavaComponent component, Wire wire, JavaPhysicalWireSourceDefinition source) {
+    public void attach(JavaComponent source,
+                       Component target,
+                       Wire wire,
+                       JavaPhysicalWireSourceDefinition definition) {
         URI sourceUri = wire.getSourceUri();
-        Class<?> type = component.getMemberType(sourceUri);
-        ObjectFactory<?> factory = new WireObjectFactory(type, wire, proxyService);
-        component.setObjectFactory(sourceUri, factory);
-        if (!wire.getCallbackInvocationChains().isEmpty()) {
-            URI callbackUri = source.getCallbackUri();
-            Class<?> callbackType = component.getMemberType(callbackUri);
-            ObjectFactory<?> callbackFactory = new CallbackWireObjectFactory2(callbackType, proxyService);
-            component.setObjectFactory(callbackUri, callbackFactory);
+        Class<?> type = source.getMemberType(sourceUri);
+        if (definition.isOptimizable()) {
+            // FIXME if possible, this is not clean
+            assert target instanceof AtomicComponent;
+            ScopeContainer container = target.getScopeContainer();
+            ObjectFactory<?> factory = new InstanceObjectFactory((AtomicComponent) target, container);
+            source.setObjectFactory(sourceUri, factory);
+        } else {
+            ObjectFactory<?> factory = new WireObjectFactory(type, wire, proxyService);
+            source.setObjectFactory(sourceUri, factory);
+            if (!wire.getCallbackInvocationChains().isEmpty()) {
+                URI callbackUri = definition.getCallbackUri();
+                Class<?> callbackType = source.getMemberType(callbackUri);
+                ObjectFactory<?> callbackFactory = new CallbackWireObjectFactory2(callbackType, proxyService);
+                source.setObjectFactory(callbackUri, callbackFactory);
+            }
         }
     }
-                                    
+
     /**
      * Attaches the target to the component.
      *

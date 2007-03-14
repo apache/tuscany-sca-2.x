@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * Returns a target instance directly from a wire
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public class OptimizedWireObjectFactory<B> implements ObjectFactory<B> {
     private final Class<B> type;

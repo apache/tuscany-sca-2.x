@@ -55,6 +55,10 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
         super(name);
     }
 
+    public ScopeContainer getScopeContainer() {
+        return scopeContainer;
+    }
+
     public void setScopeContainer(ScopeContainer scopeContainer) {
         this.scopeContainer = scopeContainer;
     }

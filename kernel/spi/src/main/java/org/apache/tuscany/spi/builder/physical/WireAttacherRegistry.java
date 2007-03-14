@@ -35,17 +35,21 @@ public interface WireAttacherRegistry {
         PWSD extends PhysicalWireSourceDefinition,
         PWTD extends PhysicalWireTargetDefinition> void register(Class<?> clazz, WireAttacher<C, PWSD, PWTD> attacher);
 
-    <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C component, Wire wire, PWSD source)
+    <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C source,
+                                                                                 Component target,
+                                                                                 Wire wire,
+                                                                                 PWSD definition)
         throws WiringException;
 
     /**
      * Attaches the wire to the target component.
      *
      * @param component  Component.
-     * @param wire
+     * @param wire       the wire
      * @param definition Target wire definition. @throws WiringException
+     * @throws WiringException if an error is encountered during the attach operation
      */
-    <C extends Component, PWTD extends PhysicalWireTargetDefinition> void attach(C component, 
+    <C extends Component, PWTD extends PhysicalWireTargetDefinition> void attach(C component,
                                                                                  Wire wire,
                                                                                  PWTD definition)
         throws WiringException;
