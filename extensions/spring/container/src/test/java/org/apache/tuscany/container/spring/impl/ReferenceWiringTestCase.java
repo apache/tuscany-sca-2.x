@@ -132,6 +132,10 @@ public class ReferenceWiringTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
+        public Object createCallbackProxy(Class<?> interfaze) throws ProxyCreationException {
+            throw new UnsupportedOperationException();
+        }
+
         public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
             throw new UnsupportedOperationException();
         }
