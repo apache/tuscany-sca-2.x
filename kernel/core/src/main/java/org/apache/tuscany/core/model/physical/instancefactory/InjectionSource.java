@@ -21,6 +21,14 @@ public class InjectionSource {
         PROPERTY
     }
 
+    public InjectionSource() {
+    }
+
+    public InjectionSource(ValueSourceType valueType, String name) {
+    this.valueType = valueType;
+    this.name = name;
+    }
+
     /**
      * Sets the type (callback, reference, property
      * @return Type.

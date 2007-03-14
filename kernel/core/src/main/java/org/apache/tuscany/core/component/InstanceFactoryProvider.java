@@ -22,6 +22,8 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.ObjectFactory;
 
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -39,7 +41,7 @@ public interface InstanceFactoryProvider<T> {
      * @param name          the injection site name
      * @param objectFactory the object factory
      */
-    void setObjectFactory(URI name, ObjectFactory<?> objectFactory);
+    void setObjectFactory(InjectionSource name, ObjectFactory<?> objectFactory);
 
     /**
      * Returns the type for the injection site
@@ -47,7 +49,7 @@ public interface InstanceFactoryProvider<T> {
      * @param injectionSite the injection site name
      * @return the required type
      */
-    Class<?> getMemberType(URI injectionSite);
+    Class<?> getMemberType(InjectionSource injectionSite);
 
     /**
      * Create an instance factory that can be used to create component instances.

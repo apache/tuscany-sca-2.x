@@ -46,6 +46,9 @@ import org.apache.tuscany.core.builder.physical.WireAttachException;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
 import org.apache.tuscany.core.injection.InstanceObjectFactory;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
+import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.CALLBACK;
+import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.REFERENCE;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
@@ -172,21 +175,23 @@ public class JavaPhysicalComponentBuilder<T>
                        Wire wire,
                        JavaPhysicalWireSourceDefinition definition) {
         URI sourceUri = wire.getSourceUri();
-        Class<?> type = source.getMemberType(sourceUri);
+        InjectionSource referenceSource = new InjectionSource(REFERENCE, sourceUri.getFragment());
+        Class<?> type = source.getMemberType(referenceSource);
         if (definition.isOptimizable()) {
             // FIXME if possible, this is not clean
             assert target instanceof AtomicComponent;
             ScopeContainer container = target.getScopeContainer();
             ObjectFactory<?> factory = new InstanceObjectFactory((AtomicComponent) target, container);
-            source.setObjectFactory(sourceUri, factory);
+            source.setObjectFactory(referenceSource, factory);
         } else {
             ObjectFactory<?> factory = new WireObjectFactory(type, wire, proxyService);
-            source.setObjectFactory(sourceUri, factory);
+            source.setObjectFactory(referenceSource, factory);
             if (!wire.getCallbackInvocationChains().isEmpty()) {
                 URI callbackUri = definition.getCallbackUri();
-                Class<?> callbackType = source.getMemberType(callbackUri);
+                InjectionSource callbackSource = new InjectionSource(CALLBACK, callbackUri.getFragment());
+                Class<?> callbackType = source.getMemberType(callbackSource);
                 ObjectFactory<?> callbackFactory = new CallbackWireObjectFactory2(callbackType, proxyService);
-                source.setObjectFactory(callbackUri, callbackFactory);
+                source.setObjectFactory(callbackSource, callbackFactory);
             }
         }
     }
