@@ -37,8 +37,15 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 public abstract class AbstractPhysicalWireSourceDefinitionMarshaller<PWSD extends PhysicalWireSourceDefinition> extends
     AbstractExtensibleMarshallerExtension<PWSD> {
 
-    // Source name attribute
+    // URI attribute
     public static final String URI_ATTRIBUTE = "uri";
+
+    // URI attribute
+    public static final String CALLBACK_URI = "callbackUri";
+    
+    // Optimizable attribute
+    public static final String OPTIMIZABLE = "optimizable";
+    
 
     /**
      * Marshalls a physical java reference definition to the xml writer.
@@ -50,6 +57,8 @@ public abstract class AbstractPhysicalWireSourceDefinitionMarshaller<PWSD extend
             QName qname = getModelObjectQName();
             writer.writeStartElement(qname.getPrefix(), qname.getLocalPart(), qname.getNamespaceURI());
             writer.writeAttribute(URI_ATTRIBUTE, modelObject.getUri().toASCIIString());
+            writer.writeAttribute(CALLBACK_URI, modelObject.getCallbackUri().toASCIIString());
+            writer.writeAttribute(OPTIMIZABLE, String.valueOf(modelObject.isOptimizable()));
             writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
             
             handleExtension(modelObject, writer);
@@ -70,6 +79,8 @@ public abstract class AbstractPhysicalWireSourceDefinitionMarshaller<PWSD extend
         try {
             PWSD sourceDefinition = getConcreteModelObject();
             sourceDefinition.setUri(new URI(reader.getAttributeValue(null, URI_ATTRIBUTE)));
+            sourceDefinition.setCallbackUri(new URI(reader.getAttributeValue(null, CALLBACK_URI)));
+            sourceDefinition.setOptimizable(Boolean.valueOf(reader.getAttributeValue(null, CALLBACK_URI)));
             handleExtension(sourceDefinition, reader);
             return sourceDefinition;
         } catch (URISyntaxException ex) {
