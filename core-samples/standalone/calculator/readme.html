@@ -53,7 +53,7 @@ $ mvn package
     To run the client, use the <code>launcher</code> command from the standalone distribution:
 </p>
 <pre class="command">
-$ java -jar {tuscany.installDir}/bin/launcher target/calc.jar {add|subtract|multiply|divide} {param} {param}
+$ java -jar {tuscany.installDir}/bin/launcher.jar target/calculator.jar {add|subtract|multiply|divide} {param} {param}
 </pre>
 
 <p>where <code>tuscany.installDir</code> is the path where you installed the standalone distribution.</p>
@@ -62,7 +62,7 @@ $ java -jar {tuscany.installDir}/bin/launcher target/calc.jar {add|subtract|mult
     The sample when run will display to the standard output:
 </p>
 <pre class="command">
-$ java -jar {tuscany.installDir}/bin/launcher target/calc.jar add 2 5
+$ java -jar {tuscany.installDir}/bin/launcher.jar target/calculator.jar add 2 5
 result = 7.0
 </pre>
 </body>
