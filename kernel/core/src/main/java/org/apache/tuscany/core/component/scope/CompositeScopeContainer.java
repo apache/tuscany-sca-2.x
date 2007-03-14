@@ -53,13 +53,9 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
     private final List<InstanceWrapper> destroyQueue;
 
     public CompositeScopeContainer(ScopeContainerMonitor monitor) {
-        super(null, monitor);
+        super(Scope.COMPOSITE, null, monitor);
         instanceWrappers = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
         destroyQueue = new ArrayList<InstanceWrapper>();
-    }
-
-    public Scope getScope() {
-        return Scope.COMPOSITE;
     }
 
     public void onEvent(Event event) {

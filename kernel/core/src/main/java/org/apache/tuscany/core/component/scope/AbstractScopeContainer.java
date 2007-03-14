@@ -20,6 +20,7 @@ package org.apache.tuscany.core.component.scope;
 
 
 import org.apache.tuscany.spi.AbstractLifecycle;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
@@ -37,12 +38,19 @@ import org.apache.tuscany.spi.component.WorkContext;
  */
 public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecycle
     implements ScopeContainer<GROUP, KEY> {
+    private final Scope scope;
+
     protected WorkContext workContext;
     protected ScopeContainerMonitor monitor;
 
-    public AbstractScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
+    public AbstractScopeContainer(Scope scope, WorkContext workContext, ScopeContainerMonitor monitor) {
+        this.scope = scope;
         this.workContext = workContext;
         this.monitor = monitor;
+    }
+
+    public Scope getScope() {
+        return scope;
     }
 
     public void register(GROUP groupId, AtomicComponent component) {

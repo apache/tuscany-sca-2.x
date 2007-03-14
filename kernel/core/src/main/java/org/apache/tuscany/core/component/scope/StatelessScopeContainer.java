@@ -35,11 +35,7 @@ import org.apache.tuscany.spi.model.Scope;
 public class StatelessScopeContainer<GROUP, KEY> extends AbstractScopeContainer<GROUP, KEY> {
 
     public StatelessScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
-        super(workContext, monitor);
-    }
-
-    public Scope getScope() {
-        return Scope.STATELESS;
+        super(Scope.STATELESS, workContext, monitor);
     }
 
     public synchronized void start() {
