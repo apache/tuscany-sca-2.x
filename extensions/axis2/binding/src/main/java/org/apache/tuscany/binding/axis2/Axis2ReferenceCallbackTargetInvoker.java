@@ -19,27 +19,28 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
 
     private Operation operation;
-    private InboundWire inboundWire;
-    private LinkedList<Object> callbackRoutingChain;
+    private Wire inboundWire;
+    private LinkedList<URI> callbackRoutingChain;
     private boolean cacheable;
     Axis2CallbackInvocationHandler invocationHandler;
     private CountDownLatch signal;
     private Object returnPayload;
 
     public Axis2ReferenceCallbackTargetInvoker(Operation operation,
-                                               InboundWire inboundWire,
+                                               Wire inboundWire,
                                                Axis2CallbackInvocationHandler invocationHandler) {
 
         this.operation = operation;
@@ -100,7 +101,7 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
         return invoker;
     }
 
-    public void setCallbackRoutingChain(LinkedList<Object> callbackRoutingChain) {
+    public void setCallbackRoutingChain(LinkedList<URI> callbackRoutingChain) {
         this.callbackRoutingChain = callbackRoutingChain;
     }
     

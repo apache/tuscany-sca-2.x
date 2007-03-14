@@ -18,32 +18,33 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
-public class Axis2CallbackInvocationHandler extends AbstractOutboundInvocationHandler {
+public class Axis2CallbackInvocationHandler extends AbstractInvocationHandler {
 
-    private InboundWire inboundWire;
+    private Wire inboundWire;
 
-    public Axis2CallbackInvocationHandler(InboundWire inboundWire) {
+    public Axis2CallbackInvocationHandler(Wire inboundWire) {
         this.inboundWire = inboundWire;
     }
 
-    public Object invoke(Operation operation, Object[] args, LinkedList<Object> callbackRoutingChain) throws Throwable {
+    public Object invoke(Operation operation, Object[] args, LinkedList<URI> callbackRoutingChain) throws Throwable {
         Object targetAddress = callbackRoutingChain.removeFirst();
         if (targetAddress == null) {
             throw new AssertionError("Popped a null from address from stack");
         }
         //TODO optimize as this is slow in local invocations
-        Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =
-            inboundWire.getSourceCallbackInvocationChains(targetAddress);
-        OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
+        Map<Operation<?>, InvocationChain> sourceCallbackInvocationChains =
+            inboundWire.getCallbackInvocationChains();
+        InvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
         return invoke(chain, invoker, args, null, callbackRoutingChain);
     }

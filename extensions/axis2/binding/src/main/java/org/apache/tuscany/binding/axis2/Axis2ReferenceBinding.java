@@ -18,18 +18,13 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import static org.osoa.sca.Constants.SCA_NS;
+
+import java.net.URI;
 import java.util.Collection;
+
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
-
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.soap.SOAPFactory;
@@ -43,25 +38,31 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Axis2Reference uses Axis2 to invoke a remote web service
  */
 public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
-    private static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
+    private static final QName BINDING_WS = new QName(SCA_NS, "binding.ws");
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
     private WorkContext workContext;
 
     @SuppressWarnings("unchecked")
-    public Axis2ReferenceBinding(String theName,
-                                 CompositeComponent parent,
+    public Axis2ReferenceBinding(URI uri,
                                  WebServiceBindingDefinition wsBinding,
                                  ServiceContract contract,
                                  ServiceContract<?> bindingServiceContract,
                                  WorkContext workContext) {
-        super(theName, parent);
+        super(uri, uri); // TODO: what should these be
         this.bindingServiceContract = bindingServiceContract;
         this.workContext = workContext;
         try {
@@ -99,9 +100,9 @@ public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
                 // other end
                 Operation callbackOperation = findCallbackOperation();
                 Axis2CallbackInvocationHandler invocationHandler =
-                    new Axis2CallbackInvocationHandler(inboundWire);
+                    new Axis2CallbackInvocationHandler(wire);
                 Axis2ReferenceCallbackTargetInvoker callbackInvoker =
-                    new Axis2ReferenceCallbackTargetInvoker(callbackOperation, inboundWire, invocationHandler);
+                    new Axis2ReferenceCallbackTargetInvoker(callbackOperation, wire, invocationHandler);
                 asyncInvoker.setCallbackTargetInvoker(callbackInvoker);
 
                 invoker = asyncInvoker;
@@ -116,7 +117,7 @@ public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
     }
 
     private Operation findCallbackOperation() {
-        ServiceContract contract = inboundWire.getServiceContract();
+        ServiceContract contract = wire.getTargetContract(); // TODO: which end?
         Operation callbackOperation = null;
         Collection callbackOperations = contract.getCallbackOperations().values();
         if (callbackOperations.size() != 1) {
@@ -184,6 +185,16 @@ public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
         }
 
         return invoker;
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) throws TargetInvokerCreationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation) throws TargetInvokerCreationException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -19,13 +19,8 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
-import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPBody;
@@ -40,6 +35,11 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Axis2TargetInvoker uses an Axis2 OperationClient to invoke a remote web service

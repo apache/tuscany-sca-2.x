@@ -19,20 +19,20 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 import javax.xml.namespace.QName;
-
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
 
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
 
 public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 
@@ -49,7 +49,7 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
         throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
     }
 
-    private Object invokeTarget(final Object payload, LinkedList<Object> callbackRoutingChain)
+    private Object invokeTarget(final Object payload, LinkedList<URI> callbackRoutingChain)
         throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
@@ -80,7 +80,8 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody(), msg.getCallbackRoutingChain());
+//            Object resp = invokeTarget(msg.getBody(), msg.getCallbackRoutingChain()); // TODO: getCallbackRoutingChain no longer exists
+            Object resp = invokeTarget(msg.getBody(), null);
             msg.setBody(resp);
         } catch (Throwable e) {
             msg.setBodyWithFault(e);

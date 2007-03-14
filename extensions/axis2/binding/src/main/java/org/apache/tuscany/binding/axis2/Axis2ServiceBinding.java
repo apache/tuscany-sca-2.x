@@ -18,8 +18,11 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import static org.osoa.sca.Constants.SCA_NS;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,28 +30,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
-
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-import org.osoa.sca.annotations.Destroy;
-
-import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ServiceBindingExtension;
-import org.apache.tuscany.spi.host.ServletHost;
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
@@ -64,6 +50,20 @@ import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
+import org.apache.tuscany.spi.host.ServletHost;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.osoa.sca.annotations.Destroy;
 
 // org.apache.tuscany.spi.model
 /**
@@ -72,7 +72,7 @@ import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
  * @version $Rev$ $Date$
  */
 public class Axis2ServiceBinding extends ServiceBindingExtension {
-    private static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
+    private static final QName BINDING_WS = new QName(SCA_NS, "binding.ws");
 
     private ServiceContract<?> serviceContract;
 
@@ -88,27 +88,24 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
     private WorkContext workContext;
 
-    private Boolean conversational = null;
-
     private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
 
-    public Axis2ServiceBinding(String theName,
+    public Axis2ServiceBinding(URI uri,
                                ServiceContract<?> serviceContract,
                                ServiceContract<?> serviceBindingContract,
-                               CompositeComponent parent,
                                WebServiceBindingDefinition binding,
                                ServletHost servletHost,
                                ConfigurationContext configContext,
                                WorkContext workContext) {
 
-        super(theName, parent);
+        super(uri);
 
         this.serviceContract = serviceContract;
         this.bindingServiceContract = serviceBindingContract;
         this.binding = binding;
         this.servletHost = servletHost;
         this.configContext = configContext;
-        this.serviceName = theName;
+        this.serviceName = uri.toString(); // TODO: whats this for, better name
         this.workContext = workContext;
     }
 
@@ -123,15 +120,15 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
         Axis2ServiceServlet servlet = new Axis2ServiceServlet();
         servlet.init(configContext);
-        configContext.setContextRoot(getName());
-        servletHost.registerMapping("/services/" + getName(), servlet);
+        configContext.setContextRoot(getUri().toString());
+        servletHost.registerMapping("/services/" + getUri().toString(), servlet);
     }
 
     @Destroy
     public void stop() {
-        servletHost.unregisterMapping("/services/" + getName());
+        servletHost.unregisterMapping("/services/" + getUri().toString());
         try {
-            configContext.getAxisConfiguration().removeService(getName());
+            configContext.getAxisConfiguration().removeService(getUri().toString());
         } catch (AxisFault e) {
             throw new Axis2BindingRunTimeException(e);
         }
@@ -150,9 +147,8 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
-        axisService.setName(this.getName());
-        axisService.setServiceDescription("Tuscany configured AxisService for service: '" + this.getName()
-            + "'");
+        axisService.setName(getUri().toString());
+        axisService.setServiceDescription("Tuscany configured AxisService for service: " + getUri().toString());
 
         // Use the existing WSDL
         Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);
@@ -194,7 +190,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args, Object messageId,
                                String conversationID)
         throws InvocationTargetException {
-        InvocationChain chain = inboundWire.getInvocationChains().get(op);
+        InvocationChain chain = wire.getInvocationChains().get(op);
         Interceptor headInterceptor = chain.getHeadInterceptor();
         String oldConversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (isConversational() && conversationID != null) {
@@ -214,7 +210,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
                 Message msg = new MessageImpl();
                 msg.setTargetInvoker(chain.getTargetInvoker());
-                msg.pushFromAddress(getFromAddress());
+//                msg.pushFromAddress(getFromAddress()); // TODO : method gone in the TRUNK???
                 if (messageId != null) {
                     msg.setMessageId(messageId);
                 }
@@ -367,10 +363,16 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     }
 
     boolean isConversational() {
-        if (conversational == null) {
-            conversational = serviceContract.getInteractionScope() == InteractionScope.CONVERSATIONAL;
+        return serviceContract.isConversational();
+    }
 
-        }
-        return conversational;
+    public TargetInvoker createTargetInvoker(String targetName, org.apache.tuscany.spi.model.Operation operation) throws TargetInvokerCreationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation) throws TargetInvokerCreationException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

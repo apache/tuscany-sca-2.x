@@ -18,9 +18,13 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
+
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -28,20 +32,16 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.xml.sax.InputSource;
+import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
+import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
+import org.xml.sax.InputSource;
 
 public class Axis2ReferenceTestCase extends TestCase {
 
@@ -57,7 +57,7 @@ public class Axis2ReferenceTestCase extends TestCase {
     public void testAsyncTargetInvoker() throws Exception {
         Axis2ReferenceBinding axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
         //Create a mocked InboundWire, make the call of ServiceBindingExtension.getInterface() returns a Class
-        InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
+        Wire inboundWire = EasyMock.createNiceMock(Wire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
         contract.setCallbackName("");
         contract.setCallbackClass(GreetingCallback.class);
@@ -66,10 +66,10 @@ public class Axis2ReferenceTestCase extends TestCase {
         HashMap<String, Operation<Type>> callbackOps = new HashMap<String, Operation<Type>>();
         callbackOps.put("sayHiCallback", callbackOp);
         contract.setCallbackOperations(callbackOps);
-        EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
+        EasyMock.expect(inboundWire.getTargetContract()).andReturn(contract).anyTimes();
         EasyMock.replay(inboundWire);
 
-        axis2Reference.setInboundWire(inboundWire);
+        axis2Reference.setWire(inboundWire);
         Operation operation = new Operation<Type>("sayHi", null, null, null, true, null, NO_CONVERSATION);
         TargetInvoker asyncTargetInvoker = axis2Reference.createTargetInvoker(contract, operation);
         assertNotNull(asyncTargetInvoker);
@@ -94,14 +94,10 @@ public class Axis2ReferenceTestCase extends TestCase {
         WebServiceBindingDefinition wsBinding =
             new WebServiceBindingDefinition(wsdlDef, port, "uri", "portURI", wsdlService);
         //Create a mocked WireService, make the call of ServiceBindingExtension.getServiceInstance() returns a proxy instance.
-        WireService wireService = EasyMock.createNiceMock(WireService.class);
-        EasyMock.replay(wireService);
-        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
         // TODO figure out what to do with the service contract
         ServiceContract<?> contract = new WSDLServiceContract();
         contract.setInterfaceClass(Greeter.class);
-        return new Axis2ReferenceBinding(serviceName,
-            parent,
+        return new Axis2ReferenceBinding(URI.create(serviceName),
             wsBinding,
             contract,
             null,
