@@ -63,7 +63,22 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         factories.put(name, objectFactory);
     }
 
-    public Class<?> getMemberType(InjectionSource injectionSite) {
+    public Class<?> getMemberType(InjectionSource injectionSource) {
+        
+        // TODO How do we decide whether this is a member or constructor arg
+        Member member = injectionSites.get(injectionSource);
+        if(member != null) {
+            if(member instanceof Field) {
+                return ((Field) member).getType();
+            } else {
+                return ((Method) member).getParameterTypes()[0];
+            }
+        } else {
+            int index = constructorNames.indexOf(injectionSource);
+            if(index >= 0) {
+                return constructor.getParameterTypes()[index];
+            }
+        }
         return null;
     }
 
