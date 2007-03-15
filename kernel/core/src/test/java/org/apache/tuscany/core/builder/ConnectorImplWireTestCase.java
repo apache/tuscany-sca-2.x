@@ -47,7 +47,6 @@ public class ConnectorImplWireTestCase extends TestCase {
     private ServiceContract<?> contract;
 
     public void testConnectWireDefinition() throws Exception {
-
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getUri()).andReturn(SOURCE_URI).atLeastOnce();
         EasyMock.replay(source);

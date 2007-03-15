@@ -285,14 +285,6 @@ public class ConnectorImpl implements Connector {
             }
             wire.addInvocationChain(operation, chain);
         }
-        for (PhysicalOperationDefinition operation : definition.getCallbackOperations()) {
-            InvocationChain chain = new InvocationChainImpl(operation);
-            for (PhysicalInterceptorDefinition interceptorDefinition : operation.getInterceptors()) {
-                Interceptor interceptor = interceptorBuilderRegistry.build(interceptorDefinition);
-                chain.addInterceptor(interceptor);
-            }
-            wire.addInvocationChain(operation, chain);
-        }
         return wire;
     }
 
