@@ -321,6 +321,9 @@ public class ConnectorImpl implements Connector {
         return wire;
     }
 
+    /**
+     * @Deprecated
+     */
     private void attachInvokers(String name, Wire wire, Invocable source, Invocable target)
         throws TargetInvokerCreationException {
         // TODO section will deleted be replaced when we cut-over to the physical marshallers
@@ -339,6 +342,9 @@ public class ConnectorImpl implements Connector {
         }
     }
 
+    /**
+     * @Deprecated
+     */
     protected void optimize(Component source, Component target, Wire wire) {
         boolean optimizableScopes = isOptimizable(source.getScope(), target.getScope());
         if (optimizableScopes && target.isOptimizable() && WireUtils.isOptimizable(wire)) {
