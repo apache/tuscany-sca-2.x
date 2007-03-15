@@ -26,10 +26,10 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.WireAttacher;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.hessian.DestinationCreationException;
-import org.apache.tuscany.hessian.HessianService;
 import org.apache.tuscany.hessian.InvalidDestinationException;
 import org.apache.tuscany.hessian.component.BindingComponent;
 import org.apache.tuscany.hessian.model.HessianBindingComponentDefinition;
@@ -43,20 +43,20 @@ public class BindingComponentBuilder
     implements PhysicalComponentBuilder<HessianBindingComponentDefinition, BindingComponent>,
     WireAttacher<BindingComponent, HessianWireSourceDefinition, HessianWireTargetDefinition> {
 
-    private HessianService hessianService;
+    private ServletHost servletHost;
 
-    public BindingComponentBuilder(@Reference HessianService hessianService) {
-        this.hessianService = hessianService;
+    public BindingComponentBuilder(@Reference ServletHost host) {
+        this.servletHost = host;
     }
 
     public BindingComponent build(HessianBindingComponentDefinition definition) throws BuilderException {
-        return new BindingComponent(definition.getComponentId(), hessianService);
+        return new BindingComponent(definition.getComponentId(), servletHost);
     }
 
     public void attach(BindingComponent source, Component target, Wire wire, HessianWireSourceDefinition definition)
         throws DestinationCreationException {
         URI endpointUri = definition.getEndpointUri();
-        hessianService.createDestination(endpointUri, wire, null); // FIXME classloader
+        source.createEndpoint(endpointUri, wire, null); // FIXME classloader
 
     }
 
