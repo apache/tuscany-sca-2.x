@@ -57,12 +57,10 @@
     </repositories>
 
     <modules>
-        <module>idl</module>
+        <!-- module>idl</module>
         <module>databinding</module>
         <module>persistence</module>
-        <module>transaction</module>
-<!--
+        <module>transaction</module-->
         <module>transports/http.jetty</module>
--->
     </modules>
 </project>
