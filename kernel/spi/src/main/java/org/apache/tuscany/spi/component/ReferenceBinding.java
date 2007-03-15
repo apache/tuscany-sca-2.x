@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * Manages an SCA reference configured with a binding
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public interface ReferenceBinding extends Invocable {
 

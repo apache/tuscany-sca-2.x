@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * The default implementation of an SCA service
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public abstract class ServiceBindingExtension extends AbstractSCAObject implements ServiceBinding {
     protected ServiceContract<?> bindingServiceContract;

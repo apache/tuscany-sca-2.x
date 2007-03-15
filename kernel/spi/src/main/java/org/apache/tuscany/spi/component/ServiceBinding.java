@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * The runtime instantiation of an SCA service binding.
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public interface ServiceBinding extends Invocable {
 

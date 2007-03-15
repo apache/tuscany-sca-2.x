@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * The default implementation of an SCA reference
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public abstract class ReferenceBindingExtension extends AbstractSCAObject implements ReferenceBinding {
     protected Wire wire;

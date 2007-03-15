@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public class MockServiceBinding extends AbstractSCAObject implements ServiceBinding {
     private Wire wire;
