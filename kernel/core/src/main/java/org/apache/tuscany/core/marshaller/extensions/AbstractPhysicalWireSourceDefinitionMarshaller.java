@@ -46,6 +46,9 @@ public abstract class AbstractPhysicalWireSourceDefinitionMarshaller<PWSD extend
     // Optimizable attribute
     public static final String OPTIMIZABLE = "optimizable";
     
+    // Conversational
+    public static final String CONVERSATIONAL = "conversational";
+    
 
     /**
      * Marshalls a physical java reference definition to the xml writer.
@@ -59,6 +62,7 @@ public abstract class AbstractPhysicalWireSourceDefinitionMarshaller<PWSD extend
             writer.writeAttribute(URI_ATTRIBUTE, modelObject.getUri().toASCIIString());
             writer.writeAttribute(CALLBACK_URI, modelObject.getCallbackUri().toASCIIString());
             writer.writeAttribute(OPTIMIZABLE, String.valueOf(modelObject.isOptimizable()));
+            writer.writeAttribute(CONVERSATIONAL, String.valueOf(modelObject.isConversational()));
             writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
             
             handleExtension(modelObject, writer);
@@ -80,7 +84,8 @@ public abstract class AbstractPhysicalWireSourceDefinitionMarshaller<PWSD extend
             PWSD sourceDefinition = getConcreteModelObject();
             sourceDefinition.setUri(new URI(reader.getAttributeValue(null, URI_ATTRIBUTE)));
             sourceDefinition.setCallbackUri(new URI(reader.getAttributeValue(null, CALLBACK_URI)));
-            sourceDefinition.setOptimizable(Boolean.valueOf(reader.getAttributeValue(null, CALLBACK_URI)));
+            sourceDefinition.setOptimizable(Boolean.valueOf(reader.getAttributeValue(null, OPTIMIZABLE)));
+            sourceDefinition.setConversational(Boolean.valueOf(reader.getAttributeValue(null, CONVERSATIONAL)));
             handleExtension(sourceDefinition, reader);
             return sourceDefinition;
         } catch (URISyntaxException ex) {

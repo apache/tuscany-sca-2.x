@@ -46,11 +46,11 @@
 	
 	<!-- Wire 1 -->
 	<core:wire>
-		<java:wireSource uri="cmp1#rf1" callbackUri="a#b" optimizable="true" 
+		<java:wireSource uri="cmp1#rf1" callbackUri="a#b" optimizable="true" conversational="false" 
 			xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
 		<java:wireTarget uri="cmp2#sv2" callbackUri="a#b" optimizable="true" 
 			xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
-		<core:operation name="op2">
+		<core:operation name="op2" conversationSequence="1">
 			<core:parameter>java.lang.String</core:parameter>
 			<core:parameter>java.lang.Long</core:parameter>
 			<core:returnType>java.lang.Object</core:returnType>
@@ -59,11 +59,11 @@
 	
 	<!-- Wire 2 -->
 	<core:wire>
-		<java:wireSource uri="cmp2#rf2" callbackUri="a#b" optimizable="true" 
+		<java:wireSource uri="cmp2#rf2" callbackUri="a#b" optimizable="true" conversational="true" 
 			xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
 		<java:wireTarget uri="cmp1#sv1" callbackUri="a#b" optimizable="true" 
 			xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
-		<core:operation name="op1">
+		<core:operation name="op1" conversationSequence="2">
 			<core:parameter>java.lang.String</core:parameter>
 			<core:parameter>java.lang.Long</core:parameter>
 			<core:returnType>java.lang.Object</core:returnType>

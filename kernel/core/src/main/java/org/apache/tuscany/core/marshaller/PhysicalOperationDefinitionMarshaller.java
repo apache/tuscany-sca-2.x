@@ -52,6 +52,9 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
     // argument
     public static final String PARAMETER = "parameter";
 
+    // Conversation sequence
+    public static final String CONVERSATION_SEQUENCE = "conversationSequence";
+
     // QName for the root element
     public static final QName QNAME = new QName(CORE_NS, "operation", CORE_PREFIX);
 
@@ -64,6 +67,7 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
             writer.writeStartElement(QNAME.getPrefix(), QNAME.getLocalPart(), QNAME.getNamespaceURI());
             writer.writeAttribute(NAME, modelObject.getName());
             writer.writeAttribute(CALLBACK, String.valueOf(modelObject.isCallback()));
+            writer.writeAttribute(CONVERSATION_SEQUENCE, String.valueOf(modelObject.getConversationSequence()));
             writer.writeStartElement(QNAME.getPrefix(), RETURN_TYPE, QNAME.getNamespaceURI());
             writer.writeCharacters(modelObject.getReturnType());
             writer.writeEndElement();
@@ -88,6 +92,7 @@ public class PhysicalOperationDefinitionMarshaller extends AbstractMarshallerExt
             PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
             operation.setName(reader.getAttributeValue(null, NAME));
             operation.setCallback(Boolean.valueOf(reader.getAttributeValue(null, CALLBACK)));
+            operation.setConversationSequence(Integer.parseInt(reader.getAttributeValue(null, CONVERSATION_SEQUENCE)));
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
