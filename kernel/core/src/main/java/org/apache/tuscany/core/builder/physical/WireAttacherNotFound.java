@@ -23,10 +23,12 @@ import java.net.URI;
 import org.apache.tuscany.spi.builder.WiringException;
 
 /**
+ * Thrown when a WireAttacher cannot be found for a type
+ *
  * @version $Rev$ $Date$
  */
-public class WireAttacherNotRegistered extends WiringException {
-    public WireAttacherNotRegistered(Class<?> type, URI source, URI target) {
+public class WireAttacherNotFound extends WiringException {
+    public WireAttacherNotFound(Class<?> type, URI source, URI target) {
         super("WireAttacher not registered for type", type.getName(), source, target);
     }
 }

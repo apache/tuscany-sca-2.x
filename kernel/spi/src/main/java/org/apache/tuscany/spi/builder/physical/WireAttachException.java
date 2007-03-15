@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.builder.physical;
+package org.apache.tuscany.spi.builder.physical;
 
 import java.net.URI;
 
 import org.apache.tuscany.spi.builder.WiringException;
 
 /**
+ * Thrown when an error is encountered attaching a wire
+ *
  * @version $Rev$ $Date$
  */
 public class WireAttachException extends WiringException {

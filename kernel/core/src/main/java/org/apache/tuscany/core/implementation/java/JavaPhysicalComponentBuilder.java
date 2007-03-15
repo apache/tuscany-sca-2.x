@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.builder.physical.WireAttacher;
+import org.apache.tuscany.spi.builder.physical.WireAttachException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -42,7 +43,6 @@ import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.Wire;
 
-import org.apache.tuscany.core.builder.physical.WireAttachException;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
 import org.apache.tuscany.core.injection.InstanceObjectFactory;
