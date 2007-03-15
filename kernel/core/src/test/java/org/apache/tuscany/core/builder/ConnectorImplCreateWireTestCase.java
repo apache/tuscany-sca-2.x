@@ -87,8 +87,8 @@ public class ConnectorImplCreateWireTestCase extends TestCase {
         callback.setCallback(true);
         callback.addInterceptor(interceptorDefinition);
         definition.addOperation(callback);
-        Wire wire = connector.createWire(definition);
-        assertEquals(2, wire.getPhysicalInvocationChains().size());
+        connector.createWire(definition);
+        EasyMock.verify(builder);
     }
 
     private class TestConnector extends ConnectorImpl {
