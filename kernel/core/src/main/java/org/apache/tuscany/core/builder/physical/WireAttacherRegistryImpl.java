@@ -30,6 +30,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
+ * Default implementation of the WireAttacher
+ *
  * @version $Rev$ $Date$
  */
 public class WireAttacherRegistryImpl implements WireAttacherRegistry {
@@ -56,7 +58,7 @@ public class WireAttacherRegistryImpl implements WireAttacherRegistry {
         Class<? extends Component> type = source.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
-            throw new WireAttacherNotRegistered(type, source.getUri(), wire.getTargetUri());
+            throw new WireAttacherNotFound(type, source.getUri(), wire.getTargetUri());
         }
         attacher.attach(source, target, wire, definition);
     }
@@ -69,7 +71,7 @@ public class WireAttacherRegistryImpl implements WireAttacherRegistry {
         Class<? extends Component> type = component.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
-            throw new WireAttacherNotRegistered(type, component.getUri(), target.getUri());
+            throw new WireAttacherNotFound(type, component.getUri(), target.getUri());
         }
         attacher.attach(component, wire, target);
     }
