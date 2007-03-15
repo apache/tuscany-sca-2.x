@@ -24,8 +24,9 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $Rev$ $Date$
- * @Deprecated
+ *
  */
+@Deprecated
 public interface Invocable extends SCAObject {
 
     /**
@@ -49,6 +50,7 @@ public interface Invocable extends SCAObject {
      * @return the target invoker
      * @throws TargetInvokerCreationException if an error is encountered creating the invoker
      */
+    @Deprecated
     TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
         throws TargetInvokerCreationException;
 

@@ -136,6 +136,7 @@ public interface Component extends Invocable {
      *
      * @param wire the wire to attach
      */
+    @Deprecated
     void attachCallbackWire(Wire wire);
 
     /**
@@ -143,6 +144,7 @@ public interface Component extends Invocable {
      *
      * @param wire the wire to attach
      */
+    @Deprecated
     void attachWire(Wire wire);
 
     /**
@@ -150,6 +152,7 @@ public interface Component extends Invocable {
      *
      * @param wires the wire to attach
      */
+    @Deprecated
     void attachWires(List<Wire> wires);
 
 }

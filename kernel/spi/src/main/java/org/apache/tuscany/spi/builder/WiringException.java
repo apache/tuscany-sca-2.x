@@ -54,6 +54,13 @@ public abstract class WiringException extends BuilderException {
         this.targetUri = targetUri;
     }
 
+
+    protected WiringException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+        sourceUri = null;
+        targetUri = null;
+    }
+
     /**
      * Returns the source name for the wire
      *
