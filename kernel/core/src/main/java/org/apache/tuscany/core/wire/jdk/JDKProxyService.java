@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.spi.wire.InvocationChain;
 
 import org.apache.tuscany.core.wire.ProxyServiceExtension;
 
@@ -57,6 +58,14 @@ public class JDKProxyService extends ProxyServiceExtension {
         assert interfaze != null;
         assert wire != null;
         JDKInvocationHandler handler = new JDKInvocationHandler(interfaze, wire, context);
+        ClassLoader cl = interfaze.getClassLoader();
+        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
+    }
+
+    public <T> T createProxy2(Class<T> interfaze, boolean conversational, Wire wire) throws ProxyCreationException {
+        assert interfaze != null;
+        assert wire != null;
+        JDKInvocationHandler2 handler = new JDKInvocationHandler2(interfaze, conversational, wire, context);
         ClassLoader cl = interfaze.getClassLoader();
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }

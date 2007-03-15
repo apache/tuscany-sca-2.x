@@ -34,6 +34,7 @@ public class PhysicalWireSourceDefinition extends ModelObject {
     private URI uri;
     private URI callbackUri;
     private boolean optimizable;
+    private boolean conversational;
 
     /**
      * Gets the URI.
@@ -88,5 +89,13 @@ public class PhysicalWireSourceDefinition extends ModelObject {
      */
     public void setOptimizable(boolean optimizable) {
         this.optimizable = optimizable;
+    }
+
+    public boolean isConversational() {
+        return conversational;
+    }
+
+    public void setConversational(boolean conversational) {
+        this.conversational = conversational;
     }
 }

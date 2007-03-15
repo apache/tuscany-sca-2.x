@@ -52,7 +52,7 @@ import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSo
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
-import org.apache.tuscany.core.wire.WireObjectFactory;
+import org.apache.tuscany.core.wire.WireObjectFactory2;
 
 /**
  * The physical component builder for Java implementation types. Responsible for creating the Component runtime artifact
@@ -174,7 +174,7 @@ public class JavaPhysicalComponentBuilder<T>
                        Component target,
                        Wire wire,
                        JavaPhysicalWireSourceDefinition definition) {
-        URI sourceUri = wire.getSourceUri();
+        URI sourceUri = definition.getUri();
         InjectionSource referenceSource = new InjectionSource(REFERENCE, sourceUri.getFragment());
         Class<?> type = source.getMemberType(referenceSource);
         if (definition.isOptimizable()) {
@@ -184,7 +184,7 @@ public class JavaPhysicalComponentBuilder<T>
             ObjectFactory<?> factory = new InstanceObjectFactory((AtomicComponent) target, container);
             source.setObjectFactory(referenceSource, factory);
         } else {
-            ObjectFactory<?> factory = new WireObjectFactory(type, wire, proxyService);
+            ObjectFactory<?> factory = new WireObjectFactory2(type, definition.isConversational(), wire, proxyService);
             source.setObjectFactory(referenceSource, factory);
             if (!wire.getCallbackInvocationChains().isEmpty()) {
                 URI callbackUri = definition.getCallbackUri();

@@ -40,8 +40,12 @@ public interface ProxyService {
      * @param interfaze the interface the proxy implements
      * @param wire      the wire to proxy @return the proxy
      * @throws ProxyCreationException
+     * @Deprecated
      */
     <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException;
+
+    <T> T createProxy2(Class<T> interfaze, boolean conversational, Wire wire) throws ProxyCreationException;
+
 
     /**
      * Creates a Java proxy for the given wire
@@ -51,6 +55,7 @@ public interface ProxyService {
      * @param mapping   the method to chain holder mapping to use in creating the proxy. Clients may cache and resuse
      *                  this mapping for performance.
      * @throws ProxyCreationException
+     * @Deprecated
      */
     <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, ChainHolder> mapping)
         throws ProxyCreationException;

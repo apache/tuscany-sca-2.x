@@ -75,6 +75,7 @@ public interface Wire {
      * Returns the service contract associated with the the source side of the wire
      *
      * @return the service contract associated with the wire
+     * @Deprecated
      */
     ServiceContract getSourceContract();
 
@@ -82,6 +83,7 @@ public interface Wire {
      * Sets the contract associated with the source side of the wire
      *
      * @param contract the contract associated with the wire
+     * @Deprecated
      */
     void setSourceContract(ServiceContract contract);
 
@@ -89,6 +91,7 @@ public interface Wire {
      * Returns the service contract associated with the the target side of the wire
      *
      * @return the service contract associated with the wire
+     * @Deprecated
      */
     ServiceContract getTargetContract();
 
@@ -96,6 +99,7 @@ public interface Wire {
      * Sets the contract associated with the the target side of the wire
      *
      * @param contract the contract associated with the wire
+     * @Deprecated
      */
     void setTargetContract(ServiceContract contract);
 
@@ -103,6 +107,7 @@ public interface Wire {
      * Returns true if the wire is optimizable and its invocation chains may be bypassed
      *
      * @return true if the wire is optimizable and its invocation chains may be bypassed
+     * @Deprecated
      */
     boolean isOptimizable();
 
@@ -117,6 +122,7 @@ public interface Wire {
      * Returns the non-proxied target instance for this wire
      *
      * @return the non-proxied target instance for this wire
+     * @Deprecated
      */
     Object getTargetInstance() throws TargetResolutionException;
 
@@ -124,6 +130,7 @@ public interface Wire {
      * Sets the target for the wire for optimizations
      *
      * @param target the target for the wire
+     * @Deprecated
      */
     void setTarget(AtomicComponent target);
 
@@ -139,6 +146,7 @@ public interface Wire {
      *
      * @param operation the service operation
      * @param chain     the invocation chain
+     * @Deprecated
      */
     void addInvocationChain(Operation<?> operation, InvocationChain chain);
 
@@ -147,6 +155,7 @@ public interface Wire {
      *
      * @param operation the service operation
      * @param chain     the invocation chain
+     * @Deprecated
      */
     void addInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain);
 
@@ -156,6 +165,7 @@ public interface Wire {
      * Returns the invocation chains for callback service operations associated with the wire
      *
      * @return the invocation chains for callback service operations associated with the wire
+     * @Deprecated
      */
     Map<Operation<?>, InvocationChain> getCallbackInvocationChains();
 
@@ -164,6 +174,7 @@ public interface Wire {
      *
      * @param operation the service operation
      * @param chain     the invocation chain
+     * @Deprecated
      */
     void addCallbackInvocationChain(Operation<?> operation, InvocationChain chain);
 

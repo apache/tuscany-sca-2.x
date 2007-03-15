@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * Uses a wire to return an object instance
+ * @Deprecated 
  *
  * @version $Rev$ $Date$
  */
