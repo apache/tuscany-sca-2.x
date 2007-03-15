@@ -16,19 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.hessian;
+package org.apache.tuscany.hessian.component;
 
-import org.apache.tuscany.spi.builder.WiringException;
+import org.apache.tuscany.hessian.HessianException;
 
 /**
- * Thrown when an error creating a destination is encountered
- *
  * @version $Rev$ $Date$
  */
-public abstract class DestinationCreationException extends WiringException {
+public class WireBindException extends HessianException {
 
-    public DestinationCreationException(String message) {
-        super(message);
+    public WireBindException(Throwable cause) {
+        super(cause);
     }
-
 }

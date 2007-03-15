@@ -18,32 +18,28 @@
  */
 package org.apache.tuscany.hessian;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
+ * Dispatches a service invocation to a Channel
+ *
  * @version $Rev$ $Date$
  */
-public class HessianTargetInvoker implements TargetInvoker {
+public class InvokerInterceptor implements Interceptor {
     private String operation;
     private Channel channel;
-    protected WorkContext workContext;
 
-    public HessianTargetInvoker(String operation, Channel channel, WorkContext workContext) {
+    /**
+     * Creates the interceptor.
+     *
+     * @param operation the service operation the interceptor dispatches for
+     * @param channel   the channel to dispatch to
+     */
+    public InvokerInterceptor(String operation, Channel channel) {
         this.operation = operation;
-        this.workContext = workContext;
         this.channel = channel;
-    }
-
-    public boolean isCacheable() {
-        return false;
-    }
-
-    public void setCacheable(boolean cacheable) {
     }
 
     public boolean isOptimizable() {
@@ -59,17 +55,12 @@ public class HessianTargetInvoker implements TargetInvoker {
         }
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            // TargetInvoker extends Cloneable so this should not have been thrown
-            throw new AssertionError(e);
-        }
+    public void setNext(Interceptor next) {
+        throw new IllegalStateException("This interceptor must be the last one in an target interceptor chain");
     }
 
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
-        return new UnsupportedOperationException();
+    public Interceptor getNext() {
+        return null;
     }
 
 

@@ -16,19 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.hessian;
+package org.apache.tuscany.hessian.model;
 
-import org.apache.tuscany.spi.builder.WiringException;
+import java.net.URI;
+
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
- * Thrown when an error creating a destination is encountered
- *
  * @version $Rev$ $Date$
  */
-public abstract class DestinationCreationException extends WiringException {
+public class HessianWireTargetDefinition extends PhysicalWireTargetDefinition {
+    private URI endpointUri;
 
-    public DestinationCreationException(String message) {
-        super(message);
+    public URI getEndpointUri() {
+        return endpointUri;
     }
 
+    public void setEndpointUri(URI endpointUri) {
+        this.endpointUri = endpointUri;
+    }
 }
