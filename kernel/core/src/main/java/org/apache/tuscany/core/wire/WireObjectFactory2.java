@@ -47,13 +47,12 @@ public class WireObjectFactory2<T> implements ObjectFactory<T> {
      * @param conversational if the wire is conversational
      * @param wire           the backing wire
      * @param proxyService   the wire service to create the proxy
-     * @throws org.apache.tuscany.core.wire.NoMethodForOperationException
-     *
+     * @throws NoMethodForOperationException if a method matching the operation cannot be found
      */
     public WireObjectFactory2(Class<T> interfaze, boolean conversational, Wire wire, ProxyService proxyService)
         throws NoMethodForOperationException {
         this.interfaze = interfaze;
-        this.conversational= conversational;
+        this.conversational = conversational;
         this.wire = wire;
         this.proxyService = proxyService;
         this.mappings = WireUtils.createInterfaceToWireMapping2(interfaze, wire);

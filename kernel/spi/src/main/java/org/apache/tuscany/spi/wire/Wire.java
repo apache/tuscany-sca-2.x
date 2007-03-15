@@ -115,6 +115,7 @@ public interface Wire {
      * Determines if the wire may be optimized
      *
      * @param optimizable true if the wire is optimizable
+     * @Deprecated
      */
     void setOptimizable(boolean optimizable);
 
@@ -138,6 +139,7 @@ public interface Wire {
      * Returns the invocation chains for service operations associated with the wire
      *
      * @return the invocation chains for service operations associated with the wire
+     * @Deprecated
      */
     Map<Operation<?>, InvocationChain> getInvocationChains();
 
