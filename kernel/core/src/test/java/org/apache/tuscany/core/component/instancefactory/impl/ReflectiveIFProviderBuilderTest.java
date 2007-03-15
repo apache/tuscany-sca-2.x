@@ -80,6 +80,10 @@ public class ReflectiveIFProviderBuilderTest extends TestCase {
         
         ReflectiveInstanceFactoryProvider provider = builder.build(def, cl);
         assertNotNull(provider);
+        
+        Class<?> clazz = provider.getMemberType(injectionSource);
+        assertNotNull(clazz);
+        assertEquals(Bar.class, clazz);
     }
 
 }
