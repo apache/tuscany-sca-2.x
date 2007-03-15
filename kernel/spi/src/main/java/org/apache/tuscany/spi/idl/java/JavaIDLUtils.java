@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  * Contains methods for mapping between an operation in a {@link org.apache.tuscany.spi.model.ServiceContract} and a
@@ -44,6 +45,7 @@ public final class JavaIDLUtils {
      * @param operation the operation to match
      * @return the method described by the operation
      * @throws NoSuchMethodException if no such method exists
+     * @Deprecated
      */
     public static <T> Method findMethod(Class<?> implClass, Operation<T> operation) throws NoSuchMethodException {
         String name = operation.getName();
@@ -51,11 +53,29 @@ public final class JavaIDLUtils {
         return implClass.getMethod(name, paramTypes);
     }
 
+    /**
+     * TODO JFM testme
+     */
+    public static Method findMethod2(Class<?> implClass, PhysicalOperationDefinition operation)
+        throws NoSuchMethodException, ClassNotFoundException {
+        String name = operation.getName();
+        List<String> params = operation.getParameters();
+        Class<?>[] types = new Class<?>[params.size()];
+        for (int i = 0; i < params.size(); i++) {
+            types[i] = implClass.getClassLoader().loadClass(params.get(i));
+        }
+        return implClass.getMethod(name, types);
+    }
+
+
+    /**
+     * @Deprecated
+     */
     private static <T> Class<?>[] getPhysicalTypes(Operation<T> operation) {
         DataType<List<DataType<T>>> inputType = operation.getInputType();
         List<DataType<T>> types = inputType.getLogical();
         Class<?>[] javaTypes = new Class<?>[types.size()];
-        for (int i = 0; i < javaTypes.length ; i++) {
+        for (int i = 0; i < javaTypes.length; i++) {
             Type physical = types.get(i).getPhysical();
             if (physical instanceof Class<?>) {
                 javaTypes[i] = (Class<?>) physical;
@@ -72,11 +92,32 @@ public final class JavaIDLUtils {
      * @param method     the method to match
      * @param operations the operations to match against
      * @return a matching operation or null
+     * @Deprecated
      */
     public static Operation findOperation(Method method, Collection<Operation<?>> operations) {
         for (Operation<?> operation : operations) {
             if (match(operation, method)) {
                 return operation;
+            }
+        }
+        return null;
+    }
+
+    public static PhysicalOperationDefinition findOperation2(Method method,
+                                                             Collection<PhysicalOperationDefinition> operations) {
+        for (PhysicalOperationDefinition operation : operations) {
+            Class<?>[] params = method.getParameterTypes();
+            List<String> types = operation.getParameters();
+            boolean found = true;
+            if (types.size() == params.length && method.getName().equals(operation.getName())) {
+                for (int i = 0; i < params.length; i++) {
+                    if (params[i].getName().equals(types.get(0))) {
+                        found = false;
+                    }
+                }
+                if (found) {
+                    return operation;
+                }
             }
         }
         return null;

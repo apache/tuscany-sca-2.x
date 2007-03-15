@@ -34,10 +34,9 @@ import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
 import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
@@ -77,14 +76,13 @@ public class JDKCallbackInvocationHandler2 extends AbstractInvocationHandler
         LinkedList<Wire> wires = context.getCallbackWires();
         Wire wire = wires.getLast();
         assert wire != null;
-        Map<Operation<?>, InvocationChain> chains = wire.getCallbackInvocationChains();
-        Operation operation = JavaIDLUtils.findOperation(method, chains.keySet());
+        Map<PhysicalOperationDefinition, InvocationChain> chains = wire.getCallbackPhysicalInvocationChains();
+        PhysicalOperationDefinition operation = JavaIDLUtils.findOperation2(method, chains.keySet());
         InvocationChain chain = chains.get(operation);
-        TargetInvoker invoker = chain.getTargetInvoker();
         Object correlationId = context.getCorrelationId();
         context.setCorrelationId(null);
         try {
-            return invokeTarget(chain, invoker, args, correlationId, wires);
+            return invokeTarget(chain, args, correlationId, wires);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {

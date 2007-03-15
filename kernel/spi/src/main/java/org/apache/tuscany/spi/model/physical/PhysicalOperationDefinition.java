@@ -47,6 +47,8 @@ public class PhysicalOperationDefinition extends ModelObject {
     // Callback
     private boolean callback;
 
+    private int conversationSequence;
+
     // Interceptors defined against the operation
     private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
 
@@ -141,4 +143,11 @@ public class PhysicalOperationDefinition extends ModelObject {
     }
 
 
+    public int getConversationSequence() {
+        return conversationSequence;
+    }
+
+    public void setConversationSequence(int conversationSequence) {
+        this.conversationSequence = conversationSequence;
+    }
 }

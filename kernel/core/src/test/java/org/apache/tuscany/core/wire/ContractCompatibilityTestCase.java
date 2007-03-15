@@ -36,6 +36,7 @@ import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.ProxyService;
+import org.apache.tuscany.spi.wire.InvocationChain;
 
 import junit.framework.TestCase;
 import org.osoa.sca.CallableReference;
@@ -350,17 +351,30 @@ public class ContractCompatibilityTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
+        public <T> T createProxy2(Class<T> interfaze, boolean conversational, Wire wire) throws ProxyCreationException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <T> T createProxy2(Class<T> interfaze, Wire wire) throws ProxyCreationException {
+            throw new UnsupportedOperationException();
+        }
+
         public <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, ChainHolder> mapping)
             throws ProxyCreationException {
             throw new UnsupportedOperationException();
         }
 
+        public <T> T createProxy2(Class<T> interfaze, Wire wire, Map<Method, InvocationChain> mapping)
+            throws ProxyCreationException {
+            throw new UnsupportedOperationException();
+        }
+
         public Object createCallbackProxy(Class<?> interfaze, List<Wire> wires) throws ProxyCreationException {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         public Object createCallbackProxy(Class<?> interfaze) throws ProxyCreationException {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract,

@@ -50,7 +50,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * Responsible for dispatching to a callback through a wire.
  * <p/>
  * TODO cache target invoker
- *
+ * @Deprecated
  * @version $Rev$ $Date$
  */
 public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
