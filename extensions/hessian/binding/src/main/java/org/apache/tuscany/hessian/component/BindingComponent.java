@@ -59,8 +59,8 @@ import org.apache.tuscany.hessian.destination.LocalDestination;
  * @version $Rev$ $Date$
  */
 public class BindingComponent extends AbstractLifecycle implements Component {
-    private String LOCAL_SCHEME = "hessianLocal";
-    private String HTTP_SCHEME = "http";
+    public static String LOCAL_SCHEME = "hessianLocal";
+    public static String HTTP_SCHEME = "http";
     private URI uri;
     private ServletHost servletHost;
     private Map<URI, LocalDestination> destinations;
@@ -88,18 +88,19 @@ public class BindingComponent extends AbstractLifecycle implements Component {
     }
 
     public void createEndpoint(URI endpointUri, Wire wire, ClassLoader loader) throws DestinationCreationException {
-        if (LOCAL_SCHEME.equals(uri.getScheme())) {
+        if (LOCAL_SCHEME.equals(endpointUri.getScheme())) {
             LocalDestination destination = new LocalDestination(wire, loader);
             destinations.put(uri, destination);
-        } else if (HTTP_SCHEME.equals(uri.getScheme())) {
+        } else if (HTTP_SCHEME.equals(endpointUri.getScheme())) {
             if (servletHost == null) {
                 throw new ServletHostNotFoundException("ServletHost is was not found");
             }
             HttpDestination destination = new HttpDestination(wire, loader);
             // FIXME mapping
-            servletHost.registerMapping(uri.toString(), destination);
+            servletHost.registerMapping(endpointUri.getPath(), destination);
+        } else {
+            throw new UnsupportedOperationException("Unsupported scheme");
         }
-        throw new UnsupportedOperationException("Unsupported scheme");
     }
 
     public void bindToEndpoint(URI endpointUri, Wire wire) throws InvalidDestinationException {
