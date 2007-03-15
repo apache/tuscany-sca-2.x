@@ -23,8 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a
  * component implementation instance or a service client.
- * @Deprecated 
+ *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public interface TargetInvoker extends Cloneable {
     /* indicates that no conversational sequence is associated with the message */

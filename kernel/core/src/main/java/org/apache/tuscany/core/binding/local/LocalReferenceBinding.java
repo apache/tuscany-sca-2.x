@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * The runtime representaion of the local reference binding
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public class LocalReferenceBinding extends ReferenceBindingExtension {
 

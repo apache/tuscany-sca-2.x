@@ -22,6 +22,7 @@ package org.apache.tuscany.spi.component;
  * Denotes an error creating a {@link org.apache.tuscany.spi.wire.TargetInvoker}
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public abstract class TargetInvokerCreationException extends ComponentException {
 

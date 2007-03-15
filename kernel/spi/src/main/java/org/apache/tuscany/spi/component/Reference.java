@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * The runtime instantiation of an SCA reference
  *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
 public interface Reference extends SCAObject {
 
