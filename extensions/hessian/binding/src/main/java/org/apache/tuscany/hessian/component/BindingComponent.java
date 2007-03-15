@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.hessian.component;
 
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
@@ -45,21 +47,28 @@ import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.hessian.Channel;
 import org.apache.tuscany.hessian.DestinationCreationException;
-import org.apache.tuscany.hessian.HessianService;
 import org.apache.tuscany.hessian.InvalidDestinationException;
 import org.apache.tuscany.hessian.InvokerInterceptor;
+import org.apache.tuscany.hessian.ServletHostNotFoundException;
+import org.apache.tuscany.hessian.channel.HttpChannel;
+import org.apache.tuscany.hessian.channel.LocalChannel;
+import org.apache.tuscany.hessian.destination.HttpDestination;
+import org.apache.tuscany.hessian.destination.LocalDestination;
 
 /**
  * @version $Rev$ $Date$
  */
 public class BindingComponent extends AbstractLifecycle implements Component {
+    private String LOCAL_SCHEME = "hessianLocal";
+    private String HTTP_SCHEME = "http";
     private URI uri;
-    private HessianService hessianService;
-    private List<URI> endpoints = new ArrayList<URI>();
+    private ServletHost servletHost;
+    private Map<URI, LocalDestination> destinations;
 
-    public BindingComponent(URI uri, HessianService hessianService) {
+    public BindingComponent(URI uri, ServletHost host) {
         this.uri = uri;
-        this.hessianService = hessianService;
+        this.servletHost = host;
+        destinations = new HashMap<URI, LocalDestination>();
     }
 
     public URI getUri() {
@@ -79,11 +88,22 @@ public class BindingComponent extends AbstractLifecycle implements Component {
     }
 
     public void createEndpoint(URI endpointUri, Wire wire, ClassLoader loader) throws DestinationCreationException {
-        hessianService.createDestination(endpointUri, wire, loader);
+        if (LOCAL_SCHEME.equals(uri.getScheme())) {
+            LocalDestination destination = new LocalDestination(wire, loader);
+            destinations.put(uri, destination);
+        } else if (HTTP_SCHEME.equals(uri.getScheme())) {
+            if (servletHost == null) {
+                throw new ServletHostNotFoundException("ServletHost is was not found");
+            }
+            HttpDestination destination = new HttpDestination(wire, loader);
+            // FIXME mapping
+            servletHost.registerMapping(uri.toString(), destination);
+        }
+        throw new UnsupportedOperationException("Unsupported scheme");
     }
 
     public void bindToEndpoint(URI endpointUri, Wire wire) throws InvalidDestinationException {
-        Channel channel = hessianService.createChannel(endpointUri);
+        Channel channel = createChannel(endpointUri);
         for (Map.Entry<PhysicalOperationDefinition, InvocationChain> entry : wire.getPhysicalInvocationChains()
             .entrySet()) {
             String name = entry.getKey().getName();
@@ -173,6 +193,31 @@ public class BindingComponent extends AbstractLifecycle implements Component {
     public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
         throws TargetInvokerCreationException {
         return null;
+    }
+
+
+    /**
+     * Creates a Channel to the service at the given URI
+     *
+     * @param uri the service uri
+     * @return the channel
+     * @throws InvalidDestinationException if an error is encountered creating the channel
+     */
+    private Channel createChannel(URI uri) throws InvalidDestinationException {
+        if (LOCAL_SCHEME.equals(uri.getScheme())) {
+            LocalDestination destination = destinations.get(uri);
+            if (destination != null) {
+                throw new InvalidDestinationException("Destination not found", uri.toString());
+            }
+            return new LocalChannel(destination);
+        } else if (HTTP_SCHEME.equals(uri.getScheme())) {
+            try {
+                return new HttpChannel(uri.toURL());
+            } catch (MalformedURLException e) {
+                throw new InvalidDestinationException("URI must be a valid URL ", e);
+            }
+        }
+        throw new UnsupportedOperationException("Unsupported scheme");
     }
 
 }

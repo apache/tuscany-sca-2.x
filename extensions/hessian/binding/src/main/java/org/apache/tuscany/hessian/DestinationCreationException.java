@@ -31,4 +31,9 @@ public abstract class DestinationCreationException extends WiringException {
         super(message);
     }
 
+    protected DestinationCreationException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+    }
+
+
 }
