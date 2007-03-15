@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
 import com.caucho.hessian.io.AbstractHessianInput;
@@ -77,7 +76,7 @@ public class AbstractDestination implements Destination {
             Thread.currentThread().setContextClassLoader(loader);
             in.readCall();
             String m = in.readMethod();
-            AbstractDestination.ChainHolder holder = chains.get(m);
+            ChainHolder holder = chains.get(m);
             if (holder == null) {
                 out.startReply();
                 out.writeFault("OperationNotFound", "The service has no method named: " + m, null);
@@ -92,7 +91,6 @@ public class AbstractDestination implements Destination {
             in.completeCall();
             Message msg = new MessageImpl();
             InvocationChain chain = holder.chain;
-            msg.setTargetInvoker((TargetInvoker) chain.getTargetInvoker().clone());
             Message ret = chain.getHeadInterceptor().invoke(msg);
             out.startReply();
             Object o = ret.getBody();
@@ -100,14 +98,6 @@ public class AbstractDestination implements Destination {
             out.completeReply();
         } catch (IOException e) {
             throw new InvocationException(e);
-        } catch (CloneNotSupportedException e) {
-            try {
-                out.startReply();
-                out.writeFault("ServiceException", e.getMessage(), e);
-                out.completeReply();
-            } catch (IOException e1) {
-                throw new InvocationException(e);
-            }
         } finally {
             Thread.currentThread().setContextClassLoader(oldLoader);
         }

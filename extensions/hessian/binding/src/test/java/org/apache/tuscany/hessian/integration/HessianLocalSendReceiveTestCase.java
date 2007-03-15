@@ -47,14 +47,9 @@ public class HessianLocalSendReceiveTestCase extends TestCase {
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
         operation.setName("hello");
 
-        TargetInvoker invoker = EasyMock.createNiceMock(TargetInvoker.class);
-        EasyMock.replay(invoker);
-
         InvocationChain chain = EasyMock.createMock(InvocationChain.class);
-        EasyMock.expect(chain.getTargetInvoker()).andReturn(invoker);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor);
         EasyMock.replay(chain);
-
 
         Map<PhysicalOperationDefinition, InvocationChain> chains =
             new HashMap<PhysicalOperationDefinition, InvocationChain>();
