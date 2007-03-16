@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import javax.wsdl.Fault;
 import javax.wsdl.Input;
 import javax.wsdl.Message;
@@ -31,12 +32,13 @@ import javax.wsdl.Output;
 import javax.wsdl.Part;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.ElementInfo;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.ServiceFaultException;
+import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.ElementInfo;
 import org.apache.tuscany.spi.model.TypeInfo;
 import org.apache.tuscany.spi.model.WrapperInfo;
-import org.apache.tuscany.spi.model.DataType;
-
+import org.apache.tuscany.spi.model.XMLType;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -48,21 +50,21 @@ import org.apache.ws.commons.schema.XmlSchemaType;
 
 /**
  * Metadata for a WSDL operation
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class WSDLOperation {
     protected XMLSchemaRegistry schemaRegistry;
     protected Operation operation;
-    protected org.apache.tuscany.spi.model.Operation<QName> operationModel;
-    protected DataType<List<DataType<QName>>> inputType;
-    protected DataType<QName> outputType;
-    protected List<DataType<QName>> faultTypes;
+    protected org.apache.tuscany.spi.model.Operation<XMLType> operationModel;
+    protected DataType<List<DataType<XMLType>>> inputType;
+    protected DataType<XMLType> outputType;
+    protected List<DataType<XMLType>> faultTypes;
     private String dataBinding;
 
     /**
-     * @param operation      The WSDL4J operation
-     * @param dataBinding    The default databinding
+     * @param operation The WSDL4J operation
+     * @param dataBinding The default databinding
      * @param schemaRegistry The XML Schema registry
      */
     public WSDLOperation(Operation operation, String dataBinding, XMLSchemaRegistry schemaRegistry) {
@@ -78,15 +80,16 @@ public class WSDLOperation {
     private Boolean wrapperStyle;
 
     /**
-     * Test if the operation qualifies wrapper style as defined by the JAX-WS 2.0 spec
-     *
+     * Test if the operation qualifies wrapper style as defined by the JAX-WS
+     * 2.0 spec
+     * 
      * @return true if the operation qualifies wrapper style, otherwise false
      */
     public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
-                wrapper.getInputChildElements() != null
-                    && (operation.getOutput() == null || wrapper.getOutputChildElements() != null);
+                wrapper.getInputChildElements() != null && (operation.getOutput() == null || wrapper
+                    .getOutputChildElements() != null);
         }
         return wrapperStyle;
     }
@@ -102,9 +105,8 @@ public class WSDLOperation {
     /**
      * @return
      * @throws InvalidServiceContractException
-     *
      */
-    public DataType<List<DataType<QName>>> getInputType() throws InvalidServiceContractException {
+    public DataType<List<DataType<XMLType>>> getInputType() throws InvalidServiceContractException {
         if (inputType == null) {
             Input input = operation.getInput();
             Message message = (input == null) ? null : input.getMessage();
@@ -118,7 +120,7 @@ public class WSDLOperation {
      * @return
      * @throws NotSupportedWSDLException
      */
-    public DataType<QName> getOutputType() throws InvalidServiceContractException {
+    public DataType<XMLType> getOutputType() throws InvalidServiceContractException {
         if (outputType == null) {
             Output output = operation.getOutput();
             Message outputMsg = (output == null) ? null : output.getMessage();
@@ -129,8 +131,8 @@ public class WSDLOperation {
                     // We don't support output with multiple parts
                     throw new NotSupportedWSDLException("Multi-part output is not supported");
                 }
-                Part part = (Part) outputParts.get(0);
-                outputType = new WSDLPart(part).getDataType();
+                Part part = (Part)outputParts.get(0);
+                outputType = new WSDLPart(part, Object.class).getDataType();
                 // outputType.setMetadata(WSDLOperation.class.getName(), this);
             }
         }
@@ -141,62 +143,65 @@ public class WSDLOperation {
      * @return
      * @throws NotSupportedWSDLException
      */
-    public List<DataType<QName>> getFaultTypes() throws InvalidServiceContractException {
+    public List<DataType<XMLType>> getFaultTypes() throws InvalidServiceContractException {
         if (faultTypes == null) {
             Collection faults = operation.getFaults().values();
-            faultTypes = new ArrayList<DataType<QName>>();
+            faultTypes = new ArrayList<DataType<XMLType>>();
             for (Object f : faults) {
-                Fault fault = (Fault) f;
+                Fault fault = (Fault)f;
                 Message faultMsg = fault.getMessage();
                 List faultParts = faultMsg.getOrderedParts(null);
                 if (faultParts.size() != 1) {
                     throw new NotSupportedWSDLException("The fault message MUST have a single part");
                 }
-                Part part = (Part) faultParts.get(0);
-                WSDLPart wsdlPart = new WSDLPart(part);
+                Part part = (Part)faultParts.get(0);
+                WSDLPart wsdlPart = new WSDLPart(part, ServiceFaultException.class);
                 faultTypes.add(wsdlPart.getDataType());
             }
         }
         return faultTypes;
     }
 
-    private DataType<List<DataType<QName>>> getMessageType(Message message) throws InvalidServiceContractException {
-        List<DataType<QName>> partTypes = new ArrayList<DataType<QName>>();
+    private DataType<List<DataType<XMLType>>> getMessageType(Message message) throws InvalidServiceContractException {
+        List<DataType<XMLType>> partTypes = new ArrayList<DataType<XMLType>>();
         if (message != null) {
             Collection parts = message.getOrderedParts(null);
             for (Object p : parts) {
-                WSDLPart part = new WSDLPart((Part) p);
-                DataType<QName> partType = part.getDataType();
+                WSDLPart part = new WSDLPart((Part)p, Object.class);
+                DataType<XMLType> partType = part.getDataType();
                 partTypes.add(partType);
             }
         }
-        return new DataType<List<DataType<QName>>>(dataBinding, Object[].class, partTypes);
+        return new DataType<List<DataType<XMLType>>>(dataBinding, Object[].class, partTypes);
     }
 
     /**
      * @return
      * @throws NotSupportedWSDLException
      */
-    public org.apache.tuscany.spi.model.Operation<QName> getOperation() throws InvalidServiceContractException {
+    public org.apache.tuscany.spi.model.Operation<XMLType> getOperation() throws InvalidServiceContractException {
         if (operationModel == null) {
             boolean oneway = (operation.getOutput() == null);
-            operationModel = new org.apache.tuscany.spi.model.Operation<QName>(operation.getName(),
-                getInputType(),
-                getOutputType(),
-                getFaultTypes(),
-                oneway,
-                dataBinding,
-                org.apache.tuscany.spi.model.Operation.NO_CONVERSATION);
+            operationModel =
+                new org.apache.tuscany.spi.model.Operation<XMLType>(
+                                                                  operation.getName(),
+                                                                  getInputType(),
+                                                                  getOutputType(),
+                                                                  getFaultTypes(),
+                                                                  oneway,
+                                                                  dataBinding,
+                                                                  org.apache.tuscany.spi.model.Operation.NO_CONVERSATION);
             operationModel.setWrapperStyle(isWrapperStyle());
             // operationModel.setMetaData(WSDLOperation.class.getName(), this);
             if (isWrapperStyle()) {
-                operationModel.setWrapper(getWrapper().getWrapperInfo());
+                WrapperInfo wrapperInfo = getWrapper().getWrapperInfo();
+                operationModel.setWrapper(wrapperInfo);
                 // Register the operation with the types
-                for (DataType<?> d : wrapper.getUnwrappedInputType().getLogical()) {
+                for (DataType<?> d : wrapperInfo.getUnwrappedInputType().getLogical()) {
                     d.setOperation(operationModel);
                 }
-                if (wrapper.getUnwrappedOutputType() != null) {
-                    wrapper.getUnwrappedOutputType().setOperation(operationModel);
+                if (wrapperInfo.getUnwrappedOutputType() != null) {
+                    wrapperInfo.getUnwrappedOutputType().setOperation(operationModel);
                 }
             }
         }
@@ -215,9 +220,9 @@ public class WSDLOperation {
 
         private XmlSchemaElement element;
 
-        private DataType<QName> dataType;
+        private DataType<XMLType> dataType;
 
-        public WSDLPart(Part part) throws InvalidWSDLException {
+        public WSDLPart(Part part, Class javaType) throws InvalidWSDLException {
             this.part = part;
             QName elementName = part.getElementName();
             if (elementName != null) {
@@ -240,9 +245,9 @@ public class WSDLOperation {
                     element.setSchemaTypeName(type.getQName());
                 }
             }
-            dataType = new DataType<QName>(dataBinding, Object.class, element.getQName());
+            dataType = new DataType<XMLType>(dataBinding, javaType, new XMLType(getElementInfo(element)));
             // dataType.setMetadata(WSDLPart.class.getName(), this);
-            dataType.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
+            // dataType.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
         }
 
         /**
@@ -262,23 +267,30 @@ public class WSDLOperation {
         /**
          * @return the dataType
          */
-        public DataType<QName> getDataType() {
+        public DataType<XMLType> getDataType() {
             return dataType;
         }
     }
 
     /**
-     * The "Wrapper Style" WSDL operation is defined by The Java API for XML-Based Web Services (JAX-WS) 2.0
-     * specification, section 2.3.1.2 Wrapper Style.
-     * <p/>
-     * A WSDL operation qualifies for wrapper style mapping only if the following criteria are met: <ul> <li>(i) The
-     * operation’s input and output messages (if present) each contain only a single part <li>(ii) The input message
-     * part refers to a global element declaration whose localname is equal to the operation name <li>(iii) The output
-     * message part refers to a global element declaration <li>(iv) The elements referred to by the input and output
-     * message parts (henceforth referred to as wrapper elements) are both complex types defined using the xsd:sequence
-     * compositor <li>(v) The wrapper elements only contain child elements, they must not contain other structures such
-     * as wildcards (element or attribute), xsd:choice, substitution groups (element references are not permitted) or
-     * attributes; furthermore, they must not be nillable. </ul>
+     * The "Wrapper Style" WSDL operation is defined by The Java API for
+     * XML-Based Web Services (JAX-WS) 2.0 specification, section 2.3.1.2
+     * Wrapper Style. <p/> A WSDL operation qualifies for wrapper style mapping
+     * only if the following criteria are met:
+     * <ul>
+     * <li>(i) The operation’s input and output messages (if present) each
+     * contain only a single part
+     * <li>(ii) The input message part refers to a global element declaration
+     * whose localname is equal to the operation name
+     * <li>(iii) The output message part refers to a global element declaration
+     * <li>(iv) The elements referred to by the input and output message parts
+     * (henceforth referred to as wrapper elements) are both complex types
+     * defined using the xsd:sequence compositor
+     * <li>(v) The wrapper elements only contain child elements, they must not
+     * contain other structures such as wildcards (element or attribute),
+     * xsd:choice, substitution groups (element references are not permitted) or
+     * attributes; furthermore, they must not be nillable.
+     * </ul>
      */
     public class Wrapper {
         private XmlSchemaElement inputWrapperElement;
@@ -289,9 +301,9 @@ public class WSDLOperation {
 
         private List<XmlSchemaElement> outputElements;
 
-        private DataType<List<DataType<QName>>> unwrappedInputType;
+        private DataType<List<DataType<XMLType>>> unwrappedInputType;
 
-        private DataType<QName> unwrappedOutputType;
+        private DataType<XMLType> unwrappedOutputType;
 
         private transient WrapperInfo wrapperInfo;
 
@@ -299,7 +311,7 @@ public class WSDLOperation {
             if (element == null) {
                 return null;
             }
-            if(element.isNillable()) {
+            if (element.isNillable()) {
                 // Wrapper element cannot be nillable
                 return null;
             }
@@ -312,7 +324,7 @@ public class WSDLOperation {
                 // Has to be a complexType
                 return null;
             }
-            XmlSchemaComplexType complexType = (XmlSchemaComplexType) type;
+            XmlSchemaComplexType complexType = (XmlSchemaComplexType)type;
             if (complexType.getAttributes().getCount() != 0 || complexType.getAnyAttribute() != null) {
                 // No attributes
                 return null;
@@ -325,7 +337,7 @@ public class WSDLOperation {
             if (!(particle instanceof XmlSchemaSequence)) {
                 return null;
             }
-            XmlSchemaSequence sequence = (XmlSchemaSequence) complexType.getParticle();
+            XmlSchemaSequence sequence = (XmlSchemaSequence)complexType.getParticle();
             XmlSchemaObjectCollection items = sequence.getItems();
             List<XmlSchemaElement> childElements = new ArrayList<XmlSchemaElement>();
             for (int i = 0; i < items.getCount(); i++) {
@@ -333,7 +345,7 @@ public class WSDLOperation {
                 if (!(schemaObject instanceof XmlSchemaElement)) {
                     return null;
                 }
-                XmlSchemaElement childElement = (XmlSchemaElement) schemaObject;
+                XmlSchemaElement childElement = (XmlSchemaElement)schemaObject;
                 if (childElement.getName() == null || childElement.getRefName() != null) {
                     return null;
                 }
@@ -348,8 +360,9 @@ public class WSDLOperation {
 
         /**
          * Return a list of child XSD elements under the wrapped request element
-         *
-         * @return a list of child XSD elements or null if if the request element is not wrapped
+         * 
+         * @return a list of child XSD elements or null if if the request
+         *         element is not wrapped
          */
         public List<XmlSchemaElement> getInputChildElements() throws InvalidWSDLException {
             if (inputElements != null) {
@@ -362,7 +375,7 @@ public class WSDLOperation {
                 if (parts.size() != 1) {
                     return null;
                 }
-                Part part = (Part) parts.iterator().next();
+                Part part = (Part)parts.iterator().next();
                 QName elementName = part.getElementName();
                 if (elementName == null) {
                     return null;
@@ -372,8 +385,8 @@ public class WSDLOperation {
                 }
                 inputWrapperElement = schemaRegistry.getElement(elementName);
                 if (inputWrapperElement == null) {
-                    throw new InvalidWSDLException("The element is not declared in a XML schema",
-                        elementName.toString());
+                    throw new InvalidWSDLException("The element is not declared in a XML schema", elementName
+                        .toString());
                 }
                 inputElements = getChildElements(inputWrapperElement);
                 return inputElements;
@@ -383,9 +396,11 @@ public class WSDLOperation {
         }
 
         /**
-         * Return a list of child XSD elements under the wrapped response element
-         *
-         * @return a list of child XSD elements or null if if the response element is not wrapped
+         * Return a list of child XSD elements under the wrapped response
+         * element
+         * 
+         * @return a list of child XSD elements or null if if the response
+         *         element is not wrapped
          */
         public List<XmlSchemaElement> getOutputChildElements() throws InvalidWSDLException {
             if (outputElements != null) {
@@ -398,7 +413,7 @@ public class WSDLOperation {
                 if (parts.size() != 1) {
                     return null;
                 }
-                Part part = (Part) parts.iterator().next();
+                Part part = (Part)parts.iterator().next();
                 QName elementName = part.getElementName();
                 if (elementName == null) {
                     throw new InvalidWSDLException("The element is not declared in the XML schema", part.getName());
@@ -408,7 +423,8 @@ public class WSDLOperation {
                     return null;
                 }
                 outputElements = getChildElements(outputWrapperElement);
-                // FIXME: Do we support multiple child elements for the response?
+                // FIXME: Do we support multiple child elements for the
+                // response?
                 return outputElements;
             } else {
                 return null;
@@ -429,21 +445,23 @@ public class WSDLOperation {
             return outputWrapperElement;
         }
 
-        public DataType<List<DataType<QName>>> getUnwrappedInputType() throws InvalidWSDLException {
+        /*
+        public DataType<List<DataType<XMLType>>> getUnwrappedInputType() throws InvalidWSDLException {
             if (unwrappedInputType == null) {
-                List<DataType<QName>> childTypes = new ArrayList<DataType<QName>>();
+                List<DataType<XMLType>> childTypes = new ArrayList<DataType<XMLType>>();
                 for (XmlSchemaElement element : getInputChildElements()) {
-                    DataType<QName> type = new DataType<QName>(dataBinding, Object.class, element.getQName());
-                    type.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
+                    DataType<XMLType> type =
+                        new DataType<XMLType>(dataBinding, Object.class, new XMLType(getElementInfo(element)));
+                    // type.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
                     childTypes.add(type);
                 }
                 unwrappedInputType =
-                    new DataType<List<DataType<QName>>>("idl:unwrapped.input", Object[].class, childTypes);
+                    new DataType<List<DataType<XMLType>>>("idl:unwrapped.input", Object[].class, childTypes);
             }
             return unwrappedInputType;
         }
 
-        public DataType<QName> getUnwrappedOutputType() throws InvalidServiceContractException {
+        public DataType<XMLType> getUnwrappedOutputType() throws InvalidServiceContractException {
             if (unwrappedOutputType == null) {
                 List<XmlSchemaElement> elements = getOutputChildElements();
                 if (elements != null && elements.size() > 0) {
@@ -452,12 +470,14 @@ public class WSDLOperation {
                         throw new NotSupportedWSDLException("Multi-part output is not supported");
                     }
                     XmlSchemaElement element = elements.get(0);
-                    unwrappedOutputType = new DataType<QName>(dataBinding, Object.class, element.getQName());
-                    unwrappedOutputType.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
+                    unwrappedOutputType =
+                        new DataType<XMLType>(dataBinding, Object.class, new XMLType(getElementInfo(element)));
+                    // unwrappedOutputType.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
                 }
             }
             return unwrappedOutputType;
         }
+        */
 
         public WrapperInfo getWrapperInfo() throws InvalidServiceContractException {
             if (wrapperInfo == null) {
@@ -474,8 +494,7 @@ public class WSDLOperation {
                     }
                 }
                 wrapperInfo =
-                    new WrapperInfo(in, out, inChildren, outChildren, getUnwrappedInputType(),
-                        getUnwrappedOutputType());
+                    new WrapperInfo(dataBinding, in, out, inChildren, outChildren);
             }
             return wrapperInfo;
         }
@@ -492,7 +511,7 @@ public class WSDLOperation {
         if (type == null) {
             return null;
         }
-        XmlSchemaType baseType = (XmlSchemaType) type.getBaseSchemaType();
+        XmlSchemaType baseType = (XmlSchemaType)type.getBaseSchemaType();
         QName name = type.getQName();
         boolean simple = (type instanceof XmlSchemaSimpleType);
         if (baseType == null) {

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.PortType;
@@ -38,19 +39,17 @@ import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.xml.sax.InputSource;
-import org.osoa.sca.annotations.Reference;
-
+import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.spi.deployer.ArtifactResolverRegistry;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
 import org.apache.tuscany.spi.model.Contribution;
 import org.apache.tuscany.spi.model.DeployedArtifact;
-
-import org.apache.tuscany.host.deployment.DeploymentException;
+import org.osoa.sca.annotations.Reference;
+import org.xml.sax.InputSource;
 
 /**
  * The WSDL processor
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class WSDLContributionProcessor extends ContributionProcessorExtension {
@@ -97,24 +96,25 @@ public class WSDLContributionProcessor extends ContributionProcessorExtension {
         reader.setFeature("javax.wsdl.verbose", false);
         reader.setExtensionRegistry(extensionRegistry);
 
-        WSDLLocatorImpl locator = new WSDLLocatorImpl(contribution.getUri(), location, inputStream);
+        WSDLLocatorImpl locator = new WSDLLocatorImpl(contribution, location, inputStream);
         Definition definition = reader.readWSDL(locator);
         String definitionNamespace = definition.getTargetNamespace();
         if (namespace != null && !namespace.equals(definitionNamespace)) {
             throw new WSDLException(WSDLException.CONFIGURATION_ERROR, namespace + " != "
-                + definition.getTargetNamespace());
+                                                                       + definition.getTargetNamespace());
         }
 
         // Load inline schemas
         registry.processModel(contribution, location, definition);
         for (Object i : definition.getImports().values()) {
-            List<Import> imps = (List<Import>) i;
+            List<Import> imps = (List<Import>)i;
             for (Import imp : imps) {
                 Definition imported = imp.getDefinition();
                 if (imported != null) {
-                    // TODO: 
-                    registry
-                        .processModel(contribution, URI.create(imp.getDefinition().getDocumentBaseURI()), definition);
+                    // TODO:
+                    registry.processModel(contribution,
+                                          URI.create(imp.getDefinition().getDocumentBaseURI()),
+                                          definition);
                 }
             }
         }
@@ -167,19 +167,22 @@ public class WSDLContributionProcessor extends ContributionProcessorExtension {
 
     public static interface Monitor {
         /**
-         * Monitor event emitted immediately before an attempt is made to read WSDL for the supplied namespace from the
-         * supplied location.
-         *
-         * @param namespace the target namespace expected in the WSDL; may be null
-         * @param location  the location where we will attempt to read the WSDL definition from
+         * Monitor event emitted immediately before an attempt is made to read
+         * WSDL for the supplied namespace from the supplied location.
+         * 
+         * @param namespace the target namespace expected in the WSDL; may be
+         *            null
+         * @param location the location where we will attempt to read the WSDL
+         *            definition from
          */
         void readingWSDL(String namespace, URI location);
 
         /**
-         * Monitor event emitted immediately before registering a WSDL definition in the cache.
-         *
+         * Monitor event emitted immediately before registering a WSDL
+         * definition in the cache.
+         * 
          * @param namespace the target namespace for the WSDL
-         * @param location  the location where the WSDL definition was read from
+         * @param location the location where the WSDL definition was read from
          */
         void cachingDefinition(String namespace, URI location);
     }
@@ -193,12 +196,12 @@ public class WSDLContributionProcessor extends ContributionProcessorExtension {
     }
 
     public class WSDLLocatorImpl implements WSDLLocator {
-        private URI contribution;
+        private Contribution contribution;
         private InputStream inputStream;
         private String baseURI;
         private URI latestImportURI;
 
-        public WSDLLocatorImpl(URI contribution, URI baseURI, InputStream is) {
+        public WSDLLocatorImpl(Contribution contribution, URI baseURI, InputStream is) {
             this.contribution = contribution;
             this.baseURI = baseURI.toString();
             this.inputStream = is;
@@ -250,15 +253,13 @@ public class WSDLContributionProcessor extends ContributionProcessorExtension {
         try {
             loadDefinition(contribution, null, source, inputStream);
         } catch (WSDLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new InvalidWSDLContributionException(contribution.getArtifact(source).getLocation().toExternalForm(),
+                                                       e);
         }
     }
 
     public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
-                                                                                               IOException {
-        // TODO Auto-generated method stub
-
+        IOException {
     }
 
 }

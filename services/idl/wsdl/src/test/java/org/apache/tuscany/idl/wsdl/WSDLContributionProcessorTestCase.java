@@ -48,7 +48,7 @@ public class WSDLContributionProcessorTestCase extends TestCase {
         processor = new WSDLContributionProcessor();
         ArtifactResolverRegistry registry = createMock(ArtifactResolverRegistry.class);
         URL url = getClass().getResource("test2.wsdl");
-        expect(registry.resolve(isA(URI.class),
+        expect(registry.resolve(isA(Contribution.class),
                                 (String)isNull(),
                                 isA(String.class),
                                 isA(String.class))).andReturn(url).anyTimes();
