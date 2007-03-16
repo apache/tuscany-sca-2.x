@@ -30,6 +30,17 @@
     <name>Apache Tuscany Script Container using JSR-223</name>
     <description>Apache Tuscany Script Container using JSR-223</description>
 
+    <repositories>
+       <!-- This is reqquired for Jython as 2.2 Beta1 hasn't made it to the maven repos yet -->
+       <repository>
+          <id>ant</id>
+          <url>http://people.apache.org/~antelder/maven2</url>
+          <snapshots>
+             <enabled>true</enabled>
+          </snapshots>
+       </repository>
+    </repositories>
+
     <dependencies>
 
         <dependency>
@@ -74,12 +85,33 @@
             <scope>test</scope>
         </dependency>
 
+
+<!-- TODO: big hack to add script engine dependencies till extension dependencies fixed -->
+
         <dependency>
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>
             <version>1.6R5</version>
-            <scope>compile</scope> <!-- TODO: hack till extension dependencies fixed -->
+            <scope>compile</scope> 
         </dependency>
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>0.9.8</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jython</groupId>
+            <artifactId>jython</artifactId>
+            <version>2.2b1</version>
+            <scope>compile</scope>
+         </dependency>
+         <dependency>
+            <groupId>groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+         </dependency>
 
     </dependencies>
 
