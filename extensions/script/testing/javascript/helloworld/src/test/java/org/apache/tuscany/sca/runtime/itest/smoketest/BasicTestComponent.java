@@ -29,6 +29,6 @@ public class BasicTestComponent extends TestCase {
     public HelloService hello;
 
     public void testGreeting() {
-        assertEquals("Hello petra", hello.getGreeting("petra"));
+        assertEquals("jsHello petra", hello.getGreeting("petra"));
     }
 }
