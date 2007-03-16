@@ -19,9 +19,10 @@
 
 package org.apache.tuscany.spi.deployer;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.Map;
+
+import org.apache.tuscany.spi.model.Contribution;
 
 
 /**
@@ -46,7 +47,7 @@ public interface ArtifactResolver {
     /**
      * Resolve an artifact by the qualified name
      * 
-     * @param contribution the URI of the contribution
+     * @param contribution the model of the contribution
      * @param modelClass The java type of the artifact 
      * @param namespace The namespace of the artifact
      * @param name The name of the artifact
@@ -55,7 +56,7 @@ public interface ArtifactResolver {
      * @param context The deployment context
      * @return The resolved artifact
      */
-    <T> T resolve(URI contribution,
+    <T> T resolve(Contribution contribution,
                   Class<T> modelClass,
                   String namespace,
                   String name,
@@ -78,6 +79,6 @@ public interface ArtifactResolver {
      * 
      * @return The URI of the resolved artifact
      */
-    URL resolve(URI contribution, String targetNamespace, String location, String baseURI);
+    URL resolve(Contribution contribution, String targetNamespace, String location, String baseURI);
 
 }
