@@ -22,7 +22,6 @@ package org.apache.tuscany.spi.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * The "Wrapper Style" WSDL operation is defined by The Java API for XML-Based
  * Web Services (JAX-WS) 2.0 specification, section 2.3.1.2 Wrapper Style. <p/>
@@ -109,12 +108,11 @@ public class WrapperInfo {
             List<DataType<XMLType>> childTypes = new ArrayList<DataType<XMLType>>();
             for (ElementInfo element : getInputChildElements()) {
                 DataType<XMLType> type = new DataType<XMLType>(dataBinding, Object.class, new XMLType(element));
-                // type.setMetadata(ElementInfo.class.getName(),
-                // getElementInfo(element));
+                type.setMetadata(ElementInfo.class.getName(), element);
                 childTypes.add(type);
             }
-            unwrappedInputType =
-                new DataType<List<DataType<XMLType>>>("idl:unwrapped.input", Object[].class, childTypes);
+            unwrappedInputType = new DataType<List<DataType<XMLType>>>("idl:unwrapped.input", Object[].class,
+                                                                       childTypes);
         }
         return unwrappedInputType;
     }
@@ -131,7 +129,9 @@ public class WrapperInfo {
                     throw new IllegalArgumentException("Multi-part output is not supported");
                 }
                 ElementInfo element = elements.get(0);
+
                 unwrappedOutputType = new DataType<XMLType>(dataBinding, Object.class, new XMLType(element));
+                unwrappedOutputType.setMetadata(ElementInfo.class.getName(), element);
             }
         }
         return unwrappedOutputType;

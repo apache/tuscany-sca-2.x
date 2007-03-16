@@ -156,9 +156,8 @@ public class IDLTransformerTestCase extends TestCase {
         responseType.setOperation(op);
 
         WrapperInfo wrapperInfo =
-            new WrapperInfo(inputElement, outputElement, inputElements, outputElements, inputType, statusType);
+            new WrapperInfo(DOMDataBinding.NAME, inputElement, outputElement, inputElements, outputElements);
         op.setWrapper(wrapperInfo);
-        op.setDataBinding(DOMDataBinding.NAME);
 
         MediatorImpl m = new MediatorImpl();
         TransformerRegistryImpl tr = new TransformerRegistryImpl();
@@ -197,6 +196,7 @@ public class IDLTransformerTestCase extends TestCase {
             new DataType<DataType>("idl:output", Object.class, op.getOutputType());
         sourceType.setOperation(op.getOutputType().getOperation());
 
+        sourceType.setMetadata(ElementInfo.class.getName(), outputElement);
         context1.setSourceDataType(sourceType);
         DataType<DataType> targetType =
             new DataType<DataType>("idl:output", Object.class,

@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.model.ElementInfo;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.WrapperInfo;
+import org.apache.tuscany.spi.model.XMLType;
 
 /**
  * This is a special transformer to transform the input from one IDL to the other one
@@ -141,11 +142,11 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             if (source == null) {
                 return new Object[]{targetWrapper};
             }
-            List<DataType<QName>> argTypes = wrapper.getUnwrappedInputType().getLogical();
+            List<DataType<XMLType>> argTypes = wrapper.getUnwrappedInputType().getLogical();
 
             for (int i = 0; i < source.length; i++) {
                 ElementInfo argElement = wrapper.getInputChildElements().get(i);
-                DataType<QName> argType = argTypes.get(i);
+                DataType<XMLType> argType = argTypes.get(i);
                 Object child = source[i];
                 child =
                     mediator.mediate(source[i], sourceType.getLogical().get(i), argType, context
@@ -180,7 +181,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
                 for (int i = 0; i < childElements.size(); i++) {
                     ElementInfo childElement = childElements.get(i);
                     Object child = sourceWrapperHandler.getChild(sourceWrapper, i, childElement);
-                    DataType<QName> childType =
+                    DataType<XMLType> childType =
                         sourceOp.getWrapper().getUnwrappedInputType().getLogical().get(i);
                     target[i] =
                         mediator.mediate(child, childType, targetType.getLogical().get(i), context
