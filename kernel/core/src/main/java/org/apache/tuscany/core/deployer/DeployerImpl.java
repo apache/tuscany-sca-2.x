@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -45,7 +46,6 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 
 import org.apache.tuscany.api.annotation.Monitor;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.resolver.AutowireResolver;

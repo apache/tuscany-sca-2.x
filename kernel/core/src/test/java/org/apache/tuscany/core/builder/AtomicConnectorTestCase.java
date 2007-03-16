@@ -22,6 +22,7 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
@@ -41,7 +42,6 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;

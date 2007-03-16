@@ -16,13 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.component;
+package org.apache.tuscany.spi.component;
 
 import java.net.URI;
 import java.util.List;
 
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 

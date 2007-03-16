@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.builder.interceptor.InterceptorBuilderRegistry;
 import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.Invocable;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
@@ -60,7 +61,6 @@ import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.NonBlockingInterceptor;

@@ -22,6 +22,7 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 

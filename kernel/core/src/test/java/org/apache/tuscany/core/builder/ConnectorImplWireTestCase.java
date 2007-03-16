@@ -23,6 +23,7 @@ import java.net.URI;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
@@ -31,7 +32,6 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.easymock.EasyMock;

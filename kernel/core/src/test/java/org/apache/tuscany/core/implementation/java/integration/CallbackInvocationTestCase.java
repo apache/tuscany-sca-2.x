@@ -26,6 +26,7 @@ import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.annotations.Callback;
 
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -44,7 +45,6 @@ import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
