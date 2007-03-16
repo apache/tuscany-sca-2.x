@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.model.ElementInfo;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.WrapperInfo;
+import org.apache.tuscany.spi.model.XMLType;
 
 /**
  * This is a special transformer to transform the output from one IDL to the other one
@@ -155,7 +156,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
                     return targetWrapper;
                 }
                 ElementInfo argElement = childElements.get(0);
-                DataType<QName> argType = wrapper.getUnwrappedOutputType();
+                DataType<XMLType> argType = wrapper.getUnwrappedOutputType();
                 Object child = response;
                 child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
                 targetWrapperHandler.setChild(targetWrapper, 0, argElement, child);
