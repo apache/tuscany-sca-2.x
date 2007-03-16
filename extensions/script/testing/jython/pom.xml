@@ -29,17 +29,6 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany Script Container Testing for Jython</name>
 
-    <repositories>
-       <!-- This is reqquired for Jython as 2.2 Beta1 hasn't made it to the maven repos yet -->
-       <repository>
-          <id>ant</id>
-          <url>http://people.apache.org/~antelder/maven2</url>
-          <snapshots>
-             <enabled>true</enabled>
-          </snapshots>
-       </repository>
-    </repositories>
-
     <modules>
         <module>helloworld</module>
     </modules>
