@@ -22,6 +22,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -37,7 +38,6 @@ import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.binding.local.LocalBindingLoader;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeObjectFactory;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;

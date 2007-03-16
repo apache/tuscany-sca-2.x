@@ -20,12 +20,12 @@ package org.apache.tuscany.core.deployer.federation;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
