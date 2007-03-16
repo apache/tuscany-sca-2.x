@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +30,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.apache.tuscany.core.services.deployment.ContentTypeDescriberImpl;
-import org.apache.tuscany.core.util.FileHelper;
+import org.apache.tuscany.core.util.IOHelper;
 import org.apache.tuscany.host.deployment.DeploymentException;
+import org.apache.tuscany.spi.deployer.ContentType;
 import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
@@ -40,7 +40,10 @@ import org.apache.tuscany.spi.model.Contribution;
 import org.apache.tuscany.spi.model.DeployedArtifact;
 
 public class JarContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
-    public static final String CONTENT_TYPE = "application/x-compressed";
+    /**
+     * Content-type that this processor can handle
+     */
+    public static final String CONTENT_TYPE = ContentType.JAR;
 
     @Override
     public String getContentType() {
@@ -69,7 +72,10 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
                     continue;
                 }
 
-                artifacts.add(new URL(rootURL, entry.getName()));
+                // FIXME: Maybe we should externalize the filter as a property
+                if (!entry.getName().startsWith(".")) {
+                    artifacts.add(new URL(rootURL, entry.getName()));
+                }
             }
         } finally {
             jar.close();
@@ -106,31 +112,27 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
 
         for (URL artifactURL : getArtifacts(sourceURL, inputStream)) {
             URI artifactURI;
-            
-            try {
-                artifactURI = new URI(source.toASCIIString() + "/" + FileHelper.getName(artifactURL.getPath()));
-                DeployedArtifact artifact = new DeployedArtifact(artifactURI);
-                artifact.setLocation(artifactURL);
-                contribution.addArtifact(artifact);
-                
-                
-                ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
-                String contentType = contentTypeDescriber.getContentType(artifactURL, null);
-                System.out.println("Type : " + contentType);
-                
 
-                //just process scdl for now
-                if ("application/v.tuscany.scdl".equals(contentType) 
-                        /* || "application/java-vm".equals(contentType) */) {
-                    this.registry.processContent(contribution, artifactURI, artifactURL.openStream());
+            String artifactPath = artifactURL.toExternalForm().substring(sourceURL.toExternalForm().length());
+            artifactURI = contribution.getUri().resolve(artifactPath);
+            DeployedArtifact artifact = new DeployedArtifact(artifactURI);
+            artifact.setLocation(artifactURL);
+            contribution.addArtifact(artifact);
+
+
+            ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
+            String contentType = contentTypeDescriber.getContentType(artifactURL, null);
+
+            // just process scdl for now
+            if (ContentType.COMPOSITE.equals(contentType)) {
+                InputStream is = IOHelper.getInputStream(artifactURL);
+                try {
+                    this.registry.processContent(contribution, artifactURI, is);
+                } finally {
+                    IOHelper.closeQuietly(is);
+                    is = null;
                 }
-            } catch (URISyntaxException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
-
- 
-
         }
 
     }
