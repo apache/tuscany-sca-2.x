@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Represents an operation that is part of a service contract. The type paramter of this operation identifies the
  * logical type system for all data types.
@@ -38,9 +39,9 @@ public class Operation<T> extends ModelObject implements Cloneable {
     protected Map<String, Object> metaData;
     private final String name;
     private ServiceContract<T> contract;
-    private final DataType<T> outputType;
-    private final DataType<List<DataType<T>>> inputType;
-    private final List<DataType<T>> faultTypes;
+    private DataType<T> outputType;
+    private DataType<List<DataType<T>>> inputType;
+    private List<DataType<T>> faultTypes;
     private String dataBinding;
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
@@ -72,8 +73,8 @@ public class Operation<T> extends ModelObject implements Cloneable {
      * @param faultTypes  the data type of faults raised by the operation
      * @param nonBlocking if the operation is non-blocking
      * @param dataBinding the data-binding type required by the operation
-     * @param sequence    the conversational attributes of the operation {@link #CONVERSATION_CONTINUE}, or {@link
-     *                    #CONVERSATION_END}
+     * @param sequence    the conversational attributes of the operation, {@link NO_CONVERSATION}, {@link
+     *                    CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
      */
     public Operation(final String name,
                      final DataType<List<DataType<T>>> inputType,
@@ -197,8 +198,8 @@ public class Operation<T> extends ModelObject implements Cloneable {
     }
 
     /**
-     * Returns the sequence the operation is called in a conversation, {@link #CONVERSATION_CONTINUE}, or {@link
-     * #CONVERSATION_END}
+     * Returns the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link
+     * CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
      *
      * @return the sequence the operation is called in a conversation
      */
@@ -207,8 +208,8 @@ public class Operation<T> extends ModelObject implements Cloneable {
     }
 
     /**
-     * Sets the sequence the operation is called in a conversation, {@link #CONVERSATION_CONTINUE}, or {@link
-     * #CONVERSATION_END}
+     * Sets the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link
+     * CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
      */
     public void setConversationSequence(int conversationSequence) {
         this.conversationSequence = conversationSequence;
@@ -277,6 +278,11 @@ public class Operation<T> extends ModelObject implements Cloneable {
 
         // HACK: If the operation is mappable, then the equality test is relaxed
         if (isMappable()) {
+            return true;
+        }
+        
+        // FIXME: TUSCANY-1111, currently comparing different IDLs fail
+        if (contract != null && contract.getClass() != operation.getServiceContract().getClass()) {
             return true;
         }
 
@@ -364,9 +370,10 @@ public class Operation<T> extends ModelObject implements Cloneable {
         this.wrapperStyle = wrapperStyle;
     }
 
-    @SuppressWarnings({"unchecked", "CloneDoesntCallSuperClone"})
+    @SuppressWarnings("unchecked")
     @Override
     public Operation<T> clone() throws CloneNotSupportedException {
+        Operation<T> copy = (Operation<T>) super.clone();
         final List<DataType<T>> clonedFaultTypes = new ArrayList<DataType<T>>(this.faultTypes.size());
         for (DataType<T> t : this.faultTypes) {
             clonedFaultTypes.add((DataType<T>) t.clone());
@@ -382,20 +389,11 @@ public class Operation<T> extends ModelObject implements Cloneable {
             new DataType<List<DataType<T>>>(inputType.getPhysical(), clonedTypes);
         clonedInputType.setDataBinding(inputType.getDataBinding());
 
-        DataType<T> outputType = (DataType<T>) this.outputType.clone();
-        Operation<T> copy =
-            new Operation<T>(name,
-                clonedInputType,
-                outputType,
-                clonedFaultTypes,
-                nonBlocking,
-                dataBinding,
-                conversationSequence);
+        DataType<T> clonedOutputType = (DataType<T>) this.outputType.clone();
 
-        copy.callback = this.callback;
-        copy.contract = this.contract;
-        copy.wrapper = this.wrapper;
-        copy.wrapperStyle = this.wrapperStyle;
+        copy.inputType = clonedInputType;
+        copy.outputType = clonedOutputType;
+        copy.faultTypes = clonedFaultTypes;
 
         if (this.metaData != null) {
             assert this.metaData instanceof HashMap;

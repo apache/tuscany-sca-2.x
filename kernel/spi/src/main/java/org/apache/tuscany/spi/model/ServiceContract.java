@@ -137,6 +137,10 @@ public abstract class ServiceContract<T> extends ModelObject implements Cloneabl
         this.callbackClass = callbackClass;
     }
 
+    public Operation getOperation(String name) {
+        return operations == null ? null : operations.get(name);
+    }
+
     public Map<String, Operation<T>> getOperations() {
         if (operations == null) {
             return Collections.emptyMap();
