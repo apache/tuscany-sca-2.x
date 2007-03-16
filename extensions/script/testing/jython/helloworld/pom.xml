@@ -20,7 +20,7 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany.sca.script.testing</groupId>
-        <artifactId>testing-javascript</artifactId>
+        <artifactId>testing-jython</artifactId>
         <version>2.0-alpha2-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -41,12 +41,6 @@
                 <version>3.8.1</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-               <groupId>jython</groupId>
-               <artifactId>jython</artifactId>
-               <version>2.2b1</version>
-               <scope>runtime</scope>
-           </dependency>
     </dependencies>
     <build>
         <defaultGoal>verify</defaultGoal>
