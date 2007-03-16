@@ -19,25 +19,28 @@
 
 package org.apache.tuscany.core.services.deployment;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.tuscany.core.util.FileHelper;
+
 import junit.framework.TestCase;
 
 public class ContributionRepositoryTestCase extends TestCase {
-    protected ContributionRepositoryImpl repository;
+    private ContributionRepositoryImpl repository;
 
     protected void setUp() throws Exception {
         super.setUp();
         // create repository (this should re-create the root directory)
-        this.repository = new ContributionRepositoryImpl("target/repository");
-
+        this.repository = new ContributionRepositoryImpl("target/repository/");
+        repository.init();
     }
 
     public void testStore() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
-        URI contribution = getClass().getResource(resourceLocation).toURI();
+        URI contribution = URI.create("sample-calculator.jar");
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
         repository.store(contribution, contributionStream);
 
@@ -47,7 +50,7 @@ public class ContributionRepositoryTestCase extends TestCase {
 
     public void testRemove() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
-        URI contribution = getClass().getResource(resourceLocation).toURI();
+        URI contribution = URI.create("sample-calculator.jar");
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
         repository.store(contribution, contributionStream);
 
@@ -58,10 +61,16 @@ public class ContributionRepositoryTestCase extends TestCase {
 
     public void testList() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
-        URI contribution = getClass().getResource(resourceLocation).toURI();
+        URI contribution = URI.create("sample-calculator.jar");
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
         repository.store(contribution, contributionStream);
 
         assertEquals(1, repository.list().size());
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        FileHelper.deleteDirectory(new File("target/repository"));
     }
 }

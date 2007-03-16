@@ -24,20 +24,28 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
-
+import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
+import org.apache.tuscany.spi.deployer.ContentType;
 import org.apache.tuscany.spi.deployer.ContributionProcessor;
 import org.apache.tuscany.spi.extension.ContributionProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
+import org.apache.tuscany.spi.implementation.java.Introspector;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.Contribution;
-
-import org.apache.tuscany.host.deployment.DeploymentException;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
 public class JavaContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
-    public static final String CONTENT_TYPE = "application/java-vm";
-    //private Introspector introspector;
+    /**
+     * Content-type that this processor can handle
+     */
+    public static final String CONTENT_TYPE = ContentType.JAVA;
+    /**
+     * Pojo introspector
+     */
+    private Introspector introspector;
 
     @Constructor
     public JavaContributionProcessor(@Reference IntrospectionRegistry introspector) {
@@ -60,10 +68,10 @@ public class JavaContributionProcessor extends ContributionProcessorExtension im
     }
 
 
-    public void processContent(Contribution contribution, URI source, InputStream inputStream)
+    public void processContent(Contribution contribution, URI artifactURI, InputStream inputStream)
         throws DeploymentException, IOException {
-        if (source == null) {
-            throw new IllegalArgumentException("Invalid null source uri.");
+        if (artifactURI == null) {
+            throw new IllegalArgumentException("Invalid null artifact uri.");
         }
 
         if (inputStream == null) {
@@ -72,24 +80,24 @@ public class JavaContributionProcessor extends ContributionProcessorExtension im
 
         // TODO Auto-generated method stub
 
-        //try {
-        CompositeClassLoader cl = new CompositeClassLoader(null, getClass().getClassLoader());
-        cl.addURL(contribution.getLocation());
+        try {
+            CompositeClassLoader cl = new CompositeClassLoader(null, getClass().getClassLoader());
+            cl.addURL(contribution.getLocation());
 
-        String clazzName = getClazzName(contribution.getArtifact(source).getLocation());
-        System.out.println(clazzName);
+            String clazzName = getClazzName(contribution.getArtifact(artifactURI).getLocation());
+            System.out.println(clazzName);
 
-        //Class clazz = cl.loadClass(clazzName);
+            Class clazz = cl.loadClass(clazzName);
 
-//            PojoComponentType javaInfo = introspector.introspect(null, clazz, null, null);
-//        } catch (ClassNotFoundException cnfe) {
-//            String msg = cnfe.getMessage();
-//
-//        }
-//      catch(ProcessingException pe){
-//            String msg = pe.getMessage();
+            //PojoComponentType javaInfo = introspector.introspect(null, clazz, null, null);
 
+            //contribution.getArtifact(artifactURI).addModelObject(PojoComponentType.class, null, javaInfo);
 
+        } catch (ClassNotFoundException cnfe) {
+            throw new InvalidPojoComponentDefinitionlException(contribution.getArtifact(artifactURI).getLocation().toExternalForm(), cnfe);
+        //} catch (ProcessingException pe) {
+        //    throw new InvalidPojoComponentDefinitionlException(contribution.getArtifact(artifactURI).getLocation().toExternalForm(), pe);
+        }
     }
 
     public void processModel(Contribution contribution, URI source, Object modelObject)

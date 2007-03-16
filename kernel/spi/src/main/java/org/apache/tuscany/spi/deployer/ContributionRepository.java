@@ -26,6 +26,12 @@ import java.net.URL;
 import java.util.List;
 
 public interface ContributionRepository {
+    /**
+     * Get the URI of the SCA domain 
+     * 
+     * @return
+     */
+    URI getDomain();
     
     /**
      * Copies a contribution to the repository.
@@ -36,6 +42,14 @@ public interface ContributionRepository {
      *            distribution
      */
     URL store(URI contribution, InputStream contributionStream) throws IOException;
+    /**
+     * Copy a contribution from the source URL to the repository
+     * @param contribution
+     * @param sourceURL
+     * @return
+     * @throws IOException
+     */
+    URL store(URI contribution, URL sourceURL) throws IOException;
 
     /**
      * Look up the contribution by URI
