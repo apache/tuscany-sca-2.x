@@ -62,7 +62,10 @@
     </dependencyManagement>
 
     <modules>
+        <module>groovy</module>
         <module>javascript</module>
+        <module>jruby</module>
+        <module>jython</module>
     </modules>
 
 </project>
