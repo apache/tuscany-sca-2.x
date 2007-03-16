@@ -30,8 +30,8 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.model.ElementInfo;
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.XMLType;
 
 /**
  * Test case for WSDLOperation
@@ -59,28 +59,24 @@ public class WSDLOperationTestCase extends TestCase {
 
         WSDLOperation op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
 
-        DataType<List<DataType<QName>>> inputType = op.getInputType();
+        DataType<List<DataType<XMLType>>> inputType = op.getInputType();
         Assert.assertEquals(1, inputType.getLogical().size());
         Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePrice"), inputType
-            .getLogical().get(0).getLogical());
+            .getLogical().get(0).getLogical().getElementName());
 
-        DataType<QName> outputType = op.getOutputType();
+        DataType<XMLType> outputType = op.getOutputType();
         Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePriceResponse"),
-                            outputType.getLogical());
+                            outputType.getLogical().getElementName());
         Assert.assertTrue(op.isWrapperStyle());
 
-        DataType<List<DataType<QName>>> unwrappedInputType = op.getWrapper().getUnwrappedInputType();
-        List<DataType<QName>> childTypes = unwrappedInputType.getLogical();
+        DataType<List<DataType<XMLType>>> unwrappedInputType = op.getWrapper().getWrapperInfo().getUnwrappedInputType();
+        List<DataType<XMLType>> childTypes = unwrappedInputType.getLogical();
         Assert.assertEquals(1, childTypes.size());
-        DataType<QName> childType = childTypes.get(0);
-        Assert.assertEquals(new QName(null, "tickerSymbol"), childType.getLogical());
-        ElementInfo element = (ElementInfo)childType.getMetadata(ElementInfo.class.getName());
-        Assert.assertNotNull(element);
+        DataType<XMLType> childType = childTypes.get(0);
+        Assert.assertEquals(new QName(null, "tickerSymbol"), childType.getLogical().getElementName());
 
-        childType = op.getWrapper().getUnwrappedOutputType();
-        Assert.assertEquals(new QName(null, "price"), childType.getLogical());
-        element = (ElementInfo)childType.getMetadata(ElementInfo.class.getName());
-        Assert.assertNotNull(element);
+        childType = op.getWrapper().getWrapperInfo().getUnwrappedOutputType();
+        Assert.assertEquals(new QName(null, "price"), childType.getLogical().getElementName());
     }
 
     public final void testUnwrappedOperation() throws Exception {

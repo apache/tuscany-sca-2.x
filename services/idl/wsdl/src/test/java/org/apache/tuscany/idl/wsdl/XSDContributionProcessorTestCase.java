@@ -51,7 +51,7 @@ public class XSDContributionProcessorTestCase extends TestCase {
         processor = new XSDContributionProcessor();
         ArtifactResolverRegistry registry = createMock(ArtifactResolverRegistry.class);
         URL url = getClass().getResource("ipo.xsd");
-        expect(registry.resolve(isA(URI.class), isA(String.class), isA(String.class), (String)isNull())).andReturn(url)
+        expect(registry.resolve(isA(Contribution.class), isA(String.class), isA(String.class), (String)isNull())).andReturn(url)
             .anyTimes();
         processor.setArtifactResolverRegistry(registry);
         replay(registry);

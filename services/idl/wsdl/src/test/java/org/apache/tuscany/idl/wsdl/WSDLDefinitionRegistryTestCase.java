@@ -68,6 +68,17 @@ public class WSDLDefinitionRegistryTestCase extends TestCase {
         }
     }
 
+    public void testGetDefinition() {
+        try {
+            wsdlRegistry.loadDefinition(NS + ' ' + exampleWsdl, cl);
+            Assert.assertNotNull(wsdlRegistry.getDefinition(NS));
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
+        } catch (WSDLException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         wsdlRegistry = new WSDLDefinitionRegistryImpl();

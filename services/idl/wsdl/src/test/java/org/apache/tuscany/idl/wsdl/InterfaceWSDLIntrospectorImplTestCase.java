@@ -33,6 +33,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.XMLType;
 
 /**
  * Test case for InterfaceWSDLIntrospectorImpl
@@ -59,13 +60,13 @@ public class InterfaceWSDLIntrospectorImplTestCase extends TestCase {
         InterfaceWSDLIntrospector introspector = new InterfaceWSDLIntrospectorImpl(registry);
         WSDLServiceContract contract = introspector.introspect(portType);
         Assert.assertEquals(contract.getInterfaceName(), "StockQuotePortType");
-        Map<String, Operation<QName>> operations = contract.getOperations();
+        Map<String, Operation<XMLType>> operations = contract.getOperations();
         Assert.assertEquals(1, operations.size());
-        Operation<QName> operation = operations.get("getLastTradePrice");
+        Operation<XMLType> operation = operations.get("getLastTradePrice");
         Assert.assertNotNull(operation);
-        DataType<List<DataType<QName>>> inputType = operation.getInputType();
+        DataType<List<DataType<XMLType>>> inputType = operation.getInputType();
         Assert.assertEquals(1, inputType.getLogical().size());
-        DataType<QName> returnType = operation.getOutputType();
+        DataType<XMLType> returnType = operation.getOutputType();
         Assert.assertNotNull(returnType);
         Assert.assertEquals(0, operation.getFaultTypes().size());
         Assert.assertEquals(1, operation.getWrapper().getInputChildElements().size());
