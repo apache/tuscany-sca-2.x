@@ -104,6 +104,7 @@ public final class MockFactory {
         }
         configuration.setWorkContext(new WorkContextImpl());
         configuration.setName(new URI(sourceName));
+        configuration.setGroupId(URI.create("composite"));
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
         sourceComponent.setScopeContainer(sourceScope);
         Wire wire = createWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
@@ -111,8 +112,8 @@ public final class MockFactory {
             chain.setTargetInvoker(targetComponent.createTargetInvoker(targetName, chain.getOperation()));
         }
         sourceComponent.attachWire(wire);
-        targetScope.register(null, targetComponent);
-        sourceScope.register(null, sourceComponent);
+        targetScope.register(targetComponent, configuration.getGroupId());
+        sourceScope.register(sourceComponent, configuration.getGroupId());
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         components.put(sourceName, sourceComponent);
         components.put(targetName, targetComponent);
@@ -142,6 +143,7 @@ public final class MockFactory {
         }
         configuration.setWorkContext(new WorkContextImpl());
         configuration.setName(new URI(sourceName));
+        configuration.setGroupId(URI.create("composite"));
 
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
         sourceComponent.setScopeContainer(sourceScope);
@@ -153,8 +155,8 @@ public final class MockFactory {
         List<Wire> wires = new ArrayList<Wire>();
         wires.add(wire);
         sourceComponent.attachWires(wires);
-        targetScope.register(null, targetComponent);
-        sourceScope.register(null, sourceComponent);
+        targetScope.register(targetComponent, configuration.getGroupId());
+        sourceScope.register(sourceComponent, configuration.getGroupId());
 
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         components.put(sourceName, sourceComponent);
@@ -186,6 +188,7 @@ public final class MockFactory {
         configuration.setProxyService(PROXY_SERVICE);
         configuration.setWorkContext(new WorkContextImpl());
         configuration.setName(new URI(name));
+        configuration.setGroupId(URI.create("composite"));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(scope);
         return component;

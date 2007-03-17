@@ -75,6 +75,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         EasyMock.replay(service);
         configuration.setProxyService(service);
         configuration.setName(new URI("source"));
+        configuration.setGroupId(URI.create("composite"));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(scope);
         component.attachWire(wire);
@@ -91,10 +92,10 @@ public class JavaReferenceWireTestCase extends TestCase {
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         scope.start();
         scope.stop();
-        scope.register(EasyMock.isNull(), EasyMock.isA(AtomicComponent.class));
+        scope.register(EasyMock.isA(AtomicComponent.class), EasyMock.eq(URI.create("composite")));
         EasyMock.expectLastCall().atLeastOnce();
         EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
-        scope.getWrapper(EasyMock.isA(AtomicComponent.class));
+        scope.getWrapper(EasyMock.isA(AtomicComponent.class), EasyMock.eq(URI.create("composite")));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             private Map<AtomicComponent, InstanceWrapper> cache = new HashMap<AtomicComponent, InstanceWrapper>();
 

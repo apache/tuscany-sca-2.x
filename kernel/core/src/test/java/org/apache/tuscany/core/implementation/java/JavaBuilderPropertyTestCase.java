@@ -98,6 +98,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(deploymentContext.getGroupId()).andStubReturn(URI.create("composite"));
         EasyMock.replay(deploymentContext);
         parent = EasyMock.createNiceMock(Component.class);
         ScopeContainer mockContainer = EasyMock.createNiceMock(ScopeContainer.class);

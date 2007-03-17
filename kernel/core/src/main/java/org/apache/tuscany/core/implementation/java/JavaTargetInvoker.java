@@ -56,8 +56,9 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+        Object contextId = workContext.getIdentifier(scopeContainer.getScope());
         try {
-            InstanceWrapper<?> wrapper = getInstance(sequence);
+            InstanceWrapper<?> wrapper = getInstance(sequence, contextId);
             Object instance = wrapper.getInstance();
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
@@ -65,7 +66,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             } else {
                 ret = operation.invoke(instance, (Object[]) payload);
             }
-            scopeContainer.returnWrapper(component, wrapper);
+            scopeContainer.returnWrapper(component, wrapper, contextId);
             if (sequence == END) {
                 // if end conversation, remove resource
                 scopeContainer.remove(component);
@@ -92,24 +93,24 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     /**
      * Resolves the target service instance or returns a cached one
      */
-    protected InstanceWrapper<?> getInstance(short sequence) throws TargetException {
+    protected InstanceWrapper<?> getInstance(short sequence, Object contextId) throws TargetException {
         switch (sequence) {
         case NONE:
             if (cacheable) {
                 if (target == null) {
-                    target = scopeContainer.getWrapper(component);
+                    target = scopeContainer.getWrapper(component, contextId);
                 }
                 return target;
             } else {
-                return scopeContainer.getWrapper(component);
+                return scopeContainer.getWrapper(component, contextId);
             }
         case START:
             assert !cacheable;
-            return scopeContainer.getWrapper(component);
+            return scopeContainer.getWrapper(component, contextId);
         case CONTINUE:
         case END:
             assert !cacheable;
-            return scopeContainer.getAssociatedWrapper(component);
+            return scopeContainer.getAssociatedWrapper(component, contextId);
         default:
             throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
         }

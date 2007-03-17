@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -40,6 +41,9 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testResourceInjection() throws Exception {
+        DeploymentContext ctx = EasyMock.createNiceMock(DeploymentContext.class);
+        EasyMock.expect(ctx.getGroupId()).andStubReturn(URI.create("composite"));
+        EasyMock.replay(ctx);
         ScopeContainer container = EasyMock.createNiceMock(ScopeContainer.class);
         ScopeRegistry registry = EasyMock.createMock(ScopeRegistry.class);
         EasyMock.expect(registry.getScopeContainer(Scope.STATELESS)).andReturn(container);
@@ -63,7 +67,7 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         EasyMock.expect(resourceWire.getTargetInstance()).andReturn("result");
         EasyMock.replay(resourceWire);
 
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, null);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(definition, ctx);
         Foo foo = (Foo) component.createInstance();
         assertEquals("result", foo.resource);
     }

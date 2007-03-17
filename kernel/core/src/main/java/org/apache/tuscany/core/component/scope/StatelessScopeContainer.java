@@ -18,57 +18,44 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.api.annotation.Monitor;
 
 /**
  * A scope context which manages stateless atomic component instances in a non-pooled fashion.
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
+@Service(ScopeContainer.class)
 public class StatelessScopeContainer<GROUP, KEY> extends AbstractScopeContainer<GROUP, KEY> {
 
-    public StatelessScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
-        super(Scope.STATELESS, workContext, monitor);
+    public StatelessScopeContainer(@Monitor ScopeContainerMonitor monitor) {
+        super(Scope.STATELESS, monitor);
     }
 
-    public synchronized void start() {
-        if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
-            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
-        }
-        lifecycleState = RUNNING;
-    }
-
-    public synchronized void stop() {
-        if (lifecycleState != RUNNING) {
-            throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
-        }
-        lifecycleState = STOPPED;
-    }
-
-    public void onEvent(Event event) {
-    }
-
-    protected <T> InstanceWrapper<T> getInstanceWrapper(AtomicComponent component, boolean create)
+    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId)
         throws TargetResolutionException {
-        // there never is a previously associated instance, return null
-        if (!create) {
-            return null;
-        }
-        // FIXME remove when AtomicComponent has a type param
-        @SuppressWarnings("unchecked")
-        InstanceWrapper<T> ctx = (InstanceWrapper<T>) component.createInstanceWrapper();
+        InstanceWrapper<T> ctx = createInstance(component);
         ctx.start();
         return ctx;
     }
 
-    public <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper)
+    public <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent<T> component, KEY contextId)
+        throws TargetResolutionException {
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> void returnWrapper(AtomicComponent<T> component, InstanceWrapper<T> wrapper, KEY contextId)
         throws TargetDestructionException {
         super.returnWrapper(component, wrapper);
         wrapper.stop();

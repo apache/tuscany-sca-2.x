@@ -73,6 +73,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
             definition.getImplementation().getComponentType();
 
         PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setGroupId(context.getGroupId());
         if (definition.getInitLevel() != null) {
             configuration.setInitLevel(definition.getInitLevel());
         } else {

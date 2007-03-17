@@ -59,9 +59,10 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
     public WebappComponent(URI name,
                            ProxyService proxyService,
                            WorkContext workContext,
+                           URI groupId,
                            Map<String, ObjectFactory<?>> attributes,
                            Map<String, Class<?>> referenceTypes) {
-        super(name, proxyService, workContext, 0, 0, 0);
+        super(name, proxyService, workContext, groupId, 0, 0, 0);
         this.propertyFactories = attributes;
         this.referenceTypes = referenceTypes;
         referenceFactories = new ConcurrentHashMap<String, Wire>(referenceTypes.size());

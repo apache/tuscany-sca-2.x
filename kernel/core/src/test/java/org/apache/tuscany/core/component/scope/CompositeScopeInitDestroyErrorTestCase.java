@@ -25,6 +25,8 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.GroupInitializationException;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.ComponentStart;
@@ -35,27 +37,29 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
+    private URI groupId;
 
-    public void testInitializeErrorMonitor() throws Exception {
-        ScopeContainerMonitor monitor;
-        monitor = EasyMock.createMock(ScopeContainerMonitor.class);
-        monitor.eagerInitializationError(EasyMock.isA(ObjectCreationException.class));
-        EasyMock.replay(monitor);
-        CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
+    public void testInitializeError() throws Exception {
+        CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
+        scope.createGroup(groupId);
 
+        ObjectCreationException ex = new ObjectCreationException("");
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getUri()).andReturn(URI.create("foo")).atLeastOnce();
-        EasyMock.expect(component.createInstanceWrapper()).andThrow(new ObjectCreationException(""));
-        EasyMock.expect(component.getInitLevel()).andReturn(1);
+        EasyMock.expect(component.createInstanceWrapper()).andThrow(ex);
+        EasyMock.expect(component.isEagerInit()).andStubReturn(true);
+        EasyMock.expect(component.getInitLevel()).andStubReturn(1);
         EasyMock.replay(component);
-        scope.register(null, component);
-        scope.onEvent(new ComponentStart(this, null));
-        EasyMock.verify(monitor);
+        scope.register(component, groupId);
+        try {
+            scope.startContext(groupId, groupId);
+        } catch (GroupInitializationException e) {
+            assertSame(ex, e.getCauses().get(0));
+        }
+        EasyMock.verify(component);
     }
 
     public void testDestroyErrorMonitor() throws Exception {
-        Object comp = new Object();
         InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
         wrapper.start();
         wrapper.stop();
@@ -68,13 +72,16 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.replay(monitor);
         CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
         scope.start();
+        scope.createGroup(groupId);
+
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
-        EasyMock.expect(component.getInitLevel()).andReturn(1);
+        EasyMock.expect(component.isEagerInit()).andStubReturn(true);
+        EasyMock.expect(component.getInitLevel()).andStubReturn(1);
         EasyMock.replay(component);
-        scope.register(null, component);
-        scope.onEvent(new ComponentStart(this, null));
-        scope.onEvent(new ComponentStop(this, null));
+        scope.register(component, groupId);
+        scope.startContext(groupId, groupId);
+        scope.stopContext(groupId);
         EasyMock.verify(monitor);
         EasyMock.verify(component);
         EasyMock.verify(wrapper);
@@ -83,5 +90,6 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        groupId = URI.create("composite");
     }
 }

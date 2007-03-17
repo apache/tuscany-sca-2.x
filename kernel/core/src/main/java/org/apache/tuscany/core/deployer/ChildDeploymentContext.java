@@ -65,4 +65,7 @@ public class ChildDeploymentContext extends AbstractDeploymentContext {
         return parent.getCompositeScope();
     }
 
+    public URI getGroupId() {
+        return parent.getGroupId();
+    }
 }

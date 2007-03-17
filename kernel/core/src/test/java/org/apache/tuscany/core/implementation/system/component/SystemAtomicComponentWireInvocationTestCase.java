@@ -39,15 +39,20 @@ import org.easymock.EasyMock;
  * @version $$Rev$$ $$Date$$
  */
 public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
+    private URI groupId;
 
     public void testWireResolution() throws Exception {
+        groupId = URI.create("composite");
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
+        scope.createGroup(groupId);
+        scope.startContext(groupId, groupId);
         Target target = new TargetImpl();
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.addReferenceSite("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(SourceImpl.class.getConstructor()));
         configuration.setName(new URI("source"));
+        configuration.setGroupId(groupId);
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scope);
         Wire wire = EasyMock.createMock(Wire.class);

@@ -82,20 +82,24 @@
     </component>
     
     <!-- Default scopes -->
-    <component name="scope.module">
-        <system:implementation.system class="org.apache.tuscany.core.component.scope.CompositeScopeObjectFactory"/>
+    <component name="scope.composite">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.CompositeScopeContainer"/>
     </component>
 
     <component name="scope.stateless">
-        <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory"/>
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeContainer"/>
     </component>
+<!--
     <component name="scope.request">
-        <system:implementation.system class="org.apache.tuscany.core.component.scope.RequestScopeObjectFactory"/>
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.RequestScopeContainer"/>
     </component>
+-->
 
+<!--
     <component name="scope.conversational">
-        <system:implementation.system class="org.apache.tuscany.core.component.scope.ConversationalScopeObjectFactory"/>
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.ConversationalScopeContainer"/>
     </component>
+-->
 
     <!-- include loader configuration -->
     <include name="org.apache.tuscany.core.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>

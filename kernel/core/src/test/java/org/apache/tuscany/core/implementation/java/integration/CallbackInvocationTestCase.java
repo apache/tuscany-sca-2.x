@@ -55,6 +55,7 @@ import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.core.wire.jdk.JDKProxyService;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
@@ -73,6 +74,7 @@ public class CallbackInvocationTestCase extends TestCase {
     private WorkContext workContext;
     private ComponentManager componentManager;
     private Connector connector;
+    private URI groupId;
 
     /**
      * Verifies callbacks between two Java component implementations: wire creation, connection, injection of callback
@@ -82,12 +84,12 @@ public class CallbackInvocationTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
         JavaAtomicComponent targetComponent = (JavaAtomicComponent) builder.build(targetDefinition, context);
         targetComponent.setScopeContainer(container);
-        container.register(null, targetComponent);
+        container.register(targetComponent, groupId);
         componentManager.register(targetComponent);
         ComponentDefinition<JavaImplementation> sourceDefinition = createSource(URI.create("fooClient"));
         JavaAtomicComponent clientComponent = (JavaAtomicComponent) builder.build(sourceDefinition, context);
         clientComponent.setScopeContainer(container);
-        container.register(null, clientComponent);
+        container.register(clientComponent, groupId);
         componentManager.register(clientComponent);
         connector.connect(sourceDefinition);
         targetComponent.start();
@@ -115,18 +117,18 @@ public class CallbackInvocationTestCase extends TestCase {
         JavaAtomicComponent targetComponent =
             (JavaAtomicComponent) builder.build(targetDefinition, context);
         targetComponent.setScopeContainer(container);
-        container.register(null, targetComponent);
+        container.register(targetComponent, groupId);
         componentManager.register(targetComponent);
 
         ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource(URI.create("client1"));
         ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource(URI.create("client2"));
         JavaAtomicComponent clientComponent1 = (JavaAtomicComponent) builder.build(sourceDefinition1, context);
         clientComponent1.setScopeContainer(container);
-        container.register(null, clientComponent1);
+        container.register(clientComponent1, groupId);
         componentManager.register(clientComponent1);
         JavaAtomicComponent clientComponent2 = (JavaAtomicComponent) builder.build(sourceDefinition2, context);
         clientComponent2.setScopeContainer(container);
-        container.register(null, clientComponent2);
+        container.register(clientComponent2, groupId);
         componentManager.register(clientComponent2);
 
         connector.connect(sourceDefinition1);
@@ -319,13 +321,16 @@ public class CallbackInvocationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        groupId = URI.create("composite");
         componentManager = new ComponentManagerImpl();
         connector = new ConnectorImpl(null, null, null, componentManager, scheduler, workContext);
         container = new CompositeScopeContainer(null);
         container.start();
+        container.createGroup(groupId);
+        container.startContext(groupId, groupId);
         context = createMock(DeploymentContext.class);
-        context.getCompositeScope();
-        expectLastCall().andReturn(container).anyTimes();
+        expect(context.getCompositeScope()).andStubReturn(container);
+        expect(context.getGroupId()).andStubReturn(groupId);
         replay(context);
 
         scheduler = createMock(WorkScheduler.class);
@@ -341,6 +346,7 @@ public class CallbackInvocationTestCase extends TestCase {
 
         builder = new JavaComponentBuilder();
         workContext = new WorkContextImpl();
+        workContext.setIdentifier(Scope.COMPOSITE, groupId);
         builder.setWorkContext(workContext);
         builder.setProxyService(new JDKProxyService(workContext));
     }

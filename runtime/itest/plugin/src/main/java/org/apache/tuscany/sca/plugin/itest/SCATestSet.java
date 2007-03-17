@@ -36,13 +36,19 @@ import org.apache.tuscany.spi.model.Operation;
 public class SCATestSet implements SurefireTestSet {
     private final MavenEmbeddedRuntime runtime;
     private final String name;
-    private final URI uri;
+    private final URI contextId;
+    private final URI componentId;
     private final Collection<? extends Operation<?>> operations;
 
-    public SCATestSet(MavenEmbeddedRuntime runtime, String name, URI uri, Collection<? extends Operation<?>> operations) {
+    public SCATestSet(MavenEmbeddedRuntime runtime, 
+                      String name,
+                      URI contextId,
+                      URI uri,
+                      Collection<? extends Operation<?>> operations) {
         this.runtime = runtime;
         this.name = name;
-        this.uri = uri;
+        this.contextId = contextId;
+        this.componentId = uri;
         this.operations = operations;
     }
 
@@ -51,7 +57,7 @@ public class SCATestSet implements SurefireTestSet {
             String operationName = operation.getName();
             reporterManager.testStarting(new ReportEntry(this, operationName, name));
             try {
-                runtime.executeTest(uri, operation);
+                runtime.executeTest(contextId, componentId, operation);
                 reporterManager.testSucceeded(new ReportEntry(this, operationName, name));
             } catch (Exception e) {
                 StackTraceWriter stw = new PojoStackTraceWriter(name, operationName, e);

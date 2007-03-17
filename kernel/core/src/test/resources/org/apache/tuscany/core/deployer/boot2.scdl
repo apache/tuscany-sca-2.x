@@ -56,11 +56,6 @@
             class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
     </component>
 
-    <!-- Scope infrastructure -->
-    <component name="scopeRegistry">
-        <system:implementation.system class="org.apache.tuscany.core.component.scope.ScopeRegistryImpl"/>
-    </component>
-
     <!-- Builder and BuilderRegistry -->
     <component name="builder">
         <system:implementation.system class="org.apache.tuscany.core.builder.BuilderRegistryImpl"/>

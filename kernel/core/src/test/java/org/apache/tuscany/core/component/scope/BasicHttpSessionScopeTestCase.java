@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.model.Scope;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class BasicHttpSessionScopeTestCase extends TestCase {
+public abstract class BasicHttpSessionScopeTestCase extends TestCase {
     private ScopeContainerMonitor monitor;
     private ScopeContainer scopeContainer;
     private AtomicComponent component;
@@ -156,9 +156,9 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         wrapper1.stop();
         control.replay();
 
-        scopeContainer.register(null, component1);
-        scopeContainer.register(null, component2);
-        scopeContainer.register(null, component3);
+        scopeContainer.register(component1, null);
+        scopeContainer.register(component2, null);
+        scopeContainer.register(component3, null);
         scopeContainer.onEvent(new HttpSessionStart(this, session));
         assertSame(wrapper1, scopeContainer.getWrapper(component1));
         assertSame(wrapper2, scopeContainer.getWrapper(component2));
@@ -185,7 +185,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         wrapper2.stop();
         control.replay();
 
-        scopeContainer.register(null, component1);
+        scopeContainer.register(component1, null);
         scopeContainer.onEvent(new HttpSessionStart(this, session));
         assertSame(wrapper1, scopeContainer.getWrapper(component1));
         scopeContainer.onEvent(new HttpSessionEnd(this, session));
@@ -208,7 +208,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
         component.addListener(scopeContainer);
         EasyMock.replay(component);
-        scopeContainer.register(null, component);
+        scopeContainer.register(component, null);
         EasyMock.reset(component);
     }
 }

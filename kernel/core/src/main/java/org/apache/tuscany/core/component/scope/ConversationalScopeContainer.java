@@ -65,8 +65,8 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         lifecycleState = STOPPED;
     }
 
-    public void register(Object groupId, AtomicComponent component) {
-        super.register(groupId, component);
+    public void register(AtomicComponent component, Object groupId) {
+        super.register(component, groupId);
         component.addListener(this);
     }
 

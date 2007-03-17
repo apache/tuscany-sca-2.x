@@ -42,7 +42,7 @@ import org.easymock.EasyMock;
  *
  * @version $$Rev: 471111 $$ $$Date: 2006-11-03 23:06:48 -0500 (Fri, 03 Nov 2006) $$
  */
-public class ConversationalScopeRestartTestCase extends TestCase {
+public abstract class ConversationalScopeRestartTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);

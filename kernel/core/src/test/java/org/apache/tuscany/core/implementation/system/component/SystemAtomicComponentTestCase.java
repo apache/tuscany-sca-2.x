@@ -39,6 +39,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
 
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
+    private URI groupId;
 
     public void testDestroy() throws Exception {
         PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null));
@@ -46,6 +47,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
         configuration.setInstanceFactory(factory);
         configuration.setDestroyInvoker(destroyInvoker);
         configuration.setName(new URI("foo"));
+        configuration.setGroupId(groupId);
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         Foo foo = (Foo) component.createInstance();
         component.destroy(foo);
@@ -62,6 +64,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
         configuration.addConstructorParamName("ref");
         configuration.addConstructorParamType(Foo.class);
         configuration.setName(new URI("foo"));
+        configuration.setGroupId(groupId);
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.addPropertyFactory("foo", new SingletonObjectFactory<String>("baz"));
         Foo target = new Foo();
@@ -81,6 +84,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
         super.setUp();
         initInvoker = new MethodEventInvoker<Object>(Foo.class.getMethod("init"));
         destroyInvoker = new MethodEventInvoker<Object>(Foo.class.getMethod("destroy"));
+        groupId = URI.create("composite");
     }
 
     protected void tearDown() throws Exception {

@@ -37,26 +37,12 @@ public class ScopeRegistryImpl implements ScopeRegistry {
     private final Map<Scope, ObjectFactory<? extends ScopeContainer>> factoryCache =
         new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
 
+    public void register(ScopeContainer container) {
+        scopeCache.put(container.getScope(), container);
+    }
+
     public ScopeContainer getScopeContainer(Scope scope) {
-        assert Scope.COMPOSITE != scope;
-        ScopeContainer container = scopeCache.get(scope);
-        if (container == null) {
-            ObjectFactory<? extends ScopeContainer> factory = factoryCache.get(scope);
-            if (factory != null) {
-                container = factory.getInstance();
-                container.start();
-                scopeCache.put(scope, container);
-            }
-        }
-        return container;
-    }
-
-    public <T extends ScopeContainer> void registerFactory(Scope scope, ObjectFactory<T> factory) {
-        factoryCache.put(scope, factory);
-    }
-
-    public void deregisterFactory(Scope scope) {
-        factoryCache.remove(scope);
+        return scopeCache.get(scope);
     }
 
 

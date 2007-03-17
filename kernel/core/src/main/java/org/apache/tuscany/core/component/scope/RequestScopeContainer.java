@@ -72,8 +72,8 @@ public class RequestScopeContainer extends AbstractScopeContainer {
         lifecycleState = STOPPED;
     }
 
-    public void register(Object groupId, AtomicComponent component) {
-        super.register(groupId, component);
+    public void register(AtomicComponent component, Object groupId) {
+        super.register(component, groupId);
         contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
     }
 

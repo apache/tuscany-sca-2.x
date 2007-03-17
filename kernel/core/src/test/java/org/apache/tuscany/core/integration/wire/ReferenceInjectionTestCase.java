@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -44,6 +45,9 @@ public class ReferenceInjectionTestCase extends TestCase {
     public void testProxiedReferenceInjection() throws Exception {
         ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
+        URI groupId = URI.create("composite");
+        scope.createGroup(groupId);
+        scope.startContext(groupId, groupId);
         Map<String, AtomicComponent> components = MockFactory.createWiredComponents("source",
             SourceImpl.class,
             scope,
