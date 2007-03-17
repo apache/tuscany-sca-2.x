@@ -36,7 +36,11 @@ public class SdclContributionForm extends TuscanyServlet {
     protected void process(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         PrintWriter writer = res.getWriter();
-        writer.println("Hi there");
+        writer.println("<form name='' action='scdlSubmit'>");
+        writer.println("<textarea name='scdl' cols='60' rows='40'></textarea>");
+        writer.println("<br/>");
+        writer.println("<input type='submit' value='Contribute SCDL'/>");
+        writer.println("</form>");
         writer.flush();
         writer.close();
 
