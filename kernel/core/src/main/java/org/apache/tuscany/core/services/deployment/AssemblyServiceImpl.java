@@ -20,29 +20,51 @@ package org.apache.tuscany.core.services.deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.apache.tuscany.spi.deployer.ChangeSetHandler;
+import org.apache.tuscany.spi.deployer.ChangeSetHandlerRegistry;
+import org.apache.tuscany.spi.generator.GeneratorRegistry;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.host.deployment.AssemblyService;
 import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
-import org.apache.tuscany.spi.deployer.ChangeSetHandlerRegistry;
-import org.apache.tuscany.spi.deployer.ChangeSetHandler;
-import org.apache.tuscany.spi.generator.GeneratorRegistry;
 
 /**
  * @version $Rev$ $Date$
  */
 public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerRegistry {
+    private static final URI DOMAIN_URI = URI.create("tuscany://domain");
     private final GeneratorRegistry generatorRegistry;
+    private final LoaderRegistry loaderRegistry;
+    private final AutowireResolver autowireResolver;
+    private final XMLInputFactory xmlFactory;
+    private ComponentDefinition<CompositeImplementation> domain;
 
-
-    public AssemblyServiceImpl(@Reference GeneratorRegistry generatorRegistry) {
+    public AssemblyServiceImpl(@Reference LoaderRegistry loaderRegistry,
+                               @Reference GeneratorRegistry generatorRegistry,
+                               @Reference AutowireResolver autowireResolver) {
+        this.loaderRegistry = loaderRegistry;
         this.generatorRegistry = generatorRegistry;
+        this.autowireResolver = autowireResolver;
+        xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
     }
 
     private final Map<String, ChangeSetHandler> registry = new HashMap<String, ChangeSetHandler>();
@@ -90,4 +112,18 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
     public void register(ChangeSetHandler handler) {
         registry.put(handler.getContentType(), handler);
     }
+
+    public void include(InputStream changeSet) throws DeploymentException {
+    }
+
+    private ComponentDefinition<CompositeImplementation> createDomain() {
+        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        CompositeImplementation impl = new CompositeImplementation();
+        impl.setComponentType(type);
+        // FIXME domain uri
+        domain = new ComponentDefinition<CompositeImplementation>(DOMAIN_URI, impl);
+        return domain;
+    }
+
 }
