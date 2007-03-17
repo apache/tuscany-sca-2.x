@@ -119,13 +119,19 @@ public class ConnectorImpl implements Connector {
         if (source == null) {
             throw new ComponentNotFoundException("Wire source component not found", baseSourceUri);
         }
-        Component target = componentManager.getComponent(baseTargetUri);
-        if (target == null) {
-            throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
-        }
         Wire wire = createWire(definition);
-        attacherRegistry.attach(source, target, wire, definition.getSource());
-        attacherRegistry.attach(target, wire, definition.getTarget());
+        if (baseTargetUri != null) {
+            Component target = componentManager.getComponent(baseTargetUri);
+            if (target == null) {
+                throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
+            }
+            attacherRegistry.attach(source, target, wire, definition.getSource());
+            attacherRegistry.attach(target, wire, definition.getTarget());
+        } else {
+            // bindings do not have a target
+            attacherRegistry.attach(source, null, wire, definition.getSource());
+            attacherRegistry.attach(null, wire, definition.getTarget());
+        }
     }
 
     public void connect(ComponentDefinition<? extends Implementation<?>> definition) throws WiringException {
