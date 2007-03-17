@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+    name="org.apache.tuscany.core.DataBinding">
+
+    <component name="databinding.wirePostProcessor" initLevel="50">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor" />
+    </component>
+
+    <component name="databinding.javaInterfaceProcessor">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceProcessor" />
+    </component>
+
+    <!-- [rfeng] HACK: Make sure the passByValue interceptor is added before the databinding interceptor -->
+    <!-- 
+        <component name="databinding.passByValueWirePostProcessor" initLevel="80">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.PassByValueWirePostProcessor" />
+        </component>
+    -->
+
+    <!-- DataBinding registry -->
+    <component name="databinding.registry">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataBindingRegistryImpl" />
+    </component>
+
+    <!-- DataBinding registry -->
+    <component name="databinding.mediator">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.MediatorImpl" />
+    </component>
+
+    <!-- Transformer registry -->
+    <component name="databinding.transformerRegistry" initLevel="90">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.TransformerRegistryImpl" />
+    </component>
+
+    <component name="dataType.loader">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.loader.DataTypeLoader" />
+    </component>
+
+    <component name="databinding.dom">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.DOMDataBinding" />
+    </component>
+
+    <component name="databinding.xmlString">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.XMLStringDataBinding" />
+    </component>
+
+    <!-- Group databindings -->
+    <component name="databinding.group.xml">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.XMLGroupDataBinding" />
+    </component>
+
+    <!-- Comment out the stax databinding as it's covered in the databinding.group.xml -->
+    <!-- 
+        <component name="databinding.stax">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.StAXDataBinding" />
+        </component>
+    -->
+    <component name="databinding.javabeans">
+        <system:implementation.system class="org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding" />
+    </component>
+
+    <!-- Transformers -->
+
+    <component name="transformer.Input2InputTransformer">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.transformers.Input2InputTransformer" />
+    </component>
+
+    <component name="transformer.Exception2ExceptionTransformer">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTransformer" />
+    </component>
+
+    <component name="transformer.Output2OutputTransformer">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.transformers.Output2OutputTransformer" />
+    </component>
+
+    <component name="transformer.Group2GroupTransformer">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.Group2GroupTransformer" />
+    </component>
+
+    <component name="transformer.InputSource2Node">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.InputSource2Node" />
+    </component>
+
+    <component name="transformer.InputSource2SAX">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.InputSource2SAX" />
+    </component>
+
+    <component name="transformer.InputStream2Node">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.InputStream2Node" />
+    </component>
+
+    <component name="transformer.InputStream2SAX">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.InputStream2SAX" />
+    </component>
+
+    <component name="transformer.DOMNode2JavaBean">
+        <system:implementation.system class="org.apache.tuscany.databinding.javabeans.DOMNode2JavaBeanTransformer" />
+    </component>
+
+    <component name="transformer.Node2OutputStream">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.Node2OutputStream" />
+    </component>
+
+    <component name="transformer.Node2String">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.Node2String" />
+    </component>
+
+    <component name="transformer.Node2Writer">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.Node2Writer" />
+    </component>
+
+    <component name="transformer.Node2XMLStreamReader">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.Node2XMLStreamReader" />
+    </component>
+
+    <component name="transformer.JavaBean2DOMNode">
+        <system:implementation.system class="org.apache.tuscany.databinding.javabeans.JavaBean2DOMNodeTransformer" />
+    </component>
+
+    <component name="transformer.Reader2Node">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.Reader2Node" />
+    </component>
+
+    <component name="transformer.Reader2SAX">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.Reader2SAX" />
+    </component>
+
+    <component name="transformer.SAX2DOMPipe">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.SAX2DOMPipe" />
+    </component>
+
+    <component name="transformer.Source2ResultTransformer">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.Source2ResultTransformer" />
+    </component>
+
+    <component name="transformer.StreamDataPipe">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.StreamDataPipe" />
+    </component>
+
+    <component name="transformer.String2Node">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.String2Node" />
+    </component>
+
+    <component name="transformer.String2SAX">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.String2SAX" />
+    </component>
+
+    <component name="transformer.String2XMLStreamReader">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.String2XMLStreamReader" />
+    </component>
+
+    <component name="transformer.Writer2ReaderDataPipe">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.Writer2ReaderDataPipe" />
+    </component>
+
+    <component name="transformer.XMLStreamReader2Node">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.XMLStreamReader2Node" />
+    </component>
+
+    <component name="transformer.XMLStreamReader2SAX">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.XMLStreamReader2SAX" />
+    </component>
+
+    <component name="transformer.XMLStreamReader2String">
+        <system:implementation.system class="org.apache.tuscany.databinding.xml.XMLStreamReader2String" />
+    </component>
+</composite>
