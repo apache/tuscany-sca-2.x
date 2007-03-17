@@ -18,11 +18,14 @@
  */
 package org.apache.tuscany.spi.generator;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ResourceDefinition;
 
 /**
  * A registry for generators
@@ -37,6 +40,8 @@ public interface GeneratorRegistry {
     void register(Class<?> clazz, BindingGenerator generator);
 
     void register(Class<?> clazz, InterceptorGenerator generator);
+
+    void register(Class<?> clazz, ResourceGenerator generator);
 
     /**
      * Generates a PhysicalComponentDefinition
@@ -70,5 +75,7 @@ public interface GeneratorRegistry {
                                                                                 BindingDefinition bindingDefinition,
                                                                                 GeneratorContext context)
         throws GenerationException;
+
+    URI generate(ResourceDefinition definition, GeneratorContext context) throws GenerationException;
 
 }

@@ -18,20 +18,25 @@
  */
 package org.apache.tuscany.spi.generator;
 
-import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
+import java.net.URI;
+
+import org.apache.tuscany.spi.model.ResourceDefinition;
 
 /**
- * A context used during generation of physical definitions
+ * Implementations generate physical resource definitions
  *
  * @version $Rev$ $Date$
  */
-public interface GeneratorContext {
+public interface ResourceGenerator {
 
     /**
-     * Returns the current changeset.
+     * Updates the change set with a physical resource definition
      *
-     * @return the current changeset
+     * @param definition the logical resource definition to generate the physical definition from
+     * @param context    the current generator context
+     * @return the id of the physical resource
+     * @throws GenerationException if an error is encountered updating the change set
      */
-    PhysicalChangeSet getPhysicalChangeSet();
+    URI generate(ResourceDefinition definition, GeneratorContext context) throws GenerationException;
 
 }

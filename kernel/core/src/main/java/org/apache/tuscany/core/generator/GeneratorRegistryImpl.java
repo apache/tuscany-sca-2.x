@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.generator;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,12 +30,14 @@ import org.apache.tuscany.spi.generator.GenerationException;
 import org.apache.tuscany.spi.generator.GeneratorContext;
 import org.apache.tuscany.spi.generator.GeneratorRegistry;
 import org.apache.tuscany.spi.generator.InterceptorGenerator;
+import org.apache.tuscany.spi.generator.ResourceGenerator;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ResourceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
@@ -56,12 +59,18 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     private Map<Class<?>, InterceptorGenerator> interceptorGenerators =
         new ConcurrentHashMap<Class<?>, InterceptorGenerator>();
 
+    private Map<Class<?>, ResourceGenerator> resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceGenerator>();
+
     public void register(Class<?> clazz, BindingGenerator generator) {
         bindingGenerators.put(clazz, generator);
     }
 
     public void register(Class<?> clazz, InterceptorGenerator generator) {
         interceptorGenerators.put(clazz, generator);
+    }
+
+    public void register(Class<?> clazz, ResourceGenerator generator) {
+        resourceGenerators.put(clazz, generator);
     }
 
     public void register(Class<?> clazz,
@@ -168,6 +177,16 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         context.getPhysicalChangeSet().addWireDefinition(wireDefinition);
     }
 
+    public URI generate(ResourceDefinition definition, GeneratorContext context) throws GenerationException {
+        Class<?> type = definition.getClass();
+        ResourceGenerator generator = resourceGenerators.get(type);
+        if (generator == null) {
+            throw new GeneratorNotFoundException(type);
+        }
+        return generator.generate(definition, context);
+    }
+
+
     @SuppressWarnings({"unchecked"})
     private PhysicalOperationDefinition mapOperation(Operation o) {
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
@@ -208,4 +227,6 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         }
         return wireDefinition;
     }
+
+
 }

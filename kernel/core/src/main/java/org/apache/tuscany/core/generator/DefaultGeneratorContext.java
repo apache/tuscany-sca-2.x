@@ -16,22 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.generator;
+package org.apache.tuscany.core.generator;
 
+import java.net.URI;
+
+import org.apache.tuscany.spi.generator.GeneratorContext;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 
 /**
- * A context used during generation of physical definitions
+ * The default implementation of a GeneratorContext
  *
  * @version $Rev$ $Date$
  */
-public interface GeneratorContext {
+public class DefaultGeneratorContext implements GeneratorContext {
+    private PhysicalChangeSet changeSet;
 
-    /**
-     * Returns the current changeset.
-     *
-     * @return the current changeset
-     */
-    PhysicalChangeSet getPhysicalChangeSet();
 
+    public DefaultGeneratorContext(PhysicalChangeSet changeSet) {
+        this.changeSet = changeSet;
+    }
+
+    public PhysicalChangeSet getPhysicalChangeSet() {
+        return changeSet;
+    }
 }

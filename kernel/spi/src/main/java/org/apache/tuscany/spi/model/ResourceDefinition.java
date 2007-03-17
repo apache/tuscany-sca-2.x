@@ -16,22 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.generator;
-
-import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
+package org.apache.tuscany.spi.model;
 
 /**
- * A context used during generation of physical definitions
+ * Represents a resource definition. Resources are provisioned to runtime nodes.
  *
  * @version $Rev$ $Date$
  */
-public interface GeneratorContext {
-
-    /**
-     * Returns the current changeset.
-     *
-     * @return the current changeset
-     */
-    PhysicalChangeSet getPhysicalChangeSet();
-
+public class ResourceDefinition {
 }
