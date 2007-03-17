@@ -48,7 +48,7 @@ public class WireAttacherRegistryTestCase extends TestCase {
             EasyMock.isA(Wire.class),
             EasyMock.isA(PhysicalWireSourceDefinition.class));
         EasyMock.replay(attacher);
-        registry.register(source.getClass(), attacher);
+        registry.register(PhysicalWireSourceDefinition.class, attacher);
         registry.attach(source, target, wire, new PhysicalWireSourceDefinition());
         EasyMock.verify(attacher);
     }
@@ -65,7 +65,7 @@ public class WireAttacherRegistryTestCase extends TestCase {
             EasyMock.isA(PhysicalWireTargetDefinition.class));
         EasyMock.replay(attacher);
 
-        registry.register(component.getClass(), attacher);
+        registry.register(PhysicalWireTargetDefinition.class, attacher);
         registry.attach(component, wire, new PhysicalWireTargetDefinition());
         EasyMock.verify(attacher);
     }

@@ -77,7 +77,7 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
 
     /**
      * Adds a constructor injection name.
-     * @param constructorName Constructor injection name.
+     * @param cdiSource Constructor injection name.
      */
     public void addCdiSource(InjectionSource cdiSource) {
         cdiSources.add(cdiSource);
@@ -141,7 +141,7 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
 
     /**
      * Adds an injection site.
-     * @param injectionSiteInjection site.
+     * @param injectionSite site.
      */
     public void addInjectionSite(InjectionSiteMapping injectionSite) {
         injectionSites.add(injectionSite);

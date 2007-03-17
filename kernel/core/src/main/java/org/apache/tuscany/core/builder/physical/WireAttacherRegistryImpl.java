@@ -55,7 +55,7 @@ public class WireAttacherRegistryImpl implements WireAttacherRegistry {
                                                                                         Wire wire,
                                                                                         PWSD definition)
         throws WiringException {
-        Class<? extends Component> type = source.getClass();
+        Class<?> type = definition.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
             throw new WireAttacherNotFound(type, source.getUri(), wire.getTargetUri());
@@ -68,7 +68,7 @@ public class WireAttacherRegistryImpl implements WireAttacherRegistry {
                                                                                         Wire wire,
                                                                                         PWTD target)
         throws WiringException {
-        Class<? extends Component> type = component.getClass();
+        Class<?> type = target.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
             throw new WireAttacherNotFound(type, component.getUri(), target.getUri());
