@@ -25,16 +25,26 @@ import java.net.URLConnection;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.host.deployment.AssemblyService;
 import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
 import org.apache.tuscany.spi.deployer.ChangeSetHandlerRegistry;
 import org.apache.tuscany.spi.deployer.ChangeSetHandler;
+import org.apache.tuscany.spi.generator.GeneratorRegistry;
 
 /**
  * @version $Rev$ $Date$
  */
 public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerRegistry {
+    private final GeneratorRegistry generatorRegistry;
+
+
+    public AssemblyServiceImpl(@Reference GeneratorRegistry generatorRegistry) {
+        this.generatorRegistry = generatorRegistry;
+    }
+
     private final Map<String, ChangeSetHandler> registry = new HashMap<String, ChangeSetHandler>();
 
     public void applyChanges(URL changeSet) throws DeploymentException, IOException {
