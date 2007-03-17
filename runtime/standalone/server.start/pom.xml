@@ -47,12 +47,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.services</groupId>
-            <artifactId>http-jetty</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
