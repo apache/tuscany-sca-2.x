@@ -25,8 +25,10 @@ import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
 import org.apache.tuscany.spi.generator.GeneratorRegistry;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
 import org.easymock.classextension.EasyMock;
 
@@ -91,9 +93,13 @@ public class AssemblyServiceImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.replay(registry);
-        service = new AssemblyServiceImpl(registry);
+        LoaderRegistry loaderRegistry = EasyMock.createMock(LoaderRegistry.class);
+        EasyMock.replay(loaderRegistry);
+        GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
+        EasyMock.replay(generatorRegistry);
+        AutowireResolver resolver = EasyMock.createMock(AutowireResolver.class);
+        EasyMock.replay(resolver);
+        service = new AssemblyServiceImpl(loaderRegistry, generatorRegistry, resolver);
     }
 
     private static class MockURLStreamHandler extends URLStreamHandler {
