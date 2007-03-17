@@ -1,6 +1,7 @@
 package org.apache.tuscany.sca.console.handler.scdl;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,9 @@ import org.osoa.sca.annotations.Reference;
 
 @SuppressWarnings("serial")
 public class SdclContributionHandler extends TuscanyServlet {
+    
+    // SCDL query parameter
+    private static final String SCDL_PARAM = "scdl";
     
     /**
      * Injects the servlet host and path mapping.
@@ -32,7 +36,12 @@ public class SdclContributionHandler extends TuscanyServlet {
      * @throws ServletException Servlet exception.
      * @throws IOException IO Exception.
      */
-    protected void process(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
+    protected void process(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+        PrintWriter writer = res.getWriter();
+        writer.println("Got SCDL" + req.getParameter(SCDL_PARAM));
+        writer.flush();
+        writer.close();
         
     }
 
