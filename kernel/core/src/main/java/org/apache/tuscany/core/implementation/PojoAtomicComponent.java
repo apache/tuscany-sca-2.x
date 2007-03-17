@@ -88,6 +88,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         super(configuration.getName(),
             configuration.getProxyService(),
             configuration.getWorkContext(),
+            configuration.getGroupId(),
             configuration.getInitLevel(),
             configuration.getMaxIdleTime(),
             configuration.getMaxAge());
@@ -129,7 +130,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public Object getTargetInstance() throws TargetResolutionException {
-        InstanceWrapper wrapper = scopeContainer.getWrapper(this);
+        InstanceWrapper wrapper = scopeContainer.getWrapper(this, groupId);
         if (!wrapper.isStarted()) {
             wrapper.start();
         }

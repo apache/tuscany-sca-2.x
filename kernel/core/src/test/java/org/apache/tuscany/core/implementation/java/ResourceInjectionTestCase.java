@@ -45,6 +45,7 @@ public class ResourceInjectionTestCase extends TestCase {
         Field field = Foo.class.getDeclaredField("resource");
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName(new URI("component"));
+        configuration.setGroupId(URI.create("composite"));
         configuration.setInstanceFactory(new PojoObjectFactory<Foo>(ctor));
         configuration.addResourceSite("bar", field);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
@@ -71,6 +72,7 @@ public class ResourceInjectionTestCase extends TestCase {
         Constructor<FooConstructor> ctor = FooConstructor.class.getConstructor(String.class);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName(new URI("component"));
+        configuration.setGroupId(URI.create("composite"));
         configuration.setInstanceFactory(new PojoObjectFactory<FooConstructor>(ctor));
         List<String> ctorNames = new ArrayList<String>();
         ctorNames.add("bar");

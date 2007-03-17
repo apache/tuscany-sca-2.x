@@ -94,6 +94,7 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
         configuration.setProxyService(proxyService);
         configuration.setWorkContext(workContext);
         configuration.setImplementationClass(implClass);
+        configuration.setGroupId(deployment.getGroupId());
 
         // setup property injection sites
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {

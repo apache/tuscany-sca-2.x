@@ -37,7 +37,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class RequestScopeRestartTestCase extends TestCase {
+public abstract class RequestScopeRestartTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         WorkContext ctx = new WorkContextImpl();

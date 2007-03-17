@@ -40,15 +40,16 @@ import org.easymock.EasyMock;
  */
 public class PojoAtomicComponentTestCase extends TestCase {
     private PojoConfiguration config;
+    private URI groupId;
 
     @SuppressWarnings({"unchecked"})
     public void testNoCallbackWires() throws Exception {
+        AtomicComponent component = new TestAtomicComponent(config);
         ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
         EasyMock.expect(container.getScope()).andReturn(Scope.CONVERSATION);
-        container.register(EasyMock.isNull(), EasyMock.isA(AtomicComponent.class));
+        container.register(component, groupId);
         EasyMock.replay(container);
         config.addCallbackSite("callback", Foo.class.getMethod("setCallback", Object.class));
-        AtomicComponent component = new TestAtomicComponent(config);
         component.setScopeContainer(container);
         component.start();
         EasyMock.verify(container);
@@ -119,6 +120,8 @@ public class PojoAtomicComponentTestCase extends TestCase {
         config = new PojoConfiguration();
         config.setInstanceFactory(factory);
         config.setName(URI.create("foo"));
+        groupId = URI.create("parent");
+        config.setGroupId(groupId);
     }
 
     private class TestAtomicComponent extends PojoAtomicComponent {

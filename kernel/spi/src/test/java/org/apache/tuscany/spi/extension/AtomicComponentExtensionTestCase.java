@@ -66,7 +66,7 @@ public class AtomicComponentExtensionTestCase extends TestCase {
     private static class TestExtension extends AtomicComponentExtension {
 
         public TestExtension(URI uri) {
-            super(uri, null, null, 0, -1, -1);
+            super(uri, null, null, URI.create("composite"), 0, -1, -1);
         }
 
         public TargetInvoker createTargetInvoker(String targetName, Operation operation)

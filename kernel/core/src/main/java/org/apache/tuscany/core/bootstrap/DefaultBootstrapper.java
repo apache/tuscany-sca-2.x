@@ -25,7 +25,6 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
@@ -38,9 +37,8 @@ import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.binding.local.LocalBindingLoader;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.CompositeScopeObjectFactory;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.idl.java.InterfaceJavaLoader;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -88,6 +86,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private final ComponentManager componentManager;
     private final AutowireResolver resolver;
     private final Connector connector;
+    private final ScopeRegistry scopeRegistry;
 
     /**
      * Create a default bootstrapper.
@@ -97,18 +96,21 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @param componentManager the component manager for the runtime instance
      * @param resolver         the autowire resolver for the runtime instance
      * @param connector        the connector for the runtime instance
+     * @param scopeRegistry    the scope registry for the runtime instance
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
                                XMLInputFactory xmlFactory,
                                ComponentManager componentManager,
                                AutowireResolver resolver,
-                               Connector connector
+                               Connector connector,
+                               ScopeRegistry scopeRegistry
     ) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = xmlFactory;
         this.componentManager = componentManager;
         this.resolver = resolver;
         this.connector = connector;
+        this.scopeRegistry = scopeRegistry;
     }
 
     /**
@@ -126,13 +128,13 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @return the primordial deployer
      */
     public Deployer createDeployer() {
-        ScopeRegistry scopeRegistry = createScopeRegistry(new WorkContextImpl());
         Builder builder = createBuilder(scopeRegistry);
         JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new PropertyObjectFactoryImpl(), introspector);
         DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, componentManager, resolver, connector);
         deployer.setMonitor(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
+        deployer.setScopeRegistry(scopeRegistry);
         return deployer;
     }
 
@@ -140,12 +142,14 @@ public class DefaultBootstrapper implements Bootstrapper {
      * Create a basic ScopeRegistry containing the ScopeContainers that are available to components in the system
      * definition. The implementation returned only support COMPOSITE scope.
      *
-     * @param workContext the WorkContext the scopes should use
      * @return a new ScopeRegistry
      */
-    public ScopeRegistry createScopeRegistry(WorkContext workContext) {
+    public ScopeRegistry createScopeRegistry() {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
-        new CompositeScopeObjectFactory(scopeRegistry, monitorFactory.getMonitor(ScopeContainerMonitor.class));
+        CompositeScopeContainer scopeContainer =
+            new CompositeScopeContainer(monitorFactory.getMonitor(ScopeContainerMonitor.class));
+        scopeContainer.start();
+        scopeRegistry.register(scopeContainer);
         return scopeRegistry;
     }
 

@@ -37,7 +37,7 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
+public abstract class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     private ConversationalScopeContainer container;
     private WorkContext context;
 
@@ -54,7 +54,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.expect(component.getMaxAge()).andReturn(600000L).atLeastOnce();
         EasyMock.replay(component);
 
-        container.register(null, component);
+        container.register(component, null);
         assertSame(wrapper, container.getWrapper(component));
         EasyMock.verify(component);
         EasyMock.verify(wrapper);
@@ -68,7 +68,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         component.addListener(EasyMock.eq(container));
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.replay(component);
-        container.register(null, component);
+        container.register(component, null);
         InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
         InstanceWrapper fooWrapper2 = EasyMock.createMock(InstanceWrapper.class);
         container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
@@ -86,7 +86,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         component.addListener(EasyMock.eq(container));
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.replay(component);
-        container.register(null, component);
+        container.register(component, null);
         InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
         container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
         assertEquals(fooWrapper, container.getWrapper(component));
@@ -103,7 +103,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.expect(component.getUri()).andReturn(URI.create("foo")).atLeastOnce();
         EasyMock.replay(component);
-        container.register(null, component);
+        container.register(component, null);
         InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
         container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
         assertEquals(fooWrapper, container.getWrapper(component));
@@ -131,7 +131,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
         EasyMock.replay(component);
 
-        container.register(null, component);
+        container.register(component, null);
         InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
         container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);
         assertEquals(fooWrapper, container.getWrapper(component));
@@ -149,7 +149,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         component.addListener(EasyMock.eq(container));
         EasyMock.replay(component);
-        container.register(null, component);
+        container.register(component, null);
 
         InstanceWrapper fooWrapper = EasyMock.createMock(InstanceWrapper.class);
         container.persistNew(component, id, fooWrapper, System.currentTimeMillis() + 100000);

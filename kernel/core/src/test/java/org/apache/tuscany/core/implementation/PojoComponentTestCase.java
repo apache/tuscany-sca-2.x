@@ -67,7 +67,7 @@ public class PojoComponentTestCase<T> extends TestCase {
     public void testLifecycleAndWrapperCreation() {
         // test start method creates the factory
         expect(provider.createFactory()).andReturn(instanceFactory);
-        scopeContainer.register(null, component);
+        scopeContainer.register(component, null);
         replay(provider, instanceFactory, wrapper, scopeContainer);
         component.start();
         verify(provider, instanceFactory, wrapper, scopeContainer);

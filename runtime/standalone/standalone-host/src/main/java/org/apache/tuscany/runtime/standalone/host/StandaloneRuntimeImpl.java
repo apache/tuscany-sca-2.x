@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -33,6 +35,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
@@ -80,7 +83,16 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
             for (Component component : components) {
                 component.start();
             }
-            return run(impl, args, compositeBase);
+            ScopeRegistry scopeRegistry = getScopeRegistry();
+            ScopeContainer<URI, URI> container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+            container.startContext(compositeUri, compositeUri);
+            getWorkContext().setIdentifier(Scope.COMPOSITE, compositeUri);
+            try {
+                return run(impl, args, compositeBase);
+            } finally {
+                container.stopContext(compositeUri);
+                getWorkContext().setIdentifier(Scope.COMPOSITE, null);
+            }
         } catch (Exception e) {
             monitor.runError(e);
         }

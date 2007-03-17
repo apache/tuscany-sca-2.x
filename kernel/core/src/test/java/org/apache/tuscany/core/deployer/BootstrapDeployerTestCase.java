@@ -28,6 +28,8 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -48,6 +50,8 @@ import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
+import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
@@ -159,8 +163,15 @@ public class BootstrapDeployerTestCase extends TestCase {
         JavaServiceContract<ComponentManager> contract = registry.introspect(ComponentManager.class);
         manager.registerJavaObject(URI.create("ComponentManager"), contract, manager);
         NullMonitorFactory monitorFactory = new NullMonitorFactory();
+
+        ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
+        CompositeScopeContainer scopeContainer =
+            new CompositeScopeContainer(monitorFactory.getMonitor(ScopeContainerMonitor.class));
+        scopeContainer.start();
+        scopeRegistry.register(scopeContainer);
+
         Bootstrapper bootstrapper =
-            new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, connector);
+            new DefaultBootstrapper(monitorFactory, xmlFactory, manager, resolver, connector, scopeRegistry);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
         deploymentContext = new RootDeploymentContext(null, null, componentId, xmlFactory, null, false);
         implementation = new SystemCompositeImplementation();

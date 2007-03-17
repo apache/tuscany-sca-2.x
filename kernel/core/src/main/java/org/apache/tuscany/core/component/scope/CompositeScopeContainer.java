@@ -18,157 +18,32 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.spi.ObjectCreationException;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Service;
+
+import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
-
-import org.apache.tuscany.core.component.event.ComponentStart;
-import org.apache.tuscany.core.component.event.ComponentStop;
 
 /**
  * A scope context which manages atomic component instances keyed by composite
  *
  * @version $Rev$ $Date$
  */
-public class CompositeScopeContainer extends AbstractScopeContainer {
-    private static final InstanceWrapper EMPTY = new EmptyWrapper();
-    private static final ComponentInitComparator COMPARATOR = new ComponentInitComparator();
-
-    private final Map<AtomicComponent, InstanceWrapper> instanceWrappers;
-    // the queue of instanceWrappers to destroy, in the order that their instances were created
-    private final List<InstanceWrapper> destroyQueue;
-
-    public CompositeScopeContainer(ScopeContainerMonitor monitor) {
-        super(Scope.COMPOSITE, null, monitor);
-        instanceWrappers = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
-        destroyQueue = new ArrayList<InstanceWrapper>();
-    }
-
-    public void onEvent(Event event) {
-        checkInit();
-        if (event instanceof ComponentStart) {
-            try {
-                eagerInitComponents();
-            } catch (ObjectCreationException e) {
-                monitor.eagerInitializationError(e);
-            } catch (TargetResolutionException e) {
-                monitor.eagerInitializationError(e);
-            }
-            lifecycleState = RUNNING;
-        } else if (event instanceof ComponentStop) {
-            shutdownContexts();
-        }
-    }
-
-    public synchronized void start() {
-        if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
-            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
-        }
-        lifecycleState = RUNNING;
-    }
-
-    public synchronized void stop() {
-        checkInit();
-        instanceWrappers.clear();
-        synchronized (destroyQueue) {
-            destroyQueue.clear();
-        }
-        lifecycleState = STOPPED;
-    }
-
-    /**
-     * Notifies instanceWrappers of a shutdown in reverse order to which they were started
-     */
-    private void shutdownContexts() {
-        if (destroyQueue.size() == 0) {
-            return;
-        }
-        synchronized (destroyQueue) {
-            // shutdown destroyable instances in reverse instantiation order
-            ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
-            while (iter.hasPrevious()) {
-                try {
-                    iter.previous().stop();
-                } catch (TargetDestructionException e) {
-                    monitor.destructionError(e);
-                }
-            }
-            destroyQueue.clear();
-        }
-    }
-
-    public void register(Object groupId, AtomicComponent component) {
-        super.register(groupId, component);
-        instanceWrappers.put(component, EMPTY);
-    }
-
-
-    public void unregister(AtomicComponent component) {
-        // FIXME should this component be destroyed already?
-        instanceWrappers.remove(component);
-        super.unregister(component);
-    }
-
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
-        throws TargetResolutionException {
-        checkInit();
-        InstanceWrapper ctx = instanceWrappers.get(component);
-        assert ctx != null;
-        if (ctx == EMPTY && !create) {
-            return null;
-        }
-        if (ctx == EMPTY) {
-            ctx = component.createInstanceWrapper();
-            ctx.start();
-            instanceWrappers.put(component, ctx);
-            synchronized (destroyQueue) {
-                destroyQueue.add(ctx);
-            }
-        }
-        return ctx;
-    }
-
-    private void eagerInitComponents() throws ObjectCreationException, TargetResolutionException {
-        List<AtomicComponent> componentList = new ArrayList<AtomicComponent>(instanceWrappers.keySet());
-        Collections.sort(componentList, COMPARATOR);
-        // start each group
-        for (AtomicComponent component : componentList) {
-            if (component.getInitLevel() <= 0) {
-                // Don't eagerly init
-                continue;
-            }
-            // the instance could have been created from a depth-first traversal
-            InstanceWrapper ctx = instanceWrappers.get(component);
-            if (ctx == EMPTY) {
-                ctx = component.createInstanceWrapper();
-                ctx.start();
-                instanceWrappers.put(component, ctx);
-                destroyQueue.add(ctx);
-            }
-        }
-    }
-
-    private static class ComponentInitComparator implements Comparator<AtomicComponent> {
-        public int compare(AtomicComponent o1, AtomicComponent o2) {
-            return o1.getInitLevel() - o2.getInitLevel();
-        }
-    }
-
-    private static class EmptyWrapper implements InstanceWrapper {
+@EagerInit
+@Service(ScopeContainer.class)
+public class CompositeScopeContainer<GROUP, KEY> extends AbstractScopeContainer<GROUP, KEY> {
+    private static final InstanceWrapper<Object> EMPTY = new InstanceWrapper<Object>() {
         public Object getInstance() {
             return null;
         }
@@ -184,5 +59,55 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
         public void stop() throws TargetDestructionException {
 
         }
+    };
+
+    // there is one instance per component so we can index directly
+    private final Map<AtomicComponent<?>, InstanceWrapper<?>> instanceWrappers =
+        new ConcurrentHashMap<AtomicComponent<?>, InstanceWrapper<?>>();
+
+    public CompositeScopeContainer(@Monitor ScopeContainerMonitor monitor) {
+        super(Scope.COMPOSITE, monitor);
+    }
+
+    public <T> void register(AtomicComponent<T> component, GROUP groupId) {
+        super.register(component, groupId);
+        instanceWrappers.put(component, EMPTY);
+    }
+
+    public <T> void unregister(AtomicComponent<T> component) {
+        // FIXME should this component be destroyed already or do we need to stop it?
+        instanceWrappers.remove(component);
+        super.unregister(component);
+    }
+
+    public synchronized void stop() {
+        super.stop();
+        instanceWrappers.clear();
+    }
+
+    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId)
+        throws TargetResolutionException {
+        assert instanceWrappers.containsKey(component);
+        @SuppressWarnings("unchecked")
+        InstanceWrapper<T> wrapper = (InstanceWrapper<T>) instanceWrappers.get(component);
+        if (wrapper == EMPTY) {
+            // FIXME is there a potential race condition here that may result in two instances being created
+            wrapper = createInstance(component);
+            instanceWrappers.put(component, wrapper);
+            wrapper.start();
+            destroyQueues.get(contextId).add(wrapper);
+        }
+        return wrapper;
+    }
+
+    public <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent<T> component, KEY contextId)
+        throws TargetResolutionException {
+        assert instanceWrappers.containsKey(component);
+        @SuppressWarnings("unchecked")
+        InstanceWrapper<T> wrapper = (InstanceWrapper<T>) instanceWrappers.get(component);
+        if (wrapper == EMPTY) {
+            throw new TargetNotFoundException(component.getUri().toString());
+        }
+        return wrapper;
     }
 }

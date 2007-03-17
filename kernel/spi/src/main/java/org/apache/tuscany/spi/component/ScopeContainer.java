@@ -56,11 +56,28 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
     void removeGroup(GROUP groupId);
 
     /**
+     * Registers a component with the scope.
+     *
+     * @param component the component to register
+     * @param groupId the id of the group to associate this component with
+     */
+    <T> void register(AtomicComponent<T> component, GROUP groupId);
+
+    /**
+     * Unregisters a component with the scope.
+     *
+     * @param component the component to unregister
+     */
+    <T> void unregister(AtomicComponent<T> component);
+
+    /**
      * Start a new context with the supplied ID.
      *
      * @param contextId an ID that uniquely identifies the context.
+     * @param groupId the group of components to associate with this context
+     * @throws GroupInitializationException if an exception was thrown by any eagerInit component
      */
-    void startContext(KEY contextId);
+    void startContext(KEY contextId, GROUP groupId) throws GroupInitializationException;
 
     /**
      * Stop the context with the supplied ID.
@@ -68,21 +85,6 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
      * @param contextId an ID that uniquely identifies the context.
      */
     void stopContext(KEY contextId);
-
-    /**
-     * Registers a component with the scope.
-     *
-     * @param groupId the id for the group that this component is associated with
-     * @param component the component to register
-     */
-    void register(GROUP groupId, AtomicComponent component);
-
-    /**
-     * Unregisters a component with the scope.
-     *
-     * @param component the component to unregister
-     */
-    void unregister(AtomicComponent component);
 
     /**
      * Returns an instance wrapper associated with the current scope context, creating one if necessary
@@ -93,7 +95,7 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
-    <T> InstanceWrapper<T> getWrapper(AtomicComponent component, KEY contextId) throws TargetResolutionException;
+    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId) throws TargetResolutionException;
 
     /**
      * Returns an implementation instance associated with the current scope context.
@@ -105,7 +107,7 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
-    <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component, KEY contextId)
+    <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent<T> component, KEY contextId)
         throws TargetResolutionException;
 
     /**
@@ -117,7 +119,7 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
      * @param wrapper the wrapper for the target instance being returned
      * @throws TargetDestructionException if there was a problem returning the target instance
      */
-    <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper, KEY contextId)
+    <T> void returnWrapper(AtomicComponent<T> component, InstanceWrapper<T> wrapper, KEY contextId)
         throws TargetDestructionException;
 
     /**
@@ -160,5 +162,5 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
      * @param component the owning component
      * @throws PersistenceException if there was a problem removing the instance
      */
-    void remove(AtomicComponent component) throws PersistenceException;
+    <T> void remove(AtomicComponent<T> component) throws PersistenceException;
 }

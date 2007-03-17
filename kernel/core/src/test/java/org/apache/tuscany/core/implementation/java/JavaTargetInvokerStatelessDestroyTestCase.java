@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
@@ -32,15 +33,16 @@ public class JavaTargetInvokerStatelessDestroyTestCase extends TestCase {
     private ScopeContainer scopeContainer;
     private InstanceWrapper wrapper;
     private Method echoMethod;
+    private WorkContext workContext;
 
     public void testDestroy() throws Exception {
-        EasyMock.expect(scopeContainer.getWrapper(component)).andReturn(wrapper);
+        EasyMock.expect(scopeContainer.getWrapper(component, null)).andReturn(wrapper);
         EasyMock.expect(wrapper.getInstance()).andReturn(new Echo());
-        scopeContainer.returnWrapper(component, wrapper);
+        scopeContainer.returnWrapper(component, wrapper, null);
         EasyMock.replay(component);
         EasyMock.replay(scopeContainer);
         EasyMock.replay(wrapper);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, scopeContainer, null);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, scopeContainer, workContext);
         invoker.setCacheable(false);
         assertEquals("foo", invoker.invokeTarget("foo", JavaTargetInvoker.NONE));
         EasyMock.verify(component);
@@ -53,8 +55,11 @@ public class JavaTargetInvokerStatelessDestroyTestCase extends TestCase {
         echoMethod = Echo.class.getDeclaredMethod("echo", String.class);
         component = EasyMock.createMock(JavaAtomicComponent.class);
         scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
-        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.STATELESS);
+        EasyMock.expect(scopeContainer.getScope()).andStubReturn(Scope.STATELESS);
         wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
+        workContext = EasyMock.createMock(WorkContext.class);
+        EasyMock.expect(workContext.getIdentifier(Scope.STATELESS)).andStubReturn(null);
+        EasyMock.replay(workContext);
     }
 
     public static class Echo {

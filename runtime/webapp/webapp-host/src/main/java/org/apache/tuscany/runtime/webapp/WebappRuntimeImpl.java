@@ -32,9 +32,13 @@ import org.apache.tuscany.runtime.webapp.implementation.webapp.WebappComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.GroupInitializationException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 
 /**
@@ -132,8 +136,16 @@ public class WebappRuntimeImpl extends AbstractRuntime<WebappRuntimeInfo> implem
             component.start();
         }
 
-        compositeId = URI.create(compositeId.toString()+'/');
-        componentId = compositeId.resolve(componentId);
+        try {
+            ScopeRegistry scopeRegistry = getScopeRegistry();
+            ScopeContainer<URI, URI> container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+            container.startContext(compositeId, compositeId);
+            getWorkContext().setIdentifier(Scope.COMPOSITE, compositeId);
+        } catch (GroupInitializationException e) {
+            throw new InitializationException(e);
+        }
+
+        componentId = URI.create(compositeId.toString()+'/').resolve(componentId);
         Component component = getComponentManager().getComponent(componentId);
         if (component == null) {
             throw new TuscanyInitException("No component found with id " + componentId, componentId.toString());

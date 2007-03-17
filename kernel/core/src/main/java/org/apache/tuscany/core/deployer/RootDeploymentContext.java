@@ -67,4 +67,8 @@ public class RootDeploymentContext extends AbstractDeploymentContext {
     public ScopeContainer getCompositeScope() {
         return scopeContainer;
     }
+
+    public URI getGroupId() {
+        return getComponentId();
+    }
 }

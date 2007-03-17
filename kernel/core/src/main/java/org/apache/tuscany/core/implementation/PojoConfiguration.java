@@ -57,6 +57,7 @@ public class PojoConfiguration {
     private long maxIdleTime = -1;
     private long maxAge = -1;
     private Class implementationClass;
+    private URI groupId;
 
     public URI getName() {
         return name;
@@ -106,6 +107,14 @@ public class PojoConfiguration {
 
     public void addConstructorParamType(Class<?> type) {
         constructorParamTypes.add(type);
+    }
+
+    public URI getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(URI groupId) {
+        this.groupId = groupId;
     }
 
     public int getInitLevel() {

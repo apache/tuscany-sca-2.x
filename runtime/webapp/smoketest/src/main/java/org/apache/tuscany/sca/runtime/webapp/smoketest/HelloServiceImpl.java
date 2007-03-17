@@ -19,10 +19,12 @@
 package org.apache.tuscany.sca.runtime.webapp.smoketest;
 
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
  */
+@Scope("COMPOSITE")
 public class HelloServiceImpl implements HelloService {
     private final String greeting;
 

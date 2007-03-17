@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
@@ -36,8 +35,5 @@ public interface ScopeRegistry {
      */
     ScopeContainer getScopeContainer(Scope scope);
 
-    <T extends ScopeContainer> void registerFactory(Scope scope, ObjectFactory<T> factory);
-
-    void deregisterFactory(Scope scope);
-
+    void register(ScopeContainer container);
 }

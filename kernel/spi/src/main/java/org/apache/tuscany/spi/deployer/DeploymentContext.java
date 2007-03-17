@@ -59,7 +59,14 @@ public interface DeploymentContext {
      *
      * @return the ScopeContainer for the COMPOSITE scope that will be associated with this deployment unit
      */
+    @Deprecated
     ScopeContainer getCompositeScope();
+
+    /**
+     * Returns the URI of the composite scope group.
+     * @return the URI of the composite scope group
+     */
+    URI getGroupId();
 
     /**
      * Returns the location of the SCDL definition being deployed.

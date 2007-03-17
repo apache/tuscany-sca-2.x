@@ -68,7 +68,7 @@ public class JavaTargetInvokerBasicInvocationTestCase extends TestCase {
         bean = new TestBean();
         EasyMock.replay(component);
         EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE);
-        EasyMock.expect(scopeContainer.getWrapper(component)).andReturn(wrapper);
+        EasyMock.expect(scopeContainer.getWrapper(component, null)).andReturn(wrapper);
         EasyMock.replay(scopeContainer);
         EasyMock.expect(wrapper.getInstance()).andReturn(bean);
         EasyMock.replay(wrapper);

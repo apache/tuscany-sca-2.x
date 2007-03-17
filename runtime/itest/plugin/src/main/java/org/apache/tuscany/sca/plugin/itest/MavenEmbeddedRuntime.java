@@ -22,10 +22,12 @@ import java.net.URI;
 import java.util.Collection;
 
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.GroupInitializationException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -63,9 +65,18 @@ public class MavenEmbeddedRuntime extends AbstractRuntime<MavenRuntimeInfo> {
         return deployer.deploy(null, definition);
     }
 
-    public void executeTest(URI componentId, Operation<?> operation) throws Exception {
+    public void startContext(URI compositeId) throws GroupInitializationException {
+        getScopeRegistry().getScopeContainer(Scope.COMPOSITE).startContext(compositeId, compositeId);
+    }
+
+    public void executeTest(URI contextId, URI componentId, Operation<?> operation) throws Exception {
         Component testComponent = getComponentManager().getComponent(componentId);
         TargetInvoker targetInvoker = testComponent.createTargetInvoker("testService", operation);
-        targetInvoker.invokeTarget(null, TargetInvoker.NONE);
+        getWorkContext().setIdentifier(Scope.COMPOSITE, contextId);
+        try {
+            targetInvoker.invokeTarget(null, TargetInvoker.NONE);
+        } finally {
+            getWorkContext().setIdentifier(Scope.COMPOSITE, null);
+        }
     }
 }

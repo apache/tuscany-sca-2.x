@@ -19,10 +19,12 @@
 package org.apache.tuscany.sca.runtime.standalone.smoketest;
 
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
  */
+@Scope("COMPOSITE")
 public class Launched {
     private HelloService hello;
 

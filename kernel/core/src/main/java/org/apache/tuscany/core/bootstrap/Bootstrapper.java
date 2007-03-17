@@ -65,10 +65,9 @@ public interface Bootstrapper {
     /**
      * Create a ScopeRegistry that supports the Scopes supported for primordial components
      *
-     * @param workContext the WorkContext the Scopes should use
      * @return a new primordial ScopeRegistry
      */
-    ScopeRegistry createScopeRegistry(WorkContext workContext);
+    ScopeRegistry createScopeRegistry();
 
     /**
      * Create a Connector that can wire together primordial components.

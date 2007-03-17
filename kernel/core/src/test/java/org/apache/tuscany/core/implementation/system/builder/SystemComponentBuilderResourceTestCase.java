@@ -49,6 +49,9 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
     public void testResourceInjection() throws Exception {
         ScopeContainer container = EasyMock.createNiceMock(ScopeContainer.class);
         DeploymentContext ctx = EasyMock.createNiceMock(DeploymentContext.class);
+        URI groupId = URI.create("composite");
+        EasyMock.expect(ctx.getGroupId()).andStubReturn(groupId);
+        EasyMock.replay(ctx);
         ScopeRegistry registry = EasyMock.createMock(ScopeRegistry.class);
         EasyMock.expect(registry.getScopeContainer(Scope.STATELESS)).andReturn(container);
         EasyMock.replay(registry);

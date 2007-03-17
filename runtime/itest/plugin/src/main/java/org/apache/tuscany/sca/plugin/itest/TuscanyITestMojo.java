@@ -235,6 +235,8 @@ public class TuscanyITestMojo extends AbstractMojo {
                 for (Component component : testComponent) {
                     component.start();
                 }
+
+                runtime.startContext(componentName);
             } catch (Exception e) {
                 monitor.runError(e);
                 throw new MojoExecutionException("Error deploying test component " + testScdl, e);
@@ -386,6 +388,7 @@ public class TuscanyITestMojo extends AbstractMojo {
                                                 URI uriBase) throws MojoExecutionException {
         SCATestSuite suite = new SCATestSuite();
 
+        URI contextId = definition.getUri();
         CompositeImplementation impl = definition.getImplementation();
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = componentType.getComponents();
@@ -395,7 +398,7 @@ public class TuscanyITestMojo extends AbstractMojo {
             Implementation<?> implementation = junitDefinition.getImplementation();
             if (ImplementationJUnit.class.isAssignableFrom(implementation.getClass())) {
                 URI uri = uriBase.resolve(name);
-                SCATestSet testSet = createTestSet(runtime, name, uri, junitDefinition);
+                SCATestSet testSet = createTestSet(runtime, name, contextId, uri, junitDefinition);
                 suite.add(testSet);
             }
         }
@@ -404,6 +407,7 @@ public class TuscanyITestMojo extends AbstractMojo {
 
     protected SCATestSet createTestSet(MavenEmbeddedRuntime runtime,
                                        String name,
+                                       URI contextId,
                                        URI uri,
                                        ComponentDefinition definition) throws MojoExecutionException {
         ImplementationJUnit impl = (ImplementationJUnit) definition.getImplementation();
@@ -414,7 +418,7 @@ public class TuscanyITestMojo extends AbstractMojo {
             throw new MojoExecutionException("No testService defined on component: " + definition.getUri());
         }
         Map<String, ? extends Operation<?>> operations = testService.getServiceContract().getOperations();
-        return new SCATestSet(runtime, name, uri, operations.values());
+        return new SCATestSet(runtime, name, contextId, uri, operations.values());
     }
 
     public interface MojoMonitor {

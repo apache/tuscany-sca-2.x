@@ -38,24 +38,32 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     protected Scope scope;
     protected ProxyService proxyService;
     protected WorkContext workContext;
+    protected final URI groupId;
     private final int initLevel;
     private final long maxIdleTime;
     private final long maxAge;
 
-    protected AtomicComponentExtension(URI name, ProxyService proxyService, WorkContext workContext, int initLevel) {
-        this(name, proxyService, workContext, initLevel, -1, -1);
+    protected AtomicComponentExtension(URI name,
+                                       ProxyService proxyService,
+                                       WorkContext workContext,
+                                       URI groupId,
+                                       int initLevel) {
+        this(name, proxyService, workContext, groupId, initLevel, -1, -1);
     }
 
     protected AtomicComponentExtension(URI name,
                                        ProxyService proxyService,
                                        WorkContext workContext,
+                                       URI groupId,
                                        int initLevel,
                                        long maxIdleTime,
                                        long maxAge) {
         super(name);
+        assert groupId != null;
         assert !(maxIdleTime > 0 && maxAge > 0);
         this.proxyService = proxyService;
         this.workContext = workContext;
+        this.groupId = groupId;
         this.initLevel = initLevel;
         this.maxIdleTime = maxIdleTime;
         this.maxAge = maxAge;
@@ -88,7 +96,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     public void start() throws CoreRuntimeException {
         super.start();
-        scopeContainer.register(null, this);
+        scopeContainer.register(this, groupId);
     }
 
     public void stop() {

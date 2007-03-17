@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.component.TargetNotFoundException;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class BasicRequestScopeTestCase extends TestCase {
+public abstract class BasicRequestScopeTestCase extends TestCase {
     private ScopeContainerMonitor monitor;
     private ScopeContainer scopeContainer;
     private AtomicComponent component;
@@ -89,8 +89,8 @@ public class BasicRequestScopeTestCase extends TestCase {
         wrapper2.stop();
         control.replay();
 
-        scopeContainer.register(null, component1);
-        scopeContainer.register(null, component2);
+        scopeContainer.register(component1, null);
+        scopeContainer.register(component2, null);
         scopeContainer.onEvent(new RequestStart(this));
         assertSame(wrapper1, scopeContainer.getWrapper(component1));
         scopeContainer.onEvent(new RequestEnd(this));
@@ -135,9 +135,9 @@ public class BasicRequestScopeTestCase extends TestCase {
         wrapper1.stop();
         control.replay();
 
-        scopeContainer.register(null, component1);
-        scopeContainer.register(null, component2);
-        scopeContainer.register(null, component3);
+        scopeContainer.register(component1, null);
+        scopeContainer.register(component2, null);
+        scopeContainer.register(component3, null);
         scopeContainer.onEvent(new RequestStart(this));
         assertSame(wrapper1, scopeContainer.getWrapper(component1));
         assertSame(wrapper2, scopeContainer.getWrapper(component2));
@@ -156,7 +156,7 @@ public class BasicRequestScopeTestCase extends TestCase {
 
         component.addListener(scopeContainer);
         EasyMock.replay(component);
-        scopeContainer.register(null, component);
+        scopeContainer.register(component, null);
         EasyMock.reset(component);
     }
 }

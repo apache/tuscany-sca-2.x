@@ -44,7 +44,7 @@ import org.easymock.classextension.EasyMock;
  *
  * @version $Rev$ $Date$
  */
-public class ConversationIdleExpireTestCase extends AbstractConversationTestCase {
+public abstract class ConversationIdleExpireTestCase extends AbstractConversationTestCase {
     protected AtomicComponent target;
     private JDKInvocationHandler handler;
     private FooImpl targetInstance;

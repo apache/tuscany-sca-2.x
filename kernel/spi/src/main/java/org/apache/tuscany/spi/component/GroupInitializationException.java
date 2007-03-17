@@ -16,22 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.component.scope;
+package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.model.Scope;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import java.util.List;
 
 /**
  * @version $Rev$ $Date$
  */
-public class StatelessScopeObjectFactoryTestCase extends TestCase {
+public class GroupInitializationException extends TargetResolutionException {
+    private final List<Exception> causes;
 
-    public void testCreation() {
-        ScopeRegistry registry = EasyMock.createMock(ScopeRegistry.class);
-        registry.registerFactory(EasyMock.isA(Scope.class), EasyMock.isA(StatelessScopeObjectFactory.class));
-        assertNotNull(new StatelessScopeObjectFactory(registry, null, null).getInstance());
+    /**
+     * Exception indicating a problem initializing a group of components.
+     *
+     * @param contextId an identified for the context being initialized
+     * @param causes the individual exceptions that occurred
+     */
+    public GroupInitializationException(String contextId, List<Exception> causes) {
+        super(contextId);
+        this.causes = causes;
+    }
+
+    /**
+     * Return the exceptions that occurred as the group was initialized.
+     *
+     * @return a list of exceptions that occurred
+     */
+    public List<Exception> getCauses() {
+        return causes;
     }
 }
