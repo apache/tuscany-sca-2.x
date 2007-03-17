@@ -33,8 +33,7 @@
     <packaging>pom</packaging>
     <name>Tuscany Hessian Binding Extension </name>
     <modules>
-		<!--<module>binding</module>
-		<module>integration-test</module>-->
+		<module>binding</module>
     </modules>
     <!-- definition of repositories where the parent pom can be found -->
     <repositories>
