@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.spi.host.ServletHost;
+import org.osoa.sca.annotations.EagerInit;
 
 /**
  * Super class for all the Tuscany servlets.
@@ -34,6 +35,7 @@ import org.apache.tuscany.spi.host.ServletHost;
  *
  */
 @SuppressWarnings("serial")
+@EagerInit
 public abstract class TuscanyServlet extends HttpServlet {
 
     /**
