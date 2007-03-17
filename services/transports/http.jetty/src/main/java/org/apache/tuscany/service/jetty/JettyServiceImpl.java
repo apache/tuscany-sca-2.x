@@ -24,6 +24,7 @@ import javax.resource.spi.work.Work;
 import javax.servlet.Servlet;
 
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
@@ -53,6 +54,7 @@ import org.mortbay.thread.ThreadPool;
  * @version $$Rev$$ $$Date$$
  */
 @Service(ServletHost.class)
+@EagerInit
 public class JettyServiceImpl implements JettyService {
 
     private static final String ROOT = "/";
