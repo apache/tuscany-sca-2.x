@@ -39,6 +39,7 @@
         <system:implementation.system class="org.apache.tuscany.sca.console.handler.scdl.SdclContributionHandler"/>
         <property name="path">/scdlSubmit</property>
         <reference name="servletHost" target="httpService"/>
+        <reference name="assemblyService" target="assemblyService"/>
     </component>
     
 </composite>
