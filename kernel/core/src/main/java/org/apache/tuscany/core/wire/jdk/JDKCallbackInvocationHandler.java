@@ -115,11 +115,6 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
         }
     }
 
-
-    public Object invoke(Method method, Object[] args) throws Throwable {
-        return invoke(null, method, args);
-    }
-
     public void writeExternal(ObjectOutput out) throws IOException {
         int i = sourceWireNames.size() - 1;
         out.writeInt(i);
