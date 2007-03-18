@@ -25,6 +25,7 @@ import org.apache.tuscany.api.TuscanyException;
  *
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("serial")
 public class InvocationException extends TuscanyException {
 
     public InvocationException(String message, String identifier) {

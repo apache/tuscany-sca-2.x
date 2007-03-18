@@ -20,6 +20,7 @@ package org.apache.tuscany.hessian;/*
 /**
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("serial")
 public class ServletHostNotFoundException extends DestinationCreationException {
     public ServletHostNotFoundException(String message) {
         super(message);
