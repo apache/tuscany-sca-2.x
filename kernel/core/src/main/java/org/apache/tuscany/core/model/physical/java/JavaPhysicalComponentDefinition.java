@@ -28,11 +28,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  *
  * @version $Rev$ $Date$
  * @param <T> the implementation class (if known)
- * @param <GROUP> the component group id type
  */
 public class JavaPhysicalComponentDefinition<T> extends PhysicalComponentDefinition {
-
-    private InstanceFactoryProvider<T> provider;
 
     // Class loader id
     private URI classLoaderId;
@@ -53,23 +50,5 @@ public class JavaPhysicalComponentDefinition<T> extends PhysicalComponentDefinit
      */
     public void setClassLoaderId(URI classLoaderId) {
         this.classLoaderId = classLoaderId;
-    }
-
-    /**
-     * Return the provider for the component's instance factory.
-     *
-     * @return the provider for the component's instance factory
-     */
-    public InstanceFactoryProvider<T> getProvider() {
-        return provider;
-    }
-
-    /**
-     * Sets the provider for the component's instance factory.
-     *
-     * @param provider the provider for the component's instance factory
-     */
-    public void setProvider(InstanceFactoryProvider<T> provider) {
-        this.provider = provider;
     }
 }
