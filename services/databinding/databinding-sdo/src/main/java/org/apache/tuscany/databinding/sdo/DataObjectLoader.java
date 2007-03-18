@@ -24,49 +24,38 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sdo.helper.XMLStreamHelper;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 import commonj.sdo.DataObject;
-import commonj.sdo.Property;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.TypeHelper;
-import commonj.sdo.helper.XSDHelper;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Destroy;
 
 /**
  * A SDO model-based Loader to load DataObject from the XML stream
- *
  */
 @EagerInit
-public class DataObjectLoader implements StAXElementLoader<ModelObject> {
-    protected LoaderRegistry registry;
-    private QName propertyQName;
+public class DataObjectLoader extends LoaderExtension<ModelDataObject> {
+    private QName elementName;
 
-    public DataObjectLoader(Property property) {
-        super();
-        this.propertyQName = new QName(XSDHelper.INSTANCE.getNamespaceURI(property),
-                                       XSDHelper.INSTANCE.getLocalName(property));
+    public DataObjectLoader(@Reference LoaderRegistry registry, 
+                            @Property(name = "namespace", required = true) String namespace, 
+                            @Property(name = "name", required = true) String name) {
+        super(registry);
+        this.elementName = new QName(namespace, name);
     }
 
-    public DataObjectLoader(QName propertyQName) {
-        super();
-        this.propertyQName = propertyQName;
-    }
-
-    public ModelObject load(CompositeComponent parent,
-                            ModelObject object,
-                            XMLStreamReader reader,
-                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
-        assert propertyQName.equals(reader.getName());
-        HelperContext helperContext = SDODataTypeHelper.getHelperContext(deploymentContext);
+    public ModelDataObject load(ModelObject object,
+                                XMLStreamReader reader,
+                                DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+        assert elementName.equals(reader.getName());
+        HelperContext helperContext = SDOContextHelper.getHelperContext(object);
         TypeHelper typeHelper = helperContext.getTypeHelper();
         XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
         DataObject dataObject = streamHelper.loadObject(reader);
@@ -74,20 +63,9 @@ public class DataObjectLoader implements StAXElementLoader<ModelObject> {
         return new ModelDataObject(dataObject);
     }
 
-    @Autowire
-    public void setRegistry(LoaderRegistry registry) {
-        this.registry = registry;
+    @Override
+    public QName getXMLType() {
+        return elementName;
     }
-
-    @Init
-    public void start() {
-        registry.registerLoader(propertyQName, this);
-    }
-
-    @Destroy
-    public void stop() {
-        registry.unregisterLoader(propertyQName, this);
-    }
-
 
 }

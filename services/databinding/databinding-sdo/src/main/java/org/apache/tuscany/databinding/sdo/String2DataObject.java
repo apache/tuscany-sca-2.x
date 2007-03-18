@@ -35,7 +35,7 @@ public class String2DataObject extends TransformerExtension<String, DataObject> 
 
     public DataObject transform(String source, TransformationContext context) {
         try {
-            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLHelper xmlHelper = helperContext.getXMLHelper();
             return xmlHelper.load(source).getRootObject();
         } catch (Exception e) {

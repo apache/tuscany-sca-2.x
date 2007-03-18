@@ -37,7 +37,7 @@ public class XMLDocument2String extends TransformerExtension<XMLDocument, String
 
     public String transform(XMLDocument source, TransformationContext context) {
         try {
-            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLHelper xmlHelper = helperContext.getXMLHelper();
             StringWriter writer = new StringWriter();
             xmlHelper.save(source, writer, null);

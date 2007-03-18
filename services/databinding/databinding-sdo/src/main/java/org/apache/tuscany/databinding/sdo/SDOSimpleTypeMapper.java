@@ -24,7 +24,6 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.idl.TypeInfo;
 
 import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
@@ -40,26 +39,24 @@ public class SDOSimpleTypeMapper implements SimpleTypeMapper {
         super();
     }
 
-    public Object toJavaObject(TypeInfo simpleType, String value, TransformationContext context) {
-        QName typeName = simpleType.getQName();
+    public Object toJavaObject(QName typeName, String value, TransformationContext context) {
         Type type = null;
         if (URI_2001_SCHEMA_XSD.equals(typeName.getNamespaceURI())) {
             type = SDOUtil.getXSDSDOType(typeName.getLocalPart());
         } else {
-            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             TypeHelper typeHelper = helperContext.getTypeHelper();
             type = typeHelper.getType(typeName.getNamespaceURI(), typeName.getLocalPart());
         }
         return SDOUtil.createFromString(type, value);
     }
 
-    public String toXMLLiteral(TypeInfo simpleType, Object obj, TransformationContext context) {
-        QName typeName = simpleType.getQName();
+    public String toXMLLiteral(QName typeName, Object obj, TransformationContext context) {
         Type type = null;
         if (URI_2001_SCHEMA_XSD.equals(typeName.getNamespaceURI())) {
             type = SDOUtil.getXSDSDOType(typeName.getLocalPart());
         } else {
-            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             TypeHelper typeHelper = helperContext.getTypeHelper();
             type = typeHelper.getType(typeName.getNamespaceURI(), typeName.getLocalPart());
         }

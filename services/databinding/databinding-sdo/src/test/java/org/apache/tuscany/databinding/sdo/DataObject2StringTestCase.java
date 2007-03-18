@@ -34,7 +34,7 @@ import commonj.sdo.DataObject;
 public class DataObject2StringTestCase extends SDOTransformerTestCaseBase {
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<QName>(binding, PurchaseOrderType.class, orderQName);
+        return new DataType<QName>(binding, PurchaseOrderType.class, ORDER_QNAME);
     }
 
     @Override
@@ -47,13 +47,14 @@ public class DataObject2StringTestCase extends SDOTransformerTestCaseBase {
         Assert.assertTrue(xml.indexOf("<city>San Jose</city>") != -1);
         DataObject po = new String2DataObject().transform(xml, reversedContext);
         Assert.assertTrue(po instanceof PurchaseOrderType);
-        PurchaseOrderType orderType = (PurchaseOrderType) po;
+        PurchaseOrderType orderType = (PurchaseOrderType)po;
         Assert.assertEquals("San Jose", orderType.getBillTo().getCity());
     }
 
     public final void testXML() {
         String xml =
-                "<foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ipo=\"http://www.example.com/IPO\" xsi:type=\"ipo:USAddress\"/>";
+            "<foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+            + "xmlns:ipo=\"http://www.example.com/IPO\" xsi:type=\"ipo:USAddress\"/>";
         DataObject dataObject = new String2DataObject().transform(xml, reversedContext);
         context.setSourceDataType(new DataType<QName>(DataObject.class.getName(), DataObject.class, null));
         xml = new DataObject2String().transform(dataObject, context);

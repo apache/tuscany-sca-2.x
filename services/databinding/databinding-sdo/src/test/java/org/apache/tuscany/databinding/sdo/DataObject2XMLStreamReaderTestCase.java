@@ -35,7 +35,7 @@ public class DataObject2XMLStreamReaderTestCase extends SDOTransformerTestCaseBa
 
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<QName>(binding, PurchaseOrderType.class, orderQName);
+        return new DataType<QName>(binding, PurchaseOrderType.class, ORDER_QNAME);
     }
 
     @Override
@@ -47,8 +47,9 @@ public class DataObject2XMLStreamReaderTestCase extends SDOTransformerTestCaseBa
         XMLStreamReader reader = new DataObject2XMLStreamReader().transform(dataObject, context);
         while (reader.hasNext()) {
             int event = reader.next();
-            if (event == XMLStreamConstants.START_ELEMENT)
+            if (event == XMLStreamConstants.START_ELEMENT) {
                 break;
+            }
         }
         new XMLStreamReader2DataObject().transform(reader, reversedContext);
     }

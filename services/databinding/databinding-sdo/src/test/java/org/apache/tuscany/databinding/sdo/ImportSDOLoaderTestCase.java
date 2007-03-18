@@ -26,10 +26,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.databinding.sdo.ImportSDOLoader.SDOType;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.easymock.EasyMock;
 
 import com.example.ipo.sdo.SdoFactory;
 
@@ -46,21 +45,21 @@ public class ImportSDOLoaderTestCase extends TestCase {
     public void testMinimal() throws XMLStreamException, LoaderException {
         String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0'/>";
         XMLStreamReader reader = getReader(xml);
-        assertTrue(loader.load(null, null, reader, deploymentContext) instanceof SDOType);
+        assertTrue(loader.load(null, reader, deploymentContext) instanceof ImportSDO);
     }
 
     public void testLocation() throws XMLStreamException, LoaderException {
         String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' location='ipo.xsd'/>";
         XMLStreamReader reader = getReader(xml);
-        assertTrue(loader.load(null, null, reader, deploymentContext) instanceof SDOType);
+        assertTrue(loader.load(null, reader, deploymentContext) instanceof ImportSDO);
     }
-    
+
     public void testFactory() throws XMLStreamException, LoaderException {
-        String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' "
-                + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
+        String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' " 
+            + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
         XMLStreamReader reader = getReader(xml);
         assertFalse(inited);
-        assertTrue(loader.load(null, null, reader, deploymentContext) instanceof SDOType);
+        assertTrue(loader.load(null, reader, deploymentContext) instanceof ImportSDO);
         assertTrue(inited);
     }
 
@@ -68,7 +67,10 @@ public class ImportSDOLoaderTestCase extends TestCase {
         super.setUp();
         loader = new ImportSDOLoader(null);
         xmlFactory = XMLInputFactory.newInstance();
-        deploymentContext = new RootDeploymentContext(getClass().getClassLoader(), null, null, xmlFactory, null);
+        deploymentContext = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(deploymentContext.getXmlFactory()).andReturn(xmlFactory).anyTimes();
+        EasyMock.expect(deploymentContext.getClassLoader()).andReturn(getClass().getClassLoader()).anyTimes();
+        EasyMock.replay(deploymentContext);
     }
 
     protected XMLStreamReader getReader(String xml) throws XMLStreamException {
@@ -85,4 +87,3 @@ public class ImportSDOLoaderTestCase extends TestCase {
         }
     }
 }
-

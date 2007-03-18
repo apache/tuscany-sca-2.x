@@ -21,22 +21,26 @@ package org.apache.tuscany.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import com.example.ipo.sdo.SdoFactory;
 import com.example.ipo.sdo.USAddress;
 import commonj.sdo.DataObject;
+import commonj.sdo.helper.HelperContext;
+import commonj.sdo.helper.XMLDocument;
+import commonj.sdo.impl.HelperProvider;
 
 /**
  * 
  */
 public class SDODataBindingTestCase extends TestCase {
+    protected static final QName ORDER_QNAME = new QName("http://www.example.com/IPO", "purchaseOrder");
     private SDODataBinding binding;
+    private HelperContext context;
 
     /**
      * @see junit.framework.TestCase#setUp()
@@ -44,18 +48,62 @@ public class SDODataBindingTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         binding = new SDODataBinding();
-        SDOUtil.registerStaticTypes(SdoFactory.class);
+        context = HelperProvider.getDefaultContext();
+        SdoFactory.INSTANCE.register(context);
     }
 
     public final void testIntrospect() {
-        DataType<?> dataType = binding.introspect(DataObject.class);
-        Assert.assertTrue(dataType.getDataBinding().equals(binding.getName()));
-        Assert.assertTrue(dataType.getPhysical() == DataObject.class && dataType.getLogical() == null);
-        dataType = binding.introspect(PurchaseOrderType.class);
-        Assert.assertEquals(PurchaseOrderType.class, dataType.getPhysical());
-        Assert.assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), dataType.getLogical());
-        dataType = binding.introspect(USAddress.class);
-        Assert.assertEquals(USAddress.class, dataType.getPhysical());
-        Assert.assertEquals(new QName("http://www.example.com/IPO", "USAddress"), dataType.getLogical());
+        DataType dataType = new DataType(DataObject.class, null);
+        boolean yes = binding.introspect(dataType, null);
+        assertTrue(yes);
+        assertTrue(dataType.getDataBinding().equals(binding.getName()));
+        assertTrue(dataType.getPhysical() == DataObject.class && dataType.getLogical() == XMLType.UNKNOWN);
+        dataType = new DataType(PurchaseOrderType.class, null);
+        yes = binding.introspect(dataType, null);
+        assertTrue(yes);
+        assertEquals(PurchaseOrderType.class, dataType.getPhysical());
+        assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), ((XMLType)dataType.getLogical())
+            .getTypeName());
+        dataType = new DataType(USAddress.class, null);
+        yes = binding.introspect(dataType, null);
+        assertTrue(yes);
+        assertEquals(USAddress.class, dataType.getPhysical());
+        assertEquals(new QName("http://www.example.com/IPO", "USAddress"), ((XMLType)dataType.getLogical())
+            .getTypeName());
+    }
+
+    public final void testCopyRoot() {
+        PurchaseOrderType po = SdoFactory.INSTANCE.createPurchaseOrderType();
+        po.setComment("Comment");
+        Object copy = binding.copy(po);
+        assertTrue(copy instanceof PurchaseOrderType);
+        assertTrue(po != copy);
+        assertTrue(context.getEqualityHelper().equal((DataObject)po, (DataObject)copy));
+        assertEquals("Comment", ((PurchaseOrderType)copy).getComment());
+    }
+
+    public final void testCopyNonRoot() {
+        USAddress address = SdoFactory.INSTANCE.createUSAddress();
+        address.setCity("San Jose");
+        Object copy = binding.copy(address);
+        assertTrue(copy instanceof USAddress);
+        assertTrue(address != copy);
+        assertTrue(context.getEqualityHelper().equal((DataObject)address, (DataObject)copy));
+        assertEquals("San Jose", ((USAddress)copy).getCity());
+    }
+
+    public final void testCopyXMLDocument() {
+        PurchaseOrderType po = SdoFactory.INSTANCE.createPurchaseOrderType();
+        po.setComment("Comment");
+        XMLDocument doc =
+            context.getXMLHelper().createDocument((DataObject)po,
+                                                  ORDER_QNAME.getNamespaceURI(),
+                                                  ORDER_QNAME.getLocalPart());
+        Object copy = binding.copy(doc);
+        assertTrue(copy instanceof XMLDocument);
+        XMLDocument docCopy = (XMLDocument)copy;
+        assertTrue(doc != copy);
+        assertTrue(context.getEqualityHelper().equal((DataObject)po, docCopy.getRootObject()));
+        assertEquals("Comment", ((PurchaseOrderType)docCopy.getRootObject()).getComment());
     }
 }

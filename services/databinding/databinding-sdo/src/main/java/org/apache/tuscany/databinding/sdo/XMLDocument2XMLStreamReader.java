@@ -43,7 +43,7 @@ public class XMLDocument2XMLStreamReader extends TransformerExtension<XMLDocumen
      */
     public XMLStreamReader transform(XMLDocument source, TransformationContext context) {
         try {
-            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext.getTypeHelper());
             return streamHelper.createXMLStreamReader(source);
         } catch (XMLStreamException e) {
