@@ -124,7 +124,7 @@ public class PojoComponentTestCase<T> extends TestCase {
         component = new TestComponent<T>(componentId, provider, scopeContainer, 0, -1, -1);
     }
 
-    public static class TestComponent<T> extends PojoComponent<T, Object> {
+    public static class TestComponent<T> extends PojoComponent<T> {
 
         public TestComponent(URI componentId,
                              InstanceFactoryProvider<T> instanceFactoryProvider,

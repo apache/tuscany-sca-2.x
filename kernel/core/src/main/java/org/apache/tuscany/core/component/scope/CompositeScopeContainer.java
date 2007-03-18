@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,7 +43,7 @@ import org.apache.tuscany.spi.model.Scope;
  */
 @EagerInit
 @Service(ScopeContainer.class)
-public class CompositeScopeContainer<GROUP, KEY> extends AbstractScopeContainer<GROUP, KEY> {
+public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
     private static final InstanceWrapper<Object> EMPTY = new InstanceWrapper<Object>() {
         public Object getInstance() {
             return null;
@@ -69,7 +70,7 @@ public class CompositeScopeContainer<GROUP, KEY> extends AbstractScopeContainer<
         super(Scope.COMPOSITE, monitor);
     }
 
-    public <T> void register(AtomicComponent<T> component, GROUP groupId) {
+    public <T> void register(AtomicComponent<T> component, URI groupId) {
         super.register(component, groupId);
         instanceWrappers.put(component, EMPTY);
     }

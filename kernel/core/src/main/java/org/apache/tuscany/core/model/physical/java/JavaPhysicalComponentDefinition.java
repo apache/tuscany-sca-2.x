@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  * @param <T> the implementation class (if known)
  * @param <GROUP> the component group id type
  */
-public class JavaPhysicalComponentDefinition<T, GROUP> extends PhysicalComponentDefinition<GROUP> {
+public class JavaPhysicalComponentDefinition<T> extends PhysicalComponentDefinition {
 
     private InstanceFactoryProvider<T> provider;
 

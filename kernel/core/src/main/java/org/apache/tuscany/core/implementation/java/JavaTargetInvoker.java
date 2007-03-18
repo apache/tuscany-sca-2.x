@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.model.Scope;
 public class JavaTargetInvoker<T> extends TargetInvokerExtension {
     protected Method operation;
     private final AtomicComponent<T> component;
-    private final ScopeContainer<?,Object> scopeContainer;
+    private final ScopeContainer scopeContainer;
     protected InstanceWrapper<T> target;
     protected boolean stateless;
 

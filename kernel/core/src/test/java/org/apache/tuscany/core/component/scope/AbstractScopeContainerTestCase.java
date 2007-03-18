@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -30,10 +32,10 @@ import org.easymock.IMocksControl;
 /**
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContainerTestCase<T, GROUP, KEY> extends TestCase {
+public abstract class AbstractScopeContainerTestCase<T, KEY> extends TestCase {
     protected IMocksControl control;
-    protected ScopeContainer<GROUP, KEY> scopeContainer;
-    protected GROUP groupId;
+    protected ScopeContainer<KEY> scopeContainer;
+    protected URI groupId;
     protected KEY contextId;
     protected AtomicComponent<T> component;
     protected InstanceWrapper<T> wrapper;

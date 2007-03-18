@@ -29,12 +29,12 @@ import org.apache.tuscany.spi.model.Scope;
  * @version $Rev$ $Date$
  * @param <GROUP> the component group id type
  */
-public abstract class PhysicalComponentDefinition<GROUP> extends ModelObject {
+public abstract class PhysicalComponentDefinition extends ModelObject {
 
     // Component Id.
     private URI componentId;
     private Scope scope;
-    private GROUP groupId;
+    private URI groupId;
 
     // Instance factory provider
     private InstanceFactoryProviderDefinition instanceFactoryProviderDefinition;// Scope
@@ -61,7 +61,7 @@ public abstract class PhysicalComponentDefinition<GROUP> extends ModelObject {
      * Returns the id of the component group this component belongs to.
      * @return the id of the component group this component belongs to
      */
-    public GROUP getGroupId() {
+    public URI getGroupId() {
         return groupId;
     }
 
@@ -69,7 +69,7 @@ public abstract class PhysicalComponentDefinition<GROUP> extends ModelObject {
      * Sets the id of the component group this component belongs to.
      * @param groupId the id of the component group this component belongs to
      */
-    public void setGroupId(GROUP groupId) {
+    public void setGroupId(URI groupId) {
         this.groupId = groupId;
     }
 

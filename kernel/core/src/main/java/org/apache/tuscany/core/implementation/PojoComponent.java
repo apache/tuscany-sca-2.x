@@ -54,10 +54,10 @@ import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
  * @param <T> the implementation class
  * @param <GROUP> the component group id type
  */
-public abstract class PojoComponent<T, GROUP> extends AbstractSCAObject implements AtomicComponent<T> {
+public abstract class PojoComponent<T> extends AbstractSCAObject implements AtomicComponent<T> {
     private final InstanceFactoryProvider<T> provider;
-    private final ScopeContainer<GROUP, ?> scopeContainer;
-    private final GROUP groupId;
+    private final ScopeContainer<?> scopeContainer;
+    private final URI groupId;
     private final int initLevel;
     private final long maxIdleTime;
     private final long maxAge;
@@ -65,8 +65,8 @@ public abstract class PojoComponent<T, GROUP> extends AbstractSCAObject implemen
 
     public PojoComponent(URI componentId,
                          InstanceFactoryProvider<T> provider,
-                         ScopeContainer<GROUP, ?> scopeContainer,
-                         GROUP groupId,
+                         ScopeContainer<?> scopeContainer,
+                         URI groupId,
                          int initLevel,
                          long maxIdleTime,
                          long maxAge) {

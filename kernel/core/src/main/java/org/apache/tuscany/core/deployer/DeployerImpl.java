@@ -120,7 +120,7 @@ public class DeployerImpl implements Deployer {
                                                                       ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, ResolutionException {
         @SuppressWarnings("unchecked")
-        ScopeContainer<URI, URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        ScopeContainer<URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
         URI groupId = componentDefinition.getUri();
         scopeContainer.createGroup(groupId);
         DeploymentContext deploymentContext =

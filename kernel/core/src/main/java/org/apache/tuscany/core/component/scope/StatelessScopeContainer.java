@@ -37,7 +37,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  */
 @EagerInit
 @Service(ScopeContainer.class)
-public class StatelessScopeContainer<GROUP, KEY> extends AbstractScopeContainer<GROUP, KEY> {
+public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
 
     public StatelessScopeContainer(@Monitor ScopeContainerMonitor monitor) {
         super(Scope.STATELESS, monitor);

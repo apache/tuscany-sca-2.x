@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -71,7 +72,7 @@ public class RequestScopeContainer extends AbstractScopeContainer {
         lifecycleState = STOPPED;
     }
 
-    public void register(AtomicComponent component, Object groupId) {
+    public void register(AtomicComponent component, URI groupId) {
         super.register(component, groupId);
         contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
     }

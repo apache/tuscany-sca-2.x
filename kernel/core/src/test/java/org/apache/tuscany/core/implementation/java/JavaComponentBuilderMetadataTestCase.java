@@ -103,7 +103,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         scopeContainer = EasyMock.createMock(ScopeContainer.class);
         scopeContainer.start();
         scopeContainer.stop();
-        scopeContainer.register(EasyMock.isA(AtomicComponent.class), EasyMock.isNull());
+        scopeContainer.register(EasyMock.isA(AtomicComponent.class), EasyMock.isA(URI.class));
         EasyMock.expectLastCall().atLeastOnce();
         EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         EasyMock.replay(scopeContainer);

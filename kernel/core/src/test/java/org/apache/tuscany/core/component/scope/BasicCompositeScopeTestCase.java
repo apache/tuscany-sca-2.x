@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.model.Scope;
  */
 public class BasicCompositeScopeTestCase<T> extends TestCase {
     protected IMocksControl control;
-    protected ScopeContainer<URI, URI> scopeContainer;
+    protected ScopeContainer<URI> scopeContainer;
     protected URI groupId;
     protected URI contextId;
     protected AtomicComponent<T> component;
@@ -136,7 +136,7 @@ public class BasicCompositeScopeTestCase<T> extends TestCase {
         EasyMock.expect(component.isEagerInit()).andStubReturn(false);
         wrapper = control.createMock(InstanceWrapper.class);
 
-        scopeContainer = new CompositeScopeContainer<URI, URI>(null);
+        scopeContainer = new CompositeScopeContainer<URI>(null);
         scopeContainer.start();
         scopeContainer.createGroup(groupId);
         scopeContainer.startContext(contextId, groupId);

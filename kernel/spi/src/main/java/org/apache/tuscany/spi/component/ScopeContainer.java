@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
@@ -32,7 +34,7 @@ import org.apache.tuscany.spi.model.Scope;
  * or for HTTP Session scope it might be the HTTP session ID.
  * @param <GROUP> the type of IDs that identify groups of components
  */
-public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListener {
+public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
 
     /**
      * Returns the Scope that this container supports.
@@ -46,14 +48,14 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
      *
      * @param groupId an identifier for the group
      */
-    void createGroup(GROUP groupId);
+    void createGroup(URI groupId);
 
     /**
      * Remove a group that associates components together.
      *
      * @param groupId an identifier for the group
      */
-    void removeGroup(GROUP groupId);
+    void removeGroup(URI groupId);
 
     /**
      * Registers a component with the scope.
@@ -61,7 +63,7 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
      * @param component the component to register
      * @param groupId the id of the group to associate this component with
      */
-    <T> void register(AtomicComponent<T> component, GROUP groupId);
+    <T> void register(AtomicComponent<T> component, URI groupId);
 
     /**
      * Unregisters a component with the scope.
@@ -77,7 +79,7 @@ public interface ScopeContainer<GROUP, KEY> extends Lifecycle, RuntimeEventListe
      * @param groupId the group of components to associate with this context
      * @throws GroupInitializationException if an exception was thrown by any eagerInit component
      */
-    void startContext(KEY contextId, GROUP groupId) throws GroupInitializationException;
+    void startContext(KEY contextId, URI groupId) throws GroupInitializationException;
 
     /**
      * Stop the context with the supplied ID.

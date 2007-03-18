@@ -138,7 +138,7 @@ public class WebappRuntimeImpl extends AbstractRuntime<WebappRuntimeInfo> implem
 
         try {
             ScopeRegistry scopeRegistry = getScopeRegistry();
-            ScopeContainer<URI, URI> container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+            ScopeContainer<URI> container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
             container.startContext(compositeId, compositeId);
             getWorkContext().setIdentifier(Scope.COMPOSITE, compositeId);
         } catch (GroupInitializationException e) {

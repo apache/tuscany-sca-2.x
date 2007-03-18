@@ -60,8 +60,8 @@ import org.apache.tuscany.spi.wire.Wire;
  * @param <T> the implementation class for the defined component
  * @param <GROUP> the component group id type
  */
-public class JavaPhysicalComponentBuilder<T, GROUP>
-    extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T, GROUP>, JavaComponent<T, GROUP>>
+public class JavaPhysicalComponentBuilder<T>
+    extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>
     implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
 
     // Classloader registry
@@ -104,11 +104,11 @@ public class JavaPhysicalComponentBuilder<T, GROUP>
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */
-    public JavaComponent<T, GROUP> build(JavaPhysicalComponentDefinition<T, GROUP> componentDefinition) throws BuilderException {
+    public JavaComponent<T> build(JavaPhysicalComponentDefinition<T> componentDefinition) throws BuilderException {
 
         URI componentId = componentDefinition.getComponentId();
         InstanceFactoryProvider<T> provider = componentDefinition.getProvider();
-        JavaComponent<T, GROUP> component = new JavaComponent<T, GROUP>(componentId, provider, null, null, 0, -1, -1);
+        JavaComponent<T> component = new JavaComponent<T>(componentId, provider, null, null, 0, -1, -1);
 
         setInstanceFactoryClass(componentDefinition, component);
 
