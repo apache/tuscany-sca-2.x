@@ -41,11 +41,13 @@ import org.apache.tuscany.core.component.event.HttpSessionEnd;
  * @version $Rev$ $Date$
  */
 public class HttpSessionScopeContainer extends AbstractScopeContainer {
+    private final WorkContext workContext;
     private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
     public HttpSessionScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
-        super(Scope.SESSION, workContext, monitor);
+        super(Scope.SESSION, monitor);
+        this.workContext = workContext;
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Object, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();
     }
