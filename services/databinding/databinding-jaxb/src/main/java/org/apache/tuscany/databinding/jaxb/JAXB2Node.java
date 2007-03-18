@@ -19,6 +19,7 @@
 package org.apache.tuscany.databinding.jaxb;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
 import org.apache.tuscany.spi.databinding.PullTransformer;
@@ -44,8 +45,8 @@ public class JAXB2Node extends TransformerExtension<Object, Node> implements Pul
             // FIXME: The default Marshaller doesn't support
             // marshaller.getNode()
             Document document = DOMHelper.newDocument();
-            marshaller.marshal(JAXBContextHelper.createJAXBElement(tContext.getSourceDataType(), source),
-                               document);
+            JAXBElement<?> jaxbElement = JAXBContextHelper.createJAXBElement(tContext.getSourceDataType(), source);
+            marshaller.marshal(jaxbElement, document);
             return document;
         } catch (Exception e) {
             throw new TransformationException(e);
