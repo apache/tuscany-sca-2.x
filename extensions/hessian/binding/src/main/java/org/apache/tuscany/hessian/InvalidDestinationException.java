@@ -23,6 +23,7 @@ import org.apache.tuscany.spi.builder.WiringException;
 /**
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("serial")
 public class InvalidDestinationException extends WiringException {
     public InvalidDestinationException(String message, Throwable cause) {
         super(message, null, null, cause);

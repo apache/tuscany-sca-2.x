@@ -21,29 +21,7 @@ package org.apache.tuscany.hessian.component;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import org.osoa.sca.ComponentContext;
-
-import org.apache.tuscany.spi.AbstractLifecycle;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.event.EventFilter;
-import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.host.ServletHost;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.PropertyValue;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.hessian.Channel;
 import org.apache.tuscany.hessian.DestinationCreationException;
@@ -54,37 +32,30 @@ import org.apache.tuscany.hessian.channel.HttpChannel;
 import org.apache.tuscany.hessian.channel.LocalChannel;
 import org.apache.tuscany.hessian.destination.HttpDestination;
 import org.apache.tuscany.hessian.destination.LocalDestination;
+import org.apache.tuscany.spi.host.ServletHost;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 /**
- * @version $Rev$ $Date$
+ * Binding component for hessian transport.
  */
-public class BindingComponent extends AbstractLifecycle implements Component {
+public class HessianBindingComponent {
+
     public static String LOCAL_SCHEME = "hessianLocal";
     public static String HTTP_SCHEME = "http";
     private URI uri;
     private ServletHost servletHost;
     private Map<URI, LocalDestination> destinations;
 
-    public BindingComponent(URI uri, ServletHost host) {
+    public HessianBindingComponent(@Property(name = "uri")
+    URI uri, @Reference(name = "servletHost")
+    ServletHost host) {
         this.uri = uri;
         this.servletHost = host;
         destinations = new HashMap<URI, LocalDestination>();
-    }
-
-    public URI getUri() {
-        return uri;
-    }
-
-    public List<Wire> getWires(String name) {
-        return null;
-    }
-
-    public Map<String, PropertyValue<?>> getDefaultPropertyValues() {
-        return null;
-    }
-
-    public void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues) {
-
     }
 
     public void createEndpoint(URI endpointUri, Wire wire, ClassLoader loader) throws DestinationCreationException {
@@ -113,96 +84,13 @@ public class BindingComponent extends AbstractLifecycle implements Component {
         }
     }
 
-    public ScopeContainer getScopeContainer() {
-        return null;
-    }
-
-    public ComponentContext getComponentContext() {
-        return null;
-    }
-
-    public void publish(Event object) {
-
-    }
-
-    public void addListener(RuntimeEventListener listener) {
-
-    }
-
-    public void addListener(EventFilter filter, RuntimeEventListener listener) {
-
-    }
-
-    public void removeListener(RuntimeEventListener listener) {
-
-    }
-
-    @Deprecated
-    public void attachWire(Wire wire) {
-    }
-
-    @Deprecated
-    public void attachCallbackWire(Wire wire) {
-    }
-
-    @Deprecated
-    public void attachWires(List<Wire> wires) {
-    }
-
-    @Deprecated
-    public Scope getScope() {
-        return null;
-    }
-
-    @Deprecated
-    public void setScopeContainer(ScopeContainer scopeContainer) {
-
-    }
-
-    @Deprecated
-    public boolean isOptimizable() {
-        return false;
-    }
-
-    @Deprecated
-    public void register(Service service) throws RegistrationException {
-
-    }
-
-    @Deprecated
-    public void register(Reference reference) throws RegistrationException {
-
-    }
-
-    @Deprecated
-    public Service getService(String name) {
-        return null;
-    }
-
-    @Deprecated
-    public Reference getReference(String name) {
-        return null;
-    }
-
-    @Deprecated
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
-        throws TargetInvokerCreationException {
-        return null;
-    }
-
-    @Deprecated
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
-        throws TargetInvokerCreationException {
-        return null;
-    }
-
-
     /**
      * Creates a Channel to the service at the given URI
-     *
+     * 
      * @param uri the service uri
      * @return the channel
-     * @throws InvalidDestinationException if an error is encountered creating the channel
+     * @throws InvalidDestinationException if an error is encountered creating
+     *             the channel
      */
     private Channel createChannel(URI uri) throws InvalidDestinationException {
         if (LOCAL_SCHEME.equals(uri.getScheme())) {

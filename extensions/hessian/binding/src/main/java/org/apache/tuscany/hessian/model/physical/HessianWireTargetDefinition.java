@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.hessian.model;
+package org.apache.tuscany.hessian.model.physical;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
-public class HessianWireSourceDefinition extends PhysicalWireSourceDefinition {
+public class HessianWireTargetDefinition extends PhysicalWireTargetDefinition {
     private URI endpointUri;
 
     public URI getEndpointUri() {

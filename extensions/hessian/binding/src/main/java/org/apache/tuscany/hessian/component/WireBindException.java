@@ -23,6 +23,7 @@ import org.apache.tuscany.hessian.HessianException;
 /**
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("serial")
 public class WireBindException extends HessianException {
 
     public WireBindException(Throwable cause) {

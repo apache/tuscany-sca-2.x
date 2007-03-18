@@ -23,6 +23,7 @@ package org.apache.tuscany.hessian;
  *
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("serial")
 public class TypeNotFoundException extends DestinationCreationException {
 
     public TypeNotFoundException(String message, String identifier, Throwable cause) {
