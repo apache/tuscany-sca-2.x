@@ -25,8 +25,10 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
 import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
 import org.apache.tuscany.core.injection.InstanceObjectFactory;
@@ -47,7 +49,6 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -62,6 +63,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * @param <T> the implementation class for the defined component
  */
 @Service(interfaces={PhysicalComponentBuilder.class, WireAttacher.class})
+@EagerInit
 public class JavaPhysicalComponentBuilder<T>
     extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>
     implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
@@ -73,8 +75,9 @@ public class JavaPhysicalComponentBuilder<T>
 
     public JavaPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
-        @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry) {
-        super(builderRegistry, scopeRegistry);
+        @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry,
+        @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders) {
+        super(builderRegistry, scopeRegistry, providerBuilders);
     }
 
     @Reference

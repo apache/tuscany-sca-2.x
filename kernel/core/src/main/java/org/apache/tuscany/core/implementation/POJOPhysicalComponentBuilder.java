@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
+import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
 
 /**
  * Base class for PhysicalComponentBuilders that build components based on POJOs.
@@ -36,14 +37,17 @@ import org.apache.tuscany.core.implementation.system.model.SystemPhysicalCompone
 public abstract class POJOPhysicalComponentBuilder<PCD extends PhysicalComponentDefinition, C extends Component>
     implements PhysicalComponentBuilder<PCD, C> {
 
-    private final PhysicalComponentBuilderRegistry builderRegistry;
-    private final ScopeRegistry scopeRegistry;
+    protected final PhysicalComponentBuilderRegistry builderRegistry;
+    protected final ScopeRegistry scopeRegistry;
+    protected final IFProviderBuilderRegistry providerBuilders;
 
     protected POJOPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
-        @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry) {
+        @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry,
+        @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders) {
         this.builderRegistry = builderRegistry;
         this.scopeRegistry = scopeRegistry;
+        this.providerBuilders = providerBuilders;
     }
 
     @Init

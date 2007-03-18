@@ -24,6 +24,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
 import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
 import org.apache.tuscany.core.implementation.system.component.SystemComponent;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
@@ -35,13 +36,14 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class SystemPhysicalComponentBuilder<T, GROUP>
+public class SystemPhysicalComponentBuilder<T>
     extends POJOPhysicalComponentBuilder<SystemPhysicalComponentDefinition<T>, SystemComponent<T>> {
 
     public SystemPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
-        @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry) {
-        super(builderRegistry, scopeRegistry);
+        @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry,
+        @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders) {
+        super(builderRegistry, scopeRegistry, providerBuilders);
     }
 
     public SystemComponent<T> build(SystemPhysicalComponentDefinition<T> definition) {
