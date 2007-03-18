@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import static org.apache.tuscany.databinding.sdo.ImportSDO.IMPORT_SDO;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -29,8 +31,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
@@ -49,11 +50,9 @@ import commonj.sdo.impl.HelperProvider;
  * @version $Rev$ $Date$
  */
 public class ImportSDOLoader extends LoaderExtension {
-    public static final QName IMPORT_SDO =
-        new QName("http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0", "import.sdo");
 
     @Constructor({"registry"})
-    public ImportSDOLoader(@Autowire LoaderRegistry registry) {
+    public ImportSDOLoader(@Reference LoaderRegistry registry) {
         super(registry);
     }
 
@@ -61,20 +60,19 @@ public class ImportSDOLoader extends LoaderExtension {
         return IMPORT_SDO;
     }
 
-    public ModelObject load(CompositeComponent parent,
-                            ModelObject object,
+    public ModelObject load(ModelObject object,
                             XMLStreamReader reader,
                             DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert IMPORT_SDO.equals(reader.getName());
 
         // FIXME: [rfeng] How to associate the TypeHelper with deployment
         // context?
-        HelperContext helperContext = SDODataTypeHelper.getHelperContext(deploymentContext);
+        HelperContext helperContext = SDOContextHelper.getHelperContext(object);
 
         importFactory(reader, deploymentContext, helperContext);
         importWSDL(reader, deploymentContext, helperContext);
         LoaderUtil.skipToEndElement(reader);
-        return new SDOType(helperContext);
+        return new ImportSDO(helperContext);
     }
 
     private void importFactory(XMLStreamReader reader, DeploymentContext deploymentContext, HelperContext helperContext)
@@ -100,7 +98,6 @@ public class ImportSDOLoader extends LoaderExtension {
         Field field = factoryClass.getField("INSTANCE");
         Object factory = field.get(null);
         Method method = factory.getClass().getMethod("register", new Class[] {HelperContext.class});
-
         method.invoke(factory, new Object[] {helperContext});
 
         // FIXME: How do we associate the application HelperContext with the one
@@ -135,24 +132,29 @@ public class ImportSDOLoader extends LoaderExtension {
                 } finally {
                     xsdInputStream.close();
                 }
+                // FIXME: How do we associate the application HelperContext with the one
+                // imported by the composite
+                HelperContext defaultContext = HelperProvider.getDefaultContext();
+                xsdInputStream = wsdlURL.openStream();
+                try {
+                    XSDHelper xsdHelper = defaultContext.getXSDHelper();
+                    ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+                    try {
+                        // set TCCL as SDO needs it
+                        ClassLoader cl = deploymentContext.getClassLoader();
+                        Thread.currentThread().setContextClassLoader(cl);
+                        xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
+                    } finally {
+                        Thread.currentThread().setContextClassLoader(oldCL);
+                    }
+                } finally {
+                    xsdInputStream.close();
+                }                
             } catch (IOException e) {
                 LoaderException sfe = new LoaderException(e.getMessage());
                 sfe.setResourceURI(location);
                 throw sfe;
             }
-        }
-    }
-
-    public static class SDOType extends ModelObject {
-        private HelperContext helperContext;
-
-        public SDOType(HelperContext helperContext) {
-            super();
-            this.helperContext = helperContext;
-        }
-
-        public HelperContext getHelperContext() {
-            return helperContext;
         }
     }
 }

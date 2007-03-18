@@ -22,6 +22,11 @@ import org.apache.tuscany.spi.model.ModelObject;
 
 import commonj.sdo.DataObject;
 
+/**
+ * Wrapper of DataObject as a ModelObject
+ * 
+ * @version $Rev$ $Date$
+ */
 public class ModelDataObject extends ModelObject {
     private DataObject dataObject;
 

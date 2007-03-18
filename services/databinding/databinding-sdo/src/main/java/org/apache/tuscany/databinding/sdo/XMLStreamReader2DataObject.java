@@ -39,7 +39,7 @@ public class XMLStreamReader2DataObject extends TransformerExtension<XMLStreamRe
 
     public DataObject transform(XMLStreamReader source, TransformationContext context) {
         try {
-            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext.getTypeHelper());
             // The XMLStreamHelper requires that the reader is posistioned at
             // START_ELEMENT

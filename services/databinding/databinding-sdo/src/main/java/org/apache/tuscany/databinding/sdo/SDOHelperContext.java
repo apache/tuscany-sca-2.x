@@ -16,32 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.databinding.sdo;
 
-import commonj.sdo.DataObject;
-import commonj.sdo.helper.CopyHelper;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.component.AbstractSCAObject;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.model.Scope;
 
-/**
- * Creates new instances of an SDO
- *
- * @version $Rev$ $Date$
- */
-public class SDOObjectFactory implements ObjectFactory<DataObject> {
+import commonj.sdo.helper.HelperContext;
 
-    private DataObject dataObject;
+public class SDOHelperContext extends AbstractSCAObject {
+    private HelperContext helperContext;
 
-    public SDOObjectFactory(DataObject dataObject) {
-        this.dataObject = dataObject;
+    /**
+     * @param name
+     * @param parent
+     */
+    public SDOHelperContext(Component parent, HelperContext helperContext) {
+        super(parent.getUri().resolve("/" + HelperContext.class.getName() + "/"));
+        this.helperContext = helperContext;
     }
 
-    public DataObject getInstance() throws ObjectCreationException {
-        return CopyHelper.INSTANCE.copy(dataObject);
+    public Scope getScope() {
+        return Scope.COMPOSITE;
     }
 
-    public void releaseInstance(DataObject instance) {
+    public HelperContext getHelperContext() {
+        return helperContext;
     }
 
 }
-

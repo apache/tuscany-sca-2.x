@@ -28,9 +28,7 @@ import junit.framework.Assert;
 import org.apache.tuscany.spi.model.DataType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
-
 import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.helper.XMLHelper;
 
 /**
  * 
@@ -39,7 +37,7 @@ public class XMLDocument2XMLStreamReaderTestCase extends SDOTransformerTestCaseB
 
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<QName>(XMLDocument.class.getName(), XMLDocument.class, orderQName);
+        return new DataType<QName>(XMLDocument.class.getName(), XMLDocument.class, ORDER_QNAME);
     }
 
     @Override
@@ -49,11 +47,13 @@ public class XMLDocument2XMLStreamReaderTestCase extends SDOTransformerTestCaseB
 
     public final void testTransform() throws XMLStreamException {
         XMLDocument document =
-                XMLHelper.INSTANCE.createDocument(dataObject, orderQName.getNamespaceURI(), orderQName.getLocalPart());
+            helperContext.getXMLHelper().createDocument(dataObject,
+                                                        ORDER_QNAME.getNamespaceURI(),
+                                                        ORDER_QNAME.getLocalPart());
         XMLStreamReader reader = new XMLDocument2XMLStreamReader().transform(document, context);
         XMLDocument document2 = new XMLStreamReader2XMLDocument().transform(reader, reversedContext);
-        Assert.assertEquals(orderQName.getNamespaceURI(), document2.getRootElementURI());
-        Assert.assertEquals(orderQName.getLocalPart(), document2.getRootElementName());
+        Assert.assertEquals(ORDER_QNAME.getNamespaceURI(), document2.getRootElementURI());
+        Assert.assertEquals(ORDER_QNAME.getLocalPart(), document2.getRootElementName());
         Assert.assertTrue(document2.getRootObject() instanceof PurchaseOrderType);
     }
 
