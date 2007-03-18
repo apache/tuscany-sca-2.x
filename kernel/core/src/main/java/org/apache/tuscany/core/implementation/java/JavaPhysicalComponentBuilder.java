@@ -99,7 +99,7 @@ public class JavaPhysicalComponentBuilder<T>
     public JavaComponent<T> build(JavaPhysicalComponentDefinition<T> componentDefinition) throws BuilderException {
 
         URI componentId = componentDefinition.getComponentId();
-        InstanceFactoryProvider<T> provider = componentDefinition.getProvider();
+        InstanceFactoryProvider<T> provider = null;
         JavaComponent<T> component = new JavaComponent<T>(componentId, provider, null, null, 0, -1, -1);
 
         setInstanceFactoryClass(componentDefinition, component);
