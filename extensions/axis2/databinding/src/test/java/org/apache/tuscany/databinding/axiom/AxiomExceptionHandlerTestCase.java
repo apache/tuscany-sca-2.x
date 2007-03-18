@@ -16,17 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.databinding.axiom;
 
-import javax.xml.namespace.QName;
+import java.io.StringReader;
+
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.tuscany.spi.idl.ServiceFaultException;
+import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.XMLType;
 
-public class OMElementTestCase extends TestCase {
+/**
+ * Test case for SDOExceptionHandler
+ */
+public class AxiomExceptionHandlerTestCase extends TestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -57,47 +66,42 @@ public class OMElementTestCase extends TestCase {
             + "  </items>"
             + "</ipo:purchaseOrder>";
 
-    public final void testStringTransform() {
-        String2OMElement t1 = new String2OMElement();
-        OMElement element = t1.transform(IPO_XML, null);
-        OMElement2String t2 = new OMElement2String();
-        String xml = t2.transform(element, null);
-        Assert.assertNotNull(xml);
-        Assert.assertNotNull(xml.indexOf("<ipo:comment>") != -1);
+    private AxiomExceptionHandler handler;
+    private OMElement faultElement;
+
+    /**
+     * @see junit.framework.TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.handler = new AxiomExceptionHandler();
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(IPO_XML));
+        StAXOMBuilder builder = new StAXOMBuilder(reader);
+        faultElement = builder.getDocumentElement();
     }
 
-    public final void testStringTransform2() {
-        String str =
-            "<p0:firstName xmlns:xml=\"http://www.w3.org/XML/1998/namespace\" " + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-                + "xmlns:p0=\"http://helloworld\">Robert</p0:firstName>";
-        String2OMElement t1 = new String2OMElement();
-        OMElement element = t1.transform(str, null);
-        OMElement2String t2 = new OMElement2String();
-        String xml = t2.transform(element, null);
-        Assert.assertNotNull(xml);
-        Assert.assertNotNull(xml.indexOf("<ipo:comment>") != -1);
+    public void testGetFaultType() {
+        DataType<?> dataType = handler.getFaultType(new DataType<XMLType>(ServiceFaultException.class, null));
+        assertEquals(OMElement.class, dataType.getPhysical());
+        assertEquals(XMLType.UNKNOWN, dataType.getLogical());
+        assertEquals(AxiomDataBinding.NAME, dataType.getDataBinding());
+        dataType = handler.getFaultType(new DataType<XMLType>(Exception.class, null));
+        assertNull(dataType);
     }
 
-    public final void testStAXTransform() {
-        String2OMElement t1 = new String2OMElement();
-        OMElement element = t1.transform(IPO_XML, null);
+    public void testCreate() {
 
-        OMElement2XMLStreamReader t2 = new OMElement2XMLStreamReader();
-        XMLStreamReader reader = t2.transform(element, null);
-
-        XMLStreamReader2OMElement t3 = new XMLStreamReader2OMElement();
-        OMElement element2 = t3.transform(reader, null);
-
-        Assert.assertEquals(element2.getQName(), element.getQName());
-        Assert.assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), element2.getQName());
+        Exception ex = handler.createException(null, "Order", faultElement, null);
+        assertTrue(ex instanceof ServiceFaultException);
+        ServiceFaultException exception = (ServiceFaultException)ex;
+        assertEquals("Order", exception.getMessage());
+        assertSame(faultElement, exception.getFaultInfo());
     }
 
-    public final void testCopy() {
-        String2OMElement t1 = new String2OMElement();
-        OMElement element = t1.transform(IPO_XML, null);
-        OMElement copy = (OMElement)new AxiomDataBinding().copy(element);
-        assertNotSame(element, copy);
-        assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), copy.getQName());
+    public void testGetFaultInfo() {
+        ServiceFaultException exception = new ServiceFaultException("Order", faultElement, null);
+        Object faultInfo = handler.getFaultInfo(exception);
+        assertSame(faultElement, faultInfo);
     }
 
 }
