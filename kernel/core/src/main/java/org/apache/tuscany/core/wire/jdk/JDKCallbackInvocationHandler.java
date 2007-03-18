@@ -105,7 +105,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
         Object correlationId = context.getCorrelationId();
         context.setCorrelationId(null);
         try {
-            return invoke(chain, invoker, args, correlationId, callbackUris);
+            return invoke(chain, invoker, args, correlationId, callbackUris, context);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {

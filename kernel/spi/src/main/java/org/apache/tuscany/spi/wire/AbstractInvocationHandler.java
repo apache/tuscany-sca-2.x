@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Base class for performing invocations on a wire. Subclasses are responsible for retrieving and supplying the
@@ -43,14 +44,12 @@ public abstract class AbstractInvocationHandler {
     public AbstractInvocationHandler() {
     }
 
-    /**
-     * @Deprecated
-     */
+    @Deprecated
     protected Object invoke(InvocationChain chain,
                             TargetInvoker invoker,
                             Object[] args,
                             Object correlationId,
-                            LinkedList<URI> callbackUris)
+                            LinkedList<URI> callbackUris, WorkContext workContext)
         throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         if (headInterceptor == null) {
@@ -61,7 +60,7 @@ public abstract class AbstractInvocationHandler {
                     String name = chain.getOperation().getName();
                     throw new AssertionError("No target invoker [" + name + "]");
                 }
-                return targetInvoker.invokeTarget(args, TargetInvoker.NONE, null);
+                return targetInvoker.invokeTarget(args, TargetInvoker.NONE, workContext);
             } catch (InvocationTargetException e) {
                 // the cause was thrown by the target so throw it
                 throw e.getCause();
@@ -69,12 +68,8 @@ public abstract class AbstractInvocationHandler {
         } else {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
-            if (correlationId != null) {
-                msg.setCorrelationId(correlationId);
-            }
-            if (callbackUris != null) {
-                msg.setCallbackUris(callbackUris);
-            }
+            msg.setCorrelationId(workContext.getCorrelationId());
+            msg.setCallbackUris(workContext.getCallbackUris());
             Operation operation = chain.getOperation();
             ServiceContract contract = operation.getServiceContract();
             if (contract.isConversational()) {

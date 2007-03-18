@@ -55,7 +55,7 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
             if (callbackRoutingChain != null) {
                 workContext.setCallbackUris(callbackRoutingChain);
             }
-            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), null);
+            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), workContext);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());

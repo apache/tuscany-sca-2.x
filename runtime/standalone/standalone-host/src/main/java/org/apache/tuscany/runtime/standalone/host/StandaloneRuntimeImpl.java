@@ -27,6 +27,7 @@ import java.util.Map;
 import org.apache.tuscany.api.annotation.LogLevel;
 import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
@@ -34,6 +35,7 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -86,8 +88,10 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
             ScopeContainer<URI, URI> container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
             container.startContext(compositeUri, compositeUri);
             getWorkContext().setIdentifier(Scope.COMPOSITE, compositeUri);
+            WorkContext workContext = new SimpleWorkContext();
+            workContext.setIdentifier(Scope.COMPOSITE, compositeUri);
             try {
-                return run(impl, args, compositeBase);
+                return run(impl, args, compositeBase, workContext);
             } finally {
                 container.stopContext(compositeUri);
                 getWorkContext().setIdentifier(Scope.COMPOSITE, null);
@@ -99,7 +103,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
 
     }
 
-    private int run(CompositeImplementation impl, String[] args, URI compositeUri) throws Exception {
+    private int run(CompositeImplementation impl, String[] args, URI compositeUri, WorkContext workContext) throws Exception {
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = componentType.getComponents();
         for (Map.Entry<String, ComponentDefinition<? extends Implementation<?>>> entry : components.entrySet()) {
@@ -107,13 +111,13 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
             ComponentDefinition<? extends Implementation<?>> launchedDefinition = entry.getValue();
             Implementation implementation = launchedDefinition.getImplementation();
             if (implementation.getClass().isAssignableFrom(Launched.class)) {
-                return run(compositeUri.resolve(name), implementation, args);
+                return run(compositeUri.resolve(name), implementation, args, workContext);
             }
         }
         return -1;
     }
 
-    private int run(URI componentUri, Implementation implementation, String[] args)
+    private int run(URI componentUri, Implementation implementation, String[] args, WorkContext workContext)
         throws TargetInvokerCreationException, InvocationTargetException {
         Launched launched = (Launched) implementation;
         PojoComponentType launchedType = launched.getComponentType();
@@ -122,7 +126,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
         Operation<?> operation = testService.getServiceContract().getOperations().get("main");
         Component component = getComponentManager().getComponent(componentUri);
         TargetInvoker targetInvoker = component.createTargetInvoker("main", operation);
-        Object result = targetInvoker.invokeTarget(new Object[]{args}, TargetInvoker.NONE, null);
+        Object result = targetInvoker.invokeTarget(new Object[]{args}, TargetInvoker.NONE, workContext);
         try {
             return int.class.cast(result);
         } catch (ClassCastException e) {

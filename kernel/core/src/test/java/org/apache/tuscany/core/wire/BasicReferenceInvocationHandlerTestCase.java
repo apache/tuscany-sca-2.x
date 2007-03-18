@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -35,12 +36,15 @@ import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 
+import org.easymock.EasyMock;
+
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class BasicReferenceInvocationHandlerTestCase extends TestCase {
 
     private Method echo;
+    private WorkContext workContext;
 
     public void testInterceptorInvoke() throws Throwable {
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
@@ -57,7 +61,7 @@ public class BasicReferenceInvocationHandlerTestCase extends TestCase {
         wire.addInvocationChain(operation, chain);
         wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("#wire"));
-        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, workContext);
         assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
     }
@@ -65,6 +69,10 @@ public class BasicReferenceInvocationHandlerTestCase extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         echo = SimpleTarget.class.getMethod("echo", String.class);
+        workContext = EasyMock.createMock(WorkContext.class);
+        EasyMock.expect(workContext.getCorrelationId()).andStubReturn(null);
+        EasyMock.expect(workContext.getCallbackUris()).andStubReturn(null);
+        EasyMock.replay(workContext);
     }
 
 }

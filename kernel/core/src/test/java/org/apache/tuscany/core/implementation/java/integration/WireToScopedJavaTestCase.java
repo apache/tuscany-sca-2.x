@@ -65,7 +65,7 @@ import org.apache.tuscany.core.wire.jdk.JDKProxyService;
  */
 public class WireToScopedJavaTestCase extends TestCase {
     private WorkContext workContext = new WorkContextImpl();
-    private ProxyService proxyService = new JDKProxyService(new WorkContextImpl());
+    private ProxyService proxyService = new JDKProxyService(workContext);
 
     public void testToStatelessScope() throws Exception {
         StatelessScopeContainer scope = new StatelessScopeContainer(null);
