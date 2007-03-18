@@ -21,7 +21,6 @@ package org.apache.tuscany.core.model.physical.java;
 import java.net.URI;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -29,13 +28,11 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  *
  * @version $Rev$ $Date$
  * @param <T> the implementation class (if known)
+ * @param <GROUP> the component group id type
  */
-public class JavaPhysicalComponentDefinition<T> extends PhysicalComponentDefinition {
+public class JavaPhysicalComponentDefinition<T, GROUP> extends PhysicalComponentDefinition<GROUP> {
 
     private InstanceFactoryProvider<T> provider;
-
-    // Scope
-    private Scope scope;
 
     // Class loader id
     private URI classLoaderId;
@@ -56,24 +53,6 @@ public class JavaPhysicalComponentDefinition<T> extends PhysicalComponentDefinit
      */
     public void setClassLoaderId(URI classLoaderId) {
         this.classLoaderId = classLoaderId;
-    }
-
-    /**
-     * Gets the scope for the component.
-     *
-     * @return The scope for the component.
-     */
-    public Scope getScope() {
-        return scope;
-    }
-
-    /**
-     * Sets the scope for the component.
-     *
-     * @param scope The scope for the component.
-     */
-    public void setScope(Scope scope) {
-        this.scope = scope;
     }
 
     /**

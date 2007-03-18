@@ -21,19 +21,23 @@ package org.apache.tuscany.spi.model.physical;
 import java.net.URI;
 
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * Represents a physical component model.
  *
  * @version $Rev$ $Date$
+ * @param <GROUP> the component group id type
  */
-public abstract class PhysicalComponentDefinition extends ModelObject {
+public abstract class PhysicalComponentDefinition<GROUP> extends ModelObject {
 
     // Component Id.
     private URI componentId;
-    
+    private Scope scope;
+    private GROUP groupId;
+
     // Instance factory provider
-    private InstanceFactoryProviderDefinition instanceFactoryProviderDefinition;
+    private InstanceFactoryProviderDefinition instanceFactoryProviderDefinition;// Scope
 
     /**
      * Gets the component id.
@@ -47,10 +51,26 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
     /**
      * Sets the component id.
      *
-     * @param componentId
+     * @param componentId the component id
      */
     public void setComponentId(URI componentId) {
         this.componentId = componentId;
+    }
+
+    /**
+     * Returns the id of the component group this component belongs to.
+     * @return the id of the component group this component belongs to
+     */
+    public GROUP getGroupId() {
+        return groupId;
+    }
+
+    /**
+     * Sets the id of the component group this component belongs to.
+     * @param groupId the id of the component group this component belongs to
+     */
+    public void setGroupId(GROUP groupId) {
+        this.groupId = groupId;
     }
 
     /**
@@ -69,4 +89,23 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
         this.instanceFactoryProviderDefinition = instanceFactoryProviderDefinition;
     }
 
+    /**
+     * Gets the scope for the component.
+     *
+     * @return The scope for the component.
+     */
+    @Deprecated
+    public Scope getScope() {
+        return scope;
+    }
+
+    /**
+     * Sets the scope for the component.
+     *
+     * @param scope The scope for the component.
+     */
+    @Deprecated
+    public void setScope(Scope scope) {
+        this.scope = scope;
+    }
 }
