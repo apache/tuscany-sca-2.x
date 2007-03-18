@@ -107,7 +107,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
                       C componentDefinition,
                       GeneratorContext context) throws GenerationException {
 
-        PhysicalWireDefinition wireDefinition = createDefinition(contract, context);
+        PhysicalWireDefinition wireDefinition = createWireDefinition(contract, context);
         Class<?> type = componentDefinition.getClass();
         ComponentGenerator<C> targetGenerator = (ComponentGenerator<C>) componentGenerators.get(type);
         if (targetGenerator == null) {
@@ -135,7 +135,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
                       GeneratorContext context) throws GenerationException {
 
         ServiceContract<?> contract = referenceDefinition.getServiceContract();
-        PhysicalWireDefinition wireDefinition = createDefinition(contract, context);
+        PhysicalWireDefinition wireDefinition = createWireDefinition(contract, context);
         Class<?> type = bindingDefinition.getClass();
         BindingGenerator targetGenerator = bindingGenerators.get(type);
         if (targetGenerator == null) {
@@ -165,7 +165,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
                       T target,
                       GeneratorContext context) throws GenerationException {
         ServiceContract<?> contract = referenceDefinition.getServiceContract();
-        PhysicalWireDefinition wireDefinition = createDefinition(contract, context);
+        PhysicalWireDefinition wireDefinition = createWireDefinition(contract, context);
         Class<?> type = target.getClass();
         ComponentGenerator<S> targetGenerator = (ComponentGenerator<S>) componentGenerators.get(type);
         if (targetGenerator == null) {
@@ -225,7 +225,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
 
 
     @SuppressWarnings({"unchecked"})
-    private PhysicalWireDefinition createDefinition(ServiceContract<?> contract, GeneratorContext context)
+    private PhysicalWireDefinition createWireDefinition(ServiceContract<?> contract, GeneratorContext context)
         throws GenerationException {
         PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition();
         for (Operation o : contract.getOperations().values()) {
