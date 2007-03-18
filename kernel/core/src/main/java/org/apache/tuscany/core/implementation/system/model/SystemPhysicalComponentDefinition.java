@@ -24,8 +24,9 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 /**
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
+ * @param <GROUP> the component group id type
  */
-public class SystemPhysicalComponentDefinition<T> extends PhysicalComponentDefinition {
+public class SystemPhysicalComponentDefinition<T, GROUP> extends PhysicalComponentDefinition<GROUP> {
     private int initLevel;
     private InstanceFactoryProvider<T> provider;
 

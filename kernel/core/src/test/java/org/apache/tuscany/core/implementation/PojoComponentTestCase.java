@@ -124,7 +124,7 @@ public class PojoComponentTestCase<T> extends TestCase {
         component = new TestComponent<T>(componentId, provider, scopeContainer, 0, -1, -1);
     }
 
-    public static class TestComponent<T> extends PojoComponent<T> {
+    public static class TestComponent<T> extends PojoComponent<T, Object> {
 
         public TestComponent(URI componentId,
                              InstanceFactoryProvider<T> instanceFactoryProvider,
@@ -132,7 +132,7 @@ public class PojoComponentTestCase<T> extends TestCase {
                              int initLevel,
                              long maxIdleTime,
                              long maxAge) {
-            super(componentId, instanceFactoryProvider, scopeContainer, initLevel, maxIdleTime, maxAge);
+            super(componentId, instanceFactoryProvider, scopeContainer, null, initLevel, maxIdleTime, maxAge);
         }
     }
 }

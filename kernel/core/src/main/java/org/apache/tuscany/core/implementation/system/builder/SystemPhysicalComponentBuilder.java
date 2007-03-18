@@ -21,6 +21,8 @@ package org.apache.tuscany.core.implementation.system.builder;
 import java.net.URI;
 
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.implementation.system.component.SystemComponent;
@@ -28,27 +30,37 @@ import org.apache.tuscany.core.implementation.system.model.SystemPhysicalCompone
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeRegistry;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemPhysicalComponentBuilder<T>
-    implements PhysicalComponentBuilder<SystemPhysicalComponentDefinition<T>, SystemComponent<T>> {
+@EagerInit
+public class SystemPhysicalComponentBuilder<T, GROUP>
+    implements PhysicalComponentBuilder<SystemPhysicalComponentDefinition<T, GROUP>, SystemComponent<T, GROUP>> {
 
-    /**
-     * Injects builder registry.
-     * @param registry PhysicalComponentBuilder registry.
-     */
-    @Reference
-    public void setBuilderRegistry(PhysicalComponentBuilderRegistry registry) {
-        registry.register(SystemPhysicalComponentDefinition.class, this);
+    private final PhysicalComponentBuilderRegistry builderRegistry;
+    private final ScopeRegistry scopeRegistry;
+
+
+    public SystemPhysicalComponentBuilder(
+        @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
+        @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry) {
+        this.builderRegistry = builderRegistry;
+        this.scopeRegistry = scopeRegistry;
     }
 
-    public SystemComponent<T> build(SystemPhysicalComponentDefinition<T> definition) {
+    @Init
+    void init() {
+        builderRegistry.register(SystemPhysicalComponentDefinition.class, this);
+    }
+
+    public SystemComponent<T, GROUP> build(SystemPhysicalComponentDefinition<T, GROUP> definition) {
         URI componentId = definition.getComponentId();
         int initLevel = definition.getInitLevel();
-        ScopeContainer scopeContainer = null;
+        GROUP groupId = definition.getGroupId();
+        ScopeContainer<GROUP, ?> scopeContainer = null;
         InstanceFactoryProvider<T> provider = definition.getProvider();
-        return new SystemComponent<T>(componentId, provider, scopeContainer, initLevel, -1, -1);
+        return new SystemComponent<T, GROUP>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
     }
 }

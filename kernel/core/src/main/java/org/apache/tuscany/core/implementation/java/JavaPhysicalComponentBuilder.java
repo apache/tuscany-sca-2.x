@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -61,10 +60,10 @@ import org.apache.tuscany.core.wire.WireObjectFactory2;
  *
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
+ * @param <GROUP> the component group id type
  */
-@Service(interfaces={PhysicalComponentBuilder.class, WireAttacher.class})
-public class JavaPhysicalComponentBuilder<T>
-    implements PhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>,
+public class JavaPhysicalComponentBuilder<T, GROUP>
+    implements PhysicalComponentBuilder<JavaPhysicalComponentDefinition<T, GROUP>, JavaComponent<T, GROUP>>,
     WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
 
     // Classloader registry
@@ -105,11 +104,11 @@ public class JavaPhysicalComponentBuilder<T>
      * @return A component instance that is ready to go live.
      * @throws BuilderException If unable to build the component.
      */
-    public JavaComponent<T> build(JavaPhysicalComponentDefinition<T> componentDefinition) throws BuilderException {
+    public JavaComponent<T, GROUP> build(JavaPhysicalComponentDefinition<T, GROUP> componentDefinition) throws BuilderException {
 
         URI componentId = componentDefinition.getComponentId();
         InstanceFactoryProvider<T> provider = componentDefinition.getProvider();
-        JavaComponent<T> component = new JavaComponent<T>(componentId, provider, null, 0, -1, -1);
+        JavaComponent<T, GROUP> component = new JavaComponent<T, GROUP>(componentId, provider, null, null, 0, -1, -1);
 
         setScopeContainer(componentDefinition, component);
 
