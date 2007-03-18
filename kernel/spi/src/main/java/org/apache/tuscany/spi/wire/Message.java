@@ -21,6 +21,8 @@ package org.apache.tuscany.spi.wire;
 import java.net.URI;
 import java.util.LinkedList;
 
+import org.apache.tuscany.spi.component.WorkContext;
+
 /**
  * Represents a request, response, or exception flowing through a wire
  *
@@ -37,6 +39,18 @@ public interface Message {
      * Sets the body of the message.
      */
     void setBody(Object body);
+
+    /**
+     * Returns the context associated with this invocation.
+     * @return the context associated with this invocation
+     */
+    WorkContext getWorkContext();
+
+    /**
+     * Sets the context associated with this invocation.
+     * @param workContext the context associated with this invocation
+     */
+    void setWorkContext(WorkContext workContext);
 
     /**
      * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
