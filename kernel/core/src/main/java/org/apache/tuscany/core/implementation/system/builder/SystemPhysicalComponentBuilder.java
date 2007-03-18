@@ -20,14 +20,13 @@ package org.apache.tuscany.core.implementation.system.builder;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
 import org.apache.tuscany.core.implementation.system.component.SystemComponent;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
-import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -37,22 +36,12 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
  */
 @EagerInit
 public class SystemPhysicalComponentBuilder<T, GROUP>
-    implements PhysicalComponentBuilder<SystemPhysicalComponentDefinition<T, GROUP>, SystemComponent<T, GROUP>> {
-
-    private final PhysicalComponentBuilderRegistry builderRegistry;
-    private final ScopeRegistry scopeRegistry;
-
+    extends POJOPhysicalComponentBuilder<SystemPhysicalComponentDefinition<T, GROUP>, SystemComponent<T, GROUP>> {
 
     public SystemPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
         @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry) {
-        this.builderRegistry = builderRegistry;
-        this.scopeRegistry = scopeRegistry;
-    }
-
-    @Init
-    void init() {
-        builderRegistry.register(SystemPhysicalComponentDefinition.class, this);
+        super(builderRegistry, scopeRegistry);
     }
 
     public SystemComponent<T, GROUP> build(SystemPhysicalComponentDefinition<T, GROUP> definition) {
