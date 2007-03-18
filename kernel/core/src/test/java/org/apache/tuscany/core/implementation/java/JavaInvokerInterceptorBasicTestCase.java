@@ -20,115 +20,191 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
 
+import junit.framework.TestCase;
+import org.easymock.IMocksControl;
+import org.easymock.classextension.EasyMock;
+
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
 
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
-
-public class JavaInvokerInterceptorBasicTestCase extends TestCase {
+public class JavaInvokerInterceptorBasicTestCase<CONTEXT> extends TestCase {
+    private TestBean bean;
+    private CONTEXT contextId;
     private Method echoMethod;
     private Method arrayMethod;
     private Method nullParamMethod;
     private Method primitiveMethod;
     private Method checkedMethod;
     private Method runtimeMethod;
-    private WorkContext context;
-    private ScopeContainer scopeContainer;
-    private InstanceWrapper wrapper;
-    private TestBean bean;
-    private JavaAtomicComponent component;
 
-    public JavaInvokerInterceptorBasicTestCase(String arg0) {
-        super(arg0);
-    }
+    private IMocksControl control;
+    private WorkContext workContext;
+    private ScopeContainer<CONTEXT> scopeContainer;
+    private InstanceWrapper<TestBean> wrapper;
+    private AtomicComponent<TestBean> component;
+    private Message message;
 
     public void testObjectInvoke() throws Throwable {
-        JavaInvokerInterceptor invoker = new JavaInvokerInterceptor(echoMethod, component, scopeContainer, context);
-        Message message = new MessageImpl();
-        message.setBody("foo");
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(echoMethod, component, scopeContainer);
+        String value = "foo";
+        mockCall(new Object[]{value});
+        message.setBody(value);
+        control.replay();
         Message ret = invoker.invoke(message);
-        assertEquals("foo", ret.getBody());
-    }
-
-    public void testArrayInvoke() throws Throwable {
-        JavaInvokerInterceptor invoker = new JavaInvokerInterceptor(arrayMethod, component, scopeContainer, context);
-        String[] args = new String[]{"foo", "bar"};
-        Message message = new MessageImpl();
-        message.setBody(new Object[]{args});
-
-        Message ret = invoker.invoke(message);
-        String[] retA = (String[]) ret.getBody();
-        assertNotNull(retA);
-        assertEquals(2, retA.length);
-        assertEquals("foo", retA[0]);
-        assertEquals("bar", retA[1]);
-    }
-
-    public void testNullInvoke() throws Throwable {
-        JavaInvokerInterceptor invoker =
-            new JavaInvokerInterceptor(nullParamMethod, component, scopeContainer, context);
-        Message message = new MessageImpl();
-        Message ret = invoker.invoke(message);
-        String retS = (String) ret.getBody();
-        assertEquals("foo", retS);
+        assertSame(ret, message);
+        control.verify();
     }
 
     public void testPrimitiveInvoke() throws Throwable {
-        JavaInvokerInterceptor invoker =
-            new JavaInvokerInterceptor(primitiveMethod, component, scopeContainer, context);
-        Message message = new MessageImpl();
-        message.setBody(new Integer[]{1});
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(primitiveMethod, component, scopeContainer);
+        Integer value = 1;
+        mockCall(new Object[]{value});
+        message.setBody(value);
+        control.replay();
         Message ret = invoker.invoke(message);
-        Integer retI = (Integer) ret.getBody();
-        assertEquals(1, retI.intValue());
+        assertSame(ret, message);
+        control.verify();
+    }
+
+    public void testArrayInvoke() throws Throwable {
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(arrayMethod, component, scopeContainer);
+        String[] value = new String[]{"foo", "bar"};
+        mockCall(new Object[]{value});
+        message.setBody(value);
+        control.replay();
+        Message ret = invoker.invoke(message);
+        assertSame(ret, message);
+        control.verify();
+    }
+
+    public void testEmptyInvoke() throws Throwable {
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(nullParamMethod, component, scopeContainer);
+        mockCall(new Object[]{});
+        message.setBody("foo");
+        control.replay();
+        Message ret = invoker.invoke(message);
+        assertSame(ret, message);
+        control.verify();
+    }
+
+    public void testNullInvoke() throws Throwable {
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(nullParamMethod, component, scopeContainer);
+        mockCall(null);
+        message.setBody("foo");
+        control.replay();
+        Message ret = invoker.invoke(message);
+        assertSame(ret, message);
+        control.verify();
     }
 
     public void testInvokeCheckedException() throws Throwable {
-        JavaInvokerInterceptor invoker = new JavaInvokerInterceptor(checkedMethod, component, scopeContainer, context);
-        Message message = new MessageImpl();
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(checkedMethod, component, scopeContainer);
+        mockCall(null);
+        message.setBodyWithFault(EasyMock.isA(TestException.class));
+        control.replay();
         Message ret = invoker.invoke(message);
-        assertTrue(ret.isFault());
+        assertSame(ret, message);
+        control.verify();
     }
 
     public void testInvokeRuntimeException() throws Throwable {
-        JavaInvokerInterceptor invoker = new JavaInvokerInterceptor(runtimeMethod, component, scopeContainer, context);
-        Message message = new MessageImpl();
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(runtimeMethod, component, scopeContainer);
+        mockCall(null);
+        message.setBodyWithFault(EasyMock.isA(TestRuntimeException.class));
+        control.replay();
         Message ret = invoker.invoke(message);
-        assertTrue(ret.isFault());
+        assertSame(ret, message);
+        control.verify();
     }
 
+    public void testSequenceStart() throws Throwable {
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(nullParamMethod, component, scopeContainer);
+        mockCall(null, JavaInvokerInterceptor.START);
+        message.setBody("foo");
+        control.replay();
+        Message ret = invoker.invoke(message);
+        assertSame(ret, message);
+        control.verify();
+    }
+
+    public void testSequenceContinue() throws Throwable {
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(nullParamMethod, component, scopeContainer);
+        mockCall(null, JavaInvokerInterceptor.CONTINUE);
+        message.setBody("foo");
+        control.replay();
+        Message ret = invoker.invoke(message);
+        assertSame(ret, message);
+        control.verify();
+    }
+
+    public void testSequenceEnd() throws Throwable {
+        JavaInvokerInterceptor<TestBean, CONTEXT> invoker =
+            new JavaInvokerInterceptor<TestBean, CONTEXT>(nullParamMethod, component, scopeContainer);
+        mockCall(null, JavaInvokerInterceptor.END);
+        message.setBody("foo");
+        control.replay();
+        Message ret = invoker.invoke(message);
+        assertSame(ret, message);
+        control.verify();
+    }
+
+    private void mockCall(Object value) throws Exception {
+        mockCall(value, JavaInvokerInterceptor.NONE);
+    }
+
+    private void mockCall(Object value, short sequence) throws Exception {
+        EasyMock.expect(message.getBody()).andReturn(value);
+        EasyMock.expect(message.getConversationSequence()).andReturn(sequence);
+        EasyMock.expect(message.getWorkContext()).andReturn(workContext);
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE);
+        EasyMock.expect(workContext.getIdentifier(Scope.COMPOSITE)).andReturn(contextId);
+        if (sequence == JavaInvokerInterceptor.START || sequence == JavaInvokerInterceptor.NONE) {
+            EasyMock.expect(scopeContainer.getWrapper(component, contextId)).andReturn(wrapper);
+        } else if (sequence == JavaInvokerInterceptor.CONTINUE || sequence == JavaInvokerInterceptor.END) {
+            EasyMock.expect(scopeContainer.getAssociatedWrapper(component, contextId)).andReturn(wrapper);
+        } else {
+            fail();
+        }
+        EasyMock.expect(wrapper.getInstance()).andReturn(bean);
+        scopeContainer.returnWrapper(component, wrapper, contextId);
+        if (sequence == JavaInvokerInterceptor.END) {
+            scopeContainer.remove(component);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
+        bean = new TestBean();
+        contextId = (CONTEXT) new Object();
         echoMethod = TestBean.class.getDeclaredMethod("echo", String.class);
         arrayMethod = TestBean.class.getDeclaredMethod("arrayEcho", String[].class);
-        nullParamMethod = TestBean.class.getDeclaredMethod("nullParam", (Class[]) null);
+        nullParamMethod = TestBean.class.getDeclaredMethod("nullParam");
         primitiveMethod = TestBean.class.getDeclaredMethod("primitiveEcho", Integer.TYPE);
-        checkedMethod = TestBean.class.getDeclaredMethod("checkedException", (Class[]) null);
-        runtimeMethod = TestBean.class.getDeclaredMethod("runtimeException", (Class[]) null);
+        checkedMethod = TestBean.class.getDeclaredMethod("checkedException");
+        runtimeMethod = TestBean.class.getDeclaredMethod("runtimeException");
         assertNotNull(echoMethod);
         assertNotNull(checkedMethod);
         assertNotNull(runtimeMethod);
 
-        context = EasyMock.createNiceMock(WorkContext.class);
-        component = EasyMock.createMock(JavaAtomicComponent.class);
-        scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
-        wrapper = EasyMock.createNiceMock(InstanceWrapper.class);
-        bean = new TestBean();
-        EasyMock.replay(component);
-        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE);
-        EasyMock.expect(scopeContainer.getWrapper(component)).andReturn(wrapper);
-        EasyMock.replay(scopeContainer);
-        EasyMock.expect(wrapper.getInstance()).andReturn(bean);
-        EasyMock.replay(wrapper);
-    }
-
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
+        control = EasyMock.createStrictControl();
+        workContext = control.createMock(WorkContext.class);
+        component = control.createMock(AtomicComponent.class);
+        scopeContainer = control.createMock(ScopeContainer.class);
+        wrapper = control.createMock(InstanceWrapper.class);
+        message = control.createMock(Message.class);
     }
 
     private class TestBean {
