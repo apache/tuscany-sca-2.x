@@ -20,6 +20,7 @@ package org.apache.tuscany.core.marshaller.extensions.java;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -29,7 +30,6 @@ import org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller;
 import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
  * Marshaller for Java physical component definitions.
@@ -45,9 +45,6 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
     // Core marshaller prefix
     public static final String JAVA_PREFIX = "java";
-
-    // Scope
-    private static final String SCOPE = "scope";
 
     // Classloader id
     private static final String CLASSLOADER_ID = "classLoaderId";
@@ -101,9 +98,7 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
 
         try {
             String name = reader.getName().getLocalPart();
-            if (SCOPE.equals(name)) {
-                componentDefinition.setScope(new Scope(reader.getElementText()));
-            } else if (CLASSLOADER_ID.equals(name)) {
+            if (CLASSLOADER_ID.equals(name)) {
                 componentDefinition.setClassLoaderId(new URI(reader.getElementText()));
             }
         } catch (URISyntaxException ex) {
@@ -126,9 +121,6 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
         throws MarshalException {
         try {
 
-            writer.writeStartElement(QNAME.getPrefix(), SCOPE, QNAME.getNamespaceURI());
-            writer.writeCharacters(componentDefinition.getScope().toString());
-            writer.writeEndElement();
             writer.writeStartElement(QNAME.getPrefix(), CLASSLOADER_ID, QNAME.getNamespaceURI());
             writer.writeCharacters(componentDefinition.getClassLoaderId().toASCIIString());
             writer.writeEndElement();

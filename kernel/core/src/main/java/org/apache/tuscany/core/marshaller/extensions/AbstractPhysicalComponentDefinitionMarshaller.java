@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.marshaller.MarshalException;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
@@ -44,6 +45,10 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
 
     // Component id attribute
     public static final String COMPONENT_ID = "componentId";
+
+    // Scope attribute
+    private static final String SCOPE = "scope";
+    
     
     // Instance factory provider
     public static final String INSTANCE_FACTORY_PROVIDER = "instanceFactoryProvider";
@@ -58,6 +63,8 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             QName qname = getModelObjectQName();
             writer.writeStartElement(qname.getPrefix(), qname.getLocalPart(), qname.getNamespaceURI());
             writer.writeAttribute(COMPONENT_ID, modelObject.getComponentId().toASCIIString());
+            writer.writeAttribute(SCOPE, modelObject.getScope().toString());
+            
             writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
             
             registry.marshall(modelObject.getInstanceFactoryProviderDefinition(), writer);
@@ -80,6 +87,7 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
         try {
             PCD componentDefinition = getConcreteModelObject();
             componentDefinition.setComponentId(new URI(reader.getAttributeValue(null, COMPONENT_ID)));
+            componentDefinition.setScope(new Scope(reader.getAttributeValue(null, SCOPE)));
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:

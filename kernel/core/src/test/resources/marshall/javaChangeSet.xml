@@ -20,8 +20,7 @@
 <core:changeSet xmlns:core="http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT">
 	
 	<!-- Component 1 -->
-	<java:component xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp1">
-		<java:scope>STATELESS</java:scope>
+	<java:component xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp1" scope="STATELESS">
 		<java:classLoaderId>#123</java:classLoaderId>
 		<bc:instanceFactoryProvider xmlns:bc="http://tuscany.apache.org/xmlns/marshaller/byteCode/1.0-SNAPSHOT">
 			<bc:byteCode>AB12345</bc:byteCode>
@@ -29,8 +28,7 @@
 	</java:component>
 	
 	<!-- Component 2 -->
-	<java:component xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp2">
-		<java:scope>STATELESS</java:scope>
+	<java:component xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp2" scope="STATELESS">
 		<java:classLoaderId>#123</java:classLoaderId>
 		<reflect:instanceFactoryProvider xmlns:reflect="http://tuscany.apache.org/xmlns/marshaller/reflect/1.0-SNAPSHOT">
 			<reflect:implementationClass>com.acme.Foo</reflect:implementationClass>
