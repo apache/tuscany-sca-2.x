@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 /**
  * @version $Revision$ $Date$
  * @param <T> the implementation class for the defined component
- * @param <GROUP> the component group id type
  */
 public class JavaComponent<T> extends PojoComponent<T> {
     public JavaComponent(URI componentId,

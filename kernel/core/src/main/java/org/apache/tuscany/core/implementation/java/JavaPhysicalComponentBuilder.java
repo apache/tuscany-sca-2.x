@@ -58,7 +58,6 @@ import org.apache.tuscany.spi.wire.Wire;
  *
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
- * @param <GROUP> the component group id type
  */
 public class JavaPhysicalComponentBuilder<T>
     extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>
