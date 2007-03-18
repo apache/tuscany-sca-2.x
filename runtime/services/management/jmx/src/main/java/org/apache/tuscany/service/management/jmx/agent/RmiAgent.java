@@ -90,6 +90,12 @@ public class RmiAgent extends AbstractAgent {
     public void preStart() throws ManagementException {
 
         try {
+            
+            String portValue = System.getProperty(ADMIN_PORT_PROPERTY);
+            if(portValue != null) {
+                port = Integer.parseInt(portValue);
+            }
+            
             registry = LocateRegistry.createRegistry(port);
         } catch (RemoteException ex) {
             throw new ManagementException(ex);
