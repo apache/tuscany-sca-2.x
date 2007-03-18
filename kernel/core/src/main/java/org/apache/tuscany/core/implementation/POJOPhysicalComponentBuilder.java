@@ -26,8 +26,11 @@ import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
+import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
+import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderException;
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
 
 /**
  * Base class for PhysicalComponentBuilders that build components based on POJOs.

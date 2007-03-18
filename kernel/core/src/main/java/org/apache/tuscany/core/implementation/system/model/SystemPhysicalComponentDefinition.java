@@ -20,39 +20,11 @@ package org.apache.tuscany.core.implementation.system.model;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
+import org.apache.tuscany.spi.model.physical.POJOComponentDefinition;
 
 /**
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
- * @param <GROUP> the component group id type
  */
-public class SystemPhysicalComponentDefinition<T> extends PhysicalComponentDefinition {
-    private int initLevel;
-    private InstanceFactoryProvider<T> provider;
-
-    /**
-     * Return the provider for the component's instance factory.
-     *
-     * @return the provider for the component's instance factory
-     */
-    public InstanceFactoryProvider<T> getProvider() {
-        return provider;
-    }
-
-    /**
-     * Sets the provider for the component's instance factory.
-     *
-     * @param provider the provider for the component's instance factory
-     */
-    public void setProvider(InstanceFactoryProvider<T> provider) {
-        this.provider = provider;
-    }
-
-    public int getInitLevel() {
-        return initLevel;
-    }
-
-    public void setInitLevel(int initLevel) {
-        this.initLevel = initLevel;
-    }
+public class SystemPhysicalComponentDefinition<T> extends POJOComponentDefinition<T> {
 }

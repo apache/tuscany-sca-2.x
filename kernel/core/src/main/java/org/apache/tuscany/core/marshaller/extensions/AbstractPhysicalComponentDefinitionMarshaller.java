@@ -70,8 +70,8 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             writer.writeAttribute(SCOPE, modelObject.getScope().toString());
             
             writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
-            
-            registry.marshall(modelObject.getInstanceFactoryProviderDefinition(), writer);
+// FIXME JNB
+//            registry.marshall(modelObject.getInstanceFactoryProviderDefinition(), writer);
             
             handleExtension(modelObject, writer);
             
@@ -100,7 +100,8 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
                         if(INSTANCE_FACTORY_PROVIDER.equals(name)) {
                             InstanceFactoryProviderDefinition ipcd = 
                                 (InstanceFactoryProviderDefinition) registry.unmarshall(reader);
-                            componentDefinition.setInstanceFactoryProviderDefinition(ipcd);
+// FIXME JNB
+//                            componentDefinition.setInstanceFactoryProviderDefinition(ipcd);
                         }
                         handleExtension(componentDefinition, reader);
                         break;

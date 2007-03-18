@@ -31,6 +31,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemPhysicalCompone
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -50,8 +51,13 @@ public class SystemPhysicalComponentBuilder<T>
         URI componentId = definition.getComponentId();
         int initLevel = definition.getInitLevel();
         URI groupId = definition.getGroupId();
+
         ScopeContainer<?> scopeContainer = null;
-        InstanceFactoryProvider<T> provider = definition.getProvider();
-        return new SystemComponent<T>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
+
+/*
+        InstanceFactoryProviderDefinition providerDefinition = definition.getInstanceFactoryProviderDefinition();
+        InstanceFactoryProvider<T> provider = providerBuilders.build(providerDefinition, null);
+*/
+        return new SystemComponent<T>(componentId, null, scopeContainer, groupId, initLevel, -1, -1);
     }
 }

@@ -22,6 +22,7 @@ import java.net.URI;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
+import org.apache.tuscany.spi.model.physical.POJOComponentDefinition;
 
 /**
  * Represents the physical component definition for a Java implementation.
@@ -29,26 +30,5 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
  * @version $Rev$ $Date$
  * @param <T> the implementation class (if known)
  */
-public class JavaPhysicalComponentDefinition<T> extends PhysicalComponentDefinition {
-
-    // Class loader id
-    private URI classLoaderId;
-
-    /**
-     * Gets the classloader id.
-     *
-     * @return Classloader id.
-     */
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    /**
-     * Set the classloader id.
-     *
-     * @param classLoaderId Classloader id.
-     */
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
+public class JavaPhysicalComponentDefinition<T> extends POJOComponentDefinition<T> {
 }
