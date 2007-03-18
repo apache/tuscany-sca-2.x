@@ -83,13 +83,13 @@ public class JavaTargetInvokerBasicInvocationTestCase extends TestCase {
     }
 
     public void testObjectInvoke() throws Throwable {
-        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, scopeContainer, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, scopeContainer);
         Object ret = invoker.invokeTarget("foo", NONE, context);
         assertEquals("foo", ret);
     }
 
     public void testArrayInvoke() throws Throwable {
-        JavaTargetInvoker invoker = new JavaTargetInvoker(arrayMethod, component, scopeContainer, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(arrayMethod, component, scopeContainer);
         String[] args = new String[]{"foo", "bar"};
         Object ret = invoker.invokeTarget(new Object[]{args}, NONE, context);
         String[] retA = (String[]) ret;
@@ -100,21 +100,21 @@ public class JavaTargetInvokerBasicInvocationTestCase extends TestCase {
     }
 
     public void testNullInvoke() throws Throwable {
-        JavaTargetInvoker invoker = new JavaTargetInvoker(nullParamMethod, component, scopeContainer, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(nullParamMethod, component, scopeContainer);
         Object ret = invoker.invokeTarget(null, NONE, context);
         String retS = (String) ret;
         assertEquals("foo", retS);
     }
 
     public void testPrimitiveInvoke() throws Throwable {
-        JavaTargetInvoker invoker = new JavaTargetInvoker(primitiveMethod, component, scopeContainer, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(primitiveMethod, component, scopeContainer);
         Object ret = invoker.invokeTarget(new Integer[]{1}, NONE, context);
         Integer retI = (Integer) ret;
         assertEquals(1, retI.intValue());
     }
 
     public void testInvokeCheckedException() throws Throwable {
-        JavaTargetInvoker invoker = new JavaTargetInvoker(checkedMethod, component, scopeContainer, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(checkedMethod, component, scopeContainer);
         try {
             invoker.invokeTarget(null, NONE, context);
             fail(TestException.class.getName() + " should have been thrown");
@@ -124,7 +124,7 @@ public class JavaTargetInvokerBasicInvocationTestCase extends TestCase {
     }
 
     public void testInvokeRuntimeException() throws Throwable {
-        JavaTargetInvoker invoker = new JavaTargetInvoker(runtimeMethod, component, scopeContainer, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(runtimeMethod, component, scopeContainer);
         try {
             invoker.invokeTarget(null, NONE, context);
             fail(TestException.class.getName() + " should have been thrown");

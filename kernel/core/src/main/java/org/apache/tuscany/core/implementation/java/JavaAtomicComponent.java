@@ -54,7 +54,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         }
         try {
             Method method = JavaIDLUtils.findMethod(implClass, operation);
-            return new JavaTargetInvoker(method, this, scopeContainer, workContext);
+            return new JavaTargetInvoker(method, this, scopeContainer);
         } catch (NoSuchMethodException e) {
             throw new TargetMethodNotFoundException(operation);
         }
