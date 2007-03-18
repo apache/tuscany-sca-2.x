@@ -36,7 +36,7 @@ public class AbstractEventPublisherTestCase extends TestCase {
         EasyMock.replay(listener);
         publisher.addListener(listener);
         publisher.publish(event);
-        EasyMock.verify(publisher);
+        EasyMock.verify(listener);
     }
 
     public void testRemoveListener() {
@@ -46,7 +46,7 @@ public class AbstractEventPublisherTestCase extends TestCase {
         publisher.addListener(listener);
         publisher.removeListener(listener);
         publisher.publish(event);
-        EasyMock.verify(publisher);
+        EasyMock.verify(listener);
     }
 
     public void testFalseFilterListener() {
@@ -55,7 +55,7 @@ public class AbstractEventPublisherTestCase extends TestCase {
         EasyMock.replay(listener);
         publisher.addListener(new FalseFilter(), listener);
         publisher.publish(event);
-        EasyMock.verify(publisher);
+        EasyMock.verify(listener);
     }
 
     public void testTrueFilterListener() {
@@ -66,7 +66,7 @@ public class AbstractEventPublisherTestCase extends TestCase {
         EasyMock.replay(listener);
         publisher.addListener(new TrueFilter(), listener);
         publisher.publish(event);
-        EasyMock.verify(publisher);
+        EasyMock.verify(listener);
     }
 
     protected void setUp() throws Exception {

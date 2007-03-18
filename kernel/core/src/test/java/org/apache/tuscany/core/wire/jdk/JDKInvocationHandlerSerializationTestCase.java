@@ -44,6 +44,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
+
 import org.easymock.EasyMock;
 
 /**
@@ -57,19 +59,24 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
     public void testSerializeDeserialize() throws Throwable {
         JDKInvocationHandler handler =
             new JDKInvocationHandler(Foo.class, wire, workContext);
-        handler.invoke(Foo.class.getMethod("invoke"), null);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        ObjectOutputStream ostream = new ObjectOutputStream(stream);
-        ostream.writeObject(handler);
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            handler.invoke(null, Foo.class.getMethod("invoke"), null);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ObjectOutputStream ostream = new ObjectOutputStream(stream);
+            ostream.writeObject(handler);
 
-        ObjectInputStream istream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
-        JDKInvocationHandler externalizable = (JDKInvocationHandler) istream.readObject();
+            ObjectInputStream istream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
+            JDKInvocationHandler externalizable = (JDKInvocationHandler) istream.readObject();
 
-        externalizable.setWorkContext(workContext);
-        externalizable.reactivate();
-        externalizable.invoke(Foo.class.getMethod("invoke"), null);
-        EasyMock.verify(invoker);
-        EasyMock.verify(wire);
+            externalizable.setWorkContext(workContext);
+            externalizable.reactivate();
+            externalizable.invoke(Foo.class.getMethod("invoke"), null);
+            EasyMock.verify(invoker);
+            EasyMock.verify(wire);
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
     protected void setUp() throws Exception {

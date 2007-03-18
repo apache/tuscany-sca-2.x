@@ -52,6 +52,9 @@ import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
+
+import org.easymock.EasyMock;
 
 /**
  * Tests scoping is properly handled for service references
@@ -63,6 +66,7 @@ public class ScopeReferenceTestCase extends TestCase {
     private URI groupId;
     private ScopeContainer statelessScope;
     private ScopeContainer compositeScope;
+    private WorkContext workContext;
 
     /**
      * Tests a composite-to-composite scoped wire
@@ -79,11 +83,16 @@ public class ScopeReferenceTestCase extends TestCase {
         AtomicComponent targetComponent = contexts.get("target");
         Source source = (Source) sourceComponent.getTargetInstance();
         Target target = (Target) targetComponent.getTargetInstance();
-        assertNull(source.getTarget().getString());
-        assertNull(target.getString());
-        target.setString("foo");
-        assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
-        assertEquals("foo", source.getTarget().getString());
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            assertNull(source.getTarget().getString());
+            assertNull(target.getString());
+            target.setString("foo");
+            assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
+            assertEquals("foo", source.getTarget().getString());
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
     /**
@@ -204,15 +213,20 @@ public class ScopeReferenceTestCase extends TestCase {
         AtomicComponent targetComponent = contexts.get("target");
         Source source = (Source) sourceComponent.getTargetInstance();
         Target target = (Target) targetComponent.getTargetInstance();
-        assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
-        assertNull(source.getTarget().getString());
-        assertNull(target.getString());
-        target.setString("foo");
-        assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = (Target) targetComponent.getTargetInstance();
-        assertFalse("foo".equals(target2.getString()));
-        source.getTarget().setString("bar");
-        assertFalse("bar".equals(source.getTarget().getString()));
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
+            assertNull(source.getTarget().getString());
+            assertNull(target.getString());
+            target.setString("foo");
+            assertFalse("foo".equals(source.getTarget().getString()));
+            Target target2 = (Target) targetComponent.getTargetInstance();
+            assertFalse("foo".equals(target2.getString()));
+            source.getTarget().setString("bar");
+            assertFalse("bar".equals(source.getTarget().getString()));
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
 
@@ -627,15 +641,20 @@ public class ScopeReferenceTestCase extends TestCase {
         AtomicComponent targetComponent = contexts.get("target");
         Source source = (Source) sourceComponent.getTargetInstance();
         Target target = (Target) targetComponent.getTargetInstance();
-        assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
-        assertNull(source.getTarget().getString());
-        assertNull(target.getString());
-        target.setString("foo");
-        assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = (Target) targetComponent.getTargetInstance();
-        assertFalse("foo".equals(target2.getString()));
-        source.getTarget().setString("bar");
-        assertFalse("bar".equals(source.getTarget().getString()));
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
+            assertNull(source.getTarget().getString());
+            assertNull(target.getString());
+            target.setString("foo");
+            assertFalse("foo".equals(source.getTarget().getString()));
+            Target target2 = (Target) targetComponent.getTargetInstance();
+            assertFalse("foo".equals(target2.getString()));
+            source.getTarget().setString("bar");
+            assertFalse("bar".equals(source.getTarget().getString()));
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
     /**
@@ -741,32 +760,22 @@ public class ScopeReferenceTestCase extends TestCase {
      * Tests a stateless-to-composite scoped wire is setup properly by the runtime
      */
     public void testStatelessToComposite() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             statelessScope, members, "target", Target.class, TargetImpl.class, compositeScope);
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
         Source source = (Source) sourceComponent.getTargetInstance();
         Target target = (Target) targetComponent.getTargetInstance();
-        assertNull(source.getTarget().getString());
-        assertNull(target.getString());
-        target.setString("foo");
-        assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
-        assertEquals("foo", source.getTarget().getString());
-
-        //second session
-        Object session2 = new Object();
-        ctx.setIdentifier(Scope.SESSION, session2);
-        compositeScope.onEvent(new HttpSessionStart(this, session2));
-
-        Target target2 = (Target) targetComponent.getTargetInstance();
-        assertEquals("foo", target2.getString());
-
-        assertEquals("foo", source.getTarget().getString());
-        source.getTarget().setString("bar");
-        assertEquals("bar", target2.getString());
-        assertEquals("bar", source.getTarget().getString());
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            assertNull(source.getTarget().getString());
+            assertNull(target.getString());
+            target.setString("foo");
+            assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
+            assertEquals("foo", source.getTarget().getString());
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
     protected void setUp() throws Exception {
@@ -787,6 +796,13 @@ public class ScopeReferenceTestCase extends TestCase {
         compositeScope.start();
         compositeScope.createGroup(groupId);
         compositeScope.startContext(groupId, groupId);
+
+        workContext = EasyMock.createMock(WorkContext.class);
+        EasyMock.expect(workContext.getIdentifier(Scope.COMPOSITE)).andStubReturn(URI.create("composite"));
+        EasyMock.expect(workContext.getIdentifier(Scope.STATELESS)).andStubReturn(null);
+        EasyMock.expect(workContext.getCorrelationId()).andStubReturn(null);
+        EasyMock.expect(workContext.getCallbackUris()).andStubReturn(null);
+        EasyMock.replay(workContext);
     }
 
 

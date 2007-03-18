@@ -37,6 +37,9 @@ public class AbstractInvocationHandlerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         workContext = EasyMock.createMock(WorkContext.class);
+        EasyMock.expect(workContext.getCorrelationId()).andStubReturn(null);
+        EasyMock.expect(workContext.getCallbackUris()).andStubReturn(null);
+        EasyMock.replay(workContext);
     }
 
     public void testInvocation() throws Throwable {

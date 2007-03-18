@@ -48,6 +48,7 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             Object messageId = msg.getMessageId();
+            WorkContext workContext = msg.getWorkContext();
             if (messageId != null) {
                 workContext.setCorrelationId(messageId);
             }

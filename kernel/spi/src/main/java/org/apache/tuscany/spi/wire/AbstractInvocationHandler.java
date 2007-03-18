@@ -67,6 +67,7 @@ public abstract class AbstractInvocationHandler {
             }
         } else {
             Message msg = new MessageImpl();
+            msg.setWorkContext(workContext);
             msg.setTargetInvoker(invoker);
             msg.setCorrelationId(workContext.getCorrelationId());
             msg.setCallbackUris(workContext.getCallbackUris());

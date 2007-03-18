@@ -53,11 +53,13 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         foo.invoke();
         EasyMock.replay(foo);
 
-        msg = new MessageImpl();
         contextId = new Object();
         workContext = EasyMock.createMock(WorkContext.class);
         EasyMock.expect(workContext.getIdentifier(Scope.CONVERSATION)).andStubReturn(contextId);
         EasyMock.replay(workContext);
+
+        msg = new MessageImpl();
+        msg.setWorkContext(workContext);
 
         component = EasyMock.createMock(JavaAtomicComponent.class);
         scopeContainer = EasyMock.createMock(ScopeContainer.class);
