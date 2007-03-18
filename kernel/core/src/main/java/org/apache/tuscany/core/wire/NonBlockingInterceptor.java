@@ -104,6 +104,14 @@ public class NonBlockingInterceptor implements Interceptor {
             }
         }
 
+        public WorkContext getWorkContext() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setWorkContext(WorkContext workContext) {
+            throw new UnsupportedOperationException();
+        }
+
         public void setTargetInvoker(TargetInvoker invoker) {
             throw new UnsupportedOperationException();
         }

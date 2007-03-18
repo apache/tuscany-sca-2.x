@@ -21,6 +21,8 @@ package org.apache.tuscany.spi.wire;
 import java.net.URI;
 import java.util.LinkedList;
 
+import org.apache.tuscany.spi.component.WorkContext;
+
 /**
  * The default implementation of a message flowed through a wire during an invocation
  *
@@ -35,6 +37,7 @@ public class MessageImpl implements Message {
     private Object correlationId;
     private boolean isFault;
     private short conversationSequence;
+    private WorkContext workContext;
 
     public MessageImpl() {
     }
@@ -46,6 +49,14 @@ public class MessageImpl implements Message {
     public void setBody(Object body) {
         this.isFault = false;
         this.body = body;
+    }
+
+    public WorkContext getWorkContext() {
+        return workContext;
+    }
+
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
     }
 
     public void setTargetInvoker(TargetInvoker invoker) {
