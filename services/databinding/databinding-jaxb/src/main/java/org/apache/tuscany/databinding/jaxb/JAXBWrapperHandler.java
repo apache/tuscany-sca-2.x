@@ -19,19 +19,20 @@
 
 package org.apache.tuscany.databinding.jaxb;
 
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
-import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.model.ElementInfo;
 
 /**
  * JAXB WrapperHandler implementation
@@ -40,9 +41,14 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
 
     public JAXBElement<?> create(ElementInfo element, TransformationContext context) {
         try {
+            // FIXME: How do we map the global element to a factory?
             String packageName = null;
             String factoryClassName = packageName + ".ObjectFactory";
-            Class<?> factoryClass = Class.forName(factoryClassName, true, context.getClassLoader());
+            ClassLoader classLoader = context != null ? context.getClassLoader() : null;
+            if (classLoader == null) {
+                classLoader = Thread.currentThread().getContextClassLoader();
+            }
+            Class<?> factoryClass = Class.forName(factoryClassName, true, classLoader);
             assert factoryClass.isAnnotationPresent(XmlRegistry.class);
             Object factory = factoryClass.newInstance();
             QName elementName = element.getQName();
@@ -58,7 +64,7 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
             if (method != null) {
                 Class typeClass = method.getParameterTypes()[0];
                 Object value = typeClass.newInstance();
-                return (JAXBElement<?>) method.invoke(factory, new Object[] { value });
+                return (JAXBElement<?>)method.invoke(factory, new Object[] {value});
             } else {
                 throw new TransformationException("ObjectFactory cannot be resolved.");
             }
@@ -67,36 +73,51 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
         }
     }
 
-    public Object getChild(JAXBElement<?> wrapper, int i, ElementInfo element) {
+    public void setChild(JAXBElement<?> wrapper, int i, ElementInfo childElement, Object value) {
+        Object wrapperValue = wrapper.getValue();
+        Class<?> wrapperClass = wrapperValue.getClass();
+
+        XmlType xmlType = wrapperClass.getAnnotation(XmlType.class);
+        String[] properties = xmlType.propOrder();
+        String property = properties[i];
+
         try {
-            Object value = wrapper.getValue();
-            PropertyDescriptor descriptors[] =
-                    Introspector.getBeanInfo(wrapper.getDeclaredType()).getPropertyDescriptors();
-            for (PropertyDescriptor d : descriptors) {
-                if (d.getName().equals(element.getQName().getLocalPart())) {
-                    return d.getReadMethod().invoke(value, new Object[] {});
+            for (Method m : wrapperClass.getMethods()) {
+                if (m.getName().equals("set" + capitalize(property))) {
+                    m.invoke(wrapperValue, new Object[] {value});
+                    return;
                 }
             }
-            return null;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new TransformationException(e);
         }
     }
 
-    public void setChild(JAXBElement<?> wrapper, int i, ElementInfo childElement, Object value) {
-        try {
-            Object wrapperValue = wrapper.getValue();
-            PropertyDescriptor descriptors[] =
-                    Introspector.getBeanInfo(wrapper.getDeclaredType()).getPropertyDescriptors();
-            for (PropertyDescriptor d : descriptors) {
-                if (d.getName().equals(childElement.getQName().getLocalPart())) {
-                    d.getWriteMethod().invoke(wrapperValue, new Object[] { value });
-                    break;
-                }
+    private static String capitalize(String name) {
+        char first = Character.toUpperCase(name.charAt(0));
+        return first + name.substring(1);
+    }
+
+    /**
+     * @see org.apache.tuscany.spi.databinding.WrapperHandler#getChildren(java.lang.Object)
+     */
+    public List getChildren(JAXBElement<?> wrapper) {
+        Object wrapperValue = wrapper.getValue();
+        Class<?> wrapperClass = wrapperValue.getClass();
+
+        XmlType xmlType = wrapperClass.getAnnotation(XmlType.class);
+        String[] properties = xmlType.propOrder();
+        List<Object> elements = new ArrayList<Object>();
+        for (String p : properties) {
+            try {
+                Method method = wrapperClass.getMethod("get" + capitalize(p), (Class[])null);
+                Object value = method.invoke(wrapperValue, (Object[])null);
+                elements.add(value);
+            } catch (Throwable e) {
+                throw new TransformationException(e);
             }
-        } catch (Exception e) {
-            throw new TransformationException(e);
         }
+        return elements;
     }
 
 }

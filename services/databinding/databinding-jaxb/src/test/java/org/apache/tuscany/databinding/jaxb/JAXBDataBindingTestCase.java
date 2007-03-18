@@ -19,14 +19,17 @@
 
 package org.apache.tuscany.databinding.jaxb;
 
+import java.lang.annotation.Annotation;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.XMLType;
 
+import com.example.ipo.jaxb.ObjectFactory;
 import com.example.ipo.jaxb.PurchaseOrderType;
 import com.example.ipo.jaxb.USAddress;
 import com.example.ipo.jaxb.USState;
@@ -46,22 +49,33 @@ public class JAXBDataBindingTestCase extends TestCase {
     }
 
     /**
-     * Test method for {@link org.apache.tuscany.databinding.jaxb.JAXBDataBinding#introspect(java.lang.Class)}.
+     * Test method for
+     * {@link org.apache.tuscany.databinding.jaxb.JAXBDataBinding#introspect(java.lang.Class, Annotation)}.
      */
     public final void testIntrospect() {
-        DataType<?> dataType = binding.introspect(JAXBElement.class);
-        Assert.assertTrue(dataType.getDataBinding().equals(binding.getName()));
-        Assert.assertTrue(dataType.getPhysical() == JAXBElement.class && dataType.getLogical() == null);
-        dataType = binding.introspect(MockJAXBElement.class);
-        Assert.assertEquals(PurchaseOrderType.class, dataType.getPhysical());
-        Assert.assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), dataType.getLogical());
-        dataType = binding.introspect(USAddress.class);
-        Assert.assertEquals(USAddress.class, dataType.getPhysical());
-        Assert.assertEquals(new QName("http://www.example.com/IPO", "USAddress"), dataType.getLogical());
-        dataType = binding.introspect(USState.class);
-        Assert.assertTrue(dataType.getDataBinding().equals(binding.getName()));
-        Assert.assertEquals(USState.class, dataType.getPhysical());
-        Assert.assertEquals(new QName("http://www.example.com/IPO", "USState"), dataType.getLogical());
+        DataType dataType = new DataType(JAXBElement.class, null);
+        boolean yes = binding.introspect(dataType, null);
+        assertTrue(yes);
+        assertTrue(dataType.getDataBinding().equals(binding.getName()));
+        assertTrue(dataType.getPhysical() == JAXBElement.class && dataType.getLogical() == XMLType.UNKNOWN);
+        dataType = new DataType(MockJAXBElement.class, null);
+        yes = binding.introspect(dataType, null);
+        assertTrue(yes);
+        assertEquals(MockJAXBElement.class, dataType.getPhysical());
+        assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), ((XMLType)dataType.getLogical())
+            .getTypeName());
+        dataType = new DataType(USAddress.class, null);
+        yes = binding.introspect(dataType, null);
+        assertTrue(yes);
+        assertEquals(USAddress.class, dataType.getPhysical());
+        assertEquals(new QName("http://www.example.com/IPO", "USAddress"), ((XMLType)dataType.getLogical())
+            .getTypeName());
+        dataType = new DataType(USState.class, null);
+        yes = binding.introspect(dataType, null);
+        assertTrue(yes);
+        assertTrue(dataType.getDataBinding().equals(binding.getName()));
+        assertEquals(USState.class, dataType.getPhysical());
+        assertEquals(new QName("http://www.example.com/IPO", "USState"), ((XMLType)dataType.getLogical()).getTypeName());
 
     }
 
@@ -80,4 +94,33 @@ public class JAXBDataBindingTestCase extends TestCase {
 
     }
 
+    @SuppressWarnings("unchecked")
+    public void testCopy() {
+        ObjectFactory factory = new ObjectFactory();
+        PurchaseOrderType poType = factory.createPurchaseOrderType();
+        JAXBElement<PurchaseOrderType> po = factory.createPurchaseOrder(poType);
+        JAXBElement<PurchaseOrderType> copy = (JAXBElement<PurchaseOrderType>)binding.copy(po);
+        assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), copy.getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testCopyNonElement() {
+        ObjectFactory factory = new ObjectFactory();
+        PurchaseOrderType poType = factory.createPurchaseOrderType();
+        poType.setComment("Comment");
+        PurchaseOrderType copy = (PurchaseOrderType)binding.copy(poType);
+        assertTrue(copy instanceof PurchaseOrderType);
+        assertEquals("Comment", ((PurchaseOrderType)copy).getComment());
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testCopyNonRoot() {
+        ObjectFactory factory = new ObjectFactory();
+        USAddress address = factory.createUSAddress();
+        address.setCity("San Jose");
+        USAddress copy = (USAddress)binding.copy(address);
+        assertTrue(copy instanceof USAddress);
+        assertEquals("San Jose", ((USAddress)copy).getCity());
+
+    }
 }
