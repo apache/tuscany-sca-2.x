@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.GroupInitializationException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -33,6 +34,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.runtime.InitializationException;
 
@@ -73,10 +75,12 @@ public class MavenEmbeddedRuntime extends AbstractRuntime<MavenRuntimeInfo> {
         Component testComponent = getComponentManager().getComponent(componentId);
         TargetInvoker targetInvoker = testComponent.createTargetInvoker("testService", operation);
         getWorkContext().setIdentifier(Scope.COMPOSITE, contextId);
+        WorkContext workContext = new SimpleWorkContext();
+        workContext.setIdentifier(Scope.COMPOSITE, contextId);
         try {
-            targetInvoker.invokeTarget(null, TargetInvoker.NONE, null);
+            targetInvoker.invokeTarget(null, TargetInvoker.NONE, workContext);
         } finally {
-            getWorkContext().setIdentifier(Scope.COMPOSITE, null);
+            getWorkContext().clearIdentifier(Scope.COMPOSITE);
         }
     }
 }

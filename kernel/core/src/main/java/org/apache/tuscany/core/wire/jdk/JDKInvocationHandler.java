@@ -145,7 +145,7 @@ public final class JDKInvocationHandler extends AbstractInvocationHandler
             list.add(wire.getSourceUri());
         }
         // send the invocation down the wire
-        Object result = invoke(chain, invoker, args, null, list);
+        Object result = invoke(chain, invoker, args, null, list, workContext);
 
         if (callback) {
             list = workContext.getCallbackUris();

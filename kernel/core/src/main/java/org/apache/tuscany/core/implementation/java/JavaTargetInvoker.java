@@ -36,15 +36,15 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $Rev$ $Date$
  */
-public class JavaTargetInvoker extends TargetInvokerExtension {
+public class JavaTargetInvoker<T> extends TargetInvokerExtension {
     protected Method operation;
-    private final AtomicComponent component;
-    private final ScopeContainer scopeContainer;
-    protected InstanceWrapper<?> target;
+    private final AtomicComponent<T> component;
+    private final ScopeContainer<?,Object> scopeContainer;
+    protected InstanceWrapper<T> target;
     protected boolean stateless;
 
     public JavaTargetInvoker(Method operation,
-                             AtomicComponent component,
+                             AtomicComponent<T> component,
                              ScopeContainer scopeContainer,
                              WorkContext context) {
         super(context);
@@ -56,9 +56,9 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     }
 
     public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
-        Object contextId = this.workContext.getIdentifier(scopeContainer.getScope());
+        Object contextId = workContext.getIdentifier(scopeContainer.getScope());
         try {
-            InstanceWrapper<?> wrapper = getInstance(sequence, contextId);
+            InstanceWrapper<T> wrapper = getInstance(sequence, contextId);
             Object instance = wrapper.getInstance();
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
@@ -93,7 +93,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     /**
      * Resolves the target service instance or returns a cached one
      */
-    protected InstanceWrapper<?> getInstance(short sequence, Object contextId) throws TargetException {
+    protected InstanceWrapper<T> getInstance(short sequence, Object contextId) throws TargetException {
         switch (sequence) {
         case NONE:
             if (cacheable) {

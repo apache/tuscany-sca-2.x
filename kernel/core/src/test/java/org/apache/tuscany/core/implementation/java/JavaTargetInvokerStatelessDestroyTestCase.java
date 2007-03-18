@@ -44,7 +44,7 @@ public class JavaTargetInvokerStatelessDestroyTestCase extends TestCase {
         EasyMock.replay(wrapper);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, scopeContainer, workContext);
         invoker.setCacheable(false);
-        assertEquals("foo", invoker.invokeTarget("foo", JavaTargetInvoker.NONE, null));
+        assertEquals("foo", invoker.invokeTarget("foo", JavaTargetInvoker.NONE, workContext));
         EasyMock.verify(component);
         EasyMock.verify(scopeContainer);
         EasyMock.verify(wrapper);

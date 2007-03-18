@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -36,10 +37,13 @@ import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 
+import org.easymock.EasyMock;
+
 public class InvocationHandlerTestCase extends TestCase {
 
     private Method hello;
     private ServiceContract<?> contract;
+    private WorkContext workContext;
 
     public InvocationHandlerTestCase() {
         super();
@@ -55,7 +59,7 @@ public class InvocationHandlerTestCase extends TestCase {
         Operation operation = contract.getOperations().get("hello");
         wire.addInvocationChain(operation, createChain(operation));
         wire.setSourceContract(contract);
-        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, workContext);
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 
@@ -65,7 +69,7 @@ public class InvocationHandlerTestCase extends TestCase {
         Operation operation = contract.getOperations().get("hello");
         wire.addInvocationChain(operation, createChain(operation));
         wire.setSourceContract(contract);
-        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, workContext);
         try {
             handler.invoke(hello, new Object[]{});
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -84,7 +88,7 @@ public class InvocationHandlerTestCase extends TestCase {
         wire.setSourceUri(URI.create("#wire"));
         wire.setSourceContract(contract);
         wire.addInvocationChain(operation, source);
-        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, workContext);
         try {
             assertEquals("foo", handler.invoke(hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -103,7 +107,7 @@ public class InvocationHandlerTestCase extends TestCase {
         wire.setSourceUri(URI.create("#wire"));
         wire.setSourceContract(contract);
         wire.addInvocationChain(operation, source);
-        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, null);
+        JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, workContext);
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 
@@ -123,6 +127,10 @@ public class InvocationHandlerTestCase extends TestCase {
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         contract = registry.introspect(SimpleTarget.class);
         hello = SimpleTarget.class.getMethod("hello", String.class);
+        workContext = EasyMock.createMock(WorkContext.class);
+        EasyMock.expect(workContext.getCorrelationId()).andStubReturn(null);
+        EasyMock.expect(workContext.getCallbackUris()).andStubReturn(null);
+        EasyMock.replay(workContext);
     }
 
 }

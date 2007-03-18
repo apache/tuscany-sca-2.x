@@ -32,6 +32,12 @@ import org.apache.tuscany.spi.component.WorkContext;
  * @version $Rev$ $Date$
  */
 public class AbstractInvocationHandlerTestCase extends TestCase {
+    private WorkContext workContext;
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        workContext = EasyMock.createMock(WorkContext.class);
+    }
 
     public void testInvocation() throws Throwable {
         InvocationHandler handler = new InvocationHandler();
@@ -41,7 +47,7 @@ public class AbstractInvocationHandlerTestCase extends TestCase {
         InvocationChain chain = EasyMock.createMock(InvocationChain.class);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor);
         EasyMock.replay(chain);
-        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new LinkedList<URI>());
+        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new LinkedList<URI>(), workContext);
         assertEquals("response", resp);
     }
 
@@ -52,7 +58,7 @@ public class AbstractInvocationHandlerTestCase extends TestCase {
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(null);
         EasyMock.expect(chain.getTargetInvoker()).andReturn(invoker);
         EasyMock.replay(chain);
-        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new LinkedList<URI>());
+        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new LinkedList<URI>(), workContext);
         assertEquals("response", resp);
     }
 
