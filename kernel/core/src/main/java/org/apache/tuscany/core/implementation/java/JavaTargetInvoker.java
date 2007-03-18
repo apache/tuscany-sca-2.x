@@ -55,8 +55,8 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
         stateless = Scope.STATELESS == scopeContainer.getScope();
     }
 
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
-        Object contextId = workContext.getIdentifier(scopeContainer.getScope());
+    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
+        Object contextId = this.workContext.getIdentifier(scopeContainer.getScope());
         try {
             InstanceWrapper<?> wrapper = getInstance(sequence, contextId);
             Object instance = wrapper.getInstance();

@@ -71,7 +71,7 @@ public class TargetInvokerExtensionTestCase extends TestCase {
             this.target = target;
         }
 
-        public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+        public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
             target.invoke((String) payload);
             return null;
         }

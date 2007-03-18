@@ -61,7 +61,7 @@ public abstract class AbstractInvocationHandler {
                     String name = chain.getOperation().getName();
                     throw new AssertionError("No target invoker [" + name + "]");
                 }
-                return targetInvoker.invokeTarget(args, TargetInvoker.NONE);
+                return targetInvoker.invokeTarget(args, TargetInvoker.NONE, null);
             } catch (InvocationTargetException e) {
                 // the cause was thrown by the target so throw it
                 throw e.getCause();
