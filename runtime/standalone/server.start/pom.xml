@@ -53,6 +53,12 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>bouncycastle</groupId>
+            <artifactId>bcprov-jdk14</artifactId>
+            <version>124</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
