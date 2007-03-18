@@ -31,21 +31,6 @@ import org.easymock.EasyMock;
  */
 public class WorkContextTestCase extends TestCase {
 
-    public void testRemoteComponent() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        Component component = EasyMock.createNiceMock(Component.class);
-        Component component2 = EasyMock.createNiceMock(Component.class);
-        ctx.setRemoteComponent(component);
-        assertEquals(component, ctx.getRemoteComponent());
-        ctx.setRemoteComponent(component2);
-        assertEquals(component2, ctx.getRemoteComponent());
-    }
-
-    public void testNonSetRemoteComponent() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        assertNull(ctx.getRemoteComponent());
-    }
-
     public void testSetCurrentAtomicComponent() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
@@ -138,18 +123,6 @@ public class WorkContextTestCase extends TestCase {
         assertNull(context.getCurrentAtomicComponent());
     }
 
-    public void testCurrentRemoteComponentDoesNotPropagateToChildThread() throws InterruptedException {
-        // NOTE should behaviour be to propagate?
-        WorkContext context = new WorkContextImpl();
-        context.setRemoteComponent(EasyMock.createNiceMock(Component.class));
-        TestCurrentRemoteComponentChildThread t = new TestCurrentRemoteComponentChildThread(context);
-        t.start();
-        t.join();
-        assertTrue(t.passed);
-        context.setRemoteComponent(null);
-        assertNull(context.getRemoteComponent());
-    }
-
     private static final class ChildThread extends Thread {
         private WorkContext context;
         private boolean passed = true;
@@ -182,25 +155,6 @@ public class WorkContextTestCase extends TestCase {
         public void run() {
             try {
                 assertNull(context.getCurrentAtomicComponent());
-            } catch (AssertionError e) {
-                passed = false;
-            }
-        }
-
-    }
-
-    private static final class TestCurrentRemoteComponentChildThread extends Thread {
-        private WorkContext context;
-        private boolean passed = true;
-
-        private TestCurrentRemoteComponentChildThread(WorkContext context) {
-            this.context = context;
-        }
-
-        @Override
-        public void run() {
-            try {
-                assertNull(context.getRemoteComponent());
             } catch (AssertionError e) {
                 passed = false;
             }

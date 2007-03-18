@@ -97,16 +97,6 @@ public interface WorkContext {
     void setCorrelationId(Object id);
 
     /**
-     * Returns the composite where a remote request came in
-     */
-    Component getRemoteComponent();
-
-    /**
-     * Sets the composite where a remote request came in
-     */
-    void setRemoteComponent(Component component);
-
-    /**
      * Returns the current atomic component as a request is processed or null if it is not being tracked. Note that the
      * current atomic component is typically only tracked during persistence operations involving implementation
      * instances
