@@ -25,25 +25,8 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
-import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
-import org.apache.tuscany.spi.builder.physical.WireAttacher;
-import org.apache.tuscany.spi.builder.physical.WireAttachException;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.ProxyService;
-import org.apache.tuscany.spi.wire.Wire;
-
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
 import org.apache.tuscany.core.injection.InstanceObjectFactory;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
@@ -53,6 +36,21 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefiniti
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 import org.apache.tuscany.core.wire.WireObjectFactory2;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
+import org.apache.tuscany.spi.builder.physical.WireAttachException;
+import org.apache.tuscany.spi.builder.physical.WireAttacher;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.ProxyService;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The physical component builder for Java implementation types. Responsible for creating the Component runtime artifact
@@ -63,29 +61,21 @@ import org.apache.tuscany.core.wire.WireObjectFactory2;
  * @param <GROUP> the component group id type
  */
 public class JavaPhysicalComponentBuilder<T, GROUP>
-    implements PhysicalComponentBuilder<JavaPhysicalComponentDefinition<T, GROUP>, JavaComponent<T, GROUP>>,
-    WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
+    extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T, GROUP>, JavaComponent<T, GROUP>>
+    implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
 
     // Classloader registry
     private ClassLoaderRegistry classLoaderRegistry;
-
-    // Scope registry
-    private ScopeRegistry scopeRegistry;
 
     private WorkContext workContext;
 
     private ProxyService proxyService;
 
-    /**
-     * Injects builder registry.
-     *
-     * @param registry PhysicalComponentBuilder registry.
-     */
-    @Reference
-    public void setBuilderRegistry(PhysicalComponentBuilderRegistry registry) {
-        registry.register(JavaPhysicalComponentDefinition.class, this);
+    public JavaPhysicalComponentBuilder(
+        @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
+        @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry) {
+        super(builderRegistry, scopeRegistry);
     }
-
 
     @Reference
     public void setWorkContext(WorkContext workContext) {
@@ -95,6 +85,16 @@ public class JavaPhysicalComponentBuilder<T, GROUP>
     @Reference
     public void setProxyService(ProxyService proxyService) {
         this.proxyService = proxyService;
+    }
+
+    /**
+     * Injects classloader registry.
+     *
+     * @param classLoaderRegistry Class loader registry.
+     */
+    @Reference
+    public void setClassLoaderRegistry(ClassLoaderRegistry classLoaderRegistry) {
+        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     /**
@@ -110,31 +110,9 @@ public class JavaPhysicalComponentBuilder<T, GROUP>
         InstanceFactoryProvider<T> provider = componentDefinition.getProvider();
         JavaComponent<T, GROUP> component = new JavaComponent<T, GROUP>(componentId, provider, null, null, 0, -1, -1);
 
-        setScopeContainer(componentDefinition, component);
-
         setInstanceFactoryClass(componentDefinition, component);
 
         return component;
-    }
-
-    /**
-     * Injects classloader registry.
-     *
-     * @param classLoaderRegistry Class loader registry.
-     */
-    @Reference
-    public void setClassLoaderRegistry(ClassLoaderRegistry classLoaderRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
-
-    /**
-     * Injects scope registry.
-     *
-     * @param scopeRegistry Scope registry.
-     */
-    @Reference
-    public void setScopeRegistry(ScopeRegistry scopeRegistry) {
-        this.scopeRegistry = scopeRegistry;
     }
 
     /*
@@ -151,15 +129,6 @@ public class JavaPhysicalComponentBuilder<T, GROUP>
         Class<InstanceFactory<?>> instanceFactoryClass = null;
         component.setInstanceFactoryClass(instanceFactoryClass);
 */
-    }
-
-    /*
-     * Set the scope container.
-     */
-    private void setScopeContainer(JavaPhysicalComponentDefinition componentDefinition, JavaComponent component) {
-        Scope scope = componentDefinition.getScope();
-        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
-        component.setScopeContainer(scopeContainer);
     }
 
     /**
