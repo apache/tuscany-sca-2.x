@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.model.Scope;
  * Represents a physical component model.
  *
  * @version $Rev$ $Date$
- * @param <GROUP> the component group id type
  */
 public abstract class PhysicalComponentDefinition extends ModelObject {
 
