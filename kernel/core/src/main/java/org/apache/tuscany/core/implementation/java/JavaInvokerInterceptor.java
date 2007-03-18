@@ -20,8 +20,6 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.LinkedList;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
@@ -37,8 +35,10 @@ import org.apache.tuscany.spi.wire.Message;
  * Responsible for dispatching an invocation to a Java component implementation instance.
  *
  * @version $Rev$ $Date$
+ * @param <T> the implementation class for the component being invoked
+ * @param <CONTEXT> the type of context id used by the ScopeContainer
  */
-public class JavaInvokerInterceptor implements Interceptor {
+public class JavaInvokerInterceptor<T, CONTEXT> implements Interceptor {
     /* indicates that no conversational sequence is associated with the message */
     public final static short NONE = 0;
     /* indicates that the message initiates a conversation */
@@ -49,25 +49,22 @@ public class JavaInvokerInterceptor implements Interceptor {
     public final static short END = 3;
 
     private Method operation;
-    private AtomicComponent component;
-    private WorkContext workContext;
-    private ScopeContainer scopeContainer;
+    private AtomicComponent<T> component;
+    private ScopeContainer<CONTEXT> scopeContainer;
 
     /**
      * Creates a new interceptor instance.
      *
      * @param operation      the method to invoke on the target instance
      * @param component      the target component
-     * @param workContext    the work context
      * @param scopeContainer the ScopeContainer that manages implementation instances for the target component
      */
     public JavaInvokerInterceptor(Method operation,
-                                  AtomicComponent component,
-                                  ScopeContainer scopeContainer,
-                                  WorkContext workContext) {
+                                  AtomicComponent<T> component,
+                                  ScopeContainer<CONTEXT> scopeContainer
+    ) {
         this.operation = operation;
         this.component = component;
-        this.workContext = workContext;
         this.scopeContainer = scopeContainer;
     }
 
@@ -85,15 +82,10 @@ public class JavaInvokerInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         try {
-            Object messageId = msg.getMessageId();
-            if (messageId != null) {
-                workContext.setCorrelationId(messageId);
-            }
-            LinkedList<URI> callbackRoutingChain = msg.getCallbackUris();
-            if (callbackRoutingChain != null) {
-                workContext.setCallbackUris(callbackRoutingChain);
-            }
-            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence());
+            Object body = msg.getBody();
+            short sequence = msg.getConversationSequence();
+            WorkContext workContext = msg.getWorkContext();
+            Object resp = invokeTarget(body, sequence, workContext);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());
@@ -101,23 +93,22 @@ public class JavaInvokerInterceptor implements Interceptor {
         return msg;
     }
 
-    @SuppressWarnings({"unchecked"})
-    private Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+    private Object invokeTarget(final Object payload, final short sequence, final WorkContext workContext)
+        throws InvocationTargetException {
+        @SuppressWarnings("unchecked")
+        CONTEXT contextId = (CONTEXT) workContext.getIdentifier(scopeContainer.getScope());
         try {
-            InstanceWrapper<?> wrapper = getInstance(sequence);
+            InstanceWrapper<T> wrapper = getInstance(sequence, contextId);
             Object instance = wrapper.getInstance();
-            Object ret;
-            if (payload != null && !payload.getClass().isArray()) {
-                ret = operation.invoke(instance, payload);
-            } else {
-                ret = operation.invoke(instance, (Object[]) payload);
+            try {
+                return operation.invoke(instance, (Object[]) payload);
+            } finally {
+                scopeContainer.returnWrapper(component, wrapper, contextId);
+                if (sequence == END) {
+                    // if end conversation, remove resource
+                    scopeContainer.remove(component);
+                }
             }
-            scopeContainer.returnWrapper(component, wrapper);
-            if (sequence == END) {
-                // if end conversation, remove resource
-                scopeContainer.remove(component);
-            }
-            return ret;
         } catch (IllegalAccessException e) {
             throw new InvocationTargetException(e);
         } catch (ComponentException e) {
@@ -129,18 +120,18 @@ public class JavaInvokerInterceptor implements Interceptor {
      * Resolves the target service instance or returns a cached one
      *
      * @param sequence the conversational sequence
+     * @param contextId the scope contextId
      * @return the InstanceWrapper
      * @throws TargetException if an exception getting the wrapper is encountered
      */
-    private InstanceWrapper<?> getInstance(short sequence) throws TargetException {
+    private InstanceWrapper<T> getInstance(short sequence, CONTEXT contextId) throws TargetException {
         switch (sequence) {
             case NONE:
-                return scopeContainer.getWrapper(component);
             case START:
-                return scopeContainer.getWrapper(component);
+                return scopeContainer.getWrapper(component, contextId);
             case CONTINUE:
             case END:
-                return scopeContainer.getAssociatedWrapper(component);
+                return scopeContainer.getAssociatedWrapper(component, contextId);
             default:
                 throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
         }

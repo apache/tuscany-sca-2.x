@@ -67,19 +67,12 @@ public class JavaPhysicalComponentBuilder<T>
     // Classloader registry
     private ClassLoaderRegistry classLoaderRegistry;
 
-    private WorkContext workContext;
-
     private ProxyService proxyService;
 
     public JavaPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
         @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry) {
         super(builderRegistry, scopeRegistry);
-    }
-
-    @Reference
-    public void setWorkContext(WorkContext workContext) {
-        this.workContext = workContext;
     }
 
     @Reference
@@ -204,7 +197,7 @@ public class JavaPhysicalComponentBuilder<T>
                 URI targetUri = wire.getTargetUri();
                 throw new WireAttachException("No matching method found", sourceUri, targetUri, e);
             }
-            chain.addInterceptor(new JavaInvokerInterceptor(method, component, scopeContainer, workContext));
+            chain.addInterceptor(new JavaInvokerInterceptor(method, component, scopeContainer));
         }
     }
 
