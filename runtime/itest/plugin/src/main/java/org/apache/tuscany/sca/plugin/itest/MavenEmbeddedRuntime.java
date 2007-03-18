@@ -74,7 +74,7 @@ public class MavenEmbeddedRuntime extends AbstractRuntime<MavenRuntimeInfo> {
         TargetInvoker targetInvoker = testComponent.createTargetInvoker("testService", operation);
         getWorkContext().setIdentifier(Scope.COMPOSITE, contextId);
         try {
-            targetInvoker.invokeTarget(null, TargetInvoker.NONE);
+            targetInvoker.invokeTarget(null, TargetInvoker.NONE, null);
         } finally {
             getWorkContext().setIdentifier(Scope.COMPOSITE, null);
         }

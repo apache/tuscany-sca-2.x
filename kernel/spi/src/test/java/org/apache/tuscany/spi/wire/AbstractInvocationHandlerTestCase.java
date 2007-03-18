@@ -26,6 +26,8 @@ import java.util.LinkedList;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.apache.tuscany.spi.component.WorkContext;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -57,7 +59,7 @@ public class AbstractInvocationHandlerTestCase extends TestCase {
 
     private class MockInvoker implements TargetInvoker {
 
-        public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+        public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
             assertEquals("foo", Array.get(payload, 0));
             return "response";
         }

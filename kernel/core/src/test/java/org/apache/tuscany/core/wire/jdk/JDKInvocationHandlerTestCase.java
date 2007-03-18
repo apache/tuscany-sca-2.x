@@ -125,7 +125,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
             currentConversationID = id;
         }
 
-        public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+        public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
             assertEquals("bar", Array.get(payload, 0));
             String convID = (String) wc.getIdentifier(Scope.CONVERSATION);
             assertSame(convID, currentConversationID);

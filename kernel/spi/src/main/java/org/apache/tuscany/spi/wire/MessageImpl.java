@@ -39,6 +39,12 @@ public class MessageImpl implements Message {
     private short conversationSequence;
     private WorkContext workContext;
 
+    public MessageImpl(WorkContext workContext, short conversationSequence, Object body) {
+        this.workContext = workContext;
+        this.conversationSequence = conversationSequence;
+        this.body = body;
+    }
+
     public MessageImpl() {
     }
 
@@ -57,6 +63,14 @@ public class MessageImpl implements Message {
 
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
+    }
+
+    public short getConversationSequence() {
+        return conversationSequence;
+    }
+
+    public void setConversationSequence(short conversationSequence) {
+        this.conversationSequence = conversationSequence;
     }
 
     public void setTargetInvoker(TargetInvoker invoker) {
@@ -128,13 +142,5 @@ public class MessageImpl implements Message {
 
     public void setInvoker(TargetInvoker invoker) {
         this.invoker = invoker;
-    }
-
-    public short getConversationSequence() {
-        return conversationSequence;
-    }
-
-    public void setConversationSequence(short conversationSequence) {
-        this.conversationSequence = conversationSequence;
     }
 }

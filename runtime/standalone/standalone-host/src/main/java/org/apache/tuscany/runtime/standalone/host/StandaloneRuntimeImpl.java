@@ -24,10 +24,16 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.tuscany.api.annotation.LogLevel;
+import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
+import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -37,13 +43,6 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-
-import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
-import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.runtime.standalone.StandaloneRuntime;
-import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
-import org.apache.tuscany.runtime.standalone.host.implementation.launched.Launched;
-import org.apache.tuscany.api.annotation.LogLevel;
 
 /**
  * @version $Rev$ $Date$
@@ -123,7 +122,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
         Operation<?> operation = testService.getServiceContract().getOperations().get("main");
         Component component = getComponentManager().getComponent(componentUri);
         TargetInvoker targetInvoker = component.createTargetInvoker("main", operation);
-        Object result = targetInvoker.invokeTarget(new Object[]{args}, TargetInvoker.NONE);
+        Object result = targetInvoker.invokeTarget(new Object[]{args}, TargetInvoker.NONE, null);
         try {
             return int.class.cast(result);
         } catch (ClassCastException e) {

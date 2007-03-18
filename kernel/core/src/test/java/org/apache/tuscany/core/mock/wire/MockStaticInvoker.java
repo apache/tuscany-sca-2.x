@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a lesser
@@ -56,7 +57,7 @@ public class MockStaticInvoker implements TargetInvoker {
         return isCacheable();
     }
 
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
         try {
             if (payload != null && !payload.getClass().isArray()) {
                 return operation.invoke(instance, payload);
@@ -70,7 +71,7 @@ public class MockStaticInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE);
+            Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE, null);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());

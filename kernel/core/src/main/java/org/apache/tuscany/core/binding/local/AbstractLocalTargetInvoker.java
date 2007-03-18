@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Base class for dispatching to a composite reference using the local binding
@@ -46,7 +47,7 @@ public abstract class AbstractLocalTargetInvoker implements TargetInvoker {
         return isCacheable(); // we only need to check if the scopes are correct
     }
 
-    public Object invokeTarget(final Object payload, short sequence) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, short sequence, WorkContext workContext) throws InvocationTargetException {
         throw new InvocationTargetException(new UnsupportedOperationException());
     }
 

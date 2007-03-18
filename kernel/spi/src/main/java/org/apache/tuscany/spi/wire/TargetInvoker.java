@@ -20,6 +20,8 @@ package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.spi.component.WorkContext;
+
 /**
  * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a
  * component implementation instance or a service client.
@@ -41,13 +43,16 @@ public interface TargetInvoker extends Cloneable {
      * Invokes an operation on a target with the given payload. Used in optmized cases where messages do not need to be
      * flowed such as in non-proxied wires.
      *
-     * @param payload  the invocation payload, typically an array of parameters
-     * @param sequence if the invocation is part of a conversation, the sequence. Valid values are {@link #NONE} for
-     *                 non-conversational, {@link #START} to begin a conversation, {@link #CONTINUE} to continue a
-     *                 conversation, or {@link #END} to end a conversation
-     * @throws InvocationTargetException
+     * @param payload     the invocation payload, typically an array of parameters
+     * @param sequence    if the invocation is part of a conversation, the sequence. Valid values are {@link #NONE} for
+     *                    non-conversational, {@link #START} to begin a conversation, {@link #CONTINUE} to continue a
+     *                    conversation, or {@link #END} to end a conversation
+     * @param workContext work context associated with this invocation
+     * @return the result of the invocation
+     * @throws InvocationTargetException if there was a problem invoking the target
      */
-    Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException;
+    Object invokeTarget(final Object payload, final short sequence, WorkContext workContext)
+        throws InvocationTargetException;
 
     /**
      * Invokes an operation on a target with the given message

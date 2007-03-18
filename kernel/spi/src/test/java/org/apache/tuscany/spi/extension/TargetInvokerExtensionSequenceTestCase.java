@@ -143,7 +143,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
             this.target = target;
         }
 
-        public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+        public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
             if (sequence == NONE) {
                 target.invokeNone((String) payload);
             } else if (sequence == START) {
