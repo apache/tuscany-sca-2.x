@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -37,7 +36,6 @@ import org.apache.tuscany.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class WorkContextImpl implements WorkContext {
-    private static final Object REMOTE_CONTEXT = new Object();
     private static final Object CORRELATION_ID = new Object();
     private static final Object CALLBACK_URIS = new Object();
     private static final Object CURRENT_ATOMIC = new Object();
@@ -109,19 +107,6 @@ public class WorkContextImpl implements WorkContext {
         map.put(CALLBACK_WIRES, wires);
     }
 
-    public Component getRemoteComponent() {
-        Map<Object, Object> map = workContext.get();
-        if (map == null) {
-            return null;
-        }
-        return (Component) map.get(REMOTE_CONTEXT);
-    }
-
-
-    public void setRemoteComponent(Component component) {
-        Map<Object, Object> map = getWorkContextMap();
-        map.put(REMOTE_CONTEXT, component);
-    }
 
     public Object getIdentifier(Object type) {
         Map<Object, Object> map = inheritableContext.get();
