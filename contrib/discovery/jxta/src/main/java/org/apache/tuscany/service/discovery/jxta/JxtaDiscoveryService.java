@@ -129,7 +129,6 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
                 try {
                     startService();
                 } catch(DiscoveryException ex) {
-                    ex.printStackTrace();
                     throw new JxtaException(ex);
                 }
             }
