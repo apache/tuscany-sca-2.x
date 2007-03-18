@@ -40,6 +40,7 @@ import java.util.Map;
  */
 public class ComponentDefinition<I extends Implementation<?>> extends ModelObject {
     private URI uri;
+    private URI runtimeId;
     private boolean autowire;
     private Integer initLevel;
     private final I implementation;
@@ -91,6 +92,24 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
      */
     public void setUri(URI uri) {
         this.uri = uri;
+    }
+
+    /**
+     * Returns the id of the node the component is to be provisioned to.
+     *
+     * @return the id of the node the component is to be provisioned to
+     */
+    public URI getRuntimeId() {
+        return runtimeId;
+    }
+
+    /**
+     * Sets the id of the node the component is to be provisioned to.
+     *
+     * @param id the id of the node the component is to be provisioned to
+     */
+    public void setRuntimeId(URI id) {
+        this.runtimeId = id;
     }
 
     /**

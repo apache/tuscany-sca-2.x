@@ -23,9 +23,11 @@ import java.net.URI;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.IntentDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ResourceDefinition;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * A registry for generators
@@ -34,12 +36,12 @@ import org.apache.tuscany.spi.model.ResourceDefinition;
  */
 public interface GeneratorRegistry {
 
-    void register(Class<?> clazz,
-                  ComponentGenerator<? extends ComponentDefinition<? extends Implementation>> generator);
+    <T extends ComponentDefinition<? extends Implementation>> void register(Class<T> clazz,
+                                                                            ComponentGenerator<T> generator);
 
     void register(Class<?> clazz, BindingGenerator generator);
 
-    void register(Class<?> clazz, InterceptorGenerator generator);
+    <T extends IntentDefinition> void register(Class<T> phase, InterceptorGenerator<T> generator);
 
     void register(Class<?> clazz, ResourceGenerator generator);
 
@@ -61,10 +63,12 @@ public interface GeneratorRegistry {
      * @param bindingDefinition
      * @param componentDefinition
      * @param context
+     * @param serviceDefinition
      * @throws GenerationException
      */
     <C extends ComponentDefinition<? extends Implementation>> void generateWire(ServiceContract<?> contract,
                                                                                 BindingDefinition bindingDefinition,
+                                                                                ServiceDefinition serviceDefinition,
                                                                                 C componentDefinition,
                                                                                 GeneratorContext context)
         throws GenerationException;
@@ -75,6 +79,13 @@ public interface GeneratorRegistry {
                                                                                 BindingDefinition bindingDefinition,
                                                                                 GeneratorContext context)
         throws GenerationException;
+
+    <S extends ComponentDefinition<? extends Implementation>, T extends ComponentDefinition<? extends Implementation>>
+        void generateWire(S sourceDefinition,
+                          ReferenceDefinition referenceDefinition,
+                          ServiceDefinition serviceDefinition,
+                          T targetDefinition,
+                          GeneratorContext context) throws GenerationException;
 
     URI generate(ResourceDefinition definition, GeneratorContext context) throws GenerationException;
 

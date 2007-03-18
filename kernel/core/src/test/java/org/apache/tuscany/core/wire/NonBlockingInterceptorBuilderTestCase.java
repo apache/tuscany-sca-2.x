@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.wire;
 
+import static org.apache.tuscany.core.wire.NonBlockingInterceptorBuilder.QNAME;
+
 import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
 
 import junit.framework.TestCase;
@@ -29,8 +31,8 @@ public class NonBlockingInterceptorBuilderTestCase extends TestCase {
 
     public void testBuild() throws Exception {
         NonBlockingInterceptorBuilder builder = new NonBlockingInterceptorBuilder(null, null);
-        PhysicalInterceptorDefinition definition = new PhysicalInterceptorDefinition();
-        definition.setBuilder(NonBlockingInterceptorBuilder.QNAME);
+        PhysicalInterceptorDefinition definition = new PhysicalInterceptorDefinition(QNAME);
+        definition.setBuilder(QNAME);
         assertTrue(builder.build(definition) instanceof NonBlockingInterceptor);
     }
 }

@@ -32,6 +32,8 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
@@ -63,6 +65,7 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
         provider.setInitMethod(type.getInitMethod().toString());
         provider.setImplementationClass(implementation.getImplementationClass().getName());
         // TODO ctor arguments
+        // TODO set CDI source for ref, props, and callbacks
         Map<String, JavaMappedReference> references = type.getReferences();
         for (Map.Entry<String, JavaMappedReference> entry : references.entrySet()) {
             JavaMappedReference reference = entry.getValue();
@@ -91,12 +94,14 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
     }
 
     public PhysicalWireSourceDefinition generateWireSource(ComponentDefinition<JavaImplementation> definition,
+                                                           ReferenceDefinition serviceDefinition,
                                                            GeneratorContext context)
         throws GenerationException {
         return new JavaPhysicalWireSourceDefinition();
     }
 
     public PhysicalWireTargetDefinition generateWireTarget(ComponentDefinition<JavaImplementation> definition,
+                                                           ServiceDefinition serviceDefinition,
                                                            GeneratorContext context)
         throws GenerationException {
         return new JavaPhysicalWireTargetDefinition();
