@@ -69,7 +69,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
 
         EasyMock.expect(scopeContainer.getScope()).andStubReturn(Scope.CONVERSATION);
         EasyMock.replay(scopeContainer);
-        invoker = new JavaTargetInvoker(method, component, scopeContainer, workContext);
+        invoker = new JavaTargetInvoker(method, component, scopeContainer);
         EasyMock.reset(scopeContainer);
         EasyMock.expect(scopeContainer.getScope()).andStubReturn(Scope.CONVERSATION);
     }
