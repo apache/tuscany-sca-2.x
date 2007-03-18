@@ -46,6 +46,9 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
     // Component id attribute
     public static final String COMPONENT_ID = "componentId";
 
+    // Group id attribute
+    public static final String GROUP_ID = "groupId";
+
     // Scope attribute
     private static final String SCOPE = "scope";
     
@@ -63,6 +66,7 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             QName qname = getModelObjectQName();
             writer.writeStartElement(qname.getPrefix(), qname.getLocalPart(), qname.getNamespaceURI());
             writer.writeAttribute(COMPONENT_ID, modelObject.getComponentId().toASCIIString());
+            writer.writeAttribute(GROUP_ID, modelObject.getGroupId().toASCIIString());
             writer.writeAttribute(SCOPE, modelObject.getScope().toString());
             
             writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
@@ -87,6 +91,7 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
         try {
             PCD componentDefinition = getConcreteModelObject();
             componentDefinition.setComponentId(new URI(reader.getAttributeValue(null, COMPONENT_ID)));
+            componentDefinition.setGroupId(new URI(reader.getAttributeValue(null, GROUP_ID)));
             componentDefinition.setScope(new Scope(reader.getAttributeValue(null, SCOPE)));
             while (true) {
                 switch (reader.next()) {
