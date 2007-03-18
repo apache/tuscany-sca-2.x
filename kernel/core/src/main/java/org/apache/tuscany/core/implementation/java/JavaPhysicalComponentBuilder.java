@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
@@ -38,6 +39,7 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinit
 import org.apache.tuscany.core.wire.WireObjectFactory2;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.builder.physical.WireAttachException;
 import org.apache.tuscany.spi.builder.physical.WireAttacher;
@@ -59,6 +61,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
  */
+@Service(interfaces={PhysicalComponentBuilder.class, WireAttacher.class})
 public class JavaPhysicalComponentBuilder<T>
     extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>
     implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
