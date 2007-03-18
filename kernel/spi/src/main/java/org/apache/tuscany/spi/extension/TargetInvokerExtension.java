@@ -33,17 +33,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public abstract class TargetInvokerExtension implements TargetInvoker {
-    protected WorkContext workContext;
     protected boolean cacheable;
-
-    /**
-     * Creates a new invoker
-     *
-     * @param workContext the work context to use for setting correlation information
-     */
-    public TargetInvokerExtension(WorkContext workContext) {
-        this.workContext = workContext;
-    }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {

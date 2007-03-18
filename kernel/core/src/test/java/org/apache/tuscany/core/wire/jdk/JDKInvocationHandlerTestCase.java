@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
+
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
@@ -88,7 +88,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         WorkContext wc = new SimpleWorkContext();
         PojoWorkContextTunnel.setThreadWorkContext(wc);
         try {
-            MockInvoker invoker = new MockInvoker(wc);
+            MockInvoker invoker = new MockInvoker();
 
             InvocationChain chain = new InvocationChainImpl(op1);
             chain.setTargetInvoker(invoker);
@@ -121,12 +121,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
     private class MockInvoker implements TargetInvoker {
 
-        private WorkContext wc;
         private String currentConversationID;
-
-        public MockInvoker(WorkContext wc) {
-            this.wc = wc;
-        }
 
         public void setCurrentConversationID(String id) {
             currentConversationID = id;
@@ -134,7 +129,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
         public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
             assertEquals("bar", Array.get(payload, 0));
-            String convID = (String) wc.getIdentifier(Scope.CONVERSATION);
+            String convID = (String) workContext.getIdentifier(Scope.CONVERSATION);
             assertSame(convID, currentConversationID);
             return "response";
         }
