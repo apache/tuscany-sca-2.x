@@ -27,15 +27,18 @@ import javax.security.cert.CertificateException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import net.jxta.credential.AuthenticationCredential;
 import net.jxta.discovery.DiscoveryService;
 import net.jxta.exception.PeerGroupException;
-import net.jxta.impl.id.binaryID.DigestTool;
+import net.jxta.impl.id.UUID.UUID;
 import net.jxta.impl.protocol.ResolverQuery;
+import net.jxta.membership.Authenticator;
+import net.jxta.membership.MembershipService;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.NetPeerGroupFactory;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkConfigurator;
+import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.resolver.QueryHandler;
 import net.jxta.resolver.ResolverService;
 
@@ -58,6 +61,10 @@ import org.osoa.sca.annotations.Reference;
  *
  */
 public class JxtaDiscoveryService extends AbstractDiscoveryService {
+    
+    /** Well known peer group id. */
+    private static final TuscanyPeerGroupID PEER_GROUP_ID = 
+        new TuscanyPeerGroupID(new UUID("aea468a4-6450-47dc-a288-a7f1bbcc5927"));
     
     /** Default discovery interval. */
     private static long DEFAULT_INTERVAL = 10000L;
@@ -260,13 +267,11 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      */
     private void createAndJoinDomainGroup() throws Exception {
         
-        //String domain = getRuntimeInfo().getDomain().toString();
-        domainGroup = new NetPeerGroupFactory().getInterface();
+        String domain = getRuntimeInfo().getDomain().toString();
         
-        /*PeerGroup netGroup = new NetPeerGroupFactory().getInterface();
-        PeerGroupID peerGroupId = createPeerGroupId(domain, netGroup);    
+        PeerGroup netGroup = new NetPeerGroupFactory().getInterface(); 
         ModuleImplAdvertisement implAdv = netGroup.getAllPurposePeerGroupImplAdvertisement();
-        domainGroup = netGroup.newGroup(peerGroupId, implAdv, domain, "Tuscany domain group");
+        domainGroup = netGroup.newGroup(PEER_GROUP_ID, implAdv, domain, "Tuscany domain group");
             
         AuthenticationCredential authCred = new AuthenticationCredential(domainGroup, null, null);
         MembershipService membership = domainGroup.getMembershipService();
@@ -276,7 +281,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
             membership.join(auth);
         } else {
             throw new DiscoveryException("Unable to join domain group");
-        }*/
+        }
         
     }
 
@@ -301,16 +306,15 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
         peerListener = new PeerListener(discoveryService, interval, getRuntimeInfo().getRuntimeId());
         
     }
-
-    /**
-     * Creates a well-known peer group id for the domain.
-     * 
-     * @param domain Name of the domain.
-     * @param netGroup Parent net peer group.
-     * @return Well-known peer group id.
+    
+    /*
+     * Well known peer grroup.
      */
-    private PeerGroupID createPeerGroupId(String domain, PeerGroup netGroup) {
-        return new DigestTool().createPeerGroupID(netGroup.getPeerGroupID(), domain, null);
+    @SuppressWarnings("serial")
+    private static class TuscanyPeerGroupID extends net.jxta.impl.id.CBID.PeerGroupID {
+        public TuscanyPeerGroupID(UUID uuid) {
+            super(uuid);
+        }
     }
 
 }
