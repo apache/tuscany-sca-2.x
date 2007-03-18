@@ -85,7 +85,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
                 component.start();
             }
             ScopeRegistry scopeRegistry = getScopeRegistry();
-            ScopeContainer<URI, URI> container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+            ScopeContainer<URI> container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
             container.startContext(compositeUri, compositeUri);
             getWorkContext().setIdentifier(Scope.COMPOSITE, compositeUri);
             WorkContext workContext = new SimpleWorkContext();

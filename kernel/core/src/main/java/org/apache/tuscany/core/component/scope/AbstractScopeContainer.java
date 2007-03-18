@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,8 +51,8 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecycle
-    implements ScopeContainer<GROUP, KEY> {
+public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
+    implements ScopeContainer<KEY> {
 
     private static final Comparator<AtomicComponent<?>> COMPARATOR = new Comparator<AtomicComponent<?>>() {
         public int compare(AtomicComponent<?> o1, AtomicComponent<?> o2) {
@@ -62,16 +63,16 @@ public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecyc
     private final Scope scope;
     protected final ScopeContainerMonitor monitor;
 
-    protected final Map<GROUP, Set<AtomicComponent<?>>> groups =
-        new ConcurrentHashMap<GROUP, Set<AtomicComponent<?>>>();
-    protected final Map<AtomicComponent<?>, GROUP> componentGroups =
-        new ConcurrentHashMap<AtomicComponent<?>, GROUP>();
+    protected final Map<URI, Set<AtomicComponent<?>>> groups =
+        new ConcurrentHashMap<URI, Set<AtomicComponent<?>>>();
+    protected final Map<AtomicComponent<?>, URI> componentGroups =
+        new ConcurrentHashMap<AtomicComponent<?>, URI>();
 
-    protected final Map<KEY, GROUP> contextGroups = new ConcurrentHashMap<KEY, GROUP>();
+    protected final Map<KEY, URI> contextGroups = new ConcurrentHashMap<KEY, URI>();
 
     // the queue of components to eagerly initialize in each group
-    protected final Map<GROUP, List<AtomicComponent<?>>> initQueues =
-        new ConcurrentHashMap<GROUP, List<AtomicComponent<?>>>();
+    protected final Map<URI, List<AtomicComponent<?>>> initQueues =
+        new ConcurrentHashMap<URI, List<AtomicComponent<?>>>();
 
     // the queue of instanceWrappers to destroy, in the order that their instances were created
     protected final Map<KEY, List<InstanceWrapper<?>>> destroyQueues =
@@ -123,7 +124,7 @@ public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecyc
     public void onEvent(Event event) {
     }
 
-    public <T> void register(AtomicComponent<T> component, GROUP groupId) {
+    public <T> void register(AtomicComponent<T> component, URI groupId) {
         checkInit();
         assert groups.containsKey(groupId);
         Set<AtomicComponent<?>> components = groups.get(groupId);
@@ -138,36 +139,36 @@ public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecyc
     }
 
     public <T> void unregister(AtomicComponent<T> component) {
-        GROUP groupId = componentGroups.remove(component);
+        URI groupId = componentGroups.remove(component);
         assert groupId != null;
         Set<AtomicComponent<?>> components = groups.get(groupId);
         components.remove(component);
     }
 
-    public void createGroup(GROUP groupId) {
+    public void createGroup(URI groupId) {
         assert !groups.containsKey(groupId);
         groups.put(groupId, new HashSet<AtomicComponent<?>>());
         initQueues.put(groupId, new ArrayList<AtomicComponent<?>>());
     }
 
-    protected Set<AtomicComponent<?>> getGroupMembers(GROUP groupId) {
+    protected Set<AtomicComponent<?>> getGroupMembers(URI groupId) {
         return groups.get(groupId);
     }
 
-    public void removeGroup(GROUP groupId) {
+    public void removeGroup(URI groupId) {
         assert groups.containsKey(groupId);
         groups.remove(groupId);
         initQueues.remove(groupId);
     }
 
-    public void startContext(KEY contextId, GROUP groupId) throws GroupInitializationException {
+    public void startContext(KEY contextId, URI groupId) throws GroupInitializationException {
         assert !contextGroups.containsKey(contextId);
         contextGroups.put(contextId, groupId);
         destroyQueues.put(contextId, new ArrayList<InstanceWrapper<?>>());
         initializeComponents(contextId, initQueues.get(groupId));
     }
 
-    protected GROUP getContextGroup(KEY contextId) {
+    protected URI getContextGroup(KEY contextId) {
         return contextGroups.get(contextId);
     }
 

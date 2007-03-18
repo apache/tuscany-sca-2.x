@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.model.Scope;
  * @version $Rev$ $Date$
  */
 public class BasicStatelessScopeTestCase<T> extends TestCase {
-    private StatelessScopeContainer<String, String> scopeContainer;
+    private StatelessScopeContainer<String> scopeContainer;
     private String contextId;
     private IMocksControl control;
     private AtomicComponent<T> component;
@@ -79,7 +79,7 @@ public class BasicStatelessScopeTestCase<T> extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        scopeContainer = new StatelessScopeContainer<String, String>(null);
+        scopeContainer = new StatelessScopeContainer<String>(null);
         contextId = "context";
 
         control = EasyMock.createStrictControl();

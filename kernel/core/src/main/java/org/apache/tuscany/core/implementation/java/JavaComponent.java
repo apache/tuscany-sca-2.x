@@ -29,11 +29,11 @@ import org.apache.tuscany.spi.component.ScopeContainer;
  * @param <T> the implementation class for the defined component
  * @param <GROUP> the component group id type
  */
-public class JavaComponent<T,GROUP> extends PojoComponent<T,GROUP> {
+public class JavaComponent<T> extends PojoComponent<T> {
     public JavaComponent(URI componentId,
                          InstanceFactoryProvider<T> instanceFactoryProvider,
-                         ScopeContainer<GROUP, ?> scopeContainer,
-                         GROUP groupId,
+                         ScopeContainer<?> scopeContainer,
+                         URI groupId,
                          int initLevel,
                          long maxIdleTime,
                          long maxAge) {

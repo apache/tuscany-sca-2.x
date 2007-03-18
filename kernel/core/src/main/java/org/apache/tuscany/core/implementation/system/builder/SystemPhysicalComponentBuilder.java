@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
  */
 @EagerInit
 public class SystemPhysicalComponentBuilder<T, GROUP>
-    extends POJOPhysicalComponentBuilder<SystemPhysicalComponentDefinition<T, GROUP>, SystemComponent<T, GROUP>> {
+    extends POJOPhysicalComponentBuilder<SystemPhysicalComponentDefinition<T>, SystemComponent<T>> {
 
     public SystemPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
@@ -44,12 +44,12 @@ public class SystemPhysicalComponentBuilder<T, GROUP>
         super(builderRegistry, scopeRegistry);
     }
 
-    public SystemComponent<T, GROUP> build(SystemPhysicalComponentDefinition<T, GROUP> definition) {
+    public SystemComponent<T> build(SystemPhysicalComponentDefinition<T> definition) {
         URI componentId = definition.getComponentId();
         int initLevel = definition.getInitLevel();
-        GROUP groupId = definition.getGroupId();
-        ScopeContainer<GROUP, ?> scopeContainer = null;
+        URI groupId = definition.getGroupId();
+        ScopeContainer<?> scopeContainer = null;
         InstanceFactoryProvider<T> provider = definition.getProvider();
-        return new SystemComponent<T, GROUP>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
+        return new SystemComponent<T>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
     }
 }

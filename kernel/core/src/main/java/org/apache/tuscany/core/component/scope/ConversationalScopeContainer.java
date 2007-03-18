@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
@@ -67,7 +69,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         lifecycleState = STOPPED;
     }
 
-    public void register(AtomicComponent component, Object groupId) {
+    public void register(AtomicComponent component, URI groupId) {
         super.register(component, groupId);
         component.addListener(this);
     }
