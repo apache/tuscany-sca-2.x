@@ -45,7 +45,6 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -61,12 +60,12 @@ import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
  * @version $Rev$ $Date$
  */
 public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerRegistry {
-    private static final URI DOMAIN_URI = URI.create("tuscany://domain");
+    //    private static final URI DOMAIN_URI = URI.create("tuscany://domain");
     private final GeneratorRegistry generatorRegistry;
     private final LoaderRegistry loaderRegistry;
     private final AutowireResolver autowireResolver;
     private final XMLInputFactory xmlFactory;
-    private ComponentDefinition<CompositeImplementation> domain;
+    //private ComponentDefinition<CompositeImplementation> domain;
 
     public AssemblyServiceImpl(@Reference LoaderRegistry loaderRegistry,
                                @Reference GeneratorRegistry generatorRegistry,
@@ -127,10 +126,10 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
 
         try {
             XMLStreamReader reader = xmlFactory.createXMLStreamReader(stream);
-            if (domain == null) {
-                // lazily create the domain
-                domain = createDomain();
-            }
+//            if (domain == null) {
+//                // lazily create the domain
+//                domain = createDomain();
+//            }
 
             ComponentDefinition<CompositeImplementation> defintion = null;    //loaderRegistry.load()
             CompositeComponentType<?, ?, ?> type = defintion.getImplementation().getComponentType();
@@ -158,7 +157,7 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
                             ComponentType<?, ?, ?> componentType = implementation.getComponentType();
                             ReferenceDefinition referenceDefinition = componentType.getReferences().get(entry.getKey());
                             // TODO resolve target
-                            ModelObject target = resolveTarget(uri);
+                            ModelObject target = resolveTarget(uri, type);
                             if (target instanceof ReferenceDefinition) {
                                 ReferenceDefinition targetReference = (ReferenceDefinition) target;
                                 // TODO this should be extensible and moved out
@@ -211,17 +210,31 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
 
     }
 
-    private ComponentDefinition<CompositeImplementation> createDomain() {
-        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
-            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        CompositeImplementation impl = new CompositeImplementation();
-        impl.setComponentType(type);
-        // FIXME domain uri
-        domain = new ComponentDefinition<CompositeImplementation>(DOMAIN_URI, impl);
-        return domain;
-    }
+//    private ComponentDefinition<CompositeImplementation> createDomain() {
+//        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+//            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+//        CompositeImplementation impl = new CompositeImplementation();
+//        impl.setComponentType(type);
+//        // FIXME domain uri
+//        domain = new ComponentDefinition<CompositeImplementation>(DOMAIN_URI, impl);
+//        return domain;
+//    }
 
-    private ModelObject resolveTarget(URI uri) {
-        throw new UnsupportedOperationException();
+    private ModelObject resolveTarget(URI uri, CompositeComponentType<?, ?, ?> type) {
+        // TODO only resolves one level deep
+//        StringTokenizer tokenizer = new StringTokenizer(uri.getPath(), "/");
+//        while (tokenizer.hasMoreTokens()) {
+//        }
+
+        ComponentDefinition<?> targetComponent = type.getDeclaredComponents().get(uri.getPath());
+        if (targetComponent != null) {
+            return targetComponent;
+        }
+        ReferenceDefinition targetReference = type.getDeclaredReferences().get(uri.getPath());
+        if (targetReference != null) {
+            return targetReference;
+        }
+        throw new AssertionError();
+
     }
 }
