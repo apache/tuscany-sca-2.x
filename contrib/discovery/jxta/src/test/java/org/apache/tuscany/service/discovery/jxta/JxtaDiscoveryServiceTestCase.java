@@ -120,8 +120,16 @@ public class JxtaDiscoveryServiceTestCase extends TestCase {
         
         discoveryService.setConfigurator(configurator);
         discoveryService.setWorkScheduler(new WorkScheduler() {
-            public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
-                scheduleWork(work, null);
+            public <T extends Runnable> void scheduleWork(final T work, final NotificationListener<T> listener) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            work.run();
+                        } catch(Exception ex) {
+                            listener.workFailed(work, ex);
+                        }
+                    }
+                }.start();
             }
             public <T extends Runnable> void scheduleWork(final T work) {
                 new Thread() {

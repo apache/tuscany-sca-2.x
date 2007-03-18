@@ -47,6 +47,8 @@ import org.apache.tuscany.service.discovery.jxta.pdp.PeerListener;
 import org.apache.tuscany.service.discovery.jxta.prp.TuscanyQueryHandler;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
 import org.apache.tuscany.spi.services.discovery.DiscoveryException;
+import org.apache.tuscany.spi.services.work.NotificationListener;
+import org.apache.tuscany.spi.services.work.NotificationListenerAdaptor;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.util.stax.StaxUtil;
 import org.omg.CORBA.Any;
@@ -121,15 +123,21 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      */
     @Override
     public void onStart() throws DiscoveryException {
-        workScheduler.scheduleWork(new Runnable() {
+        
+        Runnable runnable = new Runnable() {
             public void run() {
                 try {
                     startService();
                 } catch(DiscoveryException ex) {
+                    ex.printStackTrace();
                     throw new JxtaException(ex);
                 }
             }
-        });
+        };
+        
+        NotificationListener<Runnable> listener = new NotificationListenerAdaptor<Runnable>();        
+        workScheduler.scheduleWork(runnable, listener);
+        
     }
     
     /**
