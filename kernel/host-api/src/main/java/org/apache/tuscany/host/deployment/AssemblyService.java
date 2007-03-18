@@ -49,4 +49,12 @@ public interface AssemblyService {
      * @throws IOException         if there was a problem reading the stream
      */
     void applyChanges(InputStream changeSet, String contentType) throws DeploymentException, IOException;
+    
+    /**
+     * Includes the SCDL in the logical domain.
+     * 
+     * @param scdl SCDL to be included.
+     * @throws DeploymentException If unable to deploy.
+     */
+    void include(InputStream scdl) throws DeploymentException;
 }
