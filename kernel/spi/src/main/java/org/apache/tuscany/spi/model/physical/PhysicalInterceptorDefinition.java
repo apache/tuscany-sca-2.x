@@ -35,6 +35,10 @@ public class PhysicalInterceptorDefinition extends ModelObject {
     // The qualified name of the interceptor builder
     private QName builder;
 
+    public PhysicalInterceptorDefinition(QName builder) {
+        this.builder = builder;
+    }
+
     /**
      * Gets the qualified name of the builder.
      * @return Qualified name of the builder.

@@ -16,19 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.generator;
+package org.apache.tuscany.core.services.deployment;
 
-import org.apache.tuscany.spi.model.IntentDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
+import org.apache.tuscany.host.deployment.DeploymentException;
 
 /**
- * Implementations are responsible for generating physical interceptor definitions for a wire.
- *
  * @version $Rev$ $Date$
  */
-public interface InterceptorGenerator<T extends IntentDefinition> {
+public class DocumentParseException extends DeploymentException {
 
-    PhysicalInterceptorDefinition generate(T definition, GeneratorContext context) throws GenerationException;
-
+    public DocumentParseException(Throwable cause) {
+        super(cause);
+    }
 }
-

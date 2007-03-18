@@ -39,6 +39,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ConnectorImplCreateWireTestCase extends TestCase {
+    private static final QName QNAME = new QName("test");
 
     public void testCreateWire() throws Exception {
         TestConnector connector = new TestConnector();
@@ -75,7 +76,7 @@ public class ConnectorImplCreateWireTestCase extends TestCase {
         targetDefinition.setUri(URI.create("target"));
         definition.setSource(sourceDefinition);
         definition.setTarget(targetDefinition);
-        PhysicalInterceptorDefinition interceptorDefinition = new PhysicalInterceptorDefinition();
+        PhysicalInterceptorDefinition interceptorDefinition = new PhysicalInterceptorDefinition(QNAME);
         interceptorDefinition.setBuilder(qName);
 
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();

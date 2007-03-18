@@ -35,15 +35,19 @@ import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.IntentDefinition;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ResourceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
+
+import org.apache.tuscany.core.model.NonBlockingIntentDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -51,21 +55,26 @@ import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 public class GeneratorRegistryImpl implements GeneratorRegistry {
 
     private Map<Class<?>,
-        ComponentGenerator<? extends ComponentDefinition<? extends Implementation>>> componentGenerators =
-        new ConcurrentHashMap<Class<?>, ComponentGenerator<? extends ComponentDefinition<? extends Implementation>>>();
+        ComponentGenerator<? extends ComponentDefinition<? extends Implementation>>> componentGenerators;
+    private Map<Class<?>, BindingGenerator> bindingGenerators;
+    private Map<Class<?>, InterceptorGenerator<? extends IntentDefinition>> interceptorGenerators;
+    private Map<Class<?>, ResourceGenerator> resourceGenerators;
 
-    private Map<Class<?>, BindingGenerator> bindingGenerators = new ConcurrentHashMap<Class<?>, BindingGenerator>();
 
-    private Map<Class<?>, InterceptorGenerator> interceptorGenerators =
-        new ConcurrentHashMap<Class<?>, InterceptorGenerator>();
-
-    private Map<Class<?>, ResourceGenerator> resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceGenerator>();
+    public GeneratorRegistryImpl() {
+        componentGenerators =
+            new ConcurrentHashMap<Class<?>,
+                ComponentGenerator<? extends ComponentDefinition<? extends Implementation>>>();
+        bindingGenerators = new ConcurrentHashMap<Class<?>, BindingGenerator>();
+        resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceGenerator>();
+        interceptorGenerators = new ConcurrentHashMap<Class<?>, InterceptorGenerator<? extends IntentDefinition>>();
+    }
 
     public void register(Class<?> clazz, BindingGenerator generator) {
         bindingGenerators.put(clazz, generator);
     }
 
-    public void register(Class<?> clazz, InterceptorGenerator generator) {
+    public <T extends IntentDefinition> void register(Class<T> clazz, InterceptorGenerator<T> generator) {
         interceptorGenerators.put(clazz, generator);
     }
 
@@ -73,8 +82,8 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         resourceGenerators.put(clazz, generator);
     }
 
-    public void register(Class<?> clazz,
-                         ComponentGenerator<? extends ComponentDefinition<? extends Implementation>> generator) {
+    public <T extends ComponentDefinition<? extends Implementation>> void register(Class<T> clazz,
+                                                                                   ComponentGenerator<T> generator) {
         componentGenerators.put(clazz, generator);
     }
 
@@ -94,17 +103,18 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     public <C extends ComponentDefinition<? extends Implementation>>
     void generateWire(ServiceContract<?> contract,
                       BindingDefinition bindingDefinition,
+                      ServiceDefinition serviceDefinition,
                       C componentDefinition,
                       GeneratorContext context) throws GenerationException {
 
-        PhysicalWireDefinition wireDefinition = createDefinition(contract);
+        PhysicalWireDefinition wireDefinition = createDefinition(contract, context);
         Class<?> type = componentDefinition.getClass();
         ComponentGenerator<C> targetGenerator = (ComponentGenerator<C>) componentGenerators.get(type);
         if (targetGenerator == null) {
             throw new GeneratorNotFoundException(type);
         }
         PhysicalWireTargetDefinition targetDefinition =
-            targetGenerator.generateWireTarget(componentDefinition, context);
+            targetGenerator.generateWireTarget(componentDefinition, serviceDefinition, context);
         wireDefinition.setTarget(targetDefinition);
         type = bindingDefinition.getClass();
         BindingGenerator sourceGenerator = bindingGenerators.get(type);
@@ -125,7 +135,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
                       GeneratorContext context) throws GenerationException {
 
         ServiceContract<?> contract = referenceDefinition.getServiceContract();
-        PhysicalWireDefinition wireDefinition = createDefinition(contract);
+        PhysicalWireDefinition wireDefinition = createDefinition(contract, context);
         Class<?> type = bindingDefinition.getClass();
         BindingGenerator targetGenerator = bindingGenerators.get(type);
         if (targetGenerator == null) {
@@ -140,7 +150,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
             throw new GeneratorNotFoundException(type);
         }
         PhysicalWireSourceDefinition sourceDefinition =
-            sourceGenerator.generateWireSource(componentDefinition, context);
+            sourceGenerator.generateWireSource(componentDefinition, referenceDefinition, context);
         wireDefinition.setSource(sourceDefinition);
 
         context.getPhysicalChangeSet().addWireDefinition(wireDefinition);
@@ -150,20 +160,19 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     public <S extends ComponentDefinition<? extends Implementation>,
         T extends ComponentDefinition<? extends Implementation>>
     void generateWire(S source,
-                      ReferenceDefinition reference,
-                      ServiceDefinition service,
-                      ComponentDefinition target,
+                      ReferenceDefinition referenceDefinition,
+                      ServiceDefinition serviceDefinition,
+                      T target,
                       GeneratorContext context) throws GenerationException {
-        ServiceContract<?> contract = reference.getServiceContract();
-        PhysicalWireDefinition wireDefinition = createDefinition(contract);
-
+        ServiceContract<?> contract = referenceDefinition.getServiceContract();
+        PhysicalWireDefinition wireDefinition = createDefinition(contract, context);
         Class<?> type = target.getClass();
         ComponentGenerator<S> targetGenerator = (ComponentGenerator<S>) componentGenerators.get(type);
         if (targetGenerator == null) {
             throw new GeneratorNotFoundException(type);
         }
         PhysicalWireTargetDefinition targetDefinition =
-            targetGenerator.generateWireTarget(source, context);
+            targetGenerator.generateWireTarget(source, serviceDefinition, context);
         wireDefinition.setTarget(targetDefinition);
 
         type = source.getClass();
@@ -172,7 +181,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
             throw new GeneratorNotFoundException(type);
         }
         PhysicalWireSourceDefinition sourceDefinition =
-            targetGenerator.generateWireSource(source, context);
+            targetGenerator.generateWireSource(source, referenceDefinition, context);
         wireDefinition.setSource(sourceDefinition);
         context.getPhysicalChangeSet().addWireDefinition(wireDefinition);
     }
@@ -214,19 +223,41 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
 
     }
 
-    private PhysicalWireDefinition createDefinition(ServiceContract<?> contract) {
+
+    @SuppressWarnings({"unchecked"})
+    private PhysicalWireDefinition createDefinition(ServiceContract<?> contract, GeneratorContext context)
+        throws GenerationException {
         PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition();
         for (Operation o : contract.getOperations().values()) {
             PhysicalOperationDefinition physicalOperation = mapOperation(o);
             wireDefinition.addOperation(physicalOperation);
+            // this is egregious
+            // hardcode intent until we get the intent infrastructure in place
+            IntentDefinition intent = new NonBlockingIntentDefinition();
+            Class<? extends IntentDefinition> type = NonBlockingIntentDefinition.class;
+            InterceptorGenerator generator = interceptorGenerators.get(type);
+            if (generator == null) {
+                throw new GeneratorNotFoundException(type);
+            }
+            PhysicalInterceptorDefinition interceptorDefinition = generator.generate(intent, context);
+            physicalOperation.addInterceptor(interceptorDefinition);
         }
         for (Operation o : contract.getCallbackOperations().values()) {
             PhysicalOperationDefinition physicalOperation = mapOperation(o);
             physicalOperation.setCallback(true);
             wireDefinition.addOperation(physicalOperation);
+            // this is egregious
+            // hardcode intent until we get the intent infrastructure in place
+            IntentDefinition intent = new NonBlockingIntentDefinition();
+            Class<? extends IntentDefinition> type = NonBlockingIntentDefinition.class;
+            InterceptorGenerator generator = interceptorGenerators.get(type);
+            if (generator == null) {
+                throw new GeneratorNotFoundException(type);
+            }
+            PhysicalInterceptorDefinition interceptorDefinition = generator.generate(intent, context);
+            physicalOperation.addInterceptor(interceptorDefinition);
         }
         return wireDefinition;
     }
-
 
 }

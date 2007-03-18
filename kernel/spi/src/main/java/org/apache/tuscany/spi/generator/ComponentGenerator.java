@@ -20,6 +20,8 @@ package org.apache.tuscany.spi.generator;
 
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
@@ -30,8 +32,12 @@ public interface ComponentGenerator<C extends ComponentDefinition<? extends Impl
 
     void generate(C definition, GeneratorContext context) throws GenerationException;
 
-    PhysicalWireSourceDefinition generateWireSource(C definition, GeneratorContext context) throws GenerationException;
+    PhysicalWireSourceDefinition generateWireSource(C definition,
+                                                    ReferenceDefinition serviceDefinition,
+                                                    GeneratorContext context) throws GenerationException;
 
-    PhysicalWireTargetDefinition generateWireTarget(C definition, GeneratorContext context) throws GenerationException;
+    PhysicalWireTargetDefinition generateWireTarget(C definition,
+                                                    ServiceDefinition serviceDefinition,
+                                                    GeneratorContext context) throws GenerationException;
 
 }

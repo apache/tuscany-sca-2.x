@@ -25,7 +25,7 @@ import org.apache.tuscany.api.TuscanyException;
  *
  * @version $Rev$ $Date$
  */
-public abstract class DeploymentException extends TuscanyException {
+public class DeploymentException extends TuscanyException {
     protected DeploymentException() {
     }
 
@@ -45,7 +45,7 @@ public abstract class DeploymentException extends TuscanyException {
         super(message, identifier, cause);
     }
 
-    protected DeploymentException(Throwable cause) {
+    public DeploymentException(Throwable cause) {
         super(cause);
     }
 }

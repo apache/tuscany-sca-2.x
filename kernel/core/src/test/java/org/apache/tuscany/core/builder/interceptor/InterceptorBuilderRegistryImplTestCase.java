@@ -32,6 +32,8 @@ import org.easymock.EasyMock;
  */
 public class InterceptorBuilderRegistryImplTestCase extends TestCase {
     private static final QName QNAME = new QName("builder");
+    private static final QName INTERCEPTOR_QNAME = new QName("interceptor");
+
     private InterceptorBuilderRegistry registry = new InterceptorBuilderRegistryImpl();
 
     public void testDispatch() throws Exception {
@@ -39,7 +41,7 @@ public class InterceptorBuilderRegistryImplTestCase extends TestCase {
         EasyMock.expect(builder.build(EasyMock.isA(PhysicalInterceptorDefinition.class))).andReturn(null);
         EasyMock.replay(builder);
         registry.register(QNAME, builder);
-        PhysicalInterceptorDefinition definition = new PhysicalInterceptorDefinition();
+        PhysicalInterceptorDefinition definition = new PhysicalInterceptorDefinition(INTERCEPTOR_QNAME);
         definition.setBuilder(QNAME);
         registry.build(definition);
         EasyMock.verify(builder);
@@ -50,7 +52,7 @@ public class InterceptorBuilderRegistryImplTestCase extends TestCase {
         EasyMock.replay(builder);
         registry.register(QNAME, builder);
         registry.unregister(QNAME);
-        PhysicalInterceptorDefinition definition = new PhysicalInterceptorDefinition();
+        PhysicalInterceptorDefinition definition = new PhysicalInterceptorDefinition(INTERCEPTOR_QNAME);
         definition.setBuilder(QNAME);
         try {
             registry.build(definition);

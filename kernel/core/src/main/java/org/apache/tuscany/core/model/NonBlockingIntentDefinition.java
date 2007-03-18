@@ -16,19 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.generator;
+package org.apache.tuscany.core.model;
 
 import org.apache.tuscany.spi.model.IntentDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
 
 /**
- * Implementations are responsible for generating physical interceptor definitions for a wire.
+ * Represents a non-blocking intent
  *
  * @version $Rev$ $Date$
  */
-public interface InterceptorGenerator<T extends IntentDefinition> {
-
-    PhysicalInterceptorDefinition generate(T definition, GeneratorContext context) throws GenerationException;
-
+public class NonBlockingIntentDefinition extends IntentDefinition {
 }
-
