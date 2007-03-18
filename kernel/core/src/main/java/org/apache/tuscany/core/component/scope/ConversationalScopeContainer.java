@@ -40,10 +40,12 @@ import org.apache.tuscany.spi.services.store.StoreWriteException;
  * @version $Rev: 452655 $ $Date: 2006-10-03 18:09:02 -0400 (Tue, 03 Oct 2006) $
  */
 public class ConversationalScopeContainer extends AbstractScopeContainer implements ScopeContainer {
-    private Store nonDurableStore;
+    private final WorkContext workContext;
+    private final Store nonDurableStore;
 
     public ConversationalScopeContainer(Store store, WorkContext workContext, final ScopeContainerMonitor monitor) {
-        super(Scope.CONVERSATION, workContext, monitor);
+        super(Scope.CONVERSATION, monitor);
+        this.workContext = workContext;
         this.nonDurableStore = store;
         if (store != null) {
             store.addListener(new ExpirationListener(monitor));

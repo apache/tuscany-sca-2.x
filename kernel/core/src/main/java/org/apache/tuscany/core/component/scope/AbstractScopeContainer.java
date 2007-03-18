@@ -42,7 +42,6 @@ import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -77,16 +76,6 @@ public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecyc
     // the queue of instanceWrappers to destroy, in the order that their instances were created
     protected final Map<KEY, List<InstanceWrapper<?>>> destroyQueues =
         new ConcurrentHashMap<KEY, List<InstanceWrapper<?>>>();
-
-
-    protected WorkContext workContext;
-
-    @Deprecated
-    public AbstractScopeContainer(Scope scope, WorkContext workContext, ScopeContainerMonitor monitor) {
-        this.scope = scope;
-        this.workContext = workContext;
-        this.monitor = monitor;
-    }
 
     public AbstractScopeContainer(Scope scope, ScopeContainerMonitor monitor) {
         this.scope = scope;
@@ -217,10 +206,6 @@ public abstract class AbstractScopeContainer<GROUP, KEY> extends AbstractLifecyc
 
     public <T> void remove(AtomicComponent<T> component) throws PersistenceException {
         throw new UnsupportedOperationException("Scope does not support persistence");
-    }
-
-    protected WorkContext getWorkContext() {
-        return workContext;
     }
 
     /**

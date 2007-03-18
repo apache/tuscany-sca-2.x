@@ -43,6 +43,6 @@ public class RequestScopeObjectFactory implements ObjectFactory<RequestScopeCont
     }
 
     public RequestScopeContainer getInstance() throws ObjectCreationException {
-        return new RequestScopeContainer(context, monitor);
+        return new RequestScopeContainer(monitor);
     }
 }

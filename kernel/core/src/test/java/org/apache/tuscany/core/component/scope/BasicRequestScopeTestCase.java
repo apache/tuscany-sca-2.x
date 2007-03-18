@@ -151,7 +151,7 @@ public abstract class BasicRequestScopeTestCase extends TestCase {
         component = EasyMock.createStrictMock(AtomicComponent.class);
         wrapper = EasyMock.createStrictMock(InstanceWrapper.class);
         monitor = EasyMock.createStrictMock(ScopeContainerMonitor.class);
-        scopeContainer = new RequestScopeContainer(null, monitor);
+        scopeContainer = new RequestScopeContainer(monitor);
         scopeContainer.start();
 
         component.addListener(scopeContainer);
