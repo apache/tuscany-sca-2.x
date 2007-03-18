@@ -48,7 +48,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         Target target = EasyMock.createMock(Target.class);
         target.invokeStart("test");
         EasyMock.replay(target);
-        Invoker invoker = new Invoker(context, monitor, target);
+        Invoker invoker = new Invoker(target);
         Message msg = new MessageImpl();
         msg.setWorkContext(context);
         msg.pushCallbackUri(from);
@@ -73,7 +73,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         Target target = EasyMock.createMock(Target.class);
         target.invokeContinue("test");
         EasyMock.replay(target);
-        Invoker invoker = new Invoker(context, monitor, target);
+        Invoker invoker = new Invoker(target);
         Message msg = new MessageImpl();
         msg.setWorkContext(context);
         msg.pushCallbackUri(from);
@@ -98,7 +98,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         Target target = EasyMock.createMock(Target.class);
         target.invokeEnd("test");
         EasyMock.replay(target);
-        Invoker invoker = new Invoker(context, monitor, target);
+        Invoker invoker = new Invoker(target);
         Message msg = new MessageImpl();
         msg.setWorkContext(context);
         msg.pushCallbackUri(from);
@@ -119,11 +119,10 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         context = EasyMock.createMock(WorkContext.class);
         context.setCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
-        ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
         target.invokeNone("test");
         EasyMock.replay(target);
-        Invoker invoker = new Invoker(context, monitor, target);
+        Invoker invoker = new Invoker(target);
         Message msg = new MessageImpl();
         msg.setWorkContext(context);
         msg.pushCallbackUri(from);
@@ -142,8 +141,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
     private class Invoker extends TargetInvokerExtension {
         private Target target;
 
-        public Invoker(WorkContext workContext, ExecutionMonitor monitor, Target target) {
-            super(workContext);
+        private Invoker(Target target) {
             this.target = target;
         }
 

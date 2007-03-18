@@ -47,7 +47,6 @@ public class JavaTargetInvoker<T> extends TargetInvokerExtension {
                              AtomicComponent<T> component,
                              ScopeContainer scopeContainer,
                              WorkContext context) {
-        super(context);
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
