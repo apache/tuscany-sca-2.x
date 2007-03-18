@@ -41,8 +41,10 @@ import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 
 /**
  * @version $Rev$ $Date$
@@ -83,29 +85,34 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         contract.setConversational(true);
         op1.setServiceContract(contract);
 
-        WorkContext wc = new WorkContextImpl();
-        MockInvoker invoker = new MockInvoker(wc);
+        WorkContext wc = new SimpleWorkContext();
+        PojoWorkContextTunnel.setThreadWorkContext(wc);
+        try {
+            MockInvoker invoker = new MockInvoker(wc);
 
-        InvocationChain chain = new InvocationChainImpl(op1);
-        chain.setTargetInvoker(invoker);
-        wire.addInvocationChain(op1, chain);
-        URI uri = URI.create("fooRef");
-        wire.setSourceUri(uri);
-        wire.setSourceContract(contract);
+            InvocationChain chain = new InvocationChainImpl(op1);
+            chain.setTargetInvoker(invoker);
+            wire.addInvocationChain(op1, chain);
+            URI uri = URI.create("fooRef");
+            wire.setSourceUri(uri);
+            wire.setSourceContract(contract);
 
-        String convID = UUID.randomUUID().toString();
-        wc.setIdentifier(Scope.CONVERSATION, convID);
-        invoker.setCurrentConversationID(convID);
+            String convID = UUID.randomUUID().toString();
+            wc.setIdentifier(Scope.CONVERSATION, convID);
+            invoker.setCurrentConversationID(convID);
 
-        JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, wc);
-        handler.invoke(Foo.class.getMethod("test", String.class), new Object[]{"bar"});
-        String currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
-        assertSame(convID, currentConvID);
+            JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, wc);
+            handler.invoke(null, Foo.class.getMethod("test", String.class), new Object[]{"bar"});
+            String currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
+            assertSame(convID, currentConvID);
 
-        JDKInvocationHandler handler2 = new JDKInvocationHandler(Foo.class, wire, wc);
-        handler2.invoke(Foo.class.getMethod("test", String.class), new Object[]{"bar"});
-        currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
-        assertSame(convID, currentConvID);
+            JDKInvocationHandler handler2 = new JDKInvocationHandler(Foo.class, wire, wc);
+            handler2.invoke(null, Foo.class.getMethod("test", String.class), new Object[]{"bar"});
+            currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
+            assertSame(convID, currentConvID);
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
     private interface Foo {

@@ -52,6 +52,7 @@ import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 import org.apache.tuscany.core.wire.jdk.JDKProxyService;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
@@ -95,10 +96,15 @@ public class CallbackInvocationTestCase extends TestCase {
         targetComponent.start();
         clientComponent.start();
         FooClient client = (FooClient) clientComponent.getTargetInstance();
-        client.invoke();
-        assertTrue(client.invoked);
-        client.invokeMultiCallback();
-        assertTrue(client.count == 2);
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            client.invoke();
+            assertTrue(client.invoked);
+            client.invokeMultiCallback();
+            assertTrue(client.count == 2);
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
     /**
@@ -135,12 +141,17 @@ public class CallbackInvocationTestCase extends TestCase {
         connector.connect(sourceDefinition2);
         targetComponent.start();
 
-        FooClient client1 = (FooClient) clientComponent1.getTargetInstance();
-        client1.invoke();
-        assertTrue(client1.invoked);
-        FooClient client2 = (FooClient) clientComponent2.getTargetInstance();
-        client2.invoke();
-        assertTrue(client2.invoked);
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            FooClient client1 = (FooClient) clientComponent1.getTargetInstance();
+            client1.invoke();
+            assertTrue(client1.invoked);
+            FooClient client2 = (FooClient) clientComponent2.getTargetInstance();
+            client2.invoke();
+            assertTrue(client2.invoked);
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
 

@@ -50,6 +50,7 @@ import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.Target;
@@ -74,8 +75,13 @@ public class WireToScopedJavaTestCase extends TestCase {
         final Wire wire = getWire(scope);
         Target service = proxyService.createProxy(Target.class, wire);
         assertNotNull(service);
-        service.setString("foo");
-        assertEquals(null, service.getString());
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            service.setString("foo");
+            assertEquals(null, service.getString());
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
         scope.stop();
     }
 
@@ -170,10 +176,15 @@ public class WireToScopedJavaTestCase extends TestCase {
         final Wire wire = getWire(scope);
         Target service = proxyService.createProxy(Target.class, wire);
         Target target = proxyService.createProxy(Target.class, wire);
-        assertNotNull(service);
-        service.setString("foo");
-        assertEquals("foo", service.getString());
-        assertEquals("foo", target.getString());
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            assertNotNull(service);
+            service.setString("foo");
+            assertEquals("foo", service.getString());
+            assertEquals("foo", target.getString());
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
         scope.stop();
     }
 

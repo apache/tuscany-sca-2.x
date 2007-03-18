@@ -50,6 +50,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         EasyMock.replay(target);
         Invoker invoker = new Invoker(context, monitor, target);
         Message msg = new MessageImpl();
+        msg.setWorkContext(context);
         msg.pushCallbackUri(from);
         msg.setBody("test");
         msg.setConversationSequence(Invoker.START);
@@ -74,6 +75,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         EasyMock.replay(target);
         Invoker invoker = new Invoker(context, monitor, target);
         Message msg = new MessageImpl();
+        msg.setWorkContext(context);
         msg.pushCallbackUri(from);
         msg.setBody("test");
         msg.setConversationSequence(Invoker.CONTINUE);
@@ -98,6 +100,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         EasyMock.replay(target);
         Invoker invoker = new Invoker(context, monitor, target);
         Message msg = new MessageImpl();
+        msg.setWorkContext(context);
         msg.pushCallbackUri(from);
         msg.setBody("test");
         msg.setConversationSequence(Invoker.END);
@@ -122,6 +125,7 @@ public class TargetInvokerExtensionSequenceTestCase extends TestCase {
         EasyMock.replay(target);
         Invoker invoker = new Invoker(context, monitor, target);
         Message msg = new MessageImpl();
+        msg.setWorkContext(context);
         msg.pushCallbackUri(from);
         msg.setBody("test");
         invoker.invoke(msg);

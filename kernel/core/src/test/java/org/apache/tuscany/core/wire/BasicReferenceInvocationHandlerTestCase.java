@@ -35,6 +35,7 @@ import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 
 import org.easymock.EasyMock;
 
@@ -62,8 +63,13 @@ public class BasicReferenceInvocationHandlerTestCase extends TestCase {
         wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("#wire"));
         JDKInvocationHandler handler = new JDKInvocationHandler(SimpleTarget.class, wire, workContext);
-        assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
-        assertEquals(1, interceptor.getCount());
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
+            assertEquals(1, interceptor.getCount());
+        } finally {
+            PojoWorkContextTunnel.setThreadWorkContext(null);
+        }
     }
 
     public void setUp() throws Exception {

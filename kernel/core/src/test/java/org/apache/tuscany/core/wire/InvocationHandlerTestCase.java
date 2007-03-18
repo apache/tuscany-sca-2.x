@@ -36,6 +36,7 @@ import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 
 import org.easymock.EasyMock;
 
@@ -131,6 +132,11 @@ public class InvocationHandlerTestCase extends TestCase {
         EasyMock.expect(workContext.getCorrelationId()).andStubReturn(null);
         EasyMock.expect(workContext.getCallbackUris()).andStubReturn(null);
         EasyMock.replay(workContext);
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
     }
 
+    protected void tearDown() throws Exception {
+        PojoWorkContextTunnel.setThreadWorkContext(null);
+        super.tearDown();
+    }
 }

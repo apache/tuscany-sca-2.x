@@ -45,6 +45,7 @@ import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.wire.NoMethodForOperationException;
 import org.apache.tuscany.core.wire.WireUtils;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 
 
 /**
@@ -120,6 +121,7 @@ public final class JDKInvocationHandler extends AbstractInvocationHandler
         }
         TargetInvoker invoker = getInvoker(holder);
         InvocationChain chain = holder.getChain();
+        WorkContext workContext = PojoWorkContextTunnel.getThreadWorkContext();
 
 // JFM commonting out temporarily
 //        if (wireContainerIsAtomicComponent && contractHasCallback && !callbackIsImplemented) {
