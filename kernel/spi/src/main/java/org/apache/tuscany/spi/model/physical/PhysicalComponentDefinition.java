@@ -30,13 +30,10 @@ import org.apache.tuscany.spi.model.Scope;
  */
 public abstract class PhysicalComponentDefinition extends ModelObject {
 
-    // Component Id.
     private URI componentId;
+    private URI classLoaderId;
     private Scope scope;
     private URI groupId;
-
-    // Instance factory provider
-    private InstanceFactoryProviderDefinition instanceFactoryProviderDefinition;// Scope
 
     /**
      * Gets the component id.
@@ -57,6 +54,24 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
     }
 
     /**
+     * Gets the classloader id.
+     *
+     * @return Classloader id.
+     */
+    public URI getClassLoaderId() {
+        return classLoaderId;
+    }
+
+    /**
+     * Set the classloader id.
+     *
+     * @param classLoaderId Classloader id.
+     */
+    public void setClassLoaderId(URI classLoaderId) {
+        this.classLoaderId = classLoaderId;
+    }
+
+    /**
      * Returns the id of the component group this component belongs to.
      * @return the id of the component group this component belongs to
      */
@@ -70,22 +85,6 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      */
     public void setGroupId(URI groupId) {
         this.groupId = groupId;
-    }
-
-    /**
-     * Gets the instance factory provider definition.
-     * @return Instance factory provider definition.
-     */
-    public InstanceFactoryProviderDefinition getInstanceFactoryProviderDefinition() {
-        return instanceFactoryProviderDefinition;
-    }
-
-    /**
-     * Sets the instance factory provider definition.
-     * @param instanceFactoryProviderDefinition Instance factory provider definition.
-     */
-    public void setInstanceFactoryProviderDefinition(InstanceFactoryProviderDefinition instanceFactoryProviderDefinition) {
-        this.instanceFactoryProviderDefinition = instanceFactoryProviderDefinition;
     }
 
     /**

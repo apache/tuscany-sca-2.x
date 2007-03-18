@@ -25,7 +25,8 @@ import org.apache.tuscany.spi.model.ModelObject;
  * Base class for instance factory provider definition.
  * 
  * @version $Revsion$ $Date$
+ * @param 
  */
-public class InstanceFactoryProviderDefinition extends ModelObject {
+public class InstanceFactoryProviderDefinition<T> extends ModelObject {
 
 }
