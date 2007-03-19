@@ -239,9 +239,9 @@ public class JavaInvokerInterceptorBasicTestCase<CONTEXT> extends TestCase {
         }
     }
 
-    public class TestException extends Exception {
+    public static class TestException extends Exception {
     }
 
-    public class TestRuntimeException extends RuntimeException {
+    public static class TestRuntimeException extends RuntimeException {
     }
 }
