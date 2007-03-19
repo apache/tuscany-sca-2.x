@@ -79,8 +79,8 @@ public class HelperContextProcessor extends ImplementationProcessorExtension {
         if (HelperContext.class == paramType) {
             String name = toPropertyName(method.getName());
             Resource<HelperContext> resource = new Resource<HelperContext>(name, HelperContext.class, method);
-            type.getResources().put(name, resource);
             resource.setObjectFactory(new HelperContextFactory(context.getComponentId()));
+            type.getResources().put(name, resource);
         }
     }
 
@@ -94,8 +94,8 @@ public class HelperContextProcessor extends ImplementationProcessorExtension {
         if (HelperContext.class == paramType) {
             String name = field.getName();
             Resource<HelperContext> resource = new Resource<HelperContext>(name, HelperContext.class, field);
-            type.getResources().put(name, resource);
             resource.setObjectFactory(new HelperContextFactory(context.getComponentId()));
+            type.getResources().put(name, resource);
         }
     }
 
