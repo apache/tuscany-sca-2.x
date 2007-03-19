@@ -75,17 +75,9 @@ public class PhysicalBuilderTestCase extends TestCase {
     private PhysicalChangeSet pcs;
 
     public void testWireTwoComponents() throws Exception {
-        SystemPhysicalWireSourceDefinition wireSource = new SystemPhysicalWireSourceDefinition();
-        wireSource.setUri(sourceId.resolve("#target"));
-        SystemPhysicalWireTargetDefinition wireTarget = new SystemPhysicalWireTargetDefinition();
-        wireTarget.setUri(targetId);
-        PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition();
-        wireDefinition.setSource(wireSource);
-        wireDefinition.setTarget(wireTarget);
-
         pcs.addComponentDefinition(createSourceComponentDefinition());
         pcs.addComponentDefinition(createTargetComponentDefinition());
-        pcs.addWireDefinition(wireDefinition);
+        pcs.addWireDefinition(createWireDefinition());
         deployer.applyChangeSet(pcs);
 
         WorkContext workContext = new SimpleWorkContext();
@@ -129,6 +121,17 @@ public class PhysicalBuilderTestCase extends TestCase {
         target.setScope(Scope.COMPOSITE);
         target.setInstanceFactoryProviderDefinition(targetProviderDefinition);
         return target;
+    }
+
+    private PhysicalWireDefinition createWireDefinition() {
+        SystemPhysicalWireSourceDefinition wireSource = new SystemPhysicalWireSourceDefinition();
+        wireSource.setUri(sourceId.resolve("#target"));
+        SystemPhysicalWireTargetDefinition wireTarget = new SystemPhysicalWireTargetDefinition();
+        wireTarget.setUri(targetId);
+        PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition();
+        wireDefinition.setSource(wireSource);
+        wireDefinition.setTarget(wireTarget);
+        return wireDefinition;
     }
 
     protected void setUp() throws Exception {
