@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.core.marshaller.extensions.AbstractIFProviderDefinitionMarshaller;
-import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.java.PojoPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.instancefactory.ByteCodeIFProviderDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 
@@ -49,7 +49,7 @@ public class ByteCodeIFProviderDefinitionMarshaller extends
 
     // QName for the root element
     private static final QName QNAME =
-        new QName(BYTE_CODE_NS, AbstractPhysicalComponentDefinitionMarshaller.INSTANCE_FACTORY_PROVIDER, BYTE_CODE_PREFIX);
+        new QName(BYTE_CODE_NS, PojoPhysicalComponentDefinitionMarshaller.INSTANCE_FACTORY_PROVIDER, BYTE_CODE_PREFIX);
 
     @Override
     protected ByteCodeIFProviderDefinition getConcreteModelObject() {

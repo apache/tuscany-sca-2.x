@@ -31,9 +31,9 @@ import org.apache.tuscany.spi.model.Scope;
 public abstract class PhysicalComponentDefinition extends ModelObject {
 
     private URI componentId;
-    private URI classLoaderId;
     private Scope scope;
     private URI groupId;
+    private int initLevel;
 
     /**
      * Gets the component id.
@@ -54,24 +54,6 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
     }
 
     /**
-     * Gets the classloader id.
-     *
-     * @return Classloader id.
-     */
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    /**
-     * Set the classloader id.
-     *
-     * @param classLoaderId Classloader id.
-     */
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
-
-    /**
      * Returns the id of the component group this component belongs to.
      * @return the id of the component group this component belongs to
      */
@@ -85,6 +67,14 @@ public abstract class PhysicalComponentDefinition extends ModelObject {
      */
     public void setGroupId(URI groupId) {
         this.groupId = groupId;
+    }
+
+    public int getInitLevel() {
+        return initLevel;
+    }
+
+    public void setInitLevel(int initLevel) {
+        this.initLevel = initLevel;
     }
 
     /**

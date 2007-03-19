@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -49,12 +48,11 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
     // Group id attribute
     public static final String GROUP_ID = "groupId";
 
+    // Init level attribute
+    public static final String INIT_LEVEL = "initLevel";
+
     // Scope attribute
     private static final String SCOPE = "scope";
-    
-    
-    // Instance factory provider
-    public static final String INSTANCE_FACTORY_PROVIDER = "instanceFactoryProvider";
 
     /**
      * Marshalls a physical change set to the xml writer.
@@ -68,10 +66,9 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             writer.writeAttribute(COMPONENT_ID, modelObject.getComponentId().toASCIIString());
             writer.writeAttribute(GROUP_ID, modelObject.getGroupId().toASCIIString());
             writer.writeAttribute(SCOPE, modelObject.getScope().toString());
+            writer.writeAttribute(INIT_LEVEL, String.valueOf(modelObject.getInitLevel()));
             
             writer.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
-// FIXME JNB
-//            registry.marshall(modelObject.getInstanceFactoryProviderDefinition(), writer);
             
             handleExtension(modelObject, writer);
             
@@ -93,16 +90,10 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             componentDefinition.setComponentId(new URI(reader.getAttributeValue(null, COMPONENT_ID)));
             componentDefinition.setGroupId(new URI(reader.getAttributeValue(null, GROUP_ID)));
             componentDefinition.setScope(new Scope(reader.getAttributeValue(null, SCOPE)));
+            componentDefinition.setInitLevel(Integer.parseInt(reader.getAttributeValue(null, INIT_LEVEL)));
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
-                        String name = reader.getName().getLocalPart();
-                        if(INSTANCE_FACTORY_PROVIDER.equals(name)) {
-                            InstanceFactoryProviderDefinition ipcd = 
-                                (InstanceFactoryProviderDefinition) registry.unmarshall(reader);
-// FIXME JNB
-//                            componentDefinition.setInstanceFactoryProviderDefinition(ipcd);
-                        }
                         handleExtension(componentDefinition, reader);
                         break;
                     case END_ELEMENT:

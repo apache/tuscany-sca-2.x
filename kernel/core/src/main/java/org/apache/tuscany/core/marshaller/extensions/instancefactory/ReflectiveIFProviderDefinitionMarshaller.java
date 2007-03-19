@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.core.marshaller.extensions.AbstractIFProviderDefinitionMarshaller;
-import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
+import org.apache.tuscany.core.marshaller.extensions.java.PojoPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteMapping;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 import org.apache.tuscany.core.model.physical.instancefactory.MemberSite;
@@ -81,7 +81,7 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
 
     // QName for the root element
     private static final QName QNAME =
-        new QName(REFLECTIVE_NS, AbstractPhysicalComponentDefinitionMarshaller.INSTANCE_FACTORY_PROVIDER, REFLECTIVE_PREFIX);
+        new QName(REFLECTIVE_NS, PojoPhysicalComponentDefinitionMarshaller.INSTANCE_FACTORY_PROVIDER, REFLECTIVE_PREFIX);
 
     @Override
     protected ReflectiveIFProviderDefinition getConcreteModelObject() {

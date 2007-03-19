@@ -18,16 +18,11 @@
  */
 package org.apache.tuscany.core.marshaller.extensions.java;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller;
-import org.apache.tuscany.core.marshaller.extensions.AbstractPhysicalComponentDefinitionMarshaller;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 
@@ -38,16 +33,13 @@ import org.apache.tuscany.spi.marshaller.MarshalException;
  *          2007) $
  */
 public class JavaPhysicalComponentDefinitionMarshaller extends
-    AbstractPhysicalComponentDefinitionMarshaller<JavaPhysicalComponentDefinition> {
+    PojoPhysicalComponentDefinitionMarshaller<JavaPhysicalComponentDefinition> {
 
     // Core marshaller namespace
     public static final String JAVA_NS = "http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT";
 
     // Core marshaller prefix
     public static final String JAVA_PREFIX = "java";
-
-    // Classloader id
-    private static final String CLASSLOADER_ID = "classLoaderId";
 
     // QName for the root element
     private static final QName QNAME =
@@ -93,20 +85,8 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
      * @param reader              Reader from which marshalled data is read.
      */
     @Override
-    protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
+    protected void handlePojoExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamReader reader)
         throws MarshalException {
-
-        try {
-            String name = reader.getName().getLocalPart();
-            if (CLASSLOADER_ID.equals(name)) {
-                componentDefinition.setClassLoaderId(new URI(reader.getElementText()));
-            }
-        } catch (URISyntaxException ex) {
-            throw new MarshalException(ex);
-        } catch (XMLStreamException ex) {
-            throw new MarshalException(ex);
-        }
-
     }
 
     /**
@@ -117,18 +97,8 @@ public class JavaPhysicalComponentDefinitionMarshaller extends
      * @param writer              Writer to which marshalled data is written.
      */
     @Override
-    protected void handleExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer)
+    protected void handlePojoExtension(JavaPhysicalComponentDefinition componentDefinition, XMLStreamWriter writer)
         throws MarshalException {
-        try {
-
-            writer.writeStartElement(QNAME.getPrefix(), CLASSLOADER_ID, QNAME.getNamespaceURI());
-            writer.writeCharacters(componentDefinition.getClassLoaderId().toASCIIString());
-            writer.writeEndElement();
-
-        } catch (XMLStreamException ex) {
-            throw new MarshalException(ex);
-        }
-
     }
 
 }
