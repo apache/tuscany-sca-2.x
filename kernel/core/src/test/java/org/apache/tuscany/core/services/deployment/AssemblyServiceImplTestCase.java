@@ -27,6 +27,8 @@ import java.net.URLStreamHandler;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.generator.GeneratorRegistry;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
+import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.resolver.AutowireResolver;
@@ -102,7 +104,11 @@ public class AssemblyServiceImplTestCase extends TestCase {
         EasyMock.replay(resolver);
         ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
         EasyMock.replay(scopeRegistry);
-        service = new AssemblyServiceImpl(loaderRegistry, generatorRegistry, resolver, scopeRegistry);
+        ModelMarshallerRegistry marshallerRegistry = EasyMock.createMock(ModelMarshallerRegistry.class);
+        EasyMock.replay(marshallerRegistry);
+        DiscoveryService discoveryService = EasyMock.createMock(DiscoveryService.class);
+        EasyMock.replay(discoveryService);
+        service = new AssemblyServiceImpl(loaderRegistry, generatorRegistry, resolver, scopeRegistry, marshallerRegistry, discoveryService);
     }
 
     private static class MockURLStreamHandler extends URLStreamHandler {

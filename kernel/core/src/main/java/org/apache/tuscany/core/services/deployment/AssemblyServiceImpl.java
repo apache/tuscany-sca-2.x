@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.services.deployment;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -26,14 +28,20 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.core.generator.DefaultGeneratorContext;
+import org.apache.tuscany.core.resolver.AutowireResolver;
+import org.apache.tuscany.host.deployment.AssemblyService;
+import org.apache.tuscany.host.deployment.DeploymentException;
+import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.ChangeSetHandler;
@@ -44,6 +52,8 @@ import org.apache.tuscany.spi.generator.GeneratorContext;
 import org.apache.tuscany.spi.generator.GeneratorRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.marshaller.MarshalException;
+import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -57,13 +67,10 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
-
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.core.generator.DefaultGeneratorContext;
-import org.apache.tuscany.core.resolver.AutowireResolver;
-import org.apache.tuscany.host.deployment.AssemblyService;
-import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
+import org.apache.tuscany.spi.services.discovery.DiscoveryException;
+import org.apache.tuscany.spi.services.discovery.DiscoveryService;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * @version $Rev$ $Date$
@@ -76,16 +83,23 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
     private final AutowireResolver autowireResolver;
     private final ScopeRegistry scopeRegistry;
     private final XMLInputFactory xmlFactory;
+    private final ModelMarshallerRegistry marshallerRegistry;
+    private final DiscoveryService discoveryService;
     private ComponentDefinition<CompositeImplementation> domain;
+    
 
     public AssemblyServiceImpl(@Reference LoaderRegistry loaderRegistry,
                                @Reference GeneratorRegistry generatorRegistry,
                                @Reference AutowireResolver autowireResolver,
-                               @Reference ScopeRegistry scopeRegistry) {
+                               @Reference ScopeRegistry scopeRegistry,
+                               @Reference ModelMarshallerRegistry marshallerRegistry,
+                               @Reference DiscoveryService discoveryService) {
         this.loaderRegistry = loaderRegistry;
         this.generatorRegistry = generatorRegistry;
         this.autowireResolver = autowireResolver;
         this.scopeRegistry = scopeRegistry;
+        this.marshallerRegistry = marshallerRegistry;
+        this.discoveryService = discoveryService;
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         domain = createDomain();
     }
@@ -209,13 +223,36 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
                 } catch (GenerationException e) {
                     throw new DeploymentException(e);
                 }
+                
+                marshallAndSend(id, context);
 
             }
         } catch (XMLStreamException e) {
             throw new DocumentParseException(e);
         } catch (LoaderException e) {
             throw new DocumentParseException(e);
+        } catch (MarshalException e) {
+            throw new DocumentParseException(e);
+        } catch (DiscoveryException e) {
+            throw new DocumentParseException(e);
         }
+    }
+
+    /*
+     * Marshalls and sends the PCS.
+     */
+    private void marshallAndSend(URI id, GeneratorContext context) throws XMLStreamException, MarshalException, DiscoveryException {
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PhysicalChangeSet pcs = context.getPhysicalChangeSet();
+
+        XMLStreamWriter pcsWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(out);
+        marshallerRegistry.marshall(pcs, pcsWriter);
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        XMLStreamReader pcsReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+        discoveryService.sendMessage(id.toASCIIString(), pcsReader);
+        
     }
 
     private void generate(ComponentDefinition<?> component, Map<URI, GeneratorContext> contexts)
