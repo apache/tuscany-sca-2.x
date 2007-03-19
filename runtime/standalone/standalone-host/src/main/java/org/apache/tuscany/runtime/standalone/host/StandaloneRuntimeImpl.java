@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.apache.tuscany.api.annotation.LogLevel;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.core.component.SimpleWorkContext;
@@ -90,6 +91,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime<StandaloneRuntimeInfo
             getWorkContext().setIdentifier(Scope.COMPOSITE, compositeUri);
             WorkContext workContext = new SimpleWorkContext();
             workContext.setIdentifier(Scope.COMPOSITE, compositeUri);
+            PojoWorkContextTunnel.setThreadWorkContext(workContext);
             try {
                 return run(impl, args, compositeBase, workContext);
             } finally {
