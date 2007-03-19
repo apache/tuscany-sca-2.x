@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import commonj.sdo.DataObject;
@@ -34,7 +35,7 @@ import commonj.sdo.DataObject;
 public class DataObject2StringTestCase extends SDOTransformerTestCaseBase {
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<QName>(binding, PurchaseOrderType.class, ORDER_QNAME);
+        return new DataType<XMLType>(binding, PurchaseOrderType.class, new XMLType(ORDER_QNAME, null));
     }
 
     @Override

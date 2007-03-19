@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.Assert;
 
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import commonj.sdo.helper.XMLDocument;
@@ -37,7 +38,7 @@ public class XMLDocument2XMLStreamReaderTestCase extends SDOTransformerTestCaseB
 
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<QName>(XMLDocument.class.getName(), XMLDocument.class, ORDER_QNAME);
+        return new DataType<XMLType>(XMLDocument.class.getName(), XMLDocument.class, new XMLType(ORDER_QNAME, null));
     }
 
     @Override

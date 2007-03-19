@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 
@@ -35,7 +36,7 @@ public class DataObject2XMLStreamReaderTestCase extends SDOTransformerTestCaseBa
 
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<QName>(binding, PurchaseOrderType.class, ORDER_QNAME);
+        return new DataType<XMLType>(binding, PurchaseOrderType.class, new XMLType(ORDER_QNAME, null));
     }
 
     @Override
