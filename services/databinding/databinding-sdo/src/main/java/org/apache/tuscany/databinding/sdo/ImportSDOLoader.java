@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -50,10 +51,12 @@ import commonj.sdo.impl.HelperProvider;
  * @version $Rev$ $Date$
  */
 public class ImportSDOLoader extends LoaderExtension {
-
-    @Constructor({"registry"})
-    public ImportSDOLoader(@Reference LoaderRegistry registry) {
+    private HelperContextRegistry helperContextRegistry;
+    
+    @Constructor({"registry", "helperContextRegistry"})
+    public ImportSDOLoader(@Reference LoaderRegistry registry, @Reference HelperContextRegistry helperContextRegistry) {
         super(registry);
+        this.helperContextRegistry = helperContextRegistry;
     }
 
     public QName getXMLType() {
@@ -65,9 +68,16 @@ public class ImportSDOLoader extends LoaderExtension {
                             DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert IMPORT_SDO.equals(reader.getName());
 
+        HelperContext helperContext = null;
         // FIXME: [rfeng] How to associate the TypeHelper with deployment
         // context?
-        HelperContext helperContext = SDOContextHelper.getHelperContext(object);
+        synchronized (helperContextRegistry) {
+            helperContext = helperContextRegistry.getHelperContext(deploymentContext.getComponentId());
+            if (helperContext == null) {
+                helperContext = SDOUtil.createHelperContext();
+                helperContextRegistry.register(deploymentContext.getComponentId(), helperContext);
+            }
+        }
 
         importFactory(reader, deploymentContext, helperContext);
         importWSDL(reader, deploymentContext, helperContext);

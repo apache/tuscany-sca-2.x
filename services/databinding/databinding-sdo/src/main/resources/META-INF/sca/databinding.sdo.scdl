@@ -68,4 +68,8 @@
         <system:implementation.system class="org.apache.tuscany.databinding.sdo.HelperContextProcessor" />
     </component>
 
+    <component name="helperContext.registry">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.HelperContextRegistryImpl" />
+    </component>
+
 </composite>
