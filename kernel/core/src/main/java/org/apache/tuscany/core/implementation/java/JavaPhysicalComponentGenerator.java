@@ -71,8 +71,14 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
         pDefinition.setScope(type.getImplementationScope());
         // TODO get classloader id
         ReflectiveIFProviderDefinition provider = new ReflectiveIFProviderDefinition();
-        provider.setDestroyMethod(type.getDestroyMethod().toString());
-        provider.setInitMethod(type.getInitMethod().toString());
+        Method destroyMethod = type.getDestroyMethod();
+        if (destroyMethod != null) {
+            provider.setDestroyMethod(destroyMethod.toString());
+        }
+        Method initMethod = type.getInitMethod();
+        if (initMethod != null) {
+            provider.setInitMethod(initMethod.toString());
+        }
         provider.setImplementationClass(implementation.getImplementationClass().getName());
         // TODO ctor arguments
         // TODO set CDI source for ref, props, and callbacks
