@@ -58,4 +58,7 @@ public class Scope {
         return scope != null ? scope.hashCode() : 0;
     }
 
+    public String toString() {
+        return "Scope(\"" + scope + "\")";
+    }
 }
