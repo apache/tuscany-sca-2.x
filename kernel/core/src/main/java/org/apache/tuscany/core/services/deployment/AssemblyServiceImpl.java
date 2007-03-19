@@ -211,7 +211,7 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
                 }
 
             }
-
+            System.out.println("------");
         } catch (XMLStreamException e) {
             throw new DocumentParseException(e);
         } catch (LoaderException e) {
