@@ -27,29 +27,26 @@ import org.osoa.sca.annotations.Service;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
 import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
-import org.apache.tuscany.core.implementation.java.JavaComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemComponent;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
-import org.apache.tuscany.core.implementation.system.model.SystemPhysicalWireTargetDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalWireSourceDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
+import org.apache.tuscany.core.implementation.system.model.SystemPhysicalWireTargetDefinition;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.REFERENCE;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.builder.physical.WireAttacher;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$
