@@ -45,6 +45,8 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -83,20 +85,20 @@ public class SystemPhysicalComponentBuilder<T>
     }
 
     public void attachToSource(SystemComponent source,
-                       Component target,
-                       Wire wire,
-                       SystemPhysicalWireSourceDefinition definition) throws WiringException {
+                               SystemPhysicalWireSourceDefinition sourceDefinition, Component target,
+                               PhysicalWireTargetDefinition targetDefinition, Wire wire
+    ) throws WiringException {
         assert target instanceof AtomicComponent;
         AtomicComponent<?> targetComponent = (AtomicComponent<?>) target;
-        URI sourceUri = definition.getUri();
+        URI sourceUri = sourceDefinition.getUri();
         InjectionSource referenceSource = new InjectionSource(REFERENCE, sourceUri.getFragment());
         ObjectFactory<?> factory = targetComponent.createObjectFactory();
         source.setObjectFactory(referenceSource, factory);
     }
 
-    public void attachToTarget(Component source, SystemComponent component,
-                               Wire wire,
-                               SystemPhysicalWireTargetDefinition definition) throws WiringException {
+    public void attachToTarget(Component source, PhysicalWireSourceDefinition sourceDefinition, SystemComponent component,
+                               SystemPhysicalWireTargetDefinition targetDefinition, Wire wire
+    ) throws WiringException {
         // nothing to do here as the wire will always be optimized
     }
 }

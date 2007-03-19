@@ -70,8 +70,8 @@ public class PhysicalBuilderTestCase extends TestCase {
 
         SystemComponent<?> sourceComponent = builder.build(source);
         SystemComponent<?> targetComponent = builder.build(target);
-        builder.attachToSource(sourceComponent, targetComponent, null, wireSource);
-        builder.attachToTarget(sourceComponent, targetComponent, null, wireTarget);
+        builder.attachToSource(sourceComponent, wireSource, targetComponent, wireTarget, null);
+        builder.attachToTarget(sourceComponent, wireSource, targetComponent, wireTarget, null);
 
         sourceComponent.start();
         targetComponent.start();

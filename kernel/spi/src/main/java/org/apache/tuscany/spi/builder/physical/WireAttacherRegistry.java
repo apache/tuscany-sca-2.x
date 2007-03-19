@@ -38,25 +38,36 @@ public interface WireAttacherRegistry {
     /**
      * Attaches a wire to a source component.
      *
-     * @param source     the source component
-     * @param target     the target component
-     * @param wire       the wire
-     * @param definition metadata for performing the attach.
+     * @param source           the source component
+     * @param sourceDefinition metadata for performing the attach
+     * @param target           the target component
+     * @param targetDefinition metadata for performing the attach
+     * @param wire             the wire
      * @throws WiringException if an exception occurs during the attach operation
      */
     <C extends Component, PWSD extends PhysicalWireSourceDefinition>
-        void attachToSource(C source, Component target, Wire wire, PWSD definition) throws WiringException;
+        void attachToSource(C source,
+                            PWSD sourceDefinition,
+                            Component target,
+                            PhysicalWireTargetDefinition targetDefinition,
+                            Wire wire)
+        throws WiringException;
 
     /**
      * Attaches a wire to a target component.
      *
-     * @param source     the source component
-     * @param target     the target component
-     * @param wire       the wire
-     * @param definition metadata for performing the attach.
+     * @param source           the source component
+     * @param sourceDefinition metadata for performing the attach
+     * @param target           the target component
+     * @param targetDefinition metadata for performing the attach
+     * @param wire             the wire
      * @throws WiringException if an exception occurs during the attach operation
      */
     <C extends Component, PWTD extends PhysicalWireTargetDefinition>
-        void attachToTarget(Component source, C target, Wire wire, PWTD definition) throws WiringException;
+        void attachToTarget(Component source,
+                            PhysicalWireSourceDefinition sourceDefinition,
+                            C target,
+                            PWTD targetDefinition,
+                            Wire wire) throws WiringException;
 
 }
