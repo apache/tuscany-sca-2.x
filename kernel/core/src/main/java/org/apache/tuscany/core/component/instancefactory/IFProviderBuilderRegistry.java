@@ -44,7 +44,8 @@ public interface IFProviderBuilderRegistry {
      * @param providerDefinition Provider definition.
      * @param cl Clasloader to use.
      * @return Instance factory provider.
+     * @param <T> the type of instance the InstanceFactory creates
      */
-    InstanceFactoryProvider build(InstanceFactoryProviderDefinition providerDefinition, ClassLoader cl)
+    <T> InstanceFactoryProvider<T> build(InstanceFactoryProviderDefinition<T> providerDefinition, ClassLoader cl)
         throws IFProviderBuilderException;
 }
