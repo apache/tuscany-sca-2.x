@@ -25,7 +25,7 @@
     $Rev: 431086 $ $Date: 2006-08-12 13:58:17 -0700 (Sat, 12 Aug 2006) $
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+           xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
            name="org.apache.tuscany.databinding.sdo-axiom.include">
 
 	<component name="transformer.DataObject2OMElement">
