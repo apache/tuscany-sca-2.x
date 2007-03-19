@@ -30,6 +30,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
 import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
+import org.apache.tuscany.core.implementation.system.component.SystemComponent;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
 import org.apache.tuscany.core.injection.InstanceObjectFactory;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
@@ -50,6 +51,8 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.ProxyService;
@@ -68,16 +71,14 @@ public class JavaPhysicalComponentBuilder<T>
     extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>
     implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
 
-    // Classloader registry
-    private ClassLoaderRegistry classLoaderRegistry;
-
     private ProxyService proxyService;
 
     public JavaPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
         @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry,
-        @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders) {
-        super(builderRegistry, scopeRegistry, providerBuilders);
+        @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders,
+        @Reference(name = "classloaderRegistry")ClassLoaderRegistry classLoaderRegistry) {
+        super(builderRegistry, scopeRegistry, providerBuilders, classLoaderRegistry);
     }
 
     @Reference
@@ -85,48 +86,21 @@ public class JavaPhysicalComponentBuilder<T>
         this.proxyService = proxyService;
     }
 
-    /**
-     * Injects classloader registry.
-     *
-     * @param classLoaderRegistry Class loader registry.
-     */
-    @Reference
-    public void setClassLoaderRegistry(ClassLoaderRegistry classLoaderRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
+    public JavaComponent<T> build(JavaPhysicalComponentDefinition<T> definition) throws BuilderException {
+        URI componentId = definition.getComponentId();
+        int initLevel = definition.getInitLevel();
+        URI groupId = definition.getGroupId();
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
-    /**
-     * Builds a component from its physical component definition.
-     *
-     * @param componentDefinition Physical component definition of the component to be built.
-     * @return A component instance that is ready to go live.
-     * @throws BuilderException If unable to build the component.
-     */
-    public JavaComponent<T> build(JavaPhysicalComponentDefinition<T> componentDefinition) throws BuilderException {
+        // get the scope container for this component
+        Scope scope = definition.getScope();
+        ScopeContainer<?> scopeContainer = scopeRegistry.getScopeContainer(scope);
 
-        URI componentId = componentDefinition.getComponentId();
-        InstanceFactoryProvider<T> provider = null;
-        JavaComponent<T> component = new JavaComponent<T>(componentId, provider, null, null, 0, -1, -1);
+        // create the InstanceFactoryProvider based on the definition in the model
+        InstanceFactoryProviderDefinition<T> providerDefinition = definition.getInstanceFactoryProviderDefinition();
+        InstanceFactoryProvider<T> provider = providerBuilders.build(providerDefinition, classLoader);
 
-        setInstanceFactoryClass(componentDefinition, component);
-
-        return component;
-    }
-
-    /*
-     * Sets the instance factory class.
-     */
-    private void setInstanceFactoryClass(JavaPhysicalComponentDefinition componentDefinition, JavaComponent component) {
-/*
-        // TODO use MPCL to load IF class
-        URI classLoaderId = componentDefinition.getClassLoaderId();
-        byte[] instanceFactoryByteCode = componentDefinition.getInstanceFactoryByteCode(); //NOPMD
-        ClassLoader appCl = classLoaderRegistry.getClassLoader(classLoaderId); //NOPMD
-        ClassLoader systemCl = getClass().getClassLoader(); //NOPMD        
-        ClassLoader mpcl = null; //NOPMD
-        Class<InstanceFactory<?>> instanceFactoryClass = null;
-        component.setInstanceFactoryClass(instanceFactoryClass);
-*/
+        return new JavaComponent<T>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
     }
 
     /**
