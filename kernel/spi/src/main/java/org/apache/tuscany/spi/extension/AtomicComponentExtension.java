@@ -21,6 +21,7 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -108,4 +109,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         scopeContainer.remove(this);
     }
 
+    public ObjectFactory createObjectFactory() {
+        throw new UnsupportedOperationException();
+    }
 }
