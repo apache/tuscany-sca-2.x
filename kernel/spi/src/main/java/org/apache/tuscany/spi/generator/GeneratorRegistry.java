@@ -36,8 +36,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public interface GeneratorRegistry {
 
-    <T extends ComponentDefinition<? extends Implementation>> void register(Class<T> clazz,
-                                                                            ComponentGenerator<T> generator);
+    public <T extends Implementation<?>> void register(Class<T> clazz,
+                                                       ComponentGenerator<ComponentDefinition<T>> generator);
 
     void register(Class<?> clazz, BindingGenerator generator);
 

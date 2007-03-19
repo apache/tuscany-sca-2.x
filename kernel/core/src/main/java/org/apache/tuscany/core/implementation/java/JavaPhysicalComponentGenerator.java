@@ -24,16 +24,20 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.generator.ComponentGenerator;
 import org.apache.tuscany.spi.generator.GenerationException;
 import org.apache.tuscany.spi.generator.GeneratorContext;
+import org.apache.tuscany.spi.generator.GeneratorRegistry;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
@@ -49,7 +53,13 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinit
 /**
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class JavaPhysicalComponentGenerator implements ComponentGenerator<ComponentDefinition<JavaImplementation>> {
+
+
+    public JavaPhysicalComponentGenerator(@Reference GeneratorRegistry registry) {
+        registry.register(JavaImplementation.class, this);
+    }
 
     @SuppressWarnings({"unchecked"})
     public void generate(ComponentDefinition<JavaImplementation> definition, GeneratorContext context) {

@@ -82,8 +82,8 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         resourceGenerators.put(clazz, generator);
     }
 
-    public <T extends ComponentDefinition<? extends Implementation>> void register(Class<T> clazz,
-                                                                                   ComponentGenerator<T> generator) {
+    public <T extends Implementation<?>> void register(Class<T> clazz,
+                                                       ComponentGenerator<ComponentDefinition<T>> generator) {
         componentGenerators.put(clazz, generator);
     }
 
@@ -91,7 +91,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     public <C extends ComponentDefinition<? extends Implementation>> void generate(C definition,
                                                                                    GeneratorContext context)
         throws GenerationException {
-        Class<? extends ComponentDefinition> type = definition.getClass();
+        Class<?> type = definition.getImplementation().getClass();
         ComponentGenerator<C> generator = (ComponentGenerator<C>) componentGenerators.get(type);
         if (generator == null) {
             throw new GeneratorNotFoundException(type);

@@ -31,8 +31,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.ChangeSetHandler;
 import org.apache.tuscany.spi.deployer.ChangeSetHandlerRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -48,8 +51,10 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 
@@ -63,21 +68,26 @@ import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
 /**
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerRegistry {
-    //    private static final URI DOMAIN_URI = URI.create("tuscany://domain");
+    private static final URI DOMAIN_URI = URI.create("tuscany://./domain");
     private final GeneratorRegistry generatorRegistry;
     private final LoaderRegistry loaderRegistry;
     private final AutowireResolver autowireResolver;
+    private final ScopeRegistry scopeRegistry;
     private final XMLInputFactory xmlFactory;
-    //private ComponentDefinition<CompositeImplementation> domain;
+    private ComponentDefinition<CompositeImplementation> domain;
 
     public AssemblyServiceImpl(@Reference LoaderRegistry loaderRegistry,
                                @Reference GeneratorRegistry generatorRegistry,
-                               @Reference AutowireResolver autowireResolver) {
+                               @Reference AutowireResolver autowireResolver,
+                               @Reference ScopeRegistry scopeRegistry) {
         this.loaderRegistry = loaderRegistry;
         this.generatorRegistry = generatorRegistry;
         this.autowireResolver = autowireResolver;
+        this.scopeRegistry = scopeRegistry;
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
+        domain = createDomain();
     }
 
     private final Map<String, ChangeSetHandler> registry = new HashMap<String, ChangeSetHandler>();
@@ -130,23 +140,28 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
 
         try {
             XMLStreamReader reader = xmlFactory.createXMLStreamReader(stream);
-            while(reader.next() != XMLStreamConstants.START_ELEMENT) {                
+            while (reader.next() != XMLStreamConstants.START_ELEMENT) {
             }
-//            if (domain == null) {
-//                // lazily create the domain
-//                domain = createDomain();
-//            }
 
-//            ComponentDefinition<CompositeImplementation> defintion = null;    //loaderRegistry.load()
-//            CompositeComponentType<?, ?, ?> type = defintion.getImplementation().getComponentType();
-            
-            DeploymentContext deploymentContext = null;
-            CompositeComponentType<?, ?, ?> type = (CompositeComponentType<?, ?, ?>) loaderRegistry.load(null, reader, deploymentContext);
+            ScopeContainer<URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+            URI groupId = domain.getUri();
+            scopeContainer.createGroup(groupId);
+            // FIXME this needs to be done properly
+            ClassLoader cl = getClass().getClassLoader();
+            DeploymentContext deploymentContext =
+                new RootDeploymentContext(cl, null, groupId, xmlFactory, scopeContainer, false);
+
+            CompositeComponentType<?, ?, ?> type =
+                (CompositeComponentType<?, ?, ?>) loaderRegistry.load(null, reader, deploymentContext);
             Map<URI, GeneratorContext> contexts = new HashMap<URI, GeneratorContext>();
             // TODO create physical resource definitions
             // create physical component definitions
             for (ComponentDefinition<?> child : type.getDeclaredComponents().values()) {
-                generate(child, contexts);
+                try {
+                    generate(child, contexts);
+                } catch (GenerationException e) {
+                    throw new DeploymentException(e);
+                }
             }
             // create physical wire definitions
             for (ComponentDefinition<?> child : type.getDeclaredComponents().values()) {
@@ -204,7 +219,8 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
         }
     }
 
-    private void generate(ComponentDefinition<?> component, Map<URI, GeneratorContext> contexts) {
+    private void generate(ComponentDefinition<?> component, Map<URI, GeneratorContext> contexts)
+        throws GenerationException {
         URI id = component.getRuntimeId();
         GeneratorContext context = contexts.get(id);
         if (context == null) {
@@ -212,24 +228,18 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
             context = new DefaultGeneratorContext(changeSet);
             contexts.put(id, context);
         }
-        try {
-            // TODO support composite recursion
-            generatorRegistry.generate(component, context);
-        } catch (GenerationException e) {
-            // throw new
-        }
+        // TODO support composite recursion
+        generatorRegistry.generate(component, context);
 
     }
 
-//    private ComponentDefinition<CompositeImplementation> createDomain() {
-//        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
-//            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-//        CompositeImplementation impl = new CompositeImplementation();
-//        impl.setComponentType(type);
-//        // FIXME domain uri
-//        domain = new ComponentDefinition<CompositeImplementation>(DOMAIN_URI, impl);
-//        return domain;
-//    }
+    private ComponentDefinition<CompositeImplementation> createDomain() {
+        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        CompositeImplementation impl = new CompositeImplementation();
+        impl.setComponentType(type);
+        return new ComponentDefinition<CompositeImplementation>(DOMAIN_URI, impl);
+    }
 
     private ModelObject resolveTarget(URI uri, CompositeComponentType<?, ?, ?> type) {
         // TODO only resolves one level deep
