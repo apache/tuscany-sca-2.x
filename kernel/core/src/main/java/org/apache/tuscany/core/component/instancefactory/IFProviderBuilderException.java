@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.component.instancefactory;
 
-import org.apache.tuscany.api.TuscanyException;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 /**
  * The builder exception for IF provider.
@@ -27,7 +27,7 @@ import org.apache.tuscany.api.TuscanyException;
  *
  */
 @SuppressWarnings("serial")
-public class IFProviderBuilderException extends TuscanyException {
+public class IFProviderBuilderException extends BuilderException {
     
     /**
      * Initializes the message.

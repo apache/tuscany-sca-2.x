@@ -28,6 +28,7 @@ import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegist
 import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
 import org.apache.tuscany.core.implementation.system.component.SystemComponent;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -47,17 +48,15 @@ public class SystemPhysicalComponentBuilder<T>
         super(builderRegistry, scopeRegistry, providerBuilders);
     }
 
-    public SystemComponent<T> build(SystemPhysicalComponentDefinition<T> definition) {
+    public SystemComponent<T> build(SystemPhysicalComponentDefinition<T> definition) throws BuilderException {
         URI componentId = definition.getComponentId();
         int initLevel = definition.getInitLevel();
         URI groupId = definition.getGroupId();
 
         ScopeContainer<?> scopeContainer = null;
 
-/*
-        InstanceFactoryProviderDefinition providerDefinition = definition.getInstanceFactoryProviderDefinition();
+        InstanceFactoryProviderDefinition<T> providerDefinition = definition.getInstanceFactoryProviderDefinition();
         InstanceFactoryProvider<T> provider = providerBuilders.build(providerDefinition, null);
-*/
-        return new SystemComponent<T>(componentId, null, scopeContainer, groupId, initLevel, -1, -1);
+        return new SystemComponent<T>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
     }
 }
