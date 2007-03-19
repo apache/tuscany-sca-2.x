@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.integration.implementation.system.builder;
+package org.apache.tuscany.core.integration.implementation.java;
 
 import java.lang.annotation.ElementType;
 import java.net.URI;
@@ -30,15 +30,15 @@ import org.apache.tuscany.core.component.instancefactory.impl.DefaultIFProviderB
 import org.apache.tuscany.core.component.instancefactory.impl.ReflectiveIFProviderBuilder;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
-import org.apache.tuscany.core.implementation.system.builder.SystemPhysicalComponentBuilder;
-import org.apache.tuscany.core.implementation.system.component.SystemComponent;
-import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
-import org.apache.tuscany.core.implementation.system.model.SystemPhysicalWireSourceDefinition;
-import org.apache.tuscany.core.implementation.system.model.SystemPhysicalWireTargetDefinition;
+import org.apache.tuscany.core.implementation.java.JavaComponent;
+import org.apache.tuscany.core.implementation.java.JavaPhysicalComponentBuilder;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteMapping;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 import org.apache.tuscany.core.model.physical.instancefactory.MemberSite;
 import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProviderDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -55,23 +55,25 @@ public class PhysicalBuilderTestCase extends TestCase {
     private URI sourceId;
     private URI targetId;
     private ClassLoaderRegistry classLoaderRegistry;
-    private SystemPhysicalComponentBuilder builder;
+    private JavaPhysicalComponentBuilder builder;
     private ScopeContainer<URI> scopeContainer;
     private ScopeRegistry scopeRegistry;
     private InstanceFactoryProviderDefinition<TargetImpl> targetProviderDefinition;
 
     public void testWireTwoComponents() throws Exception {
-        SystemPhysicalComponentDefinition<SourceImpl> source = createSourceComponentDefinition();
-        SystemPhysicalComponentDefinition<TargetImpl> target = createTargetComponentDefinition();
+        JavaPhysicalComponentDefinition<SourceImpl> source = createSourceComponentDefinition();
+        JavaPhysicalComponentDefinition<TargetImpl> target = createTargetComponentDefinition();
 
-        SystemPhysicalWireSourceDefinition wireSource = new SystemPhysicalWireSourceDefinition();
+        JavaPhysicalWireSourceDefinition wireSource = new JavaPhysicalWireSourceDefinition();
         wireSource.setUri(sourceId.resolve("#target"));
-        SystemPhysicalWireTargetDefinition wireTarget = new SystemPhysicalWireTargetDefinition();
-
-        SystemComponent<?> sourceComponent = builder.build(source);
-        SystemComponent<?> targetComponent = builder.build(target);
-        builder.attach(sourceComponent, targetComponent, null, wireSource);
+        wireSource.setOptimizable(true);
+/*
+        JavaPhysicalWireTargetDefinition wireTarget = new JavaPhysicalWireTargetDefinition();
         builder.attach(targetComponent, null, wireTarget);
+*/
+        JavaComponent<?> sourceComponent = builder.build(source);
+        JavaComponent<?> targetComponent = builder.build(target);
+        builder.attach(sourceComponent, targetComponent, null, wireSource);
 
         sourceComponent.start();
         targetComponent.start();
@@ -88,7 +90,7 @@ public class PhysicalBuilderTestCase extends TestCase {
         }
     }
 
-    private SystemPhysicalComponentDefinition<SourceImpl> createSourceComponentDefinition() {
+    private JavaPhysicalComponentDefinition<SourceImpl> createSourceComponentDefinition() {
         ReflectiveIFProviderDefinition sourceProviderDefinition = new ReflectiveIFProviderDefinition();
         sourceProviderDefinition.setImplementationClass(SourceImpl.class.getName());
         InjectionSiteMapping mapping = new InjectionSiteMapping();
@@ -96,7 +98,7 @@ public class PhysicalBuilderTestCase extends TestCase {
         mapping.setSite(new MemberSite(ElementType.FIELD, "target"));
         sourceProviderDefinition.addInjectionSite(mapping);
 
-        SystemPhysicalComponentDefinition<SourceImpl> source = new SystemPhysicalComponentDefinition<SourceImpl>();
+        JavaPhysicalComponentDefinition<SourceImpl> source = new JavaPhysicalComponentDefinition<SourceImpl>();
         source.setComponentId(sourceId);
         source.setGroupId(groupId);
         source.setClassLoaderId(groupId);
@@ -105,11 +107,11 @@ public class PhysicalBuilderTestCase extends TestCase {
         return source;
     }
 
-    private SystemPhysicalComponentDefinition<TargetImpl> createTargetComponentDefinition() {
+    private JavaPhysicalComponentDefinition<TargetImpl> createTargetComponentDefinition() {
         ReflectiveIFProviderDefinition targetProviderDefinition = new ReflectiveIFProviderDefinition();
         targetProviderDefinition.setImplementationClass(TargetImpl.class.getName());
 
-        SystemPhysicalComponentDefinition<TargetImpl> target = new SystemPhysicalComponentDefinition<TargetImpl>();
+        JavaPhysicalComponentDefinition<TargetImpl> target = new JavaPhysicalComponentDefinition<TargetImpl>();
         target.setComponentId(targetId);
         target.setGroupId(groupId);
         target.setClassLoaderId(groupId);
@@ -140,7 +142,7 @@ public class PhysicalBuilderTestCase extends TestCase {
         IFProviderBuilderRegistry providerBuilders = new DefaultIFProviderBuilderRegistry();
         providerBuilders.register(ReflectiveIFProviderDefinition.class, new ReflectiveIFProviderBuilder());
 
-        builder = new SystemPhysicalComponentBuilder(null, scopeRegistry, providerBuilders, classLoaderRegistry);
+        builder = new JavaPhysicalComponentBuilder(null, scopeRegistry, providerBuilders, classLoaderRegistry);
     }
 
     public static class SourceImpl {
