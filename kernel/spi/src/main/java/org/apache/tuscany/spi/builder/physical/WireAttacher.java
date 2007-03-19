@@ -39,22 +39,22 @@ public interface WireAttacher<C extends Component,
      * Attaches a wire to a source component.
      *
      * @param source     the source component
-     * @param target     the component.
-     * @param wire       the wire
-     * @param definition metadata for performing the attach. @throws WiringException if an exception occurs during the
-     *                   attach operation
-     * @throws WiringException if an exception occurs during the attach operation
-     */
-    void attach(C source, Component target, Wire wire, PWSD definition) throws WiringException;
-
-    /**
-     * Attaches a wire to a target component.
-     *
-     * @param component  the component.
+     * @param target     the target component
      * @param wire       the wire
      * @param definition metadata for performing the attach.
      * @throws WiringException if an exception occurs during the attach operation
      */
-    void attach(C component, Wire wire, PWTD definition) throws WiringException;
+    void attachToSource(C source, Component target, Wire wire, PWSD definition) throws WiringException;
+
+    /**
+     * Attaches a wire to a target component.
+     *
+     * @param source     the source component
+     * @param target     the target component
+     * @param wire       the wire
+     * @param definition metadata for performing the attach.
+     * @throws WiringException if an exception occurs during the attach operation
+     */
+    void attachToTarget(Component source, C target, Wire wire, PWTD definition) throws WiringException;
 
 }

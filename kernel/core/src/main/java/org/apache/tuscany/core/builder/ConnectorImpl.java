@@ -125,12 +125,12 @@ public class ConnectorImpl implements Connector {
             if (target == null) {
                 throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
             }
-            attacherRegistry.attach(source, target, wire, definition.getSource());
-            attacherRegistry.attach(target, wire, definition.getTarget());
+            attacherRegistry.attachToSource(source, target, wire, definition.getSource());
+            attacherRegistry.attachToTarget(source, target, wire, definition.getTarget());
         } else {
             // bindings do not have a target
-            attacherRegistry.attach(source, null, wire, definition.getSource());
-            attacherRegistry.attach(null, wire, definition.getTarget());
+            attacherRegistry.attachToSource(source, null, wire, definition.getSource());
+            attacherRegistry.attachToTarget(source, null, wire, definition.getTarget());
         }
     }
 
