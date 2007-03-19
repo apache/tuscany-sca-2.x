@@ -17,6 +17,6 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="org.apache.tuscany.databinding.sdo">
-    <include name="org.apache.tuscany.databinding.sdo-axiom.include" scdlLocation="databinding.sdo-axiom.scdl" />
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="org.apache.tuscany.databinding.json" autowire="true">
+    <include name="org.apache.tuscany.databinding.json.include" scdlLocation="databinding.json.scdl" />
 </composite>

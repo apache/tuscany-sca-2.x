@@ -17,27 +17,6 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
-    name="org.apache.tuscany.databinding.xmlbeans">
-
-    <component name="databinding.XMLBeans">
-        <system:implementation.system class="org.apache.tuscany.databinding.xmlbeans.XMLBeansDataBinding" />
-    </component>
-
-    <component name="transformer.XMLStreamReader2XmlObject">
-        <system:implementation.system class="org.apache.tuscany.databinding.xmlbeans.XMLStreamReader2XmlObject" />
-    </component>
-    
-    <component name="transformer.Node2XmlObject">
-        <system:implementation.system class="org.apache.tuscany.databinding.xmlbeans.Node2XmlObject" />
-    </component>
-    
-    <component name="transformer.XmlObject2Node">
-        <system:implementation.system class="org.apache.tuscany.databinding.xmlbeans.XmlObject2Node" />
-    </component>    
-    
-    <component name="transformer.XMLStreamReader2XmlObject">
-        <system:implementation.system class="org.apache.tuscany.databinding.xmlbeans.XMLStreamReader2XmlObject" />
-    </component>
-    
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="org.apache.tuscany.databinding.xmlbeans" autowire="true">
+    <include name="org.apache.tuscany.databinding.xmlbeans.include" scdlLocation="databinding.xmlbeans.scdl" />
 </composite>
