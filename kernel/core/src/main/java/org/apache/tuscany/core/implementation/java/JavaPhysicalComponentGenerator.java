@@ -113,7 +113,9 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
                                                            ReferenceDefinition serviceDefinition,
                                                            GeneratorContext context)
         throws GenerationException {
-        return new JavaPhysicalWireSourceDefinition();
+        JavaPhysicalWireSourceDefinition wireDefinition = new JavaPhysicalWireSourceDefinition();
+        wireDefinition.setUri(definition.getUri());
+        return wireDefinition;
     }
 
     public PhysicalWireTargetDefinition generateWireTarget(ComponentDefinition<JavaImplementation> definition,
