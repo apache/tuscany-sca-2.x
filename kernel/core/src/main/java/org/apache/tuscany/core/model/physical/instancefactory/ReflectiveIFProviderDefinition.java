@@ -20,8 +20,10 @@
 package org.apache.tuscany.core.model.physical.instancefactory;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 
@@ -49,6 +51,9 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
     
     // Injection sites
     private List<InjectionSiteMapping> injectionSites = new LinkedList<InjectionSiteMapping>();
+    
+    // Property sites
+    private Map<InjectionSource, String> properties = new HashMap<InjectionSource, String>();
 
     /**
      * returns the constructor argument.
@@ -145,6 +150,23 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
      */
     public void addInjectionSite(InjectionSiteMapping injectionSite) {
         injectionSites.add(injectionSite);
+    }
+
+    /**
+     * Returns a read-only view of properties.
+     * @return Read-only view of properties.
+     */
+    public Map<InjectionSource, String> getProperties() {
+        return Collections.unmodifiableMap(properties);
+    }
+
+    /**
+     * Adds a property to the definition.
+     * @param injectionSource Injection source for the property.
+     * @param property String value of the property.
+     */
+    public void addProperty(InjectionSource injectionSource, String property) {
+        properties.put(injectionSource, property);
     }
 
 }
