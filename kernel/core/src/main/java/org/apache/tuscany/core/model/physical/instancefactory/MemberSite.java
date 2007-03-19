@@ -16,6 +16,14 @@ public class MemberSite {
     // Name of the site
     private String name;
 
+    public MemberSite() {
+    }
+
+    public MemberSite(ElementType elementType, String name) {
+        this.elementType = elementType;
+        this.name = name;
+    }
+
     /**
      * Gets the name of the site.
      * @return Site name.
