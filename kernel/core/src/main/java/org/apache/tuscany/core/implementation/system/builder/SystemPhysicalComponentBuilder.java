@@ -82,7 +82,7 @@ public class SystemPhysicalComponentBuilder<T>
         return new SystemComponent<T>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
     }
 
-    public void attach(SystemComponent source,
+    public void attachToSource(SystemComponent source,
                        Component target,
                        Wire wire,
                        SystemPhysicalWireSourceDefinition definition) throws WiringException {
@@ -94,9 +94,9 @@ public class SystemPhysicalComponentBuilder<T>
         source.setObjectFactory(referenceSource, factory);
     }
 
-    public void attach(SystemComponent component,
-                       Wire wire,
-                       SystemPhysicalWireTargetDefinition definition) throws WiringException {
+    public void attachToTarget(Component source, SystemComponent component,
+                               Wire wire,
+                               SystemPhysicalWireTargetDefinition definition) throws WiringException {
         // nothing to do here as the wire will always be optimized
     }
 }

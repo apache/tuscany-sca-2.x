@@ -43,36 +43,30 @@ public class WireAttacherRegistryImpl implements WireAttacherRegistry {
             ? extends PhysicalWireSourceDefinition,
             ? extends PhysicalWireTargetDefinition>>();
 
-    public <C extends Component,
-        PWSD extends PhysicalWireSourceDefinition,
-        PWTD extends PhysicalWireTargetDefinition> void register(Class<?> clazz, WireAttacher<C, PWSD, PWTD> attacher) {
+    public <C extends Component, PWSD extends PhysicalWireSourceDefinition, PWTD extends PhysicalWireTargetDefinition>
+    void register(Class<?> clazz, WireAttacher<C, PWSD, PWTD> attacher) {
         attachers.put(clazz, attacher);
     }
 
     @SuppressWarnings("unchecked")
-    public <C extends Component, PWSD extends PhysicalWireSourceDefinition> void attach(C source,
-                                                                                        Component target,
-                                                                                        Wire wire,
-                                                                                        PWSD definition)
-        throws WiringException {
+    public <C extends Component, PWSD extends PhysicalWireSourceDefinition>
+    void attachToSource(C source, Component target, Wire wire, PWSD definition) throws WiringException {
         Class<?> type = definition.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
             throw new WireAttacherNotFound(type, source.getUri(), wire.getTargetUri());
         }
-        attacher.attach(source, target, wire, definition);
+        attacher.attachToSource(source, target, wire, definition);
     }
 
     @SuppressWarnings("unchecked")
-    public <C extends Component, PWTD extends PhysicalWireTargetDefinition> void attach(C component,
-                                                                                        Wire wire,
-                                                                                        PWTD target)
-        throws WiringException {
+    public <C extends Component, PWTD extends PhysicalWireTargetDefinition>
+    void attachToTarget(Component source, C component, Wire wire, PWTD target) throws WiringException {
         Class<?> type = target.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
             throw new WireAttacherNotFound(type, component.getUri(), target.getUri());
         }
-        attacher.attach(component, wire, target);
+        attacher.attachToTarget(source, component, wire, target);
     }
 }

@@ -38,7 +38,6 @@ import org.apache.tuscany.core.model.physical.instancefactory.MemberSite;
 import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProviderDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -73,7 +72,7 @@ public class PhysicalBuilderTestCase extends TestCase {
 */
         JavaComponent<?> sourceComponent = builder.build(source);
         JavaComponent<?> targetComponent = builder.build(target);
-        builder.attach(sourceComponent, targetComponent, null, wireSource);
+        builder.attachToSource(sourceComponent, targetComponent, null, wireSource);
 
         sourceComponent.start();
         targetComponent.start();

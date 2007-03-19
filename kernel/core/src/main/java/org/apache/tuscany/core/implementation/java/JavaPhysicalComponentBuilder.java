@@ -31,7 +31,6 @@ import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
 import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
-import org.apache.tuscany.core.injection.InstanceObjectFactory;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.CALLBACK;
 import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.REFERENCE;
@@ -111,7 +110,7 @@ public class JavaPhysicalComponentBuilder<T>
      * @param definition the attach metadata
      */
     @SuppressWarnings({"unchecked"})
-    public void attach(JavaComponent source,
+    public void attachToSource(JavaComponent source,
                        Component target,
                        Wire wire,
                        JavaPhysicalWireSourceDefinition definition) {
@@ -138,11 +137,12 @@ public class JavaPhysicalComponentBuilder<T>
     /**
      * Attaches the target to the component.
      *
+     * @param source
      * @param component Component.
      * @param wire      the wire to attach
      * @param target    Target.
      */
-    public void attach(JavaComponent component, Wire wire, JavaPhysicalWireTargetDefinition target)
+    public void attachToTarget(Component source, JavaComponent component, Wire wire, JavaPhysicalWireTargetDefinition target)
         throws WireAttachException {
         ScopeContainer scopeContainer = component.getScopeContainer();
         Class<?> implementationClass = component.getImplementationClass();
