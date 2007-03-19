@@ -59,9 +59,9 @@ public class ReflectiveIFProviderBuilder<T> extends
 
             Constructor ctr = getConstructor(ifpd, cl, implClass);
 
-            Method initMethod = getInitMethod(ifpd, implClass);
+            Method initMethod = getCallBackMethod(implClass, ifpd.getInitMethod());
 
-            Method destroyMethod = getDestroyMethod(ifpd, implClass);
+            Method destroyMethod = getCallBackMethod(implClass, ifpd.getDestroyMethod());
 
             List<InjectionSource> ctrInjectSites = ifpd.getCdiSources();
 
@@ -115,28 +115,8 @@ public class ReflectiveIFProviderBuilder<T> extends
         return injectionSites;
     }
 
-    /*
-     * Get destroy method.
-     */
-    private Method getDestroyMethod(ReflectiveIFProviderDefinition ifpd, Class implClass) throws NoSuchMethodException {
-        Method destroyMethod = null;
-        String destroyMethodName = ifpd.getDestroyMethod();
-        if (destroyMethod != null) {
-            destroyMethod = implClass.getDeclaredMethod(destroyMethodName);
-        }
-        return destroyMethod;
-    }
-
-    /*
-     * Get init method.
-     */
-    private Method getInitMethod(ReflectiveIFProviderDefinition ifpd, Class implClass) throws NoSuchMethodException {
-        Method initMethod = null;
-        String initMethodName = ifpd.getInitMethod();
-        if (initMethodName != null) {
-            initMethod = implClass.getDeclaredMethod(initMethodName);
-        }
-        return initMethod;
+    private Method getCallBackMethod(Class<?> implClass, String name) throws NoSuchMethodException {
+        return name == null ? null : implClass.getMethod(name);
     }
 
     /*
@@ -144,13 +124,12 @@ public class ReflectiveIFProviderBuilder<T> extends
      */
     private Constructor getConstructor(ReflectiveIFProviderDefinition ifpd, ClassLoader cl, Class implClass)
         throws ClassNotFoundException, NoSuchMethodException {
-        Class[] ctrArgs = new Class[ifpd.getConstructorArguments().size()];
-        int i = 0;
-        for (String ctrArgClass : ifpd.getConstructorArguments()) {
-            ctrArgs[i++] = cl.loadClass(ctrArgClass);
+        List<String> argNames = ifpd.getConstructorArguments();
+        Class[] ctrArgs = new Class[argNames.size()];
+        for (int i = 0; i < ctrArgs.length; i++) {
+            ctrArgs[i++] = cl.loadClass(argNames.get(i));
         }
-        Constructor ctr = implClass.getDeclaredConstructor(ctrArgs);
-        return ctr;
+        return implClass.getDeclaredConstructor(ctrArgs);
     }
 
 }
