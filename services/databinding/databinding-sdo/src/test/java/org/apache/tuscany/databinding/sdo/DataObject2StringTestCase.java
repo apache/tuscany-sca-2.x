@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.databinding.sdo;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.Assert;
 
 import org.apache.tuscany.spi.model.DataType;
@@ -57,7 +55,7 @@ public class DataObject2StringTestCase extends SDOTransformerTestCaseBase {
             "<foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
             + "xmlns:ipo=\"http://www.example.com/IPO\" xsi:type=\"ipo:USAddress\"/>";
         DataObject dataObject = new String2DataObject().transform(xml, reversedContext);
-        context.setSourceDataType(new DataType<QName>(DataObject.class.getName(), DataObject.class, null));
+        context.setSourceDataType(new DataType<XMLType>(DataObject.class.getName(), DataObject.class, null));
         xml = new DataObject2String().transform(dataObject, context);
         Assert.assertTrue(xml.contains("xsi:type=\"ipo:USAddress\""));
     }
