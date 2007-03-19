@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  * 
  * @version $Rev$ $Date$
  */
-@Target( {METHOD, FIELD})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
 public @interface HelperContext {
 }
