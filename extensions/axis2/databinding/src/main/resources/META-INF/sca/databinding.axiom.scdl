@@ -18,10 +18,10 @@
  * under the License.    
 -->
 <!-- This is the copy ot be included by other extensions -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
     name="org.apache.tuscany.databinding.axiom.include">
 
-    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+    <dependency xmlns="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha">
         <group>org.apache.tuscany.sca.extensions.axis2</group>
         <name>databinding-axiom</name>
         <version>1.0-incubator-SNAPSHOT</version>

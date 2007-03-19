@@ -19,8 +19,8 @@
 -->
 <!-- Axis2 based WebService binding extension -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT"
+           xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
            name="org.apache.tuscany.binding.axis2.WebServiceBinding">
 
     <tuscany:dependency>

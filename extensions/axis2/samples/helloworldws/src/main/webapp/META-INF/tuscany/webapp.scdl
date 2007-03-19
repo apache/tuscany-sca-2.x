@@ -23,7 +23,7 @@
     $Rev: 454491 $ $Date: 2006-10-09 13:20:56 -0700 (Mon, 09 Oct 2006) $
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+           xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
            name="org.apache.tuscany.runtime.webapp.System">
 
     <!-- Component that provides the Deployer service -->

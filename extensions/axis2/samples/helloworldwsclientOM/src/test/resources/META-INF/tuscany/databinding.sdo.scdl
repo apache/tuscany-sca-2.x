@@ -23,7 +23,7 @@
     $Rev$ $Date$
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+           xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
            name="org.apache.tuscany.databinding.sdo">
 
     <!-- import.sdo element loader implementations -->

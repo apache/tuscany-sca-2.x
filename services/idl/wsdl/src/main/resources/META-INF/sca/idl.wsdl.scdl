@@ -24,10 +24,10 @@
     
     $Rev: 440894 $ $Date: 2006-09-06 15:52:01 -0700 (Wed, 06 Sep 2006) $
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
     name="org.apache.tuscany.idl.wsdl.include" autowire="true">
 
-    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+    <dependency xmlns="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha">
         <group>org.apache.tuscany.sca.services.idl</group>
         <name>wsdl</name>
         <version>2.0-alpha2-incubating-SNAPSHOT</version>
