@@ -24,6 +24,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
+import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.generator.GeneratorRegistry;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 
@@ -99,7 +100,9 @@ public class AssemblyServiceImplTestCase extends TestCase {
         EasyMock.replay(generatorRegistry);
         AutowireResolver resolver = EasyMock.createMock(AutowireResolver.class);
         EasyMock.replay(resolver);
-        service = new AssemblyServiceImpl(loaderRegistry, generatorRegistry, resolver);
+        ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
+        EasyMock.replay(scopeRegistry);
+        service = new AssemblyServiceImpl(loaderRegistry, generatorRegistry, resolver, scopeRegistry);
     }
 
     private static class MockURLStreamHandler extends URLStreamHandler {
