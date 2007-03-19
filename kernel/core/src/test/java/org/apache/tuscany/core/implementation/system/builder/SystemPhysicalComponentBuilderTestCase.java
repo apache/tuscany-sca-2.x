@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
+import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -45,6 +46,8 @@ public class SystemPhysicalComponentBuilderTestCase<T> extends TestCase {
     private SystemPhysicalComponentDefinition<T> definition;
     private URI componentId;
     private URI groupId;
+    private ClassLoaderRegistry classLoaderRegistry;
+    private ClassLoader classLoader;
 
     public void testBuildSimplePOJO() throws Exception {
         SystemComponent<T> component = builder.build(definition);
@@ -55,22 +58,32 @@ public class SystemPhysicalComponentBuilderTestCase<T> extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
+        groupId = URI.create("sca://./composite");
+        componentId = URI.create("sca://./component");
+
         builderRegistry = EasyMock.createMock(PhysicalComponentBuilderRegistry.class);
         scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
+
+        classLoader = getClass().getClassLoader();
+        classLoaderRegistry = EasyMock.createMock(ClassLoaderRegistry.class);
+        EasyMock.expect(classLoaderRegistry.getClassLoader(groupId)).andStubReturn(classLoader);
+        EasyMock.replay(classLoaderRegistry);
 
         providerBuilders = EasyMock.createMock(IFProviderBuilderRegistry.class);
         providerDefinition = new InstanceFactoryProviderDefinition();
         instanceFactoryProvider = EasyMock.createMock(InstanceFactoryProvider.class);
-        EasyMock.expect(providerBuilders.build(providerDefinition, null)).andStubReturn(instanceFactoryProvider);
+        EasyMock.expect(providerBuilders.build(providerDefinition, classLoader)).andStubReturn(instanceFactoryProvider);
         EasyMock.replay(providerBuilders);
 
-        builder = new SystemPhysicalComponentBuilder<T>(builderRegistry, scopeRegistry, providerBuilders);
+        builder = new SystemPhysicalComponentBuilder<T>(builderRegistry,
+                                                        scopeRegistry,
+                                                        providerBuilders,
+                                                        classLoaderRegistry);
 
-        groupId = URI.create("sca://./composite");
-        componentId = URI.create("sca://./component");
         definition = new SystemPhysicalComponentDefinition<T>();
         definition.setGroupId(groupId);
         definition.setComponentId(componentId);
+        definition.setClassLoaderId(groupId);
         definition.setScope(Scope.COMPOSITE);
         definition.setInitLevel(-1);
         definition.setInstanceFactoryProviderDefinition(providerDefinition);

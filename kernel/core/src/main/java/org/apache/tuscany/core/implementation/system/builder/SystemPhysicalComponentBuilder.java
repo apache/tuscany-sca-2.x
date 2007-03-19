@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -45,14 +46,16 @@ public class SystemPhysicalComponentBuilder<T>
     public SystemPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
         @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry,
-        @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders) {
-        super(builderRegistry, scopeRegistry, providerBuilders);
+        @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders,
+        @Reference(name = "classloaderRegistry")ClassLoaderRegistry classLoaderRegistry) {
+        super(builderRegistry, scopeRegistry, providerBuilders, classLoaderRegistry);
     }
 
     public SystemComponent<T> build(SystemPhysicalComponentDefinition<T> definition) throws BuilderException {
         URI componentId = definition.getComponentId();
         int initLevel = definition.getInitLevel();
         URI groupId = definition.getGroupId();
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
         // get the scope container for this component
         Scope scope = definition.getScope();
@@ -60,7 +63,7 @@ public class SystemPhysicalComponentBuilder<T>
 
         // create the InstanceFactoryProvider based on the definition in the model
         InstanceFactoryProviderDefinition<T> providerDefinition = definition.getInstanceFactoryProviderDefinition();
-        InstanceFactoryProvider<T> provider = providerBuilders.build(providerDefinition, null);
+        InstanceFactoryProvider<T> provider = providerBuilders.build(providerDefinition, classLoader);
 
         return new SystemComponent<T>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
     }
