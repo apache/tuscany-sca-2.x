@@ -108,7 +108,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
                       GeneratorContext context) throws GenerationException {
 
         PhysicalWireDefinition wireDefinition = createWireDefinition(contract, context);
-        Class<?> type = componentDefinition.getClass();
+        Class<?> type = componentDefinition.getImplementation().getClass();
         ComponentGenerator<C> targetGenerator = (ComponentGenerator<C>) componentGenerators.get(type);
         if (targetGenerator == null) {
             throw new GeneratorNotFoundException(type);
@@ -144,7 +144,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         PhysicalWireTargetDefinition targetDefinition = targetGenerator.generateWireTarget(bindingDefinition, context);
         wireDefinition.setTarget(targetDefinition);
 
-        type = componentDefinition.getClass();
+        type = componentDefinition.getImplementation().getClass();
         ComponentGenerator<C> sourceGenerator = (ComponentGenerator<C>) componentGenerators.get(type);
         if (sourceGenerator == null) {
             throw new GeneratorNotFoundException(type);
@@ -166,7 +166,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
                       GeneratorContext context) throws GenerationException {
         ServiceContract<?> contract = referenceDefinition.getServiceContract();
         PhysicalWireDefinition wireDefinition = createWireDefinition(contract, context);
-        Class<?> type = target.getClass();
+        Class<?> type = target.getImplementation().getClass();
         ComponentGenerator<S> targetGenerator = (ComponentGenerator<S>) componentGenerators.get(type);
         if (targetGenerator == null) {
             throw new GeneratorNotFoundException(type);
@@ -175,7 +175,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
             targetGenerator.generateWireTarget(source, serviceDefinition, context);
         wireDefinition.setTarget(targetDefinition);
 
-        type = source.getClass();
+        type = source.getImplementation().getClass();
         ComponentGenerator<T> sourceGenerator = (ComponentGenerator<T>) componentGenerators.get(type);
         if (sourceGenerator == null) {
             throw new GeneratorNotFoundException(type);
@@ -231,31 +231,35 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         for (Operation o : contract.getOperations().values()) {
             PhysicalOperationDefinition physicalOperation = mapOperation(o);
             wireDefinition.addOperation(physicalOperation);
-            // this is egregious
-            // hardcode intent until we get the intent infrastructure in place
-            IntentDefinition intent = new NonBlockingIntentDefinition();
-            Class<? extends IntentDefinition> type = NonBlockingIntentDefinition.class;
-            InterceptorGenerator generator = interceptorGenerators.get(type);
-            if (generator == null) {
-                throw new GeneratorNotFoundException(type);
+            if (o.isNonBlocking()) {
+                // this is egregious
+                // hardcode intent until we get the intent infrastructure in place
+                IntentDefinition intent = new NonBlockingIntentDefinition();
+                Class<? extends IntentDefinition> type = NonBlockingIntentDefinition.class;
+                InterceptorGenerator generator = interceptorGenerators.get(type);
+                if (generator == null) {
+                    throw new GeneratorNotFoundException(type);
+                }
+                PhysicalInterceptorDefinition interceptorDefinition = generator.generate(intent, context);
+                physicalOperation.addInterceptor(interceptorDefinition);
             }
-            PhysicalInterceptorDefinition interceptorDefinition = generator.generate(intent, context);
-            physicalOperation.addInterceptor(interceptorDefinition);
         }
         for (Operation o : contract.getCallbackOperations().values()) {
             PhysicalOperationDefinition physicalOperation = mapOperation(o);
             physicalOperation.setCallback(true);
             wireDefinition.addOperation(physicalOperation);
-            // this is egregious
-            // hardcode intent until we get the intent infrastructure in place
-            IntentDefinition intent = new NonBlockingIntentDefinition();
-            Class<? extends IntentDefinition> type = NonBlockingIntentDefinition.class;
-            InterceptorGenerator generator = interceptorGenerators.get(type);
-            if (generator == null) {
-                throw new GeneratorNotFoundException(type);
+            if (o.isNonBlocking()) {
+                // this is egregious
+                // hardcode intent until we get the intent infrastructure in place
+                IntentDefinition intent = new NonBlockingIntentDefinition();
+                Class<? extends IntentDefinition> type = NonBlockingIntentDefinition.class;
+                InterceptorGenerator generator = interceptorGenerators.get(type);
+                if (generator == null) {
+                    throw new GeneratorNotFoundException(type);
+                }
+                PhysicalInterceptorDefinition interceptorDefinition = generator.generate(intent, context);
+                physicalOperation.addInterceptor(interceptorDefinition);
             }
-            PhysicalInterceptorDefinition interceptorDefinition = generator.generate(intent, context);
-            physicalOperation.addInterceptor(interceptorDefinition);
         }
         return wireDefinition;
     }
