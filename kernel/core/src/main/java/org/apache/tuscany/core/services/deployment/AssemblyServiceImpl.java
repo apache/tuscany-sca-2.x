@@ -247,11 +247,12 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
 //        while (tokenizer.hasMoreTokens()) {
 //        }
 
-        ComponentDefinition<?> targetComponent = type.getDeclaredComponents().get(uri.getPath());
+        String key = DOMAIN_URI.relativize(uri).toString();
+        ComponentDefinition<?> targetComponent = type.getDeclaredComponents().get(key);
         if (targetComponent != null) {
             return targetComponent;
         }
-        ReferenceDefinition targetReference = type.getDeclaredReferences().get(uri.getPath());
+        ReferenceDefinition targetReference = type.getDeclaredReferences().get(key);
         if (targetReference != null) {
             return targetReference;
         }
