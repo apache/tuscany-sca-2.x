@@ -26,6 +26,8 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 
 public class ScriptComponentBuilder extends ComponentBuilderExtension<ScriptImplementation> {
 
@@ -38,10 +40,20 @@ public class ScriptComponentBuilder extends ComponentBuilderExtension<ScriptImpl
     }
 
     public Component build(ComponentDefinition componentDefinition, DeploymentContext context) throws BuilderException {
+
+        // setup reference injection sites
+        ComponentType componentType = componentDefinition.getImplementation().getComponentType();
+
+        for (Object o : componentType.getReferences().values()) {
+            ReferenceDefinition reference = (ReferenceDefinition) o;
+            System.out.println(reference);
+        }
+        
         URI name = componentDefinition.getUri();
-        Component scriptComponent =
-            new ScriptComponent(name, (ScriptImplementation)componentDefinition.getImplementation(), proxyService,
-                                workContext, 0);
+        ScriptImplementation impl = (ScriptImplementation)componentDefinition.getImplementation();
+        URI groupId = context.getComponentId();
+
+        Component scriptComponent = new ScriptComponent(name, impl, proxyService, workContext, groupId, 0);
         return scriptComponent;
     }
 

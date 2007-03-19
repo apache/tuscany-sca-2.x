@@ -39,60 +39,53 @@ import org.apache.tuscany.spi.model.Scope;
  * TODO: move vertually all of this to SPI TargetInvokerExtension
  */
 @SuppressWarnings("deprecation")
-public class ScriptInvoker extends TargetInvokerExtension {
+public class ScriptInvoker<T> extends TargetInvokerExtension {
 
     protected Object clazz;
     protected String operationName;
 
-    private final AtomicComponent component;
-    private final ScopeContainer<?, ?> scopeContainer;
-    protected InstanceWrapper<?> target;
+    private final AtomicComponent<T> component;
+    private final ScopeContainer scopeContainer;
+    protected InstanceWrapper<T> target;
     protected boolean stateless;
 
     public ScriptInvoker(String operationName,
                          AtomicComponent component,
                          ScopeContainer scopeContainer,
                          WorkContext workContext) {
-        super(workContext);
+
+        this.operationName = operationName;
         this.component = component;
         this.scopeContainer = scopeContainer;
         stateless = Scope.STATELESS == scopeContainer.getScope();
 
-        this.operationName = operationName;
         // TODO: support script classes
     }
 
-    public Object invokeTarget(Object instance, Object args) throws InvocationTargetException {
+    public Object invokeTarget(Object payload, short sequence, WorkContext workContext) throws InvocationTargetException {
+        Object contextId = workContext.getIdentifier(scopeContainer.getScope());
         try {
 
-            Invocable scriptEngine = (Invocable)instance;
+            InstanceWrapper<T> wrapper = getInstance(sequence, contextId);
+            Invocable scriptEngine = (Invocable)wrapper.getInstance();
 
+            Object ret;
             if (clazz == null) {
-                return scriptEngine.invokeFunction(operationName, (Object[])args);
+                ret = scriptEngine.invokeFunction(operationName, (Object[])payload);
             } else {
-                return scriptEngine.invokeMethod(clazz, operationName, (Object[])args);
+                ret =  scriptEngine.invokeMethod(clazz, operationName, (Object[])payload);
             }
 
-        } catch (ScriptException e) {
-            throw new InvocationTargetException(e.getCause() != null ? e.getCause() : e);
-        } catch (Exception e) {
-            throw new InvocationTargetException(e);
-        }
-    }
-
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
-        try {
-            InstanceWrapper<?> wrapper = getInstance(sequence);
-            Object instance = wrapper.getInstance();
-
-            Object ret = invokeTarget(instance, payload);
-
-            scopeContainer.returnWrapper(component, wrapper);
+            scopeContainer.returnWrapper(component, wrapper, contextId);
             if (sequence == END) {
                 // if end conversation, remove resource
                 scopeContainer.remove(component);
             }
+
             return ret;
+
+        } catch (ScriptException e) {
+            throw new InvocationTargetException(e);
         } catch (ComponentException e) {
             throw new InvocationTargetException(e);
         }
@@ -112,26 +105,26 @@ public class ScriptInvoker extends TargetInvokerExtension {
     /**
      * Resolves the target service instance or returns a cached one
      */
-    protected InstanceWrapper<?> getInstance(short sequence) throws TargetException {
+    protected InstanceWrapper<T> getInstance(short sequence, Object contextId) throws TargetException {
         switch (sequence) {
-            case NONE:
-                if (cacheable) {
-                    if (target == null) {
-                        target = scopeContainer.getWrapper(component);
-                    }
-                    return target;
-                } else {
-                    return scopeContainer.getWrapper(component);
+        case NONE:
+            if (cacheable) {
+                if (target == null) {
+                    target = scopeContainer.getWrapper(component, contextId);
                 }
-            case START:
-                assert !cacheable;
-                return scopeContainer.getWrapper(component);
-            case CONTINUE:
-            case END:
-                assert !cacheable;
-                return scopeContainer.getAssociatedWrapper(component);
-            default:
-                throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
+                return target;
+            } else {
+                return scopeContainer.getWrapper(component, contextId);
+            }
+        case START:
+            assert !cacheable;
+            return scopeContainer.getWrapper(component, contextId);
+        case CONTINUE:
+        case END:
+            assert !cacheable;
+            return scopeContainer.getAssociatedWrapper(component, contextId);
+        default:
+            throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
         }
     }
 }

@@ -20,10 +20,12 @@ package org.apache.tuscany.sca.runtime.itest.smoketest;
 
 import junit.framework.TestCase;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
  */
+@Scope("COMPOSITE")
 public class BasicTestComponent extends TestCase {
     @Reference
     public HelloService hello;
