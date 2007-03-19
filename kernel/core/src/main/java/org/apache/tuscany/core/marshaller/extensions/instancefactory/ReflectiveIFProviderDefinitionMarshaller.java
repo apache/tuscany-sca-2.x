@@ -20,6 +20,7 @@
 package org.apache.tuscany.core.marshaller.extensions.instancefactory;
 
 import java.lang.annotation.ElementType;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -67,6 +68,9 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
     // Injection site
     public static final String INJECTION_SITE = "injectionSite";
     
+    // Property
+    public static final String PROPERTY = "property";
+    
     // Injection site type
     public static final String TYPE = "type";
     
@@ -75,6 +79,9 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
     
     // Injection site URI
     public static final String NAME = "name";
+    
+    // Property value
+    public static final String VALUE = "value";
     
     // Injection site name
     public static final String PHYSICAL_NAME = "physicalName";
@@ -136,6 +143,13 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
                 
                 modelObject.addInjectionSite(injectionSite);
                 
+            } else if(PROPERTY.equals(name)) {
+                
+                InjectionSource injectionSource = new InjectionSource();
+                injectionSource.setName(reader.getAttributeValue(null, NAME));
+                injectionSource.setValueType(ValueSourceType.PROPERTY);
+                modelObject.addPropertValue(injectionSource, reader.getAttributeValue(null, VALUE));
+                
             }
             
         } catch (XMLStreamException ex) {
@@ -191,6 +205,14 @@ public class ReflectiveIFProviderDefinitionMarshaller extends
                 writer.writeAttribute(ELEMENT_TYPE, memberSite.getElementType().name());
                 writer.writeAttribute(NAME, source.getName());
                 writer.writeAttribute(PHYSICAL_NAME, memberSite.getName());
+                writer.writeEndElement();
+            }
+            
+            Map<InjectionSource, String> propertyValues = modelObject.getPropertyValues();
+            for(InjectionSource propertySource : propertyValues.keySet()) {
+                writer.writeStartElement(QNAME.getPrefix(), PROPERTY, QNAME.getNamespaceURI());
+                writer.writeAttribute(NAME, propertySource.getName());
+                writer.writeAttribute(TYPE, propertyValues.get(propertySource));
                 writer.writeEndElement();
             }
             

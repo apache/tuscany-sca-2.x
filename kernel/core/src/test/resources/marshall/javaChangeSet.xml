@@ -39,6 +39,7 @@
 			<reflect:cdiSource type="REFERENCE" name="abc"/>
 			<reflect:injectionSite elementType="FIELD" type="PROPERTY" name="xyz" physicalName="xyz"/>
 			<reflect:injectionSite elementType="METHOD" type="CALLBACK" name="abc" physicalName="abc"/>
+			<reflect:property name="abc" value="123"/>
 		</reflect:instanceFactoryProvider>
 	</java:component>
 	
