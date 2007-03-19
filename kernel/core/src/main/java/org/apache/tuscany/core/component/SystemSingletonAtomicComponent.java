@@ -22,19 +22,19 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AbstractComponentExtension;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -44,7 +44,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * @version $$Rev$$ $$Date$$
  */
 public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComponentExtension
-    implements AtomicComponent {
+    implements AtomicComponent<T> {
     private T instance;
     private List<ServiceContract> serviceContracts = new ArrayList<ServiceContract>();
 
@@ -98,8 +98,12 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         throw new UnsupportedOperationException();
     }
 
-    public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
+    public InstanceWrapper<T> createInstanceWrapper() throws ObjectCreationException {
         throw new UnsupportedOperationException();
+    }
+
+    public ObjectFactory<T> createObjectFactory() {
+        return new SingletonObjectFactory<T>(instance);
     }
 
     public boolean isOptimizable() {

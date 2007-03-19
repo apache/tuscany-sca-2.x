@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.component;
 
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * The runtime instantiation of an SCA atomic, or leaf-type, component
@@ -65,6 +66,13 @@ public interface AtomicComponent<T> extends Component {
      * @throws ObjectCreationException if there was a problem instantiating the implementation
      */
     InstanceWrapper<T> createInstanceWrapper() throws ObjectCreationException;
+
+    /**
+     * Create an ObjectFactory that returns an instance of this AtomicComponent.
+     *
+     * @return an ObjectFactory that returns an instance of this AtomicComponent
+     */
+    ObjectFactory<T> createObjectFactory();
 
     /**
      * Creates a new implementation instance, generally used as a callback by a {@link

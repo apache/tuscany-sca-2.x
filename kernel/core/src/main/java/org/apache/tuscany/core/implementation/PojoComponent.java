@@ -45,6 +45,7 @@ import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.component.ComponentObjectFactory;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 
 /**
@@ -117,6 +118,10 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
 
     public InstanceWrapper<T> createInstanceWrapper() {
         return instanceFactory.newInstance();
+    }
+
+    public ObjectFactory<T> createObjectFactory() {
+        return new ComponentObjectFactory(this, scopeContainer);
     }
 
     public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)

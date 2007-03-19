@@ -127,7 +127,7 @@ public class ReflectiveIFProviderBuilder<T> extends
         List<String> argNames = ifpd.getConstructorArguments();
         Class[] ctrArgs = new Class[argNames.size()];
         for (int i = 0; i < ctrArgs.length; i++) {
-            ctrArgs[i++] = cl.loadClass(argNames.get(i));
+            ctrArgs[i] = cl.loadClass(argNames.get(i));
         }
         return implClass.getDeclaredConstructor(ctrArgs);
     }

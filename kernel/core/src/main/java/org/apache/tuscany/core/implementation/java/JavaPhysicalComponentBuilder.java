@@ -64,8 +64,8 @@ import org.apache.tuscany.spi.wire.Wire;
  * @version $Rev$ $Date$
  * @param <T> the implementation class for the defined component
  */
-@Service(interfaces={PhysicalComponentBuilder.class, WireAttacher.class})
 @EagerInit
+@Service(interfaces={PhysicalComponentBuilder.class, WireAttacher.class})
 public class JavaPhysicalComponentBuilder<T>
     extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>
     implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
@@ -119,10 +119,8 @@ public class JavaPhysicalComponentBuilder<T>
         InjectionSource referenceSource = new InjectionSource(REFERENCE, sourceUri.getFragment());
         Class<?> type = source.getMemberType(referenceSource);
         if (definition.isOptimizable()) {
-            // FIXME if possible, this is not clean
             assert target instanceof AtomicComponent;
-            ScopeContainer container = target.getScopeContainer();
-            ObjectFactory<?> factory = new InstanceObjectFactory((AtomicComponent) target, container);
+            ObjectFactory<?> factory = ((AtomicComponent<?>)target).createObjectFactory();
             source.setObjectFactory(referenceSource, factory);
         } else {
             ObjectFactory<?> factory = new WireObjectFactory2(type, definition.isConversational(), wire, proxyService);
