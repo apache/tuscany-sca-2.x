@@ -167,21 +167,21 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         ServiceContract<?> contract = referenceDefinition.getServiceContract();
         PhysicalWireDefinition wireDefinition = createWireDefinition(contract, context);
         Class<?> type = target.getImplementation().getClass();
-        ComponentGenerator<S> targetGenerator = (ComponentGenerator<S>) componentGenerators.get(type);
+        ComponentGenerator<T> targetGenerator = (ComponentGenerator<T>) componentGenerators.get(type);
         if (targetGenerator == null) {
             throw new GeneratorNotFoundException(type);
         }
         PhysicalWireTargetDefinition targetDefinition =
-            targetGenerator.generateWireTarget(source, serviceDefinition, context);
+            targetGenerator.generateWireTarget(target, serviceDefinition, context);
         wireDefinition.setTarget(targetDefinition);
 
         type = source.getImplementation().getClass();
-        ComponentGenerator<T> sourceGenerator = (ComponentGenerator<T>) componentGenerators.get(type);
+        ComponentGenerator<S> sourceGenerator = (ComponentGenerator<S>) componentGenerators.get(type);
         if (sourceGenerator == null) {
             throw new GeneratorNotFoundException(type);
         }
         PhysicalWireSourceDefinition sourceDefinition =
-            targetGenerator.generateWireSource(source, referenceDefinition, context);
+            sourceGenerator.generateWireSource(source, referenceDefinition, context);
         wireDefinition.setSource(sourceDefinition);
         context.getPhysicalChangeSet().addWireDefinition(wireDefinition);
     }
