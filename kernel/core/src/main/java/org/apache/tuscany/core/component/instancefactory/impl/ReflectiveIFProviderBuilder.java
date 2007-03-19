@@ -35,6 +35,7 @@ import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteMappi
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 import org.apache.tuscany.core.model.physical.instancefactory.MemberSite;
 import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProviderDefinition;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * IF provider builder for reflective IF provider.
@@ -43,7 +44,7 @@ import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProvid
  */
 public class ReflectiveIFProviderBuilder<T> extends
     AbstractIFProviderBuilder<ReflectiveInstanceFactoryProvider<T>, ReflectiveIFProviderDefinition> {
-
+    
     @Override
     protected Class<ReflectiveIFProviderDefinition> getIfpdClass() {
         return ReflectiveIFProviderDefinition.class;
@@ -66,11 +67,20 @@ public class ReflectiveIFProviderBuilder<T> extends
             List<InjectionSource> ctrInjectSites = ifpd.getCdiSources();
 
             Map<InjectionSource, Member> injectionSites = getInjectionSites(ifpd, implClass);
-            return new ReflectiveInstanceFactoryProvider<T>(ctr,
+            ReflectiveInstanceFactoryProvider<T> rifp =  new ReflectiveInstanceFactoryProvider<T>(ctr,
                 ctrInjectSites,
                 injectionSites,
                 initMethod,
                 destroyMethod);
+            
+            Map<InjectionSource, String> propertyValues = ifpd.getPropertyValues();
+            for(InjectionSource source : propertyValues.keySet()) {
+                Class<?> type = rifp.getMemberType(source);
+                String propertyValue = propertyValues.get(source);
+                ObjectFactory<?> factory = ObjectFactoryUtil.create(propertyValue, type);
+                rifp.setObjectFactory(source, factory);
+            }
+            return rifp;
 
         } catch (ClassNotFoundException ex) {
             throw new IFProviderBuilderException(ex);
