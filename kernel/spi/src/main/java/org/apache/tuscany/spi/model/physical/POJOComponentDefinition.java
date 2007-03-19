@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.model.physical;
 
+import java.net.URI;
+
 /**
  * Definition of a physical component based on a POJO.
  *
@@ -25,8 +27,9 @@ package org.apache.tuscany.spi.model.physical;
  * @param <T> the implementation class (if known)
  */
 public abstract class POJOComponentDefinition<T> extends PhysicalComponentDefinition {
+    
     private InstanceFactoryProviderDefinition<T> instanceFactoryProviderDefinition;
-    private int initLevel;
+    private URI classLoaderId;
 
     /**
      * Gets the instance factory provider definition.
@@ -45,11 +48,22 @@ public abstract class POJOComponentDefinition<T> extends PhysicalComponentDefini
         this.instanceFactoryProviderDefinition = instanceFactoryProviderDefinition;
     }
 
-    public int getInitLevel() {
-        return initLevel;
+    /**
+     * Gets the classloader id.
+     *
+     * @return Classloader id.
+     */
+    public URI getClassLoaderId() {
+        return classLoaderId;
     }
 
-    public void setInitLevel(int initLevel) {
-        this.initLevel = initLevel;
+    /**
+     * Set the classloader id.
+     *
+     * @param classLoaderId Classloader id.
+     */
+    public void setClassLoaderId(URI classLoaderId) {
+        this.classLoaderId = classLoaderId;
     }
+    
 }
