@@ -35,6 +35,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.core.component.SimpleWorkContext;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.runtime.InitializationException;
 
@@ -77,6 +78,7 @@ public class MavenEmbeddedRuntime extends AbstractRuntime<MavenRuntimeInfo> {
         getWorkContext().setIdentifier(Scope.COMPOSITE, contextId);
         WorkContext workContext = new SimpleWorkContext();
         workContext.setIdentifier(Scope.COMPOSITE, contextId);
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
         try {
             targetInvoker.invokeTarget(null, TargetInvoker.NONE, workContext);
         } finally {
