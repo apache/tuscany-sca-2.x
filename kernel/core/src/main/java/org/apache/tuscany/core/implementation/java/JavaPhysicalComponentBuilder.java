@@ -51,6 +51,8 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.ProxyService;
@@ -101,31 +103,23 @@ public class JavaPhysicalComponentBuilder<T>
         return new JavaComponent<T>(componentId, provider, scopeContainer, groupId, initLevel, -1, -1);
     }
 
-    /**
-     * Attaches the source to the component.
-     *
-     * @param source     the source component to attach to
-     * @param target     the source component
-     * @param wire       the wire for the callback
-     * @param definition the attach metadata
-     */
     @SuppressWarnings({"unchecked"})
     public void attachToSource(JavaComponent source,
-                       Component target,
-                       Wire wire,
-                       JavaPhysicalWireSourceDefinition definition) {
-        URI sourceUri = definition.getUri();
+                               JavaPhysicalWireSourceDefinition sourceDefinition, Component target,
+                               PhysicalWireTargetDefinition targetDefinition, Wire wire
+    ) {
+        URI sourceUri = sourceDefinition.getUri();
         InjectionSource referenceSource = new InjectionSource(REFERENCE, sourceUri.getFragment());
         Class<?> type = source.getMemberType(referenceSource);
-        if (definition.isOptimizable()) {
+        if (sourceDefinition.isOptimizable()) {
             assert target instanceof AtomicComponent;
             ObjectFactory<?> factory = ((AtomicComponent<?>)target).createObjectFactory();
             source.setObjectFactory(referenceSource, factory);
         } else {
-            ObjectFactory<?> factory = new WireObjectFactory2(type, definition.isConversational(), wire, proxyService);
+            ObjectFactory<?> factory = new WireObjectFactory2(type, sourceDefinition.isConversational(), wire, proxyService);
             source.setObjectFactory(referenceSource, factory);
             if (!wire.getCallbackInvocationChains().isEmpty()) {
-                URI callbackUri = definition.getCallbackUri();
+                URI callbackUri = sourceDefinition.getCallbackUri();
                 InjectionSource callbackSource = new InjectionSource(CALLBACK, callbackUri.getFragment());
                 Class<?> callbackType = source.getMemberType(callbackSource);
                 ObjectFactory<?> callbackFactory = new CallbackWireObjectFactory2(callbackType, proxyService);
@@ -134,16 +128,15 @@ public class JavaPhysicalComponentBuilder<T>
         }
     }
 
-    /**
-     * Attaches the target to the component.
-     *
-     * @param source
-     * @param component Component.
-     * @param wire      the wire to attach
-     * @param target    Target.
-     */
-    public void attachToTarget(Component source, JavaComponent component, Wire wire, JavaPhysicalWireTargetDefinition target)
+    public void attachToTarget(Component source,
+                               PhysicalWireSourceDefinition sourceDefinition, JavaComponent component,
+                               JavaPhysicalWireTargetDefinition target, Wire wire
+    )
         throws WireAttachException {
+        if (sourceDefinition.isOptimizable()) {
+            return;
+        }
+        
         ScopeContainer scopeContainer = component.getScopeContainer();
         Class<?> implementationClass = component.getImplementationClass();
         ClassLoader loader = implementationClass.getClassLoader();

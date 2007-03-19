@@ -36,26 +36,26 @@ public class WireAttacherRegistryTestCase extends TestCase {
     private Component target;
     private Wire wire;
     private WireAttacher attacher;
+    private PhysicalWireSourceDefinition pwsd;
+    private PhysicalWireTargetDefinition pwtd;
 
     @SuppressWarnings("unchecked")
     public void testSourceAttachDispatch() throws Exception {
-        PhysicalWireSourceDefinition pwsd = new PhysicalWireSourceDefinition();
-        attacher.attachToSource(source, target, wire, pwsd);
+        attacher.attachToSource(source, pwsd, target, pwtd, wire);
         EasyMock.replay(attacher);
 
         registry.register(PhysicalWireSourceDefinition.class, attacher);
-        registry.attachToSource(source, target, wire, pwsd);
+        registry.attachToSource(source, pwsd, target, pwtd, wire);
         EasyMock.verify(attacher);
     }
 
     @SuppressWarnings("unchecked")
     public void testTargetAttachDispatch() throws Exception {
-        PhysicalWireTargetDefinition pwtd = new PhysicalWireTargetDefinition();
-        attacher.attachToTarget(source, target, wire, pwtd);
+        attacher.attachToTarget(source, pwsd, target, pwtd, wire);
         EasyMock.replay(attacher);
 
         registry.register(PhysicalWireTargetDefinition.class, attacher);
-        registry.attachToTarget(source, target, wire, pwtd);
+        registry.attachToTarget(source, pwsd, target, pwtd, wire);
         EasyMock.verify(attacher);
     }
 
@@ -69,6 +69,8 @@ public class WireAttacherRegistryTestCase extends TestCase {
         EasyMock.replay(wire);
         attacher = EasyMock.createMock(WireAttacher.class);
 
+        pwsd = new PhysicalWireSourceDefinition();
+        pwtd = new PhysicalWireTargetDefinition();
         registry = new WireAttacherRegistryImpl();
     }
 }

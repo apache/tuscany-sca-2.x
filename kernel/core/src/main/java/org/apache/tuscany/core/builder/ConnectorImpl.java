@@ -54,6 +54,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -120,18 +122,20 @@ public class ConnectorImpl implements Connector {
             throw new ComponentNotFoundException("Wire source component not found", baseSourceUri);
         }
         Wire wire = createWire(definition);
+
+        PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
+        PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
+        Component target;
         if (baseTargetUri != null) {
-            Component target = componentManager.getComponent(baseTargetUri);
+            target = componentManager.getComponent(baseTargetUri);
             if (target == null) {
                 throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
             }
-            attacherRegistry.attachToSource(source, target, wire, definition.getSource());
-            attacherRegistry.attachToTarget(source, target, wire, definition.getTarget());
         } else {
-            // bindings do not have a target
-            attacherRegistry.attachToSource(source, null, wire, definition.getSource());
-            attacherRegistry.attachToTarget(source, null, wire, definition.getTarget());
+            target = null;
         }
+        attacherRegistry.attachToSource(source, sourceDefinition, target, targetDefinition, wire);
+        attacherRegistry.attachToTarget(source, sourceDefinition, target, targetDefinition, wire);
     }
 
     public void connect(ComponentDefinition<? extends Implementation<?>> definition) throws WiringException {

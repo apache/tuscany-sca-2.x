@@ -50,23 +50,31 @@ public class WireAttacherRegistryImpl implements WireAttacherRegistry {
 
     @SuppressWarnings("unchecked")
     public <C extends Component, PWSD extends PhysicalWireSourceDefinition>
-    void attachToSource(C source, Component target, Wire wire, PWSD definition) throws WiringException {
-        Class<?> type = definition.getClass();
+    void attachToSource(C source,
+                        PWSD sourceDefinition,
+                        Component target,
+                        PhysicalWireTargetDefinition targetDefinition,
+                        Wire wire) throws WiringException {
+        Class<?> type = sourceDefinition.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
             throw new WireAttacherNotFound(type, source.getUri(), wire.getTargetUri());
         }
-        attacher.attachToSource(source, target, wire, definition);
+        attacher.attachToSource(source, sourceDefinition, target, targetDefinition, wire);
     }
 
     @SuppressWarnings("unchecked")
     public <C extends Component, PWTD extends PhysicalWireTargetDefinition>
-    void attachToTarget(Component source, C component, Wire wire, PWTD target) throws WiringException {
-        Class<?> type = target.getClass();
+    void attachToTarget(Component source,
+                        PhysicalWireSourceDefinition sourceDefinition,
+                        C target,
+                        PWTD targetDefinition,
+                        Wire wire) throws WiringException {
+        Class<?> type = targetDefinition.getClass();
         WireAttacher attacher = attachers.get(type);
         if (attacher == null) {
-            throw new WireAttacherNotFound(type, component.getUri(), target.getUri());
+            throw new WireAttacherNotFound(type, target.getUri(), targetDefinition.getUri());
         }
-        attacher.attachToTarget(source, component, wire, target);
+        attacher.attachToTarget(source, sourceDefinition, target, targetDefinition, wire);
     }
 }
