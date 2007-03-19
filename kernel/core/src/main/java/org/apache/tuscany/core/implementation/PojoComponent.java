@@ -52,7 +52,6 @@ import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
  *
  * @version $Rev$ $Date$
  * @param <T> the implementation class
- * @param <GROUP> the component group id type
  */
 public abstract class PojoComponent<T> extends AbstractSCAObject implements AtomicComponent<T> {
     private final InstanceFactoryProvider<T> provider;
