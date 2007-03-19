@@ -24,15 +24,18 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.apache.tuscany.core.component.SimpleWorkContext;
+import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.builder.physical.DefaultPhysicalComponentBuilderRegistry;
+import org.apache.tuscany.core.builder.physical.WireAttacherRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
+import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
 import org.apache.tuscany.core.component.instancefactory.impl.DefaultIFProviderBuilderRegistry;
 import org.apache.tuscany.core.component.instancefactory.impl.ReflectiveIFProviderBuilder;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
+import org.apache.tuscany.core.deployer.federation.FederatedDeployer;
 import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 import org.apache.tuscany.core.implementation.system.builder.SystemPhysicalComponentBuilder;
-import org.apache.tuscany.core.implementation.system.component.SystemComponent;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemPhysicalWireTargetDefinition;
@@ -40,19 +43,19 @@ import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteMappi
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 import org.apache.tuscany.core.model.physical.instancefactory.MemberSite;
 import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProviderDefinition;
-import org.apache.tuscany.core.builder.ConnectorImpl;
-import org.apache.tuscany.core.builder.physical.WireAttacherRegistryImpl;
+import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
-import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -68,11 +71,10 @@ public class PhysicalBuilderTestCase extends TestCase {
     private InstanceFactoryProviderDefinition<TargetImpl> targetProviderDefinition;
     private Connector connector;
     private ComponentManager componentManager;
+    private FederatedDeployer deployer;
+    private PhysicalChangeSet pcs;
 
     public void testWireTwoComponents() throws Exception {
-        SystemPhysicalComponentDefinition<SourceImpl> source = createSourceComponentDefinition();
-        SystemPhysicalComponentDefinition<TargetImpl> target = createTargetComponentDefinition();
-
         SystemPhysicalWireSourceDefinition wireSource = new SystemPhysicalWireSourceDefinition();
         wireSource.setUri(sourceId.resolve("#target"));
         SystemPhysicalWireTargetDefinition wireTarget = new SystemPhysicalWireTargetDefinition();
@@ -81,18 +83,16 @@ public class PhysicalBuilderTestCase extends TestCase {
         wireDefinition.setSource(wireSource);
         wireDefinition.setTarget(wireTarget);
 
-        SystemComponent<?> sourceComponent = builder.build(source);
-        componentManager.register(sourceComponent);
-        SystemComponent<?> targetComponent = builder.build(target);
-        componentManager.register(targetComponent);
-        connector.connect(wireDefinition);
-        sourceComponent.start();
-        targetComponent.start();
+        pcs.addComponentDefinition(createSourceComponentDefinition());
+        pcs.addComponentDefinition(createTargetComponentDefinition());
+        pcs.addWireDefinition(wireDefinition);
+        deployer.applyChangeSet(pcs);
 
         WorkContext workContext = new SimpleWorkContext();
         workContext.setIdentifier(Scope.COMPOSITE, groupId);
         PojoWorkContextTunnel.setThreadWorkContext(workContext);
         try {
+            AtomicComponent<?> sourceComponent = (AtomicComponent<?>) componentManager.getComponent(sourceId);
             InstanceWrapper<?> wrapper = scopeContainer.getWrapper(sourceComponent, groupId);
             SourceImpl s = (SourceImpl) wrapper.getInstance();
             assertSame(s.target.getClass(), TargetImpl.class);
@@ -153,15 +153,22 @@ public class PhysicalBuilderTestCase extends TestCase {
         IFProviderBuilderRegistry providerBuilders = new DefaultIFProviderBuilderRegistry();
         providerBuilders.register(ReflectiveIFProviderDefinition.class, new ReflectiveIFProviderBuilder());
 
-        builder = new SystemPhysicalComponentBuilder(null, scopeRegistry, providerBuilders, classLoaderRegistry);
-
+        DefaultPhysicalComponentBuilderRegistry builderRegistry = new DefaultPhysicalComponentBuilderRegistry();
         WireAttacherRegistry wireAttacherRegistry = new WireAttacherRegistryImpl();
+        builder = new SystemPhysicalComponentBuilder(null, scopeRegistry, providerBuilders, classLoaderRegistry);
+        builderRegistry.register(SystemPhysicalComponentDefinition.class, builder);
         wireAttacherRegistry.register(SystemPhysicalWireSourceDefinition.class, builder);
         wireAttacherRegistry.register(SystemPhysicalWireTargetDefinition.class, builder);
 
         componentManager = new ComponentManagerImpl();
         connector = new ConnectorImpl(null, wireAttacherRegistry, null, componentManager, null, null);
 
+        deployer = new FederatedDeployer();
+        deployer.setBuilderRegistry(builderRegistry);
+        deployer.setComponentManager(componentManager);
+        deployer.setConnector(connector);
+
+        pcs = new PhysicalChangeSet();
     }
 
     public static class SourceImpl {

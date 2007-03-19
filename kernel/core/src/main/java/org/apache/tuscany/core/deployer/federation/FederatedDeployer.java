@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.deployer.federation;
 
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller;
@@ -76,15 +79,7 @@ public class FederatedDeployer implements RequestListener {
         try {
 
             final PhysicalChangeSet changeSet = (PhysicalChangeSet) marshallerRegistry.unmarshall(content);
-            for (PhysicalComponentDefinition pcd : changeSet.getComponentDefinitions()) {
-                final Component component = builderRegistry.build(pcd);
-                componentManager.register(component);
-                component.start();
-            }
-            for (PhysicalWireDefinition pwd : changeSet.getWireDefinitions()) {
-                connector.connect(pwd);
-            }
-
+            applyChangeSet(changeSet);
         } catch (MarshalException ex) {
             return null;
         } catch (BuilderException ex) {
@@ -94,6 +89,24 @@ public class FederatedDeployer implements RequestListener {
         }
 
         return null;
+    }
+
+    public void applyChangeSet(PhysicalChangeSet changeSet) throws BuilderException, RegistrationException {
+        Set<PhysicalComponentDefinition> componentDefinitions = changeSet.getComponentDefinitions();
+        List<Component> components = new ArrayList<Component>(componentDefinitions.size());
+        for (PhysicalComponentDefinition pcd : componentDefinitions) {
+            final Component component = builderRegistry.build(pcd);
+            components.add(component);
+        }
+        for (Component component : components) {
+            componentManager.register(component);
+        }
+        for (PhysicalWireDefinition pwd : changeSet.getWireDefinitions()) {
+            connector.connect(pwd);
+        }
+        for (Component component : components) {
+            component.start();
+        }
     }
 
     /**
