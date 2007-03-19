@@ -16,21 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.databinding.sdo;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import java.lang.annotation.Target;
+import java.net.URI;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import commonj.sdo.helper.HelperContext;
 
 /**
- * To be injected with SDO HelperContext
+ * A registry for SDO HelperContext
  * 
  * @version $Rev$ $Date$
  */
-@Target({METHOD, FIELD})
-@Retention(RUNTIME)
-public @interface HelperContext {
+public class HelperContextRegistryImpl implements HelperContextRegistry {
+    private final Map<URI, HelperContext> registry = new ConcurrentHashMap<URI, HelperContext>();
+
+    public synchronized void register(URI id, HelperContext context) {
+        if (registry.containsKey(id)) {
+            throw new DuplicateHelperContextException("Duplicate HelperContext", id.toString());
+        }
+        registry.put(id, context);
+    }
+
+    public void unregister(URI id) {
+        registry.remove(id);
+    }
+
+    public HelperContext getHelperContext(URI id) {
+        return registry.get(id);
+    }
 }

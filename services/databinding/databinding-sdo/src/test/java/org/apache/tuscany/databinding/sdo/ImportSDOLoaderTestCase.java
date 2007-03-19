@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+
 import java.io.StringReader;
+import java.net.URI;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -55,8 +59,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
     }
 
     public void testFactory() throws XMLStreamException, LoaderException {
-        String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' " 
-            + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
+        String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' " + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
         XMLStreamReader reader = getReader(xml);
         assertFalse(inited);
         assertTrue(loader.load(null, reader, deploymentContext) instanceof ImportSDO);
@@ -65,12 +68,14 @@ public class ImportSDOLoaderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        loader = new ImportSDOLoader(null);
+        URI id = URI.create("/composite1/");
+        loader = new ImportSDOLoader(null, new HelperContextRegistryImpl());
         xmlFactory = XMLInputFactory.newInstance();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        EasyMock.expect(deploymentContext.getXmlFactory()).andReturn(xmlFactory).anyTimes();
-        EasyMock.expect(deploymentContext.getClassLoader()).andReturn(getClass().getClassLoader()).anyTimes();
-        EasyMock.replay(deploymentContext);
+        expect(deploymentContext.getXmlFactory()).andReturn(xmlFactory).anyTimes();
+        expect(deploymentContext.getComponentId()).andReturn(id).anyTimes();
+        expect(deploymentContext.getClassLoader()).andReturn(getClass().getClassLoader()).anyTimes();
+        replay(deploymentContext);
     }
 
     protected XMLStreamReader getReader(String xml) throws XMLStreamException {

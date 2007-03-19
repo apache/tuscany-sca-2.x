@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.implementation.java.Resource;
-import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.Reference;
 
 import commonj.sdo.helper.HelperContext;
 
@@ -44,6 +44,15 @@ import commonj.sdo.helper.HelperContext;
  * @version $Rev$ $Date$
  */
 public class HelperContextProcessor extends ImplementationProcessorExtension {
+    private HelperContextRegistry registry;
+    
+    /**
+     * @param registry
+     */
+    public HelperContextProcessor(@Reference HelperContextRegistry registry) {
+        super();
+        this.registry = registry;
+    }
 
     /**
      * Takes a setter or getter method name and converts it to a property name
@@ -60,7 +69,7 @@ public class HelperContextProcessor extends ImplementationProcessorExtension {
     public void visitMethod(Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context) throws ProcessingException {
-        if (!method.isAnnotationPresent(Context.class)) {
+        if (!method.isAnnotationPresent(org.apache.tuscany.databinding.sdo.api.HelperContext.class)) {
             return;
         }
         if (method.getParameterTypes().length != 1) {
@@ -78,7 +87,7 @@ public class HelperContextProcessor extends ImplementationProcessorExtension {
     public void visitField(Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
-        if (field.getAnnotation(Context.class) == null) {
+        if (!field.isAnnotationPresent(org.apache.tuscany.databinding.sdo.api.HelperContext.class)) {
             return;
         }
         Class<?> paramType = field.getType();
@@ -90,16 +99,16 @@ public class HelperContextProcessor extends ImplementationProcessorExtension {
         }
     }
 
-    private static class HelperContextFactory implements ObjectFactory<HelperContext> {
-        private URI parent;
+    private class HelperContextFactory implements ObjectFactory<HelperContext> {
+        private URI id;
 
-        public HelperContextFactory(URI parent) {
+        public HelperContextFactory(URI id) {
             super();
-            this.parent = parent;
+            this.id = id;
         }
 
         public HelperContext getInstance() throws ObjectCreationException {
-            return null;
+            return registry.getHelperContext(id);
         }
 
     }
