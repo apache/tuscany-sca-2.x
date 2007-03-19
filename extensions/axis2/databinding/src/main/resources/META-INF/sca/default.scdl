@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
-    name="org.apache.tuscany.databinding.axiom">
+    name="org.apache.tuscany.databinding.axiom" autowire="true">
 
     <dependency xmlns="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha">
         <group>org.apache.tuscany.sca.extensions.axis2</group>

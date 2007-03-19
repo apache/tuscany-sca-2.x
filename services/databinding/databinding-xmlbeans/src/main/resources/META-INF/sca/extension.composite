@@ -17,6 +17,6 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="org.apache.tuscany.databinding.xmlbeans">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="org.apache.tuscany.databinding.xmlbeans" autowire="true">
     <include name="org.apache.tuscany.databinding.xmlbeans.include" scdlLocation="databinding.xmlbeans.scdl" />
 </composite>

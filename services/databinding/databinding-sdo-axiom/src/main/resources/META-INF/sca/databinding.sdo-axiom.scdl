@@ -26,7 +26,7 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
-           name="org.apache.tuscany.databinding.sdo-axiom.include">
+           name="org.apache.tuscany.databinding.sdo-axiom.include" autowire="true">
 
 	<component name="transformer.DataObject2OMElement">
 		<system:implementation.system class="org.apache.tuscany.databinding.sdo.DataObject2OMElement"/>

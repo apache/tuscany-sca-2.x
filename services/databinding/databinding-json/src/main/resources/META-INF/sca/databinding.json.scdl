@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
-    name="org.apache.tuscany.databinding.json.include">
+    name="org.apache.tuscany.databinding.json.include" autowire="true">
 
     <component name="databinding.XMLBeans">
         <system:implementation.system class="org.apache.tuscany.databinding.json.XMLBeansDataBinding" />
