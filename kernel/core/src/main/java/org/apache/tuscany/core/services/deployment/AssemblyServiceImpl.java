@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -34,9 +35,11 @@ import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.deployer.ChangeSetHandler;
 import org.apache.tuscany.spi.deployer.ChangeSetHandlerRegistry;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.generator.GenerationException;
 import org.apache.tuscany.spi.generator.GeneratorContext;
 import org.apache.tuscany.spi.generator.GeneratorRegistry;
+import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -50,6 +53,7 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
 
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.generator.DefaultGeneratorContext;
 import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.host.deployment.AssemblyService;
@@ -126,13 +130,18 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
 
         try {
             XMLStreamReader reader = xmlFactory.createXMLStreamReader(stream);
+            while(reader.next() != XMLStreamConstants.START_ELEMENT) {                
+            }
 //            if (domain == null) {
 //                // lazily create the domain
 //                domain = createDomain();
 //            }
 
-            ComponentDefinition<CompositeImplementation> defintion = null;    //loaderRegistry.load()
-            CompositeComponentType<?, ?, ?> type = defintion.getImplementation().getComponentType();
+//            ComponentDefinition<CompositeImplementation> defintion = null;    //loaderRegistry.load()
+//            CompositeComponentType<?, ?, ?> type = defintion.getImplementation().getComponentType();
+            
+            DeploymentContext deploymentContext = null;
+            CompositeComponentType<?, ?, ?> type = (CompositeComponentType<?, ?, ?>) loaderRegistry.load(null, reader, deploymentContext);
             Map<URI, GeneratorContext> contexts = new HashMap<URI, GeneratorContext>();
             // TODO create physical resource definitions
             // create physical component definitions
@@ -189,6 +198,8 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
             }
 
         } catch (XMLStreamException e) {
+            throw new DocumentParseException(e);
+        } catch (LoaderException e) {
             throw new DocumentParseException(e);
         }
     }
