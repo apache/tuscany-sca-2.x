@@ -53,7 +53,7 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
     private List<InjectionSiteMapping> injectionSites = new LinkedList<InjectionSiteMapping>();
     
     // Property sites
-    private Map<InjectionSource, String> properties = new HashMap<InjectionSource, String>();
+    private Map<InjectionSource, String> propertyValues = new HashMap<InjectionSource, String>();
 
     /**
      * returns the constructor argument.
@@ -156,8 +156,8 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
      * Returns a read-only view of properties.
      * @return Read-only view of properties.
      */
-    public Map<InjectionSource, String> getProperties() {
-        return Collections.unmodifiableMap(properties);
+    public Map<InjectionSource, String> getPropertyValues() {
+        return Collections.unmodifiableMap(propertyValues);
     }
 
     /**
@@ -165,8 +165,8 @@ public class ReflectiveIFProviderDefinition extends InstanceFactoryProviderDefin
      * @param injectionSource Injection source for the property.
      * @param property String value of the property.
      */
-    public void addProperty(InjectionSource injectionSource, String property) {
-        properties.put(injectionSource, property);
+    public void addPropertValue(InjectionSource injectionSource, String propertValue) {
+        propertyValues.put(injectionSource, propertValue);
     }
 
 }
