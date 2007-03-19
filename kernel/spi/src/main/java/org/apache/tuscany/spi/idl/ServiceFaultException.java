@@ -68,14 +68,16 @@ public class ServiceFaultException extends TuscanyException {
     }
 
     public boolean isMatchingType(Object type) {
-        if (logical == null)
+        if (logical == null) {
             return false;
+        }
 
         if ((type instanceof QName) && logical.equals(type)) {
             return true;
         }
-        if (type instanceof XMLType && logical.equals(((XMLType)type).getElementName()))
+        if (type instanceof XMLType && logical.equals(((XMLType)type).getElementName())) {
             return true;
+        }
         return false;
     }
 
