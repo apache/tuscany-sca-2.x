@@ -68,8 +68,8 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
         PojoComponentType<JavaMappedService, JavaMappedReference, Property<?>> type = implementation.getComponentType();
         JavaPhysicalComponentDefinition pDefinition = new JavaPhysicalComponentDefinition();
         pDefinition.setComponentId(definition.getUri());
-        // set the classloader id temporarily until multiparent classloading is in palce
-        pDefinition.setClassLoaderId(URI.create("sca://./hostClassLoader"));
+        // set the classloader id temporarily until contribution service
+        pDefinition.setClassLoaderId(URI.create("sca://./bootClassLoader"));
         pDefinition.setScope(type.getImplementationScope());
         // TODO get classloader id
         ReflectiveIFProviderDefinition provider = new ReflectiveIFProviderDefinition();

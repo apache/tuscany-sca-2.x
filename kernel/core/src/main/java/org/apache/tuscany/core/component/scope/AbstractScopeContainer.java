@@ -124,8 +124,8 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
 
     public <T> void register(AtomicComponent<T> component, URI groupId) {
         checkInit();
-        componentGroups.put(component, groupId);
         if (component.isEagerInit()) {
+            componentGroups.put(component, groupId);
             synchronized (initQueues) {
                 List<AtomicComponent<?>> initQueue = initQueues.get(groupId);
                 if (initQueue == null) {
@@ -140,8 +140,8 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
     }
 
     public <T> void unregister(AtomicComponent<T> component) {
-        URI groupId = componentGroups.remove(component);
         if (component.isEagerInit()) {
+            URI groupId = componentGroups.remove(component);
             synchronized (initQueues) {
                 List<AtomicComponent<?>> initQueue = initQueues.get(groupId);
                 initQueue.remove(component);
