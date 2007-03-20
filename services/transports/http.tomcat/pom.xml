@@ -28,6 +28,21 @@
     <name>Apache Tuscany Tomcat HTTP Service</name>
     <description>Tuscany Tomcat HTTP Service</description>
 
+    <repositories>
+        <repository>
+            <id>tomcat-m2-repo</id>
+            <name>Tomcat M2 Repository</name>
+            <url>http://tomcat.apache.org/dev/dist/m2-repository/</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
@@ -39,6 +54,18 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>catalina</artifactId>
+            <version>6.0.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>coyote</artifactId>
+            <version>6.0.10</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
