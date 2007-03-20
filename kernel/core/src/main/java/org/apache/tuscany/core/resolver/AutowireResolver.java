@@ -45,10 +45,20 @@ public interface AutowireResolver {
                  ComponentDefinition<? extends Implementation<?>> definition) throws ResolutionException;
 
     /**
+     * Resolves autowires for a composite component type and its decendents
+     *
+     * @param compositeType the component type to resolve autowires for
+     * @throws ResolutionException
+     */
+    @SuppressWarnings({"unchecked"})
+    public void resolve(CompositeComponentType<?, ?, ?> compositeType) throws ResolutionException;
+
+    /**
      * Adds the uri of a host system service that can be an autowire target
      *
      * @param contract the service contract of the system service
      * @param uri      the component uri
      */
     void addHostUri(ServiceContract contract, URI uri);
+
 }

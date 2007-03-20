@@ -335,13 +335,6 @@ public class ConnectorImpl implements Connector {
         for (InvocationChain chain : wire.getCallbackInvocationChains().values()) {
             chain.setTargetInvoker(source.createTargetInvoker(null, chain.getOperation()));
         }
-        // TODO the above will deleted be replaced when we cut-over to the physical marshallers
-        for (InvocationChain chain : wire.getPhysicalInvocationChains().values()) {
-            chain.setTargetInvoker(target.createTargetInvoker(name, chain.getPhysicalOperation()));
-        }
-        for (InvocationChain chain : wire.getCallbackPhysicalInvocationChains().values()) {
-            chain.setTargetInvoker(source.createTargetInvoker(null, chain.getPhysicalOperation()));
-        }
     }
 
     /**

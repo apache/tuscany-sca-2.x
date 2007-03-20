@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.core.model.physical.java;
 
-import java.net.URI;
-
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
-import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.spi.model.physical.POJOComponentDefinition;
 
 /**

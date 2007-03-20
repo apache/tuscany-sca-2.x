@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.java;
+package org.apache.tuscany.core.implementation.system.generator;
 
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
@@ -41,12 +41,12 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
+import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteMapping;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
-import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.REFERENCE;
 import org.apache.tuscany.core.model.physical.instancefactory.MemberSite;
 import org.apache.tuscany.core.model.physical.instancefactory.ReflectiveIFProviderDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
 import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
 
@@ -54,18 +54,19 @@ import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinit
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class JavaPhysicalComponentGenerator implements ComponentGenerator<ComponentDefinition<JavaImplementation>> {
+public class SystemPhysicalComponentGenerator implements ComponentGenerator<ComponentDefinition<SystemImplementation>> {
 
-    public JavaPhysicalComponentGenerator(@Reference GeneratorRegistry registry) {
-        registry.register(JavaImplementation.class, this);
+
+    public SystemPhysicalComponentGenerator(@Reference GeneratorRegistry registry) {
+        registry.register(SystemImplementation.class, this);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void generate(ComponentDefinition<JavaImplementation> definition, GeneratorContext context) {
-        JavaImplementation implementation = definition.getImplementation();
+    public void generate(ComponentDefinition<SystemImplementation> definition, GeneratorContext context) {
+        SystemImplementation implementation = definition.getImplementation();
         // TODO not a safe cast
         PojoComponentType<JavaMappedService, JavaMappedReference, Property<?>> type = implementation.getComponentType();
-        JavaPhysicalComponentDefinition pDefinition = new JavaPhysicalComponentDefinition();
+        SystemPhysicalComponentDefinition pDefinition = new SystemPhysicalComponentDefinition();
         pDefinition.setComponentId(definition.getUri());
         pDefinition.setScope(type.getImplementationScope());
         // TODO get classloader id
@@ -87,7 +88,7 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
             Member member = reference.getMember();
             InjectionSource source = new InjectionSource();
             source.setName(entry.getKey());
-            source.setValueType(REFERENCE);
+            source.setValueType(InjectionSource.ValueSourceType.REFERENCE);
             MemberSite memberSite = new MemberSite();
             memberSite.setName(member.getName());
             if (member instanceof Method) {
@@ -108,7 +109,7 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
         context.getPhysicalChangeSet().addComponentDefinition(pDefinition);
     }
 
-    public PhysicalWireSourceDefinition generateWireSource(ComponentDefinition<JavaImplementation> definition,
+    public PhysicalWireSourceDefinition generateWireSource(ComponentDefinition<SystemImplementation> definition,
                                                            ReferenceDefinition serviceDefinition,
                                                            GeneratorContext context)
         throws GenerationException {
@@ -117,7 +118,7 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
         return wireDefinition;
     }
 
-    public PhysicalWireTargetDefinition generateWireTarget(ComponentDefinition<JavaImplementation> definition,
+    public PhysicalWireTargetDefinition generateWireTarget(ComponentDefinition<SystemImplementation> definition,
                                                            ServiceDefinition serviceDefinition,
                                                            GeneratorContext context)
         throws GenerationException {

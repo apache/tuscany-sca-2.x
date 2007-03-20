@@ -28,7 +28,6 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -36,12 +35,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.core.generator.DefaultGeneratorContext;
-import org.apache.tuscany.core.resolver.AutowireResolver;
-import org.apache.tuscany.host.deployment.AssemblyService;
-import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.ChangeSetHandler;
@@ -67,10 +63,16 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalChangeSet;
+import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.spi.services.discovery.DiscoveryException;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.core.generator.DefaultGeneratorContext;
+import org.apache.tuscany.core.resolver.AutowireResolver;
+import org.apache.tuscany.host.deployment.AssemblyService;
+import org.apache.tuscany.host.deployment.DeploymentException;
+import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
 
 /**
  * @version $Rev$ $Date$
@@ -86,7 +88,7 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
     private final ModelMarshallerRegistry marshallerRegistry;
     private final DiscoveryService discoveryService;
     private ComponentDefinition<CompositeImplementation> domain;
-    
+    private final Map<String, ChangeSetHandler> registry = new HashMap<String, ChangeSetHandler>();
 
     public AssemblyServiceImpl(@Reference LoaderRegistry loaderRegistry,
                                @Reference GeneratorRegistry generatorRegistry,
@@ -103,8 +105,6 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         domain = createDomain();
     }
-
-    private final Map<String, ChangeSetHandler> registry = new HashMap<String, ChangeSetHandler>();
 
     public void applyChanges(URL changeSet) throws DeploymentException, IOException {
         if (changeSet == null) {
@@ -151,7 +151,6 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
     }
 
     public void include(InputStream stream) throws DeploymentException {
-
         try {
             XMLStreamReader reader = xmlFactory.createXMLStreamReader(stream);
             while (reader.next() != XMLStreamConstants.START_ELEMENT) {
@@ -167,6 +166,11 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
 
             CompositeComponentType<?, ?, ?> type =
                 (CompositeComponentType<?, ?, ?>) loaderRegistry.load(null, reader, deploymentContext);
+            try {
+                autowireResolver.resolve(type);
+            } catch (ResolutionException e) {
+                throw new DeploymentException(e);
+            }
             Map<URI, GeneratorContext> contexts = new HashMap<URI, GeneratorContext>();
             // TODO create physical resource definitions
             // create physical component definitions
@@ -207,7 +211,13 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
                                 String serviceName = uri.getFragment();
                                 Implementation<?> targetImplementation = targetComponent.getImplementation();
                                 ComponentType<?, ?, ?> targetType = targetImplementation.getComponentType();
-                                ServiceDefinition serviceDefinition = targetType.getServices().get(serviceName);
+                                ServiceDefinition serviceDefinition = null;
+                                if (serviceName == null) {
+                                    serviceDefinition = targetType.getServices().get(serviceName);
+                                } else if (targetType.getServices().size() == 1) {
+                                    // default service
+                                    serviceDefinition = targetType.getServices().get(0);
+                                }
                                 assert serviceDefinition != null;
                                 generatorRegistry.generateWire(child,
                                     referenceDefinition,
@@ -216,14 +226,12 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
                             } else {
                                 throw new AssertionError();
                             }
-
-
                         }
                     }
                 } catch (GenerationException e) {
                     throw new DeploymentException(e);
                 }
-                
+
                 marshallAndSend(id, context);
 
             }
@@ -241,18 +249,19 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
     /*
      * Marshalls and sends the PCS.
      */
-    private void marshallAndSend(URI id, GeneratorContext context) throws XMLStreamException, MarshalException, DiscoveryException {
-        
+    private void marshallAndSend(URI id, GeneratorContext context)
+        throws XMLStreamException, MarshalException, DiscoveryException {
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PhysicalChangeSet pcs = context.getPhysicalChangeSet();
 
         XMLStreamWriter pcsWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(out);
         marshallerRegistry.marshall(pcs, pcsWriter);
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         XMLStreamReader pcsReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
         discoveryService.sendMessage(id.toASCIIString(), pcsReader);
-        
+
     }
 
     private void generate(ComponentDefinition<?> component, Map<URI, GeneratorContext> contexts)
