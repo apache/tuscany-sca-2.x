@@ -337,7 +337,6 @@ public class CallbackInvocationTestCase extends TestCase {
         connector = new ConnectorImpl(null, null, null, componentManager, scheduler, workContext);
         container = new CompositeScopeContainer(null);
         container.start();
-        container.createGroup(groupId);
         container.startContext(groupId, groupId);
         context = createMock(DeploymentContext.class);
         expect(context.getCompositeScope()).andStubReturn(container);

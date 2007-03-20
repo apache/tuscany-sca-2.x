@@ -23,28 +23,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.event.ComponentStart;
-import org.apache.tuscany.core.component.event.ComponentStop;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
-import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.core.component.event.RequestEnd;
-import org.apache.tuscany.core.component.event.RequestStart;
+
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
-import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.integration.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
@@ -791,10 +779,8 @@ public class ScopeReferenceTestCase extends TestCase {
 
         statelessScope = new StatelessScopeContainer(null);
         statelessScope.start();
-        statelessScope.createGroup(groupId);
         compositeScope = new CompositeScopeContainer(null);
         compositeScope.start();
-        compositeScope.createGroup(groupId);
         compositeScope.startContext(groupId, groupId);
 
         workContext = EasyMock.createMock(WorkContext.class);

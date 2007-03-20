@@ -146,7 +146,6 @@ public class PhysicalBuilderTestCase extends TestCase {
 
         scopeContainer = new CompositeScopeContainer<URI>(null);
         scopeContainer.start();
-        scopeContainer.createGroup(groupId);
         scopeContainer.startContext(groupId, groupId);
 
         scopeRegistry = EasyMock.createMock(ScopeRegistry.class);

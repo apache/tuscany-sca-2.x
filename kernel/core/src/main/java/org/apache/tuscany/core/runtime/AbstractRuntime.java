@@ -89,7 +89,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     private static final URI RUNTIME_INFO_URI = TUSCANY_SYSTEM_ROOT.resolve("RuntimeInfo");
 
-    private static final URI CLASSLOADER_REGISTRY_URI = TUSCANY_SYSTEM_ROOT.resolve("ClassLoaderRegsitry");
+    private static final URI CLASSLOADER_REGISTRY_URI = TUSCANY_SYSTEM_ROOT.resolve("ClassLoaderRegistry");
 
     private static final URI HOST_CLASSLOADER_ID = URI.create("sca://./hostClassLoader");
 

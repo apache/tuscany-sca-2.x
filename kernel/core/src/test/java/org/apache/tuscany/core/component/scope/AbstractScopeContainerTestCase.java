@@ -50,7 +50,6 @@ public abstract class AbstractScopeContainerTestCase<T, KEY> extends TestCase {
 
     protected void preRegisterComponent() throws Exception {
         scopeContainer.start();
-        scopeContainer.createGroup(groupId);
         scopeContainer.register(component, groupId);
         EasyMock.expect(component.isEagerInit()).andStubReturn(false);
     }
