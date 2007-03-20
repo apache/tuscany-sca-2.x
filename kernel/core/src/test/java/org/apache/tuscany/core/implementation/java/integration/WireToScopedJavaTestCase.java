@@ -19,9 +19,6 @@
 package org.apache.tuscany.core.implementation.java.integration;
 
 import java.net.URI;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -38,15 +35,7 @@ import org.apache.tuscany.spi.wire.ProxyService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.event.ComponentStart;
-import org.apache.tuscany.core.component.event.ComponentStop;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
-import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.core.component.event.RequestEnd;
-import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
-import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -71,7 +60,6 @@ public class WireToScopedJavaTestCase extends TestCase {
     public void testToStatelessScope() throws Exception {
         StatelessScopeContainer scope = new StatelessScopeContainer(null);
         scope.start();
-        scope.createGroup(URI.create("composite"));
         final Wire wire = getWire(scope);
         Target service = proxyService.createProxy(Target.class, wire);
         assertNotNull(service);
@@ -170,7 +158,6 @@ public class WireToScopedJavaTestCase extends TestCase {
         Object contextId = new Object();
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
-        scope.createGroup(groupId);
         scope.startContext(contextId, groupId);
         workContext.setIdentifier(Scope.COMPOSITE, contextId);
         final Wire wire = getWire(scope);

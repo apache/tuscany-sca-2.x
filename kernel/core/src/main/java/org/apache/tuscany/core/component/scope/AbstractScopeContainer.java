@@ -23,15 +23,14 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -63,8 +62,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
     private final Scope scope;
     protected final ScopeContainerMonitor monitor;
 
-    protected final Map<URI, Set<AtomicComponent<?>>> groups =
-        new ConcurrentHashMap<URI, Set<AtomicComponent<?>>>();
     protected final Map<AtomicComponent<?>, URI> componentGroups =
         new ConcurrentHashMap<AtomicComponent<?>, URI>();
 
@@ -72,7 +69,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
 
     // the queue of components to eagerly initialize in each group
     protected final Map<URI, List<AtomicComponent<?>>> initQueues =
-        new ConcurrentHashMap<URI, List<AtomicComponent<?>>>();
+        new HashMap<URI, List<AtomicComponent<?>>>();
 
     // the queue of instanceWrappers to destroy, in the order that their instances were created
     protected final Map<KEY, List<InstanceWrapper<?>>> destroyQueues =
@@ -108,10 +105,11 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
         setLifecycleState(STOPPED);
-        groups.clear();
         componentGroups.clear();
         contextGroups.clear();
-        initQueues.clear();
+        synchronized (initQueues) {
+            initQueues.clear();
+        }
         destroyQueues.clear();
     }
 
@@ -126,46 +124,50 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
 
     public <T> void register(AtomicComponent<T> component, URI groupId) {
         checkInit();
-        assert groups.containsKey(groupId);
-        Set<AtomicComponent<?>> components = groups.get(groupId);
-        components.add(component);
         componentGroups.put(component, groupId);
         if (component.isEagerInit()) {
-            List<AtomicComponent<?>> initQueue = initQueues.get(groupId);
-            // FIXME it would be more efficient to binary search and then insert
-            initQueue.add(component);
-            Collections.sort(initQueue, COMPARATOR);
+            synchronized (initQueues) {
+                List<AtomicComponent<?>> initQueue = initQueues.get(groupId);
+                if (initQueue == null) {
+                    initQueue = new ArrayList<AtomicComponent<?>>();
+                    initQueues.put(groupId, initQueue);
+                }
+                // FIXME it would be more efficient to binary search and then insert
+                initQueue.add(component);
+                Collections.sort(initQueue, COMPARATOR);
+            }
         }
     }
 
     public <T> void unregister(AtomicComponent<T> component) {
         URI groupId = componentGroups.remove(component);
-        assert groupId != null;
-        Set<AtomicComponent<?>> components = groups.get(groupId);
-        components.remove(component);
-    }
-
-    public void createGroup(URI groupId) {
-        assert !groups.containsKey(groupId);
-        groups.put(groupId, new HashSet<AtomicComponent<?>>());
-        initQueues.put(groupId, new ArrayList<AtomicComponent<?>>());
-    }
-
-    protected Set<AtomicComponent<?>> getGroupMembers(URI groupId) {
-        return groups.get(groupId);
-    }
-
-    public void removeGroup(URI groupId) {
-        assert groups.containsKey(groupId);
-        groups.remove(groupId);
-        initQueues.remove(groupId);
+        if (component.isEagerInit()) {
+            synchronized (initQueues) {
+                List<AtomicComponent<?>> initQueue = initQueues.get(groupId);
+                initQueue.remove(component);
+                if (initQueue.isEmpty()) {
+                    initQueues.remove(groupId);
+                }
+            }
+        }
     }
 
     public void startContext(KEY contextId, URI groupId) throws GroupInitializationException {
         assert !contextGroups.containsKey(contextId);
         contextGroups.put(contextId, groupId);
         destroyQueues.put(contextId, new ArrayList<InstanceWrapper<?>>());
-        initializeComponents(contextId, initQueues.get(groupId));
+
+        // get and clone initialization queue
+        List<AtomicComponent<?>> initQueue;
+        synchronized (initQueues) {
+            initQueue = initQueues.get(groupId);
+            if (initQueue != null) {
+                initQueue = new ArrayList<AtomicComponent<?>>(initQueue);
+            }
+        }
+        if (initQueue != null) {
+            initializeComponents(contextId, initQueue);
+        }
     }
 
     protected URI getContextGroup(KEY contextId) {
@@ -214,7 +216,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
      * The list is traversed in order and the getWrapper() method called for each to
      * associate an instance with the supplied context.
      *
-     * @param contextId the contextId to associated with the component instances
+     * @param contextId  the contextId to associated with the component instances
      * @param components the components to be initialized
      * @throws GroupInitializationException if one or more components threw an exception during initialization
      */
@@ -247,11 +249,11 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
     protected void shutdownComponents(List<InstanceWrapper<?>> instances) {
         while (true) {
             InstanceWrapper<?> toDestroy;
-            synchronized(instances) {
+            synchronized (instances) {
                 if (instances.size() == 0) {
                     return;
                 }
-                toDestroy = instances.remove(instances.size()-1);
+                toDestroy = instances.remove(instances.size() - 1);
             }
             try {
                 toDestroy.stop();

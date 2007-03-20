@@ -42,7 +42,6 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
     public void testInitializeError() throws Exception {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
-        scope.createGroup(groupId);
 
         ObjectCreationException ex = new ObjectCreationException("");
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
@@ -72,7 +71,6 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.replay(monitor);
         CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
         scope.start();
-        scope.createGroup(groupId);
 
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);

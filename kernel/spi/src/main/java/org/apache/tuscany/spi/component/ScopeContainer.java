@@ -44,20 +44,6 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
     Scope getScope();
 
     /**
-     * Create a group for associating components together.
-     *
-     * @param groupId an identifier for the group
-     */
-    void createGroup(URI groupId);
-
-    /**
-     * Remove a group that associates components together.
-     *
-     * @param groupId an identifier for the group
-     */
-    void removeGroup(URI groupId);
-
-    /**
      * Registers a component with the scope.
      *
      * @param component the component to register

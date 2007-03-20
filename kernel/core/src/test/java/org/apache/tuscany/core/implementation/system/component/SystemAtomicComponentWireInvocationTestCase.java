@@ -45,7 +45,6 @@ public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
         groupId = URI.create("composite");
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
-        scope.createGroup(groupId);
         scope.startContext(groupId, groupId);
         Target target = new TargetImpl();
         PojoConfiguration configuration = new PojoConfiguration();

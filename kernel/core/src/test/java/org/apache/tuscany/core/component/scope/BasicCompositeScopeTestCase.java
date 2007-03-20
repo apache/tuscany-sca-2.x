@@ -138,7 +138,6 @@ public class BasicCompositeScopeTestCase<T> extends TestCase {
 
         scopeContainer = new CompositeScopeContainer<URI>(null);
         scopeContainer.start();
-        scopeContainer.createGroup(groupId);
         scopeContainer.startContext(contextId, groupId);
     }
 }

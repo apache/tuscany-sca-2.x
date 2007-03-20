@@ -122,7 +122,6 @@ public class DeployerImpl implements Deployer {
         @SuppressWarnings("unchecked")
         ScopeContainer<URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
         URI groupId = componentDefinition.getUri();
-        scopeContainer.createGroup(groupId);
         DeploymentContext deploymentContext =
             new RootDeploymentContext(null, null, groupId, xmlFactory, scopeContainer, false);
         // load the model

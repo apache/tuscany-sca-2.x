@@ -158,7 +158,6 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
 
             ScopeContainer<URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
             URI groupId = domain.getUri();
-            scopeContainer.createGroup(groupId);
             // FIXME this needs to be done properly
             ClassLoader cl = getClass().getClassLoader();
             DeploymentContext deploymentContext =
@@ -216,7 +215,7 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
                                     serviceDefinition = targetType.getServices().get(serviceName);
                                 } else if (targetType.getServices().size() == 1) {
                                     // default service
-                                    serviceDefinition = targetType.getServices().values().iterator().next();
+                                    serviceDefinition = targetType.getServices().get(0);
                                 }
                                 assert serviceDefinition != null;
                                 generatorRegistry.generateWire(child,

@@ -46,7 +46,6 @@ public class ReferenceInjectionTestCase extends TestCase {
         ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         URI groupId = URI.create("composite");
-        scope.createGroup(groupId);
         scope.startContext(groupId, groupId);
         Map<String, AtomicComponent> components = MockFactory.createWiredComponents("source",
             SourceImpl.class,
