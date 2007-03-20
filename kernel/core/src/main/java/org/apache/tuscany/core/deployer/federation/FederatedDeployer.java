@@ -37,6 +37,7 @@ import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -44,6 +45,7 @@ import org.osoa.sca.annotations.Reference;
  *
  * @version $Revision$ $Date$
  */
+@EagerInit
 public class FederatedDeployer implements RequestListener {
 
     /**
