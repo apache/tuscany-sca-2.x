@@ -64,7 +64,12 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
             QName qname = getModelObjectQName();
             writer.writeStartElement(qname.getPrefix(), qname.getLocalPart(), qname.getNamespaceURI());
             writer.writeAttribute(COMPONENT_ID, modelObject.getComponentId().toASCIIString());
-            writer.writeAttribute(GROUP_ID, modelObject.getGroupId().toASCIIString());
+            
+            URI groupId = modelObject.getGroupId();
+            if(groupId != null) {
+                writer.writeAttribute(GROUP_ID, groupId.toASCIIString());
+            }
+            
             writer.writeAttribute(SCOPE, modelObject.getScope().toString());
             writer.writeAttribute(INIT_LEVEL, String.valueOf(modelObject.getInitLevel()));
             
@@ -88,7 +93,11 @@ public abstract class AbstractPhysicalComponentDefinitionMarshaller<PCD extends 
         try {
             PCD componentDefinition = getConcreteModelObject();
             componentDefinition.setComponentId(new URI(reader.getAttributeValue(null, COMPONENT_ID)));
-            componentDefinition.setGroupId(new URI(reader.getAttributeValue(null, GROUP_ID)));
+            
+            String groupId = reader.getAttributeValue(null, GROUP_ID);
+            if(groupId != null) {
+                componentDefinition.setGroupId(new URI(groupId));
+            }
             componentDefinition.setScope(new Scope(reader.getAttributeValue(null, SCOPE)));
             componentDefinition.setInitLevel(Integer.parseInt(reader.getAttributeValue(null, INIT_LEVEL)));
             while (true) {
