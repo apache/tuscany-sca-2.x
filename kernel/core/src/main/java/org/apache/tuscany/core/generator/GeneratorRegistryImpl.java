@@ -150,7 +150,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
             throw new GeneratorNotFoundException(type);
         }
         PhysicalWireSourceDefinition sourceDefinition =
-            sourceGenerator.generateWireSource(componentDefinition, referenceDefinition, context);
+            sourceGenerator.generateWireSource(componentDefinition, referenceDefinition, false, context);
         wireDefinition.setSource(sourceDefinition);
 
         context.getPhysicalChangeSet().addWireDefinition(wireDefinition);
@@ -180,8 +180,16 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         if (sourceGenerator == null) {
             throw new GeneratorNotFoundException(type);
         }
+        // determine if it is optimizable
+        boolean optimizable = true;
+        for (PhysicalOperationDefinition operation : wireDefinition.getOperations()) {
+            if (!operation.getInterceptors().isEmpty()){
+                optimizable = false;
+                break;
+            }
+        }
         PhysicalWireSourceDefinition sourceDefinition =
-            sourceGenerator.generateWireSource(source, referenceDefinition, context);
+            sourceGenerator.generateWireSource(source, referenceDefinition, optimizable, context);
         wireDefinition.setSource(sourceDefinition);
         context.getPhysicalChangeSet().addWireDefinition(wireDefinition);
     }

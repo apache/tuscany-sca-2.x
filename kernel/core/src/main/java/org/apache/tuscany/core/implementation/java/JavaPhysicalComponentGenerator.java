@@ -110,10 +110,12 @@ public class JavaPhysicalComponentGenerator implements ComponentGenerator<Compon
 
     public PhysicalWireSourceDefinition generateWireSource(ComponentDefinition<JavaImplementation> definition,
                                                            ReferenceDefinition serviceDefinition,
+                                                           boolean optimizable, 
                                                            GeneratorContext context)
         throws GenerationException {
         JavaPhysicalWireSourceDefinition wireDefinition = new JavaPhysicalWireSourceDefinition();
         wireDefinition.setUri(definition.getUri());
+        wireDefinition.setOptimizable(optimizable);
         return wireDefinition;
     }
 

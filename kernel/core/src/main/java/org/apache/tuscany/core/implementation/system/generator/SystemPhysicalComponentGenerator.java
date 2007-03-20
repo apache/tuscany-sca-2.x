@@ -111,7 +111,7 @@ public class SystemPhysicalComponentGenerator implements ComponentGenerator<Comp
 
     public PhysicalWireSourceDefinition generateWireSource(ComponentDefinition<SystemImplementation> definition,
                                                            ReferenceDefinition serviceDefinition,
-                                                           GeneratorContext context)
+                                                           boolean optimizable, GeneratorContext context)
         throws GenerationException {
         JavaPhysicalWireSourceDefinition wireDefinition = new JavaPhysicalWireSourceDefinition();
         wireDefinition.setUri(definition.getUri());
