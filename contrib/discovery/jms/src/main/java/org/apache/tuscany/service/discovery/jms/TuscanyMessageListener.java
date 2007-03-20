@@ -66,9 +66,9 @@ public class TuscanyMessageListener implements MessageListener {
             final TextMessage textMessage = (TextMessage)message;
             final String text = textMessage.getText();
             
-            System.err.println("Message received: " + text);
             final QName messageType = StaxUtil.getDocumentElementQName(text);
-
+            System.err.println("Message received: " + messageType);
+            
             RequestListener messageListener = discoveryService.getRequestListener(messageType);
             if (messageListener != null) {
                 XMLStreamReader requestReader = StaxUtil.createReader(text);
