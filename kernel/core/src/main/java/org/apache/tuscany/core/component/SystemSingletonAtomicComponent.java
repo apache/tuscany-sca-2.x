@@ -86,10 +86,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         return instance;
     }
 
-    public Object getAssociatedTargetInstance() throws TargetResolutionException {
-        return instance;
-    }
-
     public Object createInstance() throws ObjectCreationException {
         throw new UnsupportedOperationException();
     }

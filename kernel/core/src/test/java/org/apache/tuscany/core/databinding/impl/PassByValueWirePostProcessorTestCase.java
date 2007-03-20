@@ -173,10 +173,6 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
             return null;
         }
 
-        public Object getAssociatedTargetInstance() throws TargetResolutionException {
-            return null;
-        }
-
         public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
             return null;
         }
