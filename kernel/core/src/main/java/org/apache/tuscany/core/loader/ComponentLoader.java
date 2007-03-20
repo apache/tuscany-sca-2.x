@@ -21,6 +21,7 @@ package org.apache.tuscany.core.loader;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -112,6 +113,17 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         } else {
             autowire = Boolean.parseBoolean(autowireAttr);
         }
+        String runtimeAttr = reader.getAttributeValue(null, "runtimeId");
+        URI runtimeId;
+        if (runtimeAttr != null) {
+            try {
+                runtimeId = new URI(runtimeAttr);
+            } catch (URISyntaxException e) {
+                throw new InvalidValueException(runtimeAttr, "runtimeId", e);
+            }
+        } else {
+            runtimeId = null;
+        }
 
         URI componentId = URI.create(context.getComponentId() + "/").resolve(name);
         ClassLoader loader = context.getClassLoader();
@@ -124,6 +136,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         ComponentDefinition<Implementation<?>> componentDefinition =
             new ComponentDefinition<Implementation<?>>(componentId, impl);
         componentDefinition.setAutowire(autowire);
+        componentDefinition.setRuntimeId(runtimeId);
         if (initLevel != null) {
             if (initLevel.length() == 0) {
                 componentDefinition.setInitLevel(0);

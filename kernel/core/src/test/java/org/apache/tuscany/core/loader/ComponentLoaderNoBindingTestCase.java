@@ -88,6 +88,7 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeValue(null, "initLevel")).andReturn("0");
         EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
             .andReturn(null);
+        EasyMock.expect(reader.getAttributeValue(null, "runtimeId")).andReturn(null);
         EasyMock.expect(reader.nextTag()).andReturn(1);
         EasyMock.replay(reader);
         ctx = EasyMock.createMock(DeploymentContext.class);
