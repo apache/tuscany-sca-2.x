@@ -27,17 +27,6 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
-import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
-import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
-import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
-import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.CALLBACK;
-import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.REFERENCE;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
-import org.apache.tuscany.core.wire.WireObjectFactory2;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
@@ -51,12 +40,24 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
+import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.Wire;
+
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
+import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
+import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
+import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.CALLBACK;
+import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.REFERENCE;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
+import org.apache.tuscany.core.wire.WireObjectFactory2;
 
 /**
  * The physical component builder for Java implementation types. Responsible for creating the Component runtime artifact
@@ -66,7 +67,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * @param <T> the implementation class for the defined component
  */
 @EagerInit
-@Service(interfaces={PhysicalComponentBuilder.class, WireAttacher.class})
+@Service(interfaces = {PhysicalComponentBuilder.class, WireAttacher.class})
 public class JavaPhysicalComponentBuilder<T>
     extends POJOPhysicalComponentBuilder<JavaPhysicalComponentDefinition<T>, JavaComponent<T>>
     implements WireAttacher<JavaComponent, JavaPhysicalWireSourceDefinition, JavaPhysicalWireTargetDefinition> {
@@ -113,10 +114,11 @@ public class JavaPhysicalComponentBuilder<T>
         Class<?> type = source.getMemberType(referenceSource);
         if (sourceDefinition.isOptimizable()) {
             assert target instanceof AtomicComponent;
-            ObjectFactory<?> factory = ((AtomicComponent<?>)target).createObjectFactory();
+            ObjectFactory<?> factory = ((AtomicComponent<?>) target).createObjectFactory();
             source.setObjectFactory(referenceSource, factory);
         } else {
-            ObjectFactory<?> factory = new WireObjectFactory2(type, sourceDefinition.isConversational(), wire, proxyService);
+            ObjectFactory<?> factory =
+                new WireObjectFactory2(type, sourceDefinition.isConversational(), wire, proxyService);
             source.setObjectFactory(referenceSource, factory);
             if (!wire.getCallbackInvocationChains().isEmpty()) {
                 URI callbackUri = sourceDefinition.getCallbackUri();
@@ -129,14 +131,14 @@ public class JavaPhysicalComponentBuilder<T>
     }
 
     public void attachToTarget(Component source,
-                               PhysicalWireSourceDefinition sourceDefinition, JavaComponent component,
-                               JavaPhysicalWireTargetDefinition target, Wire wire
-    )
-        throws WireAttachException {
+                               PhysicalWireSourceDefinition sourceDefinition,
+                               JavaComponent component,
+                               JavaPhysicalWireTargetDefinition target,
+                               Wire wire) throws WireAttachException {
         if (sourceDefinition.isOptimizable()) {
             return;
         }
-        
+
         ScopeContainer scopeContainer = component.getScopeContainer();
         Class<?> implementationClass = component.getImplementationClass();
         ClassLoader loader = implementationClass.getClassLoader();

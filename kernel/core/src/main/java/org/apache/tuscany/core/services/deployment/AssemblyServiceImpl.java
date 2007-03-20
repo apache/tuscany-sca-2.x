@@ -216,7 +216,7 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
                                     serviceDefinition = targetType.getServices().get(serviceName);
                                 } else if (targetType.getServices().size() == 1) {
                                     // default service
-                                    serviceDefinition = targetType.getServices().get(0);
+                                    serviceDefinition = targetType.getServices().values().iterator().next();
                                 }
                                 assert serviceDefinition != null;
                                 generatorRegistry.generateWire(child,
