@@ -98,6 +98,10 @@ public class FederatedDeployer implements RequestListener {
             return null;
         } catch (XMLStreamException ex) {
             return null;
+        } catch (RuntimeException ex) {
+            // FIXME log this
+            ex.printStackTrace();
+            return null;
         }
 
         return null;
