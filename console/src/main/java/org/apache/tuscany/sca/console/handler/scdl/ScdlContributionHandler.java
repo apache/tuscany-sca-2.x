@@ -16,7 +16,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 @SuppressWarnings("serial")
-public class SdclContributionHandler extends TuscanyServlet {
+public class ScdlContributionHandler extends TuscanyServlet {
     
     // SCDL query parameter
     private static final String SCDL_PARAM = "scdl";
@@ -30,7 +30,7 @@ public class SdclContributionHandler extends TuscanyServlet {
      * @param servletHost Servlet host to use.
      * @param path Path mapping for the servlet.
      */
-    public SdclContributionHandler(@Reference(name = "servletHost") ServletHost servletHost, 
+    public ScdlContributionHandler(@Reference(name = "servletHost") ServletHost servletHost, 
                                    @Property(name = "path") String path,
                                    @Reference(name = "assemblyService") AssemblyService assemblyService) {
         super(servletHost, path);

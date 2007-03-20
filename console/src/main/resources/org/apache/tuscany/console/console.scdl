@@ -29,14 +29,14 @@
 
     <!-- Servlet that serves the SCDL contribution form -->
     <component name="console.scdlRequestForm">
-        <system:implementation.system class="org.apache.tuscany.sca.console.handler.scdl.SdclContributionForm"/>
+        <system:implementation.system class="org.apache.tuscany.sca.console.handler.scdl.ScdlContributionForm"/>
         <property name="path">/scdlForm</property>
         <reference name="servletHost" target="httpService"/>
     </component>
 
     <!-- Servlet that handles the scdl submission -->
     <component name="console.scdlHandler">
-        <system:implementation.system class="org.apache.tuscany.sca.console.handler.scdl.SdclContributionHandler"/>
+        <system:implementation.system class="org.apache.tuscany.sca.console.handler.scdl.ScdlContributionHandler"/>
         <property name="path">/scdlSubmit</property>
         <reference name="servletHost" target="httpService"/>
         <reference name="assemblyService" target="assemblyService"/>
