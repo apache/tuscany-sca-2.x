@@ -34,6 +34,7 @@ public interface ComponentGenerator<C extends ComponentDefinition<? extends Impl
 
     PhysicalWireSourceDefinition generateWireSource(C definition,
                                                     ReferenceDefinition serviceDefinition,
+                                                    boolean optimizable,
                                                     GeneratorContext context) throws GenerationException;
 
     PhysicalWireTargetDefinition generateWireTarget(C definition,
