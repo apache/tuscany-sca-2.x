@@ -20,6 +20,7 @@ package org.apache.tuscany.service.discovery.jms;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
@@ -87,7 +88,7 @@ public class JmsDiscoveryService extends AbstractDiscoveryService {
      * Starts the service and sets up the message listener.
      */
     @Override
-    protected void onStart() throws DiscoveryException {
+    protected synchronized void onStart() throws DiscoveryException {
 
         String runtimeId = getRuntimeInfo().getRuntimeId();
 
@@ -96,6 +97,21 @@ public class JmsDiscoveryService extends AbstractDiscoveryService {
             connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
 
             connection = connectionFactory.createConnection();
+            connection.setExceptionListener(new ExceptionListener() {
+                public void onException(JMSException jmsException) {
+                    // Try restarting: TODO this may need further refinement
+                    try {
+                        onStop();
+                    } catch (DiscoveryException ex) {
+                        ex.printStackTrace();
+                    }
+                    try {
+                        onStart();
+                    } catch (DiscoveryException ex) {
+                        ex.printStackTrace();
+                    }
+                }                
+            });
             receiverSession = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
 
             messageConsumer = receiverSession.createConsumer(topic);
@@ -113,21 +129,26 @@ public class JmsDiscoveryService extends AbstractDiscoveryService {
      * Closes the connection.
      */
     @Override
-    protected void onStop() throws DiscoveryException {
+    protected synchronized void onStop() throws DiscoveryException {
 
         try {
-
             receiverSession.close();
-            connection.close();
         } catch (JMSException ex) {
             throw new DiscoveryException(ex);
+        } finally {
+            try {
+                connection.close();                
+            } catch (JMSException ex) {
+                throw new DiscoveryException(ex);
+            }
         }
+        
     }
 
     /**
      * Sends the message.
      */
-    public int sendMessage(String runtimeId, XMLStreamReader reader) throws DiscoveryException {
+    public synchronized int sendMessage(String runtimeId, XMLStreamReader reader) throws DiscoveryException {
 
         try {
 
