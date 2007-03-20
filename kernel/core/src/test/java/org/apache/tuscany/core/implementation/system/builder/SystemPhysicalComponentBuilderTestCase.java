@@ -76,6 +76,7 @@ public class SystemPhysicalComponentBuilderTestCase<T> extends TestCase {
         EasyMock.replay(providerBuilders);
 
         builder = new SystemPhysicalComponentBuilder<T>(builderRegistry,
+                                                        null,
                                                         scopeRegistry,
                                                         providerBuilders,
                                                         classLoaderRegistry);

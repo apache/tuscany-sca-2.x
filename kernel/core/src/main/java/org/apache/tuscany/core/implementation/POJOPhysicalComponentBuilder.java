@@ -18,20 +18,18 @@
  */
 package org.apache.tuscany.core.implementation;
 
-import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 
+import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
+import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
+import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.physical.PhysicalComponentDefinition;
-import org.apache.tuscany.spi.model.physical.InstanceFactoryProviderDefinition;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
-import org.apache.tuscany.core.implementation.system.model.SystemPhysicalComponentDefinition;
-import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
-import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderException;
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
 
 /**
  * Base class for PhysicalComponentBuilders that build components based on POJOs.
@@ -42,23 +40,21 @@ public abstract class POJOPhysicalComponentBuilder<PCD extends PhysicalComponent
     implements PhysicalComponentBuilder<PCD, C> {
 
     protected final PhysicalComponentBuilderRegistry builderRegistry;
+    protected final WireAttacherRegistry wireAttacherRegistry;
     protected final ScopeRegistry scopeRegistry;
     protected final IFProviderBuilderRegistry providerBuilders;
     protected final ClassLoaderRegistry classLoaderRegistry;
 
     protected POJOPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
+        @Reference(name = "wireAttacherRegistry")WireAttacherRegistry wireAttacherRegistry,
         @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry,
         @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders,
         @Reference(name = "classloaderRegistry")ClassLoaderRegistry classLoaderRegistry) {
         this.builderRegistry = builderRegistry;
+        this.wireAttacherRegistry = wireAttacherRegistry;
         this.scopeRegistry = scopeRegistry;
         this.providerBuilders = providerBuilders;
         this.classLoaderRegistry = classLoaderRegistry;
-    }
-
-    @Init
-    void init() {
-        builderRegistry.register(SystemPhysicalComponentDefinition.class, this);
     }
 }
