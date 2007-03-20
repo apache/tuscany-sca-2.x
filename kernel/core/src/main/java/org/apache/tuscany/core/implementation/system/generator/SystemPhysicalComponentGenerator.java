@@ -115,6 +115,7 @@ public class SystemPhysicalComponentGenerator implements ComponentGenerator<Comp
         throws GenerationException {
         JavaPhysicalWireSourceDefinition wireDefinition = new JavaPhysicalWireSourceDefinition();
         wireDefinition.setUri(definition.getUri());
+        wireDefinition.setOptimizable(true);
         return wireDefinition;
     }
 
