@@ -231,8 +231,10 @@ public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerReg
                     throw new DeploymentException(e);
                 }
 
-                marshallAndSend(id, context);
 
+            }
+            for (Map.Entry<URI, GeneratorContext> entry : contexts.entrySet()) {
+                marshallAndSend(entry.getKey(), entry.getValue());
             }
         } catch (XMLStreamException e) {
             throw new DocumentParseException(e);
