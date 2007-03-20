@@ -21,6 +21,7 @@ package org.apache.tuscany.core.builder.physical;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
@@ -64,6 +65,9 @@ public class DefaultPhysicalComponentBuilderRegistry implements PhysicalComponen
     public Component build(PhysicalComponentDefinition componentDefinition) throws BuilderException {
 
         PhysicalComponentBuilder builder = registry.get(componentDefinition.getClass());
+        if(builder == null) {
+            throw new BuilderConfigException("Builder not found for " + componentDefinition.getClass());
+        }
         return builder.build(componentDefinition);
 
     }
