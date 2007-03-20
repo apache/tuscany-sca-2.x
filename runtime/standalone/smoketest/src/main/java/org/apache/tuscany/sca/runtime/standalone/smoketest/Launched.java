@@ -24,7 +24,6 @@ import org.osoa.sca.annotations.Scope;
 /**
  * @version $Rev$ $Date$
  */
-@Scope("COMPOSITE")
 public class Launched {
     private HelloService hello;
 
