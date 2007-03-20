@@ -32,6 +32,8 @@ import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
 import org.apache.tuscany.core.model.NonBlockingIntentDefinition;
 
 /**
+ * Generates an interceptor definition for non-blocking operations
+ *
  * @version $Rev$ $Date$
  */
 @EagerInit
