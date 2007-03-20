@@ -23,15 +23,13 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**
- * Model class representing the portable definition of an interceptor. This class 
- * is used to describe the interceptors around inbound and outbound wires on a 
- * physical component definition.
- * 
- * @version $Rev$ $Date$
+ * Model class representing the portable definition of an interceptor. This class is used to describe the interceptors
+ * around inbound and outbound wires on a physical component definition.
  *
+ * @version $Rev$ $Date$
  */
 public class PhysicalInterceptorDefinition extends ModelObject {
-    
+
     // The qualified name of the interceptor builder
     private QName builder;
 
@@ -41,6 +39,7 @@ public class PhysicalInterceptorDefinition extends ModelObject {
 
     /**
      * Gets the qualified name of the builder.
+     *
      * @return Qualified name of the builder.
      */
     public QName getBuilder() {
@@ -49,10 +48,12 @@ public class PhysicalInterceptorDefinition extends ModelObject {
 
     /**
      * Sets the qualified name of the builder.
+     *
      * @param builder Qualified name of the builder.
      */
     public void setBuilder(QName builder) {
         this.builder = builder;
     }
+
 
 }

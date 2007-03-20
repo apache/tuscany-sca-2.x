@@ -90,6 +90,27 @@ public class DefaultAutowireResolver implements AutowireResolver {
         hostAutowire.put(contract, uri);
     }
 
+    public void resolve(CompositeComponentType<?, ?, ?> compositeType) throws ResolutionException {
+        for (ComponentDefinition<? extends Implementation<?>> child : compositeType.getComponents().values()) {
+            Implementation<?> implementation = child.getImplementation();
+            ComponentType<?, ?, ?> childType = implementation.getComponentType();
+            if (childType instanceof CompositeComponentType) {
+                // recurse decendents for composites
+                resolve(null, child);
+            }
+            Map<String, ReferenceTarget> targets = child.getReferenceTargets();
+            for (ReferenceDefinition reference : childType.getReferences().values()) {
+                ReferenceTarget target = targets.get(reference.getUri().getFragment());
+                if (target == null) {
+                    continue;
+                }
+                if (target.isAutowire()) {
+                    ServiceContract requiredContract = reference.getServiceContract();
+                    resolve(compositeType, requiredContract, target, reference.isRequired());
+                }
+            }
+        }
+    }
     /**
      * Performs the actual resolution against a composite TODO this should be extensible allowing for path
      * optimizations
