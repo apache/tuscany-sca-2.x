@@ -93,6 +93,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     private static final URI HOST_CLASSLOADER_ID = URI.create("sca://./hostClassLoader");
 
+    private static final URI BOOT_CLASSLOADER_ID = URI.create("sca://./bootClassLoader");
+
     private final XMLInputFactory xmlFactory;
     private URL systemScdl;
     private String applicationName;
@@ -139,6 +141,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
         classLoaderRegistry = new ClassLoaderRegistryImpl();
+        classLoaderRegistry.register(BOOT_CLASSLOADER_ID, getClass().getClassLoader());
     }
 
     public URL getSystemScdl() {

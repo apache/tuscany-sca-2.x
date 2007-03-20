@@ -59,6 +59,6 @@ public class Scope {
     }
 
     public String toString() {
-        return "Scope(\"" + scope + "\")";
+        return scope;
     }
 }

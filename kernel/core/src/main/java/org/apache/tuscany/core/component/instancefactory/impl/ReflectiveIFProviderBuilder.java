@@ -114,9 +114,12 @@ public class ReflectiveIFProviderBuilder<T> extends
             if (memberSite.getElementType() == ElementType.FIELD) {
                 member = implClass.getDeclaredField(name);
             } else if (elementType == ElementType.METHOD) {
-                for (PropertyDescriptor pd : Introspector.getBeanInfo(implClass).getPropertyDescriptors()) {
-                    if (name.equals(pd.getName())) {
-                        member = pd.getWriteMethod();
+                // FIXME look up directly based on signature sent in RIFPD
+                Method[] methods = implClass.getMethods();
+                for (Method method : methods) {
+                    if (name.equals(method.getName())) {
+                        member = method;
+                        break;
                     }
                 }
             }

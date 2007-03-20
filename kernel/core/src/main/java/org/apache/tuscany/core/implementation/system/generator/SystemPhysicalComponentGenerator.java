@@ -70,7 +70,7 @@ public class SystemPhysicalComponentGenerator implements ComponentGenerator<Comp
         SystemPhysicalComponentDefinition pDefinition = new SystemPhysicalComponentDefinition();
         pDefinition.setComponentId(definition.getUri());
         // set the classloader id temporarily until multiparent classloading is in palce
-        pDefinition.setClassLoaderId(URI.create("sca://./hostClassLoader"));
+        pDefinition.setClassLoaderId(URI.create("sca://./bootClassLoader"));
         pDefinition.setScope(type.getImplementationScope());
         // TODO get classloader id
         ReflectiveIFProviderDefinition provider = new ReflectiveIFProviderDefinition();
