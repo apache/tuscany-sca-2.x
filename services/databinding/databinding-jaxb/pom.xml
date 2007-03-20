@@ -53,8 +53,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-databinding</artifactId>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+            <artifactId>databinding-framework</artifactId>
             <version>2.0-alpha2-incubating-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

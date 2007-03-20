@@ -19,13 +19,13 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>kernel</artifactId>
+        <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+        <artifactId>parent</artifactId>
         <version>2.0-alpha2-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.kernel</groupId>
-    <artifactId>tuscany-databinding</artifactId>
+    <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+    <artifactId>databinding-framework</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany DataBinding Framework</name>
     <description>Apache Tuscany DataBinding Framework</description>
