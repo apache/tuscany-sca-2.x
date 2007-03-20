@@ -18,9 +18,13 @@
  */
 package org.apache.tuscany.core.deployer.federation;
 
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller;
@@ -80,6 +84,10 @@ public class FederatedDeployer implements RequestListener {
 
         try {
 
+            // Get to the document element
+            while(content.next() != START_ELEMENT) {            
+            }
+            
             final PhysicalChangeSet changeSet = (PhysicalChangeSet) marshallerRegistry.unmarshall(content);
             applyChangeSet(changeSet);
         } catch (MarshalException ex) {
@@ -87,6 +95,8 @@ public class FederatedDeployer implements RequestListener {
         } catch (BuilderException ex) {
             return null;
         } catch (RegistrationException ex) {
+            return null;
+        } catch (XMLStreamException ex) {
             return null;
         }
 
