@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.osoa.sca.annotations.EagerInit;
+
 import org.apache.tuscany.core.component.ReflectiveInstanceFactoryProvider;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderException;
 import org.apache.tuscany.core.model.physical.instancefactory.InjectionSiteMapping;
@@ -42,6 +44,7 @@ import org.apache.tuscany.spi.ObjectFactory;
  *
  * @version $Date$ $Revision$
  */
+@EagerInit
 public class ReflectiveIFProviderBuilder<T> extends
     AbstractIFProviderBuilder<ReflectiveInstanceFactoryProvider<T>, ReflectiveIFProviderDefinition> {
     
