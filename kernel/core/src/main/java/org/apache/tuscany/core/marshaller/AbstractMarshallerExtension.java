@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
 import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -32,6 +33,7 @@ import org.osoa.sca.annotations.Reference;
  *          2007) $
  * @param <MD>
  */
+@EagerInit
 public abstract class AbstractMarshallerExtension<MD extends ModelObject> implements ModelMarshaller<MD> {
 
     // Private Model marshaller registry
