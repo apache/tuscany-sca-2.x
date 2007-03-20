@@ -22,12 +22,20 @@ import org.apache.tuscany.spi.model.IntentDefinition;
 import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
 
 /**
- * Implementations are responsible for generating physical interceptor definitions for a wire.
+ * Implementations are responsible for generating physical interceptor definitions for a wire based on an intent.
  *
  * @version $Rev$ $Date$
  */
 public interface InterceptorGenerator<T extends IntentDefinition> {
 
+    /**
+     * Generates the physical interceptor definition for a wire
+     *
+     * @param definition the intent definition
+     * @param context    the current generator context
+     * @return the interceptor definition
+     * @throws GenerationException if an error occurs during the generation process
+     */
     PhysicalInterceptorDefinition generate(T definition, GeneratorContext context) throws GenerationException;
 
 }
