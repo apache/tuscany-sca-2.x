@@ -12,7 +12,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 @SuppressWarnings("serial")
-public class SdclContributionForm extends TuscanyServlet {
+public class ScdlContributionForm extends TuscanyServlet {
 
     /**
      * Injects the servlet host and path mapping.
@@ -20,7 +20,7 @@ public class SdclContributionForm extends TuscanyServlet {
      * @param servletHost Servlet host to use.
      * @param path Path mapping for the servlet.
      */
-    public SdclContributionForm(@Reference(name = "servletHost") ServletHost servletHost, 
+    public ScdlContributionForm(@Reference(name = "servletHost") ServletHost servletHost, 
                                 @Property(name = "path") String path) {
         super(servletHost, path);
     }
@@ -36,7 +36,7 @@ public class SdclContributionForm extends TuscanyServlet {
     protected void process(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         PrintWriter writer = res.getWriter();
-        writer.println("<form name='' action='scdlSubmit'>");
+        writer.println("<form name='' method='post' action='scdlSubmit'>");
         writer.println("<textarea name='scdl' cols='60' rows='40'></textarea>");
         writer.println("<br/>");
         writer.println("<input type='submit' value='Contribute SCDL'/>");
