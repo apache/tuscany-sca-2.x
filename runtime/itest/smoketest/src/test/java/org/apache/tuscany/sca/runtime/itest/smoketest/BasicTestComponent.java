@@ -25,7 +25,6 @@ import org.osoa.sca.annotations.Scope;
 /**
  * @version $Rev$ $Date$
  */
-@Scope("COMPOSITE")
 public class BasicTestComponent extends TestCase {
     @Reference
     public HelloService hello;

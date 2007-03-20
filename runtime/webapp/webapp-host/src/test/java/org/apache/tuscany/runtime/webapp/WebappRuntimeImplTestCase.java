@@ -26,14 +26,10 @@ import static org.easymock.EasyMock.verify;
 import java.net.URL;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.host.servlet.ServletRequestInjector;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $Rev$ $Date$

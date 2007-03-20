@@ -82,11 +82,9 @@
     </component>
 
     <!-- Default scopes -->
-<!--
     <component name="scope.stateless">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeContainer"/>
     </component>
--->
 
 <!--
     <component name="scope.httpsession">
