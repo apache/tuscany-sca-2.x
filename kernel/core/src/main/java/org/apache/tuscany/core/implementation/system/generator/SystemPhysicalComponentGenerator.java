@@ -22,6 +22,7 @@ import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -68,6 +69,8 @@ public class SystemPhysicalComponentGenerator implements ComponentGenerator<Comp
         PojoComponentType<JavaMappedService, JavaMappedReference, Property<?>> type = implementation.getComponentType();
         SystemPhysicalComponentDefinition pDefinition = new SystemPhysicalComponentDefinition();
         pDefinition.setComponentId(definition.getUri());
+        // set the classloader id temporarily until multiparent classloading is in palce
+        pDefinition.setClassLoaderId(URI.create("sca://./hostClassLoader"));
         pDefinition.setScope(type.getImplementationScope());
         // TODO get classloader id
         ReflectiveIFProviderDefinition provider = new ReflectiveIFProviderDefinition();
