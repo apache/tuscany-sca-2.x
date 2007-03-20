@@ -127,10 +127,6 @@ public class WebappComponent extends AtomicComponentExtension implements Compone
         throw new UnsupportedOperationException();
     }
 
-    public Object getAssociatedTargetInstance() throws TargetResolutionException {
-        throw new UnsupportedOperationException();
-    }
-
     public ComponentContext getComponentContext() {
         return context;
     }

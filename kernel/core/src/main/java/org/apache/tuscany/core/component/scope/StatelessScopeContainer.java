@@ -57,7 +57,6 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
 
     public <T> void returnWrapper(AtomicComponent<T> component, InstanceWrapper<T> wrapper, KEY contextId)
         throws TargetDestructionException {
-        super.returnWrapper(component, wrapper);
         wrapper.stop();
     }
 }

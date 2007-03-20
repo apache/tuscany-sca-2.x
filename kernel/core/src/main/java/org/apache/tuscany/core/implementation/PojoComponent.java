@@ -176,11 +176,6 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
     }
 
     @Deprecated
-    public Object getAssociatedTargetInstance() throws TargetResolutionException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Deprecated
     public Scope getScope() {
         throw new UnsupportedOperationException();
     }

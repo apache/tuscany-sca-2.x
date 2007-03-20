@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.model.Scope;
  * @param <KEY> the type of IDs that this container uses to identify its contexts.
  * For example, for COMPOSITE scope this could be the URI of the composite component,
  * or for HTTP Session scope it might be the HTTP session ID.
- * @param <GROUP> the type of IDs that identify groups of components
  */
 public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
 
@@ -109,40 +108,6 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      */
     <T> void returnWrapper(AtomicComponent<T> component, InstanceWrapper<T> wrapper, KEY contextId)
         throws TargetDestructionException;
-
-    /**
-     * Returns an instance wrapper associated with the current scope context, creating one if necessary
-     *
-     * @param <T> the type of the target instance
-     * @param component the component
-     * @return the wrapper for the target instance
-     * @throws TargetResolutionException if there was a problem instantiating the target instance
-     */
-    @Deprecated
-    <T> InstanceWrapper<T> getWrapper(AtomicComponent component) throws TargetResolutionException;
-
-    /**
-     * Returns an implementation instance associated with the current scope context.
-     * If no instance is found, a {@link TargetNotFoundException} is thrown.
-     *
-     * @param <T> the type of the target instance
-     * @param component the component
-     * @return the wrapper for the target instance
-     * @throws TargetResolutionException if there was a problem instantiating the target instance
-     */
-    @Deprecated
-    <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component) throws TargetResolutionException;
-
-    /**
-     * Return a wrapper after use (for example, after invoking the instance).
-     *
-     * @param <T> the type of the target instance
-     * @param component the component
-     * @param wrapper the wrapper for the target instance being returned
-     * @throws TargetDestructionException if there was a problem returning the target instance
-     */
-    @Deprecated
-    <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper) throws TargetDestructionException;
 
     /**
      * Removes a component implementation instance associated with the current context from persistent storage

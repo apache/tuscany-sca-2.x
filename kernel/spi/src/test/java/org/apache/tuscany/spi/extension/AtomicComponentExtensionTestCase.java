@@ -103,10 +103,6 @@ public class AtomicComponentExtensionTestCase extends TestCase {
             throw new AssertionFailedError();
         }
 
-        public Object getAssociatedTargetInstance() throws TargetResolutionException {
-            throw new AssertionFailedError();
-        }
-
         public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
             throw new AssertionFailedError();
         }

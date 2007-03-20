@@ -101,12 +101,4 @@ public interface AtomicComponent<T> extends Component {
     @Deprecated
     Object getTargetInstance() throws TargetResolutionException;
 
-    /**
-     * Returns the target instance associated with the component or throws a TargetResolutionException if an instance is
-     * not associated with the current invocation context;
-     *
-     * @throws TargetResolutionException
-     */
-    @Deprecated
-    public Object getAssociatedTargetInstance() throws TargetResolutionException;
 }

@@ -170,10 +170,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
         }
     }
 
-    protected URI getContextGroup(KEY contextId) {
-        return contextGroups.get(contextId);
-    }
-
     public void stopContext(KEY contextId) {
         assert contextGroups.containsKey(contextId);
         shutdownComponents(destroyQueues.get(contextId));
@@ -192,18 +188,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
     }
 
     public <T> void returnWrapper(AtomicComponent<T> component, InstanceWrapper<T> wrapper, KEY contextId)
-        throws TargetDestructionException {
-    }
-
-    public <T> InstanceWrapper<T> getWrapper(AtomicComponent component) throws TargetResolutionException {
-        throw new UnsupportedOperationException();
-    }
-
-    public <T> InstanceWrapper<T> getAssociatedWrapper(AtomicComponent component) throws TargetResolutionException {
-        throw new UnsupportedOperationException();
-    }
-
-    public <T> void returnWrapper(AtomicComponent component, InstanceWrapper<T> wrapper)
         throws TargetDestructionException {
     }
 
