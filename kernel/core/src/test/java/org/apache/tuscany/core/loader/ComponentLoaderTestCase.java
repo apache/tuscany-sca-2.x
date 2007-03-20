@@ -74,6 +74,7 @@ public class ComponentLoaderTestCase extends TestCase {
             .andReturn(null);
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
             .andReturn(null);
+        EasyMock.expect(mockReader.getAttributeValue(null, "runtimeId")).andReturn(null);
         EasyMock.expect(mockReader.getAttributeValue(EasyMock.isA(String.class), EasyMock.isA(String.class)))
             .andReturn(null);
         EasyMock.expect(mockReader.nextTag()).andReturn(0);
@@ -109,6 +110,7 @@ public class ComponentLoaderTestCase extends TestCase {
             .andReturn(null);
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
             .andReturn("true");
+        EasyMock.expect(mockReader.getAttributeValue(null, "runtimeId")).andReturn(null);
         EasyMock.expect(mockReader.nextTag()).andReturn(0);
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(mockReader);
@@ -144,6 +146,7 @@ public class ComponentLoaderTestCase extends TestCase {
             .andReturn("20");
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
             .andReturn(null);
+        EasyMock.expect(mockReader.getAttributeValue(null, "runtimeId")).andReturn(null);
         EasyMock.expect(mockReader.nextTag()).andReturn(0);
         EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(mockReader);
@@ -199,6 +202,7 @@ public class ComponentLoaderTestCase extends TestCase {
             .andReturn(null);
         EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("autowire")))
             .andReturn(null);
+        EasyMock.expect(mockReader.getAttributeValue(null, "runtimeId")).andReturn(null);
         EasyMock.expect(mockReader.getAttributeValue(EasyMock.isA(String.class), EasyMock.isA(String.class)))
             .andReturn(null);
         EasyMock.expect(mockReader.nextTag()).andReturn(0);
