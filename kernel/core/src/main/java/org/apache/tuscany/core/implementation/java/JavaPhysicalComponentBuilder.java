@@ -24,15 +24,28 @@ import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
+import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
+import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
+import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
+import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.CALLBACK;
+import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.REFERENCE;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
+import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
+import org.apache.tuscany.core.wire.WireObjectFactory2;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.builder.physical.WireAttachException;
 import org.apache.tuscany.spi.builder.physical.WireAttacher;
+import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -46,18 +59,6 @@ import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.Wire;
-
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
-import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
-import org.apache.tuscany.core.implementation.POJOPhysicalComponentBuilder;
-import org.apache.tuscany.core.injection.CallbackWireObjectFactory2;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
-import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.CALLBACK;
-import static org.apache.tuscany.core.model.physical.instancefactory.InjectionSource.ValueSourceType.REFERENCE;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalComponentDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireSourceDefinition;
-import org.apache.tuscany.core.model.physical.java.JavaPhysicalWireTargetDefinition;
-import org.apache.tuscany.core.wire.WireObjectFactory2;
 
 /**
  * The physical component builder for Java implementation types. Responsible for creating the Component runtime artifact
@@ -76,15 +77,23 @@ public class JavaPhysicalComponentBuilder<T>
 
     public JavaPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
+        @Reference(name = "wireAttacherRegistry")WireAttacherRegistry wireAttacherRegistry,
         @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry,
         @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders,
         @Reference(name = "classloaderRegistry")ClassLoaderRegistry classLoaderRegistry) {
-        super(builderRegistry, scopeRegistry, providerBuilders, classLoaderRegistry);
+        super(builderRegistry, wireAttacherRegistry, scopeRegistry, providerBuilders, classLoaderRegistry);
     }
 
     @Reference
     public void setProxyService(ProxyService proxyService) {
         this.proxyService = proxyService;
+    }
+
+    @Init
+    public void init() {
+        builderRegistry.register(JavaPhysicalComponentDefinition.class, this);
+        wireAttacherRegistry.register(JavaPhysicalWireSourceDefinition.class, this);
+        wireAttacherRegistry.register(JavaPhysicalWireTargetDefinition.class, this);
     }
 
     public JavaComponent<T> build(JavaPhysicalComponentDefinition<T> definition) throws BuilderException {

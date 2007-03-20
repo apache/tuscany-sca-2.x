@@ -158,10 +158,13 @@ public class PhysicalBuilderTestCase extends TestCase {
 
         DefaultPhysicalComponentBuilderRegistry builderRegistry = new DefaultPhysicalComponentBuilderRegistry();
         WireAttacherRegistry wireAttacherRegistry = new WireAttacherRegistryImpl();
-        builder = new JavaPhysicalComponentBuilder(null, scopeRegistry, providerBuilders, classLoaderRegistry);
-        builderRegistry.register(JavaPhysicalComponentDefinition.class, builder);
-        wireAttacherRegistry.register(JavaPhysicalWireSourceDefinition.class, builder);
-        wireAttacherRegistry.register(JavaPhysicalWireTargetDefinition.class, builder);
+
+        builder = new JavaPhysicalComponentBuilder(builderRegistry, 
+                                                   wireAttacherRegistry,
+                                                   scopeRegistry,
+                                                   providerBuilders,
+                                                   classLoaderRegistry);
+        builder.init();
 
         componentManager = new ComponentManagerImpl();
         connector = new ConnectorImpl(null, wireAttacherRegistry, null, componentManager, null, null);

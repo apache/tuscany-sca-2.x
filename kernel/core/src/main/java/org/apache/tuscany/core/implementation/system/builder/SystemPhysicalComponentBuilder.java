@@ -23,6 +23,7 @@ import java.net.URI;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
+import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.core.component.InstanceFactoryProvider;
 import org.apache.tuscany.core.component.instancefactory.IFProviderBuilderRegistry;
@@ -39,6 +40,7 @@ import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilder;
 import org.apache.tuscany.spi.builder.physical.PhysicalComponentBuilderRegistry;
 import org.apache.tuscany.spi.builder.physical.WireAttacher;
+import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -61,10 +63,18 @@ public class SystemPhysicalComponentBuilder<T>
 
     public SystemPhysicalComponentBuilder(
         @Reference(name = "builderRegistry")PhysicalComponentBuilderRegistry builderRegistry,
+        @Reference(name = "wireAttacherRegistry")WireAttacherRegistry wireAttacherRegistry,
         @Reference(name = "scopeRegistry")ScopeRegistry scopeRegistry,
         @Reference(name = "providerBuilders")IFProviderBuilderRegistry providerBuilders,
         @Reference(name = "classloaderRegistry")ClassLoaderRegistry classLoaderRegistry) {
-        super(builderRegistry, scopeRegistry, providerBuilders, classLoaderRegistry);
+        super(builderRegistry, wireAttacherRegistry, scopeRegistry, providerBuilders, classLoaderRegistry);
+    }
+
+    @Init
+    public void init() {
+        builderRegistry.register(SystemPhysicalComponentDefinition.class, this);
+        wireAttacherRegistry.register(SystemPhysicalWireSourceDefinition.class, this);
+        wireAttacherRegistry.register(SystemPhysicalWireTargetDefinition.class, this);
     }
 
     public SystemComponent<T> build(SystemPhysicalComponentDefinition<T> definition) throws BuilderException {
