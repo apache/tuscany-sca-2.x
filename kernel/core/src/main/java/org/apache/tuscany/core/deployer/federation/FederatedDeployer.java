@@ -91,12 +91,20 @@ public class FederatedDeployer implements RequestListener {
             final PhysicalChangeSet changeSet = (PhysicalChangeSet) marshallerRegistry.unmarshall(content);
             applyChangeSet(changeSet);
         } catch (MarshalException ex) {
+            // FIXME log this
+            ex.printStackTrace();
             return null;
         } catch (BuilderException ex) {
+            // FIXME log this
+            ex.printStackTrace();
             return null;
         } catch (RegistrationException ex) {
+            // FIXME log this
+            ex.printStackTrace();
             return null;
         } catch (XMLStreamException ex) {
+            // FIXME log this
+            ex.printStackTrace();
             return null;
         } catch (RuntimeException ex) {
             // FIXME log this
