@@ -21,10 +21,10 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
     name="org.apache.tuscany.databinding.axiom.include" autowire="true">
 
-    <dependency xmlns="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha">
-        <group>org.apache.tuscany.sca.extensions.axis2</group>
+    <dependency xmlns="http://tuscany.apache.org/xmlns/sca/2.0-alpha">
+        <group>org.apache.tuscany.sca.axis2</group>
         <name>databinding-axiom</name>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <version>2.0-alpha2-incubating-SNAPSHOT</version>
     </dependency>
 
     <component name="databinding.axiom">

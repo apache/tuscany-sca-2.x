@@ -23,7 +23,5 @@
     $Rev: 440894 $ $Date: 2006-09-06 15:52:01 -0700 (Wed, 06 Sep 2006) $
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="org.apache.tuscany.idl.wsdl" autowire="true">
-
     <include name="org.apache.tuscany.idl.wsdl.include" scdlLocation="idl.wsdl.scdl" />
-
 </composite>
