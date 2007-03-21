@@ -17,40 +17,6 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
-    name="org.apache.tuscany.databinding.axiom" autowire="true">
-
-    <dependency xmlns="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha">
-        <group>org.apache.tuscany.sca.extensions.axis2</group>
-        <name>databinding-axiom</name>
-        <version>1.0-incubator-SNAPSHOT</version>
-    </dependency>
-
-    <component name="databinding.axiom">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.AxiomDataBinding" />
-    </component>
-
-    <component name="transformer.XMLStreamReader2OMElement">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.XMLStreamReader2OMElement" />
-    </component>
-
-    <component name="transformer.OMElement2XMLStreamReader">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2XMLStreamReader" />
-    </component>
-
-    <component name="transformer.String2OMElement">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.String2OMElement" />
-    </component>
-
-    <component name="transformer.OMElement2String">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2String" />
-    </component>
-
-    <component name="transformer.Object2OMElement">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.Object2OMElement" />
-    </component>
-
-    <component name="transformer.OMElement2Object">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2Object" />
-    </component>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="org.apache.tuscany.databinding.axiom" autowire="true">
+    <include name="org.apache.tuscany.databinding.axiom.include" scdlLocation="databinding.axiom.scdl" />
 </composite>
