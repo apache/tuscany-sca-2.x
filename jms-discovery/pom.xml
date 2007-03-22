@@ -18,15 +18,15 @@
  * under the License.    
 -->
 <project>
-
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>sca</artifactId>
         <version>1.0-incubating</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.runtime.services.discovery</groupId>
-    <artifactId>discovery-jms</artifactId>
+    <groupId>org.apache.tuscany.sca.discovery</groupId>
+    <artifactId>tuscany-jms-discovery</artifactId>
+    <version>0.1-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Apache Tuscany JMS Discovery</name>
     <description>Apache Tuscany JMS Discovery</description>
