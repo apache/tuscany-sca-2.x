@@ -60,7 +60,7 @@
         <!-- module>idl</module>
         <module>databinding</module>
         <module>persistence</module>
-        <module>transaction</module-->
-        <module>transports/http.jetty</module>
+        <module>transaction</module>
+        <module>transports/http.jetty</module-->
     </modules>
 </project>
