@@ -57,7 +57,6 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
         String implClass = reader.getAttributeValue(null, "class");
         Class<?> implementationClass = LoaderUtil.loadClass(implClass, deploymentContext.getClassLoader());
         implementation.setImplementationClass(implementationClass);
-        registry.loadComponentType(implementation, deploymentContext);
         while (true) {
             int code = reader.next();
             if (code == XMLStreamConstants.START_ELEMENT) {
