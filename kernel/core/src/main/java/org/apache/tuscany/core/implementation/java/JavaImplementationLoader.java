@@ -56,7 +56,6 @@ public class JavaImplementationLoader extends LoaderExtension {
         JavaImplementation implementation = new JavaImplementation();
         implementation.setClassName(implClass);
         implementation.setImplementationClass(implementationClass);
-        registry.loadComponentType(implementation, deploymentContext);
         LoaderUtil.skipToEndElement(reader);
         return implementation;
     }
