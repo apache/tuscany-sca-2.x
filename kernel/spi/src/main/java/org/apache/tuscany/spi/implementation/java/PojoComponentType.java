@@ -20,7 +20,9 @@ package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.model.ComponentType;
@@ -41,6 +43,9 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     private Method destroyMethod;
     private final Map<String, Resource> resources = new HashMap<String, Resource>();
     private Member conversationIDMember;
+    
+    private boolean allowsPassByReference;
+    private List<Method> allowsPassByReferenceMethods = new ArrayList<Method>();
 
     /**
      * Deprecated no-arg constructor, replaced with one that takes the POJO class.
@@ -144,5 +149,30 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     public void setConversationIDMember(Member conversationIDMember) {
         this.conversationIDMember = conversationIDMember;
+    }
+
+    /**
+     * @return the allowsPassByReference
+     */
+    public boolean isAllowsPassByReference() {
+        return allowsPassByReference;
+    }
+
+    /**
+     * @param allowsPassByReference the allowsPassByReference to set
+     */
+    public void setAllowsPassByReference(boolean allowsPassByReference) {
+        this.allowsPassByReference = allowsPassByReference;
+    }
+
+    /**
+     * @return the allowsPassByReferenceMethods
+     */
+    public List<Method> getAllowsPassByReferenceMethods() {
+        return allowsPassByReferenceMethods;
+    }
+    
+    public boolean isAllowsPassByReference(Method method) {
+        return allowsPassByReference || allowsPassByReferenceMethods.contains(method);
     }
 }
