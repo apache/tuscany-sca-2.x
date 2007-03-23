@@ -35,8 +35,16 @@
             <artifactId>sca-api-r${scaSpecVersion}</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>        
     </dependencies>
 </project>
