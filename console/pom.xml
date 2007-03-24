@@ -24,6 +24,7 @@
         <version>1.0-incubating</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>tuscany-sca-console</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
     <!-- TODO Change this later to WAR, one we have war deployment on servlet host -->
