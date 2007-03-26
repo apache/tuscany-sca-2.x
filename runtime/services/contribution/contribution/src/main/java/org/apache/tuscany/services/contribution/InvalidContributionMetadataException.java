@@ -18,14 +18,20 @@
  */
 package org.apache.tuscany.services.contribution;
 
-import org.apache.tuscany.host.deployment.DeploymentException;
+import org.apache.tuscany.services.contribution.spi.ContributionException;
+
 
 /**
  * Exception that indicates that the supplied XML Document invalid.
  *
  * @version $Rev: 511466 $ $Date: 2007-02-25 00:45:22 -0800 (Sun, 25 Feb 2007) $
  */
-public class InvalidContributionMetadataException extends DeploymentException {
+public class InvalidContributionMetadataException extends ContributionException {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3184477070625689942L;
 
     protected InvalidContributionMetadataException() {
     }

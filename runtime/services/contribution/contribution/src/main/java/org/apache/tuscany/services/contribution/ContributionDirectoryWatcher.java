@@ -22,13 +22,12 @@ package org.apache.tuscany.services.contribution;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.tuscany.services.contribution.spi.ContributionException;
+import org.apache.tuscany.services.contribution.spi.ContributionService;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
-
-import org.apache.tuscany.host.deployment.ContributionService;
-import org.apache.tuscany.host.deployment.DeploymentException;
 
 @EagerInit
 public class ContributionDirectoryWatcher {
@@ -58,7 +57,7 @@ public class ContributionDirectoryWatcher {
                 } else {
                     this.contributionService.contribute(file.toURL(), true);
                 }
-            } catch (DeploymentException de) {
+            } catch (ContributionException de) {
                 // FIXME handle this
                 de.printStackTrace();
             } catch (IOException ioe) {

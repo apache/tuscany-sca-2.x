@@ -27,15 +27,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.osoa.sca.annotations.Reference;
-
-import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
-import org.apache.tuscany.spi.deployer.ContributionRepository;
-import org.apache.tuscany.spi.model.Contribution;
-
+import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.services.contribution.spi.ContributionException;
+import org.apache.tuscany.services.contribution.spi.ContributionProcessorRegistry;
+import org.apache.tuscany.services.contribution.spi.ContributionRepository;
+import org.apache.tuscany.services.contribution.spi.ContributionService;
 import org.apache.tuscany.services.contribution.util.IOHelper;
-import org.apache.tuscany.host.deployment.ContributionService;
-import org.apache.tuscany.host.deployment.DeploymentException;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * @version $Rev$ $Date$
@@ -61,7 +59,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.processorRegistry = processorRegistry;
     }
 
-    public URI contribute(URL contribution, boolean storeInRepository) throws DeploymentException, IOException {
+    public URI contribute(URL contribution, boolean storeInRepository) throws ContributionException, IOException {
         if (contribution == null) {
             throw new IllegalArgumentException("contribution is null");
         }
@@ -82,7 +80,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public URI contribute(URI source, InputStream contributionStream, boolean storeInRepository)
-        throws DeploymentException, IOException {
+        throws ContributionException, IOException {
         if (source == null) {
             throw new IllegalArgumentException("source URI for contribution is null");
         }
@@ -118,7 +116,7 @@ public class ContributionServiceImpl implements ContributionService {
         return this.contributionRegistry.get(id);
     }
 
-    public void remove(URI contribution) throws DeploymentException {
+    public void remove(URI contribution) throws ContributionException {
         //remove from repository
         this.contributionRegistry.remove(contribution);
         //remove from registry
