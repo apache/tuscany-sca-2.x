@@ -33,5 +33,11 @@ public interface ContentType {
     public static final String COMPOSITE = "application/vnd.tuscany.composite";
     public static final String WSDL = "application/vnd.tuscany.wsdl";
     public static final String JAVA = "application/java-vm";
+    
+    /**
+     * Unkown contentType
+     */
+    
+    public static final String UNKNOWN = "content/unknown";
  
 }

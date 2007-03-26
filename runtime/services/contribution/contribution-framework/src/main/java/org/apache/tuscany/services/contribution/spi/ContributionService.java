@@ -31,39 +31,61 @@ import java.net.URL;
  */
 public interface ContributionService {
     /**
-     * Contribute an artifact to the SCA Domain. The type of the contribution is determined by the Content-Type of the
-     * resource or, if that is undefined, by some implementation-specific means (such as mapping an extension in the
-     * URL's path).
-     *
-     * @param contribution the location of the resource containing the artifact
-     * @param storeInRepository  flag that identifies if you want to copy the contribution to the repository 
-     * @return a URI that uniquely identifies this contribution within the SCA Domain
+     * Contribute an artifact to the SCA Domain. The type of the contribution is
+     * determined by the Content-Type of the resource or, if that is undefined,
+     * by some implementation-specific means (such as mapping an extension in
+     * the URL's path).
+     * 
+     * @param contributionURI The URI that is used as the contribution unique ID. 
+     * @param sourceURL the location of the resource containing the artifact
+     * @param storeInRepository flag that identifies if you want to copy the
+     *            contribution to the repository
      * @throws DeploymentException if there was a problem with the contribution
-     * @throws IOException         if there was a problem reading the resource
+     * @throws IOException if there was a problem reading the resource
      */
-    URI contribute(URL contribution, boolean storeInRepository) throws ContributionException, IOException;
+    void contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
+        IOException;
 
     /**
      * Contribute an artifact to the SCA Domain.
-     *
-     * @param source       an identifier for the source of this contribution
-     * @param contribution a stream containing the resource being contributed; the stream will not be closed but the
-     *                        read position after the call is undefined
-     * @param storeInRepository  flag that identifies if you want to copy the contribution to the repository
-     * @return a URI that uniquely identifies this contribution within the SCA Domain
+     * 
+     * @param contributionURI The URI that is used as the contribution unique ID.
+     * @param contributionContent a stream containing the resource being
+     *            contributed; the stream will not be closed but the read
+     *            position after the call is undefined
      * @throws DeploymentException if there was a problem with the contribution
-     * @throws IOException         if there was a problem reading the stream
+     * @throws IOException if there was a problem reading the stream
      */
-    URI contribute(URI source, InputStream contribution,  boolean storeInRepository)
+    void contribute(URI contributionURI, InputStream contributionContent)
         throws ContributionException, IOException;
-    
+
+    /**
+     * Get the model for an installed contribution
+     * 
+     * @param contribution The URI of an installed contribution
+     * @return The model for the contribution or null if there is no such
+     *         contribution
+     */
+    Object getContribution(URI contribution);
+
+    /**
+     * Adds or updates a deployment composite using a supplied composite
+     * ("composite by value" – a data structure, not an existing resource in the
+     * domain) to the contribution identified by a supplied contribution URI.
+     * The added or updated deployment composite is given a relative URI that
+     * matches the "name" attribute of the composite, with a ".composite"
+     * suffix.
+     */
+    void addDeploymentComposite(URI contribution, Object composite);
+
     /**
      * Remove a contribution from the SCA domain
+     * 
      * @param contribution The URI of the contribution
-     * @throws DeploymentException if there was a problem with the contribution
+     * @throws DeploymentException
      */
     void remove(URI contribution) throws ContributionException;
-    
+
     /**
      * Resolve an artifact by QName within the contribution
      * 
@@ -75,21 +97,24 @@ public interface ContributionService {
      * @return The resolved artifact
      */
     <T> T resolve(URI contribution, Class<T> definitionType, String namespace, String name);
-    
+
     /**
-     * Resolve the reference to an artifact by the location URI within the given contribution. 
-     * Some typical use cases are:
+     * Resolve the reference to an artifact by the location URI within the given
+     * contribution. Some typical use cases are:
      * <ul>
      * <li>Reference a XML schema using
      * {http://www.w3.org/2001/XMLSchema-instance}schemaLocation or
      * <li>Reference a list of WSDLs using
      * {http://www.w3.org/2004/08/wsdl-instance}wsdlLocation
      * </ul>
+     * 
      * @param contribution The URI of the contribution
-     * @param namespace The namespace of the artifact. This is for validation purpose. If the namespace is null,
-     * then no check will be performed.  
+     * @param namespace The namespace of the artifact. This is for validation
+     *            purpose. If the namespace is null, then no check will be
+     *            performed.
      * @param uri The location URI
-     * @param baseURI The URI of the base artifact where the reference is declared
+     * @param baseURI The URI of the base artifact where the reference is
+     *            declared
      * @return The URL of the resolved artifact
      */
     URL resolve(URI contribution, String namespace, URI uri, URI baseURI);

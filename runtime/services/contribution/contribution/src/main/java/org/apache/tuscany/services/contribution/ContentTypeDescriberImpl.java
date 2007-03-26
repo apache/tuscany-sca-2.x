@@ -25,12 +25,11 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.services.contribution.model.ContentType;
+import org.apache.tuscany.services.contribution.spi.ContentTypeDescriber;
+import org.apache.tuscany.services.contribution.util.FileHelper;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Service;
-
-import org.apache.tuscany.services.contribution.spi.ContentTypeDescriber;
-
-import org.apache.tuscany.services.contribution.util.FileHelper;
 
 /**
  * Implementation of the content describer
@@ -51,10 +50,10 @@ public class ContentTypeDescriberImpl implements ContentTypeDescriber {
      * Initialize contentType registry with know types based on known file extensions
      */
     private void init() {
-        contentTypeRegistry.put("SCDL", "application/v.tuscany.scdl");
-        contentTypeRegistry.put("COMPOSITE", "application/v.tuscany.scdl");
-        contentTypeRegistry.put("WSDL", "application/v.tuscany.wsdl");
-        contentTypeRegistry.put("JAR", "application/x-compressed");
+        contentTypeRegistry.put("COMPOSITE", ContentType.COMPOSITE);
+        contentTypeRegistry.put("SCDL", ContentType.COMPOSITE);
+        contentTypeRegistry.put("WSDL", ContentType.WSDL);
+        contentTypeRegistry.put("JAR", ContentType.JAR);
     }
 
     protected String resolveContentyTypeByExtension(URL resourceURL) {
@@ -84,7 +83,7 @@ public class ContentTypeDescriberImpl implements ContentTypeDescriber {
                 connection = resourceURL.openConnection();
                 contentType = connection.getContentType();
 
-                if (contentType == null || contentType.equals("content/unknown")) {
+                if (contentType == null || contentType.equals(ContentType.UNKNOWN)) {
                     // here we couldn't figure out from our registry or from URL
                     // return defaultContentType if provided
                     contentType = defaultContentType;
