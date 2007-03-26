@@ -21,10 +21,10 @@ package org.apache.tuscany.services.contribution;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.services.contribution.spi.ContentTypeDescriber;
-import org.apache.tuscany.services.contribution.spi.ContributionProcessorRegistry;
-import org.apache.tuscany.services.contribution.spi.ContributionRepository;
-import org.apache.tuscany.services.contribution.spi.ContributionService;
+import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
+import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionRepository;
+import org.apache.tuscany.services.spi.contribution.ContributionService;
 
 /**
  * This is more intended to be a integration test then a unit test. *

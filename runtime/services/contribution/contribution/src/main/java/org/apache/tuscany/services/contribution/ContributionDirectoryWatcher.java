@@ -22,8 +22,8 @@ package org.apache.tuscany.services.contribution;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.tuscany.services.contribution.spi.ContributionException;
-import org.apache.tuscany.services.contribution.spi.ContributionService;
+import org.apache.tuscany.services.spi.contribution.ContributionException;
+import org.apache.tuscany.services.spi.contribution.ContributionService;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;

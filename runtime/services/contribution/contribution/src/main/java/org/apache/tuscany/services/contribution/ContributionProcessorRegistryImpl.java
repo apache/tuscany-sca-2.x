@@ -27,11 +27,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.spi.ContentTypeDescriber;
-import org.apache.tuscany.services.contribution.spi.ContributionException;
-import org.apache.tuscany.services.contribution.spi.ContributionProcessor;
-import org.apache.tuscany.services.contribution.spi.ContributionProcessorRegistry;
-import org.apache.tuscany.services.contribution.spi.UnsupportedContentTypeException;
+import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
+import org.apache.tuscany.services.spi.contribution.ContributionException;
+import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
+import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.UnsupportedContentTypeException;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
