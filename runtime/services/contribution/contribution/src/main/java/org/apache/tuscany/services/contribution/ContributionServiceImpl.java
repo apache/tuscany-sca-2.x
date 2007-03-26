@@ -31,11 +31,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.spi.ContributionException;
-import org.apache.tuscany.services.contribution.spi.ContributionProcessorRegistry;
-import org.apache.tuscany.services.contribution.spi.ContributionRepository;
-import org.apache.tuscany.services.contribution.spi.ContributionService;
 import org.apache.tuscany.services.contribution.util.IOHelper;
+import org.apache.tuscany.services.spi.contribution.ContributionException;
+import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionRepository;
+import org.apache.tuscany.services.spi.contribution.ContributionService;
+import org.apache.tuscany.services.spi.contribution.loader.ContributionLoaderException;
 import org.osoa.sca.annotations.Reference;
 
 /**

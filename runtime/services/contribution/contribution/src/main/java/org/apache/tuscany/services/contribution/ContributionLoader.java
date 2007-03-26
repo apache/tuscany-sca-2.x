@@ -30,13 +30,15 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.model.ContributionImport;
+import org.apache.tuscany.services.spi.contribution.loader.ContributionLoaderException;
+import org.apache.tuscany.services.spi.contribution.loader.ContributionMetadataLoader;
 
 /**
  * Loader that handles contribution metadata files
  * 
  * @version $Rev: 515261 $ $Date: 2007-03-06 11:22:46 -0800 (Tue, 06 Mar 2007) $
  */
-public class ContributionLoader {
+public class ContributionLoader implements ContributionMetadataLoader {
     private static final QName CONTRIBUTION = new QName(SCA_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA_NS, "deployable");
     private static final QName IMPORT = new QName(SCA_NS, "import");

@@ -16,43 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.services.contribution;
+
+package org.apache.tuscany.services.spi.contribution.loader;
 
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 
-
-/**
- * Exception that indicates that the supplied XML Document invalid.
- *
- * @version $Rev: 511466 $ $Date: 2007-02-25 00:45:22 -0800 (Sun, 25 Feb 2007) $
- */
-public class InvalidContributionMetadataException extends ContributionException {
+public class ContributionLoaderException extends ContributionException {
 
     /**
      * 
      */
-    private static final long serialVersionUID = -3184477070625689942L;
+    private static final long serialVersionUID = 2442537028550702609L;
 
-    protected InvalidContributionMetadataException() {
+    public ContributionLoaderException() {
+        super();
     }
 
-    protected InvalidContributionMetadataException(String message) {
+    public ContributionLoaderException(String message) {
         super(message);
     }
 
-    protected InvalidContributionMetadataException(String message, String identifier) {
+    public ContributionLoaderException(String message, String identifier) {
         super(message, identifier);
     }
 
-    protected InvalidContributionMetadataException(String message, Throwable cause) {
+    public ContributionLoaderException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    protected InvalidContributionMetadataException(String message, String identifier, Throwable cause) {
+    public ContributionLoaderException(String message, String identifier, Throwable cause) {
         super(message, identifier, cause);
     }
 
-    protected InvalidContributionMetadataException(Throwable cause) {
+    public ContributionLoaderException(Throwable cause) {
         super(cause);
     }
+
 }

@@ -27,8 +27,8 @@ import java.util.Map;
 
 import org.apache.tuscany.services.contribution.model.ContentType;
 import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.spi.ContentTypeDescriber;
 import org.apache.tuscany.services.contribution.util.FileHelper;
+import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Service;
 
