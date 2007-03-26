@@ -28,31 +28,24 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.InvalidValueException;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.Contribution;
-import org.apache.tuscany.spi.model.ContributionImport;
-import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.services.contribution.model.ContributionImport;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 
 /**
- * Loader that handles &lt;include&gt; elements.
+ * Loader that handles contribution metadata files
  * 
  * @version $Rev: 515261 $ $Date: 2007-03-06 11:22:46 -0800 (Tue, 06 Mar 2007) $
  */
-public class ContributionLoader extends LoaderExtension<Contribution> {
+public class ContributionLoader {
     private static final QName CONTRIBUTION = new QName(SCA_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA_NS, "deployable");
     private static final QName IMPORT = new QName(SCA_NS, "import");
     private static final QName EXPORT = new QName(SCA_NS, "export");
 
-    @Constructor({"registry"})
-    public ContributionLoader(@Reference LoaderRegistry registry) {
-        super(registry);
+    public ContributionLoader() {
+        super();
     }
 
     public QName getXMLType() {

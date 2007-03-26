@@ -19,15 +19,15 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.runtime</groupId>
-        <artifactId>services</artifactId>
+        <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
+        <artifactId>contribution</artifactId>
         <version>2.0-alpha2-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
-    <artifactId>contribution</artifactId>
-    <name>Apache Tuscany SCA Contribution Services</name>
-    <description>Apache Tuscany SCA Contribution Services</description>
+    <artifactId>contribution-contribution</artifactId>
+    <name>Apache Tuscany SCA Contribution Services Implementation</name>
+    <description>Apache Tuscany SCA Contribution Services Implementation</description>
 
     <dependencies>
         <dependency>
@@ -35,8 +35,13 @@
             <artifactId>sca-api-r${scaSpecVersion}</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
+            <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
+            <artifactId>contribution-framework</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
