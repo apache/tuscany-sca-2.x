@@ -35,6 +35,10 @@
             <artifactId>sca-api-r${scaSpecVersion}</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+        </dependency>        
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>

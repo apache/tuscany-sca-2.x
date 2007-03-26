@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.services.contribution.model.ContentType;
+import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.spi.ContentTypeDescriber;
 import org.apache.tuscany.services.contribution.util.FileHelper;
 import org.osoa.sca.annotations.EagerInit;
@@ -65,10 +66,11 @@ public class ContentTypeDescriberImpl implements ContentTypeDescriber {
     }
 
     /**
-     * Build contentType for a specific resource. We first check if the file is a supported one (looking into our
-     * registry based on resource extension) If not found, we try to check file contentType Or we return
+     * Build contentType for a specific resource. We first check if the file is
+     * a supported one (looking into our registry based on resource extension)
+     * If not found, we try to check file contentType Or we return
      * defaultContentType provided
-     *
+     * 
      * @param url
      * @param defaultContentType
      * @return
@@ -77,20 +79,29 @@ public class ContentTypeDescriberImpl implements ContentTypeDescriber {
         URLConnection connection = null;
         String contentType = defaultContentType;
 
-        contentType = resolveContentyTypeByExtension(resourceURL);
-        if (contentType == null) {
-            try {
-                connection = resourceURL.openConnection();
-                contentType = connection.getContentType();
-
-                if (contentType == null || contentType.equals(ContentType.UNKNOWN)) {
-                    // here we couldn't figure out from our registry or from URL
-                    // return defaultContentType if provided
-                    contentType = defaultContentType;
+        if (resourceURL.getProtocol().equals("file") && FileHelper.toFile(resourceURL).isDirectory()) {
+            // Special case : contribution is a folder
+            contentType = ContentType.FOLDER;
+        } else if (resourceURL.toExternalForm().endsWith(Contribution.SCA_CONTRIBUTION_META) 
+            || resourceURL.toExternalForm().endsWith(Contribution.SCA_CONTRIBUTION_GENERATED_META)) {
+            // Special case : contribution metadata
+            contentType = ContentType.CONTRIBUTION_METADATA;
+        } else {
+            contentType = resolveContentyTypeByExtension(resourceURL);
+            if (contentType == null) {
+                try {
+                    connection = resourceURL.openConnection();
+                    contentType = connection.getContentType();
+    
+                    if (contentType == null || contentType.equals("content/unknown")) {
+                        // here we couldn't figure out from our registry or from URL and it's not a special file
+                        // return defaultContentType if provided
+                        contentType = defaultContentType;
+                    }
+                } catch (IOException io) {
+                    // could not access artifact, just ignore and we will return
+                    // null contentType
                 }
-            } catch (IOException io) {
-                // could not access artifact, just ignore and we will return
-                // null contentType
             }
         }
         return contentType == null ? defaultContentType : contentType;

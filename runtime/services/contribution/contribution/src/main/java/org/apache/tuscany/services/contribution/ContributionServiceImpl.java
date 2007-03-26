@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.contribution.spi.ContributionException;
 import org.apache.tuscany.services.contribution.spi.ContributionProcessorRegistry;
 import org.apache.tuscany.services.contribution.spi.ContributionRepository;

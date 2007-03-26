@@ -26,17 +26,15 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.services.contribution.spi.ContentTypeDescriber;
+import org.apache.tuscany.services.contribution.spi.ContributionException;
+import org.apache.tuscany.services.contribution.spi.ContributionProcessor;
+import org.apache.tuscany.services.contribution.spi.ContributionProcessorRegistry;
+import org.apache.tuscany.services.contribution.spi.UnsupportedContentTypeException;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
-
-import org.apache.tuscany.spi.deployer.ContentTypeDescriber;
-import org.apache.tuscany.spi.deployer.ContributionProcessor;
-import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
-import org.apache.tuscany.spi.model.Contribution;
-
-import org.apache.tuscany.host.deployment.DeploymentException;
-import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
 
 /**
  * Default implementation of ContributionProcessorRegistry
@@ -72,7 +70,7 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
     }
 
     public void processContent(Contribution contribution, URI source, InputStream inputStream)
-        throws DeploymentException, IOException {
+        throws ContributionException, IOException {
 
         URL locationURL = contribution.getArtifact(source).getLocation();
         String contentType = this.contentTypeDescriber.getContentType(locationURL, null);
@@ -89,7 +87,7 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
 
     }
 
-    public void processModel(Contribution contribution, URI source, Object modelObject) throws DeploymentException,
+    public void processModel(Contribution contribution, URI source, Object modelObject) throws ContributionException,
                                                                                                IOException {
     }
 }
