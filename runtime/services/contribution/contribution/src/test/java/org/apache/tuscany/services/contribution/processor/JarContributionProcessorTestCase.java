@@ -18,14 +18,7 @@
  */
 package org.apache.tuscany.services.contribution.processor;
 
-import java.net.URI;
-import java.net.URL;
-
 import junit.framework.TestCase;
-
-import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
-import org.apache.tuscany.spi.model.Contribution;
-import org.easymock.EasyMock;
 
 public class JarContributionProcessorTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
