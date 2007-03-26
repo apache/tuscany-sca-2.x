@@ -17,10 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.services.contribution.spi.extension;
+package org.apache.tuscany.services.spi.contribution.extension;
 
-import org.apache.tuscany.services.contribution.spi.ContributionProcessor;
-import org.apache.tuscany.services.contribution.spi.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
+import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;

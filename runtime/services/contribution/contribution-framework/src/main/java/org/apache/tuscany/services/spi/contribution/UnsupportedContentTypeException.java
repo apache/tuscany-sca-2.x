@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.services.contribution.spi;
+package org.apache.tuscany.services.spi.contribution;
 
 /**
  * Exception thrown to indicate that a Content-Type is not supported by this SCA Domain.

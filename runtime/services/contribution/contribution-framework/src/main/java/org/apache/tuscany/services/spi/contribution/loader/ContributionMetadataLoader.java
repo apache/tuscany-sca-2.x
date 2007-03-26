@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.services.contribution.spi.loader;
+package org.apache.tuscany.services.spi.contribution.loader;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
