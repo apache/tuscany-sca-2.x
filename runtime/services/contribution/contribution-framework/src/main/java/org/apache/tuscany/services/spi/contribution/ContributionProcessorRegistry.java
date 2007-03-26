@@ -16,21 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.services.contribution.spi;
-
-import java.net.URL;
+package org.apache.tuscany.services.spi.contribution;
 
 /**
- * Provide content type for a given resource
- *
  * @version $Rev$ $Date$
  */
-public interface ContentTypeDescriber {
+public interface ContributionProcessorRegistry extends ContributionProcessor {
     /**
-     * @param resourceURL        the resource url
-     * @param defaultContentType the default content type
-     * @return the content type
+     * Register a ContributionProcessor using the content type as the key
+     * @param processor
      */
-    String getContentType(URL resourceURL, String defaultContentType);
+    void register(String contentType, ContributionProcessor processor);
+    
+    /**
+     * Unregister a ContributionProcessor by content type
+     * @param contentType
+     */
+    void unregister(String contentType);
 }

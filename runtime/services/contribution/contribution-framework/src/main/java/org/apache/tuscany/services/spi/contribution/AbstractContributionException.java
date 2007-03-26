@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.services.contribution.spi;
+package org.apache.tuscany.services.spi.contribution;
 
 import java.io.PrintWriter;
 
