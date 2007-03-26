@@ -30,8 +30,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.model.ContributionImport;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
 
 /**
  * Loader that handles contribution metadata files
@@ -52,9 +50,10 @@ public class ContributionLoader {
         return CONTRIBUTION;
     }
 
-    public Contribution load(ModelObject object,
-                             XMLStreamReader reader,
-                             DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    /* (non-Javadoc)
+     * @see org.apache.tuscany.services.contribution.ContributionMetadataLoader#load(javax.xml.stream.XMLStreamReader)
+     */
+    public Contribution load(XMLStreamReader reader) throws XMLStreamException, ContributionLoaderException {
 
         Contribution contribution = new Contribution();
         while (true) {

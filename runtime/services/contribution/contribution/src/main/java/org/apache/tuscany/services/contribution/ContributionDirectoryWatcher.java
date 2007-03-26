@@ -51,6 +51,7 @@ public class ContributionDirectoryWatcher {
 
         File[] files = extensionDir.listFiles();
         for (File file : files) {
+            /*
             try {
                 if (file.isDirectory()) {
                     this.contributionService.contribute(file.toURL(), false);
@@ -64,6 +65,7 @@ public class ContributionDirectoryWatcher {
                 // FIXME handle this
                 ioe.printStackTrace();
             }
+            */
         }
     }
 }

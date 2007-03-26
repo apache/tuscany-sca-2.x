@@ -44,9 +44,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.services.contribution.spi.ContributionRepository;
 import org.apache.tuscany.services.contribution.util.FileHelper;
 import org.apache.tuscany.services.contribution.util.IOHelper;
-import org.apache.tuscany.spi.deployer.ContributionRepository;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
