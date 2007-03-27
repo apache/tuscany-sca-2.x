@@ -21,10 +21,12 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.ProxyService;
@@ -110,6 +112,16 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     }
 
     public ObjectFactory createObjectFactory() {
-        throw new UnsupportedOperationException();
+        // FIXME: Is it the correct way to create an ObjectFactory for itself?
+        return new ObjectFactory() {
+            public Object getInstance() throws ObjectCreationException {
+                try {
+                    return scopeContainer.getWrapper(AtomicComponentExtension.this, groupId).getInstance();
+                } catch (TargetResolutionException e) {
+                    throw new ObjectCreationException(e);
+                }
+            }
+        };
+        // throw new UnsupportedOperationException();
     }
 }
