@@ -18,29 +18,59 @@
  */
 package org.apache.tuscany.services.contribution.processor;
 
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+
 import junit.framework.TestCase;
 
-public class JarContributionProcessorTestCase extends TestCase {
-    private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
+import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.services.contribution.model.DeployedArtifact;
+import org.apache.tuscany.services.contribution.util.IOHelper;
+import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.easymock.EasyMock;
 
+public class JarContributionProcessorTestCase extends TestCase {
+    private static final String CONTRIBUTION_URI = "sca://contributions/001/";
+    private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
+    
+    private JarContributionProcessor jarProcessor;
+    
     protected void setUp() throws Exception {
         super.setUp();
+        
+        this.jarProcessor = new JarContributionProcessor();
     }
     
     public final void testProcessJarArtifacts() throws Exception {
-        /*
-        JarContributionProcessor jarContribution = new JarContributionProcessor();
         ContributionProcessorRegistry mockRegistry = EasyMock.createMock(ContributionProcessorRegistry.class);
-        mockRegistry.register(JarContributionProcessor.CONTENT_TYPE, jarContribution);
-        EasyMock.expectLastCall().once();
+        mockRegistry.register(JarContributionProcessor.CONTENT_TYPE, jarProcessor);
+        mockRegistry.processContent((Contribution)EasyMock.anyObject(), (URI) EasyMock.anyObject(), (InputStream) EasyMock.anyObject() );
+        EasyMock.expectLastCall().anyTimes();
         EasyMock.replay(mockRegistry);
-        jarContribution.setContributionProcessorRegistry(mockRegistry);
-        jarContribution.start();
+        jarProcessor.setContributionProcessorRegistry(mockRegistry);
+        jarProcessor.start();
         EasyMock.verify(mockRegistry);
-        URL jarURL = getClass().getResource(JarContributionProcessorTestCase.JAR_CONTRIBUTION);
-        Contribution contribution = new Contribution(URI.create("sca://contributions/001"));
+
+
+        //start processing the jar
+        URL jarURL = getClass().getResource(JAR_CONTRIBUTION);
+        URI contributionURI = URI.create(CONTRIBUTION_URI);
+        URI artifactURI = contributionURI.resolve(JAR_CONTRIBUTION);
+       
+        Contribution contribution = new Contribution(contributionURI);
         contribution.setLocation(jarURL);
-        jarContribution.processContent(contribution, contribution.getUri(), jarURL.openStream());
-        */
+        
+        DeployedArtifact artifact = new DeployedArtifact(artifactURI);
+        artifact.setLocation(jarURL);
+        contribution.addArtifact(artifact);
+        
+        InputStream jarStream = jarURL.openStream();
+        
+        try{
+            jarProcessor.processContent(contribution, contributionURI.resolve(JAR_CONTRIBUTION), jarStream);
+        }finally{
+            IOHelper.closeQuietly(jarStream);
+        }
     }
 }

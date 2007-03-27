@@ -34,25 +34,28 @@
       This library will typically be added to the application's classpath and so should
       should have as few dependencies as possible and nothing from the Tuscany runtime.
     -->
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
-            <artifactId>contribution-framework</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
-            <artifactId>contribution-contribution</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>org.osoa</groupId>
+			<artifactId>sca-api-r${scaSpecVersion}</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
+			<artifactId>contribution-framework</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
+			<artifactId>contribution-contribution</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
 
     <build>
         <plugins>

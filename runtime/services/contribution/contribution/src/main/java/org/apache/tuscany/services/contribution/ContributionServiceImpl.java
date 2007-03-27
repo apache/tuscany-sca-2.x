@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.util.IOHelper;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
@@ -69,16 +70,16 @@ public class ContributionServiceImpl implements ContributionService {
      */
     protected Map<URI, Contribution> contributionRegistry = new HashMap<URI, Contribution>();
 
-    //protected ArtifactResolverRegistry resolverRegistry;
+    protected ArtifactResolverRegistry resolverRegistry;
 
     public ContributionServiceImpl(@Reference
     ContributionRepository repository, @Reference
-    ContributionProcessorRegistry processorRegistry/*, @Reference
-    ArtifactResolverRegistry resolverRegistry*/) {
+    ContributionProcessorRegistry processorRegistry, @Reference
+    ArtifactResolverRegistry resolverRegistry) {
         super();
         this.contributionRepository = repository;
         this.processorRegistry = processorRegistry;
-        //this.resolverRegistry = resolverRegistry;
+        this.resolverRegistry = resolverRegistry;
         
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         this.contributionLoader = new ContributionLoader();
@@ -219,21 +220,13 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public <T> T resolve(URI contribution, Class<T> definitionType, String namespace, String name) {
-        /*
-        Contribution contributionObject = (Contribution)getContribution(contribution);
-        return resolverRegistry.resolve(contributionObject, definitionType, namespace, name, null, null);
-        */
-        
-        return null;
+        Contribution contributionObject = getContribution(contribution);
+        return resolverRegistry.resolve(contributionObject, definitionType, namespace, name, null);
     }
 
     public URL resolve(URI contribution, String namespace, URI uri, URI baseURI) {
-        /*
-        Contribution contributionObject = (Contribution)getContribution(contribution);
+        Contribution contributionObject = getContribution(contribution);
         return resolverRegistry.resolve(contributionObject, namespace, uri.toString(), baseURI.toString());
-        */
-        
-        return null;
     }
 
 }
