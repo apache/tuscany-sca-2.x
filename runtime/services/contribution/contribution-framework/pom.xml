@@ -30,14 +30,19 @@
     <description>Apache Tuscany SCA Contribution Services Framework</description>
 
     <dependencies>
+		<!-- OSOA SCA API -->
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api-r${scaSpecVersion}</artifactId>
         </dependency>
+        <!-- java.xml.stream API -->
         <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-        </dependency>        
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+   
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
