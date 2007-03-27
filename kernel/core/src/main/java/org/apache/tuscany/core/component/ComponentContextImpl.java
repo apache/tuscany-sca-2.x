@@ -25,6 +25,9 @@ import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
 
 /**
  * Implementation of ComponentContext that delegates to a ComponentContextProvider.
@@ -79,7 +82,9 @@ public class ComponentContextImpl implements ComponentContext {
     }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
-        return null;
+        // FIXME: How to get the ObjectFactory?
+        ObjectFactory<B> factory = ((AtomicComponent) component).createObjectFactory();
+        return new ServiceReferenceImpl<B>(businessInterface, factory);
     }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, String serviceName) {
