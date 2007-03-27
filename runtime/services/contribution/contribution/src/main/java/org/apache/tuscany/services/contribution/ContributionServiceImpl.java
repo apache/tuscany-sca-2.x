@@ -197,7 +197,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionRegistry.put(contribution.getUri(), contribution);
     }
 
-    public Object getContribution(URI id) {
+    public Contribution getContribution(URI id) {
         return this.contributionRegistry.get(id);
     }
 

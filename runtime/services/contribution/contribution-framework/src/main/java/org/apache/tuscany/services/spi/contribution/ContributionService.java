@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.tuscany.services.contribution.model.Contribution;
+
 
 /**
  * Service interface that manages artifacts contributed to a Tuscany runtime.
@@ -66,7 +68,7 @@ public interface ContributionService {
      * @return The model for the contribution or null if there is no such
      *         contribution
      */
-    Object getContribution(URI contribution);
+    Contribution getContribution(URI contribution);
 
     /**
      * Adds or updates a deployment composite using a supplied composite
