@@ -19,8 +19,8 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.runtime</groupId>
-        <artifactId>services</artifactId>
+        <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
+        <artifactId>contribution</artifactId>
         <version>2.0-alpha2-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
