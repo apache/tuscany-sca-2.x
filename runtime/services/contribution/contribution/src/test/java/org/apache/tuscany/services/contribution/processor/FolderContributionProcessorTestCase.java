@@ -19,14 +19,8 @@
 package org.apache.tuscany.services.contribution.processor;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
 
 import junit.framework.TestCase;
-
-import org.apache.tuscany.spi.deployer.ContributionProcessorRegistry;
-import org.apache.tuscany.spi.model.Contribution;
-import org.easymock.EasyMock;
 
 public class FolderContributionProcessorTestCase extends TestCase {
     private static final String DIRECTORY_CONTRIBUTION = "//D:/DEV/Projects/Tuscany/source/java-sca-integration/samples/sca/calculator";
