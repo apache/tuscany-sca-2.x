@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidConstructorException extends ProcessingException {
+    private static final long serialVersionUID = 1411492435210741512L;
 
     public InvalidConstructorException(String message) {
         super(message);

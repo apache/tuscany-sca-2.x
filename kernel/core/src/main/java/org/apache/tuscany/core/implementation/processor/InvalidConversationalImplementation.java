@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidConversationalImplementation extends ProcessingException {
+    private static final long serialVersionUID = -5487291552769408149L;
 
     public InvalidConversationalImplementation(String message) {
         super(message);

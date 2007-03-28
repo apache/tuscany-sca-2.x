@@ -20,8 +20,6 @@ package org.apache.tuscany.core.implementation.processor;
 
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -31,14 +29,12 @@ import java.util.Collection;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
-import org.apache.tuscany.spi.implementation.java.Parameter;
 import org.apache.tuscany.spi.implementation.java.JavaElement;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.Parameter;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.Multiplicity;
@@ -97,7 +93,8 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
     }
 
     public void visitConstructorParameter(Parameter parameter,
-                                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                          PojoComponentType<JavaMappedService, 
+                                          JavaMappedReference, JavaMappedProperty<?>> type,
                                           DeploymentContext context) throws ProcessingException {
         Reference refAnnotation = parameter.getAnnotation(Reference.class);
         if (refAnnotation == null) {

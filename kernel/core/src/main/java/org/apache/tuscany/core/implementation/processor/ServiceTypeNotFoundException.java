@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class ServiceTypeNotFoundException extends ProcessingException {
+    private static final long serialVersionUID = -5124437274726947007L;
 
     public ServiceTypeNotFoundException(String message) {
         super(message);

@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * 
  * @version $Rev$ $Date$
  */
-public class HeutisticExtensibleConstructorTestCase extends AbstractConstructorProcessorTest {
+public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTest {
 
     private HeuristicPojoProcessor processor;
 

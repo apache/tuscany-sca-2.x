@@ -24,6 +24,7 @@ package org.apache.tuscany.core.implementation.processor;
  * @version $Rev$ $Date$
  */
 public class UnknownContextTypeException extends IllegalContextException {
+    private static final long serialVersionUID = 8125863714365422419L;
 
     public UnknownContextTypeException(String message) {
         super(message);

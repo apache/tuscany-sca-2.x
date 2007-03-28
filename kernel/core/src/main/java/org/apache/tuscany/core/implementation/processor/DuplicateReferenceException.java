@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class DuplicateReferenceException extends ProcessingException {
+    private static final long serialVersionUID = 907910648213477158L;
 
     public DuplicateReferenceException(String message) {
         super(message);

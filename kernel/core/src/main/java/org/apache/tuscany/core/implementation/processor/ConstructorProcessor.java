@@ -19,8 +19,6 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -40,13 +38,8 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 @SuppressWarnings("unchecked")
 public class ConstructorProcessor extends ImplementationProcessorExtension {
-    // private List<ImplementationProcessorExtension> paramProcessors = new
-    // ArrayList<ImplementationProcessorExtension>();
 
     public ConstructorProcessor() {
-        // paramProcessors.add(new ReferenceProcessor());
-        // paramProcessors.add(new PropertyProcessor());
-        // paramProcessors.add(new ResourceProcessor());
     }
 
     public <T> void visitClass(Class<T> clazz,
@@ -69,7 +62,8 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
     }
 
     public <T> void visitConstructor(Constructor<T> constructor,
-                                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                     PojoComponentType<JavaMappedService, JavaMappedReference, 
+                                     JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Constructor annotation = constructor
             .getAnnotation(org.osoa.sca.annotations.Constructor.class);
@@ -85,16 +79,11 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
         String[] value = annotation.value();
         boolean isDefault = value.length == 0 || (value.length == 1 && "".equals(value[0]));
         if (!isDefault && value.length != parameters.length) {
-            throw new InvalidConstructorException("Nubmer of names in @Constructor doesn't match the actual parameters");
+            throw new InvalidConstructorException("Invalid Nubmer of names in @Constructor");
         }
         for (int i = 0; i < parameters.length; i++) {
             parameters[i].setName(i < value.length ? value[i] : "");
         }
         type.setConstructorDefinition(definition);
-        // for (ImplementationProcessorExtension processor : paramProcessors) {
-        // processor.setInterfaceProcessorRegistry(interfaceProcessorRegistry);
-        // processor.setRegistry(registry);
-        // processor.visitConstructor(constructor, type, context);
-        // }
     }
 }

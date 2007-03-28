@@ -210,7 +210,8 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
      *             cannot be unambiguously mapped to references and properties
      */
     @SuppressWarnings("unchecked")
-    private <T> void evaluateConstructor(PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+    private <T> void evaluateConstructor(PojoComponentType<JavaMappedService, 
+                                         JavaMappedReference, JavaMappedProperty<?>> type,
                                          Class<T> clazz) throws ProcessingException {
         // determine constructor if one is not annotated
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
@@ -333,7 +334,8 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
      * Returns true if the union of the given collections of properties and
      * references have unique Java types
      */
-    private boolean calcPropRefUniqueness(Collection<JavaMappedProperty<?>> props, Collection<JavaMappedReference> refs) {
+    private boolean calcPropRefUniqueness(Collection<JavaMappedProperty<?>> props, 
+                                          Collection<JavaMappedReference> refs) {
 
         Class[] classes = new Class[props.size() + refs.size()];
         int i = 0;
@@ -358,7 +360,8 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
      */
     private boolean findReferenceOrProperty(Parameter parameter,
                                             Map<String, JavaMappedProperty<?>> props,
-                                            Map<String, JavaMappedReference> refs) throws AmbiguousConstructorException {
+                                            Map<String, JavaMappedReference> refs) 
+        throws AmbiguousConstructorException {
 
         boolean found = false;
         if (!"".equals(parameter.getName())) {
@@ -494,7 +497,8 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
      * @param methods all methods in the class to examine
      */
     private void calculateServiceInterface(Class<?> clazz,
-                                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                           PojoComponentType<JavaMappedService, 
+                                           JavaMappedReference, JavaMappedProperty<?>> type,
                                            Set<Method> methods) throws ProcessingException {
         List<Method> nonPropRefMethods = new ArrayList<Method>();
         // Map<String, JavaMappedService> services = type.getServices();

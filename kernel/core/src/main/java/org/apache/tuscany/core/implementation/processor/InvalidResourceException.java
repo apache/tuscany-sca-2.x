@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidResourceException extends ProcessingException {
+    private static final long serialVersionUID = 511728001735534934L;
 
     public InvalidResourceException(String message, String identifier) {
         super(message, identifier);

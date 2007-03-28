@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalServiceDefinitionException extends ProcessingException {
+    private static final long serialVersionUID = -7151534258405092548L;
 
     public IllegalServiceDefinitionException(String message) {
         super(message);

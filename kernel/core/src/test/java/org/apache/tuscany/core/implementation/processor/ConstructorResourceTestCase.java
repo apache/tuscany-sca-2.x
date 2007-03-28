@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 /**
  * @version $Rev$ $Date$
  */
-public class ConstructorResourceTestCase extends AbstractConstructorProcessorTest {
+public class ConstructorResourceTestCase extends AbstractProcessorTest {
 
     public void testResource() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =

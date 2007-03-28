@@ -129,7 +129,8 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
     }
 
     public void visitConstructorParameter(Parameter parameter,
-                                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                          PojoComponentType<JavaMappedService, 
+                                          JavaMappedReference, JavaMappedProperty<?>> type,
                                           DeploymentContext context) throws ProcessingException {
 
         Map<String, JavaMappedProperty<?>> properties = type.getProperties();

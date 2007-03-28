@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class DuplicateInitException extends ProcessingException {
+    private static final long serialVersionUID = -6282935288115512057L;
 
     public DuplicateInitException(String message) {
         super(message);

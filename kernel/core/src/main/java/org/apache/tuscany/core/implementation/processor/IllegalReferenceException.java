@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalReferenceException extends ProcessingException {
+    private static final long serialVersionUID = 4612984122225271395L;
 
     public IllegalReferenceException(String message) {
         super(message);
