@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.lang.reflect.Method;
+
 import org.osoa.sca.annotations.AllowsPassByReference;
 
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -36,11 +38,15 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
     AllowsPassByReferenceProcessor processor;
 
     public void testClassAnnotation() throws Exception {
-//        processor.visitClass(Foo.class, type, null);
-//        assertEquals(true, type.isAllowsPassByReference());
-//
-//        processor.visitClass(Bar.class, type, null);
-//        assertEquals(false, type.isAllowsPassByReference());
+        processor.visitClass(Foo.class, type, null);
+        assertEquals(true, type.isAllowsPassByReference());
+
+        processor.visitClass(Bar.class, type, null);
+        assertEquals(false, type.isAllowsPassByReference());
+
+        Method m1 = Bar.class.getMethod("m1", new Class[] {});
+        processor.visitMethod(m1, type, null);
+        assertTrue(type.isAllowsPassByReference(m1));
     }
 
     protected void setUp() throws Exception {
@@ -53,7 +59,11 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
     private class Foo {
     }
 
-    //no annotation
+    // no annotation
     private class Bar {
+        @AllowsPassByReference
+        public void m1() {
+
+        }
     }
 }

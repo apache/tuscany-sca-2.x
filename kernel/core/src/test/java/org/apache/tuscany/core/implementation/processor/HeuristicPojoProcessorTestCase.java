@@ -23,21 +23,22 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
+import junit.framework.TestCase;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Verfies component type information is properly introspected from an unadorned POJO according to the SCA Java Client
@@ -45,10 +46,24 @@ import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
  *
  * @version $Rev$ $Date$
  */
-public class HeuristicPojoProcessorTestCase extends TestCase {
+public class HeuristicPojoProcessorTestCase extends AbstractConstructorProcessorTest {
 
-    private HeuristicPojoProcessor processor =
-        new HeuristicPojoProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
+    private HeuristicPojoProcessor processor;
+
+    public HeuristicPojoProcessorTestCase() {
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        processor = new HeuristicPojoProcessor();
+        processor.setInterfaceProcessorRegistry(registry);
+    }
+
+    private <T> void visitEnd(Class<T> clazz,
+                              PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                              DeploymentContext context) throws ProcessingException {
+        for (Constructor<T> constructor : clazz.getConstructors()) {
+            visitConstructor(constructor, type, context);
+        }
+        processor.visitEnd(clazz, type, context);
+    }
 
     /**
      * Verifies a single service interface is computed when only one interface is implemented
@@ -120,8 +135,8 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         Constructor<ReferenceCollectionImpl> ctor = ReferenceCollectionImpl.class.getConstructor();
         type.setConstructorDefinition(new ConstructorDefinition<ReferenceCollectionImpl>(ctor));
         processor.visitEnd(ReferenceCollectionImpl.class, type, null);
-        assertEquals(0, type.getProperties().size());
-        assertEquals(4, type.getReferences().size());
+        assertEquals(1, type.getProperties().size());
+        assertEquals(3, type.getReferences().size());
     }
 
     /**
@@ -177,7 +192,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         JavaMappedProperty<?> prop2 = new JavaMappedProperty();
         prop2.setName("string2");
         type.add(prop2);
-        processor.visitEnd(MockService.class, type, null);
+        visitEnd(MockService.class, type, null);
         assertEquals(1, type.getServices().size());
     }
 
@@ -202,19 +217,18 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     public void testSetDataTypes() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor<PropertyIntTypeOnConstructor> ctor = PropertyIntTypeOnConstructor.class.getConstructor(int.class);
+        Constructor<PropertyIntTypeOnConstructor> ctor = PropertyIntTypeOnConstructor.class.getConstructor();
         type.setConstructorDefinition(new ConstructorDefinition<PropertyIntTypeOnConstructor>(ctor));
-        processor.visitEnd(ProtectedRemotableRefMethodImpl.class, type, null);
+        processor.visitEnd(PropertyIntTypeOnConstructor.class, type, null);
         org.apache.tuscany.spi.model.Property<?> foo = type.getProperties().get("foo");
         assertEquals(int.class, foo.getJavaType());
         assertEquals(SimpleTypeMapperExtension.XSD_INT, foo.getXmlType());
     }
 
     private static class PropertyIntTypeOnConstructor {
-        private int foo;
+        protected int foo;
 
-        public PropertyIntTypeOnConstructor(@Property(name = "foo")int foo) {
-            this.foo = foo;
+        public PropertyIntTypeOnConstructor() {
         }
 
         public int getFoo() {
@@ -330,6 +344,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         }
 
         public void setNonGenericCollectionReference(Collection ref) {
+            // [rfeng] By the SCA spec, this should be classified as property
         }
 
         public void setListReference(List<Ref> ref) {

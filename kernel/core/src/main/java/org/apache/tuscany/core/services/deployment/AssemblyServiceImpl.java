@@ -37,6 +37,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -78,6 +79,7 @@ import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
  * @version $Rev$ $Date$
  */
 @EagerInit
+@Service(AssemblyService.class)
 public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerRegistry {
     private static final URI DOMAIN_URI = URI.create("tuscany://./domain");
     private final GeneratorRegistry generatorRegistry;

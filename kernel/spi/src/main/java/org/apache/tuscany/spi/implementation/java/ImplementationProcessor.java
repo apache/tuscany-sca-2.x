@@ -89,14 +89,28 @@ public interface ImplementationProcessor {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
         DeploymentContext context)
         throws ProcessingException;
+    
+    /**
+     * @param parameter
+     * @param type
+     * @param context
+     * @throws ProcessingException
+     */
+    void visitConstructorParameter(Parameter parameter,
+                                   PojoComponentType<JavaMappedService, 
+                                   JavaMappedReference, JavaMappedProperty<?>> type,
+                                   DeploymentContext context) throws ProcessingException;
 
     /**
-     * A callback received as the component implementation's public and protected fields are evaluated
-     *
-     * @param field   the current public or protected field being evaluated
-     * @param type    the incomplete component type associated with the implementation class
+     * A callback received as the component implementation's public and
+     * protected fields are evaluated
+     * 
+     * @param field the current public or protected field being evaluated
+     * @param type the incomplete component type associated with the
+     *            implementation class
      * @param context the current deployment context
-     * @throws ProcessingException if an error is encountered while processing metadata
+     * @throws ProcessingException if an error is encountered while processing
+     *             metadata
      */
     void visitField(
         Field field,

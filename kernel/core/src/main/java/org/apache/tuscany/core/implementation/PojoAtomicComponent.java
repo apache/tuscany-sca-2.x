@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.implementation;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -61,9 +62,12 @@ import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 
 /**
- * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
- *
- * @version $$Rev$$ $$Date$$
+ * Base implementation of an
+ * {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java
+ * class
+ * 
+ * @version $$Rev$$ $$Date: 2007-03-19 22:08:36 -0700 (Mon, 19 Mar
+ *          2007) $$
  */
 public abstract class PojoAtomicComponent extends AtomicComponentExtension implements ComponentContextProvider {
     protected EventInvoker<Object> initInvoker;
@@ -85,13 +89,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     private List<Class<?>> constructorParamTypes = new ArrayList<Class<?>>();
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
-        super(configuration.getName(),
-            configuration.getProxyService(),
-            configuration.getWorkContext(),
-            configuration.getGroupId(),
-            configuration.getInitLevel(),
-            configuration.getMaxIdleTime(),
-            configuration.getMaxAge());
+        super(configuration.getName(), configuration.getProxyService(), configuration.getWorkContext(), configuration
+            .getGroupId(), configuration.getInitLevel(), configuration.getMaxIdleTime(), configuration.getMaxAge());
         assert configuration.getInstanceFactory() != null : "Object factory was null";
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
@@ -101,13 +100,13 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         constructorParamTypes = configuration.getConstructorParamTypes();
         injectors = new ArrayList<Injector<Object>>();
         referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
-            : new HashMap<String, Member>();
+                                                                 : new HashMap<String, Member>();
         propertySites = configuration.getPropertySites() != null ? configuration.getPropertySites()
-            : new HashMap<String, Member>();
+                                                                : new HashMap<String, Member>();
         resourceSites = configuration.getResourceSites() != null ? configuration.getResourceSites()
-            : new HashMap<String, Member>();
+                                                                : new HashMap<String, Member>();
         callbackSites = configuration.getCallbackSites() != null ? configuration.getCallbackSites()
-            : new HashMap<String, Member>();
+                                                                : new HashMap<String, Member>();
         implementationClass = configuration.getImplementationClass();
 
         componentContext = new ComponentContextImpl(this);
@@ -124,7 +123,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public boolean isOptimizable() {
-        // stateless implementations that require a destroy callback cannot be optimized since the callback is
+        // stateless implementations that require a destroy callback cannot be
+        // optimized since the callback is
         // performed by the JavaTargetInvoker
         return !(getScope() == Scope.STATELESS && destroyInvoker != null);
     }
@@ -147,9 +147,9 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
-/* FIXME make this work
-        return instanceFactory2.newInstance();
-*/
+        /*
+         * FIXME make this work return instanceFactory2.newInstance();
+         */
         Object instance = createInstance();
         return new ReflectiveInstanceWrapper<Object>(instance, initInvoker, destroyInvoker);
     }
@@ -168,7 +168,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         }
         wireList.add(wire);
         Member member = referenceSites.get(referenceName);
-        if (member != null) {
+        if (member != null && !(member instanceof Constructor)) {
             injectors.add(createInjector(member, wire));
         }
         // cycle through constructor param names as well
@@ -179,7 +179,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
                 break;
             }
         }
-        //TODO error if ref not set on constructor or ref site
+        // TODO error if ref not set on constructor or ref site
 
     }
 
@@ -228,16 +228,17 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             for (Map.Entry<String, Member> entry : callbackSites.entrySet()) {
                 List<Wire> wires = callBackwires.get(entry.getKey());
                 if (wires == null) {
-                    // this can happen when there are no client wires to a component that has a callback  
+                    // this can happen when there are no client wires to a
+                    // component that has a callback
                     continue;
                 }
                 Member member = entry.getValue();
                 if (member instanceof Field) {
-                    Field field = (Field) member;
+                    Field field = (Field)member;
                     ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), proxyService, wires);
                     injectors.add(new FieldInjector<Object>(field, factory));
                 } else if (member instanceof Method) {
-                    Method method = (Method) member;
+                    Method method = (Method)member;
                     Class<?> type = method.getParameterTypes()[0];
                     ObjectFactory<?> factory = new CallbackWireObjectFactory(type, proxyService, wires);
                     injectors.add(new MethodInjector<Object>(method, factory));
@@ -253,9 +254,9 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     public void addPropertyFactory(String name, ObjectFactory<?> factory) {
         Member member = propertySites.get(name);
         if (member instanceof Field) {
-            injectors.add(new FieldInjector<Object>((Field) member, factory));
+            injectors.add(new FieldInjector<Object>((Field)member, factory));
         } else if (member instanceof Method) {
-            injectors.add(new MethodInjector<Object>((Method) member, factory));
+            injectors.add(new MethodInjector<Object>((Method)member, factory));
         }
         // cycle through constructor param names as well
         for (int i = 0; i < constructorParamNames.size(); i++) {
@@ -265,7 +266,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
                 break;
             }
         }
-        //FIXME throw an error if no injection site found
+        // FIXME throw an error if no injection site found
 
         propertyFactories.put(name, factory);
     }
@@ -273,9 +274,9 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
         Member member = resourceSites.get(name);
         if (member instanceof Field) {
-            injectors.add(new FieldInjector<Object>((Field) member, factory));
+            injectors.add(new FieldInjector<Object>((Field)member, factory));
         } else if (member instanceof Method) {
-            injectors.add(new MethodInjector<Object>((Method) member, factory));
+            injectors.add(new MethodInjector<Object>((Method)member, factory));
         }
         // cycle through constructor param names as well
         for (int i = 0; i < constructorParamNames.size(); i++) {
@@ -285,15 +286,15 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
                 break;
             }
         }
-        //FIXME throw an error if no injection site found
+        // FIXME throw an error if no injection site found
     }
 
     public void addConversationIDFactory(Member member) {
         ObjectFactory<String> convIDObjectFactory = new ConversationIDObjectFactory(workContext);
         if (member instanceof Field) {
-            injectors.add(new FieldInjector<Object>((Field) member, convIDObjectFactory));
+            injectors.add(new FieldInjector<Object>((Field)member, convIDObjectFactory));
         } else if (member instanceof Method) {
-            injectors.add(new MethodInjector<Object>((Method) member, convIDObjectFactory));
+            injectors.add(new MethodInjector<Object>((Method)member, convIDObjectFactory));
         } else {
             throw new InvalidAccessorException("Member must be a field or method", member.getName());
         }
@@ -312,13 +313,15 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     protected Injector<Object> createInjector(Member member, Wire wire) {
         if (member instanceof Field) {
-            Class<?> type = ((Field) member).getType();
+            Class<?> type = ((Field)member).getType();
             ObjectFactory<?> factory = createWireFactory(type, wire);
-            return new FieldInjector<Object>((Field) member, factory);
+            return new FieldInjector<Object>((Field)member, factory);
         } else if (member instanceof Method) {
-            Class<?> type = ((Method) member).getParameterTypes()[0];
+            Class<?> type = ((Method)member).getParameterTypes()[0];
             ObjectFactory<?> factory = createWireFactory(type, wire);
-            return new MethodInjector<Object>((Method) member, factory);
+            return new MethodInjector<Object>((Method)member, factory);
+        } else if (member instanceof Constructor) {
+            return null;
         } else {
             throw new InvalidAccessorException("Member must be a field or method", member.getName());
         }
@@ -332,14 +335,14 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             factories.add(createWireFactory(interfaceType, wire));
         }
         if (member instanceof Field) {
-            Field field = (Field) member;
+            Field field = (Field)member;
             if (field.getType().isArray()) {
                 return new FieldInjector<Object>(field, new ArrayMultiplicityObjectFactory(interfaceType, factories));
             } else {
                 return new FieldInjector<Object>(field, new ListMultiplicityObjectFactory(factories));
             }
         } else if (member instanceof Method) {
-            Method method = (Method) member;
+            Method method = (Method)member;
             if (method.getParameterTypes()[0].isArray()) {
                 return new MethodInjector<Object>(method, new ArrayMultiplicityObjectFactory(interfaceType, factories));
             } else {
@@ -389,7 +392,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) {
-        return (R) proxyService.cast(target);
+        return (R)proxyService.cast(target);
     }
 
     protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire);

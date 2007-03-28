@@ -28,11 +28,7 @@
            autowire="true">
 
     <!-- Foundation implementation processors -->
-    <component name="implementation.ImplementationProcessorService">
-        <system:implementation.system
-            class="org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl"/>
-    </component>
-    <component name="implementation.Constructor">
+    <component name="implementation.Constructor" initLevel="30">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ConstructorProcessor"/>
     </component>
     <component name="implementation.Destroy">

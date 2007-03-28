@@ -21,27 +21,24 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.osoa.sca.annotations.Reference;
+import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ConstructorReferenceTestCase extends TestCase {
-    private ConstructorProcessor processor;
+public class ConstructorReferenceTestCase extends AbstractConstructorProcessorTest {
 
     public void testReference() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
-        processor.visitConstructor(ctor, type, null);
+        visitConstructor(ctor, type, null);
         JavaMappedReference reference = type.getReferences().get("myRef");
         assertTrue(reference.isRequired());
         assertEquals("#myRef", reference.getUri().toString());
@@ -51,7 +48,7 @@ public class ConstructorReferenceTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
-        processor.visitConstructor(ctor, type, null);
+        visitConstructor(ctor, type, null);
         assertNotNull(type.getReferences().get("myRef1"));
         assertNotNull(type.getReferences().get("myRef2"));
     }
@@ -61,7 +58,7 @@ public class ConstructorReferenceTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
         try {
-            processor.visitConstructor(ctor, type, null);
+            visitConstructor(ctor, type, null);
             fail();
         } catch (DuplicateReferenceException e) {
             // expected
@@ -72,7 +69,7 @@ public class ConstructorReferenceTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<NoNameFoo> ctor = NoNameFoo.class.getConstructor(String.class);
-        processor.visitConstructor(ctor, type, null);
+        visitConstructor(ctor, type, null);
         assertNotNull(type.getReferences().get("_ref0"));
     }
 
@@ -80,7 +77,7 @@ public class ConstructorReferenceTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
-        processor.visitConstructor(ctor, type, null);
+        visitConstructor(ctor, type, null);
         assertNotNull(type.getReferences().get("myRef"));
     }
 
@@ -89,9 +86,9 @@ public class ConstructorReferenceTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
         try {
-            processor.visitConstructor(ctor, type, null);
+            visitConstructor(ctor, type, null);
             fail();
-        } catch (InvalidReferenceException e) {
+        } catch (InvalidConstructorException e) {
             // expected
         }
     }
@@ -101,7 +98,7 @@ public class ConstructorReferenceTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(List.class, List.class);
         try {
-            processor.visitConstructor(ctor, type, null);
+            visitConstructor(ctor, type, null);
             fail();
         } catch (InvalidConstructorException e) {
             // expected
@@ -110,8 +107,6 @@ public class ConstructorReferenceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        processor =
-            new ConstructorProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
     }
 
 //    public void testMultiplicityRequired() throws Exception {

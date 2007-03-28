@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.implementation.java;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     extends ComponentType<S, R, P> {
     private Class<?> implClass;
     private ConstructorDefinition<?> constructorDefinition;
+    private Map<Constructor, ConstructorDefinition> constructors = new HashMap<Constructor, ConstructorDefinition>();
     private Method initMethod;
     private Method destroyMethod;
     private final Map<String, Resource> resources = new HashMap<String, Resource>();
@@ -174,5 +176,12 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     
     public boolean isAllowsPassByReference(Method method) {
         return allowsPassByReference || allowsPassByReferenceMethods.contains(method);
+    }
+
+    /**
+     * @return the constructors
+     */
+    public Map<Constructor, ConstructorDefinition> getConstructors() {
+        return constructors;
     }
 }

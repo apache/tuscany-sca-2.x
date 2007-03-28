@@ -23,6 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Collection;
 
 import org.osoa.sca.annotations.Destroy;
@@ -31,19 +33,27 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 
 /**
- * A convenience class for annotation processors which alleviates the need to implement unused callbacks
- *
+ * A convenience class for annotation processors which alleviates the need to
+ * implement unused callbacks
+ * 
  * @version $Rev$ $Date$
  */
 @EagerInit
 public abstract class ImplementationProcessorExtension implements ImplementationProcessor {
-    private IntrospectionRegistry registry;
+    protected IntrospectionRegistry registry;
+    protected JavaInterfaceProcessorRegistry interfaceProcessorRegistry;
 
     @Reference
     public void setRegistry(IntrospectionRegistry registry) {
         this.registry = registry;
+    }
+
+    @Reference
+    public void setInterfaceProcessorRegistry(JavaInterfaceProcessorRegistry interfaceProcessorRegistry) {
+        this.interfaceProcessorRegistry = interfaceProcessorRegistry;
     }
 
     @Init
@@ -58,28 +68,22 @@ public abstract class ImplementationProcessorExtension implements Implementation
 
     public <T> void visitClass(Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                               DeploymentContext context)
-        throws ProcessingException {
+                               DeploymentContext context) throws ProcessingException {
     }
 
     public <T> void visitSuperClass(Class<T> clazz,
-                                    PojoComponentType<JavaMappedService,
-                                        JavaMappedReference, JavaMappedProperty<?>> type,
-                                    DeploymentContext context)
-        throws ProcessingException {
+                                    PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                    DeploymentContext context) throws ProcessingException {
     }
 
     public void visitMethod(Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context)
-        throws ProcessingException {
+                            DeploymentContext context) throws ProcessingException {
     }
 
     public <T> void visitConstructor(Constructor<T> constructor,
-                                     PojoComponentType<JavaMappedService,
-                                         JavaMappedReference, JavaMappedProperty<?>> type,
-                                     DeploymentContext context)
-        throws ProcessingException {
+                                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                     DeploymentContext context) throws ProcessingException {
     }
 
     public void visitField(Field field,
@@ -100,12 +104,12 @@ public abstract class ImplementationProcessorExtension implements Implementation
             if (genericType == cls) {
                 return Object.class;
             } else {
-                ParameterizedType parameterizedType = (ParameterizedType) genericType;
+                ParameterizedType parameterizedType = (ParameterizedType)genericType;
                 Type baseType = parameterizedType.getActualTypeArguments()[0];
                 if (baseType instanceof Class) {
-                    return (Class<?>) baseType;
+                    return (Class<?>)baseType;
                 } else if (baseType instanceof ParameterizedType) {
-                    return (Class<?>) ((ParameterizedType) baseType).getRawType();
+                    return (Class<?>)((ParameterizedType)baseType).getRawType();
                 } else {
                     return null;
                 }
@@ -113,5 +117,11 @@ public abstract class ImplementationProcessorExtension implements Implementation
         } else {
             return cls;
         }
+    }
+
+    public void visitConstructorParameter(Parameter parameter,
+                                          PojoComponentType<JavaMappedService, 
+                                          JavaMappedReference, JavaMappedProperty<?>> type,
+                                          DeploymentContext context) throws ProcessingException {
     }
 }

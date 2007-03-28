@@ -22,6 +22,8 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -30,6 +32,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -45,7 +48,7 @@ public class ServiceProcessorTestCase extends TestCase {
         ServiceContract contract = service.getServiceContract();
         assertEquals(Baz.class, contract.getInterfaceClass());
         assertEquals(Bar.class, contract.getCallbackClass());
-        assertEquals("ServiceProcessorTestCase$Bar", contract.getCallbackName());
+        assertEquals("Bar", contract.getCallbackName());
         assertNotNull(type.getServices().get(Bar.class.getSimpleName()));
     }
 
@@ -96,8 +99,9 @@ public class ServiceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        JavaInterfaceProcessorRegistryImpl registry = new JavaInterfaceProcessorRegistryImpl();
-        processor = new ServiceProcessor(new ImplementationProcessorServiceImpl(registry));
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        processor = new ServiceProcessor();
+        processor.setInterfaceProcessorRegistry(registry);
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
     }
 

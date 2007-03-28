@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.Collection;
 import javax.xml.stream.XMLInputFactory;
 
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.api.annotation.Monitor;
@@ -77,6 +78,7 @@ public class DeployerImpl implements Deployer {
         this.connector = connector;
     }
 
+    @Constructor
     public DeployerImpl() {
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
     }

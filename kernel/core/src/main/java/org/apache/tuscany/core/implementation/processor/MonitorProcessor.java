@@ -18,16 +18,12 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.osoa.sca.annotations.Reference;
-
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Processes an {@link @Monitor} annotation, updating the component type with corresponding {@link
@@ -38,8 +34,8 @@ import org.apache.tuscany.host.MonitorFactory;
 public class MonitorProcessor extends AbstractPropertyProcessor<Monitor> {
     private MonitorFactory monitorFactory;
 
-    public MonitorProcessor(@Reference MonitorFactory factory, @Reference ImplementationProcessorService service) {
-        super(Monitor.class, service);
+    public MonitorProcessor(@Reference MonitorFactory factory) {
+        super(Monitor.class);
         this.monitorFactory = factory;
     }
 

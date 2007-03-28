@@ -18,31 +18,28 @@
  */
 package org.apache.tuscany.core.integration.implementation;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.apache.tuscany.api.annotation.Resource;
-
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import static org.apache.tuscany.spi.model.Scope.COMPOSITE;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
-import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ResourceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * Sanity check of the <code>IntegrationRegistry</code> to verify operation with processors
@@ -73,9 +70,10 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());
         JavaInterfaceProcessorRegistryImpl interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
-        ImplementationProcessorService service = new ImplementationProcessorServiceImpl(interfaceProcessorRegistry);
-        registry.registerProcessor(new PropertyProcessor(service));
-        registry.registerProcessor(new ReferenceProcessor(interfaceProcessorRegistry));
+        registry.registerProcessor(new PropertyProcessor());
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor();
+        referenceProcessor.setInterfaceProcessorRegistry(interfaceProcessorRegistry);
+        registry.registerProcessor(referenceProcessor);
         registry.registerProcessor(new ResourceProcessor());
     }
 

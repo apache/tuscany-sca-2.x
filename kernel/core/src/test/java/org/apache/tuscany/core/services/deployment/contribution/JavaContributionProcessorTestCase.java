@@ -22,13 +22,11 @@ import java.net.URL;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
-
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
-import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
@@ -38,8 +36,6 @@ import org.apache.tuscany.core.monitor.NullMonitorFactory;
 
 public class JavaContributionProcessorTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
-    private static final String JAVA_ARTIFACT_URL =
-        "jar:file://repository/sample-calculator.jar!/calculator/AddService.class";
     private IntrospectionRegistryImpl registry;
 
     protected void setUp() throws Exception {
@@ -50,9 +46,10 @@ public class JavaContributionProcessorTestCase extends TestCase {
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());
         JavaInterfaceProcessorRegistryImpl interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
-        ImplementationProcessorService service = new ImplementationProcessorServiceImpl(interfaceProcessorRegistry);
-        registry.registerProcessor(new PropertyProcessor(service));
-        registry.registerProcessor(new ReferenceProcessor(interfaceProcessorRegistry));
+        registry.registerProcessor(new PropertyProcessor());
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor();
+        referenceProcessor.setInterfaceProcessorRegistry(interfaceProcessorRegistry);
+        registry.registerProcessor(referenceProcessor);
         registry.registerProcessor(new ResourceProcessor());
     }
 

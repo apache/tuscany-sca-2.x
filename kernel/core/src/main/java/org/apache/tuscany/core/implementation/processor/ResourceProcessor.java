@@ -18,26 +18,27 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import java.lang.reflect.Constructor;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
+import org.apache.tuscany.spi.implementation.java.JavaElement;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.Parameter;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.implementation.java.Resource;
 
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
-
 /**
- * Processes an {@link @Resource} annotation, updating the component type with corresponding {@link
- * org.apache.tuscany.spi.implementation.java.Resource}
- *
+ * Processes an {@link @Resource} annotation, updating the component type with
+ * corresponding {@link org.apache.tuscany.spi.implementation.java.Resource}
+ * 
  * @version $Rev$ $Date$
  */
 public class ResourceProcessor extends ImplementationProcessorExtension {
@@ -45,21 +46,17 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
     public ResourceProcessor() {
     }
 
-    public void visitMethod(
-        Method method,
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-        DeploymentContext context)
-        throws ProcessingException {
-        org.apache.tuscany.api.annotation.Resource annotation =
-            method.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
+    public void visitMethod(Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context) throws ProcessingException {
+        org.apache.tuscany.api.annotation.Resource annotation = method
+            .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (annotation == null) {
             return;
         }
         if (method.getParameterTypes().length != 1) {
             throw new IllegalResourceException("Resource setter must have one parameter", method.toString());
         }
-        Class<?> resourceType = method.getParameterTypes()[0];
-
         String name = annotation.name();
         if (name.length() < 1) {
             name = toPropertyName(method.getName());
@@ -69,7 +66,7 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         }
 
         String mappedName = annotation.mappedName();
-        Resource<?> resource = createResource(name, resourceType, method);
+        Resource<?> resource = createResource(name, new JavaElement(method, 0));
         resource.setOptional(annotation.optional());
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
@@ -77,13 +74,12 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         type.add(resource);
     }
 
-    public void visitField(
-        Field field,
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-        DeploymentContext context) throws ProcessingException {
+    public void visitField(Field field,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
 
-        org.apache.tuscany.api.annotation.Resource annotation =
-            field.getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
+        org.apache.tuscany.api.annotation.Resource annotation = field
+            .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (annotation == null) {
             return;
         }
@@ -98,7 +94,7 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         Class<?> fieldType = field.getType();
         String mappedName = annotation.mappedName();
 
-        Resource<?> resource = createResource(name, fieldType, field);
+        Resource<?> resource = createResource(name, new JavaElement(field));
         resource.setOptional(annotation.optional());
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
@@ -106,17 +102,43 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         type.add(resource);
     }
 
-    public <T> Resource<T> createResource(String name, Class<T> type, Member member) {
-        return new Resource<T>(name, type, member);
+    public <T> Resource<T> createResource(String name, JavaElement element) {
+        return new Resource<T>(name, (Class<T>)element.getType(), (Member)element.getAnchor());
     }
 
-    public <T> void visitConstructor(
-        Constructor<T> constructor,
-        PojoComponentType<JavaMappedService, JavaMappedReference,
-            JavaMappedProperty<?>> type,
-        DeploymentContext context) throws ProcessingException {
+    public void visitConstructorParameter(Parameter parameter,
+                                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                          DeploymentContext context) throws ProcessingException {
+        org.apache.tuscany.api.annotation.Resource resourceAnnotation = parameter
+            .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
+        if (resourceAnnotation != null) {
+            String name = resourceAnnotation.name();
+            if ("".equals(name)) {
+                name = parameter.getName();
+            }
+            if ("".equals(name)) {
+                throw new InvalidResourceException("Missing resource name", parameter.toString());
+            }
 
+            if (!"".equals(parameter.getName()) && !name.equals(parameter.getName())) {
+                throw new InvalidConstructorException("Mismatched resource name: " + parameter);
+            }
+
+            if (type.getResources().get(name) != null) {
+                throw new DuplicateResourceException(name);
+            }
+
+            String mappedName = resourceAnnotation.mappedName();
+
+            Resource<?> resource = createResource(name, parameter);
+            resource.setOptional(resourceAnnotation.optional());
+            if (mappedName.length() > 0) {
+                resource.setMappedName(mappedName);
+            }
+            type.add(resource);
+            parameter.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
+            parameter.setName(name);
+        }
     }
-
 
 }

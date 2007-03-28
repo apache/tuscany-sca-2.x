@@ -18,20 +18,25 @@
  */
 package org.apache.tuscany.core.util;
 
+import java.beans.Introspector;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
  * Implements various reflection-related operations
- *
+ * 
  * @version $Rev$ $Date$
  */
 public final class JavaIntrospectionHelper {
@@ -44,16 +49,17 @@ public final class JavaIntrospectionHelper {
     private JavaIntrospectionHelper() {
     }
 
-
     /**
-     * Returns a collection of public, and protected fields declared by a class or one of its supertypes
+     * Returns a collection of public, and protected fields declared by a class
+     * or one of its supertypes
      */
     public static Set<Field> getAllPublicAndProtectedFields(Class clazz) {
         return getAllPublicAndProtectedFields(clazz, new HashSet<Field>());
     }
 
     /**
-     * Recursively evaluates the type hierachy to return all fields that are public or protected
+     * Recursively evaluates the type hierachy to return all fields that are
+     * public or protected
      */
     private static Set<Field> getAllPublicAndProtectedFields(Class clazz, Set<Field> fields) {
         if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
@@ -72,10 +78,12 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Returns a collection of public and protected  methods declared by a class or one of its supertypes. Note that
-     * overriden methods will not be returned in the collection (i.e. only the method override will be). <p/> This
-     * method can potentially be expensive as reflection information is not cached. It is assumed that this method will
-     * be used during a configuration phase.
+     * Returns a collection of public and protected methods declared by a class
+     * or one of its supertypes. Note that overriden methods will not be
+     * returned in the collection (i.e. only the method override will be). <p/>
+     * This method can potentially be expensive as reflection information is not
+     * cached. It is assumed that this method will be used during a
+     * configuration phase.
      */
     public static Set<Method> getAllUniquePublicProtectedMethods(Class clazz) {
         return getAllUniqueMethods(clazz, new HashSet<Method>());
@@ -101,7 +109,8 @@ public final class JavaIntrospectionHelper {
                 List<Method> temp = new ArrayList<Method>();
                 boolean matched = false;
                 for (Method method : methods) {
-                    // only add if not already in the set from a supclass (i.e. the
+                    // only add if not already in the set from a supclass (i.e.
+                    // the
                     // method is not overrided)
                     if (exactMethodMatch(declaredMethod, method)) {
                         matched = true;
@@ -117,17 +126,18 @@ public final class JavaIntrospectionHelper {
                 temp.clear();
             }
         }
-        // evaluate class hierarchy - this is done last to track inherited methods
+        // evaluate class hierarchy - this is done last to track inherited
+        // methods
         methods = getAllUniqueMethods(pClass.getSuperclass(), methods);
         return methods;
     }
 
     /**
-     * Finds the closest matching field with the given name, that is, a field of the exact specified type or,
-     * alternately, of a supertype.
-     *
-     * @param name   the name of the field
-     * @param type   the field type
+     * Finds the closest matching field with the given name, that is, a field of
+     * the exact specified type or, alternately, of a supertype.
+     * 
+     * @param name the name of the field
+     * @param type the field type
      * @param fields the collection of fields to search
      * @return the matching field or null if not found
      */
@@ -137,12 +147,14 @@ public final class JavaIntrospectionHelper {
             if (field.getName().equals(name)) {
                 if (field.getType().equals(type)) {
                     return field; // exact match
-                } else if (field.getType().isAssignableFrom(type)
+                } else if (field.getType().isAssignableFrom(type) 
                     || (field.getType().isPrimitive() && primitiveAssignable(field.getType(), type))) {
-                    // We could have the situation where a field parameter is a primitive and the demarshalled value is
+                    // We could have the situation where a field parameter is a
+                    // primitive and the demarshalled value is
                     // an object counterpart (e.g. Integer and int)
                     // @spec issue
-                    // either an interface or super class, so keep a reference until
+                    // either an interface or super class, so keep a reference
+                    // until
                     // we know there are no closer types
                     candidate = field;
                 }
@@ -156,11 +168,11 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Finds the closest matching method with the given name, that is, a method taking the exact parameter types or,
-     * alternately, parameter supertypes.
-     *
-     * @param name    the name of the method
-     * @param types   the method parameter types
+     * Finds the closest matching method with the given name, that is, a method
+     * taking the exact parameter types or, alternately, parameter supertypes.
+     * 
+     * @param name the name of the method
+     * @param types the method parameter types
      * @param methods the collection of methods to search
      * @return the matching method or null if not found
      */
@@ -202,74 +214,38 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Searches a collection of fields for one that matches by name and has a multiplicity type. i.e. a List or Array of
-     * interfaces
-     *
-     * @return a matching field or null
-     */
-    public static Field findMultiplicityFieldByName(String name, Set<Field> fields) {
-        for (Field candidate : fields) {
-            if (candidate.getName().equals(name)
-                && (List.class.isAssignableFrom(candidate.getType()) || (candidate.getType().isArray()
-                && candidate.getType().getComponentType() != null && candidate.getType().getComponentType()
-                .isInterface()))) {
-                return candidate;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Searches a collection of method for one that matches by name and has single parameter of a multiplicity type.
-     * i.e. a List or Array of interfaces
-     *
-     * @return a matching method or null
-     */
-    public static Method findMultiplicityMethodByName(String name, Set<Method> methods) {
-        for (Method candidate : methods) {
-            if (candidate.getName().equals(name)
-                && candidate.getParameterTypes().length == 1
-                && (List.class.isAssignableFrom(candidate.getParameterTypes()[0])
-                || (candidate.getParameterTypes()[0].isArray()
-                && candidate.getParameterTypes()[0].getComponentType() != null
-                && candidate.getParameterTypes()[0].getComponentType().isInterface()))) {
-                return candidate;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Determines if two methods "match" - that is, they have the same method names and exact parameter types (one is
-     * not a supertype of the other)
+     * Determines if two methods "match" - that is, they have the same method
+     * names and exact parameter types (one is not a supertype of the other)
      */
     public static boolean exactMethodMatch(Method method1, Method method2) {
         if (!method1.getName().equals(method2.getName())) {
             return false;
         }
-        Class[] types1 = method1.getParameterTypes();
-        Class[] types2 = method2.getParameterTypes();
-        if (types1.length == 0 && types2.length == 0) {
-            return true;
-        } else if (types1.length == types2.length) {
-            for (int n = 0; n < types1.length; n++) {
-                if (!types1[n].equals(types2[n])) {
-                    return false;
-                }
-            }
-            return true;
+        Class<?>[] types1 = method1.getParameterTypes();
+        Class<?>[] types2 = method2.getParameterTypes();
+        if (types1.length != types2.length) {
+            return false;
         }
-        return false;
+        boolean matched = true;
+        for (int i = 0; i < types1.length; i++) {
+            if (types1[i] != types2[i]) {
+                matched = false;
+                break;
+            }
+        }
+        return matched;
     }
 
     public static <T> Constructor<T> getDefaultConstructor(Class<T> clazz) throws NoSuchMethodException {
-        return clazz.getConstructor((Class[]) null);
+        return clazz.getConstructor((Class[])null);
     }
 
     /**
-     * Loads a class corresponding to the class name using the current context class loader.
-     *
-     * @throws ClassNotFoundException if the class was not found on the classpath
+     * Loads a class corresponding to the class name using the current context
+     * class loader.
+     * 
+     * @throws ClassNotFoundException if the class was not found on the
+     *             classpath
      */
     public static Class loadClass(String pName) throws ClassNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -277,57 +253,100 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Returns the simple name of a class - i.e. the class name devoid of its package qualifier
-     *
+     * Returns the simple name of a class - i.e. the class name devoid of its
+     * package qualifier
+     * 
      * @param implClass the implmentation class
      */
     public static String getBaseName(Class<?> implClass) {
-        String baseName = implClass.getName();
-        int lastDot = baseName.lastIndexOf('.');
-        if (lastDot != -1) {
-            baseName = baseName.substring(lastDot + 1);
-        }
-        return baseName;
+        return implClass.getSimpleName();
     }
 
     public static boolean isImmutable(Class clazz) {
-        return String.class == clazz
-            || clazz.isPrimitive()
-            || Number.class.isAssignableFrom(clazz)
-            || Boolean.class.isAssignableFrom(clazz)
-            || Character.class.isAssignableFrom(clazz)
-            || Byte.class.isAssignableFrom(clazz);
+        return String.class == clazz || clazz.isPrimitive()
+               || Number.class.isAssignableFrom(clazz)
+               || Boolean.class.isAssignableFrom(clazz)
+               || Character.class.isAssignableFrom(clazz)
+               || Byte.class.isAssignableFrom(clazz);
     }
 
     /**
-     * Takes a property name and converts it to a getter method name according to JavaBean conventions. For example,
-     * property <code>foo<code> is returned as <code>getFoo</code>
+     * Takes a property name and converts it to a getter method name according
+     * to JavaBean conventions. For example, property
+     * <code>foo<code> is returned as <code>getFoo</code>
      */
     public static String toGetter(String name) {
         return "get" + name.toUpperCase().substring(0, 1) + name.substring(1);
     }
 
     /**
-     * Takes a setter or getter method name and converts it to a property name according to JavaBean conventions. For
-     * example, <code>setFoo(var)</code> is returned as property <code>foo<code>
+     * Takes a setter or getter method name and converts it to a property name
+     * according to JavaBean conventions. For example, <code>setFoo(var)</code>
+     * is returned as property <code>foo<code>
      */
     public static String toPropertyName(String name) {
         if (!name.startsWith("set")) {
             return name;
         }
-        return Character.toLowerCase(name.charAt(3)) + name.substring(4);
+        return Introspector.decapitalize(name.substring(3));
+    }
+
+    public static Class<?> getErasure(Type type) {
+        if (type instanceof Class) {
+            return (Class)type;
+        } else if (type instanceof GenericArrayType) {
+            // FIXME: How to deal with the []?
+            GenericArrayType arrayType = (GenericArrayType)type;
+            return getErasure(arrayType.getGenericComponentType());
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType)type;
+            return getErasure(pType.getRawType());
+        } else if (type instanceof WildcardType) {
+            WildcardType wType = (WildcardType)type;
+            Type[] types = wType.getUpperBounds();
+            return getErasure(types[0]);
+        } else if (type instanceof TypeVariable) {
+            TypeVariable var = (TypeVariable)type;
+            Type[] types = var.getBounds();
+            return getErasure(types[0]);
+        }
+        return null;
+    }
+
+    public static Class<?> getBaseType(Class<?> cls, Type genericType) {
+        if (cls.isArray()) {
+            return cls.getComponentType();
+        } else if (Collection.class.isAssignableFrom(cls)) {
+            if (genericType instanceof ParameterizedType) {
+                // Collection<BaseType>
+                ParameterizedType parameterizedType = (ParameterizedType)genericType;
+                Type baseType = parameterizedType.getActualTypeArguments()[0];
+                if (baseType instanceof GenericArrayType) {
+                    // Base is array
+                    return cls;
+                } else {
+                    return getErasure(baseType);
+                }
+            } else {
+                return cls;
+            }
+        } else {
+            return cls;
+        }
     }
 
     /**
-     * Takes a property name and converts it to a setter method name according to JavaBean conventions. For example, the
-     * property <code>foo<code> is returned as <code>setFoo(var)</code>
+     * Takes a property name and converts it to a setter method name according
+     * to JavaBean conventions. For example, the property
+     * <code>foo<code> is returned as <code>setFoo(var)</code>
      */
     public static String toSetter(String name) {
         return "set" + name.toUpperCase().substring(0, 1) + name.substring(1);
     }
 
     /**
-     * Compares a two types, assuming one is a primitive, to determine if the other is its object counterpart
+     * Compares a two types, assuming one is a primitive, to determine if the
+     * other is its object counterpart
      */
     private static boolean primitiveAssignable(Class memberType, Class param) {
         if (memberType == Integer.class) {
@@ -364,17 +383,19 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Returns the generic types represented in the given type. Usage as follows: <code>
+     * Returns the generic types represented in the given type. Usage as
+     * follows: <code>
      * JavaIntrospectionHelper.getGenerics(field.getGenericType());
      * <p/>
      * JavaIntrospectionHelper.getGenerics(m.getGenericParameterTypes()[0];); </code>
-     *
-     * @return the generic types in order of declaration or an empty array if the type is not genericized
+     * 
+     * @return the generic types in order of declaration or an empty array if
+     *         the type is not genericized
      */
     public static List<? extends Type> getGenerics(Type genericType) {
         List<Type> classes = new ArrayList<Type>();
         if (genericType instanceof ParameterizedType) {
-            ParameterizedType ptype = (ParameterizedType) genericType;
+            ParameterizedType ptype = (ParameterizedType)genericType;
             // get the type arguments
             Type[] targs = ptype.getActualTypeArguments();
             for (Type targ : targs) {
@@ -385,9 +406,8 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Returns the generic type specified by the class at the given position as in:
-     * <p/>
-     * <code> public class Foo<Bar,Baz>{ //.. }
+     * Returns the generic type specified by the class at the given position as
+     * in: <p/> <code> public class Foo<Bar,Baz>{ //.. }
      * <p/>
      * JavaIntrospectionHelper.introspectGeneric(Foo.class,1); <code>
      * <p/>
@@ -397,26 +417,27 @@ public final class JavaIntrospectionHelper {
         assert clazz != null : "No class specified";
         Type type = clazz.getGenericSuperclass();
         if (type instanceof ParameterizedType) {
-            Type[] args = ((ParameterizedType) type).getActualTypeArguments();
+            Type[] args = ((ParameterizedType)type).getActualTypeArguments();
             if (args.length <= pos) {
                 throw new IllegalArgumentException("Invalid index value for generic class " + clazz.getName());
             }
-            return (Class) ((ParameterizedType) type).getActualTypeArguments()[pos];
+            return (Class)((ParameterizedType)type).getActualTypeArguments()[pos];
         } else {
             Type[] interfaces = clazz.getGenericInterfaces();
             for (Type itype : interfaces) {
                 if (!(itype instanceof ParameterizedType)) {
                     continue;
                 }
-                ParameterizedType interfaceType = (ParameterizedType) itype;
-                return (Class) interfaceType.getActualTypeArguments()[0];
+                ParameterizedType interfaceType = (ParameterizedType)itype;
+                return (Class)interfaceType.getActualTypeArguments()[0];
             }
         }
         return null;
     }
 
     /**
-     * Returns the set of interfaces implemented by the given class and its ancestors or a blank set if none
+     * Returns the set of interfaces implemented by the given class and its
+     * ancestors or a blank set if none
      */
     public static Set<Class> getAllInterfaces(Class clazz) {
         Set<Class> implemented = new HashSet<Class>();
