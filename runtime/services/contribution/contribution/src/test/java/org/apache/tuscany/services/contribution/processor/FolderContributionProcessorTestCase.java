@@ -19,13 +19,21 @@
 package org.apache.tuscany.services.contribution.processor;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.easymock.EasyMock;
+
 public class FolderContributionProcessorTestCase extends TestCase {
-    private static final String DIRECTORY_CONTRIBUTION = "//D:/DEV/Projects/Tuscany/source/java-sca-integration/samples/sca/calculator";
+    private static final String CONTRIBUTION_URI = "sca://contributions/002/";
+    private static final String DIRECTORY_CONTRIBUTION = "../../../../core-samples/common/calculator";
     
     private File contributionRoot;
+    private FolderContributionProcessor folderProcessor = new FolderContributionProcessor();
     
 
     protected void setUp() throws Exception {
@@ -34,17 +42,17 @@ public class FolderContributionProcessorTestCase extends TestCase {
     }
     
     public final void testProcessJarArtifacts() throws Exception {
-//        FolderContributionProcessor folderContribution = new FolderContributionProcessor();
-//        ContributionProcessorRegistry mockRegistry = EasyMock.createMock(ContributionProcessorRegistry.class);
-//        mockRegistry.register(FolderContributionProcessor.CONTENT_TYPE, folderContribution);
-//        EasyMock.expectLastCall().anyTimes();
-//        EasyMock.replay(mockRegistry);
-//        folderContribution.setContributionProcessorRegistry(mockRegistry);
-//        folderContribution.start();
-//        EasyMock.verify(mockRegistry);
-//        
-//        Contribution contribution = new Contribution(URI.create("sca://contributions/001"));
-//        contribution.setLocation(this.contributionRoot.toURL());
-//        folderContribution.processContent(contribution, contribution.getUri(), null);
+        ContributionProcessorRegistry mockRegistry = EasyMock.createMock(ContributionProcessorRegistry.class);
+        mockRegistry.register(FolderContributionProcessor.CONTENT_TYPE, folderProcessor);
+        mockRegistry.processContent((Contribution)EasyMock.anyObject(), (URI) EasyMock.anyObject(), (InputStream) EasyMock.anyObject() );
+        EasyMock.expectLastCall().anyTimes();
+        EasyMock.replay(mockRegistry);
+        folderProcessor.setContributionProcessorRegistry(mockRegistry);
+        folderProcessor.start();
+        EasyMock.verify(mockRegistry);
+        
+        Contribution contribution = new Contribution(URI.create(CONTRIBUTION_URI));
+        contribution.setLocation(this.contributionRoot.toURL());
+        folderProcessor.processContent(contribution, contribution.getUri(), null);
     }
 }

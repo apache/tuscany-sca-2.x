@@ -82,10 +82,14 @@ public class FolderContributionProcessor extends ContributionProcessorExtension 
 
         // Assume the root is a jar file
         File rootFolder;
-
+        
         try {
             rootFolder = new File(rootURL.toURI());
             if (rootFolder.isDirectory()) {
+                if(! rootFolder.exists()){
+                    throw new InvalidFolderContributionException(rootFolder.getAbsolutePath());
+                }
+
                 this.traverse(artifacts, rootFolder);
             }
 
