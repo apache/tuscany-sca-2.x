@@ -65,7 +65,7 @@ public class Main {
         
         //start the process of installing the contribution
         ContributionRepository contributionRepository = new ContributionRepositoryImpl(null);
-        ContributionService contributionService = new ContributionServiceImpl(contributionRepository, null);
+        ContributionService contributionService = new ContributionServiceImpl(contributionRepository, null, null);
 
         URL contributionURL = contributionSource.toURL();
         InputStream contributionStream = contributionURL.openStream();
