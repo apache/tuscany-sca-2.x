@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalDestructorException extends ProcessingException {
+    private static final long serialVersionUID = 365719353107446326L;
 
     public IllegalDestructorException(String message) {
         super(message);

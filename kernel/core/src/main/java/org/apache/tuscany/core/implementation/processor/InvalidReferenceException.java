@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidReferenceException extends ProcessingException {
+    private static final long serialVersionUID = -3285246635989254165L;
 
     public InvalidReferenceException(String message) {
         super(message);

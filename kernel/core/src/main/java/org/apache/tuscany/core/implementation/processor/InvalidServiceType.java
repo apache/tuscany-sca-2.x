@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidServiceType extends ProcessingException {
+    private static final long serialVersionUID = -1076466639416644386L;
 
     public InvalidServiceType(String message, String identifier) {
         super(message, identifier);

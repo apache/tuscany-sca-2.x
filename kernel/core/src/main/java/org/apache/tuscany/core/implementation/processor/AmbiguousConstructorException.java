@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class AmbiguousConstructorException extends ProcessingException {
+    private static final long serialVersionUID = 3662860753837091880L;
 
     public AmbiguousConstructorException(String message) {
         super(message);

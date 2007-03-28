@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class DuplicateDestructorException extends ProcessingException {
+    private static final long serialVersionUID = -7474912510114895203L;
 
     public DuplicateDestructorException(String message) {
         super(message);

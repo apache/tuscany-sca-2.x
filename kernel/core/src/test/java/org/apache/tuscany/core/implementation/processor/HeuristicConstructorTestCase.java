@@ -38,7 +38,7 @@ import org.osoa.sca.annotations.Remotable;
 /**
  * @version $Rev$ $Date$
  */
-public class HeuristicConstructorTestCase extends AbstractConstructorProcessorTest {
+public class HeuristicConstructorTestCase extends AbstractProcessorTest {
 
     private HeuristicPojoProcessor processor;
 

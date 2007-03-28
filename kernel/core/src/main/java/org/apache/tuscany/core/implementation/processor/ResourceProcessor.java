@@ -91,7 +91,6 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
             throw new DuplicateResourceException(name);
         }
 
-        Class<?> fieldType = field.getType();
         String mappedName = annotation.mappedName();
 
         Resource<?> resource = createResource(name, new JavaElement(field));
@@ -102,12 +101,14 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         type.add(resource);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> Resource<T> createResource(String name, JavaElement element) {
         return new Resource<T>(name, (Class<T>)element.getType(), (Member)element.getAnchor());
     }
 
     public void visitConstructorParameter(Parameter parameter,
-                                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                          PojoComponentType<JavaMappedService, 
+                                          JavaMappedReference, JavaMappedProperty<?>> type,
                                           DeploymentContext context) throws ProcessingException {
         org.apache.tuscany.api.annotation.Resource resourceAnnotation = parameter
             .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);

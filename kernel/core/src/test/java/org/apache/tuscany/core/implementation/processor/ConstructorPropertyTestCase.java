@@ -33,7 +33,7 @@ import org.osoa.sca.annotations.Property;
 /**
  * @version $Rev$ $Date$
  */
-public class ConstructorPropertyTestCase extends AbstractConstructorProcessorTest {
+public class ConstructorPropertyTestCase extends AbstractProcessorTest {
 
     public void testProperty() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =

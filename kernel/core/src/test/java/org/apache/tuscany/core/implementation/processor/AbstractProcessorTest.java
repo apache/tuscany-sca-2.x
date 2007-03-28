@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * 
  * @version $Rev$ $Date$
  */
-public class AbstractConstructorProcessorTest extends TestCase {
+public class AbstractProcessorTest extends TestCase {
     protected ConstructorProcessor constructorProcessor;
     private ReferenceProcessor referenceProcessor = new ReferenceProcessor();
     private PropertyProcessor propertyProcessor = new PropertyProcessor();
@@ -46,7 +46,7 @@ public class AbstractConstructorProcessorTest extends TestCase {
     private MonitorProcessor monitorProcessor = new MonitorProcessor(new NullMonitorFactory());
 
 
-    protected AbstractConstructorProcessorTest() {
+    protected AbstractProcessorTest() {
         constructorProcessor = new ConstructorProcessor();
         referenceProcessor = new ReferenceProcessor();
         referenceProcessor.setInterfaceProcessorRegistry(new JavaInterfaceProcessorRegistryImpl());

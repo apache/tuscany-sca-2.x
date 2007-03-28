@@ -26,6 +26,8 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalInitException extends ProcessingException {
+    private static final long serialVersionUID = -3690763271986854701L;
+
     public IllegalInitException(String message) {
         super(message);
     }

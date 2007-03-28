@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidPropertyException extends ProcessingException {
+    private static final long serialVersionUID = -2682862652069727948L;
 
     public InvalidPropertyException(String message) {
         super(message);

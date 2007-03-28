@@ -27,6 +27,8 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class DuplicateResourceException extends ProcessingException {
 
+    private static final long serialVersionUID = 1619276459330463299L;
+
     public DuplicateResourceException(String message) {
         super(message);
     }

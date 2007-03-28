@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalContextException extends ProcessingException {
+    private static final long serialVersionUID = -6946383136750117008L;
 
     public IllegalContextException(String message) {
         super(message);

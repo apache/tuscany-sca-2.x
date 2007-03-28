@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalResourceException extends ProcessingException {
+    private static final long serialVersionUID = -1100936539412435579L;
 
     public IllegalResourceException(String message) {
         super(message);
