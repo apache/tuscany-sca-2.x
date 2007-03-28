@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.Parameter;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -123,9 +124,9 @@ public class LaunchedComponentBuilder extends ComponentBuilderExtension<Launched
         Constructor<?> constr = ctorDef.getConstructor();
         PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
         configuration.setInstanceFactory(instanceFactory);
-        configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
-        for (Class<?> clazz : constr.getParameterTypes()) {
-            configuration.addConstructorParamType(clazz);
+        for (Parameter param : ctorDef.getParameters()) {
+            configuration.getConstructorParamNames().add(param.getName());
+            configuration.addConstructorParamType(param.getType());
         }
         configuration.setName(definition.getUri());
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
