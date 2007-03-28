@@ -18,16 +18,14 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
+import org.apache.tuscany.core.resolver.AutowireResolver;
+import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.implementation.java.Introspector;
 import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
-
-import org.apache.tuscany.core.resolver.AutowireResolver;
-import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * Interface that abstracts the process used to create a running Tuscany system. Implementation of this may provide

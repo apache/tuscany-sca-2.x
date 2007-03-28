@@ -18,35 +18,35 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.Parameter;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
-
 /**
- * Handles processing of a constructor decorated with {@link org.osoa.sca.annotations.Constructor}
- *
+ * Handles processing of a constructor decorated with
+ * {@link org.osoa.sca.annotations.Constructor}
+ * 
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("unchecked")
 public class ConstructorProcessor extends ImplementationProcessorExtension {
+    // private List<ImplementationProcessorExtension> paramProcessors = new
+    // ArrayList<ImplementationProcessorExtension>();
 
-    private ImplementationProcessorService service;
-
-    public ConstructorProcessor(@Reference ImplementationProcessorService service) {
-        this.service = service;
+    public ConstructorProcessor() {
+        // paramProcessors.add(new ReferenceProcessor());
+        // paramProcessors.add(new PropertyProcessor());
+        // paramProcessors.add(new ResourceProcessor());
     }
 
     public <T> void visitClass(Class<T> clazz,
@@ -55,58 +55,46 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
         Constructor[] ctors = clazz.getConstructors();
         boolean found = false;
         for (Constructor constructor : ctors) {
+            ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
+            type.getConstructors().put(constructor, definition);
             if (constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class) != null) {
                 if (found) {
                     String name = constructor.getDeclaringClass().getName();
                     throw new DuplicateConstructorException("Multiple constructors marked with @Constructor", name);
                 }
                 found = true;
+                type.setConstructorDefinition(definition);
             }
         }
     }
 
     public <T> void visitConstructor(Constructor<T> constructor,
-                                     PojoComponentType<JavaMappedService, JavaMappedReference,
-                                         JavaMappedProperty<?>> type,
+                                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {
-        org.osoa.sca.annotations.Constructor annotation =
-            constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class);
+        org.osoa.sca.annotations.Constructor annotation = constructor
+            .getAnnotation(org.osoa.sca.annotations.Constructor.class);
         if (annotation == null) {
             return;
         }
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
-        if (definition != null && !definition.getConstructor().equals(constructor)) {
-            String name = constructor.getDeclaringClass().getName();
-            throw new DuplicateConstructorException("Multiple constructor definitions found", name);
-        } else if (definition == null) {
+        if (definition == null) {
             definition = new ConstructorDefinition(constructor);
+            type.setConstructorDefinition(definition);
         }
-        Class<?>[] params = constructor.getParameterTypes();
-        String[] names = annotation.value();
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        List<String> injectionNames = definition.getInjectionNames();
-        for (int i = 0; i < params.length; i++) {
-            Class<?> param = params[i];
-            Annotation[] paramAnnotations = annotations[i];
-            try {
-                if (!service.processParam(param,
-                    constructor.getGenericParameterTypes()[i],
-                    paramAnnotations,
-                    names,
-                    i,
-                    type,
-                    injectionNames)) {
-                    String name = (i < names.length) ? names[i] : "";
-                    service.addName(injectionNames, i, name);
-                }
-            } catch (ProcessingException e) {
-                e.setMember(constructor);
-                throw e;
-            }
+        Parameter[] parameters = definition.getParameters();
+        String[] value = annotation.value();
+        boolean isDefault = value.length == 0 || (value.length == 1 && "".equals(value[0]));
+        if (!isDefault && value.length != parameters.length) {
+            throw new InvalidConstructorException("Nubmer of names in @Constructor doesn't match the actual parameters");
         }
-        if (names.length != 0 && names[0].length() != 0 && names.length != params.length) {
-            throw new InvalidConstructorException("Names in @Constructor do not match number of parameters");
+        for (int i = 0; i < parameters.length; i++) {
+            parameters[i].setName(i < value.length ? value[i] : "");
         }
         type.setConstructorDefinition(definition);
+        // for (ImplementationProcessorExtension processor : paramProcessors) {
+        // processor.setInterfaceProcessorRegistry(interfaceProcessorRegistry);
+        // processor.setRegistry(registry);
+        // processor.visitConstructor(constructor, type, context);
+        // }
     }
 }

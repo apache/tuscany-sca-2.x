@@ -38,9 +38,8 @@ import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
  */
 public class ReferenceProcessorTestCase extends TestCase {
 
-    PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-        new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-    ReferenceProcessor processor = new ReferenceProcessor(new JavaInterfaceProcessorRegistryImpl());
+    private PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type;
+    private ReferenceProcessor processor;
 
     public void testMethodAnnotation() throws Exception {
         processor.visitMethod(ReferenceProcessorTestCase.Foo.class.getMethod("setFoo", Ref.class), type, null);
@@ -48,7 +47,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         assertNotNull(reference);
         ServiceContract contract = reference.getServiceContract();
         assertEquals(Ref.class, contract.getInterfaceClass());
-        assertEquals("ReferenceProcessorTestCase$Ref", contract.getInterfaceName());
+        assertEquals("Ref", contract.getInterfaceName());
     }
 
     public void testMethodRequired() throws Exception {
@@ -56,9 +55,9 @@ public class ReferenceProcessorTestCase extends TestCase {
             ReferenceProcessorTestCase.Foo.class.getMethod("setFooRequired", Ref.class),
                               type,
                               null);
-        JavaMappedReference prop = type.getReferences().get("fooRequired");
-        assertNotNull(prop);
-        assertTrue(prop.isRequired());
+        JavaMappedReference ref = type.getReferences().get("fooRequired");
+        assertNotNull(ref);
+        assertTrue(ref.isRequired());
     }
 
     public void testMethodName() throws Exception {
@@ -75,7 +74,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         assertNotNull(reference);
         ServiceContract contract = reference.getServiceContract();
         assertEquals(Ref.class, contract.getInterfaceClass());
-        assertEquals("ReferenceProcessorTestCase$Ref", contract.getInterfaceName());
+        assertEquals("Ref", contract.getInterfaceName());
     }
 
     public void testFieldRequired() throws Exception {
@@ -125,7 +124,8 @@ public class ReferenceProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor = new ReferenceProcessor(new JavaInterfaceProcessorRegistryImpl());
+        processor = new ReferenceProcessor();
+        processor.setInterfaceProcessorRegistry(new JavaInterfaceProcessorRegistryImpl());
     }
 
     private interface Ref {

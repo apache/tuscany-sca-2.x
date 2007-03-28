@@ -21,30 +21,32 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Service;
+import junit.framework.TestCase;
 
+import org.apache.tuscany.core.idl.java.IllegalCallbackException;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
-import org.apache.tuscany.core.idl.java.IllegalCallbackException;
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Service;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ServiceCallbackTestCase extends TestCase {
+    private ServiceProcessor processor;
 
-    ServiceProcessor processor =
-        new ServiceProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
+    @Override
+    protected void setUp() throws Exception {
+        processor = new ServiceProcessor();
+        processor.setInterfaceProcessorRegistry(new JavaInterfaceProcessorRegistryImpl());
+    }
 
     public void testMethodCallbackInterface() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(FooImpl.class, type, null);
         JavaMappedService service = type.getServices().get(Foo.class.getSimpleName());
         assertNotNull(service);
@@ -54,8 +56,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testFieldCallbackInterface() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(FooImpl.class, type, null);
         JavaMappedService service = type.getServices().get(Foo.class.getSimpleName());
         assertNotNull(service);
@@ -65,8 +66,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testMethodDoesNotMatchCallback() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(BadBarImpl.class, type, null);
         Method method = BadBarImpl.class.getMethod("setWrongInterfaceCallback", String.class);
         try {
@@ -78,8 +78,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testNoParamCallback() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(BadBarImpl.class, type, null);
         Method method = BadBarImpl.class.getMethod("setNoParamCallback");
         try {
@@ -91,8 +90,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testFieldDoesNotMatchCallback() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(BadBarImpl.class, type, null);
         Field field = BadBarImpl.class.getDeclaredField("wrongInterfaceCallback");
         try {
@@ -104,8 +102,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testBadCallbackInterfaceAnnotation() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
             processor.visitClass(BadFooImpl.class, type, null);
             fail();
@@ -161,6 +158,5 @@ public class ServiceCallbackTestCase extends TestCase {
     private static class BadFooImpl implements BadFoo {
 
     }
-
 
 }

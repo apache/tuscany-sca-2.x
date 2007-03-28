@@ -86,9 +86,10 @@ public class MonitorProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Bar> ctor = Bar.class.getConstructor(BazMonitor.class);
+        ConstructorDefinition<Bar> definition = new ConstructorDefinition<Bar>(ctor);
         EasyMock.expect(monitorFactory.getMonitor(EasyMock.eq(BazMonitor.class))).andReturn(null);
         EasyMock.replay(monitorFactory);
-        processor.visitConstructor(ctor, type, null);
+        processor.visitConstructorParameter(definition.getParameters()[0], type, null);
         Map<String, JavaMappedProperty<?>> properties = type.getProperties();
         assertTrue(
             properties.get(BazMonitor.class.getName()).getDefaultValueFactory() instanceof SingletonObjectFactory);
@@ -107,12 +108,12 @@ public class MonitorProcessorTestCase extends TestCase {
         EasyMock.replay(monitorFactory);
         ConstructorDefinition<Bar> definition = new ConstructorDefinition<Bar>(ctor);
         JavaMappedProperty prop = new JavaMappedProperty();
-        definition.getInjectionNames().add("prop");
+        definition.getParameters()[0].setName("prop");
         type.setConstructorDefinition(definition);
         type.getProperties().put("prop", prop);
-        processor.visitConstructor(ctor, type, null);
+        processor.visitConstructorParameter(definition.getParameters()[1], type, null);
         Map<String, JavaMappedProperty<?>> properties = type.getProperties();
-        assertEquals(BazMonitor.class.getName(), definition.getInjectionNames().get(1));
+        assertEquals(BazMonitor.class.getName(), definition.getParameters()[1].getName());
         assertEquals(2, type.getProperties().size());
         String name = BazMonitor.class.getName();
         assertTrue(properties.get(name).getDefaultValueFactory() instanceof SingletonObjectFactory);
@@ -127,13 +128,13 @@ public class MonitorProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Bar> ctor = Bar.class.getConstructor(String.class, BazMonitor.class);
+        ConstructorDefinition<Bar> definition = new ConstructorDefinition<Bar>(ctor);
         EasyMock.expect(monitorFactory.getMonitor(EasyMock.eq(BazMonitor.class))).andReturn(null);
         EasyMock.replay(monitorFactory);
-        processor.visitConstructor(ctor, type, null);
+        processor.visitConstructorParameter(definition.getParameters()[1], type, null);
         Map<String, JavaMappedProperty<?>> properties = type.getProperties();
-        ConstructorDefinition definition = type.getConstructorDefinition();
-        assertEquals(2, definition.getInjectionNames().size());
-        assertEquals(BazMonitor.class.getName(), definition.getInjectionNames().get(1));
+        assertEquals(2, definition.getParameters().length);
+        assertEquals(BazMonitor.class.getName(), definition.getParameters()[1].getName());
         String name = BazMonitor.class.getName();
         assertTrue(properties.get(name).getDefaultValueFactory() instanceof SingletonObjectFactory);
         EasyMock.verify(monitorFactory);
@@ -143,8 +144,8 @@ public class MonitorProcessorTestCase extends TestCase {
         super.setUp();
         monitorFactory = EasyMock.createMock(MonitorFactory.class);
         JavaInterfaceProcessorRegistryImpl registry = new JavaInterfaceProcessorRegistryImpl();
-        ImplementationProcessorServiceImpl processor = new ImplementationProcessorServiceImpl(registry);
-        this.processor = new MonitorProcessor(monitorFactory, processor);
+        this.processor = new MonitorProcessor(monitorFactory);
+        processor.setInterfaceProcessorRegistry(registry);
     }
 
     private class Foo {

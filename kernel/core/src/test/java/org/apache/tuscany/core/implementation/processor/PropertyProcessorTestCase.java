@@ -107,8 +107,7 @@ public class PropertyProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        JavaInterfaceProcessorRegistryImpl registry = new JavaInterfaceProcessorRegistryImpl();
-        processor = new PropertyProcessor(new ImplementationProcessorServiceImpl(registry));
+        processor = new PropertyProcessor();
     }
 
     private class Foo {

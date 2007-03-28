@@ -16,21 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.implementation.java;
+package org.apache.tuscany.core.implementation.processor;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-
-import junit.framework.TestCase;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
+import org.apache.tuscany.spi.implementation.java.IllegalPropertyException;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessor;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.Parameter;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 
 /**
  * @version $Rev$ $Date$
@@ -39,11 +47,9 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     private ImplementationProcessor processor;
 
-
     public void testVisitMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", String.class);
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitMethod(method, type, null);
         JavaMappedProperty<?> prop = type.getProperties().get("test");
         assertNotNull(prop.getDefaultValueFactory());
@@ -51,45 +57,41 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     public void testVisitNoParamsMethod() throws Exception {
         Method method = Foo.class.getMethod("setNoParamsBar");
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
             processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalPropertyException e) {
-            //expected
+            // expected
         }
     }
 
     public void testVisitNonVoidMethod() throws Exception {
         Method method = Foo.class.getMethod("setBadBar", String.class);
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         try {
             processor.visitMethod(method, type, null);
             fail();
         } catch (IllegalPropertyException e) {
-            //expected
+            // expected
         }
     }
 
     public void testDuplicateMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", String.class);
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitMethod(method, type, null);
         try {
             processor.visitMethod(method, type, null);
             fail();
         } catch (DuplicatePropertyException e) {
-            //expected
+            // expected
         }
     }
 
     public void testVisitField() throws Exception {
         Field field = Foo.class.getDeclaredField("d");
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitField(field, type, null);
         JavaMappedProperty<?> prop = type.getProperties().get("test");
         assertNotNull(prop.getDefaultValueFactory());
@@ -97,27 +99,18 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     public void testVisitConstructor() throws Exception {
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitConstructor(ctor, type, null);
-        ConstructorDefinition def = type.getConstructorDefinition();
-        assertEquals("test", def.getInjectionNames().get(0));
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        ConstructorDefinition def = new ConstructorDefinition<Foo>(ctor);
+        Parameter parameter = def.getParameters()[0];
+        processor.visitConstructorParameter(parameter, type, null);
+        assertEquals("test", def.getParameters()[0].getName());
         assertNotNull(type.getProperties().get("test"));
     }
 
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        ImplementationProcessorService service = EasyMock.createMock(ImplementationProcessorService.class);
-        service.addName(EasyMock.isA(List.class), EasyMock.eq(0), EasyMock.eq("test"));
-        EasyMock.expectLastCall().andStubAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                ((List<Object>) EasyMock.getCurrentArguments()[0]).add("test");
-                return null;
-            }
-        });
-        EasyMock.replay(service);
-        processor = new TestProcessor(service);
+        processor = new TestProcessor();
     }
 
     @Retention(RUNTIME)
@@ -127,14 +120,12 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     private class TestProcessor extends AbstractPropertyProcessor<Bar> {
 
-        public TestProcessor(ImplementationProcessorService service) {
-            super(Bar.class, service);
+        public TestProcessor() {
+            super(Bar.class);
         }
 
         @SuppressWarnings("unchecked")
-        protected <T> void initProperty(JavaMappedProperty<T> property,
-                                        Bar annotation,
-                                        DeploymentContext context) {
+        protected <T> void initProperty(JavaMappedProperty<T> property, Bar annotation, DeploymentContext context) {
             property.setDefaultValueFactory(EasyMock.createMock(ObjectFactory.class));
             property.setName("test");
         }
@@ -144,16 +135,17 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         }
     }
 
-
     private static class Foo {
 
         @Bar
         protected String d;
 
-        public Foo(String a, @Bar String b) {
+        public Foo(String a, @Bar
+        String b) {
         }
-        
-        public Foo(@Bar String d) {
+
+        public Foo(@Bar
+        String d) {
             this.d = d;
         }
 

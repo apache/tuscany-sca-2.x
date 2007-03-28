@@ -18,21 +18,11 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import java.lang.reflect.Constructor;
-
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.TypeInfo;
-import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.model.TypeInfo;
+import org.osoa.sca.annotations.Property;
 
 /**
  * Processes an {@link @Property} annotation, updating the component type with corresponding {@link JavaMappedProperty}
@@ -42,8 +32,8 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
     private SimpleTypeMapperExtension typeMapper = new SimpleTypeMapperExtension();
 
-    public PropertyProcessor(@Reference ImplementationProcessorService service) {
-        super(Property.class, service);
+    public PropertyProcessor() {
+        super(Property.class);
     }
 
     protected String getName(Property annotation) {
@@ -60,10 +50,4 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
         }
     }
 
-    public <T> void visitConstructor(Constructor<T> constructor,
-                                     PojoComponentType<JavaMappedService, JavaMappedReference,
-                                         JavaMappedProperty<?>> type,
-                                     DeploymentContext context) throws ProcessingException {
-        // override since heuristic pojo processor evalautes properties
-    }
 }

@@ -16,38 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.spi.implementation.java;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 
 /**
- * Hold injection information for the constructor used to instantiate a
- * component implementation instance
- * 
  * @version $Rev$ $Date$
  */
-public class ConstructorDefinition<T> {
+public class Parameter extends JavaElement {
+    private Class<? extends Annotation> classifer;
 
-    private Constructor<T> constructor;
-    private Parameter[] parameters;
-
-    public ConstructorDefinition(Constructor<T> constructor) {
-        this.constructor = constructor;
-        int size = constructor.getParameterTypes().length;
-        parameters = new Parameter[size];
-        for (int i = 0; i < size; i++) {
-            parameters[i] = new Parameter(constructor, i);
-        }
-    }
-
-    public Constructor<T> getConstructor() {
-        return constructor;
+    /**
+     * @param constructor
+     * @param index
+     */
+    public Parameter(Constructor<?> constructor, int index) {
+        super(constructor, index);
     }
 
     /**
-     * @return the parameters
+     * @return the classifer
      */
-    public Parameter[] getParameters() {
-        return parameters;
+    public Class<? extends Annotation> getClassifer() {
+        return classifer;
     }
+
+    /**
+     * @param classifer the classifer to set
+     */
+    public void setClassifer(Class<? extends Annotation> classifer) {
+        this.classifer = classifer;
+    }
+
 }

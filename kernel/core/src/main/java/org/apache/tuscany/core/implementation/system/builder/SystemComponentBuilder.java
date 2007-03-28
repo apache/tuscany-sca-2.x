@@ -24,8 +24,12 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Reference;
-
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.ResourceObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -35,18 +39,13 @@ import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.Parameter;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.injection.ResourceObjectFactory;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Produces system atomic components from a component definition
@@ -113,9 +112,9 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         Constructor<?> constr = ctorDef.getConstructor();
         PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
         configuration.setInstanceFactory(instanceFactory);
-        configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
-        for (Class<?> clazz : constr.getParameterTypes()) {
-            configuration.addConstructorParamType(clazz);
+        for (Parameter param : ctorDef.getParameters()) {
+            configuration.getConstructorParamNames().add(param.getName());
+            configuration.addConstructorParamType(param.getType());
         }
         configuration.setName(definition.getUri());
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);

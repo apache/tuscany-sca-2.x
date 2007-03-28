@@ -19,90 +19,108 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
-import java.util.List;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
- * Verifies constructors that have extensible annotation types, i.e. that have parameters marked by annotations which
- * are themselves processed by some other implementation processor
- *
+ * Verifies constructors that have extensible annotation types, i.e. that have
+ * parameters marked by annotations which are themselves processed by some other
+ * implementation processor
+ * 
  * @version $Rev$ $Date$
  */
-public class HeutisticExtensibleConstructorTestCase extends TestCase {
+public class HeutisticExtensibleConstructorTestCase extends AbstractConstructorProcessorTest {
 
-    private HeuristicPojoProcessor processor =
-        new HeuristicPojoProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
+    private HeuristicPojoProcessor processor;
 
+    public HeutisticExtensibleConstructorTestCase() {
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        processor = new HeuristicPojoProcessor();
+        processor.setInterfaceProcessorRegistry(registry);
+    }
+
+    private <T> void visitEnd(Class<T> clazz,
+                              PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                              DeploymentContext context) throws ProcessingException {
+        for (Constructor<T> constructor : clazz.getConstructors()) {
+            visitConstructor(constructor, type, context);
+        }
+        processor.visitEnd(clazz, type, context);
+    }
+    
     /**
-     * Verifies heuristic processing can be called priot to an extension annotation processors being called.
+     * Verifies heuristic processing can be called priot to an extension
+     * annotation processors being called.
      */
     public void testBarAnnotationProcessedFirst() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type 
+            = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
         ConstructorDefinition<Foo> definition = new ConstructorDefinition<Foo>(ctor);
         type.setConstructorDefinition(definition);
         JavaMappedProperty property = new JavaMappedProperty();
         property.setName("myBar");
-        definition.getInjectionNames().add("myBar");
+        definition.getParameters()[0].setName("myBar");
         type.getProperties().put("myBar", property);
-        processor.visitEnd(Foo.class, type, null);
+        visitEnd(Foo.class, type, null);
         assertEquals(2, type.getProperties().size());
     }
 
     /**
-     * Verifies heuristic processing can be called before an extension annotation processors is called.
-     * <p/>
-     * For example, given:
-     * <pre> Foo(@Bar String prop, @org.osoa.sca.annotations.Property(name = "foo") String prop2)</pre>
-     * <p/>
-     * Heuristic evaluation of @Property can occur prior to another implementation processor evaluating @Bar
-     *
+     * Verifies heuristic processing can be called before an extension
+     * annotation processors is called. <p/> For example, given:
+     * 
+     * <pre>
+     *  Foo(@Bar String prop, @org.osoa.sca.annotations.Property(name = &quot;foo&quot;) String prop2)
+     * </pre>
+     * 
+     * <p/> Heuristic evaluation of
+     * @Property can occur prior to another implementation processor evaluating
+     * @Bar
      * @throws Exception
      */
     public void testBarAnnotationProcessedLast() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(Foo.class, type, null);
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        visitEnd(Foo.class, type, null);
 
         // now simulate process the bar impl
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
-        List<String> injectionNames = definition.getInjectionNames();
-        injectionNames.remove(0);
-        injectionNames.add(0, "mybar");
+        definition.getParameters()[0].setName("myBar");
         type.getProperties().put("mybar", new JavaMappedProperty<String>());
 
         assertEquals(2, type.getProperties().size());
-        assertEquals("foo", definition.getInjectionNames().get(1));
+        assertEquals("foo", definition.getParameters()[1].getName());
     }
 
     /**
-     * Verifies heuristic processing can be called before an extension annotation processors is called with the
-     * extension parameter in a middle position. Specifically, verifies that the heuristic processor updates injection
-     * names and preserves their ordering.
+     * Verifies heuristic processing can be called before an extension
+     * annotation processors is called with the extension parameter in a middle
+     * position. Specifically, verifies that the heuristic processor updates
+     * injection names and preserves their ordering.
      */
     public void testBarAnnotationProcessedFirstInMiddle() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo2> ctor = Foo2.class.getConstructor(String.class, String.class, String.class);
         ConstructorDefinition<Foo2> definition = new ConstructorDefinition<Foo2>(ctor);
         type.setConstructorDefinition(definition);
-        // insert placeholder for first param, which would be done by a processor
-        definition.getInjectionNames().add("");
+        // insert placeholder for first param, which would be done by a
+        // processor
+        definition.getParameters()[0].setName("");
         JavaMappedProperty property = new JavaMappedProperty();
+        property.setJavaType(String.class);
         property.setName("myBar");
-        definition.getInjectionNames().add("myBar");
+        definition.getParameters()[1].setName("myBar");
         type.getProperties().put("myBar", property);
-        processor.visitEnd(Foo2.class, type, null);
-        assertEquals("baz", definition.getInjectionNames().get(0));
+        visitEnd(Foo2.class, type, null);
+        assertEquals("baz", definition.getParameters()[0].getName());
         assertEquals(2, type.getProperties().size());
         assertEquals(1, type.getReferences().size());
     }
@@ -112,18 +130,19 @@ public class HeutisticExtensibleConstructorTestCase extends TestCase {
     }
 
     public static class Foo {
-        public Foo(@Bar String prop, @org.osoa.sca.annotations.Property(name = "foo") String prop2) {
+        public Foo(@Bar
+        String prop, @org.osoa.sca.annotations.Property(name = "foo")
+        String prop2) {
         }
     }
 
     public static class Foo2 {
-        public Foo2(@org.osoa.sca.annotations.Reference(name = "baz") String prop1,
-                    @Bar String prop2,
-                    @org.osoa.sca.annotations.Property(name = "foo") String prop3) {
+        public Foo2(@org.osoa.sca.annotations.Reference(name = "baz")
+        String prop1, @Bar
+        String prop2, @org.osoa.sca.annotations.Property(name = "foo")
+        String prop3) {
         }
     }
 
-
 }
-
 

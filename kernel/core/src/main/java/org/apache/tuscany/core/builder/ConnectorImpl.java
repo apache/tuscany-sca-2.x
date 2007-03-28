@@ -301,6 +301,7 @@ public class ConnectorImpl implements Connector {
     protected Wire createWire(URI sourceURI, URI targetUri, ServiceContract<?> contract, QName bindingType) {
         Wire wire = new WireImpl(bindingType);
         wire.setSourceContract(contract);
+        wire.setTargetContract(contract);
         wire.setSourceUri(sourceURI);
         wire.setTargetUri(targetUri);
         for (Operation<?> operation : contract.getOperations().values()) {

@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Property;
 
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
@@ -44,11 +45,10 @@ public class HeuristicAndPropertyTestCase extends TestCase {
      */
     @SuppressWarnings("unchecked")
     public void testPropertyProcessorWithHeuristicProcessor() throws Exception {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor ctor = Foo.class.getConstructor(String.class);
         type.setConstructorDefinition(new ConstructorDefinition(ctor));
-        propertyProcessor.visitConstructor(ctor, type, null);
+        propertyProcessor.visitConstructorParameter(type.getConstructorDefinition().getParameters()[0], type, null);
         heuristicProcessor.visitEnd(Foo.class, type, null);
         assertEquals(1, type.getProperties().size());
         assertNotNull(type.getProperties().get("foo"));
@@ -56,14 +56,16 @@ public class HeuristicAndPropertyTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ImplementationProcessorServiceImpl service =
-            new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl());
-        propertyProcessor = new PropertyProcessor(service);
-        heuristicProcessor = new HeuristicPojoProcessor(service);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        propertyProcessor = new PropertyProcessor();
+        propertyProcessor.setInterfaceProcessorRegistry(registry);
+        heuristicProcessor = new HeuristicPojoProcessor();
+        heuristicProcessor.setInterfaceProcessorRegistry(registry);
     }
 
     public static class Foo {
-        public Foo(@Property(name = "foo") String prop) {
+        public Foo(@Property(name = "foo")
+        String prop) {
         }
     }
 

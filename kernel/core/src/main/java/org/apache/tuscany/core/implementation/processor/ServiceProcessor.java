@@ -18,41 +18,34 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Set;
-
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Remotable;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.ServiceContract;
-
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * Processes an {@link org.osoa.sca.annotations.Service} annotation and updates the component type with corresponding
- * {@link JavaMappedService}s. Also processes related {@link org.osoa.sca.annotations.Callback} annotations.
- *
+ * Processes an {@link org.osoa.sca.annotations.Service} annotation and updates
+ * the component type with corresponding {@link JavaMappedService}s. Also
+ * processes related {@link org.osoa.sca.annotations.Callback} annotations.
+ * 
  * @version $Rev$ $Date$
  */
 public class ServiceProcessor extends ImplementationProcessorExtension {
-
-    private ImplementationProcessorService implService;
-
-    public ServiceProcessor(@Reference ImplementationProcessorService implService) {
-        this.implService = implService;
-    }
 
     public <T> void visitClass(Class<T> clazz,
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
@@ -65,7 +58,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
                 if (interfaze.isAnnotationPresent(Remotable.class) || interfaze.isAnnotationPresent(Callback.class)) {
                     JavaMappedService service;
                     try {
-                        service = implService.createService(interfaze);
+                        service = createService(interfaze);
                     } catch (InvalidServiceContractException e) {
                         throw new ProcessingException(e);
                     }
@@ -90,7 +83,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
             }
             JavaMappedService service;
             try {
-                service = implService.createService(interfaze);
+                service = createService(interfaze);
             } catch (InvalidServiceContractException e) {
                 throw new ProcessingException(e);
             }
@@ -98,11 +91,9 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         }
     }
 
-
-    public void visitMethod(
-        Method method,
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-        DeploymentContext context) throws ProcessingException {
+    public void visitMethod(Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context) throws ProcessingException {
 
         Callback annotation = method.getAnnotation(Callback.class);
         if (annotation == null) {
@@ -151,5 +142,14 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         callbacksService.setCallbackMember(field);
     }
 
+    public JavaMappedService createService(Class<?> interfaze) throws InvalidServiceContractException {
+        JavaMappedService service = new JavaMappedService();
+        // create a relative URI
+        service.setUri(URI.create("#" + interfaze.getSimpleName()));
+        service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
+        ServiceContract<?> contract = interfaceProcessorRegistry.introspect(interfaze);
+        service.setServiceContract(contract);
+        return service;
+    }
 
 }

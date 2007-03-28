@@ -18,21 +18,13 @@
  */
 package org.apache.tuscany.core.implementation.system.loader;
 
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
-import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
@@ -42,7 +34,11 @@ import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.mock.component.BasicInterfaceImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.easymock.EasyMock;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -51,7 +47,6 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
     private SystemComponentTypeLoader loader;
 
     public void testIntrospectUnannotatedClass() throws ProcessingException {
-        Component parent = EasyMock.createNiceMock(Component.class);
         SystemImplementation impl = new SystemImplementation(BasicInterfaceImpl.class);
         PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(impl, null);
         ServiceDefinition service = componentType.getServices().get(BasicInterface.class.getSimpleName());
@@ -65,18 +60,23 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         JavaInterfaceProcessorRegistryImpl interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
-        ImplementationProcessorService service =
-            new ImplementationProcessorServiceImpl(interfaceProcessorRegistry);
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl();
         registry.setMonitor(new NullMonitorFactory().getMonitor(IntrospectionRegistryImpl.Monitor.class));
-        registry.registerProcessor(new ConstructorProcessor(service));
+        registry.registerProcessor(new ConstructorProcessor());
         registry.registerProcessor(new DestroyProcessor());
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());
-        registry.registerProcessor(new PropertyProcessor(service));
-        registry.registerProcessor(new ReferenceProcessor(interfaceProcessorRegistry));
-        registry.registerProcessor(new ServiceProcessor(service));
-        registry.registerProcessor(new HeuristicPojoProcessor(service));
+        registry.registerProcessor(new PropertyProcessor());
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor();
+        referenceProcessor.setInterfaceProcessorRegistry(interfaceProcessorRegistry);
+        registry.registerProcessor(referenceProcessor);
+        registry.registerProcessor(new ServiceProcessor());
+        ServiceProcessor serviceProcessor = new ServiceProcessor();
+        serviceProcessor.setInterfaceProcessorRegistry(interfaceProcessorRegistry);
+        registry.registerProcessor(serviceProcessor);
+        HeuristicPojoProcessor pojoProcessor = new HeuristicPojoProcessor();
+        pojoProcessor.setInterfaceProcessorRegistry(interfaceProcessorRegistry);
+        registry.registerProcessor(pojoProcessor);
         loader = new SystemComponentTypeLoader(registry);
     }
 }
