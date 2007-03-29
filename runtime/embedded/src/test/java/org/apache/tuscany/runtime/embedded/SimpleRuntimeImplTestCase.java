@@ -37,7 +37,7 @@ public class SimpleRuntimeImplTestCase extends TestCase {
      * @throws java.lang.Exception
      */
     protected void setUp() throws Exception {
-        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(getClass().getClassLoader(), "application.composite");
+        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(getClass().getClassLoader(), "calculator.composite");
         runtime = new SimpleRuntimeImpl(runtimeInfo);
         runtime.start();
     }

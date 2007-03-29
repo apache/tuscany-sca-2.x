@@ -28,13 +28,9 @@ import org.osoa.sca.ServiceReference;
  */
 public class CalculatorClient {
 
-    public CalculatorClient() {
-        super();
-    }
-
     public static void main(String[] args) {
         // Start the embedded SCA runtime
-        SCARuntime.start();
+        SCARuntime.start("calculator.composite");
         
         // Look up the ComponentContext by name
         ComponentContext context = SCARuntime.getComponentContext("CalculatorServiceComponent");
