@@ -139,6 +139,7 @@
                 <module>host-api</module>
                 <module>spi</module>
                 <module>core</module>
+                <module>databinding</module>
             </modules>
             <build>
                 <defaultGoal>install</defaultGoal>

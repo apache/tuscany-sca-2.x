@@ -135,17 +135,17 @@
 
     <!-- DataBinding registry -->
     <component name="databinding.registry">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingRegistryImpl"/>
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataBindingRegistryImpl"/>
     </component>
 
     <!-- DataBinding registry -->
     <component name="databinding.mediator">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.MediatorImpl"/>
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.MediatorImpl"/>
     </component>
 
     <!-- Transformer registry -->
     <component name="databinding.transformerRegistry" initLevel="90">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl"/>
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.TransformerRegistryImpl"/>
     </component>
 
     <component name="propertyFactory">

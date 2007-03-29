@@ -73,8 +73,33 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         processors.remove(processor);
     }
 
+    /**
+     * JSR-250 PFD recommends the following guidelines for how annotations
+     * interact with inheritance in order to keep the resulting complexity in
+     * control:
+     * <ol>
+     * <li>Class-level annotations only affect the class they annotate and
+     * their members, that is, its methods and fields. They never affect a
+     * member declared by a superclass, even if it is not hidden or overridden
+     * by the class in question.
+     * <li>In addition to affecting the annotated class, class-level
+     * annotations may act as a shorthand for member-level annotations. If a
+     * member carries a specific member-level annotation, any annotations of the
+     * same type implied by a class-level annotation are ignored. In other
+     * words, explicit member-level annotations have priority over member-level
+     * annotations implied by a class-level annotation.
+     * <li>The interfaces implemented by a class never contribute annotations
+     * to the class itself or any of its members.
+     * <li>Members inherited from a superclass and which are not hidden or
+     * overridden maintain the annotations they had in the class that declared
+     * them, including member-level annotations implied by class-level ones.
+     * <li>Member-level annotations on a hidden or overridden member are always
+     * ignored.
+     * </ol>
+     */
     public PojoComponentType introspect(Class<?> clazz,
-                                        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                        PojoComponentType<JavaMappedService, 
+                                        JavaMappedReference, JavaMappedProperty<?>> type,
                                         DeploymentContext context) throws ProcessingException {
         for (ImplementationProcessor processor : processors) {
             processor.visitClass(clazz, type, context);
@@ -83,7 +108,8 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         for (Constructor<?> constructor : clazz.getConstructors()) {
             for (ImplementationProcessor processor : processors) {
                 processor.visitConstructor(constructor, type, context);
-                // Assuming the visitClass or visitConstructor will populate the type.getConstructors
+                // Assuming the visitClass or visitConstructor will populate the
+                // type.getConstructors
                 ConstructorDefinition<?> definition = type.getConstructors().get(constructor);
                 if (definition != null) {
                     for (Parameter p : definition.getParameters()) {

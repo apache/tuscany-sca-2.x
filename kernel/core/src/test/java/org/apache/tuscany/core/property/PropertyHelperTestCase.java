@@ -20,16 +20,16 @@
 package org.apache.tuscany.core.property;
 
 import java.net.URL;
+
 import javax.xml.namespace.NamespaceContext;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.databinding.xml.String2Node;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.databinding.xml.String2Node;
-import org.easymock.EasyMock;
 
 /**
  *

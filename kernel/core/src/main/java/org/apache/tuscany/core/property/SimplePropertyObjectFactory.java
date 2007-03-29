@@ -22,9 +22,8 @@ package org.apache.tuscany.core.property;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
-import org.apache.tuscany.spi.model.TypeInfo;
 import org.apache.tuscany.spi.model.Property;
-
+import org.apache.tuscany.spi.model.TypeInfo;
 import org.w3c.dom.Document;
 
 public class SimplePropertyObjectFactory<P> implements ObjectFactory<P> {
@@ -57,7 +56,7 @@ public class SimplePropertyObjectFactory<P> implements ObjectFactory<P> {
             if (xmlType == null) {
                 throw new IllegalArgumentException("Complex property is not supported.");
             }
-            instance = (P)typeMapper.toJavaObject(xmlType, text, null);
+            instance = (P)typeMapper.toJavaObject(xmlType.getQName(), text, null);
         }
         return instance;
     }

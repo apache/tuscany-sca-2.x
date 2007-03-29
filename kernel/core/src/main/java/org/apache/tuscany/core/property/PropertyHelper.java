@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -32,9 +33,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
+import org.apache.tuscany.databinding.xml.InputStream2Node;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.InvalidValueException;
@@ -44,8 +43,8 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
-
-import org.apache.tuscany.core.databinding.xml.InputStream2Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * The property factory backed by the DataBindingframework
