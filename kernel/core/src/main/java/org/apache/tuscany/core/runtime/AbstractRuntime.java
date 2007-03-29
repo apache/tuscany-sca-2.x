@@ -18,48 +18,24 @@
  */
 package org.apache.tuscany.core.runtime;
 
+import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_DEPLOYER;
+import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_SYSTEM;
+import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_SYSTEM_ROOT;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.stream.XMLInputFactory;
-
-import org.osoa.sca.ComponentContext;
-
-import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_SYSTEM_ROOT;
-import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_SYSTEM;
-import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_DEPLOYER;
-import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.ComponentManager;
-import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.GroupInitializationException;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.resolver.ResolutionException;
-import org.apache.tuscany.spi.services.management.TuscanyManagementService;
-import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
-import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
+import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
@@ -72,6 +48,30 @@ import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
+import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.ComponentManager;
+import org.apache.tuscany.spi.component.GroupInitializationException;
+import org.apache.tuscany.spi.component.RegistrationException;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.resolver.ResolutionException;
+import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
+import org.apache.tuscany.spi.services.management.TuscanyManagementService;
+import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
@@ -109,7 +109,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     private I runtimeInfo;
 
     /**
-     * MonitorFactory provided by the host for directing events to its management framework.
+     * MonitorFactory provided by the host for directing events to its
+     * management framework.
      */
     private MonitorFactory monitorFactory;
 
@@ -126,7 +127,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     private AutowireResolver resolver;
 
     private Component systemComponent;
-    private Component tuscanySystem;
+    private Collection<Component> components;
 
     private JavaInterfaceProcessorRegistry interfaceProcessorRegistry;
     private ScopeRegistry scopeRegistry;
@@ -207,13 +208,12 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         registerBaselineSystemComponents();
 
         // deploy the system scdl
-        Collection<Component> components;
         try {
             components = deploySystemScdl(bootstrapper.createDeployer(),
-                systemComponent,
-                name,
-                getSystemScdl(),
-                getClass().getClassLoader());
+                                          systemComponent,
+                                          name,
+                                          getSystemScdl(),
+                                          getClass().getClassLoader());
         } catch (LoaderException e) {
             throw new InitializationException(e);
         } catch (BuilderException e) {
@@ -223,11 +223,12 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         } catch (ResolutionException e) {
             throw new InitializationException(e);
         }
+
         for (Component component : components) {
             component.start();
         }
-        Component composite = componentManager.getComponent(name);
-        URI uri = composite.getUri();
+        systemComponent = componentManager.getComponent(name);
+        URI uri = systemComponent.getUri();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
         try {
             scopeContainer.startContext(uri, uri);
@@ -237,16 +238,18 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     }
 
     public void destroy() {
-        if (tuscanySystem != null) {
-            tuscanySystem.stop();
-            tuscanySystem = null;
-        }
+        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        scopeContainer.stopContext(systemComponent.getUri());
         if (systemComponent != null) {
             systemComponent.stop();
             systemComponent = null;
         }
+        if (components != null) {
+            for (Component component : components) {
+                component.stop();
+            }
+        }
     }
-
 
     public ComponentContext getComponentContext(URI componentId) {
         Component component = componentManager.getComponent(componentId);
@@ -257,21 +260,17 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     }
 
     protected Bootstrapper createBootstrapper() {
-        TuscanyManagementService tms = (TuscanyManagementService) getManagementService();
+        TuscanyManagementService tms = (TuscanyManagementService)getManagementService();
         resolver = new DefaultAutowireResolver();
         componentManager = new ComponentManagerImpl(tms, resolver);
         Connector connector = new ConnectorImpl(componentManager);
 
         scopeRegistry = new ScopeRegistryImpl();
-        CompositeScopeContainer scopeContainer =
-            new CompositeScopeContainer(monitorFactory.getMonitor(ScopeContainerMonitor.class));
+        CompositeScopeContainer scopeContainer = new CompositeScopeContainer(monitorFactory
+            .getMonitor(ScopeContainerMonitor.class));
         scopeContainer.start();
         scopeRegistry.register(scopeContainer);
-        return new DefaultBootstrapper(getMonitorFactory(),
-                                       xmlFactory,
-                                       componentManager,
-                                       resolver,
-                                       connector,
+        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, connector,
                                        scopeRegistry);
     }
 
@@ -330,18 +329,18 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
                                                      Component parent,
                                                      URI name,
                                                      URL systemScdl,
-                                                     ClassLoader systemClassLoader)
-        throws LoaderException, BuilderException, ComponentException, ResolutionException {
+                                                     ClassLoader systemClassLoader) throws LoaderException,
+        BuilderException, ComponentException, ResolutionException {
 
         SystemCompositeImplementation impl = new SystemCompositeImplementation();
         impl.setScdlLocation(systemScdl);
         impl.setClassLoader(systemClassLoader);
-        ComponentDefinition<SystemCompositeImplementation> definition =
-            new ComponentDefinition<SystemCompositeImplementation>(name, impl);
+        ComponentDefinition<SystemCompositeImplementation> definition = new ComponentDefinition<SystemCompositeImplementation>(
+                                                                                                                               name,
+                                                                                                                               impl);
 
         return deployer.deploy(parent, definition);
     }
-
 
     protected ComponentManager getComponentManager() {
         return componentManager;
@@ -353,20 +352,17 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     protected WorkContext getWorkContext() {
         try {
-            AtomicComponent component =
-                (AtomicComponent) getComponentManager().getComponent(WORK_CONTEXT_URI);
-            return (WorkContext) component.getTargetInstance();
+            AtomicComponent component = (AtomicComponent)getComponentManager().getComponent(WORK_CONTEXT_URI);
+            return (WorkContext)component.getTargetInstance();
         } catch (TargetResolutionException e) {
             throw new AssertionError(e);
         }
     }
 
-
     protected Deployer getDeployer() {
         try {
-            AtomicComponent component =
-                (AtomicComponent) getComponentManager().getComponent(TUSCANY_DEPLOYER);
-            return (Deployer) component.getTargetInstance();
+            AtomicComponent component = (AtomicComponent)getComponentManager().getComponent(TUSCANY_DEPLOYER);
+            return (Deployer)component.getTargetInstance();
         } catch (TargetResolutionException e) {
             throw new AssertionError(e);
         }
