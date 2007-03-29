@@ -51,6 +51,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.loader.ComponentLoader;
 import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
+import org.apache.tuscany.core.loader.DependencyLoader;
 import org.apache.tuscany.core.loader.IncludeLoader;
 import org.apache.tuscany.core.loader.LoaderRegistryImpl;
 import org.apache.tuscany.core.loader.PropertyLoader;
@@ -58,6 +59,7 @@ import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.property.PropertyObjectFactoryImpl;
 import org.apache.tuscany.core.resolver.AutowireResolver;
+import org.apache.tuscany.core.services.artifact.LocalMavenRepository;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.Connector;
@@ -175,7 +177,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         // register element loaders
         registerLoader(loaderRegistry, new ComponentLoader(loaderRegistry, propertyFactory));
         registerLoader(loaderRegistry, new ComponentTypeElementLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry, null));
+        registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry, new LocalMavenRepository(".m2/repository")));
         registerLoader(loaderRegistry, new IncludeLoader(loaderRegistry));
         JavaInterfaceProcessorRegistryImpl processorRegistry = new JavaInterfaceProcessorRegistryImpl();
         registerLoader(loaderRegistry, new InterfaceJavaLoader(loaderRegistry, processorRegistry));
@@ -184,6 +186,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         registerLoader(loaderRegistry, new ServiceLoader(loaderRegistry));
         registerLoader(loaderRegistry, new SystemImplementationLoader(loaderRegistry));
         registerLoader(loaderRegistry, new LocalBindingLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new DependencyLoader(loaderRegistry));
         return loaderRegistry;
     }
 

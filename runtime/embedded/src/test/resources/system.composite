@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<!--
+    Default system configuration for the launcher environment.
+    
+    $Rev: 520623 $ $Date: 2007-03-20 15:17:36 -0700 (Tue, 20 Mar 2007) $
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
+    name="org.apache.tuscany.launcher.System" autowire="true">
+
+    <!-- Work manager -->
+    <component name="workManager">
+        <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager" />
+        <property name="poolSize">10</property>
+    </component>
+
+    <component name="workScheduler">
+        <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler" />
+    </component>
+    <!-- Generator Registry -->
+    <component name="generatorRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.generator.GeneratorRegistryImpl" />
+    </component>
+
+    <component name="javaGenerator">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.java.JavaPhysicalComponentGenerator" />
+    </component>
+
+
+    <!-- JXTA network configurator -->
+    <!-- component name="networkConfigurator">
+        <system:implementation.system
+        class="net.jxta.platform.NetworkConfigurator"/>
+        <property name="principal">principal</property>
+        <property name="password">password</property>
+        </component-->
+
+    <!-- Discovery service -->
+    <!--component name="discoveryService">
+        <system:implementation.system
+        class="org.apache.tuscany.service.discovery.jxta.JxtaDiscoveryService"/>
+        <property name="interval">5000</property>
+        <reference name="configurator" target="networkConfigurator"/>
+        <reference name="workScheduler" target="workScheduler"/>
+        </component-->
+
+    <!-- JMS discovery service -->
+    <!--
+        <component name="discoveryService">
+        <system:implementation.system
+        class="org.apache.tuscany.service.discovery.jms.JmsDiscoveryService"/>
+        <property name="topic">tuscany.federation</property>
+        </component>
+    -->
+
+    <!-- Marshaller registry -->
+    <component name="marshallerRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.marshaller.DefaultModelMarshallerRegistry" />
+    </component>
+
+    <!-- Changeset marshaller -->
+    <component name="changeSetMarshaller">
+        <system:implementation.system class="org.apache.tuscany.core.marshaller.PhysicalChangeSetMarshaller" />
+    </component>
+
+    <!-- Wide definition marshaller -->
+    <component name="wireDefinitionMarshaller">
+        <system:implementation.system class="org.apache.tuscany.core.marshaller.PhysicalWireDefinitionMarshaller" />
+    </component>
+
+    <!-- Operation definition marshaller -->
+    <component name="operationMarshaller">
+        <system:implementation.system class="org.apache.tuscany.core.marshaller.PhysicalOperationDefinitionMarshaller" />
+    </component>
+
+    <!-- Java component definition marshaller -->
+    <component name="javaComponentDefinitionMarshaller">
+        <system:implementation.system
+            class="org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalComponentDefinitionMarshaller" />
+    </component>
+
+    <!-- Reflective IF provider definition marshaller -->
+    <component name="reflectiveIfProviderDefinitionMarshaller">
+        <system:implementation.system
+            class="org.apache.tuscany.core.marshaller.extensions.instancefactory.ReflectiveIFProviderDefinitionMarshaller" />
+    </component>
+
+    <!-- Java physical wire source definition marshaller -->
+    <component name="javaWireSourceDefinitionMarshaller">
+        <system:implementation.system
+            class="org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalWireSourceDefinitionMarshaller" />
+    </component>
+
+    <!-- Java physical wire target definition marshaller -->
+    <component name="javaWireTargetDefinitionMarshaller">
+        <system:implementation.system
+            class="org.apache.tuscany.core.marshaller.extensions.java.JavaPhysicalWireTargetDefinitionMarshaller" />
+    </component>
+
+    <!-- Builder registry -->
+    <component name="builderRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.builder.physical.DefaultPhysicalComponentBuilderRegistry" />
+    </component>
+    <component name="wireAttacherRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.builder.physical.WireAttacherRegistryImpl" />
+    </component>
+    <component name="providerBuilderRegistry">
+        <system:implementation.system
+            class="org.apache.tuscany.core.component.instancefactory.impl.DefaultIFProviderBuilderRegistry" />
+    </component>
+
+    <component name="reflectiveIFProviderBuilder">
+        <system:implementation.system
+            class="org.apache.tuscany.core.component.instancefactory.impl.ReflectiveIFProviderBuilder" />
+    </component>
+
+    <!-- Java physical component builder -->
+    <component name="javaPhysicalComponentBuilder">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.java.JavaPhysicalComponentBuilder" />
+    </component>
+
+    <!-- Classloader registry -->
+    <!-- 
+        <component name="classLoaderRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.classloading.ClassLoaderRegistryImpl" />
+        </component>
+    -->
+
+    <!-- Federated deployer -->
+    <component name="federateDeployer">
+        <system:implementation.system class="org.apache.tuscany.core.deployer.federation.FederatedDeployer" />
+    </component>
+
+    <!-- Component manager -->
+    <!--
+        <component name="componentManager">
+        <system:implementation.system
+        class="org.apache.tuscany.core.component.ComponentManagerImpl"/>
+        </component>
+    -->
+
+    <!-- Connector -->
+    <!-- 
+        <component name="connector">
+        <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl" />
+        </component>
+    -->
+
+    <!-- Jetty HTTP service -->
+    <!--
+        <component name="httpService">
+        <system:implementation.system
+        class="org.apache.tuscany.service.jetty.JettyServiceImpl"/>
+        <property name="httpPort">7000</property>
+        </component>
+    -->
+
+    <!-- Console -->
+    <!--
+        <include name="org.apache.tuscany.sca.console"
+        scdlResource="org/apache/tuscany/console/console.scdl"/>
+    -->
+
+    <!-- Assembly service -->
+    <component name="assemblyService">
+        <system:implementation.system class="org.apache.tuscany.core.services.deployment.AssemblyServiceImpl" />
+    </component>
+
+
+    <!--_________________________________________________________________________________________-->
+
+    <!--__________________________Legacy from launcher SCDL _____________________________________-->
+
+    <!--_________________________________________________________________________________________-->
+
+    <!-- Component that provides the Deployer service -->
+    <component name="deployer">
+        <system:implementation.system class="org.apache.tuscany.core.deployer.DeployerImpl" />
+    </component>
+
+    <!-- Work management -->
+    <component name="WorkContext">
+        <system:implementation.system class="org.apache.tuscany.core.component.WorkContextImpl" />
+    </component>
+
+    <!-- Wire service -->
+    <component name="proxyService">
+        <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKProxyService" />
+    </component>
+
+    <!-- Store infrastructure -->
+    <component name="store">
+        <system:implementation.system class="org.apache.tuscany.core.services.store.memory.MemoryStore" />
+    </component>
+
+    <!-- Builder and BuilderRegistry -->
+    <component name="builder">
+        <system:implementation.system class="org.apache.tuscany.core.builder.BuilderRegistryImpl" />
+    </component>
+
+    <!-- Resource host registry -->
+    <component name="resourceHostRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry" />
+    </component>
+
+    <!-- Loader and LoaderRegistry -->
+    <component name="loader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.LoaderRegistryImpl" />
+    </component>
+
+    <!-- Introspector and IntrospectionRegistry -->
+    <component name="interfaceProcessorRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.IntrospectionRegistryImpl" />
+    </component>
+
+    <!-- Connector infrastructure -->
+    <component name="connector">
+        <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl" />
+    </component>
+
+    <component name="wirePostProcessorRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl" />
+    </component>
+
+    <!-- Default scopes -->
+    <component name="scope.stateless">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeContainer" />
+    </component>
+    <!--
+        <component name="scope.request">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.RequestScopeContainer"/>
+        </component>
+    -->
+    <!--
+        <component name="scope.conversational">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.ConversationalScopeContainer"/>
+        </component>
+    -->
+
+    <!-- include loader configuration -->
+    <include name="org.apache.tuscany.core.Loader" scdlResource="org/apache/tuscany/core/loader.scdl" />
+
+    <!-- include databinding configuration -->
+    <include name="org.apache.tuscany.core.DataBinding" scdlResource="org/apache/tuscany/core/databinding.scdl" />
+
+    <!-- include implementation processor configuration -->
+    <include name="org.apache.tuscany.core.Implementation" scdlResource="org/apache/tuscany/core/implementation.scdl" />
+
+    <!-- Java interface definition language -->
+    <include name="org.apache.tuscany.core.InterfaceJava" scdlResource="org/apache/tuscany/core/interfaceJava.scdl" />
+
+    <!-- include omposite implementation type -->
+    <include name="org.apache.tuscany.core.Composite" scdlResource="org/apache/tuscany/core/composite.scdl" />
+
+    <!-- System implementation type -->
+    <include name="org.apache.tuscany.core.SystemImplementation"
+        scdlResource="org/apache/tuscany/core/systemImplementation.scdl" />
+
+    <!-- Java implementation type -->
+    <include name="org.apache.tuscany.core.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl" />
+
+    <!-- service for resolving artifacts using Maven repositories -->
+    <component name="artifactRepository">
+        <system:implementation.system class="org.apache.tuscany.services.maven.MavenArtifactRepository" />
+        <property name="remoteRepoUrl">
+            http://repo1.maven.org/maven2/,http://people.apache.org/repo/m2-snapshot-repository,http://people.apache.org/repo/m2-incubating-repository/,http://people.apache.org/repo/m1-snapshot-repository/
+        </property>
+    </component>
+
+    <component name="policyBuilderRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl" />
+    </component>
+
+    <component name="propertyFactory">
+        <system:implementation.system class="org.apache.tuscany.core.property.PropertyObjectFactoryImpl" />
+    </component>
+
+    <!-- component that scans the extension directory -->
+    <!--
+        <component name="directoryScanExtender" initLevel="90">
+        <system:implementation.system
+        class="org.apache.tuscany.runtime.standalone.host.DirectoryScanExtender"/>
+        <property name="path">extensions</property>
+        </component>
+    -->
+
+    <!-- the local binding -->
+    <component name="localBindingLoader">
+        <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingLoader" />
+    </component>
+
+    <component name="localBindingBuilder">
+        <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingBuilder" />
+    </component>
+
+    <component name="artifactRepository">
+        <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository" />
+        <property name="repository">.m2/repository</property>
+    </component>
+
+    <!--
+        <component name="launchedLoader">
+        <system:implementation.system
+        class="org.apache.tuscany.runtime.standalone.host.implementation.launched.LaunchedLoader"/>
+        </component>
+        
+        <component name="launchedComponentLoader">
+        <system:implementation.system
+        class="org.apache.tuscany.runtime.standalone.host.implementation.launched.LaunchedComponentTypeLoader"/>
+        </component>
+        
+        <component name="launchedComponentBuilder">
+        <system:implementation.system
+        class="org.apache.tuscany.runtime.standalone.host.implementation.launched.LaunchedComponentBuilder"/>
+        </component>
+    -->
+
+    <component name="wiringExceptionFormatter">
+        <system:implementation.system class="org.apache.tuscany.core.builder.WiringExceptionFormatter" />
+    </component>
+
+    <component name="loaderExceptionFormatter">
+        <system:implementation.system class="org.apache.tuscany.core.loader.LoaderExceptionFormatter" />
+    </component>
+
+    <component name="incompatibleServiceContractExceptionFormatter">
+        <system:implementation.system class="org.apache.tuscany.core.wire.IncompatibleServiceContractExceptionFormatter" />
+    </component>
+
+</composite>
