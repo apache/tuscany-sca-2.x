@@ -35,7 +35,7 @@ public class SCARuntimeTestCase extends TestCase {
      * @throws java.lang.Exception
      */
     protected void setUp() throws Exception {
-        SCARuntime.start();
+        SCARuntime.start("calculator.composite");
     }
 
     public void testStart() throws Exception {
