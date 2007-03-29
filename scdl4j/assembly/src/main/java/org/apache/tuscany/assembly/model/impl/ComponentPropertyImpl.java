@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +15,45 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
-        <version>1.0.1-incubating-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca</groupId>
-    <artifactId>tuscany-scdl4j</artifactId>
-    <version>0.1-incubating-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCDL4J</name>
-    <description>Apache Tuscany SCDL4J.</description>
+ */
 
-    <modules>
-        <module>assembly</module>
-        <module>policy</module>
-    </modules>
+package org.apache.tuscany.assembly.model.impl;
 
-</project>
+import org.apache.tuscany.assembly.model.ComponentProperty;
+import org.apache.tuscany.assembly.model.Property;
+
+/**
+ * Represents a component property.
+ *
+ *  @version $Rev$ $Date$
+ */
+public class ComponentPropertyImpl extends PropertyImpl implements ComponentProperty {
+	private String file;
+	private Property property;
+	private String source;
+
+	public String getFile() {
+		return file;
+	}
+
+	public Property getProperty() {
+		return property;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setFile(String file) {
+		this.file = file;
+	}
+
+	public void setProperty(Property property) {
+		this.property = property;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+}

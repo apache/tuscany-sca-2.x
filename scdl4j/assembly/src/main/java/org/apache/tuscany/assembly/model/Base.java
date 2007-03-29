@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +15,32 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
-        <version>1.0.1-incubating-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca</groupId>
-    <artifactId>tuscany-scdl4j</artifactId>
-    <version>0.1-incubating-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCDL4J</name>
-    <description>Apache Tuscany SCDL4J.</description>
+ */
+package org.apache.tuscany.assembly.model;
 
-    <modules>
-        <module>assembly</module>
-        <module>policy</module>
-    </modules>
+import java.util.List;
 
-</project>
+/**
+ * Base interface for all assembly model objects.
+ */
+public interface Base {
+
+    /**
+     * Returns a list of extension objects contained in this model object.
+     * @return a list of extension objects container in this model object
+     */
+    List<?> getExtensions();
+
+    /**
+     * Returns true if the model element is unresolved.
+     * @return true if the model element is unresolved.
+     */
+    boolean isUnresolved();
+    
+    /**
+     * Sets whether the model element is unresolved.
+     * @param unresolved whether the model element is unresolved
+     */
+    void setUnresolved(boolean unresolved);
+
+}
