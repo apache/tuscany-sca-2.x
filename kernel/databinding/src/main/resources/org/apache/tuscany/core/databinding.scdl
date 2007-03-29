@@ -36,17 +36,17 @@
     -->
 
     <!-- DataBinding registry -->
-    <component name="databinding.registry">
+    <component name="databinding.registry" initLevel="30">
         <system:implementation.system class="org.apache.tuscany.databinding.impl.DataBindingRegistryImpl" />
     </component>
 
-    <!-- DataBinding registry -->
-    <component name="databinding.mediator">
+    <!-- DataBinding Mediator -->
+    <component name="databinding.mediator" initLeve="35">
         <system:implementation.system class="org.apache.tuscany.databinding.impl.MediatorImpl" />
     </component>
 
     <!-- Transformer registry -->
-    <component name="databinding.transformerRegistry" initLevel="90">
+    <component name="databinding.transformerRegistry" initLevel="32">
         <system:implementation.system class="org.apache.tuscany.databinding.impl.TransformerRegistryImpl" />
     </component>
 

@@ -39,6 +39,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-core-databinding</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>commonj-api_r1.1</artifactId>
             <version>1.0-incubator-M2</version>

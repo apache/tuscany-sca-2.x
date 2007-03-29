@@ -21,26 +21,24 @@ package org.apache.tuscany.core.property;
 
 import javax.xml.namespace.QName;
 
-import org.w3c.dom.Node;
+import org.apache.tuscany.databinding.xml.DOMDataBinding;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.databinding.DataBindingRegistry;
+import org.apache.tuscany.spi.databinding.Mediator;
+import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
+import org.apache.tuscany.spi.loader.PropertyObjectFactory;
+import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.ElementInfo;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.PropertyValue;
+import org.apache.tuscany.spi.model.TypeInfo;
+import org.apache.tuscany.spi.model.XMLType;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
-
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.databinding.DataBinding;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
-import org.apache.tuscany.spi.model.ElementInfo;
-import org.apache.tuscany.spi.model.TypeInfo;
-import org.apache.tuscany.spi.loader.PropertyObjectFactory;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.PropertyValue;
-
-import org.apache.tuscany.core.databinding.xml.DOMDataBinding;
+import org.w3c.dom.Node;
 
 @Service(PropertyObjectFactory.class)
 @Scope("COMPOSITE")
@@ -68,13 +66,14 @@ public class PropertyObjectFactoryImpl implements PropertyObjectFactory {
     public class ObjectFactoryImpl<P> implements ObjectFactory<P> {
         private Property<P> property;
         private PropertyValue<P> propertyValue;
-        private DataType<QName> sourceDataType;
+        private DataType<XMLType> sourceDataType;
         private DataType<?> targetDataType;
 
         public ObjectFactoryImpl(Property<P> property, PropertyValue<P> propertyValue) {
             this.property = property;
             this.propertyValue = propertyValue;
-            sourceDataType = new DataType<QName>(DOMDataBinding.NAME, Node.class, this.property.getXmlType());
+            sourceDataType = new DataType<XMLType>(DOMDataBinding.NAME, Node.class, 
+                new XMLType(null, this.property.getXmlType()));
             TypeInfo typeInfo = null;
             if (this.property.getXmlType() != null) {
                 if (SimpleTypeMapperExtension.isSimpleXSDType(this.property.getXmlType())) {
@@ -89,14 +88,12 @@ public class PropertyObjectFactoryImpl implements PropertyObjectFactory {
             ElementInfo elementInfo = new ElementInfo(null, typeInfo);
             sourceDataType.setMetadata(ElementInfo.class.getName(), elementInfo);
             Class javaType = this.property.getJavaType();
-            String dataBinding = (String) property.getExtensions().get(DataBinding.class.getName());
+            String dataBinding = (String) property.getExtensions().get("databinding");
             if (dataBinding != null) {
                 targetDataType = new DataType<Class>(dataBinding, javaType, javaType);
             } else {
-                targetDataType = registry.introspectType(javaType);
-                if (targetDataType == null) {
-                    targetDataType = new DataType<Class>("java.lang.Object", javaType, javaType);
-                }
+                targetDataType = new DataType<Class>("java.lang.Object", javaType, javaType);
+                registry.introspectType(targetDataType, null);
             }
         }
 
