@@ -18,7 +18,9 @@
  */
 package org.apache.tuscany.assembly.model;
 
-import org.apache.tuscany.assembly.model.impl.InterfaceImpl;
+import org.apache.tuscany.sca.idl.Interface;
+import org.apache.tuscany.sca.idl.Operation;
+import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
 
 /**
  * A test interface model.
@@ -29,7 +31,6 @@ public class TestInterface extends InterfaceImpl implements Interface {
 
 	public TestInterface(AssemblyFactory factory) {
 		
-		setConversational(true);
 		setRemotable(true);
 		
 		Operation operation = new TestOperation();

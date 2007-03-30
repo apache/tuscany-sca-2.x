@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.policy.model;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.idl.Operation;
 
 
 
@@ -38,5 +42,11 @@ public interface Intent {
 	 * @param name the intent name
 	 */
 	void setName(QName name);
+
+	/**
+	 * Returns the list of operations that this intent applies to.
+	 * @return
+	 */
+	List<Operation> getOperations();
 	
 }

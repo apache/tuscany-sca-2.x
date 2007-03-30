@@ -18,9 +18,13 @@
  */
 package org.apache.tuscany.policy.model.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.policy.model.Intent;
+import org.apache.tuscany.sca.idl.Operation;
 
 /**
  * Represents a policy intent.
@@ -30,6 +34,7 @@ import org.apache.tuscany.policy.model.Intent;
 public class IntentImpl implements Intent {
 	
 	private QName name;
+	private List<Operation> operations = new ArrayList<Operation>();
 
 	public QName getName() {
 		return name;
@@ -37,6 +42,10 @@ public class IntentImpl implements Intent {
 
 	public void setName(QName name) {
 		this.name = name;
+	}
+	
+	public List<Operation> getOperations() {
+		return operations;
 	}
 
 }
