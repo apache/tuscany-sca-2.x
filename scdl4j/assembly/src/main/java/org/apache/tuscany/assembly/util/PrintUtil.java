@@ -31,87 +31,111 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A simple print utility class to help print the assembly model.
+ * A simple print utility class to help print assembly model instances.
  *
  *  @version $Rev$ $Date$
  */
 public class PrintUtil {
 	
 	PrintWriter out;
-	Set<Object> objs = new HashSet<Object>();
-	int level;
+	Set<Object> objects = new HashSet<Object>();
+	int indent;
 	
 	public PrintUtil(OutputStream out) {
 		this.out = new PrintWriter(new OutputStreamWriter(out), true);
 	}
 	
-	void indent(int level) {
-		for (int i=0; i<level; i++) {
+	void indent() {
+		for (int i=0; i<indent; i++) {
 			out.print("  ");
 		}
 	}
 	
-	public void print(Object obj) {
-		if (objs.contains(obj)) {
-			indent(level);
-			out.println(obj.getClass().getName()+"@"+System.identityHashCode(obj));
+	/**
+	 * Print a model object.
+	 * @param object
+	 */
+	public void print(Object object) {
+		if (objects.contains(object)) {
+			
+			// If we've already printed an object, print just it's hashcode
+			indent();
+			out.println(object.getClass().getName()+"@"+System.identityHashCode(object));
 		}
 		else {
-			objs.add(obj);
+			objects.add(object);
 			try {
-				indent(level);
-				out.println(obj.getClass().getSimpleName() + " {");
-				BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
-				for (PropertyDescriptor pd: bi.getPropertyDescriptors()) {
+				
+				// Print the object class name
+				indent();
+				out.println(object.getClass().getSimpleName() + " {");
+				
+				// Get the object's properties
+				BeanInfo beanInfo = Introspector.getBeanInfo(object.getClass());
+				for (PropertyDescriptor propertyDescriptor: beanInfo.getPropertyDescriptors()) {
 					try {
-						Object pv = pd.getReadMethod().invoke(obj);
-						if (pv != null) {
-							if (pv.getClass().isArray()) {
-								pv = Arrays.asList((Object[])pv);
+						
+						// Get the value of each property 
+						Object value = propertyDescriptor.getReadMethod().invoke(object);
+						if (value != null) {
+							
+							// Convert array value into a list
+							if (value.getClass().isArray()) {
+								value = Arrays.asList((Object[])value);
 							}
-							if (pv instanceof List) {
-								if (!((List)pv).isEmpty()) {
-									level++;
-									indent(level);
-									out.println(pd.getName() + "= [");
-									for (Object e: (List)pv) {
-										level++;
-										print(e);
-										level--;
+							
+							// Print elements in a list
+							if (value instanceof List) {
+								if (!((List)value).isEmpty()) {
+									indent++;
+									indent();
+									out.println(propertyDescriptor.getName() + "= [");
+									
+									// Print each element, recursively
+									for (Object element: (List)value) {
+										indent++;
+										print(element);
+										indent--;
 									}
-									indent(level);
+									indent();
 									out.println( " ]");
-									level--;
+									indent--;
 								}
 							}
 							else {
-								Class<?> pvc = pv.getClass();
-								if (pvc.isPrimitive() || pvc.getName().startsWith("java.") || pvc.getName().startsWith("javax.") || pvc.isEnum()) {
-									if (!pd.getName().equals("class")) {
-										if (!(Boolean.FALSE.equals(pv))) {
-											indent(level+1);
-											out.println(pd.getName() + "=" + pv.toString());
+								Class<?> valueClass = value.getClass();
+								
+								// Print a primitive, java built in type or enum, using toString()
+								if (valueClass.isPrimitive() || valueClass.getName().startsWith("java.") || valueClass.getName().startsWith("javax.") || valueClass.isEnum()) {
+									if (!propertyDescriptor.getName().equals("class")) {
+										if (!(Boolean.FALSE.equals(value))) {
+											indent++;
+											indent();
+											out.println(propertyDescriptor.getName() + "=" + value.toString());
+											indent--;
 										}
 									}
 								} else {
-									level++;
-									indent(level);
-									out.println(pd.getName() + "= {" );
-									level++;
-									print(pv);
-									level--;
-									indent(level);
+									
+									// Print an object, recursively
+									indent++;
+									indent();
+									out.println(propertyDescriptor.getName() + "= {" );
+									indent++;
+									print(value);
+									indent--;
+									indent();
 									out.println("}");
-									level--;
+									indent--;
 								}
 							}
 						}
 					} catch (Exception e) {}
 				}
-				indent(level);
+				indent();
 				out.println("}");
 			} catch (IntrospectionException e) {
-				indent(level);
+				indent();
 				out.println(e);
 			}
 		}
