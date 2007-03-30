@@ -21,9 +21,14 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -34,12 +39,6 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
-import org.apache.tuscany.core.mock.component.Source;
-import org.apache.tuscany.core.mock.component.SourceImpl;
-import org.apache.tuscany.core.mock.component.Target;
 import org.easymock.EasyMock;
 
 /**
@@ -92,7 +91,9 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = new CompositeComponentImpl(URI.create("parent"));
+        parent = EasyMock.createMock(Component.class);
+        EasyMock.expect(parent.getUri()).andReturn(URI.create("parent")).anyTimes();
+        EasyMock.replay(parent);
         constructor = SourceImpl.class.getConstructor((Class[]) null);
         createDeploymentContext();
         createComponentDefinitionAndType();

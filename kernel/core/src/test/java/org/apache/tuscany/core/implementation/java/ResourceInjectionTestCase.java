@@ -26,9 +26,12 @@ import java.util.List;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.host.ResourceHost;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
+
+import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.ResourceObjectFactory;
@@ -74,9 +77,10 @@ public class ResourceInjectionTestCase extends TestCase {
         configuration.setName(new URI("component"));
         configuration.setGroupId(URI.create("composite"));
         configuration.setInstanceFactory(new PojoObjectFactory<FooConstructor>(ctor));
-        List<String> ctorNames = new ArrayList<String>();
-        ctorNames.add("bar");
-        configuration.setConstructorParamNames(ctorNames);
+        ConstructorDefinition<?> definition = new ConstructorDefinition(ctor);
+        definition.getParameters()[0].setName("bar");
+        definition.getParameters()[0].setClassifer(Resource.class);
+        configuration.setConstructor(definition);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(containter);
 

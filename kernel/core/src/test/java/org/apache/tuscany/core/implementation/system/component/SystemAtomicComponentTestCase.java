@@ -18,8 +18,10 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
@@ -29,6 +31,8 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.easymock.EasyMock;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Verifies a system atomic component can be started and initialized
@@ -59,10 +63,13 @@ public class SystemAtomicComponentTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
-        configuration.addConstructorParamName("foo");
-        configuration.addConstructorParamType(String.class);
-        configuration.addConstructorParamName("ref");
-        configuration.addConstructorParamType(Foo.class);
+        Constructor<?> constructor = Bar.class.getConstructor(new Class[] {String.class, Foo.class});
+        ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
+        definition.getParameters()[0].setName("foo");
+        definition.getParameters()[0].setClassifer(Property.class);
+        definition.getParameters()[1].setName("ref");
+        definition.getParameters()[1].setClassifer(Reference.class);
+        configuration.setConstructor(definition);
         configuration.setName(new URI("foo"));
         configuration.setGroupId(groupId);
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);

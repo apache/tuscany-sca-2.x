@@ -154,6 +154,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
                 throw new DuplicatePropertyException("Duplication property: " + name);
             }
             parameter.setName(name);
+            parameter.setClassifer(annotationClass);
             JavaMappedProperty<?> property = createProperty(name, parameter);
             initProperty(property, annotation, context);
             properties.put(name, property);

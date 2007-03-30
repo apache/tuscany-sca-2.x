@@ -39,7 +39,6 @@ import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.Parameter;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -112,10 +111,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         Constructor<?> constr = ctorDef.getConstructor();
         PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
         configuration.setInstanceFactory(instanceFactory);
-        for (Parameter param : ctorDef.getParameters()) {
-            configuration.getConstructorParamNames().add(param.getName());
-            configuration.addConstructorParamType(param.getType());
-        }
+        configuration.setConstructor(ctorDef);
         configuration.setName(definition.getUri());
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         // handle properties

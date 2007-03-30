@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.implementation;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -31,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.ObjectCreationException;
@@ -39,9 +42,12 @@ import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.Parameter;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.Wire;
 
+import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.InstanceFactory;
@@ -74,7 +80,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     protected EventInvoker<Object> destroyInvoker;
     protected PojoObjectFactory<?> instanceFactory;
     protected InstanceFactory<?> instanceFactory2;
-    protected List<String> constructorParamNames;
+    protected ConstructorDefinition<?> constructor;
+    // protected List<String> constructorParamNames;
     protected Map<String, Member> referenceSites;
     protected Map<String, Member> resourceSites;
     protected Map<String, Member> propertySites;
@@ -86,7 +93,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     private final ComponentContext componentContext;
     private final Map<String, ObjectFactory<?>> propertyFactories = new ConcurrentHashMap<String, ObjectFactory<?>>();
-    private List<Class<?>> constructorParamTypes = new ArrayList<Class<?>>();
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
         super(configuration.getName(), configuration.getProxyService(), configuration.getWorkContext(), configuration
@@ -96,8 +102,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         destroyInvoker = configuration.getDestroyInvoker();
         instanceFactory = configuration.getInstanceFactory();
         instanceFactory2 = configuration.getInstanceFactory2();
-        constructorParamNames = configuration.getConstructorParamNames();
-        constructorParamTypes = configuration.getConstructorParamTypes();
+        constructor = configuration.getConstructor();
         injectors = new ArrayList<Injector<Object>>();
         referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
                                                                  : new HashMap<String, Member>();
@@ -171,16 +176,43 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         if (member != null && !(member instanceof Constructor)) {
             injectors.add(createInjector(member, wire));
         }
-        // cycle through constructor param names as well
-        for (int i = 0; i < constructorParamNames.size(); i++) {
-            if (referenceName.equals(constructorParamNames.get(i))) {
-                ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
-                initializerFactories[i] = createWireFactory(constructorParamTypes.get(i), wire);
-                break;
-            }
-        }
+
+        configureConstructor(referenceName, Reference.class, wire);
+
         // TODO error if ref not set on constructor or ref site
 
+    }
+
+    private boolean configureConstructor(String name, Class<? extends Annotation> classifer, Wire wire) {
+        Parameter param = getParameter(name, classifer);
+        if (param != null) {
+            ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
+            initializerFactories[param.getIndex()] = createWireFactory(param.getType(), wire);
+            return true;
+        }
+        return false;
+    }
+
+    private Parameter getParameter(String name, Class<? extends Annotation> classifer) {
+        if (constructor == null) {
+            return null;
+        }
+        for (Parameter param : constructor.getParameters()) {
+            if (param.getClassifer() == classifer && param.getName().equals(name)) {
+                return param;
+            }
+        }
+        return null;
+    }
+
+    private boolean configureConstructor(String name, Class<? extends Annotation> classifer, ObjectFactory<?> factory) {
+        Parameter param = getParameter(name, classifer);
+        if (param != null) {
+            ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
+            initializerFactories[param.getIndex()] = factory;
+            return true;
+        }
+        return false;
     }
 
     public void attachWires(List<Wire> attachWires) {
@@ -195,7 +227,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         wireList.addAll(attachWires);
         Member member = referenceSites.get(referenceName);
         if (member == null) {
-            if (constructorParamNames.contains(referenceName)) {
+            if (getParameter(referenceName, Reference.class) != null) {
                 // injected on the constructor
                 throw new UnsupportedOperationException();
             } else {
@@ -258,14 +290,9 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         } else if (member instanceof Method) {
             injectors.add(new MethodInjector<Object>((Method)member, factory));
         }
-        // cycle through constructor param names as well
-        for (int i = 0; i < constructorParamNames.size(); i++) {
-            if (name.equals(constructorParamNames.get(i))) {
-                ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
-                initializerFactories[i] = factory;
-                break;
-            }
-        }
+
+        configureConstructor(name, Property.class, factory);
+
         // FIXME throw an error if no injection site found
 
         propertyFactories.put(name, factory);
@@ -278,14 +305,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         } else if (member instanceof Method) {
             injectors.add(new MethodInjector<Object>((Method)member, factory));
         }
-        // cycle through constructor param names as well
-        for (int i = 0; i < constructorParamNames.size(); i++) {
-            if (name.equals(constructorParamNames.get(i))) {
-                ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
-                initializerFactories[i] = factory;
-                break;
-            }
-        }
+
+        configureConstructor(name, Resource.class, factory);
         // FIXME throw an error if no injection site found
     }
 
