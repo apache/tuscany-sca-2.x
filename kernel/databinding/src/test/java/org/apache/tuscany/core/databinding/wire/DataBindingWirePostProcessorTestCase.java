@@ -53,8 +53,6 @@ import org.osoa.sca.Constants;
 import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 
-import com.ibm.rmi.corba.IsA;
-
 /**
  * @version $Rev$ $Date$
  */
