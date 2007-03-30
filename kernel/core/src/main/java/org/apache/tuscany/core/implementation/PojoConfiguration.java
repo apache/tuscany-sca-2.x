@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.wire.ProxyService;
 
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -42,8 +43,7 @@ public class PojoConfiguration {
     private URI name;
     private InstanceFactory<?> instanceFactory2;
     private PojoObjectFactory<?> instanceFactory;
-    private List<String> constructorParamNames = new ArrayList<String>();
-    private List<Class<?>> constructorParamTypes = new ArrayList<Class<?>>();
+    private ConstructorDefinition<?> constructor;
     private int initLevel;
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
@@ -85,6 +85,7 @@ public class PojoConfiguration {
         this.instanceFactory2 = instanceFactory2;
     }
 
+    /*
     public List<String> getConstructorParamNames() {
         return constructorParamNames;
     }
@@ -108,6 +109,7 @@ public class PojoConfiguration {
     public void addConstructorParamType(Class<?> type) {
         constructorParamTypes.add(type);
     }
+    */
 
     public URI getGroupId() {
         return groupId;
@@ -219,5 +221,19 @@ public class PojoConfiguration {
 
     public void setImplementationClass(Class implementationClass) {
         this.implementationClass = implementationClass;
+    }
+
+    /**
+     * @return the constructor
+     */
+    public ConstructorDefinition<?> getConstructor() {
+        return constructor;
+    }
+
+    /**
+     * @param constructor the constructor to set
+     */
+    public void setConstructor(ConstructorDefinition<?> constructor) {
+        this.constructor = constructor;
     }
 }
