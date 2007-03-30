@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.policy.model;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.idl.Operation;
 
 
 
@@ -39,4 +43,10 @@ public interface PolicySet {
 	 */
 	void setName(QName name);
 
+	/**
+	 * Returns the list of operations that this policy set applies to.
+	 * @return
+	 */
+	List<Operation> getOperations();
+	
 }

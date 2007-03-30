@@ -40,6 +40,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tuscany.sca.idl</groupId>
+            <artifactId>tuscany-idl</artifactId>
+            <version>0.1-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>

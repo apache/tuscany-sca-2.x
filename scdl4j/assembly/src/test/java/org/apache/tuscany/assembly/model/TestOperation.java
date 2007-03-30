@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.assembly.model;
 
-import org.apache.tuscany.assembly.model.impl.OperationImpl;
+import org.apache.tuscany.sca.idl.Operation;
+import org.apache.tuscany.sca.idl.impl.OperationImpl;
 
 /**
  * A test operation model.
