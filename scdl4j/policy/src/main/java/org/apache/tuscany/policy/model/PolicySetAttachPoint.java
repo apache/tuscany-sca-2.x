@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Base interface for all assembly model objects that can have policy sets attached to them.
  */
-public interface PolicySetAttachPoint {
+public interface PolicySetAttachPoint extends IntentAttachPoint {
 
 	/**
 	 * Returns a list of policy sets. See the Policy Framework specification for a description of this attribute.
