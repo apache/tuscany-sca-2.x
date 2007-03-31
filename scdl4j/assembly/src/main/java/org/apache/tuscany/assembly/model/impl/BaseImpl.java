@@ -29,10 +29,10 @@ import org.apache.tuscany.assembly.model.Base;
  *  @version $Rev$ $Date$
  */
 public class BaseImpl implements Base {
-	private List<?> extensions = new ArrayList();
+	private List<Base> extensions = new ArrayList<Base>();
 	private boolean unresolved = false;
 
-	public List<?> getExtensions() {
+	public List<Base> getExtensions() {
 		return extensions;
 	}
 
