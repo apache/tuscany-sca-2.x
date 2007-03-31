@@ -19,15 +19,12 @@
 
 package org.apache.tuscany.scdl.stax.impl;
 
-import java.io.InputStream;
+import java.net.URL;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.model.AssemblyFactory;
 import org.apache.tuscany.assembly.model.Callback;
 import org.apache.tuscany.assembly.model.Component;
 import org.apache.tuscany.assembly.model.ComponentReference;
@@ -37,14 +34,9 @@ import org.apache.tuscany.assembly.model.CompositeReference;
 import org.apache.tuscany.assembly.model.CompositeService;
 import org.apache.tuscany.assembly.model.Multiplicity;
 import org.apache.tuscany.assembly.model.Property;
-import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
-import org.apache.tuscany.policy.model.PolicyFactory;
-import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
-import org.apache.tuscany.scdl.stax.LoaderRegistry;
-import org.apache.tuscany.scdl.stax.impl.CompositeLoader;
-import org.apache.tuscany.scdl.stax.impl.LoaderRegistryImpl;
+import org.apache.tuscany.scdl.stax.Constants;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
@@ -52,33 +44,19 @@ import org.apache.tuscany.scdl.stax.impl.LoaderRegistryImpl;
  * @version $Rev$ $Date$
  */
 public class ReadAllTestCase extends TestCase {
-
-    private XMLInputFactory inputFactory;
-    private AssemblyFactory assemblyFactory;
-    private PolicyFactory policyFactory;
-    private LoaderRegistry loaderRegistry;
+    private LoaderRegistryImpl loaderRegistry;
 
     public void setUp() throws Exception {
-        inputFactory = XMLInputFactory.newInstance();
-        assemblyFactory = new DefaultAssemblyFactory();
-        policyFactory = new DefaultPolicyFactory();
         loaderRegistry = new LoaderRegistryImpl();
     }
 
     public void tearDown() throws Exception {
-        assemblyFactory = null;
-        policyFactory = null;
-        inputFactory = null;
         loaderRegistry = null;
     }
 
     public void testReadComposite() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
-        CompositeLoader loader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-
-        Composite composite = loader.load(reader);
-        is.close();
+        URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
+        Composite composite = loaderRegistry.load(null, url, Composite.class);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "Calculator"));
@@ -155,18 +133,14 @@ public class ReadAllTestCase extends TestCase {
         assertNotNull(calcCallback);
         // TODO test operations
 
-        new PrintUtil(System.out).print(loader);
+        new PrintUtil(System.out).print(loaderRegistry.getLoader(Constants.COMPOSITE_QNAME));
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
-        CompositeLoader loader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-
-        Composite composite = loader.load(reader);
-        is.close();
+        URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
+        Composite composite = loaderRegistry.load(null, url, Composite.class);
         assertNotNull(composite);
-        new CompositeUtil(assemblyFactory, composite).configure(null);
+        new CompositeUtil(loaderRegistry.getAssemblyFactory(), composite).configure(null);
 
         Component calcComponent = composite.getComponents().get(0);
         CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);

@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AssemblyFactory;
+import org.apache.tuscany.assembly.model.Base;
 import org.apache.tuscany.assembly.model.Callback;
 import org.apache.tuscany.assembly.model.Component;
 import org.apache.tuscany.assembly.model.ComponentProperty;
@@ -41,6 +42,7 @@ import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.assembly.model.Wire;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.scdl.stax.Constants;
+import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderRegistry;
 
 /**
@@ -48,13 +50,13 @@ import org.apache.tuscany.scdl.stax.LoaderRegistry;
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeLoader extends BaseLoader implements Constants {
+public class CompositeLoader extends BaseLoader implements Loader<Composite> {
 
     public CompositeLoader(AssemblyFactory factory, PolicyFactory policyFactory, LoaderRegistry registry) {
         super(factory, policyFactory, registry);
     }
 
-    public Composite load(XMLStreamReader reader) throws XMLStreamException {
+    public Composite load(Base parent, XMLStreamReader reader) throws XMLStreamException {
         Composite composite = null;
         Composite include = null;
         Component component = null;

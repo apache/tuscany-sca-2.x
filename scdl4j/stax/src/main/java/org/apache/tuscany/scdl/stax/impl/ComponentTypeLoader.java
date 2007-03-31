@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AssemblyFactory;
+import org.apache.tuscany.assembly.model.Base;
 import org.apache.tuscany.assembly.model.Callback;
 import org.apache.tuscany.assembly.model.ComponentService;
 import org.apache.tuscany.assembly.model.ComponentType;
@@ -35,6 +36,7 @@ import org.apache.tuscany.assembly.model.Reference;
 import org.apache.tuscany.assembly.model.Service;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.scdl.stax.Constants;
+import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderRegistry;
 
 /**
@@ -42,13 +44,13 @@ import org.apache.tuscany.scdl.stax.LoaderRegistry;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeLoader extends BaseLoader {
+public class ComponentTypeLoader extends BaseLoader implements Loader<ComponentType> {
 
     public ComponentTypeLoader(AssemblyFactory factory, PolicyFactory policyFactory, LoaderRegistry registry) {
         super(factory, policyFactory, registry);
     }
 
-    public ComponentType load(XMLStreamReader reader) throws XMLStreamException {
+    public ComponentType load(Base parent, XMLStreamReader reader) throws XMLStreamException {
         ComponentType componentType = null;
         Service service = null;
         Reference reference = null;

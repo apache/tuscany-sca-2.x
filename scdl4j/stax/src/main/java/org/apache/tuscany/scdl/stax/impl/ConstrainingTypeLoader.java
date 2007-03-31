@@ -30,9 +30,11 @@ import org.apache.tuscany.assembly.model.AbstractProperty;
 import org.apache.tuscany.assembly.model.AbstractReference;
 import org.apache.tuscany.assembly.model.AbstractService;
 import org.apache.tuscany.assembly.model.AssemblyFactory;
+import org.apache.tuscany.assembly.model.Base;
 import org.apache.tuscany.assembly.model.ConstrainingType;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.scdl.stax.Constants;
+import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderRegistry;
 
 /**
@@ -40,7 +42,7 @@ import org.apache.tuscany.scdl.stax.LoaderRegistry;
  * 
  * @version $Rev$ $Date$
  */
-public class ConstrainingTypeLoader extends BaseLoader {
+public class ConstrainingTypeLoader extends BaseLoader implements Loader<ConstrainingType>{
 
     public ConstrainingTypeLoader(AssemblyFactory factory,
                                   PolicyFactory policyFactory,
@@ -48,7 +50,7 @@ public class ConstrainingTypeLoader extends BaseLoader {
         super(factory, policyFactory, registry);
     }
 
-    public ConstrainingType load(XMLStreamReader reader) throws XMLStreamException {
+    public ConstrainingType load(Base parent, XMLStreamReader reader) throws XMLStreamException {
         ConstrainingType constrainingType = null;
         AbstractService abstractService = null;
         AbstractReference abstractReference = null;

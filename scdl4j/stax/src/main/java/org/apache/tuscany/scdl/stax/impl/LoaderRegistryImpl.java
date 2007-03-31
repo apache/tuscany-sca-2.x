@@ -30,7 +30,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.assembly.model.AssemblyFactory;
 import org.apache.tuscany.assembly.model.Base;
+import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.policy.model.PolicyFactory;
+import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
+import org.apache.tuscany.scdl.stax.Constants;
 import org.apache.tuscany.scdl.stax.InvalidConfigurationException;
 import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderException;
@@ -45,7 +50,31 @@ import org.apache.tuscany.scdl.stax.UnrecognizedElementException;
 public class LoaderRegistryImpl implements LoaderRegistry {
     private final Map<QName, Loader> loaders = new HashMap<QName, Loader>();
 
+    private AssemblyFactory assemblyFactory;
+    private PolicyFactory policyFactory;
+    private XMLInputFactory factory;
+
+    /**
+     * @param assemblyFactory
+     * @param policyFactory
+     * @param factory
+     */
+    public LoaderRegistryImpl(AssemblyFactory assemblyFactory, PolicyFactory policyFactory, XMLInputFactory factory) {
+        super();
+        this.assemblyFactory = assemblyFactory;
+        this.policyFactory = policyFactory;
+        this.factory = factory;
+        init();
+    }
+
     public LoaderRegistryImpl() {
+        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), XMLInputFactory.newInstance());
+    }
+
+    public final void init() {
+        addLoader(Constants.COMPOSITE_QNAME, new CompositeLoader(assemblyFactory, policyFactory, this));
+        addLoader(Constants.COMPONENT_TYPE_QNAME, new ComponentTypeLoader(assemblyFactory, policyFactory, this));
+        addLoader(Constants.CONSTRAINING_TYPE_QNAME, new ConstrainingTypeLoader(assemblyFactory, policyFactory, this));
     }
 
     public Base load(Base object, XMLStreamReader reader) throws XMLStreamException {
@@ -56,7 +85,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
             // throw new IllegalArgumentException(name.toString());
             return null;
         }
-        return (Base) loader.load(object, reader);
+        return (Base)loader.load(object, reader);
     }
 
     public <MO extends Base> MO load(Base object, URL url, Class<MO> type) throws LoaderException {
@@ -65,7 +94,6 @@ public class LoaderRegistryImpl implements LoaderRegistry {
             InputStream is;
             is = url.openStream();
             try {
-                XMLInputFactory factory = XMLInputFactory.newInstance();
                 reader = factory.createXMLStreamReader(is);
                 try {
                     reader.nextTag();
@@ -106,12 +134,26 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         }
     }
 
-    public void addLoader(QName element, Loader loader) {
+    public final void addLoader(QName element, Loader loader) {
         loaders.put(element, loader);
     }
 
     public Loader getLoader(QName element) {
         return loaders.get(element);
+    }
+
+    /**
+     * @return the assemblyFactory
+     */
+    public AssemblyFactory getAssemblyFactory() {
+        return assemblyFactory;
+    }
+
+    /**
+     * @return the policyFactory
+     */
+    public PolicyFactory getPolicyFactory() {
+        return policyFactory;
     }
 
 }
