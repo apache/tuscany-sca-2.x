@@ -38,6 +38,8 @@ import org.apache.tuscany.assembly.model.Reference;
 import org.apache.tuscany.assembly.model.SCABinding;
 import org.apache.tuscany.assembly.model.Service;
 import org.apache.tuscany.assembly.model.Wire;
+import org.apache.tuscany.sca.idl.Operation;
+import org.apache.tuscany.sca.idl.impl.OperationImpl;
 
 /**
  * A factory for the assembly model.
@@ -116,5 +118,9 @@ public class DefaultAssemblyFactory implements AssemblyFactory {
 
 	public SCABinding createSCABinding() {
 		return new SCABindingImpl();
+	}
+	
+	public Operation createOperation() {
+		return new OperationImpl();
 	}
 }
