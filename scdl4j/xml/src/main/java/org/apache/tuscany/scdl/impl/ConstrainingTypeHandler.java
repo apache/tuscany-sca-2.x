@@ -65,7 +65,7 @@ public class ConstrainingTypeHandler extends BaseHandler implements ContentHandl
             if (Constants.CONSTRAINING_TYPE.equals(name)) {
                 constrainingType = factory.createConstrainingType();
                 constrainingType.setName(getQName(attr, Constants.NAME));
-                readRequiredIntents(constrainingType, attr);
+                readIntents(constrainingType, attr);
                 return;
 
             } else if (Constants.SERVICE.equals(name)) {
@@ -73,7 +73,7 @@ public class ConstrainingTypeHandler extends BaseHandler implements ContentHandl
                 abstractContract = abstractService;
                 abstractService.setName(getString(attr, Constants.NAME));
                 constrainingType.getServices().add(abstractService);
-                readRequiredIntents(abstractService, attr);
+                readIntents(abstractService, attr);
                 return;
 
             } else if (Constants.REFERENCE.equals(name)) {
@@ -81,14 +81,14 @@ public class ConstrainingTypeHandler extends BaseHandler implements ContentHandl
                 abstractContract = abstractReference;
                 abstractReference.setName(getString(attr, Constants.NAME));
                 constrainingType.getReferences().add(abstractReference);
-                readRequiredIntents(abstractReference, attr);
+                readIntents(abstractReference, attr);
                 return;
 
             } else if (Constants.PROPERTY.equals(name)) {
                 abstractProperty = factory.createAbstractProperty();
                 readAbstractProperty(abstractProperty, attr);
                 constrainingType.getProperties().add(abstractProperty);
-                readRequiredIntents(abstractProperty, attr);
+                readIntents(abstractProperty, attr);
                 return;
             }
         }

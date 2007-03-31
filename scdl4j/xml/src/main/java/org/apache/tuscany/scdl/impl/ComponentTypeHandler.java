@@ -28,6 +28,8 @@ import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.assembly.model.Reference;
 import org.apache.tuscany.assembly.model.Service;
 import org.apache.tuscany.policy.model.PolicyFactory;
+import org.apache.tuscany.sca.idl.Operation;
+import org.apache.tuscany.scdl.BindingHandler;
 import org.apache.tuscany.scdl.Constants;
 import org.apache.tuscany.scdl.HandlerRegistry;
 import org.apache.tuscany.scdl.InterfaceHandler;
@@ -50,6 +52,7 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
     private Property property;
     private Callback callback;
     private InterfaceHandler interfaceHandler;
+	private BindingHandler bindingHandler;
 	private AssemblyFactory factory;
 
     public ComponentTypeHandler(AssemblyFactory factory, PolicyFactory policyFactory,
@@ -68,8 +71,7 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
             if (Constants.COMPONENT_TYPE.equals(name)) {
                 componentType = factory.createComponentType();
                 componentType.setConstrainingType(getConstrainingType(attr));
-                readRequiredIntents(componentType, attr);
-                readPolicySets(componentType, attr);
+                readPolicies(componentType, attr);
                 return;
 
             } else if (Constants.SERVICE.equals(name)) {
@@ -77,8 +79,7 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
                 contract = service;
                 service.setName(getString(attr, Constants.NAME));
                 componentType.getServices().add(service);
-                readRequiredIntents(service, attr);
-                readPolicySets(service, attr);
+                readPolicies(service, attr);
                 return;
 
             } else if (Constants.REFERENCE.equals(name)) {
@@ -93,30 +94,40 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
             	reference.getTargets().add(target);
 
             	componentType.getReferences().add(reference);
-                readRequiredIntents(reference, attr);
-                readPolicySets(reference, attr);
+                readPolicies(reference, attr);
             	return;
             	
             } else if (Constants.PROPERTY.equals(name)) {
                 property = factory.createProperty();
                 readProperty(property, attr);
                 componentType.getProperties().add(property);
-                readRequiredIntents(property, attr);
-                readPolicySets(property, attr);
+                readPolicies(property, attr);
                 return;
 
             } else if (Constants.CALLBACK.equals(name)) {
 	            callback = factory.createCallback();
 	            contract.setCallback(callback);
-                readRequiredIntents(callback, attr);
-                readPolicySets(callback, attr);
+                readPolicies(callback, attr);
 	            return;
+
+            } else if (Constants.OPERATION.equals(name)) {
+        		Operation operation = factory.createOperation();
+        		operation.setName(getString(attr, Constants.NAME));
+        		operation.setUnresolved(true);
+        		if (callback != null) {
+        			readPolicies(callback, operation, attr);
+        		} else {
+        			readPolicies(contract, operation, attr);
+        		}
 	        }
         }
         
         // Handle interface elements
         if (contract != null) {
         	interfaceHandler = startInterfaceElement(uri, name, qname, attr);
+        	if (interfaceHandler == null) {
+        		bindingHandler = startBindingElement(uri, name, qname, attr);
+        	}
         }
     }
 
@@ -127,6 +138,10 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
 			if (endInterfaceElement(uri, name, qname)) {
 				contract.setInterface(interfaceHandler.getInterface());
 				interfaceHandler = null;
+				return;
+			} else if (endBindingElement(uri, name, qname)) {
+				contract.getBindings().add(bindingHandler.getBinding());
+				bindingHandler = null;
 				return;
 			}
         }
