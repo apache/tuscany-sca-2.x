@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.assembly.model;
 
+import org.apache.tuscany.sca.idl.Operation;
+
 /**
  * A factory for the assembly model
  */
@@ -130,4 +132,11 @@ public interface AssemblyFactory {
 	 * @return a new SCA binding
 	 */
 	SCABinding createSCABinding();
+
+	/**
+	 * Create a new operation.
+	 * @return a new operation
+	 */
+	Operation createOperation();
+	
 }
