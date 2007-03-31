@@ -25,9 +25,10 @@ import org.apache.tuscany.sca.idl.Operation;
  *
  *  @version $Rev$ $Date$
  */
-public abstract class OperationImpl implements Operation {
+public class OperationImpl implements Operation {
 	
 	private String name;
+	private boolean unresolved = false;
 	
 	public String getName() {
 		return name;
@@ -37,4 +38,12 @@ public abstract class OperationImpl implements Operation {
 		this.name = name;
 	}
 	
+	public boolean isUnresolved() {
+		return unresolved;
+	}
+
+	public void setUnresolved(boolean undefined) {
+		this.unresolved = undefined;
+	}
+
 }
