@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.idl.Operation;
  *
  *  @version $Rev$ $Date$
  */
-public abstract class InterfaceImpl implements Interface {
+public class InterfaceImpl implements Interface {
 	
 	private boolean remotable;
 	private List<Operation> operations = new ArrayList<Operation>();

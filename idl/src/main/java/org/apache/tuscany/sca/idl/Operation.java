@@ -36,4 +36,16 @@ public interface Operation {
 	 */
 	void setName(String name);
 
+    /**
+     * Returns true if the model element is unresolved.
+     * @return true if the model element is unresolved.
+     */
+    boolean isUnresolved();
+    
+    /**
+     * Sets whether the model element is unresolved.
+     * @param unresolved whether the model element is unresolved
+     */
+    void setUnresolved(boolean unresolved);
+
 }
