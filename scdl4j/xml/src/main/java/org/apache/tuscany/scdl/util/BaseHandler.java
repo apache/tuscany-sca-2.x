@@ -35,6 +35,7 @@ import org.apache.tuscany.policy.model.IntentAttachPoint;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.policy.model.PolicySet;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
+import org.apache.tuscany.sca.idl.Operation;
 import org.apache.tuscany.scdl.BindingHandler;
 import org.apache.tuscany.scdl.Constants;
 import org.apache.tuscany.scdl.HandlerRegistry;
@@ -117,7 +118,11 @@ public abstract class BaseHandler extends DefaultHandler implements ContentHandl
     	}
     }
     
-    protected void readRequiredIntents(IntentAttachPoint attachPoint, Attributes attr) {
+    protected void readIntents(IntentAttachPoint attachPoint, Attributes attr) {
+    	readIntents(attachPoint, null, attr);
+    }
+    
+    protected void readIntents(IntentAttachPoint attachPoint, Operation operation, Attributes attr) {
     	String value = attr.getValue(Constants.REQUIRES);
     	if (value != null) {
 			List<Intent> requiredIntents = attachPoint.getRequiredIntents();
@@ -125,12 +130,21 @@ public abstract class BaseHandler extends DefaultHandler implements ContentHandl
     			QName qname = getQName(tokens.nextToken());
     			Intent intent = policyFactory.createIntent();
     			intent.setName(qname);
+    			if (operation != null) {
+    				intent.getOperations().add(operation);
+    			}
 				requiredIntents.add(intent);
     		}
     	}
     }
+    
+    protected void readPolicies(PolicySetAttachPoint attachPoint, Attributes attr) {
+    	readPolicies(attachPoint, null, attr);
+    }
 
-    protected void readPolicySets(PolicySetAttachPoint attachPoint, Attributes attr) {
+	protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, Attributes attr) {
+		readIntents(attachPoint, operation, attr);
+		
     	String value = attr.getValue(Constants.POLICY_SETS);
     	if (value != null) {
 			List<PolicySet> policySets = attachPoint.getPolicySets();
@@ -138,6 +152,9 @@ public abstract class BaseHandler extends DefaultHandler implements ContentHandl
     			QName qname = getQName(tokens.nextToken());
     			PolicySet policySet = policyFactory.createPolicySet();
     			policySet.setName(qname);
+    			if (operation != null) {
+    				policySet.getOperations().add(operation);
+    			}
 				policySets.add(policySet);
     		}
     	}

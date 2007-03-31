@@ -32,6 +32,7 @@ import org.apache.tuscany.assembly.model.Contract;
 import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.assembly.model.Wire;
 import org.apache.tuscany.policy.model.PolicyFactory;
+import org.apache.tuscany.sca.idl.Operation;
 import org.apache.tuscany.scdl.BindingHandler;
 import org.apache.tuscany.scdl.Constants;
 import org.apache.tuscany.scdl.HandlerRegistry;
@@ -87,8 +88,7 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
                 composite.setAutowire(getBoolean(attr, Constants.AUTOWIRE));
                 composite.setLocal(getBoolean(attr, Constants.LOCAL));
                 composite.setConstrainingType(getConstrainingType(attr));
-                readRequiredIntents(composite, attr);
-                readPolicySets(composite, attr);
+                readPolicies(composite, attr);
                 return;
 
             } else if (Constants.INCLUDE.equals(name)) {
@@ -102,8 +102,7 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
                     componentService = factory.createComponentService();
                     contract = componentService;
                     componentService.setName(getString(attr, Constants.NAME));
-                    readRequiredIntents(componentService, attr);
-                    readPolicySets(componentService, attr);
+                    readPolicies(componentService, attr);
                     component.getServices().add(componentService);
                 } else {
                     compositeService = factory.createCompositeService();
@@ -117,8 +116,7 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
 
                 	composite.getServices().add(compositeService);
                 }
-                readRequiredIntents(contract, attr);
-                readPolicySets(contract, attr);
+                readPolicies(contract, attr);
                 return;
 
             } else if (Constants.REFERENCE.equals(name)) {
@@ -147,8 +145,7 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
 
                 	composite.getReferences().add(compositeReference);
                 }
-                readRequiredIntents(contract, attr);
-                readPolicySets(contract, attr);
+                readPolicies(contract, attr);
                 return;
 
             } else if (Constants.PROPERTY.equals(name)) {
@@ -162,8 +159,7 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
                     readProperty(property, attr);
                     composite.getProperties().add(property);
                 }
-                readRequiredIntents(property, attr);
-                readPolicySets(property, attr);
+                readPolicies(property, attr);
                 return;
 
             } else if (Constants.COMPONENT.equals(name)) {
@@ -171,8 +167,7 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
                 component.setName(getString(attr, Constants.NAME));
                 component.setConstrainingType(getConstrainingType(attr));
                 composite.getComponents().add(component);
-                readRequiredIntents(component, attr);
-                readPolicySets(component, attr);
+                readPolicies(component, attr);
                 return;
                 
             } else if (Constants.WIRE.equals(name)) {
@@ -188,16 +183,24 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
             	wire.setTarget(target);
             	
                 composite.getWires().add(wire);
-                readRequiredIntents(wire, attr);
-                readPolicySets(wire, attr);
+                readPolicies(wire, attr);
                 return;
             	
 	        } else if (Constants.CALLBACK.equals(name)) {
                 callback = factory.createCallback();
                 contract.setCallback(callback);
-                readRequiredIntents(callback, attr);
-                readPolicySets(callback, attr);
+                readPolicies(callback, attr);
                 return;
+                
+	        } else if (Constants.OPERATION.equals(name)) {
+        		Operation operation = factory.createOperation();
+        		operation.setName(getString(attr, Constants.NAME));
+        		operation.setUnresolved(true);
+        		if (callback != null) {
+        			readPolicies(callback, operation, attr);
+        		} else {
+        			readPolicies(contract, operation, attr);
+        		}
 	        }
         }
 
@@ -233,7 +236,6 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
 				contract.setInterface(interfaceHandler.getInterface());
 				interfaceHandler = null;
 				return;
-				
 			} else if (endBindingElement(uri, name, qname)) {
 				contract.getBindings().add(bindingHandler.getBinding());
 				bindingHandler = null;
