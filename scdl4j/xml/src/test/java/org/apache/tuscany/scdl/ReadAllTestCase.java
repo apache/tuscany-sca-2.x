@@ -1,0 +1,174 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+package org.apache.tuscany.scdl;
+
+import java.io.InputStream;
+
+import javax.xml.namespace.QName;
+
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.model.AssemblyFactory;
+import org.apache.tuscany.assembly.model.Callback;
+import org.apache.tuscany.assembly.model.Component;
+import org.apache.tuscany.assembly.model.ComponentReference;
+import org.apache.tuscany.assembly.model.ComponentService;
+import org.apache.tuscany.assembly.model.Composite;
+import org.apache.tuscany.assembly.model.CompositeReference;
+import org.apache.tuscany.assembly.model.CompositeService;
+import org.apache.tuscany.assembly.model.Multiplicity;
+import org.apache.tuscany.assembly.model.Property;
+import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.util.CompositeUtil;
+import org.apache.tuscany.assembly.util.PrintUtil;
+import org.apache.tuscany.policy.model.PolicyFactory;
+import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
+import org.apache.tuscany.scdl.impl.CompositeHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+/**
+ * Test the usability of the assembly model API when loading SCDL
+ * 
+ * @version $Rev$ $Date$
+ */
+public class ReadAllTestCase extends TestCase {
+
+    XMLReader reader;
+    AssemblyFactory assemblyFactory;
+    PolicyFactory policyFactory;
+    
+    public void setUp() throws Exception {
+        reader = XMLReaderFactory.createXMLReader();
+        reader.setFeature("http://xml.org/sax/features/namespaces", true);
+        reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
+        
+        assemblyFactory = new DefaultAssemblyFactory();
+        policyFactory = new DefaultPolicyFactory();
+    }
+
+    public void tearDown() throws Exception {
+        assemblyFactory = null;
+        policyFactory = null;
+        reader = null;
+    }
+
+    public void testReadComposite() throws Exception {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        CompositeHandler handler = new CompositeHandler(assemblyFactory, policyFactory, null, null, null);
+        reader.setContentHandler(handler);
+        reader.parse(new InputSource(is));
+        
+        Composite composite = handler.getComposite();
+        assertNotNull(handler.getComposite());
+        assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
+        assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "Calculator"));
+        assertTrue(composite.isLocal());
+        assertFalse(composite.isAutowire());
+        assertEquals(composite.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality", "confidentiality"));
+        assertEquals(composite.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        
+        Composite include = composite.getIncludes().get(0);
+        assertEquals(include.getName(), new QName("http://calc", "TestAllDivide"));
+        
+        CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);
+        assertEquals(calcCompositeService.getName(), "CalculatorService");
+        assertTrue(calcCompositeService.getPromotedService().isUnresolved());
+        assertEquals(calcCompositeService.getPromotedService().getName(), "CalculatorServiceComponent/CalculatorService");
+        assertEquals(calcCompositeService.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality", "confidentiality"));
+        assertEquals(calcCompositeService.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        //TODO test operations
+        Callback calcServiceCallback = calcCompositeService.getCallback();
+        assertNotNull(calcServiceCallback);
+        assertEquals(calcServiceCallback.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality", "confidentiality"));
+        assertEquals(calcServiceCallback.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        //TODO test operations
+        
+        Component calcComponent = composite.getComponents().get(0);
+        assertEquals(calcComponent.getName(), "CalculatorServiceComponent");
+        assertEquals(calcComponent.isAutowire(), false);
+        assertEquals(calcComponent.getConstrainingType().getName(), new QName("http://calc", "CalculatorServiceComponent"));
+        assertEquals(calcComponent.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality", "confidentiality"));
+        assertEquals(calcComponent.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+
+        ComponentService calcComponentService = calcComponent.getServices().get(0);
+        assertEquals(calcComponentService.getName(), "CalculatorService");
+        assertEquals(calcComponentService.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality", "confidentiality"));
+        assertEquals(calcComponentService.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        //TODO test operations
+
+        ComponentReference calcComponentReference = calcComponent.getReferences().get(0);
+        assertEquals(calcComponentReference.getName(), "addService");
+        assertEquals(calcComponentReference.isAutowire(), false);
+        assertEquals(calcComponentReference.isWiredByImpl(), false);
+        assertEquals(calcComponentReference.getMultiplicity(), Multiplicity.ONE_ONE);
+        assertEquals(calcComponentReference.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality", "confidentiality"));
+        assertEquals(calcComponentReference.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        //TODO test operations
+
+        Property property = calcComponent.getProperties().get(0);
+        assertEquals(property.getName(), "round");
+        assertEquals(property.getDefaultValue(), "true");
+        assertEquals(property.getXSDType(), new QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        assertEquals(property.isMany(), false);
+        
+        CompositeReference calcCompositeReference = (CompositeReference)composite.getReferences().get(0);
+        assertEquals(calcCompositeReference.getName(), "MultiplyService");
+        assertTrue(calcCompositeReference.getPromotedReferences().get(0).isUnresolved());
+        assertEquals(calcCompositeReference.getPromotedReferences().get(0).getName(), "CalculatorServiceComponent/multiplyService");
+        assertEquals(calcCompositeReference.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality", "confidentiality"));
+        assertEquals(calcCompositeReference.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        //TODO test operations
+        Callback calcCallback = calcCompositeReference.getCallback();
+        assertEquals(calcCompositeReference.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality", "confidentiality"));
+        assertEquals(calcCompositeReference.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        assertNotNull(calcCallback);
+        //TODO test operations
+        
+        new PrintUtil(System.out).print(handler.getComposite());
+    }
+
+    public void testReadCompositeAndWireIt() throws Exception {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        CompositeHandler handler = new CompositeHandler(assemblyFactory, policyFactory, null, null, null);
+        reader.setContentHandler(handler);
+        reader.parse(new InputSource(is));
+        assertNotNull(handler.getComposite());
+        
+        Composite composite = handler.getComposite();
+        new CompositeUtil(assemblyFactory, composite).configure(null);
+
+        Component calcComponent = composite.getComponents().get(0);
+        CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);
+        assertEquals(calcComponent.getServices().get(0), calcCompositeService.getPromotedService());
+
+        ComponentReference multiplyReference = calcComponent.getReferences().get(2);
+        CompositeReference calcCompositeReference = (CompositeReference)composite.getReferences().get(0);
+        assertEquals(multiplyReference, calcCompositeReference.getPromotedReferences().get(0));
+        
+        Component addComponent = composite.getComponents().get(1);
+        ComponentReference addReference = calcComponent.getReferences().get(0);
+        assertEquals(addReference.getTargets().get(0), addComponent.getServices().get(0));
+
+        new PrintUtil(System.out).print(handler.getComposite());
+    }
+
+}
