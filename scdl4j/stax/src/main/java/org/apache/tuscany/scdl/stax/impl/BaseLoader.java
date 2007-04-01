@@ -40,7 +40,6 @@ import org.apache.tuscany.policy.model.PolicySet;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 import org.apache.tuscany.sca.idl.Operation;
 import org.apache.tuscany.scdl.stax.Constants;
-import org.apache.tuscany.scdl.stax.LoaderRegistry;
 
 /**
  * A test handler to test the usability of the assembly model API when loading
@@ -48,17 +47,17 @@ import org.apache.tuscany.scdl.stax.LoaderRegistry;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class BaseLoader implements Constants {
+abstract class BaseLoader implements Constants {
 
-    protected AssemblyFactory factory;
-    protected PolicyFactory policyFactory;
-    protected LoaderRegistry registry;
-
-    public BaseLoader(AssemblyFactory factory, PolicyFactory policyFactory, LoaderRegistry registry) {
-
+    private AssemblyFactory factory;
+    private PolicyFactory policyFactory;
+    
+    BaseLoader() {
+    }
+    
+    BaseLoader(AssemblyFactory factory, PolicyFactory policyFactory) {
         this.factory = factory;
         this.policyFactory = policyFactory;
-        this.registry = registry;
     }
 
     protected String getString(XMLStreamReader reader, String name) {

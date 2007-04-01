@@ -59,8 +59,6 @@ public class WriteTestCase extends TestCase {
         policyFactory = new DefaultPolicyFactory();
 
         reader = XMLReaderFactory.createXMLReader();
-        reader.setFeature("http://xml.org/sax/features/namespaces", true);
-        reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
         
         transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty("indent", "yes");

@@ -39,14 +39,22 @@ import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderRegistry;
 
 /**
- * A componentType content handler.
+ * A componentType loader.
  * 
  * @version $Rev$ $Date$
  */
 public class ComponentTypeLoader extends BaseLoader implements Loader<ComponentType> {
+    private AssemblyFactory factory;
 
+    /**
+     * Constructs a new componentType loader.
+     * @param factory
+     * @param policyFactory
+     * @param registry
+     */
     public ComponentTypeLoader(AssemblyFactory factory, PolicyFactory policyFactory, LoaderRegistry registry) {
-        super(factory, policyFactory, registry);
+        super(factory, policyFactory);
+        this.factory = factory;
     }
 
     public ComponentType load(XMLStreamReader reader) throws XMLStreamException {
@@ -56,11 +64,14 @@ public class ComponentTypeLoader extends BaseLoader implements Loader<ComponentT
         Contract contract = null;
         Property property = null;
         Callback callback = null;
+        QName name = null;
+        
+        // Read the componentType document
         while (reader.hasNext()) {
             int event = reader.getEventType();
             switch (event) {
                 case START_ELEMENT:
-                    QName name = reader.getName();
+                    name = reader.getName();
 
                     if (Constants.COMPONENT_TYPE_QNAME.equals(name)) {
                         componentType = factory.createComponentType();

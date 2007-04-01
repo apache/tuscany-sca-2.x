@@ -63,42 +63,36 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeLoader loader = new ComponentTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        ComponentTypeLoader componentTypeReader = new ComponentTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(loader.load(reader));
+        assertNotNull(componentTypeReader.load(reader));
         is.close();
     }
 
     public void testReadConstrainingType() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingTypeLoader loader = new ConstrainingTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        ConstrainingTypeLoader constrainingTypeReader = new ConstrainingTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(loader.load(reader));
+        assertNotNull(constrainingTypeReader.load(reader));
         is.close();
 
     }
 
-    public static void main(String[] args) throws Exception {
-        ReadTestCase tc = new ReadTestCase();
-        tc.setUp();
-        tc.testReadComposite();
-    }
-
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
-        CompositeLoader loader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeLoader compositeReader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(loader.load(reader));
+        assertNotNull(compositeReader.load(reader));
         is.close();
 
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
-        CompositeLoader loader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeLoader compositeReader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(loader.load(reader));
+        assertNotNull(compositeReader.load(reader));
         is.close();
     }
 

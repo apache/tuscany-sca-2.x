@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -54,6 +55,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     private XMLInputFactory factory;
 
     /**
+     * Constructs a new loader registry.
      * @param assemblyFactory
      * @param policyFactory
      * @param factory
