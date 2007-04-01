@@ -16,31 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.model;
+package org.apache.tuscany.implementation.java;
 
-import java.util.List;
+import org.apache.tuscany.assembly.model.Implementation;
 
 /**
- * Base interface for all assembly model objects.
+ * Represents a Java implementation.
+ *
+ *  @version $Rev$ $Date$
  */
-public interface Base {
+public interface JavaImplementation extends Implementation {
+	
+	/**
+	 * Returns the name of the Java implementation class.
+	 * @return the name of the Java implementation class
+	 */
+	String getName();
+	
+	/**
+	 * Sets the name of the Java implementation class.
+	 * @param className the name of the Java implementation class
+	 */
+	void setName(String className);
 
-    /**
-     * Returns a list of extension objects contained in this model object.
-     * @return a list of extension objects container in this model object
-     */
-    List<Object> getExtensions();
+	/**
+	 * Returns the Java implementation class.
+	 * @return the Java implementation class
+	 */
+	Class<?> getJavaClass();
 
-    /**
-     * Returns true if the model element is unresolved.
-     * @return true if the model element is unresolved.
-     */
-    boolean isUnresolved();
-    
-    /**
-     * Sets whether the model element is unresolved.
-     * @param unresolved whether the model element is unresolved
-     */
-    void setUnresolved(boolean unresolved);
-
+	/**
+	 * Sets the Java implementation class.
+	 * @param javaClass the Java implementation class
+	 */
+	void setJavaClass(Class<?> javaClass);
+	
 }

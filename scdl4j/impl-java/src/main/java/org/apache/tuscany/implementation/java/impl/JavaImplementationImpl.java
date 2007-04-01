@@ -16,31 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.model;
+package org.apache.tuscany.implementation.java.impl;
 
-import java.util.List;
+import org.apache.tuscany.assembly.model.impl.ComponentTypeImpl;
+import org.apache.tuscany.implementation.java.JavaImplementation;
 
 /**
- * Base interface for all assembly model objects.
+ * Represents a Java implementation.
+ *
+ *  @version $Rev$ $Date$
  */
-public interface Base {
+public class JavaImplementationImpl extends ComponentTypeImpl implements JavaImplementation {
+	
+	private String className;
+	private Class<?> javaClass;
 
-    /**
-     * Returns a list of extension objects contained in this model object.
-     * @return a list of extension objects container in this model object
-     */
-    List<Object> getExtensions();
+	public String getName() {
+		if (isUnresolved())
+			return className;
+		else
+			return javaClass.getName();
+	}
 
-    /**
-     * Returns true if the model element is unresolved.
-     * @return true if the model element is unresolved.
-     */
-    boolean isUnresolved();
-    
-    /**
-     * Sets whether the model element is unresolved.
-     * @param unresolved whether the model element is unresolved
-     */
-    void setUnresolved(boolean unresolved);
+	public void setName(String className) {
+		if (!isUnresolved())
+			throw new IllegalStateException();
+		this.className = className;
+	}
+
+	public Class<?> getJavaClass() {
+		return javaClass;
+	}
+	
+	public void setJavaClass(Class<?> javaClass) {
+		this.javaClass = javaClass;
+	}
 
 }

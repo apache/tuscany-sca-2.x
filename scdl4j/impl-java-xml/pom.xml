@@ -25,11 +25,11 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-idl-wsdl-xml</artifactId>
+    <artifactId>tuscany-impl-java-xml</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Apache Tuscany SCA XML WSDL Interface Extension</name>
-    <description>Apache Tuscany SCA XML WSDL Interface Extension.</description>
+    <name>Apache Tuscany SCA XML Java Implementation Extension</name>
+    <description>Apache Tuscany SCA XML Java Implementation Extension.</description>
 
     <dependencies>
 
@@ -41,7 +41,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-idl-wsdl</artifactId>
+            <artifactId>tuscany-impl-java</artifactId>
             <version>0.1-incubating-SNAPSHOT</version>
         </dependency>
 

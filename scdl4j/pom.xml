@@ -41,6 +41,8 @@
         <module>idl-java-xml</module>
         <module>idl-wsdl</module>
         <module>idl-wsdl-xml</module>
+        <module>impl-java</module>
+        <module>impl-java-xml</module>
     </modules>
 
 </project>
