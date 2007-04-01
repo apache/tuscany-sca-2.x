@@ -215,17 +215,17 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                         contract.setCallback(callback);
                         readPolicies(callback, reader);
                         
-        	        } else if (OPERATION.equals(name)) {
-        	        	
-        	        	// Read an <operation>
-                		Operation operation = factory.createOperation();
-                		operation.setName(getString(reader, NAME));
-                		operation.setUnresolved(true);
-                		if (callback != null) {
-                			readPolicies(callback, operation, reader);
-                		} else {
-                			readPolicies(contract, operation, reader);
-                		}
+                    } else if (OPERATION.equals(name)) {
+    	        	
+    	        	// Read an <operation>
+            		Operation operation = factory.createOperation();
+            		operation.setName(getString(reader, NAME));
+            		operation.setUnresolved(true);
+            		if (callback != null) {
+            			readPolicies(callback, operation, reader);
+            		} else {
+            			readPolicies(contract, operation, reader);
+            		}
                     } else {
                     	
                         // Read an extension element
@@ -265,7 +265,7 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                 case END_ELEMENT:
                     name = reader.getName();
                 	
-                	// Clear current state when reading reaching end element
+                    // Clear current state when reading reaching end element
                     if (SERVICE_QNAME.equals(name)) {
                         componentService = null;
                         compositeService = null;
