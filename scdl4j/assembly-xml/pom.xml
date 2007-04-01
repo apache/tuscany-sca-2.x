@@ -28,8 +28,8 @@
     <artifactId>tuscany-assembly-xml</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Apache Tuscany support for SCA XML assembly files.</name>
-    <description>Apache Tuscany support for SCA XML assembly files.</description>
+    <name>Apache Tuscany SCA XML Assembly Support.</name>
+    <description>Apache Tuscany SCA XML Assembly Support.</description>
 
     <dependencies>
 

@@ -28,8 +28,8 @@
     <artifactId>tuscany-idl-java-xml</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Apache Tuscany support for Java Interfaces in SCA XML assembly files.</name>
-    <description>Apache Tuscany support for Java Interfaces in SCA XML assembly files.</description>
+    <name>Apache Tuscany SCA XML Java Interface Support</name>
+    <description>Apache Tuscany SCA XML Java Interface Support.</description>
 
     <dependencies>
 
