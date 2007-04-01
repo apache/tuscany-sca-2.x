@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.idl.wsdl;
+package org.apache.tuscany.idl;
 
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;

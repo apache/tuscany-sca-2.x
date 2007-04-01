@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.idl.java.impl;
+package org.apache.tuscany.idl.java.impl;
 
-import org.apache.tuscany.sca.idl.java.JavaFactory;
-import org.apache.tuscany.sca.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.JavaFactory;
+import org.apache.tuscany.idl.java.JavaInterface;
 
 /**
  * A factory for the Java model.

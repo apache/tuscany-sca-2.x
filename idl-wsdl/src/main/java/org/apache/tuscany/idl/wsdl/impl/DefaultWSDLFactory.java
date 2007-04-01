@@ -16,19 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.idl.wsdl;
+package org.apache.tuscany.idl.wsdl.impl;
+
+import org.apache.tuscany.idl.WSDLFactory;
+import org.apache.tuscany.idl.WSDLInterface;
 
 /**
- * Factory for the WSDL model.
+ * A factory for the WSDL model.
  *
  *  @version $Rev$ $Date$
  */
-public interface WSDLFactory {
+public class DefaultWSDLFactory implements WSDLFactory {
 	
-	/**
-	 * Creates a new WSDL interface.
-	 * @return a new WSDL interface
-	 */
-	WSDLInterface createWSDLInterface();
+	public WSDLInterface createWSDLInterface() {
+		return new WSDLInterfaceImpl();
+	}
 
 }
