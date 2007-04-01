@@ -16,31 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.model;
+package org.apache.tuscany.implementation.java.xml;
 
-import java.util.List;
+import javax.xml.namespace.QName;
 
-/**
- * Base interface for all assembly model objects.
- */
-public interface Base {
+import org.apache.tuscany.scdl.Constants;
 
-    /**
-     * Returns a list of extension objects contained in this model object.
-     * @return a list of extension objects container in this model object
-     */
-    List<Object> getExtensions();
-
-    /**
-     * Returns true if the model element is unresolved.
-     * @return true if the model element is unresolved.
-     */
-    boolean isUnresolved();
-    
-    /**
-     * Sets whether the model element is unresolved.
-     * @param unresolved whether the model element is unresolved
-     */
-    void setUnresolved(boolean unresolved);
+public interface JavaImplementationConstants {
+	
+	public final String IMPLEMENTATION_JAVA = "implementation.java";
+        public final QName IMPLEMENTATION_JAVA_QNAME = new QName(Constants.SCA10_NS, "implementation.java");
+	public final String CLASS = "class";
 
 }
