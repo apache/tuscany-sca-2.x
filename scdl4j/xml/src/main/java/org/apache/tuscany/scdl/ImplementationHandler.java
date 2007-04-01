@@ -23,15 +23,16 @@ import org.xml.sax.ContentHandler;
 
 /**
  * A content handler for SCDL implementation elements.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface ImplementationHandler extends ContentHandler {
 
-	/**
-	 * Returns the implementation model object.
-	 * @return
-	 */
-	Implementation getImplementation();
+    /**
+     * Returns the implementation model object.
+     * 
+     * @return
+     */
+    Implementation getImplementation();
 
 }

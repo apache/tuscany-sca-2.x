@@ -62,21 +62,22 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
     private Contract contract;
     private Wire wire;
     private Callback callback;
-	private AssemblyFactory factory;
-	private InterfaceHandler interfaceHandler;
-	private ImplementationHandler implementationHandler;
-	private BindingHandler bindingHandler;
+    private AssemblyFactory factory;
+    private InterfaceHandler interfaceHandler;
+    private ImplementationHandler implementationHandler;
+    private BindingHandler bindingHandler;
 
-    public CompositeHandler(AssemblyFactory factory, PolicyFactory policyFactory,
-    		HandlerRegistry<InterfaceHandler> interfaceHandlers,
-    		HandlerRegistry<ImplementationHandler> implementationHandlers,
-    		HandlerRegistry<BindingHandler> bindingHandlers) {
+    public CompositeHandler(AssemblyFactory factory,
+                            PolicyFactory policyFactory,
+                            HandlerRegistry<InterfaceHandler> interfaceHandlers,
+                            HandlerRegistry<ImplementationHandler> implementationHandlers,
+                            HandlerRegistry<BindingHandler> bindingHandlers) {
         super(factory, policyFactory, interfaceHandlers, implementationHandlers, bindingHandlers);
         this.factory = factory;
     }
-    
+
     public void startDocument() throws SAXException {
-    	composite = null;
+        composite = null;
     }
 
     public void startElement(String uri, String name, String qname, Attributes attr) throws SAXException {
@@ -92,11 +93,11 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
                 return;
 
             } else if (Constants.INCLUDE.equals(name)) {
-            	include = factory.createComposite();
-            	include.setUnresolved(true);
-            	composite.getIncludes().add(include);
-            	return;
-            	
+                include = factory.createComposite();
+                include.setUnresolved(true);
+                composite.getIncludes().add(include);
+                return;
+
             } else if (Constants.SERVICE.equals(name)) {
                 if (component != null) {
                     componentService = factory.createComponentService();
@@ -110,11 +111,11 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
                     compositeService.setName(getString(attr, Constants.NAME));
 
                     ComponentService promoted = factory.createComponentService();
-                	promoted.setUnresolved(true);
-                	promoted.setName(getString(attr, Constants.PROMOTE));
-                	compositeService.setPromotedService(promoted);
+                    promoted.setUnresolved(true);
+                    promoted.setName(getString(attr, Constants.PROMOTE));
+                    compositeService.setPromotedService(promoted);
 
-                	composite.getServices().add(compositeService);
+                    composite.getServices().add(compositeService);
                 }
                 readPolicies(contract, attr);
                 return;
@@ -125,25 +126,25 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
                     contract = componentReference;
                     componentReference.setName(getString(attr, Constants.NAME));
 
-                    //TODO support multivalued attribute
-                	ComponentService target = factory.createComponentService();
-                	target.setUnresolved(true);
-                	target.setName(getString(attr, Constants.TARGET));
-                	componentReference.getTargets().add(target);
-                    
+                    // TODO support multivalued attribute
+                    ComponentService target = factory.createComponentService();
+                    target.setUnresolved(true);
+                    target.setName(getString(attr, Constants.TARGET));
+                    componentReference.getTargets().add(target);
+
                     component.getReferences().add(componentReference);
                 } else {
                     compositeReference = factory.createCompositeReference();
                     contract = compositeReference;
                     compositeReference.setName(getString(attr, Constants.NAME));
 
-                    //TODO support multivalued attribute
+                    // TODO support multivalued attribute
                     ComponentReference promoted = factory.createComponentReference();
-                	promoted.setUnresolved(true);
-                	promoted.setName(getString(attr, Constants.PROMOTE));
-                	compositeReference.getPromotedReferences().add(promoted);
+                    promoted.setUnresolved(true);
+                    promoted.setName(getString(attr, Constants.PROMOTE));
+                    compositeReference.getPromotedReferences().add(promoted);
 
-                	composite.getReferences().add(compositeReference);
+                    composite.getReferences().add(compositeReference);
                 }
                 readPolicies(contract, attr);
                 return;
@@ -169,94 +170,94 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
                 composite.getComponents().add(component);
                 readPolicies(component, attr);
                 return;
-                
+
             } else if (Constants.WIRE.equals(name)) {
-            	wire = factory.createWire();
-            	ComponentReference source = factory.createComponentReference();
-            	source.setUnresolved(true);
-            	source.setName(getString(attr, Constants.SOURCE));
-            	wire.setSource(source);
-            	
-            	ComponentService target = factory.createComponentService();
-            	target.setUnresolved(true);
-            	target.setName(getString(attr, Constants.TARGET));
-            	wire.setTarget(target);
-            	
+                wire = factory.createWire();
+                ComponentReference source = factory.createComponentReference();
+                source.setUnresolved(true);
+                source.setName(getString(attr, Constants.SOURCE));
+                wire.setSource(source);
+
+                ComponentService target = factory.createComponentService();
+                target.setUnresolved(true);
+                target.setName(getString(attr, Constants.TARGET));
+                wire.setTarget(target);
+
                 composite.getWires().add(wire);
                 readPolicies(wire, attr);
                 return;
-            	
-	        } else if (Constants.CALLBACK.equals(name)) {
+
+            } else if (Constants.CALLBACK.equals(name)) {
                 callback = factory.createCallback();
                 contract.setCallback(callback);
                 readPolicies(callback, attr);
                 return;
-                
-	        } else if (Constants.OPERATION.equals(name)) {
-        		Operation operation = factory.createOperation();
-        		operation.setName(getString(attr, Constants.NAME));
-        		operation.setUnresolved(true);
-        		if (callback != null) {
-        			readPolicies(callback, operation, attr);
-        		} else {
-        			readPolicies(contract, operation, attr);
-        		}
-	        }
+
+            } else if (Constants.OPERATION.equals(name)) {
+                Operation operation = factory.createOperation();
+                operation.setName(getString(attr, Constants.NAME));
+                operation.setUnresolved(true);
+                if (callback != null) {
+                    readPolicies(callback, operation, attr);
+                } else {
+                    readPolicies(contract, operation, attr);
+                }
+            }
         }
 
         // Handle interface elements
         if (contract != null) {
-        	interfaceHandler = startInterfaceElement(uri, name, qname, attr);
-        	if (interfaceHandler == null) {
-        		bindingHandler = startBindingElement(uri, name, qname, attr);
-        	}
-        	
+            interfaceHandler = startInterfaceElement(uri, name, qname, attr);
+            if (interfaceHandler == null) {
+                bindingHandler = startBindingElement(uri, name, qname, attr);
+            }
+
         } else if (component != null) {
-        	
-        	// Handle implementation elements
-        	implementationHandler = startImplementationElement(uri, name, qname, attr);
+
+            // Handle implementation elements
+            implementationHandler = startImplementationElement(uri, name, qname, attr);
         }
     }
-    
+
     public void characters(char[] ch, int start, int length) throws SAXException {
-    	
-    	// Handle property value
-    	if (property != null) {
-    		property.setDefaultValue(new String(ch, start, length));
-    	} else if (include != null) {
-    		include.setName(getQName(new String(ch, start, length)));
-    	}
+
+        // Handle property value
+        if (property != null) {
+            property.setDefaultValue(new String(ch, start, length));
+        } else if (include != null) {
+            include.setName(getQName(new String(ch, start, length)));
+        }
     }
 
     public void endElement(String uri, String name, String qname) throws SAXException {
-    	
-    	// Handle interface elements
+
+        // Handle interface elements
         if (contract != null) {
-			if (endInterfaceElement(uri, name, qname)) {
-				contract.setInterface(interfaceHandler.getInterface());
-				interfaceHandler = null;
-				return;
-			} else if (endBindingElement(uri, name, qname)) {
-				contract.getBindings().add(bindingHandler.getBinding());
-				bindingHandler = null;
-				return;
-			}
+            if (endInterfaceElement(uri, name, qname)) {
+                contract.setInterface(interfaceHandler.getInterface());
+                interfaceHandler = null;
+                return;
+            } else if (endBindingElement(uri, name, qname)) {
+                contract.getBindings().add(bindingHandler.getBinding());
+                bindingHandler = null;
+                return;
+            }
         } else if (component != null) {
-        	
-        	// Handle implementation elements
-        	if (endImplementationElement(uri, name, qname)) {
-        		component.setImplementation(implementationHandler.getImplementation());
-        		implementationHandler = null;
-        		return;
-        	}
+
+            // Handle implementation elements
+            if (endImplementationElement(uri, name, qname)) {
+                component.setImplementation(implementationHandler.getImplementation());
+                implementationHandler = null;
+                return;
+            }
         }
-		
+
         if (Constants.SERVICE.equals(name)) {
             componentService = null;
             compositeService = null;
             contract = null;
         } else if (Constants.INCLUDE.equals(name)) {
-        	include = null;
+            include = null;
         } else if (Constants.REFERENCE.equals(name)) {
             componentReference = null;
             compositeReference = null;
@@ -267,14 +268,14 @@ public class CompositeHandler extends BaseHandler implements ContentHandler {
         } else if (Constants.COMPONENT.equals(name)) {
             component = null;
         } else if (Constants.WIRE.equals(name)) {
-            wire= null;
+            wire = null;
         } else if (Constants.CALLBACK.equals(name)) {
-        	callback = null;
+            callback = null;
         }
     }
 
-	public Composite getComposite() {
-		return composite;
-	}
+    public Composite getComposite() {
+        return composite;
+    }
 
 }

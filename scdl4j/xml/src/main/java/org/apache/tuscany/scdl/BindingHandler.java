@@ -23,15 +23,16 @@ import org.xml.sax.ContentHandler;
 
 /**
  * A content handler for SCDL binding elements.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface BindingHandler extends ContentHandler {
 
-	/**
-	 * Returns the parsed binding model object.
-	 * @return
-	 */
-	Binding getBinding();
+    /**
+     * Returns the parsed binding model object.
+     * 
+     * @return
+     */
+    Binding getBinding();
 
 }

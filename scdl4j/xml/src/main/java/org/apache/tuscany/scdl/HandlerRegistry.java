@@ -22,23 +22,25 @@ import org.xml.sax.ContentHandler;
 
 /**
  * A registry for SCDL content handlers.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface HandlerRegistry<H extends ContentHandler> {
 
-	/**
-	 * Registers a content handler with an XML element qname.
-	 * @param qname
-	 * @param handler
-	 */
-	void addHandler(String uri, String name, H handler);
-	
-	/**
-	 * Returns the handler registered with the given XML element qname.
-	 * @param qname
-	 * @return
-	 */
-	H getHandler(String uri, String name);
+    /**
+     * Registers a content handler with an XML element qname.
+     * 
+     * @param qname
+     * @param handler
+     */
+    void addHandler(String uri, String name, H handler);
+
+    /**
+     * Returns the handler registered with the given XML element qname.
+     * 
+     * @param qname
+     * @return
+     */
+    H getHandler(String uri, String name);
 
 }

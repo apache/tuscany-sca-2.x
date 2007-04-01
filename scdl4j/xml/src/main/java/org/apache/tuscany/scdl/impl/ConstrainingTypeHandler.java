@@ -46,17 +46,18 @@ public class ConstrainingTypeHandler extends BaseHandler implements ContentHandl
     private AbstractReference abstractReference;
     private AbstractProperty abstractProperty;
     private AbstractContract abstractContract;
-	private AssemblyFactory factory;
-	private InterfaceHandler interfaceHandler;
+    private AssemblyFactory factory;
+    private InterfaceHandler interfaceHandler;
 
-    public ConstrainingTypeHandler(AssemblyFactory factory, PolicyFactory policyFactory,
-    		HandlerRegistry<InterfaceHandler> interfaceHandlers) {
+    public ConstrainingTypeHandler(AssemblyFactory factory,
+                                   PolicyFactory policyFactory,
+                                   HandlerRegistry<InterfaceHandler> interfaceHandlers) {
         super(factory, policyFactory, interfaceHandlers, null, null);
         this.factory = factory;
     }
-    
+
     public void startDocument() throws SAXException {
-    	constrainingType = null;
+        constrainingType = null;
     }
 
     public void startElement(String uri, String name, String qname, Attributes attr) throws SAXException {
@@ -92,25 +93,25 @@ public class ConstrainingTypeHandler extends BaseHandler implements ContentHandl
                 return;
             }
         }
-        
+
         // Handle interface elements
-        if (abstractContract !=null) {
-        	interfaceHandler = startInterfaceElement(uri, name, qname, attr);
+        if (abstractContract != null) {
+            interfaceHandler = startInterfaceElement(uri, name, qname, attr);
         }
-        
+
     }
 
     public void endElement(String uri, String name, String qname) throws SAXException {
-    	
-    	// Handle interface elements
-        if (abstractContract !=null) {
-			if (endInterfaceElement(uri, name, qname)) {
-				abstractContract.setInterface(interfaceHandler.getInterface());
-				interfaceHandler = null;
-				return;
-			}
+
+        // Handle interface elements
+        if (abstractContract != null) {
+            if (endInterfaceElement(uri, name, qname)) {
+                abstractContract.setInterface(interfaceHandler.getInterface());
+                interfaceHandler = null;
+                return;
+            }
         }
-    	
+
         if (Constants.SCA10_NS.equals(uri)) {
             if (Constants.SERVICE.equals(name)) {
                 abstractService = null;
@@ -126,8 +127,8 @@ public class ConstrainingTypeHandler extends BaseHandler implements ContentHandl
         }
     }
 
-	public ConstrainingType getConstrainingType() {
-		return constrainingType;
-	}
+    public ConstrainingType getConstrainingType() {
+        return constrainingType;
+    }
 
 }

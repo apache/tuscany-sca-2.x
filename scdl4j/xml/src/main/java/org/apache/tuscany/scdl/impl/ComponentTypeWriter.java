@@ -29,7 +29,8 @@ import org.apache.tuscany.scdl.util.BaseWriter;
 import org.xml.sax.SAXException;
 
 /**
- * A test handler to test the usability of the assembly model API when writing SCDL
+ * A test handler to test the usability of the assembly model API when writing
+ * SCDL
  * 
  * @version $Rev$ $Date$
  */
@@ -40,39 +41,39 @@ public class ComponentTypeWriter extends BaseWriter {
     public ComponentTypeWriter(ComponentType componentType) {
         this.componentType = componentType;
     }
-    
+
     protected void write() throws SAXException {
-    	
-    	start(Constants.COMPONENT_TYPE, new Attr(Constants.CONSTRAINING_TYPE, getConstrainingType(componentType)));
-    	
-    	for (Service service: componentType.getServices()) {
-    		start(Constants.SERVICE, new Attr(Constants.NAME, service.getName()));
-    		if (service.getCallback() != null) {
-    			start(Constants.CALLBACK);
-    			end(Constants.CALLBACK);
-    		}
-    		end(Constants.SERVICE);
-    	}
-    	
-    	for (Reference reference: componentType.getReferences()) {
-    		//TODO handle multivalued target attribute
-    		String target = reference.getTargets().isEmpty()? null: reference.getTargets().get(0).getName();
-    		start(Constants.REFERENCE, 
-    			new Attr(Constants.NAME, reference.getName()),
-    			new Attr(Constants.TARGET, target));
-    		if (reference.getCallback() != null) {
-    			start(Constants.CALLBACK);
-    			end(Constants.CALLBACK);
-    		}
-    		end(Constants.REFERENCE);
-    	}
-    	
-    	for (Property property: componentType.getProperties()) {
-    		start(Constants.PROPERTY, new Attr(Constants.NAME, property.getName()));
-    		end(Constants.PROPERTY);
-    	}
-    	
-    	end(Constants.COMPONENT_TYPE);
+
+        start(Constants.COMPONENT_TYPE, new Attr(Constants.CONSTRAINING_TYPE, getConstrainingType(componentType)));
+
+        for (Service service : componentType.getServices()) {
+            start(Constants.SERVICE, new Attr(Constants.NAME, service.getName()));
+            if (service.getCallback() != null) {
+                start(Constants.CALLBACK);
+                end(Constants.CALLBACK);
+            }
+            end(Constants.SERVICE);
+        }
+
+        for (Reference reference : componentType.getReferences()) {
+            // TODO handle multivalued target attribute
+            String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
+            start(Constants.REFERENCE,
+                  new Attr(Constants.NAME, reference.getName()),
+                  new Attr(Constants.TARGET, target));
+            if (reference.getCallback() != null) {
+                start(Constants.CALLBACK);
+                end(Constants.CALLBACK);
+            }
+            end(Constants.REFERENCE);
+        }
+
+        for (Property property : componentType.getProperties()) {
+            start(Constants.PROPERTY, new Attr(Constants.NAME, property.getName()));
+            end(Constants.PROPERTY);
+        }
+
+        end(Constants.COMPONENT_TYPE);
     }
-    
+
 }

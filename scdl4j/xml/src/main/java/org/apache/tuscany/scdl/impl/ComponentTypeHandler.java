@@ -39,7 +39,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
- A componentType content handler.
+ * A componentType content handler.
  * 
  * @version $Rev$ $Date$
  */
@@ -52,17 +52,18 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
     private Property property;
     private Callback callback;
     private InterfaceHandler interfaceHandler;
-	private BindingHandler bindingHandler;
-	private AssemblyFactory factory;
+    private BindingHandler bindingHandler;
+    private AssemblyFactory factory;
 
-    public ComponentTypeHandler(AssemblyFactory factory, PolicyFactory policyFactory,
-    		HandlerRegistry<InterfaceHandler> interfaceHandlers) {
+    public ComponentTypeHandler(AssemblyFactory factory,
+                                PolicyFactory policyFactory,
+                                HandlerRegistry<InterfaceHandler> interfaceHandlers) {
         super(factory, policyFactory, interfaceHandlers, null, null);
         this.factory = factory;
     }
-    
+
     public void startDocument() throws SAXException {
-    	componentType = null;
+        componentType = null;
     }
 
     public void startElement(String uri, String name, String qname, Attributes attr) throws SAXException {
@@ -87,16 +88,16 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
                 contract = reference;
                 reference.setName(getString(attr, Constants.NAME));
 
-                //TODO support multivalued attribute
-            	ComponentService target = factory.createComponentService();
-            	target.setUnresolved(true);
-            	target.setName(getString(attr, Constants.TARGET));
-            	reference.getTargets().add(target);
+                // TODO support multivalued attribute
+                ComponentService target = factory.createComponentService();
+                target.setUnresolved(true);
+                target.setName(getString(attr, Constants.TARGET));
+                reference.getTargets().add(target);
 
-            	componentType.getReferences().add(reference);
+                componentType.getReferences().add(reference);
                 readPolicies(reference, attr);
-            	return;
-            	
+                return;
+
             } else if (Constants.PROPERTY.equals(name)) {
                 property = factory.createProperty();
                 readProperty(property, attr);
@@ -105,47 +106,47 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
                 return;
 
             } else if (Constants.CALLBACK.equals(name)) {
-	            callback = factory.createCallback();
-	            contract.setCallback(callback);
+                callback = factory.createCallback();
+                contract.setCallback(callback);
                 readPolicies(callback, attr);
-	            return;
+                return;
 
             } else if (Constants.OPERATION.equals(name)) {
-        		Operation operation = factory.createOperation();
-        		operation.setName(getString(attr, Constants.NAME));
-        		operation.setUnresolved(true);
-        		if (callback != null) {
-        			readPolicies(callback, operation, attr);
-        		} else {
-        			readPolicies(contract, operation, attr);
-        		}
-	        }
+                Operation operation = factory.createOperation();
+                operation.setName(getString(attr, Constants.NAME));
+                operation.setUnresolved(true);
+                if (callback != null) {
+                    readPolicies(callback, operation, attr);
+                } else {
+                    readPolicies(contract, operation, attr);
+                }
+            }
         }
-        
+
         // Handle interface elements
         if (contract != null) {
-        	interfaceHandler = startInterfaceElement(uri, name, qname, attr);
-        	if (interfaceHandler == null) {
-        		bindingHandler = startBindingElement(uri, name, qname, attr);
-        	}
+            interfaceHandler = startInterfaceElement(uri, name, qname, attr);
+            if (interfaceHandler == null) {
+                bindingHandler = startBindingElement(uri, name, qname, attr);
+            }
         }
     }
 
     public void endElement(String uri, String name, String qname) throws SAXException {
-    	
-    	// Handle interface elements
+
+        // Handle interface elements
         if (contract != null) {
-			if (endInterfaceElement(uri, name, qname)) {
-				contract.setInterface(interfaceHandler.getInterface());
-				interfaceHandler = null;
-				return;
-			} else if (endBindingElement(uri, name, qname)) {
-				contract.getBindings().add(bindingHandler.getBinding());
-				bindingHandler = null;
-				return;
-			}
+            if (endInterfaceElement(uri, name, qname)) {
+                contract.setInterface(interfaceHandler.getInterface());
+                interfaceHandler = null;
+                return;
+            } else if (endBindingElement(uri, name, qname)) {
+                contract.getBindings().add(bindingHandler.getBinding());
+                bindingHandler = null;
+                return;
+            }
         }
-    	
+
         if (Constants.SCA10_NS.equals(uri)) {
             if (Constants.SERVICE.equals(name)) {
                 service = null;
@@ -156,12 +157,12 @@ public class ComponentTypeHandler extends BaseHandler implements ContentHandler 
             } else if (Constants.PROPERTY.equals(name)) {
                 property = null;
             } else if (Constants.CALLBACK.equals(name))
-            	callback = null;
+                callback = null;
         }
     }
 
-	public ComponentType getComponentType() {
-		return componentType;
-	}
+    public ComponentType getComponentType() {
+        return componentType;
+    }
 
 }
