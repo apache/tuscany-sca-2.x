@@ -66,7 +66,7 @@ public class ReadTestCase extends TestCase {
         ComponentTypeLoader loader = new ComponentTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(loader.load(null, reader));
+        assertNotNull(loader.load(reader));
         is.close();
     }
 
@@ -74,7 +74,7 @@ public class ReadTestCase extends TestCase {
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingTypeLoader loader = new ConstrainingTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(loader.load(null, reader));
+        assertNotNull(loader.load(reader));
         is.close();
 
     }
@@ -89,7 +89,7 @@ public class ReadTestCase extends TestCase {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
         CompositeLoader loader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(loader.load(null, reader));
+        assertNotNull(loader.load(reader));
         is.close();
 
     }
@@ -98,7 +98,7 @@ public class ReadTestCase extends TestCase {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
         CompositeLoader loader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(loader.load(null, reader));
+        assertNotNull(loader.load(reader));
         is.close();
     }
 

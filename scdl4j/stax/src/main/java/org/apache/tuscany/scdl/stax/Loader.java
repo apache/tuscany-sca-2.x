@@ -21,13 +21,11 @@ package org.apache.tuscany.scdl.stax;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.assembly.model.Base;
-
 /**
  * A content handler for SCDL implementation elements.
  * 
  * @version $Rev$ $Date$
  */
 public interface Loader<T> {
-    T load(Base parent, XMLStreamReader reader) throws XMLStreamException;
+    T load(XMLStreamReader reader) throws XMLStreamException;
 }

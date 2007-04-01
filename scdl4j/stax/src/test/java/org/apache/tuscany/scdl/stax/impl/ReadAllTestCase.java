@@ -56,7 +56,7 @@ public class ReadAllTestCase extends TestCase {
 
     public void testReadComposite() throws Exception {
         URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
-        Composite composite = loaderRegistry.load(null, url, Composite.class);
+        Composite composite = loaderRegistry.load(url, Composite.class);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "Calculator"));
@@ -138,7 +138,7 @@ public class ReadAllTestCase extends TestCase {
 
     public void testReadCompositeAndWireIt() throws Exception {
         URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
-        Composite composite = loaderRegistry.load(null, url, Composite.class);
+        Composite composite = loaderRegistry.load(url, Composite.class);
         assertNotNull(composite);
         new CompositeUtil(loaderRegistry.getAssemblyFactory(), composite).configure(null);
 

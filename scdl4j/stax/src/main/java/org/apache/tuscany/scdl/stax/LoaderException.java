@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.scdl.stax;
 
-import org.apache.tuscany.api.TuscanyException;
 
 /**
  * Base class for Exceptions raised during the loading process. Loader implementations should throw a subclass of this
@@ -26,36 +25,25 @@ import org.apache.tuscany.api.TuscanyException;
  *
  * @version $Rev$ $Date$
  */
-public class LoaderException extends TuscanyException {
+public class LoaderException extends RuntimeException {
     public static final int UNDEFINED = -1;
     private static final long serialVersionUID = -7459051598906813461L;
     private String resourceURI;
     private int line = UNDEFINED;
     private int column = UNDEFINED;
 
-    public LoaderException() {
-    }
-
     public LoaderException(String message) {
         super(message);
-    }
-
-    public LoaderException(String message, String identifier) {
-        super(message, identifier);
     }
 
     public LoaderException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public LoaderException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
     public LoaderException(Throwable cause) {
         super(cause);
     }
-
+    
     /**
      * Returns the location of the resource that was being loaded.
      *

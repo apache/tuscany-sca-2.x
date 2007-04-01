@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AbstractProperty;
 import org.apache.tuscany.assembly.model.AssemblyFactory;
+import org.apache.tuscany.assembly.model.Base;
 import org.apache.tuscany.assembly.model.ConstrainingType;
 import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.policy.model.Intent;
@@ -38,7 +39,9 @@ import org.apache.tuscany.policy.model.IntentAttachPoint;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.policy.model.PolicySet;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
+import org.apache.tuscany.sca.idl.Operation;
 import org.apache.tuscany.scdl.stax.Constants;
+import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderRegistry;
 
 /**
@@ -102,7 +105,11 @@ public abstract class BaseLoader implements Constants {
         }
     }
 
-    protected void readRequiredIntents(IntentAttachPoint attachPoint, XMLStreamReader reader) {
+    protected void readIntents(IntentAttachPoint attachPoint, XMLStreamReader reader) {
+    	readIntents(attachPoint, null, reader);
+    }
+    
+    protected void readIntents(IntentAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, Constants.REQUIRES);
         if (value != null) {
             List<Intent> requiredIntents = attachPoint.getRequiredIntents();
@@ -110,12 +117,21 @@ public abstract class BaseLoader implements Constants {
                 QName qname = getQNameValue(reader, tokens.nextToken());
                 Intent intent = policyFactory.createIntent();
                 intent.setName(qname);
+    			if (operation != null) {
+    				intent.getOperations().add(operation);
+    			}
                 requiredIntents.add(intent);
             }
         }
     }
 
-    protected void readPolicySets(PolicySetAttachPoint attachPoint, XMLStreamReader reader) {
+    protected void readPolicies(PolicySetAttachPoint attachPoint, XMLStreamReader reader) {
+    	readPolicies(attachPoint, null, reader);
+    }
+
+    protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
+    	readIntents(attachPoint, operation, reader);
+    	
         String value = reader.getAttributeValue(null, Constants.POLICY_SETS);
         if (value != null) {
             List<PolicySet> policySets = attachPoint.getPolicySets();
@@ -123,6 +139,9 @@ public abstract class BaseLoader implements Constants {
                 QName qname = getQNameValue(reader, tokens.nextToken());
                 PolicySet policySet = policyFactory.createPolicySet();
                 policySet.setName(qname);
+    			if (operation != null) {
+    				policySet.getOperations().add(operation);
+    			}
                 policySets.add(policySet);
             }
         }
@@ -146,7 +165,6 @@ public abstract class BaseLoader implements Constants {
         prop.setMustSupply(getBoolean(reader, "mustSupply"));
         prop.setXSDElement(getQName(reader, "element"));
         prop.setXSDType(getQName(reader, "type"));
-        // TODO handle default value
     }
 
     protected void readProperty(Property prop, XMLStreamReader reader) {

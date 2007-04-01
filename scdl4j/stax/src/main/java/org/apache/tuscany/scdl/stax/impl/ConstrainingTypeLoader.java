@@ -30,7 +30,6 @@ import org.apache.tuscany.assembly.model.AbstractProperty;
 import org.apache.tuscany.assembly.model.AbstractReference;
 import org.apache.tuscany.assembly.model.AbstractService;
 import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.Base;
 import org.apache.tuscany.assembly.model.ConstrainingType;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.scdl.stax.Constants;
@@ -42,7 +41,7 @@ import org.apache.tuscany.scdl.stax.LoaderRegistry;
  * 
  * @version $Rev$ $Date$
  */
-public class ConstrainingTypeLoader extends BaseLoader implements Loader<ConstrainingType>{
+public class ConstrainingTypeLoader extends BaseLoader implements Loader<ConstrainingType> {
 
     public ConstrainingTypeLoader(AssemblyFactory factory,
                                   PolicyFactory policyFactory,
@@ -50,7 +49,7 @@ public class ConstrainingTypeLoader extends BaseLoader implements Loader<Constra
         super(factory, policyFactory, registry);
     }
 
-    public ConstrainingType load(Base parent, XMLStreamReader reader) throws XMLStreamException {
+    public ConstrainingType load(XMLStreamReader reader) throws XMLStreamException {
         ConstrainingType constrainingType = null;
         AbstractService abstractService = null;
         AbstractReference abstractReference = null;
@@ -64,27 +63,27 @@ public class ConstrainingTypeLoader extends BaseLoader implements Loader<Constra
                     if (Constants.CONSTRAINING_TYPE_QNAME.equals(name)) {
                         constrainingType = factory.createConstrainingType();
                         constrainingType.setName(getQName(reader, Constants.NAME));
-                        readRequiredIntents(constrainingType, reader);
+                        readIntents(constrainingType, reader);
 
                     } else if (Constants.SERVICE_QNAME.equals(name)) {
                         abstractService = factory.createAbstractService();
                         abstractContract = abstractService;
                         abstractService.setName(getString(reader, Constants.NAME));
                         constrainingType.getServices().add(abstractService);
-                        readRequiredIntents(abstractService, reader);
+                        readIntents(abstractService, reader);
 
                     } else if (Constants.REFERENCE_QNAME.equals(name)) {
                         abstractReference = factory.createAbstractReference();
                         abstractContract = abstractReference;
                         abstractReference.setName(getString(reader, Constants.NAME));
                         constrainingType.getReferences().add(abstractReference);
-                        readRequiredIntents(abstractReference, reader);
+                        readIntents(abstractReference, reader);
 
                     } else if (Constants.PROPERTY_QNAME.equals(name)) {
                         abstractProperty = factory.createAbstractProperty();
                         readAbstractProperty(abstractProperty, reader);
                         constrainingType.getProperties().add(abstractProperty);
-                        readRequiredIntents(abstractProperty, reader);
+                        readIntents(abstractProperty, reader);
 
                     }
             }

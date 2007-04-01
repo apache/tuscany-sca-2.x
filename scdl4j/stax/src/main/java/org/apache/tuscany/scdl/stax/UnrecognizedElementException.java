@@ -30,16 +30,18 @@ public class UnrecognizedElementException extends LoaderException {
     private final QName element;
 
     /**
-     * Constructor that indicates which resource could not be found. The supplied parameter is also returned as the
-     * message.
-     *
+     * Constructor that indicates which element could not be handled.
      * @param element the element that could not be handled
      */
     public UnrecognizedElementException(QName element) {
-        super("Unrecognized element", element.toString());
+        super("Unrecognized element: " + element.toString());
         this.element = element;
     }
 
+    /**
+     * Returns the element that could not be handled.
+     * @return the element that could not be handled.
+     */
     public QName getElement() {
         return element;
     }

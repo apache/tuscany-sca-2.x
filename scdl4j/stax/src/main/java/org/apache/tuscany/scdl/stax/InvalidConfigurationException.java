@@ -26,12 +26,8 @@ package org.apache.tuscany.scdl.stax;
 public class InvalidConfigurationException extends LoaderException {
     private static final long serialVersionUID = -4312958640212000366L;
 
-    public InvalidConfigurationException(String message) {
-        super(message);
-    }
-
-    public InvalidConfigurationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
+	public InvalidConfigurationException(String message, Throwable cause) {
+		super(message, cause);
+	}
+    
 }

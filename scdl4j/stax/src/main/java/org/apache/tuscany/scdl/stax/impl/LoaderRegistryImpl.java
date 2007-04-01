@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.Base;
 import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
@@ -77,18 +76,16 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         addLoader(Constants.CONSTRAINING_TYPE_QNAME, new ConstrainingTypeLoader(assemblyFactory, policyFactory, this));
     }
 
-    public Base load(Base object, XMLStreamReader reader) throws XMLStreamException {
+    public Object load(XMLStreamReader reader) throws XMLStreamException {
         QName name = reader.getName();
         Loader loader = loaders.get(name);
         if (loader == null) {
-            // FIXME:
-            // throw new IllegalArgumentException(name.toString());
             return null;
         }
-        return (Base)loader.load(object, reader);
+        return loader.load(reader);
     }
 
-    public <MO extends Base> MO load(Base object, URL url, Class<MO> type) throws LoaderException {
+    public <MO> MO load(URL url, Class<MO> type) throws LoaderException {
         try {
             XMLStreamReader reader;
             InputStream is;
@@ -98,7 +95,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
                 try {
                     reader.nextTag();
                     QName name = reader.getName();
-                    Base mo = load(object, reader);
+                    Object mo = load(reader);
                     if (type.isInstance(mo)) {
                         return type.cast(mo);
                     } else {
@@ -130,7 +127,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
             sfe.setResourceURI(url.toString());
             throw sfe;
         } catch (XMLStreamException e) {
-            throw new InvalidConfigurationException("Invalid or missing resource", url.toString(), e);
+            throw new InvalidConfigurationException("Invalid or missing resource: " + url.toString(), e);
         }
     }
 
