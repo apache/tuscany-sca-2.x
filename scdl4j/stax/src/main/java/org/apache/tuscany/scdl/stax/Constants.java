@@ -48,6 +48,7 @@ public interface Constants {
     String REQUIRES = "requires";
     String POLICY_SETS = "policySets";
     String OPERATION = "operation";
+    QName OPERATION_QNAME = new QName(SCA10_NS, OPERATION);
     String CALLBACK = "callback";
     QName CALLBACK_QNAME = new QName(SCA10_NS, CALLBACK);
     String PROMOTE = "promote";

@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.Base;
 import org.apache.tuscany.assembly.model.Callback;
 import org.apache.tuscany.assembly.model.ComponentService;
 import org.apache.tuscany.assembly.model.ComponentType;
@@ -50,7 +49,7 @@ public class ComponentTypeLoader extends BaseLoader implements Loader<ComponentT
         super(factory, policyFactory, registry);
     }
 
-    public ComponentType load(Base parent, XMLStreamReader reader) throws XMLStreamException {
+    public ComponentType load(XMLStreamReader reader) throws XMLStreamException {
         ComponentType componentType = null;
         Service service = null;
         Reference reference = null;
@@ -66,16 +65,14 @@ public class ComponentTypeLoader extends BaseLoader implements Loader<ComponentT
                     if (Constants.COMPONENT_TYPE_QNAME.equals(name)) {
                         componentType = factory.createComponentType();
                         componentType.setConstrainingType(getConstrainingType(reader));
-                        readRequiredIntents(componentType, reader);
-                        readPolicySets(componentType, reader);
+                        readPolicies(componentType, reader);
 
                     } else if (Constants.SERVICE_QNAME.equals(name)) {
                         service = factory.createService();
                         contract = service;
                         service.setName(getString(reader, Constants.NAME));
                         componentType.getServices().add(service);
-                        readRequiredIntents(service, reader);
-                        readPolicySets(service, reader);
+                        readPolicies(service, reader);
 
                     } else if (Constants.REFERENCE_QNAME.equals(name)) {
                         reference = factory.createReference();
@@ -89,21 +86,18 @@ public class ComponentTypeLoader extends BaseLoader implements Loader<ComponentT
                         reference.getTargets().add(target);
 
                         componentType.getReferences().add(reference);
-                        readRequiredIntents(reference, reader);
-                        readPolicySets(reference, reader);
+                        readPolicies(reference, reader);
 
                     } else if (Constants.PROPERTY_QNAME.equals(name)) {
                         property = factory.createProperty();
                         readProperty(property, reader);
                         componentType.getProperties().add(property);
-                        readRequiredIntents(property, reader);
-                        readPolicySets(property, reader);
+                        readPolicies(property, reader);
 
                     } else if (Constants.CALLBACK_QNAME.equals(name)) {
                         callback = factory.createCallback();
                         contract.setCallback(callback);
-                        readRequiredIntents(callback, reader);
-                        readPolicySets(callback, reader);
+                        readPolicies(callback, reader);
 
                     }
             }
