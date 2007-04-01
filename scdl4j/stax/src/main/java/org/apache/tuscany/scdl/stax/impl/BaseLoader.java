@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AbstractProperty;
 import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.Base;
 import org.apache.tuscany.assembly.model.ConstrainingType;
 import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.policy.model.Intent;
@@ -41,7 +40,6 @@ import org.apache.tuscany.policy.model.PolicySet;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 import org.apache.tuscany.sca.idl.Operation;
 import org.apache.tuscany.scdl.stax.Constants;
-import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderRegistry;
 
 /**
