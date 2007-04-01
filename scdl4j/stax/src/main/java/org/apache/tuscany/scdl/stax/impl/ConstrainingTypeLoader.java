@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.scdl.stax.impl;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import javax.xml.namespace.QName;
@@ -32,6 +33,8 @@ import org.apache.tuscany.assembly.model.AbstractService;
 import org.apache.tuscany.assembly.model.AssemblyFactory;
 import org.apache.tuscany.assembly.model.ConstrainingType;
 import org.apache.tuscany.policy.model.PolicyFactory;
+import org.apache.tuscany.sca.idl.Interface;
+import org.apache.tuscany.sca.idl.Operation;
 import org.apache.tuscany.scdl.stax.Constants;
 import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderRegistry;
@@ -51,9 +54,7 @@ public class ConstrainingTypeLoader extends BaseLoader implements Loader<Constra
      * @param policyFactory
      * @param registry
      */
-    public ConstrainingTypeLoader(AssemblyFactory factory,
-                                  PolicyFactory policyFactory,
-                                  LoaderRegistry registry) {
+    public ConstrainingTypeLoader(AssemblyFactory factory, PolicyFactory policyFactory, LoaderRegistry registry) {
         super(factory, policyFactory);
         this.factory = factory;
         this.registry = registry;
@@ -65,17 +66,25 @@ public class ConstrainingTypeLoader extends BaseLoader implements Loader<Constra
         AbstractReference abstractReference = null;
         AbstractProperty abstractProperty = null;
         AbstractContract abstractContract = null;
+        QName name = null;
+        
+        // Read the constrainingType document
         while (reader.hasNext()) {
             int event = reader.getEventType();
             switch (event) {
+
                 case START_ELEMENT:
-                    QName name = reader.getName();
+                    name = reader.getName();
+                    
+                    // Read a <constrainingType>
                     if (Constants.CONSTRAINING_TYPE_QNAME.equals(name)) {
                         constrainingType = factory.createConstrainingType();
                         constrainingType.setName(getQName(reader, Constants.NAME));
                         readIntents(constrainingType, reader);
 
                     } else if (Constants.SERVICE_QNAME.equals(name)) {
+                        
+                        // Read a <service>
                         abstractService = factory.createAbstractService();
                         abstractContract = abstractService;
                         abstractService.setName(getString(reader, Constants.NAME));
@@ -83,6 +92,8 @@ public class ConstrainingTypeLoader extends BaseLoader implements Loader<Constra
                         readIntents(abstractService, reader);
 
                     } else if (Constants.REFERENCE_QNAME.equals(name)) {
+                        
+                        // Read a <reference>
                         abstractReference = factory.createAbstractReference();
                         abstractContract = abstractReference;
                         abstractReference.setName(getString(reader, Constants.NAME));
@@ -90,17 +101,53 @@ public class ConstrainingTypeLoader extends BaseLoader implements Loader<Constra
                         readIntents(abstractReference, reader);
 
                     } else if (Constants.PROPERTY_QNAME.equals(name)) {
+                        
+                        // Read a <property>
                         abstractProperty = factory.createAbstractProperty();
                         readAbstractProperty(abstractProperty, reader);
                         constrainingType.getProperties().add(abstractProperty);
                         readIntents(abstractProperty, reader);
+                        
+                    } else if (OPERATION.equals(name)) {
 
+                        // Read an <operation>
+                        Operation operation = factory.createOperation();
+                        operation.setName(getString(reader, NAME));
+                        operation.setUnresolved(true);
+                        readIntents(abstractContract, operation, reader);
+                        
+                    } else {
+
+                        // Read an extension element
+                        Object extension = registry.load(reader);
+                        if (extension != null) {
+                            if (extension instanceof Interface) {
+
+                                // <service><interface> and <reference><interface>
+                                abstractContract.setInterface((Interface)extension);
+                            }
+                        }
                     }
+                    break;
+
+                case END_ELEMENT:
+                    name = reader.getName();
+
+                    // Clear current state when reading reaching end element
+                    if (SERVICE_QNAME.equals(name)) {
+                        abstractService = null;
+                        abstractContract = null;
+                    } else if (REFERENCE_QNAME.equals(name)) {
+                        abstractReference = null;
+                        abstractContract = null;
+                    } else if (PROPERTY_QNAME.equals(name)) {
+                        abstractProperty = null;
+                    }
+                    break;
             }
             if (reader.hasNext()) {
                 reader.next();
             }
-
         }
         return constrainingType;
 
