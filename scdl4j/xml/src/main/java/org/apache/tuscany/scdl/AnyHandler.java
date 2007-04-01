@@ -22,15 +22,16 @@ import org.xml.sax.ContentHandler;
 
 /**
  * A content handler for xsd:any extension elements.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface AnyHandler extends ContentHandler {
-	
-	/**
-	 * Returns the parsed model object.
-	 * @return
-	 */
-	Object getAny();
+
+    /**
+     * Returns the parsed model object.
+     * 
+     * @return
+     */
+    Object getAny();
 
 }

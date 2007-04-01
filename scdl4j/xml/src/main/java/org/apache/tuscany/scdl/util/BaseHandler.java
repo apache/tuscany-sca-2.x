@@ -47,7 +47,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * A test handler to test the usability of the assembly model API when loading SCDL
+ * A test handler to test the usability of the assembly model API when loading
+ * SCDL
  * 
  * @version $Rev$ $Date$
  */
@@ -66,34 +67,35 @@ public abstract class BaseHandler extends DefaultHandler implements ContentHandl
     private BindingHandler bindingHandler;
     private int elementCount;
 
-    public BaseHandler(AssemblyFactory factory, PolicyFactory policyFactory,
-    		HandlerRegistry<InterfaceHandler> interfaceHandlers,
-    		HandlerRegistry<ImplementationHandler> implementationHandlers,
-    		HandlerRegistry<BindingHandler> bindingHandlers) {
-    	
-    	this.factory = factory;
-    	this.policyFactory = policyFactory;
-    	this.interfaceHandlers = interfaceHandlers;
-    	this.implementationHandlers = implementationHandlers;
-    	this.bindingHandlers = bindingHandlers;
+    public BaseHandler(AssemblyFactory factory,
+                       PolicyFactory policyFactory,
+                       HandlerRegistry<InterfaceHandler> interfaceHandlers,
+                       HandlerRegistry<ImplementationHandler> implementationHandlers,
+                       HandlerRegistry<BindingHandler> bindingHandlers) {
+
+        this.factory = factory;
+        this.policyFactory = policyFactory;
+        this.interfaceHandlers = interfaceHandlers;
+        this.implementationHandlers = implementationHandlers;
+        this.bindingHandlers = bindingHandlers;
     }
 
     protected String getString(Attributes attr, String name) {
         return attr.getValue(name);
     }
-    
+
     protected QName getQName(String qname) {
         if (qname != null) {
-	        int index = qname.indexOf(':');
-	        String prefix = index == -1 ? "" : qname.substring(0, index);
-	        String localName = index == -1 ? qname : qname.substring(index+1);
-	        String ns = nsStack.getNamespaceURI(prefix);
-	        if (ns == null) {
-	            ns = "";
-	        }
-	        return new QName(ns, localName, prefix);
+            int index = qname.indexOf(':');
+            String prefix = index == -1 ? "" : qname.substring(0, index);
+            String localName = index == -1 ? qname : qname.substring(index + 1);
+            String ns = nsStack.getNamespaceURI(prefix);
+            if (ns == null) {
+                ns = "";
+            }
+            return new QName(ns, localName, prefix);
         } else {
-        	return null;
+            return null;
         }
     }
 
@@ -104,60 +106,60 @@ public abstract class BaseHandler extends DefaultHandler implements ContentHandl
     protected boolean getBoolean(Attributes attr, String name) {
         return Boolean.valueOf(attr.getValue(name));
     }
-    
+
     protected List<QName> getQNames(Attributes attr, String name) {
-    	String value = attr.getValue(name);
-    	if (value != null) {
-    		List<QName> qnames = new ArrayList<QName>();
-    		for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens(); ) {
-    			qnames.add(getQName(tokens.nextToken()));
-    		}
-    		return qnames;
-    	} else {
-    		return Collections.emptyList();
-    	}
-    }
-    
-    protected void readIntents(IntentAttachPoint attachPoint, Attributes attr) {
-    	readIntents(attachPoint, null, attr);
-    }
-    
-    protected void readIntents(IntentAttachPoint attachPoint, Operation operation, Attributes attr) {
-    	String value = attr.getValue(Constants.REQUIRES);
-    	if (value != null) {
-			List<Intent> requiredIntents = attachPoint.getRequiredIntents();
-    		for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens(); ) {
-    			QName qname = getQName(tokens.nextToken());
-    			Intent intent = policyFactory.createIntent();
-    			intent.setName(qname);
-    			if (operation != null) {
-    				intent.getOperations().add(operation);
-    			}
-				requiredIntents.add(intent);
-    		}
-    	}
-    }
-    
-    protected void readPolicies(PolicySetAttachPoint attachPoint, Attributes attr) {
-    	readPolicies(attachPoint, null, attr);
+        String value = attr.getValue(name);
+        if (value != null) {
+            List<QName> qnames = new ArrayList<QName>();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                qnames.add(getQName(tokens.nextToken()));
+            }
+            return qnames;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
-	protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, Attributes attr) {
-		readIntents(attachPoint, operation, attr);
-		
-    	String value = attr.getValue(Constants.POLICY_SETS);
-    	if (value != null) {
-			List<PolicySet> policySets = attachPoint.getPolicySets();
-    		for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens(); ) {
-    			QName qname = getQName(tokens.nextToken());
-    			PolicySet policySet = policyFactory.createPolicySet();
-    			policySet.setName(qname);
-    			if (operation != null) {
-    				policySet.getOperations().add(operation);
-    			}
-				policySets.add(policySet);
-    		}
-    	}
+    protected void readIntents(IntentAttachPoint attachPoint, Attributes attr) {
+        readIntents(attachPoint, null, attr);
+    }
+
+    protected void readIntents(IntentAttachPoint attachPoint, Operation operation, Attributes attr) {
+        String value = attr.getValue(Constants.REQUIRES);
+        if (value != null) {
+            List<Intent> requiredIntents = attachPoint.getRequiredIntents();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                QName qname = getQName(tokens.nextToken());
+                Intent intent = policyFactory.createIntent();
+                intent.setName(qname);
+                if (operation != null) {
+                    intent.getOperations().add(operation);
+                }
+                requiredIntents.add(intent);
+            }
+        }
+    }
+
+    protected void readPolicies(PolicySetAttachPoint attachPoint, Attributes attr) {
+        readPolicies(attachPoint, null, attr);
+    }
+
+    protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, Attributes attr) {
+        readIntents(attachPoint, operation, attr);
+
+        String value = attr.getValue(Constants.POLICY_SETS);
+        if (value != null) {
+            List<PolicySet> policySets = attachPoint.getPolicySets();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                QName qname = getQName(tokens.nextToken());
+                PolicySet policySet = policyFactory.createPolicySet();
+                policySet.setName(qname);
+                if (operation != null) {
+                    policySet.getOperations().add(operation);
+                }
+                policySets.add(policySet);
+            }
+        }
     }
 
     protected ConstrainingType getConstrainingType(Attributes attr) {
@@ -183,74 +185,77 @@ public abstract class BaseHandler extends DefaultHandler implements ContentHandl
     protected void readProperty(Property prop, Attributes attr) {
         readAbstractProperty(prop, attr);
     }
-    
-    protected InterfaceHandler startInterfaceElement(String uri, String name, String qname, Attributes attr) throws SAXException {
-    	if (interfaceHandler == null && interfaceHandlers != null) {
-    		interfaceHandler = interfaceHandlers.getHandler(uri, name);
-    	}
-    	if (interfaceHandler != null) {
-    		interfaceHandler.startElement(uri, name, qname, attr);
-    		elementCount++;
-    	}
-    	return interfaceHandler;
+
+    protected InterfaceHandler startInterfaceElement(String uri, String name, String qname, Attributes attr)
+        throws SAXException {
+        if (interfaceHandler == null && interfaceHandlers != null) {
+            interfaceHandler = interfaceHandlers.getHandler(uri, name);
+        }
+        if (interfaceHandler != null) {
+            interfaceHandler.startElement(uri, name, qname, attr);
+            elementCount++;
+        }
+        return interfaceHandler;
     }
-    
+
     protected boolean endInterfaceElement(String uri, String name, String qname) throws SAXException {
-    	if (interfaceHandler != null) {
-    		interfaceHandler.endElement(uri, name, qname);
-    		elementCount--;
-    		if (elementCount == 0) {
-    			interfaceHandler = null;
-    			return true;
-    		}
-    	}
-    	return false;
+        if (interfaceHandler != null) {
+            interfaceHandler.endElement(uri, name, qname);
+            elementCount--;
+            if (elementCount == 0) {
+                interfaceHandler = null;
+                return true;
+            }
+        }
+        return false;
     }
 
-    protected ImplementationHandler startImplementationElement(String uri, String name, String qname, Attributes attr) throws SAXException {
-    	if (implementationHandler == null && implementationHandlers != null) {
-    		implementationHandler = implementationHandlers.getHandler(uri, name);
-    	}
-    	if (implementationHandler != null) {
-    		implementationHandler.startElement(uri, name, qname, attr);
-    		elementCount++;
-    	}
-    	return implementationHandler;
+    protected ImplementationHandler startImplementationElement(String uri, String name, String qname, Attributes attr)
+        throws SAXException {
+        if (implementationHandler == null && implementationHandlers != null) {
+            implementationHandler = implementationHandlers.getHandler(uri, name);
+        }
+        if (implementationHandler != null) {
+            implementationHandler.startElement(uri, name, qname, attr);
+            elementCount++;
+        }
+        return implementationHandler;
     }
-    
+
     protected boolean endImplementationElement(String uri, String name, String qname) throws SAXException {
-    	if (implementationHandler != null) {
-    		implementationHandler.endElement(uri, name, qname);
-    		elementCount--;
-    		if (elementCount == 0) {
-    			implementationHandler = null;
-    			return true;
-    		}
-    	}
-    	return false;
+        if (implementationHandler != null) {
+            implementationHandler.endElement(uri, name, qname);
+            elementCount--;
+            if (elementCount == 0) {
+                implementationHandler = null;
+                return true;
+            }
+        }
+        return false;
     }
 
-    protected BindingHandler startBindingElement(String uri, String name, String qname, Attributes attr) throws SAXException {
-    	if (bindingHandler == null && bindingHandlers != null) {
-    		bindingHandler = bindingHandlers.getHandler(uri, name);
-    	}
-    	if (bindingHandler != null) {
-    		bindingHandler.startElement(uri, name, qname, attr);
-    		elementCount++;
-    	}
-    	return bindingHandler;
+    protected BindingHandler startBindingElement(String uri, String name, String qname, Attributes attr)
+        throws SAXException {
+        if (bindingHandler == null && bindingHandlers != null) {
+            bindingHandler = bindingHandlers.getHandler(uri, name);
+        }
+        if (bindingHandler != null) {
+            bindingHandler.startElement(uri, name, qname, attr);
+            elementCount++;
+        }
+        return bindingHandler;
     }
-    
+
     protected boolean endBindingElement(String uri, String name, String qname) throws SAXException {
-    	if (bindingHandler != null) {
-    		bindingHandler.endElement(uri, name, qname);
-    		elementCount--;
-    		if (elementCount == 0) {
-    			bindingHandler = null;
-    			return true;
-    		}
-    	}
-    	return false;
+        if (bindingHandler != null) {
+            bindingHandler.endElement(uri, name, qname);
+            elementCount--;
+            if (elementCount == 0) {
+                bindingHandler = null;
+                return true;
+            }
+        }
+        return false;
     }
 
     public void endPrefixMapping(String prefix) throws SAXException {

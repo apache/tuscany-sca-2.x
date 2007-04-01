@@ -29,7 +29,8 @@ import org.apache.tuscany.scdl.util.BaseWriter;
 import org.xml.sax.SAXException;
 
 /**
- * A test handler to test the usability of the assembly model API when writing SCDL
+ * A test handler to test the usability of the assembly model API when writing
+ * SCDL
  * 
  * @version $Rev$ $Date$
  */
@@ -40,28 +41,28 @@ public class ConstrainingTypeWriter extends BaseWriter {
     public ConstrainingTypeWriter(ConstrainingType constrainingType) {
         this.constrainingType = constrainingType;
     }
-    
+
     protected void write() throws SAXException {
-    	
-    	start(Constants.CONSTRAINING_TYPE);
-    	
-    	for (AbstractService service: constrainingType.getServices()) {
-    		start(Constants.SERVICE, new Attr(Constants.NAME, service.getName()));
-    		end(Constants.SERVICE);
-    	}
-    	
-    	for (AbstractReference reference: constrainingType.getReferences()) {
-    		//TODO handle multivalued target attribute
-    		start(Constants.REFERENCE, new Attr(Constants.NAME, reference.getName()));
-    		end(Constants.REFERENCE);
-    	}
-    	
-    	for (AbstractProperty property: constrainingType.getProperties()) {
-    		start(Constants.PROPERTY, new Attr(Constants.NAME, property.getName()));
-    		end(Constants.PROPERTY);
-    	}
-    	
-    	end(Constants.CONSTRAINING_TYPE);
+
+        start(Constants.CONSTRAINING_TYPE);
+
+        for (AbstractService service : constrainingType.getServices()) {
+            start(Constants.SERVICE, new Attr(Constants.NAME, service.getName()));
+            end(Constants.SERVICE);
+        }
+
+        for (AbstractReference reference : constrainingType.getReferences()) {
+            // TODO handle multivalued target attribute
+            start(Constants.REFERENCE, new Attr(Constants.NAME, reference.getName()));
+            end(Constants.REFERENCE);
+        }
+
+        for (AbstractProperty property : constrainingType.getProperties()) {
+            start(Constants.PROPERTY, new Attr(Constants.NAME, property.getName()));
+            end(Constants.PROPERTY);
+        }
+
+        end(Constants.CONSTRAINING_TYPE);
     }
-    
+
 }

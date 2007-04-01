@@ -35,7 +35,8 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
- * A test writer to test the usability of the assembly model API when writing SCDL
+ * A test writer to test the usability of the assembly model API when writing
+ * SCDL
  * 
  * @version $Rev$ $Date$
  */
@@ -46,64 +47,63 @@ public abstract class BaseWriter extends XMLFilterImpl {
 
     /**
      * This is where you write the logic to produce SCDL.
+     * 
      * @throws SAXException
      */
     abstract protected void write() throws SAXException;
-    
+
     public void parse(InputSource input) throws SAXException, IOException {
-    	out.startDocument();
-    	write();
-    	out.endDocument();
+        out.startDocument();
+        write();
+        out.endDocument();
     }
-    
+
     public void setContentHandler(ContentHandler handler) {
-    	super.setContentHandler(handler);
-    	out = handler;
+        super.setContentHandler(handler);
+        out = handler;
     }
-    
+
     protected void start(String uri, String name, Attr... attrs) throws SAXException {
-    	out.startElement(uri, null, name, attributes(attrs));
+        out.startElement(uri, null, name, attributes(attrs));
     }
 
     protected void start(String name, Attr... attrs) throws SAXException {
-    	out.startElement(sca10, null, name, attributes(attrs));
+        out.startElement(sca10, null, name, attributes(attrs));
     }
-    
+
     protected void end(String uri, String name) throws SAXException {
-    	out.endElement(uri, null, name);
+        out.endElement(uri, null, name);
     }
 
     protected void end(String name) throws SAXException {
-    	out.endElement(sca10, null, name);
+        out.endElement(sca10, null, name);
     }
 
     protected Attributes attributes(Attr... attrs) {
-    	AttributesImpl attributes = new AttributesImpl();
-    	for (Attr attr: attrs) {
-    		if (attr != null)
-    			attr.write(attributes);
-    	}
-    	return attributes;
+        AttributesImpl attributes = new AttributesImpl();
+        for (Attr attr : attrs) {
+            if (attr != null)
+                attr.write(attributes);
+        }
+        return attributes;
     }
 
     protected QName getConstrainingType(ComponentType componentType) {
-    	ConstrainingType constrainingType = componentType.getConstrainingType();
-    	if (constrainingType!=null)
-    		return constrainingType.getName();
-    	else
-    		return null;
+        ConstrainingType constrainingType = componentType.getConstrainingType();
+        if (constrainingType != null)
+            return constrainingType.getName();
+        else
+            return null;
     }
 
     protected Attributes abstractPropertyAttributes(AbstractProperty prop) {
-    	Attributes attributes = attributes(
-	        new Attr("name", prop.getName()),
-	        new Attr("many", prop.isMany()),
-	        new Attr("mustSupply", prop.isMustSupply()),
-	        new Attr("element", prop.getXSDElement()),
-	        new Attr("type", prop.getXSDType())
-    	);
+        Attributes attributes = attributes(new Attr("name", prop.getName()),
+                                           new Attr("many", prop.isMany()),
+                                           new Attr("mustSupply", prop.isMustSupply()),
+                                           new Attr("element", prop.getXSDElement()),
+                                           new Attr("type", prop.getXSDType()));
         // TODO handle default value
-    	return attributes;
+        return attributes;
     }
 
     protected Attributes propertyAttributes(Property prop) {

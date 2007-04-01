@@ -35,7 +35,8 @@ import org.apache.tuscany.scdl.util.BaseWriter;
 import org.xml.sax.SAXException;
 
 /**
- * A test handler to test the usability of the assembly model API when writing SCDL
+ * A test handler to test the usability of the assembly model API when writing
+ * SCDL
  * 
  * @version $Rev$ $Date$
  */
@@ -46,84 +47,78 @@ public class CompositeWriter extends BaseWriter {
     public CompositeWriter(Composite composite) {
         this.composite = composite;
     }
-    
-    protected void write() throws SAXException {
-    	
-    	start(Constants.COMPOSITE, new Attr(Constants.CONSTRAINING_TYPE, getConstrainingType(composite)));
-    	
-    	for (Service service: composite.getServices()) {
-    		CompositeService compositeService = (CompositeService)service;
-    		ComponentService promotedService = compositeService.getPromotedService();
-    		String promote = promotedService != null? promotedService.getName():null;
-    		start(Constants.SERVICE,
-    			new Attr(Constants.NAME, service.getName()),
-    			new Attr(Constants.PROMOTE, promote));
-    		if (service.getCallback() != null) {
-    			start(Constants.CALLBACK);
-    			end(Constants.CALLBACK);
-    		}
-    		end(Constants.SERVICE);
-    	}
-    	
-    	for (Component component: composite.getComponents()) {
-    		start(Constants.COMPONENT,
-    			new Attr(Constants.NAME, component.getName()));
 
-    		for (ComponentService service: component.getServices()) {
-        		start(Constants.SERVICE,
-        			new Attr(Constants.NAME, service.getName()));
-        		end(Constants.SERVICE);
-        		if (service.getCallback() != null) {
-        			start(Constants.CALLBACK);
-        			end(Constants.CALLBACK);
-        		}
-        	}
-    		
-        	for (ComponentReference reference: component.getReferences()) {
-        		//TODO handle multivalued target attribute
-        		String target = reference.getTargets().isEmpty()? null: reference.getTargets().get(0).getName();
-        		start(Constants.REFERENCE, 
-        			new Attr(Constants.NAME, reference.getName()),
-        			new Attr(Constants.TARGET, target));
-        		if (reference.getCallback() != null) {
-        			start(Constants.CALLBACK);
-        			end(Constants.CALLBACK);
-        		}
-        		end(Constants.REFERENCE);
-        	}
-        	
-        	for (ComponentProperty property: component.getProperties()) {
-        		start(Constants.PROPERTY, new Attr(Constants.NAME, property.getName()));
-        		end(Constants.PROPERTY);
-        	}
-        	
-    		end(Constants.COMPONENT);
-    	}
-    	
-    	for (Reference reference: composite.getReferences()) {
-    		//TODO handle multivalued promote attribute
-    		CompositeReference compositeReference = (CompositeReference)reference;
-    		String promote;
-    		if (!compositeReference.getPromotedReferences().isEmpty())
-        		promote = compositeReference.getPromotedReferences().get(0).getName();
-    		else
-    			promote = null;
-    		start(Constants.REFERENCE, 
-    			new Attr(Constants.NAME, reference.getName()),
-    			new Attr(Constants.PROMOTE, promote));
-    		if (reference.getCallback() != null) {
-    			start(Constants.CALLBACK);
-    			end(Constants.CALLBACK);
-    		}
-    		end(Constants.REFERENCE);
-    	}
-    	
-    	for (Property property: composite.getProperties()) {
-    		start(Constants.PROPERTY, new Attr(Constants.NAME, property.getName()));
-    		end(Constants.PROPERTY);
-    	}
-    	
-    	end(Constants.COMPOSITE);
+    protected void write() throws SAXException {
+
+        start(Constants.COMPOSITE, new Attr(Constants.CONSTRAINING_TYPE, getConstrainingType(composite)));
+
+        for (Service service : composite.getServices()) {
+            CompositeService compositeService = (CompositeService)service;
+            ComponentService promotedService = compositeService.getPromotedService();
+            String promote = promotedService != null ? promotedService.getName() : null;
+            start(Constants.SERVICE, new Attr(Constants.NAME, service.getName()), new Attr(Constants.PROMOTE, promote));
+            if (service.getCallback() != null) {
+                start(Constants.CALLBACK);
+                end(Constants.CALLBACK);
+            }
+            end(Constants.SERVICE);
+        }
+
+        for (Component component : composite.getComponents()) {
+            start(Constants.COMPONENT, new Attr(Constants.NAME, component.getName()));
+
+            for (ComponentService service : component.getServices()) {
+                start(Constants.SERVICE, new Attr(Constants.NAME, service.getName()));
+                end(Constants.SERVICE);
+                if (service.getCallback() != null) {
+                    start(Constants.CALLBACK);
+                    end(Constants.CALLBACK);
+                }
+            }
+
+            for (ComponentReference reference : component.getReferences()) {
+                // TODO handle multivalued target attribute
+                String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
+                start(Constants.REFERENCE, new Attr(Constants.NAME, reference.getName()), new Attr(Constants.TARGET,
+                                                                                                   target));
+                if (reference.getCallback() != null) {
+                    start(Constants.CALLBACK);
+                    end(Constants.CALLBACK);
+                }
+                end(Constants.REFERENCE);
+            }
+
+            for (ComponentProperty property : component.getProperties()) {
+                start(Constants.PROPERTY, new Attr(Constants.NAME, property.getName()));
+                end(Constants.PROPERTY);
+            }
+
+            end(Constants.COMPONENT);
+        }
+
+        for (Reference reference : composite.getReferences()) {
+            // TODO handle multivalued promote attribute
+            CompositeReference compositeReference = (CompositeReference)reference;
+            String promote;
+            if (!compositeReference.getPromotedReferences().isEmpty())
+                promote = compositeReference.getPromotedReferences().get(0).getName();
+            else
+                promote = null;
+            start(Constants.REFERENCE, new Attr(Constants.NAME, reference.getName()), new Attr(Constants.PROMOTE,
+                                                                                               promote));
+            if (reference.getCallback() != null) {
+                start(Constants.CALLBACK);
+                end(Constants.CALLBACK);
+            }
+            end(Constants.REFERENCE);
+        }
+
+        for (Property property : composite.getProperties()) {
+            start(Constants.PROPERTY, new Attr(Constants.NAME, property.getName()));
+            end(Constants.PROPERTY);
+        }
+
+        end(Constants.COMPOSITE);
     }
-    
+
 }

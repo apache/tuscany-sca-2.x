@@ -23,8 +23,8 @@ import org.apache.tuscany.scdl.util.DefaultHandlerRegistry;
 
 /**
  * A registry for interface handlers.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class InterfaceHandlerRegistry extends DefaultHandlerRegistry<InterfaceHandler> {
 

@@ -27,15 +27,15 @@ import org.apache.tuscany.scdl.HandlerRegistry;
 import org.xml.sax.ContentHandler;
 
 public class DefaultHandlerRegistry<H extends ContentHandler> implements HandlerRegistry<H> {
-	
-	private Map<QName, H> map = new HashMap<QName, H>();
 
-	public void addHandler(String uri, String name, H handler) {
-		map.put(new QName(uri, name), handler);
-	}
+    private Map<QName, H> map = new HashMap<QName, H>();
 
-	public H getHandler(String uri, String name) {
-		return map.get(new QName(uri, name));
-	}
+    public void addHandler(String uri, String name, H handler) {
+        map.put(new QName(uri, name), handler);
+    }
+
+    public H getHandler(String uri, String name) {
+        return map.get(new QName(uri, name));
+    }
 
 }

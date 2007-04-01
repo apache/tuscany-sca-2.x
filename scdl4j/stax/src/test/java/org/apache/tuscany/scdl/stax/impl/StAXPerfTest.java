@@ -37,34 +37,34 @@ import org.apache.tuscany.scdl.stax.LoaderRegistry;
  * @version $Rev$ $Date$
  */
 public class StAXPerfTest {
-	
+
     private XMLInputFactory inputFactory;
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
     private LoaderRegistry loaderRegistry;
 
-	public static void main(String[] args) throws Exception {
-		
-		StAXPerfTest perfTest = new StAXPerfTest();
-		perfTest.setUp();
-		
-		// Warm up
-		for (long i = 0; i<500; i++) {
-			perfTest.testReadComposite();
-		}
-		
-		long begin = System.currentTimeMillis();
-		long iter = 50000;
-		for (long i = 0; i<iter; i++) {
-			perfTest.testReadComposite();
-		}
-		long end = System.currentTimeMillis();
-		System.out.println("Iterations: "+ iter);
-		double time = ((double)(end - begin)) / ((double)iter);
-		System.out.println("Time: "+ time);
-		System.out.println("Memory: "+Runtime.getRuntime().totalMemory()/1024);
-		
-	}
+    public static void main(String[] args) throws Exception {
+
+        StAXPerfTest perfTest = new StAXPerfTest();
+        perfTest.setUp();
+
+        // Warm up
+        for (long i = 0; i < 500; i++) {
+            perfTest.testReadComposite();
+        }
+
+        long begin = System.currentTimeMillis();
+        long iter = 50000;
+        for (long i = 0; i < iter; i++) {
+            perfTest.testReadComposite();
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("Iterations: " + iter);
+        double time = ((double)(end - begin)) / ((double)iter);
+        System.out.println("Time: " + time);
+        System.out.println("Memory: " + Runtime.getRuntime().totalMemory() / 1024);
+
+    }
 
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
@@ -88,8 +88,9 @@ public class StAXPerfTest {
         Composite composite = loader.load(reader);
         is.close();
 
-        if (composite == null)
-        	throw new IllegalStateException("Null composite");
+        if (composite == null) {
+            throw new IllegalStateException("Null composite");
+        }
     }
 
 }

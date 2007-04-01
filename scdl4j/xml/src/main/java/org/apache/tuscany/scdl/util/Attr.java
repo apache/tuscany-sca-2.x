@@ -24,48 +24,48 @@ import javax.xml.namespace.QName;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class Attr {
-	
-	String uri;
-	String name;
-	Object value;
-	
-	public Attr(String uri, String name, String value) {
-		this.uri = uri;
-		this.name = name;
-		this.value = value;
-	}
 
-	public Attr(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
+    String uri;
+    String name;
+    Object value;
 
-	public Attr(String uri, String name, boolean value) {
-		this.uri = uri;
-		this.name = name;
-		this.value = value;
-	}
+    public Attr(String uri, String name, String value) {
+        this.uri = uri;
+        this.name = name;
+        this.value = value;
+    }
 
-	public Attr(String name, boolean value) {
-		this.name = name;
-		this.value = value;
-	}
-	
-	public Attr(String uri, String name, QName value) {
-		this.uri = uri;
-		this.name = name;
-		this.value = value;
-	}
+    public Attr(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
-	public Attr(String name, QName value) {
-		this.name = name;
-		this.value = value;
-	}
-	
-	void write(AttributesImpl attrs) {
-		if (value != null) {
-			attrs.addAttribute(uri, name, name, "CDATA", String.valueOf(value));
-		}
-	}
-	
+    public Attr(String uri, String name, boolean value) {
+        this.uri = uri;
+        this.name = name;
+        this.value = value;
+    }
+
+    public Attr(String name, boolean value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public Attr(String uri, String name, QName value) {
+        this.uri = uri;
+        this.name = name;
+        this.value = value;
+    }
+
+    public Attr(String name, QName value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    void write(AttributesImpl attrs) {
+        if (value != null) {
+            attrs.addAttribute(uri, name, name, "CDATA", String.valueOf(value));
+        }
+    }
+
 }

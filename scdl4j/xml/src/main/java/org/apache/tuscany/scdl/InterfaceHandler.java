@@ -23,15 +23,16 @@ import org.xml.sax.ContentHandler;
 
 /**
  * A content handler for Java interface elements.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface InterfaceHandler extends ContentHandler {
 
-	/**
-	 * Returns the parsed interface model object.
-	 * @return
-	 */
-	Interface getInterface();
-	
+    /**
+     * Returns the parsed interface model object.
+     * 
+     * @return
+     */
+    Interface getInterface();
+
 }
