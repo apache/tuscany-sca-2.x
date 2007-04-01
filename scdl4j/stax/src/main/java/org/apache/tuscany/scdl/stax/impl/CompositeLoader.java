@@ -139,6 +139,7 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                             componentReference = factory.createComponentReference();
                             contract = componentReference;
                             componentReference.setName(getString(reader, NAME));
+                            readMultiplicity(componentReference, reader);
 
                             // TODO support multivalued attribute
                             ComponentService target = factory.createComponentService();
@@ -154,6 +155,7 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                             compositeReference = factory.createCompositeReference();
                             contract = compositeReference;
                             compositeReference.setName(getString(reader, NAME));
+                            readMultiplicity(compositeReference, reader);
 
                             // TODO support multivalued attribute
                             ComponentReference promoted = factory.createComponentReference();

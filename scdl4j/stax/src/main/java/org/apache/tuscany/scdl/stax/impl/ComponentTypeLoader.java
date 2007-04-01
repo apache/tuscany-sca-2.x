@@ -102,6 +102,7 @@ public class ComponentTypeLoader extends BaseLoader implements Loader<ComponentT
                         reference = factory.createReference();
                         contract = reference;
                         reference.setName(getString(reader, Constants.NAME));
+                        readMultiplicity(reference, reader);
 
                         // TODO support multivalued attribute
                         ComponentService target = factory.createComponentService();

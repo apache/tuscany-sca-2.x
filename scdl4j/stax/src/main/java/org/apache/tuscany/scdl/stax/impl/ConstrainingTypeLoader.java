@@ -97,6 +97,7 @@ public class ConstrainingTypeLoader extends BaseLoader implements Loader<Constra
                         abstractReference = factory.createAbstractReference();
                         abstractContract = abstractReference;
                         abstractReference.setName(getString(reader, Constants.NAME));
+                        readMultiplicity(abstractReference, reader);
                         constrainingType.getReferences().add(abstractReference);
                         readIntents(abstractReference, reader);
 
