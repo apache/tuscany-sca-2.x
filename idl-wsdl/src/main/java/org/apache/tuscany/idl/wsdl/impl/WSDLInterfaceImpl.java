@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.idl.wsdl.impl;
+package org.apache.tuscany.idl.wsdl.impl;
 
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.WSDLInterface;
 import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
-import org.apache.tuscany.sca.idl.wsdl.WSDLInterface;
 
 /**
  * Represents a WSDL interface.

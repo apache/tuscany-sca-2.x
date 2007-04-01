@@ -16,20 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.idl.wsdl.impl;
-
-import org.apache.tuscany.sca.idl.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.idl.wsdl.WSDLInterface;
+package org.apache.tuscany.idl.java;
 
 /**
- * A factory for the WSDL model.
+ * Factory for the Java model
  *
  *  @version $Rev$ $Date$
  */
-public class DefaultWSDLFactory implements WSDLFactory {
-	
-	public WSDLInterface createWSDLInterface() {
-		return new WSDLInterfaceImpl();
-	}
+public interface JavaFactory {
+
+	/**
+	 * Creates a new Java interface.
+	 * @return
+	 */
+	JavaInterface createJavaInterface();
 
 }

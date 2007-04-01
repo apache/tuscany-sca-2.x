@@ -16,40 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.idl.java.impl;
-
-import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
-import org.apache.tuscany.sca.idl.java.JavaInterface;
+package org.apache.tuscany.idl;
 
 /**
- * Represents a Java interface.
+ * Factory for the WSDL model.
  *
  *  @version $Rev$ $Date$
  */
-public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
+public interface WSDLFactory {
 	
-	private String className;
-	private Class<?> javaClass;
-
-	public String getName() {
-		if (isUnresolved())
-			return className;
-		else
-			return javaClass.getName();
-	}
-
-	public void setName(String className) {
-		if (!isUnresolved())
-			throw new IllegalStateException();
-		this.className = className;
-	}
-	
-	public Class<?> getJavaClass() {
-		return javaClass;
-	}
-	
-	public void setJavaClass(Class<?> javaClass) {
-		this.javaClass = javaClass;
-	}
+	/**
+	 * Creates a new WSDL interface.
+	 * @return a new WSDL interface
+	 */
+	WSDLInterface createWSDLInterface();
 
 }

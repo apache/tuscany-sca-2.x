@@ -16,19 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.idl.java;
+package org.apache.tuscany.idl.java.impl;
+
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
 
 /**
- * Factory for the Java model
+ * Represents a Java interface.
  *
  *  @version $Rev$ $Date$
  */
-public interface JavaFactory {
+public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
+	
+	private String className;
+	private Class<?> javaClass;
 
-	/**
-	 * Creates a new Java interface.
-	 * @return
-	 */
-	JavaInterface createJavaInterface();
+	public String getName() {
+		if (isUnresolved())
+			return className;
+		else
+			return javaClass.getName();
+	}
+
+	public void setName(String className) {
+		if (!isUnresolved())
+			throw new IllegalStateException();
+		this.className = className;
+	}
+	
+	public Class<?> getJavaClass() {
+		return javaClass;
+	}
+	
+	public void setJavaClass(Class<?> javaClass) {
+		this.javaClass = javaClass;
+	}
 
 }
