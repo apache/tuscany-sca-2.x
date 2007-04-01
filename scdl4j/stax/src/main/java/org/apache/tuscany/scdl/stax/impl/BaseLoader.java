@@ -30,8 +30,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AbstractProperty;
+import org.apache.tuscany.assembly.model.AbstractReference;
 import org.apache.tuscany.assembly.model.AssemblyFactory;
 import org.apache.tuscany.assembly.model.ConstrainingType;
+import org.apache.tuscany.assembly.model.Multiplicity;
 import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.policy.model.Intent;
 import org.apache.tuscany.policy.model.IntentAttachPoint;
@@ -124,6 +126,17 @@ abstract class BaseLoader implements Constants {
 
     protected void readPolicies(PolicySetAttachPoint attachPoint, XMLStreamReader reader) {
     	readPolicies(attachPoint, null, reader);
+    }
+    
+    protected void readMultiplicity(AbstractReference reference, XMLStreamReader reader) {
+        String value = reader.getAttributeValue(null, MULTIPLICITY);
+        if (ZERO_ONE.equals(value)) {
+            reference.setMultiplicity(Multiplicity.ZERO_ONE);
+        } else if (ONE_N.equals(value)) {
+            reference.setMultiplicity(Multiplicity.ONE_N);
+        } else if (ZERO_N.equals(value)) {
+            reference.setMultiplicity(Multiplicity.ZERO_N);
+        }
     }
 
     protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
