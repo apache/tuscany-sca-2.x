@@ -32,9 +32,11 @@
     <description>Apache Tuscany SCDL4J.</description>
 
     <modules>
+        <module>../idl</module>
         <module>assembly</module>
         <module>policy</module>
         <module>xml</module>
+        <module>stax</module>
     </modules>
 
 </project>
