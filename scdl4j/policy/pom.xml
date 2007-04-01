@@ -24,7 +24,7 @@
         <version>0.1-incubating-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-scdl4j-policy</artifactId>
+    <artifactId>tuscany-policy</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Apache Tuscany SCDL4J Policy Model</name>

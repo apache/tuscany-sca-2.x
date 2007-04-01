@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AssemblyFactory;
+import org.apache.tuscany.assembly.model.Binding;
 import org.apache.tuscany.assembly.model.Callback;
 import org.apache.tuscany.assembly.model.Component;
 import org.apache.tuscany.assembly.model.ComponentProperty;
@@ -37,9 +38,11 @@ import org.apache.tuscany.assembly.model.Composite;
 import org.apache.tuscany.assembly.model.CompositeReference;
 import org.apache.tuscany.assembly.model.CompositeService;
 import org.apache.tuscany.assembly.model.Contract;
+import org.apache.tuscany.assembly.model.Implementation;
 import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.assembly.model.Wire;
 import org.apache.tuscany.policy.model.PolicyFactory;
+import org.apache.tuscany.sca.idl.Interface;
 import org.apache.tuscany.sca.idl.Operation;
 import org.apache.tuscany.scdl.stax.Loader;
 import org.apache.tuscany.scdl.stax.LoaderRegistry;
@@ -50,23 +53,21 @@ import org.apache.tuscany.scdl.stax.LoaderRegistry;
  * @version $Rev$ $Date$
  */
 public class CompositeLoader extends BaseLoader implements Loader<Composite> {
-
-	/**
-	 * Construct a new composite loader
-	 * @param assemblyFactory 
-	 * @param policyFactory
-	 * @param registry
-	 */
-    public CompositeLoader(AssemblyFactory assemblyFactory, PolicyFactory policyFactory, LoaderRegistry registry) {
-        super(assemblyFactory, policyFactory, registry);
-    }
+    private AssemblyFactory factory;
+    private LoaderRegistry registry;
 
     /**
-     * Read an SCA composite
-     * @param reader
-     * @return a composite model
-     * @throws XMLStreamException
+     * Construct a new composite loader
+     * @param assemblyFactory 
+     * @param policyFactory
+     * @param registry
      */
+    public CompositeLoader(AssemblyFactory factory, PolicyFactory policyFactory, LoaderRegistry registry) {
+        super(factory, policyFactory);
+        this.factory = factory;
+        this.registry = registry;
+    }
+
     public Composite load(XMLStreamReader reader) throws XMLStreamException {
         Composite composite = null;
         Composite include = null;
@@ -227,13 +228,23 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                 		}
                     } else {
                     	
-                        // Read extension elements
-                        // <service><interface>
-                        // <service><binding>
-                    	// <component><implementation>
-                        if (nextChildElement(reader)) {
-                            registry.load(reader);
-                            continue;
+                        // Read an extension element
+                        Object extension = registry.load(reader);
+                        if (extension != null) {
+                            if (extension instanceof Interface) {
+
+                                // <service><interface> and <reference><interface>
+                                contract.setInterface((Interface)extension);
+                                
+                            } else if (extension instanceof Binding) {
+                                // <service><binding> and <reference><binding>
+                                contract.getBindings().add((Binding)extension);
+                                
+                            } else if (extension instanceof Implementation) {
+                                
+                                // <component><implementation>
+                                component.setImplementation((Implementation)extension);
+                            }
                         }
                     }
                     break;

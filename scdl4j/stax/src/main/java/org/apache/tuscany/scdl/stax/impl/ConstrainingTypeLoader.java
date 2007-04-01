@@ -42,11 +42,21 @@ import org.apache.tuscany.scdl.stax.LoaderRegistry;
  * @version $Rev$ $Date$
  */
 public class ConstrainingTypeLoader extends BaseLoader implements Loader<ConstrainingType> {
+    private AssemblyFactory factory;
+    private LoaderRegistry registry;
 
+    /**
+     * Construct a new constrainingType loader.
+     * @param factory
+     * @param policyFactory
+     * @param registry
+     */
     public ConstrainingTypeLoader(AssemblyFactory factory,
                                   PolicyFactory policyFactory,
                                   LoaderRegistry registry) {
-        super(factory, policyFactory, registry);
+        super(factory, policyFactory);
+        this.factory = factory;
+        this.registry = registry;
     }
 
     public ConstrainingType load(XMLStreamReader reader) throws XMLStreamException {
