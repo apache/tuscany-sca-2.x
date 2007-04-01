@@ -178,7 +178,6 @@ public abstract class BaseHandler extends DefaultHandler implements ContentHandl
         prop.setMustSupply(getBoolean(attr, "mustSupply"));
         prop.setXSDElement(getQName(attr, "element"));
         prop.setXSDType(getQName(attr, "type"));
-        // TODO handle default value
     }
 
     protected void readProperty(Property prop, Attributes attr) {
