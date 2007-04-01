@@ -27,8 +27,8 @@
     <artifactId>tuscany-policy</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Apache Tuscany SCDL4J Policy Model</name>
-    <description>Apache Tuscany SCDL4J Policy Model.</description>
+    <name>Apache Tuscany Policy Model</name>
+    <description>Apache Tuscany Policy Model.</description>
 
     <dependencies>
 

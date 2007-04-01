@@ -29,8 +29,8 @@
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>tuscany-idl-wsdl</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
-    <name>Apache Tuscany IDL WSDL</name>
-    <description>Apache Tuscany IDL WSDL</description>
+    <name>Apache Tuscany WSDL Interface Model</name>
+    <description>Apache Tuscany WSDL Interface Model.</description>
 
     <!-- definition of repositories where the parent pom can be found -->
     <repositories>
