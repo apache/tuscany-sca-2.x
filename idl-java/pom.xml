@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>sca</artifactId>
-        <version>1.0-incubating</version>
+        <version>1.0.1-incubating-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.idl.java</groupId>
-    <artifactId>tuscany-idl</artifactId>
+    <groupId>org.apache.tuscany.sca</groupId>
+    <artifactId>tuscany-idl-java</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
     <name>Apache Tuscany IDL Java</name>
     <description>Apache Tuscany IDL Java</description>
@@ -49,21 +49,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.idl</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-idl</artifactId>
             <version>0.1-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>2.2</version>
+            <version>4.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

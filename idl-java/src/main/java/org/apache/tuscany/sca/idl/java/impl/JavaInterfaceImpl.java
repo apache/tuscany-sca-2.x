@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +15,41 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
-        <version>1.0.1-incubating-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca</groupId>
-    <artifactId>tuscany-scdl4j</artifactId>
-    <version>0.1-incubating-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCDL4J</name>
-    <description>Apache Tuscany SCDL4J.</description>
+ */
+package org.apache.tuscany.sca.idl.java.impl;
 
-    <modules>
-        <module>../idl</module>
-        <module>../idl-java</module>
-        <module>../idl-wsdl</module>
-        <module>assembly</module>
-        <module>policy</module>
-        <module>xml</module>
-        <module>stax</module>
-    </modules>
+import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
+import org.apache.tuscany.sca.idl.java.JavaInterface;
 
-</project>
+/**
+ * Represents a Java interface.
+ *
+ *  @version $Rev$ $Date$
+ */
+public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
+	
+	private String className;
+	private Class<?> javaClass;
+
+	public String getName() {
+		if (isUnresolved())
+			return className;
+		else
+			return javaClass.getName();
+	}
+
+	public void setName(String className) {
+		if (!isUnresolved())
+			throw new IllegalStateException();
+		this.className = className;
+	}
+	
+	public Class<?> getJavaClass() {
+		return javaClass;
+	}
+	
+	public void setJavaClass(Class<?> javaClass) {
+		this.javaClass = javaClass;
+	}
+
+}

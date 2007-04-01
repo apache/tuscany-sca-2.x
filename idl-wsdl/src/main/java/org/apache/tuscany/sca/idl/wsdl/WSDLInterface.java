@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +15,43 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
-        <version>1.0.1-incubating-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca</groupId>
-    <artifactId>tuscany-scdl4j</artifactId>
-    <version>0.1-incubating-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCDL4J</name>
-    <description>Apache Tuscany SCDL4J.</description>
+ */
+package org.apache.tuscany.sca.idl.wsdl;
 
-    <modules>
-        <module>../idl</module>
-        <module>../idl-java</module>
-        <module>../idl-wsdl</module>
-        <module>assembly</module>
-        <module>policy</module>
-        <module>xml</module>
-        <module>stax</module>
-    </modules>
+import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
 
-</project>
+import org.apache.tuscany.sca.idl.Interface;
+
+/**
+ * Represents a WSDL interface.
+ *
+ *  @version $Rev$ $Date$
+ */
+public interface WSDLInterface extends Interface {
+	
+	/**
+	 * Returns the name of the WSDL interface.
+	 * @return the name of the WSDL interface
+	 */
+	QName getName();
+	
+	/**
+	 * Sets the name of the WSDL interface.
+	 * @param className the name of the WSDL interface
+	 */
+	void setName(QName interfaceName);
+	
+	/**
+	 * Returns the WSDL interface portType.
+	 * @return the WSDL interface portType
+	 */
+	PortType getPortType();
+	
+	/**
+	 * Sets the WSDL interface portType
+	 * @param portType the WSDL interface portType
+	 */
+	void setPortType(PortType portType);
+	
+}
