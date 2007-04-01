@@ -55,21 +55,20 @@ public class SAXPerfTest extends TestCase {
 		}
 		
 		long begin = System.currentTimeMillis();
-		long iter = 10000;
+		long iter = 50000;
 		for (long i = 0; i<iter; i++) {
 			perfTest.testReadComposite();
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("Iterations: "+ iter);
-		System.out.println("Time: "+ (end - begin));
+		double time = ((double)(end - begin)) / ((double)iter);
+		System.out.println("Time: "+ time);
 		System.out.println("Memory: "+Runtime.getRuntime().totalMemory()/1024);
 		
 	}
 
     public void setUp() throws Exception {
-        reader = XMLReaderFactory.createXMLReader();
-        reader.setFeature("http://xml.org/sax/features/namespaces", true);
-        reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
+        reader = XMLReaderFactory.createXMLReader("com.ctc.wstx.sax.WstxSAXParser");
         
         assemblyFactory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
