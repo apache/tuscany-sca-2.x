@@ -29,26 +29,27 @@ import org.apache.tuscany.idl.WSDLFactory;
 import org.apache.tuscany.idl.WSDLInterface;
 import org.apache.tuscany.scdl.stax.Loader;
 
-public class WSDLReader implements Loader<WSDLInterface>, WSDLConstants {
+public class WSDLInterfaceLoader implements Loader<WSDLInterface>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
-    
-    public WSDLReader(WSDLFactory javaFactory) {
-            this.wsdlFactory = javaFactory;
+
+    public WSDLInterfaceLoader(WSDLFactory javaFactory) {
+        this.wsdlFactory = javaFactory;
     }
-    
+
     public WSDLInterface load(XMLStreamReader reader) throws XMLStreamException {
 
         // Read an <interface.java>
         WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
         wsdlInterface.setUnresolved(true);
-        //TODO handle qname
+        // TODO handle qname
         wsdlInterface.setName(new QName("", reader.getAttributeValue(null, INTERFACE)));
-        
+
         // Skip to end element
         while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && INTERFACE_WSDL_QNAME.equals(reader.getName()))
+            if (reader.next() == END_ELEMENT && INTERFACE_WSDL_QNAME.equals(reader.getName())) {
                 break;
+            }
         }
         return wsdlInterface;
     }

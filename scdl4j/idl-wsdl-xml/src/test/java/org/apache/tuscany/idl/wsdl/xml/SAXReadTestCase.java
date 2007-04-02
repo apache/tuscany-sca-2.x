@@ -52,15 +52,15 @@ public class SAXReadTestCase extends TestCase {
     XMLReader reader;
     InterfaceHandlerRegistry interfaceHandlers;
     ImplementationHandlerRegistry implementationHandlers;
-    
+
     public void setUp() throws Exception {
 
         reader = XMLReaderFactory.createXMLReader();
-        
+
         assemblyFactory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
 
-        WSDLHandler wsdlHandler = new WSDLHandler(new DefaultWSDLFactory());
+        WSDLInterfaceHandler wsdlHandler = new WSDLInterfaceHandler(new DefaultWSDLFactory());
         interfaceHandlers = new InterfaceHandlerRegistry();
         interfaceHandlers.addHandler(Constants.SCA10_NS, WSDLConstants.INTERFACE_WSDL, wsdlHandler);
     }
@@ -76,7 +76,7 @@ public class SAXReadTestCase extends TestCase {
         reader.setContentHandler(handler);
         reader.parse(new InputSource(is));
         assertNotNull(handler.getComponentType());
-        
+
         new PrintUtil(System.out).print(handler.getComponentType());
     }
 
@@ -89,10 +89,11 @@ public class SAXReadTestCase extends TestCase {
 
         new PrintUtil(System.out).print(handler.getConstrainingType());
     }
-    
+
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
-        CompositeHandler handler = new CompositeHandler(assemblyFactory, policyFactory, interfaceHandlers, implementationHandlers, null);
+        CompositeHandler handler = new CompositeHandler(assemblyFactory, policyFactory, interfaceHandlers,
+                                                        implementationHandlers, null);
         reader.setContentHandler(handler);
         reader.parse(new InputSource(is));
         assertNotNull(handler.getComposite());

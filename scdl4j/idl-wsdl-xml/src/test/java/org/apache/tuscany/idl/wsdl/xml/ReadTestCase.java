@@ -53,14 +53,14 @@ public class ReadTestCase extends TestCase {
     AssemblyFactory assemblyFactory;
     PolicyFactory policyFactory;
     LoaderRegistry loaderRegistry;
-    
+
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
         assemblyFactory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
         loaderRegistry = new LoaderRegistryImpl();
 
-        WSDLReader wsdlReader = new WSDLReader(new DefaultWSDLFactory());
+        WSDLInterfaceLoader wsdlReader = new WSDLInterfaceLoader(new DefaultWSDLFactory());
         loaderRegistry.addLoader(WSDLConstants.INTERFACE_WSDL_QNAME, wsdlReader);
     }
 
@@ -72,17 +72,19 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeLoader componentTypeReader = new ComponentTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        ComponentTypeLoader componentTypeReader = new ComponentTypeLoader(assemblyFactory, policyFactory,
+                                                                          loaderRegistry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = componentTypeReader.load(reader);
         assertNotNull(componentType);
-        
+
         new PrintUtil(System.out).print(componentType);
     }
 
     public void testReadConstrainingType() throws Exception {
-        ConstrainingTypeLoader constrainingTypeReader = new ConstrainingTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        ConstrainingTypeLoader constrainingTypeReader = new ConstrainingTypeLoader(assemblyFactory, policyFactory,
+                                                                                   loaderRegistry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ConstrainingType constrainingType = constrainingTypeReader.load(reader);
@@ -90,7 +92,7 @@ public class ReadTestCase extends TestCase {
 
         new PrintUtil(System.out).print(constrainingType);
     }
-    
+
     public void testReadComposite() throws Exception {
         CompositeLoader compositeReader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
