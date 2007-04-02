@@ -16,43 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.idl.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+package org.apache.tuscany.sca.idl.util;
 
-import org.apache.tuscany.sca.idl.Interface;
-import org.apache.tuscany.sca.idl.Operation;
+import javax.xml.namespace.QName;
 
 /**
- * Represents a service interface.
- * 
- * @version $Rev$ $Date$
+ * An abstraction of XML schema elements
  */
-public class InterfaceImpl implements Interface {
+public class ElementInfo {
+    private final QName name;
+    private final TypeInfo type;
 
-    private boolean remotable;
-    private List<Operation> operations = new ArrayList<Operation>();
-    private boolean unresolved;
-
-    public boolean isRemotable() {
-        return remotable;
+    /**
+     * @param name
+     * @param type
+     */
+    public ElementInfo(QName name, TypeInfo type) {
+        super();
+        this.name = name;
+        this.type = type;
     }
 
-    public void setRemotable(boolean local) {
-        this.remotable = local;
+    /**
+     * @return the name
+     */
+    public QName getQName() {
+        return name;
     }
 
-    public List<Operation> getOperations() {
-        return operations;
+    /**
+     * @return the type
+     */
+    public TypeInfo getType() {
+        return type;
     }
 
-    public boolean isUnresolved() {
-        return unresolved;
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Element: ").append(name).append(" ").append(type);
+        return sb.toString();
     }
-
-    public void setUnresolved(boolean undefined) {
-        this.unresolved = undefined;
-    }
-
 }

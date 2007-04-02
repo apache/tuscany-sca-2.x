@@ -21,38 +21,43 @@ package org.apache.tuscany.sca.idl;
 import java.util.List;
 
 /**
- * Represents a service interface.
- * This interface will typically be extended to support concrete interface type systems, such as
- * Java interfaces, WSDL 1.1 portTypes and WSDL 2.0 interfaces.
+ * Represents a service interface. This interface will typically be extended to
+ * support concrete interface type systems, such as Java interfaces, WSDL 1.1
+ * portTypes and WSDL 2.0 interfaces.
  */
 public interface Interface {
 
     /**
-     * Returns true if the interface is a remotable interface.. 
+     * Returns true if the interface is a remotable interface..
+     * 
      * @return true if the interface is a remotable interface
      */
     boolean isRemotable();
 
     /**
-    * Sets whether the interface is a remotable or local interface. 
-    * @param remotable indicates whether the interface is remotable or local
+     * Sets whether the interface is a remotable or local interface.
+     * 
+     * @param remotable indicates whether the interface is remotable or local
      */
     void setRemotable(boolean remotable);
 
     /**
      * Returns the operations defined on this interface.
+     * 
      * @return the operations defined on this interface
      */
     List<Operation> getOperations();
-    
+
     /**
      * Returns true if the model element is unresolved.
+     * 
      * @return true if the model element is unresolved.
      */
     boolean isUnresolved();
-    
+
     /**
      * Sets whether the model element is unresolved.
+     * 
      * @param unresolved whether the model element is unresolved
      */
     void setUnresolved(boolean unresolved);
