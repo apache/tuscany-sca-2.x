@@ -74,6 +74,6 @@
         <operation name="multiplyCallback" policySets="" requires=""/>
       </binding.ws>
     </callback>
-  </service>
+  </reference>
   
 </composite>

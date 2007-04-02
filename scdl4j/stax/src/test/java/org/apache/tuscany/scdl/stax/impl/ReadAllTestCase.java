@@ -37,6 +37,8 @@ import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
 import org.apache.tuscany.scdl.stax.Constants;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
@@ -113,7 +115,10 @@ public class ReadAllTestCase extends TestCase {
 
         Property property = calcComponent.getProperties().get(0);
         assertEquals(property.getName(), "round");
-        assertEquals(property.getDefaultValue(), "true");
+        Document doc = (Document) property.getDefaultValue();
+        Element element = doc.getDocumentElement();
+        String value = element.getTextContent();
+        assertEquals(value, "true");
         assertEquals(property.getXSDType(), new QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         assertEquals(property.isMany(), false);
 

@@ -58,7 +58,8 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
 
     /**
      * Construct a new composite loader
-     * @param assemblyFactory 
+     * 
+     * @param assemblyFactory
      * @param policyFactory
      * @param registry
      */
@@ -89,36 +90,36 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
             switch (event) {
                 case START_ELEMENT:
                     name = reader.getName();
-                    
+
                     if (COMPOSITE_QNAME.equals(name)) {
-                    	
-                    	// Read a <composite>
+
+                        // Read a <composite>
                         composite = factory.createComposite();
                         composite.setName(getQName(reader, NAME));
                         composite.setAutowire(getBoolean(reader, AUTOWIRE));
                         composite.setLocal(getBoolean(reader, LOCAL));
                         composite.setConstrainingType(getConstrainingType(reader));
                         readPolicies(composite, reader);
-                        
+
                     } else if (INCLUDE_QNAME.equals(name)) {
-                    	
-                    	// Read an <include> 
+
+                        // Read an <include>
                         include = factory.createComposite();
                         include.setUnresolved(true);
                         composite.getIncludes().add(include);
-                        
+
                     } else if (SERVICE_QNAME.equals(name)) {
                         if (component != null) {
-                        	
-                        	// Read a <component><service>
+
+                            // Read a <component><service>
                             componentService = factory.createComponentService();
                             contract = componentService;
                             componentService.setName(getString(reader, NAME));
                             component.getServices().add(componentService);
                             readPolicies(contract, reader);
                         } else {
-                        	
-                        	// Read a <composite><service>
+
+                            // Read a <composite><service>
                             compositeService = factory.createCompositeService();
                             contract = compositeService;
                             compositeService.setName(getString(reader, NAME));
@@ -134,8 +135,8 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
 
                     } else if (REFERENCE_QNAME.equals(name)) {
                         if (component != null) {
-                        	
-                        	// Read a <component><reference>
+
+                            // Read a <component><reference>
                             componentReference = factory.createComponentReference();
                             contract = componentReference;
                             componentReference.setName(getString(reader, NAME));
@@ -150,8 +151,8 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                             component.getReferences().add(componentReference);
                             readPolicies(contract, reader);
                         } else {
-                        	
-                        	// Read a <composite><reference>
+
+                            // Read a <composite><reference>
                             compositeReference = factory.createCompositeReference();
                             contract = compositeReference;
                             compositeReference.setName(getString(reader, NAME));
@@ -166,36 +167,37 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                             composite.getReferences().add(compositeReference);
                             readPolicies(contract, reader);
                         }
-                        
+
                     } else if (PROPERTY_QNAME.equals(name)) {
                         if (component != null) {
-                        	
-                        	// Read a <component><property>
+
+                            // Read a <component><property>
                             componentProperty = factory.createComponentProperty();
                             property = componentProperty;
+                            readPolicies(property, reader);
                             readProperty(componentProperty, reader);
                             component.getProperties().add(componentProperty);
                         } else {
-                        	
-                        	// Read a <composite><property>
+
+                            // Read a <composite><property>
                             property = factory.createProperty();
+                            readPolicies(property, reader);
                             readProperty(property, reader);
                             composite.getProperties().add(property);
                         }
-                        readPolicies(property, reader);
-                        
+
                     } else if (COMPONENT_QNAME.equals(name)) {
-                    	
-                    	// Read a <component>
+
+                        // Read a <component>
                         component = factory.createComponent();
                         component.setName(getString(reader, NAME));
                         component.setConstrainingType(getConstrainingType(reader));
                         composite.getComponents().add(component);
                         readPolicies(component, reader);
-                        
+
                     } else if (WIRE_QNAME.equals(name)) {
-                    	
-                    	// Read a <wire>
+
+                        // Read a <wire>
                         wire = factory.createWire();
                         ComponentReference source = factory.createComponentReference();
                         source.setUnresolved(true);
@@ -209,41 +211,42 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
 
                         composite.getWires().add(wire);
                         readPolicies(wire, reader);
-                        
+
                     } else if (CALLBACK_QNAME.equals(name)) {
-                    	
-                    	// Read a <callback> 
+
+                        // Read a <callback>
                         callback = factory.createCallback();
                         contract.setCallback(callback);
                         readPolicies(callback, reader);
-                        
+
                     } else if (OPERATION.equals(name)) {
-    	        	
-    	        	// Read an <operation>
-            		Operation operation = factory.createOperation();
-            		operation.setName(getString(reader, NAME));
-            		operation.setUnresolved(true);
-            		if (callback != null) {
-            			readPolicies(callback, operation, reader);
-            		} else {
-            			readPolicies(contract, operation, reader);
-            		}
+
+                        // Read an <operation>
+                        Operation operation = factory.createOperation();
+                        operation.setName(getString(reader, NAME));
+                        operation.setUnresolved(true);
+                        if (callback != null) {
+                            readPolicies(callback, operation, reader);
+                        } else {
+                            readPolicies(contract, operation, reader);
+                        }
                     } else {
-                    	
+
                         // Read an extension element
                         Object extension = registry.load(reader);
                         if (extension != null) {
                             if (extension instanceof Interface) {
 
-                                // <service><interface> and <reference><interface>
+                                // <service><interface> and
+                                // <reference><interface>
                                 contract.setInterface((Interface)extension);
-                                
+
                             } else if (extension instanceof Binding) {
                                 // <service><binding> and <reference><binding>
                                 contract.getBindings().add((Binding)extension);
-                                
+
                             } else if (extension instanceof Implementation) {
-                                
+
                                 // <component><implementation>
                                 component.setImplementation((Implementation)extension);
                             }
@@ -252,21 +255,17 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                     break;
 
                 case XMLStreamConstants.CHARACTERS:
-                	
-                	// Read an <include>qname</include>
+
+                    // Read an <include>qname</include>
                     if (include != null && INCLUDE_QNAME.equals(name)) {
                         include.setName(getQNameValue(reader, reader.getText().trim()));
                     }
-                    
-                    // Read a <property>value</property>
-                    else if (property != null && PROPERTY_QNAME.equals(name)) {
-                        property.setDefaultValue(reader.getText().trim());
-                    }
+
                     break;
-                
+
                 case END_ELEMENT:
                     name = reader.getName();
-                	
+
                     // Clear current state when reading reaching end element
                     if (SERVICE_QNAME.equals(name)) {
                         componentService = null;
@@ -290,7 +289,7 @@ public class CompositeLoader extends BaseLoader implements Loader<Composite> {
                     }
                     break;
             }
-            
+
             // Read the next element
             if (reader.hasNext()) {
                 reader.next();
