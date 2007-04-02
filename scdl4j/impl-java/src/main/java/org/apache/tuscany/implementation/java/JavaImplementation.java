@@ -22,33 +22,37 @@ import org.apache.tuscany.assembly.model.Implementation;
 
 /**
  * Represents a Java implementation.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface JavaImplementation extends Implementation {
-	
-	/**
-	 * Returns the name of the Java implementation class.
-	 * @return the name of the Java implementation class
-	 */
-	String getName();
-	
-	/**
-	 * Sets the name of the Java implementation class.
-	 * @param className the name of the Java implementation class
-	 */
-	void setName(String className);
 
-	/**
-	 * Returns the Java implementation class.
-	 * @return the Java implementation class
-	 */
-	Class<?> getJavaClass();
+    /**
+     * Returns the name of the Java implementation class.
+     * 
+     * @return the name of the Java implementation class
+     */
+    String getName();
 
-	/**
-	 * Sets the Java implementation class.
-	 * @param javaClass the Java implementation class
-	 */
-	void setJavaClass(Class<?> javaClass);
-	
+    /**
+     * Sets the name of the Java implementation class.
+     * 
+     * @param className the name of the Java implementation class
+     */
+    void setName(String className);
+
+    /**
+     * Returns the Java implementation class.
+     * 
+     * @return the Java implementation class
+     */
+    Class<?> getJavaClass();
+
+    /**
+     * Sets the Java implementation class.
+     * 
+     * @param javaClass the Java implementation class
+     */
+    void setJavaClass(Class<?> javaClass);
+
 }

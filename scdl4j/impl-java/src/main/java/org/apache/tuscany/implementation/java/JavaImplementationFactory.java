@@ -20,15 +20,16 @@ package org.apache.tuscany.implementation.java;
 
 /**
  * Factory for the Java model
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface JavaImplementationFactory {
 
-	/**
-	 * Creates a new Java implementation.
-	 * @return
-	 */
-	JavaImplementation createJavaImplementation();
-	
+    /**
+     * Creates a new Java implementation.
+     * 
+     * @return
+     */
+    JavaImplementation createJavaImplementation();
+
 }

@@ -60,7 +60,7 @@ public class ReadTestCase extends TestCase {
         policyFactory = new DefaultPolicyFactory();
         loaderRegistry = new LoaderRegistryImpl();
 
-        JavaImplementationReader javaReader = new JavaImplementationReader(new DefaultJavaImplementationFactory(assemblyFactory));
+        JavaImplementationLoader javaReader = new JavaImplementationLoader(new DefaultJavaImplementationFactory(assemblyFactory));
         loaderRegistry.addLoader(JavaImplementationConstants.IMPLEMENTATION_JAVA_QNAME, javaReader);
     }
 
