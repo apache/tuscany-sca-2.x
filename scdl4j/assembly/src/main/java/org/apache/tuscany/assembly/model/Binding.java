@@ -23,6 +23,8 @@ import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
 /**
  * Represents a binding.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface Binding extends Base, IntentAttachPoint, PolicySetAttachPoint {
 

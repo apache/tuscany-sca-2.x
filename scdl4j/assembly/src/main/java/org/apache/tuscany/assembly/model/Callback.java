@@ -25,6 +25,8 @@ import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
 /**
  * Represents a callback object describing the bindings to use for callbacks.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface Callback extends Base, IntentAttachPoint, PolicySetAttachPoint {
 

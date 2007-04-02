@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 
 /**
  * Represents a composite.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface Composite extends Implementation {
 

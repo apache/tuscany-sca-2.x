@@ -24,6 +24,8 @@ import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
 /**
  * Represents a contract. A contract can be either a service or a reference.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface Contract extends AbstractContract, PolicySetAttachPoint {
 

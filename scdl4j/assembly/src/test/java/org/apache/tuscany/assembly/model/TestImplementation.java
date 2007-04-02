@@ -38,22 +38,18 @@ public class TestImplementation extends ComponentTypeImpl implements Implementat
         p.setXSDType(new QName("", ""));
         getProperties().add(p);
 
-        {
-            Reference r = factory.createReference();
-            r.setName("accountDataService");
-            r.setMultiplicity(Multiplicity.ONE_ONE);
-            getReferences().add(r);
-            r.getBindings().add(new TestBinding(factory));
-        }
+        Reference ref1 = factory.createReference();
+        ref1.setName("accountDataService");
+        ref1.setMultiplicity(Multiplicity.ONE_ONE);
+        getReferences().add(ref1);
+        ref1.getBindings().add(new TestBinding(factory));
 
-        {
-            Reference r = factory.createReference();
-            r.setName("stockQuoteService");
-            r.setMultiplicity(Multiplicity.ONE_ONE);
-            r.setInterface(new TestInterface(factory));
-            getReferences().add(r);
-            r.getBindings().add(new TestBinding(factory));
-        }
+        Reference ref2 = factory.createReference();
+        ref2.setName("stockQuoteService");
+        ref2.setMultiplicity(Multiplicity.ONE_ONE);
+        ref2.setInterface(new TestInterface(factory));
+        getReferences().add(ref2);
+        ref2.getBindings().add(new TestBinding(factory));
 
         Service s = factory.createService();
         s.setName("AccountService");

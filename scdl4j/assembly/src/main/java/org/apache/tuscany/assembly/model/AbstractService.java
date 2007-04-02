@@ -20,6 +20,8 @@ package org.apache.tuscany.assembly.model;
 
 /**
  * Represents a service contract.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface AbstractService extends AbstractContract {
 

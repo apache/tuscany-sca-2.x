@@ -25,6 +25,8 @@ import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
 /**
  * Describes an implementation and represents its configurable aspects.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface ComponentType extends Base, IntentAttachPoint, PolicySetAttachPoint {
 

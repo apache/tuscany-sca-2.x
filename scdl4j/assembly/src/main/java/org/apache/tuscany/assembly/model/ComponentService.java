@@ -20,6 +20,8 @@ package org.apache.tuscany.assembly.model;
 
 /**
  * An addressable instance of a service associated with a particular component.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface ComponentService extends Service {
 

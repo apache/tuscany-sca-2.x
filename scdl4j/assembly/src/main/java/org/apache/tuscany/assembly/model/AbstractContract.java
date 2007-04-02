@@ -24,6 +24,8 @@ import org.apache.tuscany.sca.idl.Interface;
 /**
  * Interface contracts define one or more business functions. These business
  * functions are provided by services and are used by references.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface AbstractContract extends Base, IntentAttachPoint {
 

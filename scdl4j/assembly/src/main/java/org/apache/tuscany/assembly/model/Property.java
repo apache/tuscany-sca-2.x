@@ -25,6 +25,8 @@ import org.apache.tuscany.policy.model.PolicySetAttachPoint;
  * set data values. An implementation can have zero or more properties. Each
  * property has a data type, which may be either simple or complex. An
  * implementation may also define a default value for a property.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface Property extends AbstractProperty, PolicySetAttachPoint {
 

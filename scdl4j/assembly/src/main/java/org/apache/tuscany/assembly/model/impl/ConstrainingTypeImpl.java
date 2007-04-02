@@ -67,19 +67,23 @@ public class ConstrainingTypeImpl extends BaseImpl implements ConstrainingType {
     }
 
     public boolean accept(Visitor visitor) {
-        if (!super.accept(visitor))
+        if (!super.accept(visitor)) {
             return false;
+        }
         for (AbstractProperty property : properties) {
-            if (!visitor.visit(property))
+            if (!visitor.visit(property)) {
                 return false;
+            }
         }
         for (AbstractReference reference : references) {
-            if (!visitor.visit(reference))
+            if (!visitor.visit(reference)) {
                 return false;
+            }
         }
         for (AbstractService service : services) {
-            if (!visitor.visit(service))
+            if (!visitor.visit(service)) {
                 return false;
+            }
         }
         return true;
     }

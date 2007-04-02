@@ -32,7 +32,7 @@ import org.apache.tuscany.assembly.util.Visitor;
  */
 public abstract class BaseImpl implements Base, Visitable {
     private List<Object> extensions = new ArrayList<Object>();
-    private boolean unresolved = false;
+    private boolean unresolved;
 
     public List<Object> getExtensions() {
         return extensions;
