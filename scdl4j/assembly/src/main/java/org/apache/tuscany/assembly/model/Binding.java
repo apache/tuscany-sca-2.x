@@ -21,7 +21,6 @@ package org.apache.tuscany.assembly.model;
 import org.apache.tuscany.policy.model.IntentAttachPoint;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
-
 /**
  * Represents a binding.
  */
@@ -29,24 +28,28 @@ public interface Binding extends Base, IntentAttachPoint, PolicySetAttachPoint {
 
     /**
      * Returns the binding URI.
+     * 
      * @return the binding uri
      */
     String getURI();
 
     /**
      * Sets the binding URI.
+     * 
      * @param uri the binding uri
      */
     void setURI(String uri);
 
     /**
      * Returns the binding name.
+     * 
      * @return the binding name
      */
     String getName();
-    
+
     /**
      * Sets the binding name.
+     * 
      * @param name the binding name
      */
     void setName(String name);

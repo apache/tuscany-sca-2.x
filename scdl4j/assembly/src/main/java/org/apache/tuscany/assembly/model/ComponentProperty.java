@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.assembly.model;
 
-
 /**
  * Represents a configured property of a component.
  */
@@ -26,38 +25,48 @@ public interface ComponentProperty extends Property {
 
     /**
      * Returns the property defined by the component implementation.
+     * 
      * @return the property defined by the component implementation
      */
     Property getProperty();
 
     /**
      * Sets the property type that defines this property.
+     * 
      * @param type the property that defines this property
      */
     void setProperty(Property property);
 
     /**
-     * Returns an xpath expression referencing a property of the enclosing composite.
-     * @return an xpath expression referencing a property of the enclosing composite
+     * Returns an xpath expression referencing a property of the enclosing
+     * composite.
+     * 
+     * @return an xpath expression referencing a property of the enclosing
+     *         composite
      */
     String getSource();
-    
+
     /**
-     * Sets an xpath expression referencing a property of the enclosing composite.
-     * @param source an xpath expression referencing a property of the enclosing composite
+     * Sets an xpath expression referencing a property of the enclosing
+     * composite.
+     * 
+     * @param source an xpath expression referencing a property of the enclosing
+     *            composite
      */
     void setSource(String source);
-    
+
     /**
      * Returns a URI to a file containing the property value.
+     * 
      * @return a URI to a file containing the property value
      */
     String getFile();
-    
+
     /**
      * Sets a URI to a file containing the property value.
+     * 
      * @param file a URI to a file containing the property value
      */
     void setFile(String file);
-    
+
 }

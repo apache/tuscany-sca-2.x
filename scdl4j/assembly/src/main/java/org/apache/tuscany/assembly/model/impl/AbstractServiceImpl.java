@@ -22,8 +22,8 @@ import org.apache.tuscany.assembly.model.AbstractService;
 
 /**
  * Represents an abstract service
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class AbstractServiceImpl extends ContractImpl implements AbstractService {
 

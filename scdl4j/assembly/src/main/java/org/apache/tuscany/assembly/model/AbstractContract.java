@@ -21,46 +21,59 @@ package org.apache.tuscany.assembly.model;
 import org.apache.tuscany.policy.model.IntentAttachPoint;
 import org.apache.tuscany.sca.idl.Interface;
 
-
 /**
- * Interface contracts define one or more business functions.  These business functions are
- * provided by services and are used by references.
+ * Interface contracts define one or more business functions. These business
+ * functions are provided by services and are used by references.
  */
 public interface AbstractContract extends Base, IntentAttachPoint {
 
     /**
      * Returns the name of the contract.
+     * 
      * @return the name of the contract
      */
     String getName();
 
     /**
      * Sets the name of the contract.
+     * 
      * @param name the name of the contract
      */
     void setName(String name);
 
     /**
-     * Returns the interface definition representing the interface for invocations from the requestor to the provider.
-     * @return the interface definition representing the interface for invocations from the requestor to the provider
+     * Returns the interface definition representing the interface for
+     * invocations from the requestor to the provider.
+     * 
+     * @return the interface definition representing the interface for
+     *         invocations from the requestor to the provider
      */
     Interface getInterface();
 
     /**
-     * Sets the interface definition representing the interface for invocations from the requestor to the provider.
-     * @param callInterface the interface definition representing the interface for invocations from the requestor to the provider
+     * Sets the interface definition representing the interface for invocations
+     * from the requestor to the provider.
+     * 
+     * @param callInterface the interface definition representing the interface
+     *            for invocations from the requestor to the provider
      */
     void setInterface(Interface callInterface);
-    
+
     /**
-     * Returns the interface definition representing the interface for invocations from the provider to the requestor.
-     * @return the interface definition representing the interface for invocations from the provider to the requestor.
+     * Returns the interface definition representing the interface for
+     * invocations from the provider to the requestor.
+     * 
+     * @return the interface definition representing the interface for
+     *         invocations from the provider to the requestor.
      */
     Interface getCallbackInterface();
 
     /**
-     * Sets the interface definition representing the interface for invocations from the provider to the requestor.
-     * @param callbackInterface the interface definition representing the interface for invocations from the provider to the requestor.
+     * Sets the interface definition representing the interface for invocations
+     * from the provider to the requestor.
+     * 
+     * @param callbackInterface the interface definition representing the
+     *            interface for invocations from the provider to the requestor.
      */
     void setCallbackInterface(Interface callbackInterface);
 

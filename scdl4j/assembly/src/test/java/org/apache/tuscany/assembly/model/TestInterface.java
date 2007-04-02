@@ -24,19 +24,19 @@ import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
 
 /**
  * A test interface model.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class TestInterface extends InterfaceImpl implements Interface {
 
-	public TestInterface(AssemblyFactory factory) {
-		
-		setRemotable(true);
-		
-		Operation operation = new TestOperation();
-		operation.setName("test");
-		getOperations().add(operation);
-		
-	}
-	
+    public TestInterface(AssemblyFactory factory) {
+
+        setRemotable(true);
+
+        Operation operation = new TestOperation();
+        operation.setName("test");
+        getOperations().add(operation);
+
+    }
+
 }

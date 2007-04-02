@@ -24,18 +24,18 @@ import org.apache.tuscany.assembly.model.Service;
 
 /**
  * Represents a component service
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class ComponentServiceImpl extends ServiceImpl implements ComponentService {
-	private Service service;
+    private Service service;
 
-	public Service getService() {
-		return service;
-	}
+    public Service getService() {
+        return service;
+    }
 
-	public void setService(Service service) {
-		this.service = service;
-	}
+    public void setService(Service service) {
+        this.service = service;
+    }
 
 }

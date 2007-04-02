@@ -22,8 +22,8 @@ import org.apache.tuscany.assembly.model.SCABinding;
 
 /**
  * Represents an SCA binding.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class SCABindingImpl extends BindingImpl implements SCABinding {
 

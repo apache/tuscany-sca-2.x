@@ -29,37 +29,37 @@ import org.apache.tuscany.policy.model.PolicySet;
 
 /**
  * Represents a reference.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class ServiceImpl extends AbstractServiceImpl implements Service {
-	private List<Binding> bindings = new ArrayList<Binding>();
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
-	private Callback callback;
+    private List<Binding> bindings = new ArrayList<Binding>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private Callback callback;
 
-	public List<Binding> getBindings() {
-		return bindings;
-	}
+    public List<Binding> getBindings() {
+        return bindings;
+    }
 
-	public <B> B getBinding(Class<B> bindingClass) {
-		for (Binding binding: bindings) {
-			if (bindingClass.isInstance(binding)) {
-				return bindingClass.cast(binding);
-			}
-		}
-		return null;
-	}
+    public <B> B getBinding(Class<B> bindingClass) {
+        for (Binding binding : bindings) {
+            if (bindingClass.isInstance(binding)) {
+                return bindingClass.cast(binding);
+            }
+        }
+        return null;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
-	
-	public Callback getCallback() {
-		return callback;
-	}
-	
-	public void setCallback(Callback callback) {
-		this.callback = callback;
-	}
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
 }

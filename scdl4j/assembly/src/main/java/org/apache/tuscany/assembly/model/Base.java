@@ -27,18 +27,21 @@ public interface Base {
 
     /**
      * Returns a list of extension objects contained in this model object.
+     * 
      * @return a list of extension objects container in this model object
      */
     List<Object> getExtensions();
 
     /**
      * Returns true if the model element is unresolved.
+     * 
      * @return true if the model element is unresolved.
      */
     boolean isUnresolved();
-    
+
     /**
      * Sets whether the model element is unresolved.
+     * 
      * @param unresolved whether the model element is unresolved
      */
     void setUnresolved(boolean unresolved);

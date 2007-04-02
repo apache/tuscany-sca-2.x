@@ -20,8 +20,6 @@ package org.apache.tuscany.assembly.model;
 
 import java.util.List;
 
-
-
 /**
  * Represents composite reference.
  */
@@ -29,8 +27,9 @@ public interface CompositeReference extends Reference {
 
     /**
      * Returns the promoted composite references.
+     * 
      * @return the promoted composite references
      */
     List<ComponentReference> getPromotedReferences();
-    
+
 }

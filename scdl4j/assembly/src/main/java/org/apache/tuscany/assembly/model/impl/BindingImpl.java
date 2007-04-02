@@ -27,37 +27,37 @@ import org.apache.tuscany.policy.model.PolicySet;
 
 /**
  * Represents a binding.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public abstract class BindingImpl extends BaseImpl implements Binding {
-	private String name;
-	private String uri;
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private String name;
+    private String uri;
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getURI() {
-		return uri;
-	}
+    public String getURI() {
+        return uri;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setURI(String uri) {
-		this.uri = uri;
-	}
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
 
 }

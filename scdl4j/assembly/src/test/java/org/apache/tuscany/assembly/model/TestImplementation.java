@@ -24,43 +24,43 @@ import org.apache.tuscany.assembly.model.impl.ComponentTypeImpl;
 
 /**
  * A test component implementation model.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class TestImplementation extends ComponentTypeImpl implements Implementation {
 
-	public TestImplementation(AssemblyFactory factory) {
-		
-		Property p = factory.createProperty();
-		p.setName("currency");
-		p.setDefaultValue("USD");
-		p.setMustSupply(true);
-		p.setXSDType(new QName("", ""));
-		getProperties().add(p);
-		
-		{
-			Reference r = factory.createReference();
-			r.setName("accountDataService");
-			r.setMultiplicity(Multiplicity.ONE_ONE);
-			getReferences().add(r);
-			r.getBindings().add(new TestBinding(factory));
-		}
+    public TestImplementation(AssemblyFactory factory) {
 
-		{
-			Reference r = factory.createReference();
-			r.setName("stockQuoteService");
-			r.setMultiplicity(Multiplicity.ONE_ONE);
-			r.setInterface(new TestInterface(factory));
-			getReferences().add(r);
-			r.getBindings().add(new TestBinding(factory));
-		}
-		
-		Service s = factory.createService();
-		s.setName("AccountService");
-		s.setInterface(new TestInterface(factory));
-		getServices().add(s);
-		s.getBindings().add(new TestBinding(factory));
-		
-	}
-	
+        Property p = factory.createProperty();
+        p.setName("currency");
+        p.setDefaultValue("USD");
+        p.setMustSupply(true);
+        p.setXSDType(new QName("", ""));
+        getProperties().add(p);
+
+        {
+            Reference r = factory.createReference();
+            r.setName("accountDataService");
+            r.setMultiplicity(Multiplicity.ONE_ONE);
+            getReferences().add(r);
+            r.getBindings().add(new TestBinding(factory));
+        }
+
+        {
+            Reference r = factory.createReference();
+            r.setName("stockQuoteService");
+            r.setMultiplicity(Multiplicity.ONE_ONE);
+            r.setInterface(new TestInterface(factory));
+            getReferences().add(r);
+            r.getBindings().add(new TestBinding(factory));
+        }
+
+        Service s = factory.createService();
+        s.setName("AccountService");
+        s.setInterface(new TestInterface(factory));
+        getServices().add(s);
+        s.getBindings().add(new TestBinding(factory));
+
+    }
+
 }

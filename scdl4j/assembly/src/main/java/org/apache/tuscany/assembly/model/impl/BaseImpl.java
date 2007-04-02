@@ -22,26 +22,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.model.Base;
+import org.apache.tuscany.assembly.util.Visitable;
+import org.apache.tuscany.assembly.util.Visitor;
 
 /**
  * Convenience base class for assembly model objects.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
-public class BaseImpl implements Base {
-	private List<Object> extensions = new ArrayList<Object>();
-	private boolean unresolved = false;
+public abstract class BaseImpl implements Base, Visitable {
+    private List<Object> extensions = new ArrayList<Object>();
+    private boolean unresolved = false;
 
-	public List<Object> getExtensions() {
-		return extensions;
-	}
+    public List<Object> getExtensions() {
+        return extensions;
+    }
 
-	public boolean isUnresolved() {
-		return unresolved;
-	}
+    public boolean isUnresolved() {
+        return unresolved;
+    }
 
-	public void setUnresolved(boolean undefined) {
-		this.unresolved = undefined;
-	}
+    public void setUnresolved(boolean undefined) {
+        this.unresolved = undefined;
+    }
 
+    public boolean accept(Visitor visitor) {
+        return visitor.visit(this);
+    }
 }

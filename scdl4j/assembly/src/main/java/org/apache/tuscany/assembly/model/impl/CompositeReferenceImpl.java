@@ -27,14 +27,14 @@ import org.apache.tuscany.assembly.model.CompositeReference;
 
 /**
  * Represents a composite reference.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class CompositeReferenceImpl extends ReferenceImpl implements CompositeReference {
-	private List<ComponentReference> promotedReferences = new ArrayList<ComponentReference>();
+    private List<ComponentReference> promotedReferences = new ArrayList<ComponentReference>();
 
-	public List<ComponentReference> getPromotedReferences() {
-		return promotedReferences;
-	}
+    public List<ComponentReference> getPromotedReferences() {
+        return promotedReferences;
+    }
 
 }

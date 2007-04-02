@@ -24,36 +24,36 @@ import org.apache.tuscany.assembly.model.Property;
 
 /**
  * Represents a component property.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class ComponentPropertyImpl extends PropertyImpl implements ComponentProperty {
-	private String file;
-	private Property property;
-	private String source;
+    private String file;
+    private Property property;
+    private String source;
 
-	public String getFile() {
-		return file;
-	}
+    public String getFile() {
+        return file;
+    }
 
-	public Property getProperty() {
-		return property;
-	}
+    public Property getProperty() {
+        return property;
+    }
 
-	public String getSource() {
-		return source;
-	}
+    public String getSource() {
+        return source;
+    }
 
-	public void setFile(String file) {
-		this.file = file;
-	}
+    public void setFile(String file) {
+        this.file = file;
+    }
 
-	public void setProperty(Property property) {
-		this.property = property;
-	}
+    public void setProperty(Property property) {
+        this.property = property;
+    }
 
-	public void setSource(String source) {
-		this.source = source;
-	}
+    public void setSource(String source) {
+        this.source = source;
+    }
 
 }

@@ -30,59 +30,59 @@ import org.apache.tuscany.policy.model.PolicySet;
 
 /**
  * Represents a reference.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class ReferenceImpl extends AbstractReferenceImpl implements Reference {
-	private List<Binding> bindings = new ArrayList<Binding>();
-	private boolean wiredByImpl;
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
-	private List<ComponentService> targets = new ArrayList<ComponentService>();
-	private Callback callback;
-	private boolean autowire;
+    private List<Binding> bindings = new ArrayList<Binding>();
+    private boolean wiredByImpl;
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<ComponentService> targets = new ArrayList<ComponentService>();
+    private Callback callback;
+    private boolean autowire;
 
-	public List<Binding> getBindings() {
-		return bindings;
-	}
-	
-	public <B> B getBinding(Class<B> bindingClass) {
-		for (Binding binding: bindings) {
-			if (bindingClass.isInstance(binding)) {
-				return bindingClass.cast(binding);
-			}
-		}
-		return null;
-	}
+    public List<Binding> getBindings() {
+        return bindings;
+    }
 
-	public boolean isWiredByImpl() {
-		return wiredByImpl;
-	}
+    public <B> B getBinding(Class<B> bindingClass) {
+        for (Binding binding : bindings) {
+            if (bindingClass.isInstance(binding)) {
+                return bindingClass.cast(binding);
+            }
+        }
+        return null;
+    }
 
-	public void setWiredByImpl(boolean wiredByImpl) {
-		this.wiredByImpl = wiredByImpl;
-	}
+    public boolean isWiredByImpl() {
+        return wiredByImpl;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
-	
-	public List<ComponentService> getTargets() {
-		return targets;
-	}
+    public void setWiredByImpl(boolean wiredByImpl) {
+        this.wiredByImpl = wiredByImpl;
+    }
 
-	public Callback getCallback() {
-		return callback;
-	}
-	
-	public void setCallback(Callback callback) {
-		this.callback = callback;
-	}
-	
-	public boolean isAutowire() {
-		return autowire;
-	}
-	
-	public void setAutowire(boolean autowire) {
-		this.autowire = autowire;
-	}
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<ComponentService> getTargets() {
+        return targets;
+    }
+
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    public boolean isAutowire() {
+        return autowire;
+    }
+
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
+    }
 }

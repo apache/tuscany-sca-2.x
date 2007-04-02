@@ -24,18 +24,18 @@ import org.apache.tuscany.assembly.model.Reference;
 
 /**
  * Represents a component reference
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference {
-	private Reference reference;
+    private Reference reference;
 
-	public Reference getReference() {
-		return reference;
-	}
+    public Reference getReference() {
+        return reference;
+    }
 
-	public void setReference(Reference reference) {
-		this.reference = reference;
-	}
+    public void setReference(Reference reference) {
+        this.reference = reference;
+    }
 
 }
