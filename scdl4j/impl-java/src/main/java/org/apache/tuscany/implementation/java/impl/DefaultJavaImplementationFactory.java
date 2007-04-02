@@ -27,21 +27,21 @@ import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 
 public class DefaultJavaImplementationFactory implements JavaImplementationFactory {
-	
-	private AssemblyFactory assemblyFactory;
-	
-	public DefaultJavaImplementationFactory(AssemblyFactory assemblyFactory) {
-		this.assemblyFactory = assemblyFactory; 
-	}
 
-	public JavaImplementation createJavaImplementation() {
-		JavaImplementation javaImplementation = new JavaImplementationImpl();
-		
-		//TODO temporary, services should be created by introspecting
-		// the implementation
-		Service service = assemblyFactory.createService();
-		javaImplementation.getServices().add(service);
-		return javaImplementation;
-	}
+    private AssemblyFactory assemblyFactory;
+
+    public DefaultJavaImplementationFactory(AssemblyFactory assemblyFactory) {
+        this.assemblyFactory = assemblyFactory;
+    }
+
+    public JavaImplementation createJavaImplementation() {
+        JavaImplementation javaImplementation = new JavaImplementationImpl();
+
+        // TODO temporary, services should be created by introspecting
+        // the implementation
+        Service service = assemblyFactory.createService();
+        javaImplementation.getServices().add(service);
+        return javaImplementation;
+    }
 
 }

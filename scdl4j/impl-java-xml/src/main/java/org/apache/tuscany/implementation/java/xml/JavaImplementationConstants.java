@@ -23,9 +23,9 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.scdl.Constants;
 
 public interface JavaImplementationConstants {
-	
-	public final String IMPLEMENTATION_JAVA = "implementation.java";
-        public final QName IMPLEMENTATION_JAVA_QNAME = new QName(Constants.SCA10_NS, "implementation.java");
-	public final String CLASS = "class";
+
+    String IMPLEMENTATION_JAVA = "implementation.java";
+    QName IMPLEMENTATION_JAVA_QNAME = new QName(Constants.SCA10_NS, "implementation.java");
+    String CLASS = "class";
 
 }

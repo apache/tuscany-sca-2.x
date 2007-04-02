@@ -23,33 +23,35 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 
 /**
  * Represents a Java implementation.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class JavaImplementationImpl extends ComponentTypeImpl implements JavaImplementation {
-	
-	private String className;
-	private Class<?> javaClass;
 
-	public String getName() {
-		if (isUnresolved())
-			return className;
-		else
-			return javaClass.getName();
-	}
+    private String className;
+    private Class<?> javaClass;
 
-	public void setName(String className) {
-		if (!isUnresolved())
-			throw new IllegalStateException();
-		this.className = className;
-	}
+    public String getName() {
+        if (isUnresolved()) {
+            return className;
+        } else {
+            return javaClass.getName();
+        }
+    }
 
-	public Class<?> getJavaClass() {
-		return javaClass;
-	}
-	
-	public void setJavaClass(Class<?> javaClass) {
-		this.javaClass = javaClass;
-	}
+    public void setName(String className) {
+        if (!isUnresolved()) {
+            throw new IllegalStateException();
+        }
+        this.className = className;
+    }
+
+    public Class<?> getJavaClass() {
+        return javaClass;
+    }
+
+    public void setJavaClass(Class<?> javaClass) {
+        this.javaClass = javaClass;
+    }
 
 }

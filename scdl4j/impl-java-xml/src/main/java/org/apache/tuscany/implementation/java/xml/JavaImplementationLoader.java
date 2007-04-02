@@ -28,25 +28,26 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.scdl.stax.Loader;
 
-public class JavaImplementationReader implements Loader<JavaImplementation>, JavaImplementationConstants {
+public class JavaImplementationLoader implements Loader<JavaImplementation>, JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
-    
-    public JavaImplementationReader(JavaImplementationFactory javaFactory) {
-            this.javaFactory = javaFactory;
+
+    public JavaImplementationLoader(JavaImplementationFactory javaFactory) {
+        this.javaFactory = javaFactory;
     }
-    
+
     public JavaImplementation load(XMLStreamReader reader) throws XMLStreamException {
 
         // Read an <interface.java>
         JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
         javaImplementation.setUnresolved(true);
         javaImplementation.setName(reader.getAttributeValue(null, CLASS));
-        
+
         // Skip to end element
         while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && IMPLEMENTATION_JAVA_QNAME.equals(reader.getName()))
+            if (reader.next() == END_ELEMENT && IMPLEMENTATION_JAVA_QNAME.equals(reader.getName())) {
                 break;
+            }
         }
         return javaImplementation;
     }
