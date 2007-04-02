@@ -68,12 +68,9 @@
 
     <modules>
         <module>axis2</module>
-        <module>groovy</module>
-        <module>javascript</module>
         <module>jms</module>
         <module>jsonrpc</module>
         <module>rmi</module>
-        <module>ruby</module>
         <module>spring</module>
     </modules>
 
