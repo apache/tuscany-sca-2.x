@@ -27,42 +27,60 @@ import org.apache.tuscany.assembly.model.AbstractProperty;
 import org.apache.tuscany.assembly.model.AbstractReference;
 import org.apache.tuscany.assembly.model.AbstractService;
 import org.apache.tuscany.assembly.model.ConstrainingType;
+import org.apache.tuscany.assembly.util.Visitor;
 import org.apache.tuscany.policy.model.Intent;
 
 /**
  * Represents a constraining type.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class ConstrainingTypeImpl extends BaseImpl implements ConstrainingType {
-	private QName name;
-	private List<AbstractProperty> properties = new ArrayList<AbstractProperty>();
-	private List<AbstractReference> references = new ArrayList<AbstractReference>();
-	private List<AbstractService> services = new ArrayList<AbstractService>();
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
-	
-	public QName getName() {
-		return name;
-	}
-	
-	public void setName(QName name) {
-		this.name = name;
-	}
+    private QName name;
+    private List<AbstractProperty> properties = new ArrayList<AbstractProperty>();
+    private List<AbstractReference> references = new ArrayList<AbstractReference>();
+    private List<AbstractService> services = new ArrayList<AbstractService>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
 
-	public List<AbstractProperty> getProperties() {
-		return properties;
-	}
+    public QName getName() {
+        return name;
+    }
 
-	public List<AbstractReference> getReferences() {
-		return references;
-	}
+    public void setName(QName name) {
+        this.name = name;
+    }
 
-	public List<AbstractService> getServices() {
-		return services;
-	}
+    public List<AbstractProperty> getProperties() {
+        return properties;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
+    public List<AbstractReference> getReferences() {
+        return references;
+    }
 
+    public List<AbstractService> getServices() {
+        return services;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public boolean accept(Visitor visitor) {
+        if (!super.accept(visitor))
+            return false;
+        for (AbstractProperty property : properties) {
+            if (!visitor.visit(property))
+                return false;
+        }
+        for (AbstractReference reference : references) {
+            if (!visitor.visit(reference))
+                return false;
+        }
+        for (AbstractService service : services) {
+            if (!visitor.visit(service))
+                return false;
+        }
+        return true;
+    }
 }

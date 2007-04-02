@@ -22,82 +22,99 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.policy.model.IntentAttachPoint;
 
-
 /**
- * A property allows for the configuration of an implementation with externally set data values.
- * An implementation can have zero or more properties.  Each property has a data type, which may be
-  * either simple or complex.  An implementation may also define a default value for a property.
+ * A property allows for the configuration of an implementation with externally
+ * set data values. An implementation can have zero or more properties. Each
+ * property has a data type, which may be either simple or complex. An
+ * implementation may also define a default value for a property.
  */
 public interface AbstractProperty extends Base, IntentAttachPoint {
 
     /**
      * Returns the property name.
+     * 
      * @return the property name
      */
     String getName();
 
     /**
      * Sets the property name.
+     * 
      * @param name the property name
      */
     void setName(String name);
 
     /**
      * Returns the default value of the property.
+     * 
      * @return the default value of ths property
      */
     Object getDefaultValue();
 
     /**
      * Sets the default value of the property.
+     * 
      * @param defaultValue the default value of ths property
      */
     void setDefaultValue(Object defaultValue);
 
     /**
      * Returns true if the property allows multiple values.
+     * 
      * @return true if the property allows multiple values
      */
     boolean isMany();
 
     /**
      * Sets whether or not the property allows multiple values.
+     * 
      * @param many true if the property should allow multiple values
      */
     void setMany(boolean many);
 
     /**
      * Returns true if a value must be supplied for the property.
+     * 
      * @return true is a value must be supplied for the property
      */
     boolean isMustSupply();
 
     /**
      * Sets whether a value must be supplied for the property.
-     * @param mustSupply set to true to require that a value be supplied for uses of this property
+     * 
+     * @param mustSupply set to true to require that a value be supplied for
+     *            uses of this property
      */
     void setMustSupply(boolean mustSupply);
 
     /**
-     * Returns the data type of this property. This is the qualified name of an XML schema type.
+     * Returns the data type of this property. This is the qualified name of an
+     * XML schema type.
+     * 
      * @return the type of this property
      */
     QName getXSDType();
 
     /**
-     * Sets the data type of this property. This is the qualified name of an XML schema type.
+     * Sets the data type of this property. This is the qualified name of an XML
+     * schema type.
+     * 
      * @param type the type of this property
      */
     void setXSDType(QName type);
 
     /**
-     * Returns the element defining the data type of this property. This is the qualified name of an XML schema element.
+     * Returns the element defining the data type of this property. This is the
+     * qualified name of an XML schema element.
+     * 
      * @return the element defining the type of this property
      */
     QName getXSDElement();
 
     /**
-     * Sets the element defining the data type of this property. This is the qualified name of an XML schema element.
+     * Sets the element defining the data type of this property. This is the
+     * qualified name of an XML schema element.
+     * 
      * @param type the element defining the type of this property
      */
     void setXSDElement(QName element);

@@ -28,22 +28,22 @@ import org.apache.tuscany.assembly.model.CompositeService;
 
 /**
  * Represents a composite service
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class CompositeServiceImpl extends ServiceImpl implements CompositeService {
-	private List<Binding> callbackBindings = new ArrayList<Binding>();
-	private ComponentService promotedService;
+    private List<Binding> callbackBindings = new ArrayList<Binding>();
+    private ComponentService promotedService;
 
-	public List<Binding> getCallbackBindings() {
-		return callbackBindings;
-	}
+    public List<Binding> getCallbackBindings() {
+        return callbackBindings;
+    }
 
-	public ComponentService getPromotedService() {
-		return promotedService;
-	}
-	 
-	public void setPromotedService(ComponentService promotedService) {
-		this.promotedService = promotedService;
-	}
+    public ComponentService getPromotedService() {
+        return promotedService;
+    }
+
+    public void setPromotedService(ComponentService promotedService) {
+        this.promotedService = promotedService;
+    }
 }

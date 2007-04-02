@@ -29,48 +29,47 @@ import org.apache.tuscany.assembly.model.Composite;
 import org.apache.tuscany.assembly.model.Wire;
 
 public class CompositeImpl extends ComponentTypeImpl implements Composite {
-	private List<Component> components = new ArrayList<Component>();
-	private List<Composite> includes = new ArrayList<Composite>();
-	private QName name;
-	private List<Wire> wires = new ArrayList<Wire>();
-	private boolean autowire;
-	private boolean local = true;
-	
+    private List<Component> components = new ArrayList<Component>();
+    private List<Composite> includes = new ArrayList<Composite>();
+    private QName name;
+    private List<Wire> wires = new ArrayList<Wire>();
+    private boolean autowire;
+    private boolean local = true;
 
-	public List<Component> getComponents() {
-		return components;
-	}
+    public List<Component> getComponents() {
+        return components;
+    }
 
-	public List<Composite> getIncludes() {
-		return includes;
-	}
+    public List<Composite> getIncludes() {
+        return includes;
+    }
 
-	public QName getName() {
-		return name;
-	}
+    public QName getName() {
+        return name;
+    }
 
-	public List<Wire> getWires() {
-		return wires;
-	}
+    public List<Wire> getWires() {
+        return wires;
+    }
 
-	public boolean isAutowire() {
-		return autowire;
-	}
+    public boolean isAutowire() {
+        return autowire;
+    }
 
-	public boolean isLocal() {
-		return local;
-	}
+    public boolean isLocal() {
+        return local;
+    }
 
-	public void setAutowire(boolean autowire) {
-		this.autowire = autowire;
-	}
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
+    }
 
-	public void setLocal(boolean local) {
-		this.local = local;
-	}
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
 
-	public void setName(QName name) {
-		this.name = name;
-	}
+    public void setName(QName name) {
+        this.name = name;
+    }
 
 }

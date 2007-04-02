@@ -26,37 +26,37 @@ import org.apache.tuscany.policy.model.Intent;
 import org.apache.tuscany.sca.idl.Interface;
 
 public class ContractImpl extends BaseImpl implements AbstractContract {
-	private Interface callbackInterface;
-	private Interface callInterface;
-	private String name;
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private Interface callbackInterface;
+    private Interface callInterface;
+    private String name;
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
 
-	public Interface getCallbackInterface() {
-		return callbackInterface;
-	}
+    public Interface getCallbackInterface() {
+        return callbackInterface;
+    }
 
-	public Interface getInterface() {
-		return callInterface;
-	}
+    public Interface getInterface() {
+        return callInterface;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setCallbackInterface(Interface callbackInterface) {
-		this.callbackInterface = callbackInterface;
-	}
+    public void setCallbackInterface(Interface callbackInterface) {
+        this.callbackInterface = callbackInterface;
+    }
 
-	public void setInterface(Interface callInterface) {
-		this.callInterface = callInterface;
-	}
+    public void setInterface(Interface callInterface) {
+        this.callInterface = callInterface;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
 }

@@ -26,48 +26,66 @@ import org.apache.tuscany.assembly.model.ConstrainingType;
 import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.assembly.model.Reference;
 import org.apache.tuscany.assembly.model.Service;
+import org.apache.tuscany.assembly.util.Visitor;
 import org.apache.tuscany.policy.model.Intent;
 import org.apache.tuscany.policy.model.PolicySet;
 
 /**
  * Represents a component type.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class ComponentTypeImpl extends BaseImpl implements ComponentType {
-	private ConstrainingType constrainingType;
-	private List<Property> properties = new ArrayList<Property>();
-	private List<Reference> references = new ArrayList<Reference>();
-	private List<Service> services = new ArrayList<Service>();
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private ConstrainingType constrainingType;
+    private List<Property> properties = new ArrayList<Property>();
+    private List<Reference> references = new ArrayList<Reference>();
+    private List<Service> services = new ArrayList<Service>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
-	public ConstrainingType getConstrainingType() {
-		return constrainingType;
-	}
+    public ConstrainingType getConstrainingType() {
+        return constrainingType;
+    }
 
-	public List<Property> getProperties() {
-		return properties;
-	}
+    public List<Property> getProperties() {
+        return properties;
+    }
 
-	public List<Reference> getReferences() {
-		return references;
-	}
+    public List<Reference> getReferences() {
+        return references;
+    }
 
-	public List<Service> getServices() {
-		return services;
-	}
+    public List<Service> getServices() {
+        return services;
+    }
 
-	public void setConstrainingType(ConstrainingType constrainingType) {
-		this.constrainingType = constrainingType;
-	}
+    public void setConstrainingType(ConstrainingType constrainingType) {
+        this.constrainingType = constrainingType;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
 
+    public boolean accept(Visitor visitor) {
+        if (!super.accept(visitor))
+            return false;
+        for (Property property : properties) {
+            if (!visitor.visit(property))
+                return false;
+        }
+        for (Reference reference : references) {
+            if (!visitor.visit(reference))
+                return false;
+        }
+        for (Service service : services) {
+            if (!visitor.visit(service))
+                return false;
+        }
+        return true;
+    }
 }

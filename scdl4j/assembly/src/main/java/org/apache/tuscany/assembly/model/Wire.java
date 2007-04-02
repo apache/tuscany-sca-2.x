@@ -21,36 +21,37 @@ package org.apache.tuscany.assembly.model;
 import org.apache.tuscany.policy.model.IntentAttachPoint;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
-
-
-
 /**
  * Represents a wire.
  */
 public interface Wire extends Base, IntentAttachPoint, PolicySetAttachPoint {
-    
+
     /**
      * Returns the source of the wire.
+     * 
      * @return the source of the wire
      */
     ComponentReference getSource();
-    
+
     /**
      * Sets the source of the wire.
+     * 
      * @param source the source of the wire
      */
     void setSource(ComponentReference source);
-    
+
     /**
      * Returns the target of the wire.
+     * 
      * @return the target of the wire
      */
     ComponentService getTarget();
-    
+
     /**
      * Sets the target of the wire.
+     * 
      * @param target the target of the wire
      */
     void setTarget(ComponentService target);
-    
+
 }

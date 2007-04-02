@@ -27,14 +27,14 @@ import org.apache.tuscany.policy.model.PolicySet;
 
 /**
  * Represents a property.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class PropertyImpl extends AbstractPropertyImpl implements Property {
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
 
 }

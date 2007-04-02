@@ -20,8 +20,8 @@ package org.apache.tuscany.assembly.model;
 
 /**
  * Represents an SCA binding.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface SCABinding extends Binding {
 

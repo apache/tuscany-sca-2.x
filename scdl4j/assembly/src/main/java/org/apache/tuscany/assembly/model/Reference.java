@@ -20,42 +20,48 @@ package org.apache.tuscany.assembly.model;
 
 import java.util.List;
 
-
 /**
- * Represents a reference. References within an implementation represent
- * links to services that the implementation uses that must be provided by other components.
+ * Represents a reference. References within an implementation represent links
+ * to services that the implementation uses that must be provided by other
+ * components.
  */
 public interface Reference extends AbstractReference, Contract {
-	
-	/**
-	 * Returns a boolean value, "false" by default, which indicates that the implementation wires this
-     * reference dynamically.
-	 * @return true if the implementation wires this reference dynamically
-	 */
-	boolean isWiredByImpl();
 
-	/**
-	 * Sets a boolean value, "false" by default, which indicates that the implementation wires this
-     * reference dynamically.
-	 * @param wiredByImpl whether the implementation wires this reference dynamically
-	 */
-	void setWiredByImpl(boolean wiredByImpl);
-    
+    /**
+     * Returns a boolean value, "false" by default, which indicates that the
+     * implementation wires this reference dynamically.
+     * 
+     * @return true if the implementation wires this reference dynamically
+     */
+    boolean isWiredByImpl();
+
+    /**
+     * Sets a boolean value, "false" by default, which indicates that the
+     * implementation wires this reference dynamically.
+     * 
+     * @param wiredByImpl whether the implementation wires this reference
+     *            dynamically
+     */
+    void setWiredByImpl(boolean wiredByImpl);
+
     /**
      * Returns the targets of this reference.
+     * 
      * @return the targets of this reference.
      */
     List<ComponentService> getTargets();
-    
-	/**
-	 * Returns true if the reference should be autowired.
-	 * @return whether the reference should be autowired.
-	 */
-	boolean isAutowire();
 
-	/**
-	 * Sets whether the reference should be autowired.
-	 * @param autowire whether the reference should be autowired
-	 */
-	void setAutowire(boolean autowire);
+    /**
+     * Returns true if the reference should be autowired.
+     * 
+     * @return whether the reference should be autowired.
+     */
+    boolean isAutowire();
+
+    /**
+     * Sets whether the reference should be autowired.
+     * 
+     * @param autowire whether the reference should be autowired
+     */
+    void setAutowire(boolean autowire);
 }

@@ -18,11 +18,10 @@
  */
 package org.apache.tuscany.assembly.model;
 
-
 /**
  * Represents a service. Services are used to publish services provided by
  * implementations, so that they are addressable by other components.
  */
 public interface Service extends AbstractService, Contract {
-    
+
 }

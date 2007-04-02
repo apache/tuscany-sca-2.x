@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-
 /**
  * Represents a composite.
  */
@@ -30,56 +29,69 @@ public interface Composite extends Implementation {
 
     /**
      * Returns the name of the composite.
+     * 
      * @return the name of the composite
      */
     QName getName();
 
     /**
      * Sets the name of the composite.
+     * 
      * @param name the name of the composite
      */
     void setName(QName name);
 
     /**
      * Returns a list of composites included in this composite.
+     * 
      * @return a list of composites included in this composite.
      */
     List<Composite> getIncludes();
-    
+
     /**
      * Returns a list of components contained in this composite.
+     * 
      * @return a list of components contained in this composite
      */
     List<Component> getComponents();
 
     /**
      * Returns a list of wires contained in this composite.
+     * 
      * @return a list of wires contained in this composite
      */
     List<Wire> getWires();
 
     /**
-     * Returns true if all the components within the composite must run in the same process.
-     * @return true if all the components within the composite must run in the same process
+     * Returns true if all the components within the composite must run in the
+     * same process.
+     * 
+     * @return true if all the components within the composite must run in the
+     *         same process
      */
     boolean isLocal();
 
     /**
-     * Sets whether all the components within the composite must run in the same process.
-     * @param local whether all the components within the composite must run in the same process
+     * Sets whether all the components within the composite must run in the same
+     * process.
+     * 
+     * @param local whether all the components within the composite must run in
+     *            the same process
      */
     void setLocal(boolean local);
-    
+
     /**
      * Returns true if autowiring is enabled in the composite.
+     * 
      * @return true if autowiring is enabled in the composite
      */
     boolean isAutowire();
 
     /**
      * Sets whether autowiring is enabled in the composite.
+     * 
      * @param autowire whether autowiring is enabled in the composite
      */
     void setAutowire(boolean autowire);
-    
+
 }

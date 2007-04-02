@@ -23,18 +23,18 @@ import org.apache.tuscany.assembly.model.Multiplicity;
 
 /**
  * Represents an abstract reference
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class AbstractReferenceImpl extends ContractImpl implements AbstractReference {
-	private Multiplicity multiplicity = Multiplicity.ONE_ONE;
+    private Multiplicity multiplicity = Multiplicity.ONE_ONE;
 
-	public Multiplicity getMultiplicity() {
-		return multiplicity;
-	}
+    public Multiplicity getMultiplicity() {
+        return multiplicity;
+    }
 
-	public void setMultiplicity(Multiplicity multiplicity) {
-		this.multiplicity = multiplicity;
-	}
+    public void setMultiplicity(Multiplicity multiplicity) {
+        this.multiplicity = multiplicity;
+    }
 
 }

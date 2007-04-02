@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.assembly.model;
 
-
-
-
 /**
  * Represents a reference contract.
  */
@@ -28,13 +25,16 @@ public interface AbstractReference extends AbstractContract {
 
     /**
      * Returns the multiplicity allowed for wires connected to this reference.
+     * 
      * @return the multiplicity allowed for wires connected to this reference
      */
     Multiplicity getMultiplicity();
 
     /**
      * Sets the multiplicity allowed for wires connected to this reference.
-     * @param multiplicity the multiplicity allowed for wires connected to this reference
+     * 
+     * @param multiplicity the multiplicity allowed for wires connected to this
+     *            reference
      */
     void setMultiplicity(Multiplicity multiplicity);
 

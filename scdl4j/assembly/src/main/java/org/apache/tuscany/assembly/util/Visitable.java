@@ -16,23 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.model;
-
-import java.util.List;
-
-import org.apache.tuscany.policy.model.IntentAttachPoint;
-import org.apache.tuscany.policy.model.PolicySetAttachPoint;
+package org.apache.tuscany.assembly.util;
 
 /**
- * Represents a callback object describing the bindings to use for callbacks.
+ * This interface is implemented by object that can accept a visitor.
  */
-public interface Callback extends Base, IntentAttachPoint, PolicySetAttachPoint {
+public interface Visitable {
 
     /**
-     * Returns the bindings supported for callbacks.
+     * Accepts the given visitor. The visitor's visit method is called with this
+     * model object. If the visitor returns true, this method visits this
+     * object's children.
      * 
-     * @return the bindings supported for callbacks
+     * @param visitor
+     * @return true if the model object's chidren should be visited, false if
+     *         they should be skipped
      */
-    List<Binding> getBindings();
+    boolean accept(Visitor visitor);
 
 }

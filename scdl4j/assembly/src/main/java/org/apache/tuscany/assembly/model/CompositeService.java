@@ -18,23 +18,23 @@
  */
 package org.apache.tuscany.assembly.model;
 
-
-
 /**
  * Represents a composite service.
  */
 public interface CompositeService extends Service {
-    
+
     /**
      * Returns the promoted component service .
+     * 
      * @return the promoted component service.
      */
     ComponentService getPromotedService();
-    
+
     /**
      * Sets the promoted component service
+     * 
      * @param promotedService the promoted component service.
      */
     void setPromotedService(ComponentService promotedService);
-    
+
 }

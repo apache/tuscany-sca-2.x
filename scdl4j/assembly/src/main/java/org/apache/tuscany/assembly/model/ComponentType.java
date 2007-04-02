@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.tuscany.policy.model.IntentAttachPoint;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
-
 /**
  * Describes an implementation and represents its configurable aspects.
  */
@@ -31,30 +30,35 @@ public interface ComponentType extends Base, IntentAttachPoint, PolicySetAttachP
 
     /**
      * Returns a list of services that are offered.
+     * 
      * @return a list of services that are offered
      */
     List<Service> getServices();
 
     /**
      * Returns the list of reference types that are used.
+     * 
      * @return the list of reference types that are used
      */
     List<Reference> getReferences();
 
     /**
      * Returns the list of properties that can be set.
+     * 
      * @return the list of properties that can be set
      */
     List<Property> getProperties();
 
     /**
      * Returns a constraining type defining the shape of the implementation.
+     * 
      * @return a constraining type
      */
     ConstrainingType getConstrainingType();
-    
+
     /**
      * Sets a constraining type defining the shape of the implementation.
+     * 
      * @param constrainingType the constraining type to set
      */
     void setConstrainingType(ConstrainingType constrainingType);

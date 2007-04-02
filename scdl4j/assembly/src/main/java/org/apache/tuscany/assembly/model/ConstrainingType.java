@@ -24,41 +24,45 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.policy.model.IntentAttachPoint;
 
-
-
 /**
- * A constrainingType provides the "shape" for a component and its implementation.
- * Any component configuration that points to a constrainingType is constrained by this shape.
- * The constrainingType specifies the services, references and properties that must be implemented.
+ * A constrainingType provides the "shape" for a component and its
+ * implementation. Any component configuration that points to a constrainingType
+ * is constrained by this shape. The constrainingType specifies the services,
+ * references and properties that must be implemented.
  */
 public interface ConstrainingType extends Base, IntentAttachPoint {
-	
+
     /**
      * Returns the name of the constrainingType.
+     * 
      * @return the name of the constrainingType
      */
     QName getName();
 
     /**
      * Sets the name of the constrainingType.
+     * 
      * @param name the name of the constrainingType
      */
     void setName(QName name);
 
     /**
      * Returns a list of services that are offered.
+     * 
      * @return a list of services that are offered
      */
     List<AbstractService> getServices();
 
     /**
      * Returns the list of references that are used.
+     * 
      * @return the list of references that are used
      */
     List<AbstractReference> getReferences();
 
     /**
      * Returns the list of properties that can be set.
+     * 
      * @return the list of properties that can be set
      */
     List<AbstractProperty> getProperties();

@@ -22,37 +22,40 @@ import java.util.List;
 
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
-
 /**
  * Represents a contract. A contract can be either a service or a reference.
  */
 public interface Contract extends AbstractContract, PolicySetAttachPoint {
-    
+
     /**
      * Returns the bindings supported by this contract.
+     * 
      * @return the bindings supported by this contract
      */
     List<Binding> getBindings();
-    
+
     /**
-     * Returns a binding of the specified type or null if there is no such binding
-     * configured on this contract.
+     * Returns a binding of the specified type or null if there is no such
+     * binding configured on this contract.
+     * 
      * @param <B> the binding type
      * @param bindingClass the binding type class
      * @return the binding or null if there is no binding of the specified type
      */
     <B> B getBinding(Class<B> bindingClass);
-    
+
     /**
-     * Returns a callback definition of the bindings to use for callbacks. 
+     * Returns a callback definition of the bindings to use for callbacks.
+     * 
      * @return a definition of the bindings to use for callbacks
      */
     Callback getCallback();
 
     /**
      * Sets a callback definition of the bindings to use for callbacks
+     * 
      * @param callback a definition of the bindings to use for callbacks
      */
     void setCallback(Callback callback);
-    
+
 }

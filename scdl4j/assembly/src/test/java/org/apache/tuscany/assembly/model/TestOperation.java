@@ -23,8 +23,8 @@ import org.apache.tuscany.sca.idl.impl.OperationImpl;
 
 /**
  * A test operation model.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class TestOperation extends OperationImpl implements Operation {
 

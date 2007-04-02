@@ -18,24 +18,23 @@
  */
 package org.apache.tuscany.assembly.model;
 
-
-
-
 /**
  * An instance of a reference associated with a particular component.
  */
 public interface ComponentReference extends Reference {
-	
-	/**
-	 * Returns the reference defined by the implementation for this reference.
-	 * @return
-	 */
-	Reference getReference();
 
-	/**
-	 * Sets the reference defined by the implementation for this reference.
-	 * @param reference
-	 */
-	void setReference(Reference reference);
+    /**
+     * Returns the reference defined by the implementation for this reference.
+     * 
+     * @return
+     */
+    Reference getReference();
+
+    /**
+     * Sets the reference defined by the implementation for this reference.
+     * 
+     * @param reference
+     */
+    void setReference(Reference reference);
 
 }

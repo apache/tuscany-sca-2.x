@@ -22,15 +22,15 @@ import org.apache.tuscany.assembly.model.impl.BindingImpl;
 
 /**
  * A test interface model.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class TestBinding extends BindingImpl implements Binding {
 
-	public TestBinding(AssemblyFactory factory) {
+    public TestBinding(AssemblyFactory factory) {
 
-		setName("test");
-		setURI("http://test");
-	}
-	
+        setName("test");
+        setURI("http://test");
+    }
+
 }

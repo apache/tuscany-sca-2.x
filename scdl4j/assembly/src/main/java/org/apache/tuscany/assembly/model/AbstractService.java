@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.assembly.model;
 
-
-
-
 /**
  * Represents a service contract.
  */

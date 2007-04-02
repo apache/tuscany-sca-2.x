@@ -29,37 +29,37 @@ import org.apache.tuscany.policy.model.PolicySet;
 
 /**
  * Represents a wire
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class WireImpl extends BaseImpl implements Wire {
-	private ComponentReference source;
-	private ComponentService target;
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private ComponentReference source;
+    private ComponentService target;
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
-	public ComponentReference getSource() {
-		return source;
-	}
+    public ComponentReference getSource() {
+        return source;
+    }
 
-	public ComponentService getTarget() {
-		return target;
-	}
+    public ComponentService getTarget() {
+        return target;
+    }
 
-	public void setSource(ComponentReference source) {
-		this.source = source;
-	}
+    public void setSource(ComponentReference source) {
+        this.source = source;
+    }
 
-	public void setTarget(ComponentService target) {
-		this.target = target;
-	}
+    public void setTarget(ComponentService target) {
+        this.target = target;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
 
 }

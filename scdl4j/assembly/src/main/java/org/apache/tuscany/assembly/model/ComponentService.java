@@ -18,24 +18,23 @@
  */
 package org.apache.tuscany.assembly.model;
 
-
-
-
 /**
  * An addressable instance of a service associated with a particular component.
  */
 public interface ComponentService extends Service {
-    
-	/**
-	 * Returns the service defined by the implementation for this service.
-	 * @return
-	 */
-	Service getService();
 
-	/**
-	 * Sets the service defined by the implementation for this service.
-	 * @param service
-	 */
-	void setService(Service service);
+    /**
+     * Returns the service defined by the implementation for this service.
+     * 
+     * @return
+     */
+    Service getService();
+
+    /**
+     * Sets the service defined by the implementation for this service.
+     * 
+     * @param service
+     */
+    void setService(Service service);
 
 }

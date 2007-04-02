@@ -43,84 +43,84 @@ import org.apache.tuscany.sca.idl.impl.OperationImpl;
 
 /**
  * A factory for the assembly model.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class DefaultAssemblyFactory implements AssemblyFactory {
 
-	public AbstractProperty createAbstractProperty() {
-		return new AbstractPropertyImpl();
-	}
+    public AbstractProperty createAbstractProperty() {
+        return new AbstractPropertyImpl();
+    }
 
-	public AbstractReference createAbstractReference() {
-		return new AbstractReferenceImpl();
-	}
+    public AbstractReference createAbstractReference() {
+        return new AbstractReferenceImpl();
+    }
 
-	public AbstractService createAbstractService() {
-		return new AbstractServiceImpl();
-	}
-	
-	public Callback createCallback() {
-		return new CallbackImpl();
-	}
+    public AbstractService createAbstractService() {
+        return new AbstractServiceImpl();
+    }
 
-	public Component createComponent() {
-		return new ComponentImpl();
-	}
+    public Callback createCallback() {
+        return new CallbackImpl();
+    }
 
-	public ComponentProperty createComponentProperty() {
-		return new ComponentPropertyImpl();
-	}
+    public Component createComponent() {
+        return new ComponentImpl();
+    }
 
-	public ComponentReference createComponentReference() {
-		return new ComponentReferenceImpl();
-	}
+    public ComponentProperty createComponentProperty() {
+        return new ComponentPropertyImpl();
+    }
 
-	public ComponentService createComponentService() {
-		return new ComponentServiceImpl();
-	}
+    public ComponentReference createComponentReference() {
+        return new ComponentReferenceImpl();
+    }
 
-	public ComponentType createComponentType() {
-		return new ComponentTypeImpl();
-	}
+    public ComponentService createComponentService() {
+        return new ComponentServiceImpl();
+    }
 
-	public Composite createComposite() {
-		return new CompositeImpl();
-	}
+    public ComponentType createComponentType() {
+        return new ComponentTypeImpl();
+    }
 
-	public CompositeReference createCompositeReference() {
-		return new CompositeReferenceImpl();
-	}
+    public Composite createComposite() {
+        return new CompositeImpl();
+    }
 
-	public CompositeService createCompositeService() {
-		return new CompositeServiceImpl();
-	}
+    public CompositeReference createCompositeReference() {
+        return new CompositeReferenceImpl();
+    }
 
-	public ConstrainingType createConstrainingType() {
-		return new ConstrainingTypeImpl();
-	}
+    public CompositeService createCompositeService() {
+        return new CompositeServiceImpl();
+    }
 
-	public Property createProperty() {
-		return new PropertyImpl();
-	}
+    public ConstrainingType createConstrainingType() {
+        return new ConstrainingTypeImpl();
+    }
 
-	public Reference createReference() {
-		return new ReferenceImpl();
-	}
+    public Property createProperty() {
+        return new PropertyImpl();
+    }
 
-	public Service createService() {
-		return new ServiceImpl();
-	}
+    public Reference createReference() {
+        return new ReferenceImpl();
+    }
 
-	public Wire createWire() {
-		return new WireImpl();
-	}
+    public Service createService() {
+        return new ServiceImpl();
+    }
 
-	public SCABinding createSCABinding() {
-		return new SCABindingImpl();
-	}
-	
-	public Operation createOperation() {
-		return new OperationImpl();
-	}
+    public Wire createWire() {
+        return new WireImpl();
+    }
+
+    public SCABinding createSCABinding() {
+        return new SCABindingImpl();
+    }
+
+    public Operation createOperation() {
+        return new OperationImpl();
+    }
 }

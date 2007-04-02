@@ -28,69 +28,69 @@ import org.apache.tuscany.assembly.model.AbstractProperty;
 import org.apache.tuscany.policy.model.Intent;
 
 /**
- * Represents an abstract  property.
- *
- *  @version $Rev$ $Date$
+ * Represents an abstract property.
+ * 
+ * @version $Rev$ $Date$
  */
 public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
-	private Object defaultValue;
-	private String name;
-	private QName xsdType;
-	private QName xsdElement;
-	private boolean many;
-	private boolean mustSupply;
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private Object defaultValue;
+    private String name;
+    private QName xsdType;
+    private QName xsdElement;
+    private boolean many;
+    private boolean mustSupply;
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
 
-	public Object getDefaultValue() {
-		return defaultValue;
-	}
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public QName getXSDElement() {
-		return xsdElement;
-	}
+    public QName getXSDElement() {
+        return xsdElement;
+    }
 
-	public QName getXSDType() {
-		return xsdType;
-	}
+    public QName getXSDType() {
+        return xsdType;
+    }
 
-	public boolean isMany() {
-		return many;
-	}
+    public boolean isMany() {
+        return many;
+    }
 
-	public boolean isMustSupply() {
-		return mustSupply;
-	}
+    public boolean isMustSupply() {
+        return mustSupply;
+    }
 
-	public void setDefaultValue(Object defaultValue) {
-		this.defaultValue = defaultValue;
-	}
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
 
-	public void setMany(boolean many) {
-		this.many = many;
-	}
+    public void setMany(boolean many) {
+        this.many = many;
+    }
 
-	public void setMustSupply(boolean mustSupply) {
-		this.mustSupply = mustSupply;
-	}
+    public void setMustSupply(boolean mustSupply) {
+        this.mustSupply = mustSupply;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setXSDElement(QName element) {
-		this.xsdElement = element;
-	}
+    public void setXSDElement(QName element) {
+        this.xsdElement = element;
+    }
 
-	public void setXSDType(QName type) {
-		this.xsdType = type;
-	}
+    public void setXSDType(QName type) {
+        this.xsdType = type;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
 }

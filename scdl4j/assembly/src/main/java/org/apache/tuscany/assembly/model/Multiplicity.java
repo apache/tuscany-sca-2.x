@@ -19,10 +19,11 @@
 package org.apache.tuscany.assembly.model;
 
 /**
- * Enumeration for multiplicity. Defines the number of wires that can connect a reference to target services.
+ * Enumeration for multiplicity. Defines the number of wires that can connect a
+ * reference to target services.
  */
 public enum Multiplicity {
-    
+
     /**
      * Zero or one wire can have the reference as a source.
      */

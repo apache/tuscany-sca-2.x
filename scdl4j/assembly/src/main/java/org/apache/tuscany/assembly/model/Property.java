@@ -20,12 +20,12 @@ package org.apache.tuscany.assembly.model;
 
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
-
 /**
- * A property allows for the configuration of an implementation with externally set data values.
- * An implementation can have zero or more properties.  Each property has a data type, which may be
-  * either simple or complex.  An implementation may also define a default value for a property.
+ * A property allows for the configuration of an implementation with externally
+ * set data values. An implementation can have zero or more properties. Each
+ * property has a data type, which may be either simple or complex. An
+ * implementation may also define a default value for a property.
  */
 public interface Property extends AbstractProperty, PolicySetAttachPoint {
-    
+
 }
