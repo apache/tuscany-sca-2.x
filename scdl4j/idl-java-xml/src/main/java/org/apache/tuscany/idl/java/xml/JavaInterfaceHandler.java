@@ -32,12 +32,12 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaHandler extends DefaultHandler implements InterfaceHandler {
+public class JavaInterfaceHandler extends DefaultHandler implements InterfaceHandler {
 
     private JavaFactory javaFactory;
     private JavaInterface javaInterface;
 
-    public JavaHandler(JavaFactory javaFactory) {
+    public JavaInterfaceHandler(JavaFactory javaFactory) {
         this.javaFactory = javaFactory;
     }
 

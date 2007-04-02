@@ -23,10 +23,10 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.scdl.Constants;
 
 public interface JavaConstants {
-	
-	public final String INTERFACE_JAVA = "interface.java";
-        public final QName INTERFACE_JAVA_QNAME = new QName(Constants.SCA10_NS, "interface.java");
-	public final String INTERFACE = "interface";
-	public final String CLASS = "class";
+
+    String INTERFACE_JAVA = "interface.java";
+    QName INTERFACE_JAVA_QNAME = new QName(Constants.SCA10_NS, "interface.java");
+    String INTERFACE = "interface";
+    String CLASS = "class";
 
 }
