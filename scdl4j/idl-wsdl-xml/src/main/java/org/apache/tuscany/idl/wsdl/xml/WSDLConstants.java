@@ -23,9 +23,9 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.scdl.Constants;
 
 public interface WSDLConstants {
-	
-	public final String INTERFACE_WSDL = "interface.wsdl";
-        public final QName INTERFACE_WSDL_QNAME = new QName(Constants.SCA10_NS, "interface.wsdl");
-	public final String INTERFACE = "interface";
+
+    String INTERFACE_WSDL = "interface.wsdl";
+    QName INTERFACE_WSDL_QNAME = new QName(Constants.SCA10_NS, "interface.wsdl");
+    String INTERFACE = "interface";
 
 }

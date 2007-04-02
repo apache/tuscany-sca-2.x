@@ -30,40 +30,40 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * A content handler for Java interfaces and implementations. 
- *
- *  @version $Rev$ $Date$
+ * A content handler for Java interfaces and implementations.
+ * 
+ * @version $Rev$ $Date$
  */
-public class WSDLHandler extends DefaultHandler implements InterfaceHandler {
-	
-	private WSDLFactory wsdlFactory;
-	private WSDLInterface wsdlInterface;
-	
-	public WSDLHandler(WSDLFactory wsdlFactory) {
-		this.wsdlFactory = wsdlFactory;
-	}
-	
-	public void startDocument() throws SAXException {
-		wsdlInterface = null;
-	}
-	
-	public void startElement(String uri, String name, String qname, Attributes attr) throws SAXException {
-		
-		if (Constants.SCA10_NS.equals(uri)) {
-			
-			if (WSDLConstants.INTERFACE_WSDL.equals(name)) {
-				
-				// Parse a WSDL interface
-				wsdlInterface = wsdlFactory.createWSDLInterface();
-				wsdlInterface.setUnresolved(true);
-				//TODO handle qname
-				wsdlInterface.setName(new QName("", attr.getValue(WSDLConstants.INTERFACE)));
-			}
-		}
-	}
-	
-	public Interface getInterface() {
-		return wsdlInterface;
-	}
-	
+public class WSDLInterfaceHandler extends DefaultHandler implements InterfaceHandler {
+
+    private WSDLFactory wsdlFactory;
+    private WSDLInterface wsdlInterface;
+
+    public WSDLInterfaceHandler(WSDLFactory wsdlFactory) {
+        this.wsdlFactory = wsdlFactory;
+    }
+
+    public void startDocument() throws SAXException {
+        wsdlInterface = null;
+    }
+
+    public void startElement(String uri, String name, String qname, Attributes attr) throws SAXException {
+
+        if (Constants.SCA10_NS.equals(uri)) {
+
+            if (WSDLConstants.INTERFACE_WSDL.equals(name)) {
+
+                // Parse a WSDL interface
+                wsdlInterface = wsdlFactory.createWSDLInterface();
+                wsdlInterface.setUnresolved(true);
+                // TODO handle qname
+                wsdlInterface.setName(new QName("", attr.getValue(WSDLConstants.INTERFACE)));
+            }
+        }
+    }
+
+    public Interface getInterface() {
+        return wsdlInterface;
+    }
+
 }

@@ -23,13 +23,13 @@ import org.apache.tuscany.idl.WSDLInterface;
 
 /**
  * A factory for the WSDL model.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class DefaultWSDLFactory implements WSDLFactory {
-	
-	public WSDLInterface createWSDLInterface() {
-		return new WSDLInterfaceImpl();
-	}
+
+    public WSDLInterface createWSDLInterface() {
+        return new WSDLInterfaceImpl();
+    }
 
 }

@@ -20,15 +20,16 @@ package org.apache.tuscany.idl;
 
 /**
  * Factory for the WSDL model.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface WSDLFactory {
-	
-	/**
-	 * Creates a new WSDL interface.
-	 * @return a new WSDL interface
-	 */
-	WSDLInterface createWSDLInterface();
+
+    /**
+     * Creates a new WSDL interface.
+     * 
+     * @return a new WSDL interface
+     */
+    WSDLInterface createWSDLInterface();
 
 }
