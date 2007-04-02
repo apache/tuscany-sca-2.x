@@ -22,6 +22,8 @@ import org.apache.tuscany.sca.idl.Operation;
 
 /**
  * A factory for the assembly model
+ * 
+ * @version $Rev$ $Date$
  */
 public interface AssemblyFactory {
 

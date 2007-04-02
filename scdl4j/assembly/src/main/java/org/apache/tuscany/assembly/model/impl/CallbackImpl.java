@@ -51,11 +51,13 @@ public class CallbackImpl extends BaseImpl implements Callback {
     }
 
     public boolean accept(Visitor visitor) {
-        if (!super.accept(visitor))
+        if (!super.accept(visitor)) {
             return false;
+        }
         for (Binding binding : bindings) {
-            if (!visitor.visit(binding))
+            if (!visitor.visit(binding)) {
                 return false;
+            }
         }
         return true;
     }

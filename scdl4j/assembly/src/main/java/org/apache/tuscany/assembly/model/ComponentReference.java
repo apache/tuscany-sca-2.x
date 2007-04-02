@@ -20,6 +20,8 @@ package org.apache.tuscany.assembly.model;
 
 /**
  * An instance of a reference associated with a particular component.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface ComponentReference extends Reference {
 

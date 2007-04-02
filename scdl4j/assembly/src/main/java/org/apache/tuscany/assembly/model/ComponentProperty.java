@@ -20,6 +20,8 @@ package org.apache.tuscany.assembly.model;
 
 /**
  * Represents a configured property of a component.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface ComponentProperty extends Property {
 

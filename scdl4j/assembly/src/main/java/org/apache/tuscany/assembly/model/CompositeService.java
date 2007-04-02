@@ -20,6 +20,8 @@ package org.apache.tuscany.assembly.model;
 
 /**
  * Represents a composite service.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface CompositeService extends Service {
 

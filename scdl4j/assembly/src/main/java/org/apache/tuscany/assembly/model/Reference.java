@@ -24,6 +24,8 @@ import java.util.List;
  * Represents a reference. References within an implementation represent links
  * to services that the implementation uses that must be provided by other
  * components.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface Reference extends AbstractReference, Contract {
 

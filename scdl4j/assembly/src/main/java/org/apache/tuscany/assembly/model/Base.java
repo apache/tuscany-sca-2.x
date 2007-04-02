@@ -22,6 +22,8 @@ import java.util.List;
 
 /**
  * Base interface for all assembly model objects.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface Base {
 

@@ -20,6 +20,8 @@ package org.apache.tuscany.assembly.model;
 
 /**
  * Represents a reference contract.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface AbstractReference extends AbstractContract {
 

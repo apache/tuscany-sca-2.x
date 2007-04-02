@@ -22,6 +22,8 @@ import java.util.List;
 
 /**
  * Represents composite reference.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface CompositeReference extends Reference {
 

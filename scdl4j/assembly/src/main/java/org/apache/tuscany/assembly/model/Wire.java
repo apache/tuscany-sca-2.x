@@ -23,6 +23,8 @@ import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 
 /**
  * Represents a wire.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface Wire extends Base, IntentAttachPoint, PolicySetAttachPoint {
 

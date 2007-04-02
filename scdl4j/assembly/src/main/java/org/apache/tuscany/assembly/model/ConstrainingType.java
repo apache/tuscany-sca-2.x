@@ -29,6 +29,8 @@ import org.apache.tuscany.policy.model.IntentAttachPoint;
  * implementation. Any component configuration that points to a constrainingType
  * is constrained by this shape. The constrainingType specifies the services,
  * references and properties that must be implemented.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface ConstrainingType extends Base, IntentAttachPoint {
 

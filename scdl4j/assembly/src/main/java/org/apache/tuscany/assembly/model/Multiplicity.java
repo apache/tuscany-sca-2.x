@@ -21,6 +21,8 @@ package org.apache.tuscany.assembly.model;
 /**
  * Enumeration for multiplicity. Defines the number of wires that can connect a
  * reference to target services.
+ * 
+ * @version $Rev$ $Date$
  */
 public enum Multiplicity {
 
