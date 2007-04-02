@@ -121,12 +121,9 @@ public class ConstrainingTypeLoader extends BaseLoader implements Loader<Constra
 
                         // Read an extension element
                         Object extension = registry.load(reader);
-                        if (extension != null) {
-                            if (extension instanceof Interface) {
-
-                                // <service><interface> and <reference><interface>
-                                abstractContract.setInterface((Interface)extension);
-                            }
+                        if (extension instanceof Interface) {
+                            // <service><interface> and <reference><interface>
+                            abstractContract.setInterface((Interface)extension);
                         }
                     }
                     break;

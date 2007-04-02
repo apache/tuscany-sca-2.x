@@ -19,11 +19,17 @@
 
 package org.apache.tuscany.scdl.stax.impl;
 
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -42,6 +48,10 @@ import org.apache.tuscany.policy.model.PolicySet;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 import org.apache.tuscany.sca.idl.Operation;
 import org.apache.tuscany.scdl.stax.Constants;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * A test handler to test the usability of the assembly model API when loading
@@ -53,10 +63,10 @@ abstract class BaseLoader implements Constants {
 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
-    
+
     BaseLoader() {
     }
-    
+
     BaseLoader(AssemblyFactory factory, PolicyFactory policyFactory) {
         this.factory = factory;
         this.policyFactory = policyFactory;
@@ -68,6 +78,18 @@ abstract class BaseLoader implements Constants {
 
     protected QName getQName(XMLStreamReader reader, String name) {
         String qname = reader.getAttributeValue(null, name);
+        return getQNameValue(reader, qname);
+    }
+
+    /**
+     * Get the value of xsi:type attribute
+     * 
+     * @param reader The XML stream reader
+     * @return The QName of the type, if the attribute is not present, null is
+     *         returned.
+     */
+    protected QName getXSIType(XMLStreamReader reader) {
+        String qname = reader.getAttributeValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
         return getQNameValue(reader, qname);
     }
 
@@ -105,9 +127,9 @@ abstract class BaseLoader implements Constants {
     }
 
     protected void readIntents(IntentAttachPoint attachPoint, XMLStreamReader reader) {
-    	readIntents(attachPoint, null, reader);
+        readIntents(attachPoint, null, reader);
     }
-    
+
     protected void readIntents(IntentAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, Constants.REQUIRES);
         if (value != null) {
@@ -116,18 +138,18 @@ abstract class BaseLoader implements Constants {
                 QName qname = getQNameValue(reader, tokens.nextToken());
                 Intent intent = policyFactory.createIntent();
                 intent.setName(qname);
-    			if (operation != null) {
-    				intent.getOperations().add(operation);
-    			}
+                if (operation != null) {
+                    intent.getOperations().add(operation);
+                }
                 requiredIntents.add(intent);
             }
         }
     }
 
     protected void readPolicies(PolicySetAttachPoint attachPoint, XMLStreamReader reader) {
-    	readPolicies(attachPoint, null, reader);
+        readPolicies(attachPoint, null, reader);
     }
-    
+
     protected void readMultiplicity(AbstractReference reference, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, MULTIPLICITY);
         if (ZERO_ONE.equals(value)) {
@@ -140,8 +162,8 @@ abstract class BaseLoader implements Constants {
     }
 
     protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
-    	readIntents(attachPoint, operation, reader);
-    	
+        readIntents(attachPoint, operation, reader);
+
         String value = reader.getAttributeValue(null, Constants.POLICY_SETS);
         if (value != null) {
             List<PolicySet> policySets = attachPoint.getPolicySets();
@@ -149,9 +171,9 @@ abstract class BaseLoader implements Constants {
                 QName qname = getQNameValue(reader, tokens.nextToken());
                 PolicySet policySet = policyFactory.createPolicySet();
                 policySet.setName(qname);
-    			if (operation != null) {
-    				policySet.getOperations().add(operation);
-    			}
+                if (operation != null) {
+                    policySet.getOperations().add(operation);
+                }
                 policySets.add(policySet);
             }
         }
@@ -169,25 +191,27 @@ abstract class BaseLoader implements Constants {
         }
     }
 
-    protected void readAbstractProperty(AbstractProperty prop, XMLStreamReader reader) {
+    protected void readAbstractProperty(AbstractProperty prop, XMLStreamReader reader) throws XMLStreamException {
         prop.setName(getString(reader, "name"));
         prop.setMany(getBoolean(reader, "many"));
         prop.setMustSupply(getBoolean(reader, "mustSupply"));
         prop.setXSDElement(getQName(reader, "element"));
         prop.setXSDType(getQName(reader, "type"));
+        Node value = readPropertyValue(reader, prop.getXSDType());
+        prop.setDefaultValue(value);
     }
 
-    protected void readProperty(Property prop, XMLStreamReader reader) {
+    protected void readProperty(Property prop, XMLStreamReader reader) throws XMLStreamException {
         readAbstractProperty(prop, reader);
     }
 
     protected boolean nextChildElement(XMLStreamReader reader) throws XMLStreamException {
         while (reader.hasNext()) {
             int event = reader.next();
-            if (event == XMLStreamConstants.END_ELEMENT) {
+            if (event == END_ELEMENT) {
                 return false;
             }
-            if (event == XMLStreamConstants.START_ELEMENT) {
+            if (event == START_ELEMENT) {
                 return true;
             }
         }
@@ -215,5 +239,34 @@ abstract class BaseLoader implements Constants {
             }
         }
     }
+
+    public static Document readPropertyValue(XMLStreamReader reader, QName type)
+        throws XMLStreamException {
+        Document doc = DOMUtil.newDocument();
+
+        // root element has no namespace and local name "value"
+        Element root = doc.createElementNS(null, "value");
+        if (type != null) {
+            Attr xsi = doc.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
+            xsi.setValue(W3C_XML_SCHEMA_INSTANCE_NS_URI);
+            root.setAttributeNodeNS(xsi);
+
+            String prefix = type.getPrefix();
+            if (prefix == null || prefix.length() == 0) {
+                prefix = "ns";
+            }
+
+            DOMUtil.declareNamespace(root, prefix, type.getNamespaceURI());
+
+            Attr xsiType = doc.createAttributeNS(W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:type");
+            xsiType.setValue(prefix + ":" + type.getLocalPart());
+            root.setAttributeNodeNS(xsiType);
+        }
+        doc.appendChild(root);
+
+        DOMUtil.loadDOM(reader, root);
+        return doc;
+    }
+
 
 }
