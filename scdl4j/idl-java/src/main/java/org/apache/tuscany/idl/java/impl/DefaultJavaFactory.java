@@ -25,12 +25,12 @@ import org.apache.tuscany.idl.java.JavaInterface;
  * A factory for the Java model.
  */
 public class DefaultJavaFactory implements JavaFactory {
-	
-	public DefaultJavaFactory() {
-	}
 
-	public JavaInterface createJavaInterface() {
-		return new JavaInterfaceImpl();
-	}
+    public DefaultJavaFactory() {
+    }
+
+    public JavaInterface createJavaInterface() {
+        return new JavaInterfaceImpl();
+    }
 
 }

@@ -20,15 +20,16 @@ package org.apache.tuscany.idl.java;
 
 /**
  * Factory for the Java model
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface JavaFactory {
 
-	/**
-	 * Creates a new Java interface.
-	 * @return
-	 */
-	JavaInterface createJavaInterface();
+    /**
+     * Creates a new Java interface.
+     * 
+     * @return
+     */
+    JavaInterface createJavaInterface();
 
 }

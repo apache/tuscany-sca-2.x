@@ -22,33 +22,37 @@ import org.apache.tuscany.sca.idl.Interface;
 
 /**
  * Represents a Java interface.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public interface JavaInterface extends Interface {
-	
-	/**
-	 * Returns the name of the Java interface class.
-	 * @return the name of the Java interface class
-	 */
-	String getName();
-	
-	/**
-	 * Sets the name of the Java interface class.
-	 * @param className the name of the Java interface class
-	 */
-	void setName(String className);
-	
-	/**
-	 * Returns the Java interface class.
-	 * @return the Java interface class
-	 */
-	Class<?> getJavaClass();
 
-	/**
-	 * Sets the Java interface class.
-	 * @param javaClass the Java interface class
-	 */
-	void setJavaClass(Class<?> javaClass);
-	
+    /**
+     * Returns the name of the Java interface class.
+     * 
+     * @return the name of the Java interface class
+     */
+    String getName();
+
+    /**
+     * Sets the name of the Java interface class.
+     * 
+     * @param className the name of the Java interface class
+     */
+    void setName(String className);
+
+    /**
+     * Returns the Java interface class.
+     * 
+     * @return the Java interface class
+     */
+    Class<?> getJavaClass();
+
+    /**
+     * Sets the Java interface class.
+     * 
+     * @param javaClass the Java interface class
+     */
+    void setJavaClass(Class<?> javaClass);
+
 }
