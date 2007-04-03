@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-modules</artifactId>
-        <version>${version}</version>
+        <version>1.0-alpha1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-idl-java-xml</artifactId>
@@ -32,13 +32,13 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>
-            <version>${version}</version>
+            <version>1.0-alpha1-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-idl-java</artifactId>
-            <version>${version}</version>
+            <version>1.0-alpha1-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
