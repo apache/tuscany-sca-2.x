@@ -23,19 +23,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.Base;
-import org.apache.tuscany.assembly.model.Component;
-import org.apache.tuscany.assembly.model.ComponentReference;
-import org.apache.tuscany.assembly.model.ComponentService;
-import org.apache.tuscany.assembly.model.Composite;
-import org.apache.tuscany.assembly.model.CompositeReference;
-import org.apache.tuscany.assembly.model.CompositeService;
-import org.apache.tuscany.assembly.model.Implementation;
-import org.apache.tuscany.assembly.model.Reference;
-import org.apache.tuscany.assembly.model.SCABinding;
-import org.apache.tuscany.assembly.model.Service;
-import org.apache.tuscany.assembly.model.Wire;
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Base;
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.Reference;
+import org.apache.tuscany.assembly.SCABinding;
+import org.apache.tuscany.assembly.Service;
+import org.apache.tuscany.assembly.Wire;
 
 /**
  * A temporary utility class that resolves wires in a composite.

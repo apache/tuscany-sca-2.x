@@ -26,11 +26,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.ComponentType;
-import org.apache.tuscany.assembly.model.Composite;
-import org.apache.tuscany.assembly.model.ConstrainingType;
-import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.ComponentType;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.ConstrainingType;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
 import org.apache.tuscany.assembly.xml.LoaderRegistry;
@@ -39,8 +39,8 @@ import org.apache.tuscany.assembly.xml.impl.CompositeLoader;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeLoader;
 import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
-import org.apache.tuscany.policy.model.PolicyFactory;
-import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * Test the usability of the assembly model API when loading SCDL

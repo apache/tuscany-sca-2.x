@@ -25,15 +25,15 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.model.Callback;
-import org.apache.tuscany.assembly.model.Component;
-import org.apache.tuscany.assembly.model.ComponentReference;
-import org.apache.tuscany.assembly.model.ComponentService;
-import org.apache.tuscany.assembly.model.Composite;
-import org.apache.tuscany.assembly.model.CompositeReference;
-import org.apache.tuscany.assembly.model.CompositeService;
-import org.apache.tuscany.assembly.model.Multiplicity;
-import org.apache.tuscany.assembly.model.Property;
+import org.apache.tuscany.assembly.Callback;
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
 import org.apache.tuscany.assembly.xml.Constants;

@@ -24,14 +24,14 @@ import java.io.InputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.Composite;
-import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.LoaderRegistry;
 import org.apache.tuscany.assembly.xml.impl.CompositeLoader;
 import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
-import org.apache.tuscany.policy.model.PolicyFactory;
-import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * Test the usability of the assembly model API when loading SCDL

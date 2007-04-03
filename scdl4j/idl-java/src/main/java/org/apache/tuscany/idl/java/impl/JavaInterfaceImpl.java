@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.idl.java.impl;
 
+import org.apache.tuscany.idl.impl.InterfaceImpl;
 import org.apache.tuscany.idl.java.JavaInterface;
-import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
 
 /**
  * Represents a Java interface.
