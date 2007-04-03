@@ -28,56 +28,56 @@ import org.apache.tuscany.sca.idl.Operation;
 
 /**
  * Represents a policy intent.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class IntentImpl implements Intent {
-	
-	private QName name;
-	private List<Operation> operations = new ArrayList<Operation>();
-        private List<QName> constrains;
-        private String description;
-        private List<Intent> qualifiedIntents;
-        private List<Intent> requiredIntents;
-        private boolean unresolved;
 
-	public QName getName() {
-		return name;
-	}
+    private QName name;
+    private List<Operation> operations = new ArrayList<Operation>();
+    private List<QName> constrains;
+    private String description;
+    private List<Intent> qualifiedIntents;
+    private List<Intent> requiredIntents;
+    private boolean unresolved;
 
-	public void setName(QName name) {
-		this.name = name;
-	}
-	
-	public List<Operation> getOperations() {
-		return operations;
-	}
+    public QName getName() {
+        return name;
+    }
 
-        public List<QName> getConstrains() {
-            return constrains;
-        }
-        
-        public String getDescription() {
-            return description;
-        }
-        
-        public void setDescription(String description) {
-            this.description = description;
-        }
-        
-        public List<Intent> getQualifiedIntents() {
-            return qualifiedIntents;
-        }
-        
-        public List<Intent> getRequiredIntents() {
-            return requiredIntents;
-        }
-        
-        public boolean isUnresolved() {
-            return unresolved;
-        }
-        
-        public void setUnresolved(boolean unresolved) {
-            this.unresolved = unresolved;
-        }
+    public void setName(QName name) {
+        this.name = name;
+    }
+
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    public List<QName> getConstrains() {
+        return constrains;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Intent> getQualifiedIntents() {
+        return qualifiedIntents;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
+    }
 }

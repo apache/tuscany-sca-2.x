@@ -25,21 +25,21 @@ import org.apache.tuscany.policy.model.PolicySet;
 
 /**
  * A factory for the policy model.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class DefaultPolicyFactory implements PolicyFactory {
 
-	public Intent createIntent() {
-		return new IntentImpl();
-	}
+    public Intent createIntent() {
+        return new IntentImpl();
+    }
 
-	public PolicySet createPolicySet() {
-		return new PolicySetImpl();
-	}
-        
-        public IntentMap createIntentMap() {
-            return new IntentMapImpl();
-        }
+    public PolicySet createPolicySet() {
+        return new PolicySetImpl();
+    }
+
+    public IntentMap createIntentMap() {
+        return new IntentMapImpl();
+    }
 
 }
