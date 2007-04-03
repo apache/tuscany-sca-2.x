@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<!-- This is the copy ot be included by other extensions -->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
+    name="org.apache.tuscany.databinding.axiom.include" autowire="true">
+
+    <dependency xmlns="http://tuscany.apache.org/xmlns/sca/2.0-alpha">
+        <group>org.apache.tuscany.sca.axis2</group>
+        <name>databinding-axiom</name>
+        <version>2.0-alpha2-incubating-SNAPSHOT</version>
+    </dependency>
+
+    <component name="databinding.axiom">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.AxiomDataBinding" />
+    </component>
+
+    <component name="transformer.XMLStreamReader2OMElement">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.XMLStreamReader2OMElement" />
+    </component>
+
+    <component name="transformer.OMElement2XMLStreamReader">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2XMLStreamReader" />
+    </component>
+
+    <component name="transformer.String2OMElement">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.String2OMElement" />
+    </component>
+
+    <component name="transformer.OMElement2String">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2String" />
+    </component>
+
+    <component name="transformer.Object2OMElement">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.Object2OMElement" />
+    </component>
+
+    <component name="transformer.OMElement2Object">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2Object" />
+    </component>
+</composite>

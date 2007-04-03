@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<definitions name="StockQuote" targetNamespace="http://example.com/order.wsdl" xmlns:tns="http://example.com/order.wsdl"
+    xmlns:xsd1="http://example.com/order.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <types>
+        <schema targetNamespace="http://example.com/order.xsd" xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:ipo="http://www.example.com/IPO">
+            <import namespace="http://www.example.com/IPO" schemaLocation="ipo.xsd"/>
+            <element name="checkOrderStatus">
+                <complexType>
+                    <sequence>
+                        <element name="customerId" type="string" />
+                        <element name="order" type="ipo:PurchaseOrderType" />
+                        <element name="flag" type="int" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="checkOrderStatusResponse">
+                <complexType>
+                    <sequence>
+                        <element name="status" type="string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="note" type="string" />
+        </schema>
+    </types>
+
+    <message name="CheckOrderStatusInput1">
+        <part name="body" element="xsd1:checkOrderStatus" />
+    </message>
+
+    <message name="CheckOrderStatusOutput1">
+        <part name="body" element="xsd1:checkOrderStatusResponse" />
+    </message>
+
+    <message name="CheckOrderStatusInput2">
+        <part name="p1" element="xsd1:checkOrderStatus" />
+        <part name="p2" element="xsd1:note" />
+    </message>
+
+    <message name="CheckOrderStatusOutput2">
+        <part name="p1" element="xsd1:checkOrderStatusResponse" />
+    </message>
+
+    <portType name="OrderPortType">
+        <operation name="checkOrderStatus">
+            <input message="tns:CheckOrderStatusInput1" />
+            <output message="tns:CheckOrderStatusOutput1" />
+        </operation>
+        <operation name="checkOrderStatus2">
+            <input message="tns:CheckOrderStatusInput2" />
+            <output message="tns:CheckOrderStatusOutput2" />
+        </operation>
+    </portType>
+
+</definitions>
