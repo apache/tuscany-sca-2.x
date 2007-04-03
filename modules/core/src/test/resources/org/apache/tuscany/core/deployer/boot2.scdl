@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<!--
+    A more complex example closer to a typical bootstrap configuration
+    $Rev$ $Date$
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:system="http://tuscany.apache.org/xmlns/sca/system/2.0-alpha"
+           name="boot2"
+           autowire="true">
+
+
+    <!-- expose Deployer API as a service -->
+    <service name="deployer" promote="deployerImpl">
+        <interface.java interface="org.apache.tuscany.spi.deployer.Deployer"/>
+    </service>
+
+    <!-- Component that provides the Deployer service -->
+    <component name="deployerImpl">
+        <system:implementation.system class="org.apache.tuscany.core.deployer.DeployerImpl"/>
+    </component>
+
+    <!-- Component that provides the Autowire resolver service -->
+    <component name="autowireResolver">
+        <system:implementation.system class="org.apache.tuscany.core.resolver.DefaultAutowireResolver"/>
+    </component>
+
+    <!-- Work management -->
+    <component name="workContext">
+        <system:implementation.system class="org.apache.tuscany.core.component.WorkContextImpl"/>
+    </component>
+
+    <component name="workScheduler">
+        <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler"/>
+    </component>
+
+    <component name="workManager">
+        <system:implementation.system
+            class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
+    </component>
+
+    <!-- Builder and BuilderRegistry -->
+    <component name="builder">
+        <system:implementation.system class="org.apache.tuscany.core.builder.BuilderRegistryImpl"/>
+    </component>
+
+    <!-- Loader and LoaderRegistry -->
+    <component name="loader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.LoaderRegistryImpl"/>
+    </component>
+
+    <!-- Introspector and IntrospectionRegistry -->
+    <component name="interfaceProcessorRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.IntrospectionRegistryImpl"/>
+    </component>
+
+    <!-- Connector infrastructure -->
+    <component name="connector">
+        <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl"/>
+    </component>
+
+    <component name="interceptorBuilderRegistry">
+        <system:implementation.system
+            class="org.apache.tuscany.core.builder.interceptor.InterceptorBuilderRegistryImpl"/>
+    </component>
+
+    <component name="wireAttacherRegistry">
+        <system:implementation.system
+            class="org.apache.tuscany.core.builder.physical.WireAttacherRegistryImpl"/>
+    </component>
+
+    <component name="wirePostProcess">
+        <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
+    </component>
+
+    <!-- Resource host registry -->
+    <component name="resourceHostRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
+    </component>
+
+    <!-- Foundation element loader implementations -->
+    <component name="elementLoader.component">
+        <system:implementation.system class="org.apache.tuscany.core.loader.ComponentLoader"/>
+    </component>
+    <component name="elementLoader.componentType">
+        <system:implementation.system class="org.apache.tuscany.core.loader.ComponentTypeElementLoader"/>
+    </component>
+    <component name="elementLoader.interface.java">
+        <system:implementation.system class="org.apache.tuscany.core.idl.java.InterfaceJavaLoader"/>
+    </component>
+    <component name="elementLoader.property">
+        <system:implementation.system class="org.apache.tuscany.core.loader.PropertyLoader"/>
+    </component>
+    <component name="elementLoader.reference">
+        <system:implementation.system class="org.apache.tuscany.core.loader.ReferenceLoader"/>
+    </component>
+    <component name="elementLoader.service">
+        <system:implementation.system class="org.apache.tuscany.core.loader.ServiceLoader"/>
+    </component>
+
+    <component name="proxyService">
+        <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKProxyService"/>
+    </component>
+
+    <!-- Composite implementation type -->
+    <component name="composite.loader">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeLoader"/>
+    </component>
+
+    <component name="interfaceJava.interfaceProcessorRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl"/>
+    </component>
+
+    <component name="artifactRepository">
+        <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
+        <property name="repository">.m2/repository</property>
+    </component>
+
+    <!-- DataBinding registry -->
+    <component name="databinding.registry">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataBindingRegistryImpl"/>
+    </component>
+
+    <!-- DataBinding registry -->
+    <component name="databinding.mediator">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.MediatorImpl"/>
+    </component>
+
+    <!-- Transformer registry -->
+    <component name="databinding.transformerRegistry" initLevel="90">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.TransformerRegistryImpl"/>
+    </component>
+
+    <component name="propertyFactory">
+        <system:implementation.system class="org.apache.tuscany.core.property.PropertyObjectFactoryImpl"/>
+    </component>
+
+    <component name="policyBuilderRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl"/>
+    </component>
+
+
+</composite>
