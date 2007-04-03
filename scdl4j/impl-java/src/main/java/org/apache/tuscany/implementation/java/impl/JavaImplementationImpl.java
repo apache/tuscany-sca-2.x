@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.impl;
 
-import org.apache.tuscany.assembly.model.impl.ComponentTypeImpl;
+import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 
 /**

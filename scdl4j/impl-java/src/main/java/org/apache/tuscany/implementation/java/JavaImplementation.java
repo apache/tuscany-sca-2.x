@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java;
 
-import org.apache.tuscany.assembly.model.Implementation;
+import org.apache.tuscany.assembly.Implementation;
 
 /**
  * Represents a Java implementation.

@@ -21,7 +21,6 @@ package org.apache.tuscany.idl;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.idl.Interface;
 
 /**
  * Represents a WSDL interface.

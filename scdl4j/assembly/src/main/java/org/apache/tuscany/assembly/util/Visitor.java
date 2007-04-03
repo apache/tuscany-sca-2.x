@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.assembly.util;
 
-import org.apache.tuscany.assembly.model.Base;
+import org.apache.tuscany.assembly.Base;
 
 /**
  * This interface is implemented by objects that visit assembly model trees.

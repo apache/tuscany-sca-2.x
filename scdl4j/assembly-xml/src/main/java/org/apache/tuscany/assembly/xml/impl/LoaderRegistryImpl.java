@@ -30,16 +30,16 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.assembly.xml.InvalidConfigurationException;
 import org.apache.tuscany.assembly.xml.Loader;
 import org.apache.tuscany.assembly.xml.LoaderException;
 import org.apache.tuscany.assembly.xml.LoaderRegistry;
 import org.apache.tuscany.assembly.xml.UnrecognizedElementException;
-import org.apache.tuscany.policy.model.PolicyFactory;
-import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * The default implementation of a loader registry

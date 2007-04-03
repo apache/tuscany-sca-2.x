@@ -21,8 +21,8 @@ package org.apache.tuscany.implementation.java.impl;
 /**
  * A factory for the Java model.
  */
-import org.apache.tuscany.assembly.model.AssemblyFactory;
-import org.apache.tuscany.assembly.model.Service;
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 

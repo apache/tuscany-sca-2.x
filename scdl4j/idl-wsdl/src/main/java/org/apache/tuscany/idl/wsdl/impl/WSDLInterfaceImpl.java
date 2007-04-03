@@ -22,7 +22,7 @@ import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.idl.WSDLInterface;
-import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
+import org.apache.tuscany.idl.impl.InterfaceImpl;
 
 /**
  * Represents a WSDL interface.
