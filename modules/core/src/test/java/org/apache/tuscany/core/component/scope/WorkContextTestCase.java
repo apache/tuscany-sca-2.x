@@ -18,12 +18,12 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.WorkContext;
-
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.SimpleWorkContext;
+
+import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.easymock.EasyMock;
 
 /**
@@ -32,7 +32,7 @@ import org.easymock.EasyMock;
 public class WorkContextTestCase extends TestCase {
 
     public void testSetCurrentAtomicComponent() throws Exception {
-        WorkContext ctx = new SimpleWorkContext();
+        WorkContext ctx = new WorkContextImpl();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         AtomicComponent component2 = EasyMock.createNiceMock(AtomicComponent.class);
         ctx.setCurrentAtomicComponent(component);
@@ -42,19 +42,19 @@ public class WorkContextTestCase extends TestCase {
     }
 
     public void testNonSetCurrentAtomicComponent() throws Exception {
-        WorkContext ctx = new SimpleWorkContext();
+        WorkContext ctx = new WorkContextImpl();
         assertNull(ctx.getCurrentAtomicComponent());
     }
 
     public void testIndentifier() throws Exception {
-        WorkContext ctx = new SimpleWorkContext();
+        WorkContext ctx = new WorkContextImpl();
         Object id = new Object();
         ctx.setIdentifier(this, id);
         assertEquals(id, ctx.getIdentifier(this));
     }
 
     public void testClearIndentifier() throws Exception {
-        WorkContext ctx = new SimpleWorkContext();
+        WorkContext ctx = new WorkContextImpl();
         Object id = new Object();
         ctx.setIdentifier(this, id);
         ctx.clearIdentifier(this);
@@ -62,7 +62,7 @@ public class WorkContextTestCase extends TestCase {
     }
 
     public void testClearIndentifiers() throws Exception {
-        WorkContext ctx = new SimpleWorkContext();
+        WorkContext ctx = new WorkContextImpl();
         Object id = new Object();
         Object id2 = new Object();
         ctx.setIdentifier(id, id);
@@ -73,12 +73,12 @@ public class WorkContextTestCase extends TestCase {
     }
 
     public void testClearNonExistentIndentifier() throws Exception {
-        WorkContext ctx = new SimpleWorkContext();
+        WorkContext ctx = new WorkContextImpl();
         ctx.clearIdentifier(this);
     }
 
     public void testNullIndentifier() throws Exception {
-        WorkContext ctx = new SimpleWorkContext();
+        WorkContext ctx = new WorkContextImpl();
         Object id = new Object();
         ctx.setIdentifier(this, id);
         ctx.clearIdentifier(null);
@@ -86,12 +86,12 @@ public class WorkContextTestCase extends TestCase {
     }
 
     public void testNoIndentifier() throws Exception {
-        WorkContext ctx = new SimpleWorkContext();
+        WorkContext ctx = new WorkContextImpl();
         assertNull(ctx.getIdentifier(this));
     }
 
     public void testSetGetCorrelationId() {
-        WorkContext context = new SimpleWorkContext();
+        WorkContext context = new WorkContextImpl();
         context.setCorrelationId("msg-005");
         assertEquals(context.getCorrelationId(), "msg-005");
         context.setCorrelationId(null);
@@ -99,7 +99,7 @@ public class WorkContextTestCase extends TestCase {
     }
 
     public void testSetGetCorrelationIdInNewThread() throws InterruptedException {
-        WorkContext context = new SimpleWorkContext();
+        WorkContext context = new WorkContextImpl();
         context.setCorrelationId("msg-005");
         assertEquals(context.getCorrelationId(), "msg-005");
         context.setIdentifier("TX", "002");
@@ -113,7 +113,7 @@ public class WorkContextTestCase extends TestCase {
 
     public void testCurrentAtomicComponentDoesNotPropagateToChildThread() throws InterruptedException {
         // NOTE should behaviour be to propagate?
-        WorkContext context = new SimpleWorkContext();
+        WorkContext context = new WorkContextImpl();
         context.setCurrentAtomicComponent(EasyMock.createNiceMock(AtomicComponent.class));
         TestCurrentAtomicComponentChildThread t = new TestCurrentAtomicComponentChildThread(context);
         t.start();
@@ -136,7 +136,7 @@ public class WorkContextTestCase extends TestCase {
             try {
                 assertNull(context.getCorrelationId());
                 assertEquals("002", context.getIdentifier("TX"));
-            } catch (AssertionError e) {
+            } catch (AssertionFailedError e) {
                 passed = false;
             }
         }
@@ -155,7 +155,7 @@ public class WorkContextTestCase extends TestCase {
         public void run() {
             try {
                 assertNull(context.getCurrentAtomicComponent());
-            } catch (AssertionError e) {
+            } catch (AssertionFailedError e) {
                 passed = false;
             }
         }
