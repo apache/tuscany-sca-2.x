@@ -38,7 +38,6 @@ import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistr
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
 import org.apache.tuscany.services.spi.contribution.loader.ContributionLoaderException;
-import org.osoa.sca.annotations.Reference;
 
 /**
  * @version $Rev$ $Date$
@@ -72,10 +71,9 @@ public class ContributionServiceImpl implements ContributionService {
 
     protected ArtifactResolverRegistry resolverRegistry;
 
-    public ContributionServiceImpl(@Reference
-    ContributionRepository repository, @Reference
-    ContributionProcessorRegistry processorRegistry, @Reference
-    ArtifactResolverRegistry resolverRegistry) {
+    public ContributionServiceImpl(ContributionRepository repository,
+                                   ContributionProcessorRegistry processorRegistry,
+                                   ArtifactResolverRegistry resolverRegistry) {
         super();
         this.contributionRepository = repository;
         this.processorRegistry = processorRegistry;

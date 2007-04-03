@@ -20,28 +20,20 @@
 package org.apache.tuscany.services.contribution;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
-@EagerInit
 public class ContributionDirectoryWatcher {
     private final String path;
 
     private final ContributionService contributionService;
 
-    public ContributionDirectoryWatcher(@Reference ContributionService contributionService, 
-                                        @Property(name = "path") String path) {
+    public ContributionDirectoryWatcher(ContributionService contributionService, 
+                                        String path) {
         this.path = path;
         this.contributionService = contributionService;
     }
 
-    @Init
     public void init() {
         File extensionDir = new File(path);
         if (!extensionDir.isDirectory()) {

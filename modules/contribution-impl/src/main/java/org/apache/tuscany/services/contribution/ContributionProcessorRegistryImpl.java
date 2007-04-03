@@ -32,17 +32,12 @@ import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
 import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.UnsupportedContentTypeException;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Default implementation of ContributionProcessorRegistry
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-@Service(ContributionProcessorRegistry.class)
 public class ContributionProcessorRegistryImpl implements ContributionProcessorRegistry {
     /**
      * Processor registry
@@ -53,7 +48,7 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
      */
     private ContentTypeDescriber contentTypeDescriber;
 
-    public ContributionProcessorRegistryImpl(@Reference ContentTypeDescriber contentTypeDescriber) {
+    public ContributionProcessorRegistryImpl(ContentTypeDescriber contentTypeDescriber) {
         if (contentTypeDescriber == null) {
             this.contentTypeDescriber = new ContentTypeDescriberImpl();
         } else {

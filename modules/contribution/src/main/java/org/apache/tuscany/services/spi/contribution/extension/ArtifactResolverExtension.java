@@ -21,20 +21,12 @@ package org.apache.tuscany.services.spi.contribution.extension;
 
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 /**
  * The base class for ContributionProcessor implementations
  * 
  * @version $Rev$ $Date$
  */
-@EagerInit
-@Service(ArtifactResolver.class)
 public abstract class ArtifactResolverExtension implements ArtifactResolver {
     /**
      * The ArtifactResolverRegistry that this resolver should register with; usually set by injection.
@@ -44,15 +36,13 @@ public abstract class ArtifactResolverExtension implements ArtifactResolver {
     /**
      * @param registry the registry to set
      */
-    @Constructor
-    public ArtifactResolverExtension(@Reference ArtifactResolverRegistry registry) {
+    public ArtifactResolverExtension(ArtifactResolverRegistry registry) {
         this.registry = registry;
     }
     
     /**
      * Initialize the resolver. It registers itself to the registry by model type it supports. 
      */ 
-    @Init
     public void start() {
         this.registry.registerResolver(this.getType(), this);
     }
@@ -60,7 +50,6 @@ public abstract class ArtifactResolverExtension implements ArtifactResolver {
     /**
      * Destroy the resolver. It unregisters itself from the registry. 
      */
-    @Destroy
     public void stop() {
         registry.unregisterResolver(this.getType());
     }

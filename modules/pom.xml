@@ -43,8 +43,10 @@
                 <module>binding-jms</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-rmi</module>
+                -->
                 <module>contribution</module>
                 <module>contribution-impl</module>
+                <!--
                 <module>core</module>
                 <module>databinding</module>
                 <module>databinding-axiom</module>
@@ -56,8 +58,10 @@
                 <module>idl</module>
                 <module>idl-java</module>
                 <module>idl-java-xml</module>
+                <!--
                 <module>idl-wsdl</module>
                 <module>idl-wsdl-xml</module>
+                -->
                 <module>impl-java</module>
                 <module>impl-java-xml</module>
                 <!--

@@ -28,14 +28,10 @@ import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.extension.ArtifactResolverExtension;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.osoa.sca.annotations.Reference;
 
 public class ComponentDefinitionArtifactResolver extends ArtifactResolverExtension implements ArtifactResolver {
 
-    public ComponentDefinitionArtifactResolver(@Reference
-    ArtifactResolverRegistry registry) {
+    public ComponentDefinitionArtifactResolver(ArtifactResolverRegistry registry) {
         super(registry);
     }
 

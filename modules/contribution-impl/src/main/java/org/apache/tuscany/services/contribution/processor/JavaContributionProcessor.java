@@ -19,22 +19,17 @@
 
 package org.apache.tuscany.services.contribution.processor;
 
+import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.services.contribution.model.ContentType;
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
 import org.apache.tuscany.services.spi.contribution.extension.ContributionProcessorExtension;
-import org.apache.tuscany.spi.deployer.CompositeClassLoader;
-import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
-import org.apache.tuscany.spi.implementation.java.Introspector;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
 
 public class JavaContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
     /**
@@ -46,12 +41,10 @@ public class JavaContributionProcessor extends ContributionProcessorExtension im
      */
     private Introspector introspector;
 
-    @Constructor
-    public JavaContributionProcessor(@Reference IntrospectionRegistry introspector) {
+    public JavaContributionProcessor(IntrospectionRegistry introspector) {
         //this.introspector = introspector;
     }
 
-    @Override
     public String getContentType() {
         return CONTENT_TYPE;
     }

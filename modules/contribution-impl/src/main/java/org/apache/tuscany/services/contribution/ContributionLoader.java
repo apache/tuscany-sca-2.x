@@ -19,7 +19,6 @@
 package org.apache.tuscany.services.contribution;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.osoa.sca.Constants.SCA_NS;
 
 import java.net.URI;
 

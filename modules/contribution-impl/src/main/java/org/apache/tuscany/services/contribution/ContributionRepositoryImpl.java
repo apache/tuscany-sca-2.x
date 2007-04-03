@@ -47,18 +47,12 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.services.contribution.util.FileHelper;
 import org.apache.tuscany.services.contribution.util.IOHelper;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
 
 /**
  * The default implementation of ContributionRepository
  * 
  * @version $Rev$ $Date$
  */
-@EagerInit
 public class ContributionRepositoryImpl implements ContributionRepository {
     private static final String NS = "http://tuscany.apache.org/xmlns/1.0-SNAPSHOT";
     private final File rootFile;
@@ -72,9 +66,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      * 
      * @param repository
      */
-    @Constructor
-    public ContributionRepositoryImpl(@Property(name = "repository")
-    final String repository) throws IOException {
+    public ContributionRepositoryImpl(final String repository) throws IOException {
         String root = repository;
         if (repository == null) {
             root = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -206,7 +198,6 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         return new ArrayList<URI>(contributionMap.keySet());
     }
 
-    @Init
     public void init() {
         File domainFile = new File(rootFile, "sca-domain.xml");
         if (!domainFile.isFile()) {
@@ -268,7 +259,6 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         }
     }
 
-    @Destroy
     public void destroy() {
     }
 
