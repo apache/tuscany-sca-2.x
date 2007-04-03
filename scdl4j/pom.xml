@@ -35,7 +35,6 @@
         <module>idl</module>
         <module>assembly</module>
         <module>policy</module>
-        <module>stax</module>
         <module>assembly-xml</module>
         <module>idl-java</module>
         <module>idl-java-xml</module>

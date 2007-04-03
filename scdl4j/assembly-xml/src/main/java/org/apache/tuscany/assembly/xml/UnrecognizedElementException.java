@@ -16,31 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.scdl.stax;
+package org.apache.tuscany.assembly.xml;
 
 import javax.xml.namespace.QName;
 
 /**
- * A registry for SCDL content handlers.
- * 
+ * Exception that indicates an element was encountered that could not be handled.
+ *
  * @version $Rev$ $Date$
  */
-public interface LoaderRegistry extends Loader {
+public class UnrecognizedElementException extends LoaderException {
+    private static final long serialVersionUID = 2549543622209829032L;
+    private final QName element;
 
     /**
-     * Registers a content handler with an XML element qname.
-     * 
-     * @param qname
-     * @param handler
+     * Constructor that indicates which element could not be handled.
+     * @param element the element that could not be handled
      */
-    void addLoader(QName element, Loader handler);
+    public UnrecognizedElementException(QName element) {
+        super("Unrecognized element: " + element.toString());
+        this.element = element;
+    }
 
     /**
-     * Returns the handler registered with the given XML element qname.
-     * 
-     * @param qname
-     * @return
+     * Returns the element that could not be handled.
+     * @return the element that could not be handled.
      */
-    Loader getLoader(QName element);
-
+    public QName getElement() {
+        return element;
+    }
 }

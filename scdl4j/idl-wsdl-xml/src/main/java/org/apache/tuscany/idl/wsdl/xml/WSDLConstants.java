@@ -20,7 +20,7 @@ package org.apache.tuscany.idl.wsdl.xml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.scdl.Constants;
+import org.apache.tuscany.assembly.xml.Constants;
 
 public interface WSDLConstants {
 

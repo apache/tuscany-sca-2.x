@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.scdl.stax.impl;
+package org.apache.tuscany.assembly.xml.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -32,12 +32,12 @@ import org.apache.tuscany.assembly.model.AbstractReference;
 import org.apache.tuscany.assembly.model.AbstractService;
 import org.apache.tuscany.assembly.model.AssemblyFactory;
 import org.apache.tuscany.assembly.model.ConstrainingType;
+import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.assembly.xml.Loader;
+import org.apache.tuscany.assembly.xml.LoaderRegistry;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.sca.idl.Interface;
 import org.apache.tuscany.sca.idl.Operation;
-import org.apache.tuscany.scdl.stax.Constants;
-import org.apache.tuscany.scdl.stax.Loader;
-import org.apache.tuscany.scdl.stax.LoaderRegistry;
 
 /**
  * A contrainingType content handler.

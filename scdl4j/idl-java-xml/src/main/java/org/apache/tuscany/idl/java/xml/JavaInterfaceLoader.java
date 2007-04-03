@@ -24,9 +24,9 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.assembly.xml.Loader;
 import org.apache.tuscany.idl.java.JavaFactory;
 import org.apache.tuscany.idl.java.JavaInterface;
-import org.apache.tuscany.scdl.stax.Loader;
 
 public class JavaInterfaceLoader implements Loader<JavaInterface>, JavaConstants {
 

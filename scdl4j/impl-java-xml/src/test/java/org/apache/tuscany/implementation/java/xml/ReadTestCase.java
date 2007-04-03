@@ -33,14 +33,14 @@ import org.apache.tuscany.assembly.model.ConstrainingType;
 import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
+import org.apache.tuscany.assembly.xml.LoaderRegistry;
+import org.apache.tuscany.assembly.xml.impl.ComponentTypeLoader;
+import org.apache.tuscany.assembly.xml.impl.CompositeLoader;
+import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeLoader;
+import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
-import org.apache.tuscany.scdl.stax.LoaderRegistry;
-import org.apache.tuscany.scdl.stax.impl.ComponentTypeLoader;
-import org.apache.tuscany.scdl.stax.impl.CompositeLoader;
-import org.apache.tuscany.scdl.stax.impl.ConstrainingTypeLoader;
-import org.apache.tuscany.scdl.stax.impl.LoaderRegistryImpl;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
