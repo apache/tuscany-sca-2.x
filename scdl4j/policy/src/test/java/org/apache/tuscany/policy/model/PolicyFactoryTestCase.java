@@ -26,30 +26,30 @@ import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
 
 /**
  * Test building of policy model instances using the policy factory.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class PolicyFactoryTestCase extends TestCase {
-	
-	PolicyFactory factory;
 
-	public void setUp() throws Exception {
-		factory = new DefaultPolicyFactory();
-	}
+    PolicyFactory factory;
 
-	public void tearDown() throws Exception {
-		factory = null;
-	}
+    public void setUp() throws Exception {
+        factory = new DefaultPolicyFactory();
+    }
 
-	public void testCreateIntent() {
-		Intent intent = factory.createIntent();
-		intent.setName(new QName("http://test", "reliability"));
-		assertEquals(intent.getName(), new QName("http://test", "reliability"));
-	}
+    public void tearDown() throws Exception {
+        factory = null;
+    }
 
-	public void testCreatePolicySet() {
-		PolicySet policySet = factory.createPolicySet();
-		policySet.setName(new QName("http://test", "reliability"));
-		assertEquals(policySet.getName(), new QName("http://test", "reliability"));
-	}
+    public void testCreateIntent() {
+        Intent intent = factory.createIntent();
+        intent.setName(new QName("http://test", "reliability"));
+        assertEquals(intent.getName(), new QName("http://test", "reliability"));
+    }
+
+    public void testCreatePolicySet() {
+        PolicySet policySet = factory.createPolicySet();
+        policySet.setName(new QName("http://test", "reliability"));
+        assertEquals(policySet.getName(), new QName("http://test", "reliability"));
+    }
 }

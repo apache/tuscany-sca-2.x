@@ -18,29 +18,30 @@
  */
 package org.apache.tuscany.policy.model;
 
-
-
 /**
  * A factory for the policy model.
  */
 public interface PolicyFactory {
-	
-	/**
-	 * Create a new intent.
-	 * @return a new intent
-	 */
-	Intent createIntent();
-	
-	/**
-	 * Create a new policy set.
-	 * @return a new policy set
-	 */
-	PolicySet createPolicySet();
-        
-        /**
-         * Create a new intent map.
-         * @return a new intent map
-         */
-        IntentMap createIntentMap();
-    
+
+    /**
+     * Create a new intent.
+     * 
+     * @return a new intent
+     */
+    Intent createIntent();
+
+    /**
+     * Create a new policy set.
+     * 
+     * @return a new policy set
+     */
+    PolicySet createPolicySet();
+
+    /**
+     * Create a new intent map.
+     * 
+     * @return a new intent map
+     */
+    IntentMap createIntentMap();
+
 }

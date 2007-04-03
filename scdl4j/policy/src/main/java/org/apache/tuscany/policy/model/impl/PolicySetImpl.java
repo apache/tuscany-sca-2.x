@@ -29,52 +29,52 @@ import org.apache.tuscany.sca.idl.Operation;
 
 /**
  * Represents a policy set.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class PolicySetImpl implements PolicySet {
-	
-	private QName name;
-	private List<Operation> operations = new ArrayList<Operation>();
-        private List<QName> appliesTo;
-        private List<Intent> providedIntents;
-        private List<PolicySet> referencedPolicySets;
-        private List<Object> policies;
-        private boolean unresolved;
 
-	public QName getName() {
-		return name;
-	}
+    private QName name;
+    private List<Operation> operations = new ArrayList<Operation>();
+    private List<QName> appliesTo;
+    private List<Intent> providedIntents;
+    private List<PolicySet> referencedPolicySets;
+    private List<Object> policies;
+    private boolean unresolved;
 
-	public void setName(QName name) {
-		this.name = name;
-	}
+    public QName getName() {
+        return name;
+    }
 
-	public List<Operation> getOperations() {
-		return operations;
-	}
+    public void setName(QName name) {
+        this.name = name;
+    }
 
-        public List<QName> getAppliesTo() {
-            return appliesTo;
-        }
-        
-        public List<Intent> getProvidedIntents() {
-            return providedIntents;
-        }
-        
-        public List<PolicySet> getReferencedPolicySets() {
-            return referencedPolicySets;
-        }
-        
-        public List<Object> getPolicies() {
-            return policies;
-        }
-        
-        public boolean isUnresolved() {
-            return unresolved;
-        }
-        
-        public void setUnresolved(boolean unresolved) {
-            this.unresolved = unresolved;
-        }
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    public List<QName> getAppliesTo() {
+        return appliesTo;
+    }
+
+    public List<Intent> getProvidedIntents() {
+        return providedIntents;
+    }
+
+    public List<PolicySet> getReferencedPolicySets() {
+        return referencedPolicySets;
+    }
+
+    public List<Object> getPolicies() {
+        return policies;
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
+    }
 }

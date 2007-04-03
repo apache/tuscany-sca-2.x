@@ -24,73 +24,81 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.idl.Operation;
 
-
-
 /**
- * Represents a policy intent.  See the Policy Framework specification for a description of this element.
+ * Represents a policy intent. See the Policy Framework specification for a
+ * description of this element.
  */
 public interface Intent {
 
-	/**
-	 * Returns the intent name.
-	 * @return the intent name
-	 */
-	QName getName();
-	
-	/**
-	 * Sets the intent name
-	 * @param name the intent name
-	 */
-	void setName(QName name);
+    /**
+     * Returns the intent name.
+     * 
+     * @return the intent name
+     */
+    QName getName();
 
-	/**
-	 * Returns the list of operations that this intent applies to.
-	 * @return
-	 */
-	List<Operation> getOperations();
+    /**
+     * Sets the intent name
+     * 
+     * @param name the intent name
+     */
+    void setName(QName name);
 
-        /**
-         * Returns the list of SCA constructs that this intent is meant to configure.
-         * @return the list of SCA constructs that this intent is meant to configure
-         */
-        List<QName> getConstrains();
-        
-        /**
-         * Returns the list of required intents. 
-         * @return
-         */
-        List<Intent> getRequiredIntents();
+    /**
+     * Returns the list of operations that this intent applies to.
+     * 
+     * @return
+     */
+    List<Operation> getOperations();
 
-        /**
-         * Returns the list of children qualified intents.
-         * @return the list of children qualified intents.
-         */
-        List<Intent> getQualifiedIntents();
-        
-        /**
-         * Returns the intent description.
-         * @return the intent description
-         */
-        String getDescription();
-        
-        /**
-         * Sets the intent description. 
-         * @param description the intent description
-         */
-        void setDescription(String description);
-        
-        /**
-         * Returns true if the model element is unresolved.
-         * 
-         * @return true if the model element is unresolved.
-         */
-        boolean isUnresolved();
+    /**
+     * Returns the list of SCA constructs that this intent is meant to
+     * configure.
+     * 
+     * @return the list of SCA constructs that this intent is meant to configure
+     */
+    List<QName> getConstrains();
 
-        /**
-         * Sets whether the model element is unresolved.
-         * 
-         * @param unresolved whether the model element is unresolved
-         */
-        void setUnresolved(boolean unresolved);
+    /**
+     * Returns the list of required intents.
+     * 
+     * @return
+     */
+    List<Intent> getRequiredIntents();
+
+    /**
+     * Returns the list of children qualified intents.
+     * 
+     * @return the list of children qualified intents.
+     */
+    List<Intent> getQualifiedIntents();
+
+    /**
+     * Returns the intent description.
+     * 
+     * @return the intent description
+     */
+    String getDescription();
+
+    /**
+     * Sets the intent description.
+     * 
+     * @param description the intent description
+     */
+    void setDescription(String description);
+
+    /**
+     * Returns true if the model element is unresolved.
+     * 
+     * @return true if the model element is unresolved.
+     */
+    boolean isUnresolved();
+
+    /**
+     * Sets whether the model element is unresolved.
+     * 
+     * @param unresolved whether the model element is unresolved
+     */
+    void setUnresolved(boolean unresolved);
 
 }

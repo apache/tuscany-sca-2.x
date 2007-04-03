@@ -25,46 +25,46 @@ import org.apache.tuscany.policy.model.IntentMap;
 
 /**
  * Represents an intent map.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class IntentMapImpl implements IntentMap {
-	
-        private boolean unresolved;
-        private IntentMap defaultQualifiedIntentMap;
-        private List<Object> policies;
-        private Intent providedIntent;
-        private List<IntentMap> qualifiedIntentMaps;
 
-        public IntentMap getDefaultQualifiedIntentMap() {
-            return defaultQualifiedIntentMap;
-        }
+    private boolean unresolved;
+    private IntentMap defaultQualifiedIntentMap;
+    private List<Object> policies;
+    private Intent providedIntent;
+    private List<IntentMap> qualifiedIntentMaps;
 
-        public List<Object> getPolicies() {
-            return policies;
-        }
+    public IntentMap getDefaultQualifiedIntentMap() {
+        return defaultQualifiedIntentMap;
+    }
 
-        public Intent getProvidedIntent() {
-            return providedIntent;
-        }
+    public List<Object> getPolicies() {
+        return policies;
+    }
 
-        public List<IntentMap> getQualifiedIntentMaps() {
-            return qualifiedIntentMaps;
-        }
+    public Intent getProvidedIntent() {
+        return providedIntent;
+    }
 
-        public void setDefaultQualifiedIntentMap(IntentMap defaultQualifiedIntentMap) {
-            this.defaultQualifiedIntentMap = defaultQualifiedIntentMap;
-        }
+    public List<IntentMap> getQualifiedIntentMaps() {
+        return qualifiedIntentMaps;
+    }
 
-        public void setProvidedIntent(Intent providedIntent) {
-            this.providedIntent = providedIntent;
-        }
+    public void setDefaultQualifiedIntentMap(IntentMap defaultQualifiedIntentMap) {
+        this.defaultQualifiedIntentMap = defaultQualifiedIntentMap;
+    }
 
-        public boolean isUnresolved() {
-            return unresolved;
-        }
-        
-        public void setUnresolved(boolean unresolved) {
-            this.unresolved = unresolved;
-        }
+    public void setProvidedIntent(Intent providedIntent) {
+        this.providedIntent = providedIntent;
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
+    }
 }

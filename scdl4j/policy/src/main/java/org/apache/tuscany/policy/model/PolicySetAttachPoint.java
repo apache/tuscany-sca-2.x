@@ -21,14 +21,17 @@ package org.apache.tuscany.policy.model;
 import java.util.List;
 
 /**
- * Base interface for all assembly model objects that can have policy sets attached to them.
+ * Base interface for all assembly model objects that can have policy sets
+ * attached to them.
  */
 public interface PolicySetAttachPoint extends IntentAttachPoint {
 
-	/**
-	 * Returns a list of policy sets. See the Policy Framework specification for a description of this attribute.
-	 * @return a list of policy sets.
-	 */
-	List<PolicySet> getPolicySets();
+    /**
+     * Returns a list of policy sets. See the Policy Framework specification for
+     * a description of this attribute.
+     * 
+     * @return a list of policy sets.
+     */
+    List<PolicySet> getPolicySets();
 
 }
