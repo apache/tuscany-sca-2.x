@@ -58,7 +58,7 @@ public class MemoryStoreTestCase extends TestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         listener.onEvent(EasyMock.isA(StoreExpirationEvent.class));
-        org.easymock.classextension.EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 latch.countDown();
                 return null;
