@@ -41,4 +41,20 @@
              <version>1.6.2</version>
          </dependency>
     </dependencies>
+
+    <repositories>
+        <!-- Apache repository for Web Services artifacts -->
+        <repository>
+            <id>apache.ws.zone</id>
+            <name>Apache WS Zone Repository</name>
+            <url>http://ws.zones.apache.org/repository2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 </project>
