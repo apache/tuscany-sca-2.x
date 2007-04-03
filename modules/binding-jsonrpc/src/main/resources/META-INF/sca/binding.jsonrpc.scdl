@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<!--
+    Default system configuration for the launcher environment.
+    
+    $Rev$ $Date$
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+           name="org.apache.tuscany.binding.jsonrpc">
+
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.tuscany.sca.extensions.jsonrpc</group>
+        <name>tuscany-jsonrpc</name>
+        <version>1.0-incubator-SNAPSHOT</version>
+    </dependency>
+
+    <component name="binding.jsonrpc.bindingLoader">
+        <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.JSONRPCBindingLoader"/>
+    </component>
+    
+    <component name="binding.jsonrpc.bindingBuilder">
+        <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.JSONRPCBindingBuilder"/>
+    </component>
+</composite>
