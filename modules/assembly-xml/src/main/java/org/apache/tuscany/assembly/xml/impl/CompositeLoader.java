@@ -43,9 +43,9 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.xml.Loader;
 import org.apache.tuscany.assembly.xml.LoaderRegistry;
+import org.apache.tuscany.idl.Interface;
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.sca.idl.Interface;
-import org.apache.tuscany.sca.idl.Operation;
 
 /**
  * A composite content handler.

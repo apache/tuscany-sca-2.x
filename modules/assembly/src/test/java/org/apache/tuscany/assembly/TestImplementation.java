@@ -20,12 +20,6 @@ package org.apache.tuscany.assembly;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Implementation;
-import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 
 /**

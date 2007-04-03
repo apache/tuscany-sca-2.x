@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.AbstractContract;
+import org.apache.tuscany.idl.Interface;
 import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.sca.idl.Interface;
 
 public class ContractImpl extends BaseImpl implements AbstractContract {
     private Interface callbackInterface;
