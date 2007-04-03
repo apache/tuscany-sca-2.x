@@ -18,10 +18,9 @@
  */
 package org.apache.tuscany.assembly;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.idl.Interface;
-import org.apache.tuscany.sca.idl.Operation;
-import org.apache.tuscany.sca.idl.impl.InterfaceImpl;
+import org.apache.tuscany.idl.Interface;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.InterfaceImpl;
 
 /**
  * A test interface model.

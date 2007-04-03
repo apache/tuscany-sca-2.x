@@ -22,25 +22,6 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.AbstractProperty;
-import org.apache.tuscany.assembly.AbstractReference;
-import org.apache.tuscany.assembly.AbstractService;
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentProperty;
-import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.ComponentType;
-import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.CompositeReference;
-import org.apache.tuscany.assembly.CompositeService;
-import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.assembly.Implementation;
-import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 
 /**

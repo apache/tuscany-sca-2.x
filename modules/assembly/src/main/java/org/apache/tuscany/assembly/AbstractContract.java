@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.assembly;
 
+import org.apache.tuscany.idl.Interface;
 import org.apache.tuscany.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.idl.Interface;
 
 /**
  * Interface contracts define one or more business functions. These business

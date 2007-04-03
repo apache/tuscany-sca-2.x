@@ -23,8 +23,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.sca.idl.Operation;
 
 /**
  * Represents a policy intent.

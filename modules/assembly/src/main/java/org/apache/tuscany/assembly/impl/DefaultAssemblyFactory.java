@@ -38,8 +38,8 @@ import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
-import org.apache.tuscany.sca.idl.Operation;
-import org.apache.tuscany.sca.idl.impl.OperationImpl;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.OperationImpl;
 
 /**
  * A factory for the assembly model.

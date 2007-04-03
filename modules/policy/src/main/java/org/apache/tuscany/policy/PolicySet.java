@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.idl.Operation;
+import org.apache.tuscany.idl.Operation;
 
 /**
  * Represents a policy set. See the Policy Framework specification for a
