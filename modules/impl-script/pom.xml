@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<project>
+
+    <parent>
+        <groupId>org.apache.tuscany.sca.script</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.0-alpha2-incubating-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>container-jsr223</artifactId>
+    <name>Apache Tuscany Script Container using JSR-223</name>
+    <description>Apache Tuscany Script Container using JSR-223</description>
+
+    <repositories>
+       <!-- This is reqquired for Jython as 2.2 Beta1 hasn't made it to the maven repos yet -->
+       <repository>
+          <id>ant</id>
+          <url>http://people.apache.org/~antelder/maven2</url>
+          <snapshots>
+             <enabled>true</enabled>
+          </snapshots>
+       </repository>
+    </repositories>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
+            <version>2.0-alpha2-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.bsf</groupId>
+            <artifactId>bsf-all</artifactId>
+            <version>3.0-beta1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>2.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>                                      
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
+<!-- TODO: big hack to add script engine dependencies till extension dependencies fixed -->
+
+        <dependency>
+            <groupId>rhino</groupId>
+            <artifactId>js</artifactId>
+            <version>1.6R5</version>
+            <scope>compile</scope> 
+        </dependency>
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>0.9.8</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jython</groupId>
+            <artifactId>jython</artifactId>
+            <version>2.2b1</version>
+            <scope>compile</scope>
+         </dependency>
+         <dependency>
+            <groupId>groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+         </dependency>
+
+    </dependencies>
+
+</project>
