@@ -19,6 +19,7 @@
 package org.apache.tuscany.policy.model.impl;
 
 import org.apache.tuscany.policy.model.Intent;
+import org.apache.tuscany.policy.model.IntentMap;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.policy.model.PolicySet;
 
@@ -36,5 +37,9 @@ public class DefaultPolicyFactory implements PolicyFactory {
 	public PolicySet createPolicySet() {
 		return new PolicySetImpl();
 	}
+        
+        public IntentMap createIntentMap() {
+            return new IntentMapImpl();
+        }
 
 }

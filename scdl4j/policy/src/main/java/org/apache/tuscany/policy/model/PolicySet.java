@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.idl.Operation;
 
 
 /**
- * Represents a policy set.  See the Policy Framework specification for a description of this attribute.
+ * Represents a policy set.  See the Policy Framework specification for a description of this element.
  */
 public interface PolicySet {
     
@@ -48,5 +48,44 @@ public interface PolicySet {
 	 * @return
 	 */
 	List<Operation> getOperations();
-	
+
+        /**
+         * Returns the list of 
+         * @return
+         */
+        List<PolicySet> getReferencedPolicySets();
+        
+        /**
+         * Returns the list of provided intents
+         * @return
+         */
+        List<Intent> getProvidedIntents(); 
+        
+        /**
+         * Returns the list of SCA constructs that this policy set is meant to configure.
+         * @return the list of SCA constructs that this policy set is meant to configure
+         */
+        List<QName> getAppliesTo();
+        
+        /**
+         * Returns the list of concrete policies, either WS-Policy policy attachments, policy
+         * references, or policies expressed in another policy language.  
+         * @return the list of concrete policies
+         */
+        List<Object> getPolicies();
+        
+        /**
+         * Returns true if the model element is unresolved.
+         * 
+         * @return true if the model element is unresolved.
+         */
+        boolean isUnresolved();
+
+        /**
+         * Sets whether the model element is unresolved.
+         * 
+         * @param unresolved whether the model element is unresolved
+         */
+        void setUnresolved(boolean unresolved);
+
 }
