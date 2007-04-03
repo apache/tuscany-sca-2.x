@@ -119,10 +119,7 @@ public class JUnitComponentBuilder extends ComponentBuilderExtension<Implementat
         Constructor<?> constr = ctorDef.getConstructor();
         PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
         configuration.setInstanceFactory(instanceFactory);
-        for (Parameter param : ctorDef.getParameters()) {
-            configuration.getConstructorParamNames().add(param.getName());
-            configuration.addConstructorParamType(param.getType());
-        }
+        configuration.setConstructor(ctorDef);
         configuration.setName(definition.getUri());
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
 
