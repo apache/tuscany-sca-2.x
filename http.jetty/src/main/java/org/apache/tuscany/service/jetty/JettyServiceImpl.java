@@ -111,6 +111,10 @@ public class JettyServiceImpl implements JettyService {
         this(monitor, scheduler);
         this.connector = connector;
     }
+    
+    public JettyServiceImpl() {
+        this.monitor = new TrivialMonitor();
+    }
 
     @Property
     public void setHttpPort(int httpPort) {
@@ -323,4 +327,14 @@ public class JettyServiceImpl implements JettyService {
         }
     }
 
+    private class TrivialMonitor implements TransportMonitor {
+        
+        public void started() {}
+
+        public void shutdown() {}
+
+        public void warn(String msg, Object...args) {}
+
+        public void debug(String msg, Object...args) {}
+    }
 }
