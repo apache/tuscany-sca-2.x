@@ -29,16 +29,12 @@ import org.apache.tuscany.services.contribution.model.ContentType;
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.util.FileHelper;
 import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Implementation of the content describer
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-@Service(ContentTypeDescriber.class)
 public class ContentTypeDescriberImpl implements ContentTypeDescriber {
     private final Map<String, String> contentTypeRegistry = new HashMap<String, String>();
 

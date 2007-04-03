@@ -21,19 +21,12 @@ package org.apache.tuscany.services.spi.contribution.extension;
 
 import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
 import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 /**
  * The base class for ContributionProcessor implementations
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-@Service(ContributionProcessor.class)
 public abstract class ContributionProcessorExtension implements ContributionProcessor {
     /**
      * The ContributionProcessorRegistry that this processor should register with; usually set by injection. This
@@ -44,7 +37,6 @@ public abstract class ContributionProcessorExtension implements ContributionProc
     /**
      * @param registry the registry to set
      */
-    @Reference
     public void setContributionProcessorRegistry(ContributionProcessorRegistry registry) {
         this.registry = registry;
     }
@@ -52,7 +44,6 @@ public abstract class ContributionProcessorExtension implements ContributionProc
     /**
      * Initialize the processor. It registers itself to the registry by content type it supports.
      */
-    @Init
     public void start() {
         registry.register(this.getContentType(), this);
     }
@@ -60,7 +51,6 @@ public abstract class ContributionProcessorExtension implements ContributionProc
     /**
      * Destroy the processor. It unregisters itself from the registry.
      */
-    @Destroy
     public void stop() {
         registry.unregister(this.getContentType());
     }

@@ -20,10 +20,8 @@ package org.apache.tuscany.services.contribution;
 
 import java.net.URI;
 import java.net.URL;
-import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
+import javax.xml.stream.XMLInputFactory;
 
 /**
  * A holder that can be used during the load process to store information that is not part of the logical assembly

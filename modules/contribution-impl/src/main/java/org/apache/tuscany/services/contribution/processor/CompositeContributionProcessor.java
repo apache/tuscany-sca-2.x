@@ -32,14 +32,6 @@ import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
 import org.apache.tuscany.services.spi.contribution.extension.ContributionProcessorExtension;
-import org.apache.tuscany.spi.deployer.CompositeClassLoader;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.CompositeImplementation;
-import org.osoa.sca.annotations.Reference;
 
 public class CompositeContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
     /**
@@ -51,7 +43,7 @@ public class CompositeContributionProcessor extends ContributionProcessorExtensi
     private final LoaderRegistry registry;
 
 
-    public CompositeContributionProcessor(@Reference LoaderRegistry registry) {
+    public CompositeContributionProcessor(LoaderRegistry registry) {
         super();
         this.registry = registry;
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
