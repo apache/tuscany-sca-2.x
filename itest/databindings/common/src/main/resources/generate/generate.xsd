@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://www.apache.org/tuscany/generate" 
+        xmlns:tns="http://www.apache.org/tuscany/generate">
+        
+    <complexType name="TypeType">
+        <sequence>
+            <element name="TypeName" type="string"/>
+            <element name="CreateTypeCode" type="string"/>
+            <element name="ModifyTypeCode" type="string"/>
+            <element name="ResultComparison" type="string"/>
+        </sequence>
+    </complexType>        
+    
+    <complexType name="InputFileType">
+        <sequence>
+            <element name="FileName" type="string"/>
+            <element name="FilePath" type="string"/> 
+            <element name="JavaPackage" type="string"/>
+            <element name="Factory" type="string"/>
+            <element name="Namespace" type="string"/>
+            <element name="Prefix" type="string"/>
+            <element name="Type" type="tns:TypeType" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+    
+    <complexType name="TemplateType">
+        <sequence>
+            <element name="TemplateName" type="string"/>
+            <element name="TemplateTargetDir" type="string"/>
+            <element name="JavaPackage" type="string"/>
+        </sequence>
+    </complexType>
+        
+    <complexType name="GenerateType">
+        <sequence>
+            <element name="Template" type="tns:TemplateType" maxOccurs="unbounded"/>
+            <element name="InputFile" type="tns:InputFileType" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+    
+    <element name="Generate" type="tns:GenerateType"/>
+</schema>

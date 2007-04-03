@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ASCII"?>
+<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance">
+
+  <service name="Component2Service">
+     <!-- interface.java interface="org.apache.tuscany.sca.itest.Component" / --> 
+     <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
+  </service>
+
+</componentType>              
+       

@@ -1,0 +1,65 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+package $template.getJavaPackage();
+
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
+
+#foreach($file in $fileList)
+#set($typeList = $file.getType_())
+#foreach($typeInstance in $typeList)
+import $file.getJavaPackage().$typeInstance.getTypeName();
+#end
+#end
+
+/**
+ * The automcatically generated service that simply forwards data objects on to 
+ * the GreeterService and passes back the responses
+ *
+ * @version $Rev: 508831 $ $Date: 2007-02-18 00:12:31 +0000 (Sun, 18 Feb 2007) $
+ */
+@Service(GreeterService.class)
+public class GreeterServiceClientImpl implements GreeterService {
+
+    /**
+     * the reference the the GreeterService that will
+     * change each data object slightly and return it
+     */
+    private GreeterService service;
+
+    @Reference
+    public void setGreeterService(GreeterService service) {
+        this.service = service;
+    }
+#foreach($file in $fileList)
+#set($typeList = $file.getType_())
+#foreach($typeInstance in $typeList)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.tuscany.sca.itest.sdodatabinding.GreeterService#greet$typeInstance.getTypeName()($typeInstance.getTypeName() param)
+     */
+    public $typeInstance.getTypeName() greet$typeInstance.getTypeName()($typeInstance.getTypeName() param) {
+        return service.greet$typeInstance.getTypeName()(param);
+    }
+#end
+#end    
+}

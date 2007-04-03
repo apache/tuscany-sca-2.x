@@ -1,0 +1,4 @@
+A dummy WSDL file that causes the target/classes/wsdl dir to be created in the generated test project. This is 
+required because the test generator must run in the process-resource phase, after generate.xml has been copied
+into target. The generator needs to write out target/classes/wsdl and will fail the directory isn't there. So
+this file just gets unpacked and overwritten. 

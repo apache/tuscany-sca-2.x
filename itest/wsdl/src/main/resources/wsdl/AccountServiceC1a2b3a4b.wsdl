@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:account="http://www.bigbank.com/account"
+	targetNamespace="http://www.bigbank.com/account"
+	name="AccountService">
+
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.bigbank.com/account"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			xmlns:account="http://www.bigbank.com/account"
+			
+			> <!-- xmlns:sdojava="commonj.sdo/java" sdojava:package="org.apache.tuscany.samples.bigbank.account" -->
+			
+			
+<!--	<xsd:complexType name="DataGraphRoot">	
+	 	<xsd:sequence>
+            <xsd:element name="customerProfileData" type="account:CustomerProfileData" maxOccurs="unbounded" minOccurs="0" />
+            <xsd:element name="StockSummaries" type="account:StockSummary" maxOccurs="unbounded" minOccurs="0" />
+            <xsd:element name="AccountSummaries" type="account:AccountSummary" maxOccurs="unbounded" minOccurs="0" />
+            <xsd:element name="StockLogEntries" type="account:StockLogEntry" maxOccurs="unbounded" minOccurs="0" />
+            <xsd:element name="AccountLogEntries" type="account:AccountLogEntry" maxOccurs="unbounded" minOccurs="0" />
+        </xsd:sequence>
+	</xsd:complexType>-->
+			
+
+			<xsd:element name="getAccountReport">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="customerID"
+							type="xsd:int" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getAccountReportResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="accountReport"
+							type="account:AccountReport" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:complexType name="AccountReport">
+				<xsd:sequence>
+					<xsd:element name="accountSummaries"
+						type="account:AccountSummary" maxOccurs="unbounded" />
+					<xsd:element name="stockSummaries"
+						type="account:StockSummary" maxOccurs="unbounded" />
+						
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="AccountSummary">
+				<xsd:attribute name="accountNumber" type="xsd:string" />
+				<xsd:attribute name="accountType" type="xsd:string" />
+				<xsd:attribute name="balance" type="xsd:float" />
+			</xsd:complexType>
+
+			<xsd:complexType name="StockSummary">
+			    <!-- xsd:attribute name="id" type="xsd:int" / -->
+				<xsd:attribute name="purchaseLotNumber" type="xsd:int" />
+				<!-- unique id for this purchase -->
+				<xsd:attribute name="symbol" type="xsd:string" />
+				<xsd:attribute name="quantity" type="xsd:int" />
+				<xsd:attribute name="purchaseDate" type="xsd:dateTime" />
+				<xsd:attribute name="purchasePrice" type="xsd:float" />
+				<xsd:attribute name="currentPrice" type="xsd:float" />
+				<xsd:attribute name="company" type="xsd:string" />
+				<xsd:attribute name="highPrice" type="xsd:float" />
+				<xsd:attribute name="lowPrice" type="xsd:float" />
+				
+			</xsd:complexType>
+
+			<!-- Profile in data base  -->
+			<xsd:element name="getCustomerProfile">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="loginID" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:complexType name="CustomerProfileData">
+				<xsd:sequence>
+					<xsd:element name="firstName" type="xsd:string" />
+					<xsd:element name="lastName" type="xsd:string" />
+					<xsd:element name="address" type="xsd:string" />
+					<xsd:element name="email" type="xsd:string" />
+					<xsd:element name="loginID" type="xsd:string" />
+					<xsd:element name="password" type="xsd:string" />
+					<xsd:element name="id" type="xsd:int" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="getCustomerProfileResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="customerProfile"
+							type="account:CustomerProfileData" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="withdraw">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="accountNumber"
+							type="xsd:string" />
+						<xsd:element name="amount" type="xsd:float" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="withdrawResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="balance" type="xsd:float" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="deposit">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="accountNumber"
+							type="xsd:string" />
+						<xsd:element name="amount" type="xsd:float" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="depositResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="balance" type="xsd:float" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="purchaseStock">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="id" type="xsd:int" />
+						<xsd:element name="stock" type="account:StockSummary" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="purchaseStockResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="purchaseSummary"
+							type="account:StockSummary" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+
+
+			<xsd:element name="sellStock">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="purchaseLotNumber"
+							type="xsd:int" /><!-- unique id for this purchase -->
+						<xsd:element name="quantity" type="xsd:int" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="createAccount">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="customerProfile"
+							type="account:CustomerProfileData" />
+                        <xsd:element name="createSavings"
+							type="xsd:boolean" />
+                        <xsd:element name="createCheckings"
+							type="xsd:boolean" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>	
+			<xsd:element name="createAccountResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="customerProfile"
+							type="account:CustomerProfileData" />
+					</xsd:sequence>
+				</xsd:complexType>
+				
+			</xsd:element>
+
+			<xsd:element name="getAccountLog">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="customerID"
+							type="xsd:int" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getAccountLogResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="accountLog"
+							type="account:AccountLog" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:complexType name="AccountLog">
+				<xsd:sequence>
+					<xsd:element name="accountLogEntries"
+						type="account:AccountLogEntry" maxOccurs="unbounded" />
+					<xsd:element name="stockLogEntries"
+						type="account:StockLogEntry" maxOccurs="unbounded" />
+						
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="AccountLogEntry">
+				<xsd:attribute name="logSeqNo" type="xsd:int" />
+				<xsd:attribute name="id" type="xsd:int" />
+				<xsd:attribute name="accountNumber" type="xsd:string" />
+				<xsd:attribute name="actionType" type="xsd:string" />
+				<xsd:attribute name="amount" type="xsd:float" />
+			</xsd:complexType>
+
+			<xsd:complexType name="StockLogEntry">
+				<xsd:attribute name="logSeqNo" type="xsd:int" />
+				<xsd:attribute name="id" type="xsd:int" />
+				<xsd:attribute name="symbol" type="xsd:string" />
+				<xsd:attribute name="quantity" type="xsd:int" />
+				<xsd:attribute name="actionType" type="xsd:string" />
+				<xsd:attribute name="purchaseLotNumber" type="xsd:int" />
+			</xsd:complexType>
+
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="getAccountReportRequest">
+		<wsdl:part element="account:getAccountReport"
+			name="getAccountReportRequest" />
+	</wsdl:message>
+	<wsdl:message name="getAccountReportResponse">
+		<wsdl:part element="account:getAccountReportResponse"
+			name="getAccountReportResponse" />
+	</wsdl:message>
+
+	<wsdl:message name="getCustomerProfileRequest">
+		<wsdl:part element="account:getCustomerProfile"
+			name="getCustomerProfile" />
+	</wsdl:message>
+	<wsdl:message name="getCustomerProfileResponse">
+		<wsdl:part element="account:getCustomerProfileResponse"
+			name="getCustomerProfileResponse" />
+	</wsdl:message>
+
+	<wsdl:message name="withdrawRequest">
+		<wsdl:part element="account:withdraw" name="withdrawRequest" />
+	</wsdl:message>
+
+	<wsdl:message name="withdrawResponse">
+		<wsdl:part element="account:withdrawResponse"
+			name="withdrawResponse" />
+	</wsdl:message>
+
+	<wsdl:message name="depositRequest">
+		<wsdl:part element="account:deposit" name="depositRequest" />
+	</wsdl:message>
+
+	<wsdl:message name="depositResponse">
+		<wsdl:part element="account:depositResponse"
+			name="depositResponse" />
+	</wsdl:message>
+
+	<wsdl:message name="purchaseStockRequest">
+		<wsdl:part element="account:purchaseStock"
+			name="purchaseStockRequest" />
+	</wsdl:message>
+
+	<wsdl:message name="purchaseStockResponse">
+		<wsdl:part element="account:purchaseStockResponse"
+			name="purchaseStockResponse" />
+	</wsdl:message>
+
+	<wsdl:message name="sellStockRequest">
+		<wsdl:part element="account:sellStock" name="sellStockRequest" />
+	</wsdl:message>
+	
+	<wsdl:message name="createAccountRequest">
+		<wsdl:part element="account:createAccount" name="createAccountRequest" />
+	</wsdl:message>
+
+	<wsdl:message name="createAccountResponse">
+		<wsdl:part element="account:createAccountResponse" name="createAccountResponse" />
+	</wsdl:message>
+
+	<wsdl:message name="getAccountLogRequest">
+		<wsdl:part element="account:getAccountLog"
+			name="getAccountLogRequest" />
+	</wsdl:message>
+	
+	<wsdl:message name="getAccountLogResponse">
+		<wsdl:part element="account:getAccountLogResponse"
+			name="getAccountLogResponse" />
+	</wsdl:message>
+
+	<wsdl:portType name="AccountService">
+		<wsdl:operation name="getAccountReport">
+			<wsdl:input message="account:getAccountReportRequest" />
+			<wsdl:output message="account:getAccountReportResponse" />
+		</wsdl:operation>
+
+		<wsdl:operation name="getCustomerProfile">
+			<wsdl:input message="account:getCustomerProfileRequest" />
+			<wsdl:output message="account:getCustomerProfileResponse" />
+		</wsdl:operation>
+
+		<wsdl:operation name="withdraw">
+			<wsdl:input message="account:withdrawRequest" />
+			<wsdl:output message="account:withdrawResponse" />
+		</wsdl:operation>
+
+		<wsdl:operation name="deposit">
+			<wsdl:input message="account:depositRequest" />
+			<wsdl:output message="account:depositResponse" />
+		</wsdl:operation>
+
+		<wsdl:operation name="purchaseStock">
+			<wsdl:input message="account:purchaseStockRequest" />
+			<wsdl:output message="account:purchaseStockResponse" />
+		</wsdl:operation>
+
+		<wsdl:operation name="sellStock">
+			<wsdl:input message="account:sellStockRequest" />
+			<wsdl:output message="account:purchaseStockResponse" />
+		</wsdl:operation>
+
+
+		<wsdl:operation name="createAccount">
+			<wsdl:input message="account:createAccountRequest" />
+			<wsdl:output message="account:createAccountResponse" />
+		</wsdl:operation>
+
+		<wsdl:operation name="getAccountLog">
+			<wsdl:input message="account:getAccountLogRequest" />
+			<wsdl:output message="account:getAccountLogResponse" />
+		</wsdl:operation>
+
+	</wsdl:portType>
+
+
+
+	<wsdl:binding name="AccountServiceSOAP" type="account:AccountService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getAccountReport">
+			<soap:operation
+				soapAction="http://www.bigbank.com/account/getAccountReport" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getCustomerProfile">
+			<soap:operation
+				soapAction="http://www.bigbank.com/account/getCustomerProfile" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+		<wsdl:operation name="withdraw">
+			<soap:operation
+				soapAction="http://www.bigbank.com/account/withdraw" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+		<wsdl:operation name="deposit">
+			<soap:operation
+				soapAction="http://www.bigbank.com/account/deposit" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+		<wsdl:operation name="purchaseStock">
+			<soap:operation
+				soapAction="http://www.bigbank.com/account/purchaseStock" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+		<wsdl:operation name="sellStock">
+			<soap:operation
+				soapAction="http://www.bigbank.com/account/sellStock" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+		<wsdl:operation name="createAccount">
+			<soap:operation
+				soapAction="http://www.bigbank.com/account/createAccount" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+		<wsdl:operation name="getAccountLog">
+			<soap:operation
+				soapAction="http://www.bigbank.com/account/getAccountLog" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+	</wsdl:binding>
+	<wsdl:service name="AccountService">
+		<wsdl:port binding="account:AccountServiceSOAP"
+			name="AccountServiceSOAP">
+			<soap:address
+				location="http://localhost:8080/services/AccountService1a2b3a4b" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

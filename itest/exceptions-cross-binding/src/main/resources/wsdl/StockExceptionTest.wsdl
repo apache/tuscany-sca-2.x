@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+<wsdl:definitions targetNamespace="http://scatesttool.stockexceptiontestservice" xmlns:impl="http://scatesttool.stockexceptiontestservice"
+    xmlns:tns="http://scatesttool.stockexceptiontestservice" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="StockExceptionTest">
+    <wsdl:types>
+        <schema targetNamespace="http://scatesttool.stockexceptiontestservice" xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <complexType name="StockOffer">
+                    <sequence>
+                        <element name="symbol" minOccurs="1" type="xsd:string" />
+                        <element name="price" minOccurs="1" type="xsd:float" nillable="true" /> <!-- max price reqested, actual response -->
+                        <element name="name" minOccurs="0" type="xsd:string" />
+                    </sequence>
+            </complexType>
+            
+            <element name="stockQuoteOffer">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="tns:StockOffer" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="stockQuoteOfferResponse">
+                <complexType>
+                    <sequence>
+                        <element name="stockQuoteOfferReturn" minOccurs="0" type="tns:StockOffer" />
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <!-- Faults -->
+            <element name="InvalidSymbolFault">
+                <complexType>
+                    <sequence>
+                        <element name="message"  minOccurs="1" type="xsd:string" />
+                        <element name="offer" minOccurs="1" type="tns:StockOffer" />
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <element name="MarketClosedFault"   type="xsd:int" />
+			
+			<element name="TestNotDeclaredAtSourceFault" type="xsd:string" />
+     
+        </schema>
+    </wsdl:types>
+
+
+    <wsdl:message name="stockQuoteOfferRequest">
+        <wsdl:part element="tns:stockQuoteOffer" name="parameters" />
+    </wsdl:message>
+
+    <wsdl:message name="stockQuoteOfferResponse">
+        <wsdl:part element="tns:stockQuoteOfferResponse" name="parameters" />
+    </wsdl:message>
+
+    <wsdl:message name="InvalidSymbolFault">
+        <wsdl:part element="tns:InvalidSymbolFault" name="fault" />
+    </wsdl:message>
+
+    <wsdl:message name="MarketClosedFault">
+        <wsdl:part element="tns:MarketClosedFault" name="fault" />
+    </wsdl:message>
+
+   <wsdl:message name="TestNotDeclaredAtSourceFault">
+        <wsdl:part element="tns:TestNotDeclaredAtSourceFault" name="fault" />
+    </wsdl:message>
+
+
+    <wsdl:portType name="StockExceptionTest">
+        <wsdl:operation name="stockQuoteOffer">
+            <wsdl:input message="tns:stockQuoteOfferRequest" name="stockQuoteOfferRequest" />
+
+            <wsdl:output message="tns:stockQuoteOfferResponse" name="stockQuoteOfferResponse" />
+            
+            <wsdl:fault message="tns:InvalidSymbolFault" name="InvalidSymbolException" />
+             
+            <wsdl:fault message="tns:MarketClosedFault" name="MarketClosedException" />
+            
+            <wsdl:fault message="tns:TestNotDeclaredAtSourceFault" name="TestNotDeclaredAtSourceException" />
+        </wsdl:operation>
+
+ 
+    </wsdl:portType>
+
+    <wsdl:binding name="StockExceptionTestServiceSoapBinding" type="tns:StockExceptionTest">
+        <!-- <wsaw:UsingAddressing wsdl:required="false" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"/> -->
+
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+
+        <wsdl:operation name="stockQuoteOffer">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="stockQuoteOfferRequest">
+                <wsdlsoap:body use="literal" />
+            </wsdl:input>
+
+            <wsdl:output name="stockQuoteOfferResponse">
+                <wsdlsoap:body use="literal" />
+            </wsdl:output>
+            
+            <wsdl:fault name="InvalidSymbolException"> 
+            	<wsdlsoap:fault name="InvalidSymbolException" use="literal" />
+            </wsdl:fault>
+            
+            <wsdl:fault name="MarketClosedException"> 
+            	<wsdlsoap:fault name="MarketClosedException" use="literal" />
+            </wsdl:fault>
+            
+            <wsdl:fault name="TestNotDeclaredAtSourceException"> 
+            	<wsdlsoap:fault name="TestNotDeclaredAtSourceException" use="literal" />
+            </wsdl:fault>
+
+
+
+        </wsdl:operation>
+
+
+    </wsdl:binding>
+
+    <wsdl:service name="StockExceptionTestService">
+        <wsdl:port binding="tns:StockExceptionTestServiceSoapBinding" name="StockExceptionTestServiceSoapPort">
+            <wsdlsoap:address location="http://localhost:8080/StockExceptionTestService/services/StockExceptionTestService" />
+
+        </wsdl:port>
+
+    </wsdl:service>
+
+</wsdl:definitions>
