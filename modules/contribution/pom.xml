@@ -18,38 +18,21 @@
  * under the License.    
 -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
-        <artifactId>contribution</artifactId>
-        <version>2.0-alpha2-incubating-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>${version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
     <artifactId>tuscany-contribution</artifactId>
-    <name>Apache Tuscany SCA Contribution Services Framework</name>
-    <description>Apache Tuscany SCA Contribution Services Framework</description>
+    <name>Apache Tuscany SCA Contribution Service</name>
 
     <dependencies>
-		<!-- OSOA SCA API -->
-        <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api-r${scaSpecVersion}</artifactId>
-        </dependency>
-        <!-- java.xml.stream API -->
         <dependency>
             <groupId>stax</groupId>
             <artifactId>stax-api</artifactId>
             <version>1.0.1</version>
-            <scope>compile</scope>
         </dependency>
-   
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>        
     </dependencies>
 </project>

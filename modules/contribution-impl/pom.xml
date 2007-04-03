@@ -18,44 +18,29 @@
  * under the License.    
 -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
-        <artifactId>contribution</artifactId>
-        <version>2.0-alpha2-incubating-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>${version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
     <artifactId>tuscany-contribution-impl</artifactId>
-    <name>Apache Tuscany SCA Contribution Services Implementation</name>
-    <description>Apache Tuscany SCA Contribution Services Implementation</description>
+    <name>Apache Tuscany SCA Contribution Service Implementation</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api-r${scaSpecVersion}</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution</artifactId>
             <version>${version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
+            <version>3.2.0</version>
+            <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>        
+        
     </dependencies>
 </project>

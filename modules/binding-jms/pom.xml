@@ -17,73 +17,17 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <parent>
-        <groupId>org.apache.tuscany.sca.extensions.jms</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
-    </parent>
-
+<project>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-jms</artifactId>
-    <name>Apache Tuscany Binding for JMS</name>
-    <description>Implementation of the SCA JMS Binding</description>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>${version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-binding-jms</artifactId>
+    <name>Apache Tuscany JMS Binding</name>
 
     <dependencies>
-
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-jms</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-        </dependency>       
-
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-j2ee-management</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca.services.idl</groupId>
-            <artifactId>wsdl</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
-            <artifactId>databinding-axiom</artifactId>
-            <version>${extensionVersion}</version>
-            <scope>compile</scope>
-        </dependency>        
-
-        <!-- test dependencies -->
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>test</artifactId>
-        </dependency>
-
-        <dependency>
-           <groupId>xmlunit</groupId>
-           <artifactId>xmlunit</artifactId>
-           <version>1.0</version>
-           <scope>test</scope>
-        </dependency>
-
     </dependencies>
-
 </project>
