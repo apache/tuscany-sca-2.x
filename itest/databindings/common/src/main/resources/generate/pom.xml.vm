@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<project>
+    <parent>
+        <groupId>org.apache.tuscany.testing</groupId>
+        <artifactId>databindings</artifactId>
+        <version>1.0-incubator-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>iTest-sdoDatabinding</artifactId>
+    <version>${testing.version}</version>
+    <packaging>jar</packaging>
+    <name>SDO Databinding Integration Test</name>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>java.net</id>
+            <name>java.net Maven 1.x Repository</name>
+            <url>https://maven-repository.dev.java.net/nonav/repository</url>
+            <layout>legacy</layout>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>java.net</id>
+            <name>java.net Maven 1.x Repository</name>
+            <url>https://maven-repository.dev.java.net/repository</url>
+            <layout>legacy</layout>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+            <artifactId>databinding-jaxb</artifactId>
+            <version>2.0-alpha2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+            <artifactId>databinding-sdo</artifactId>
+            <version>2.0-alpha2-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
+            <artifactId>databinding-axiom</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.testing</groupId>
+            <artifactId>itest-commonDatabinding</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+    </dependencies>
+
+    <build>
+        <plugins>
+           <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <phase>generate-sources</phase>
+                      <goals>
+                          <goal>unpack</goal>
+                      </goals>
+                      <configuration>
+                          <artifactItems>
+                              <artifactItem>
+                                  <groupId>org.apache.tuscany.testing</groupId>
+                                  <artifactId>itest-commonDatabinding</artifactId>
+                                  <version>${project.version}</version>
+                                  <overWrite>true</overWrite>
+                                  <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                              </artifactItem>
+                          </artifactItems>
+                      </configuration>
+                  </execution>
+              </executions>              
+            </plugin>       
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/sdo-source</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-test-source</id>
+                        <phase>process-resources</phase>                    
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.apache.tuscany.sca.itest.generate.Generate</mainClass>
+                    <arguments>  
+                        <argument>${project.build.directory}</argument>
+                    </arguments>
+                </configuration>
+            </plugin> 
+            <plugin>
+                <groupId>org.apache.tuscany.sdo</groupId>
+                <artifactId>tuscany-sdo-plugin</artifactId>
+                <version>1.0-incubator-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-sdo</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <schemaFiles>
+                                <configuration>
+                                    <fileName>${project.build.directory}/classes/wsdl/Greeter.wsdl</fileName>
+                                    <javaPackage>org.apache.tuscany.sca.itest.databinding.services</javaPackage>
+                                </configuration>                            
+                            #foreach( $file in $fileList )
+                                <configuration>
+                                    <fileName>${project.build.directory}/classes/$file.getFilePath()/$file.getFileName()</fileName>
+                                    <javaPackage>$file.getJavaPackage()</javaPackage>
+                                </configuration>
+                            #end
+                            </schemaFiles>
+                            <noNotification>true</noNotification>
+                            <noContainment>true</noContainment>
+                            <noUnsettable>true</noUnsettable>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

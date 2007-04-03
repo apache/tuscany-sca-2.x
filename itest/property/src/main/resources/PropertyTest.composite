@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+       xmlns:foo="http://foo"
+           name="PropertyTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <property name="number" type="xsd:int">1</property>
+    <property name="complex" type="foo:MyComplexType" >
+        <foo:MyComplexValue xsi:type="foo:MyComplexType" >
+            <foo:a>a</foo:a>
+            <foo:b>b</foo:b>
+            <foo:c>c</foo:c>
+            <foo:d>d</foo:d>
+            <foo:x>
+                <foo:y>y</foo:y>
+                <foo:z>z</foo:z>
+            </foo:x>
+        </foo:MyComplexValue>
+    </property>
+
+    <property name="moreComplex" type="foo:MyMoreComplexType">
+        <foo:MyMoreComplexValue xsi:type="foo:MyMoreComplexType">
+            <foo:stringArray>TestString_1</foo:stringArray>
+            <foo:stringArray>TestString_2</foo:stringArray>
+            <foo:intArray>10</foo:intArray>
+            <foo:integerNumber>27</foo:integerNumber>
+            <foo:floatNumber>79.34</foo:floatNumber>
+            <foo:doubleArray>25.52</foo:doubleArray>
+            <foo:doubleNumber>184.52</foo:doubleNumber>
+            <foo:doubleArray>50.05</foo:doubleArray>
+            <foo:intArray>20</foo:intArray>
+            <foo:numberSetArray>
+                <foo:integerNumber>1</foo:integerNumber>
+                <foo:floatNumber>11</foo:floatNumber>
+                <foo:doubleNumber>111</foo:doubleNumber>
+            </foo:numberSetArray>
+            <foo:numberSetArray>
+                <foo:integerNumber>2</foo:integerNumber>
+                <foo:floatNumber>22</foo:floatNumber>
+                <foo:doubleNumber>222</foo:doubleNumber>
+            </foo:numberSetArray>
+            <foo:numberSet>
+                <foo:integerNumber>54</foo:integerNumber>
+                <foo:floatNumber>158.68</foo:floatNumber>
+                <foo:doubleNumber>369.04</foo:doubleNumber>
+            </foo:numberSet>
+        </foo:MyMoreComplexValue>
+    </property>
+
+    <component name="ABCDComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.ABCDComponentImpl"/>
+        <reference name="ab">ABComponent</reference>
+        <reference name="cd">CDComponent</reference>
+    </component>
+
+    <component name="ABComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.ABComponentImpl"/>
+        <property name="a" source="$complex/foo:MyComplexValue/foo:a"/>
+        <property name="b" source="$complex/foo:MyComplexValue/foo:b"/>
+        <property name="f" source="$complex/foo:MyComplexValue/foo:a">f</property>
+        <property name="xpath" source="$complex/foo:MyComplexValue/foo:x/*[local-name()='z']"/>
+        <property name="one" source="$number"/>
+        <property name="foobar">
+        	<value>Apache</value>
+        	<value>Tuscany</value>
+        	<value>Java SCA</value>
+        </property>
+        <property name="fooInts">
+        	<value>123</value>
+        	<value>456</value>
+        	<value>789</value>
+        </property>
+    </component>
+    
+
+    <component name="CDComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.CDComponentImpl"/>
+        <property name="c" source="$complex/foo:MyComplexValue/foo:c"/>
+        <property name="d" source="$complex/foo:MyComplexValue/foo:d"/>
+        <property name="nosource">aValue</property>
+        <property name="fileProperty" file="fileProperty.txt"/>
+        <property name="manyValuesFileProperty" file="manyValuesFileProperty.txt"/>
+        <property name="nonFileProperty" file="fileProperty.txt" source="$complex/foo:MyComplexValue/foo:c"/>
+        <property name="two" source="$number">2</property>
+    </component>
+
+    <component name="PropertyComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.PropertyComponentImpl"/>
+        <property name="complexPropertyOne" source="$moreComplex"></property>
+        <property name="complexPropertyTwo">
+            <foo:MyAnotherComplexValue>
+                <foo:stringArray>TestString_1</foo:stringArray>
+                <foo:stringArray>TestString_2</foo:stringArray>
+                <foo:intArray>10</foo:intArray>
+                <foo:integerNumber>27</foo:integerNumber>
+                <foo:floatNumber>79.34</foo:floatNumber>
+                <foo:doubleArray>25.52</foo:doubleArray>
+                <foo:doubleNumber>184.52</foo:doubleNumber>
+                <foo:doubleArray>50.05</foo:doubleArray>
+                <foo:intArray>20</foo:intArray>
+                <foo:numberSetArray>
+                    <foo:integerNumber>1</foo:integerNumber>
+                    <foo:floatNumber>11</foo:floatNumber>
+                    <foo:doubleNumber>111</foo:doubleNumber>
+                </foo:numberSetArray>
+                <foo:numberSetArray>
+                    <foo:integerNumber>2</foo:integerNumber>
+                    <foo:floatNumber>22</foo:floatNumber>
+                    <foo:doubleNumber>222</foo:doubleNumber>
+                </foo:numberSetArray>
+                <foo:numberSet>
+                    <foo:integerNumber>54</foo:integerNumber>
+                    <foo:floatNumber>158.68</foo:floatNumber>
+                    <foo:doubleNumber>369.04</foo:doubleNumber>
+                </foo:numberSet>
+            </foo:MyAnotherComplexValue>
+        </property>
+        <property name="complexPropertyThree" element="foo:PropertyThreeElement">
+            <foo:PropertyThreeElement>
+                <foo:stringArray>TestElementString_1</foo:stringArray>
+                <foo:stringArray>TestElementString_2</foo:stringArray>
+                <foo:intArray>10</foo:intArray>
+                <foo:integerNumber>27</foo:integerNumber>
+                <foo:floatNumber>79.34</foo:floatNumber>
+                <foo:doubleArray>25.52</foo:doubleArray>
+                <foo:doubleNumber>184.52</foo:doubleNumber>
+                <foo:doubleArray>50.05</foo:doubleArray>
+                <foo:intArray>20</foo:intArray>
+                <foo:numberSetArray>
+                    <foo:integerNumber>1</foo:integerNumber>
+                    <foo:floatNumber>11</foo:floatNumber>
+                    <foo:doubleNumber>111</foo:doubleNumber>
+                </foo:numberSetArray>
+                <foo:numberSetArray>
+                    <foo:integerNumber>2</foo:integerNumber>
+                    <foo:floatNumber>22</foo:floatNumber>
+                    <foo:doubleNumber>222</foo:doubleNumber>
+                </foo:numberSetArray>
+                <foo:numberSet>
+                    <foo:integerNumber>54</foo:integerNumber>
+                    <foo:floatNumber>158.68</foo:floatNumber>
+                    <foo:doubleNumber>369.04</foo:doubleNumber>
+                </foo:numberSet>
+            </foo:PropertyThreeElement>
+        </property>
+        <property name="complexPropertyFour" element="foo:PropertyFourElement" >
+            <foo:PropertyFourElement>
+                <foo:integerNumber>1</foo:integerNumber>
+                <foo:floatNumber>11.11</foo:floatNumber>
+                <foo:doubleNumber>111.111</foo:doubleNumber>
+                <foo:numberSet>
+                    <foo:integerNumber>11</foo:integerNumber>
+                    <foo:floatNumber>1111.1111</foo:floatNumber>
+                    <foo:doubleNumber>11111.11111</foo:doubleNumber>
+                </foo:numberSet>
+            </foo:PropertyFourElement>
+            <foo:PropertyFourElement>
+                <foo:integerNumber>2</foo:integerNumber>
+                <foo:floatNumber>22.22</foo:floatNumber>
+                <foo:doubleNumber>222.222</foo:doubleNumber>
+                <foo:numberSet>
+                    <foo:integerNumber>22</foo:integerNumber>
+                    <foo:floatNumber>2222.2222</foo:floatNumber>
+                    <foo:doubleNumber>22222.22222</foo:doubleNumber>
+                </foo:numberSet>
+            </foo:PropertyFourElement>
+            <foo:PropertyFourElement>
+                <foo:integerNumber>3</foo:integerNumber>
+                <foo:floatNumber>33.33</foo:floatNumber>
+                <foo:doubleNumber>333.333</foo:doubleNumber>
+                <foo:numberSet>
+                    <foo:integerNumber>33</foo:integerNumber>
+                    <foo:floatNumber>3333.3333</foo:floatNumber>
+                    <foo:doubleNumber>33333.33333</foo:doubleNumber>
+                </foo:numberSet>
+            </foo:PropertyFourElement>
+        </property>
+    </component>
+</composite>
+

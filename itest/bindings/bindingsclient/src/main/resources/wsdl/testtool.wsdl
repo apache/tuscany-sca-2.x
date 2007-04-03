@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+<wsdl:definitions targetNamespace="http://scatesttool.scabeta1fvt" xmlns:impl="http://scatesttool.scabeta1fvt"
+    xmlns:tns="http://scatesttool.scabeta1fvt" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="testtool">
+    <wsdl:types>
+        <schema targetNamespace="http://scatesttool.scabeta1fvt" xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <element name="doOneHopPingResponse">
+                <complexType>
+                    <sequence>
+                        <element name="doOneHopPingReturn" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="doTwoHopPing">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="doTwoHopPingResponse">
+                <complexType>
+                    <sequence>
+                        <element name="doTwoHopPingReturn" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="doDataTypeTest">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="doDataTypeTestResponse">
+                <complexType>
+                    <sequence>
+                        <element name="doDataTypeTestReturn" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="getCallbackBuffer">
+                <complexType>
+                    <sequence />
+                </complexType>
+            </element>
+            <element name="getCallbackBufferResponse">
+                <complexType>
+                    <sequence>
+                        <element name="getCallbackBufferReturn" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="clearCallbackBuffer">
+                <complexType>
+                    <sequence />
+                </complexType>
+            </element>
+            <element name="clearCallbackBufferResponse">
+                <complexType>
+                    <sequence />
+                </complexType>
+            </element>
+            <element name="doOneHopPing">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="doOneHopPingResponse">
+        <wsdl:part element="tns:doOneHopPingResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="doDataTypeTestResponse">
+        <wsdl:part element="tns:doDataTypeTestResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="clearCallbackBufferResponse">
+        <wsdl:part element="tns:clearCallbackBufferResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="getCallbackBufferRequest">
+        <wsdl:part element="tns:getCallbackBuffer" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="doTwoHopPingRequest">
+        <wsdl:part element="tns:doTwoHopPing" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="doTwoHopPingResponse">
+        <wsdl:part element="tns:doTwoHopPingResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="getCallbackBufferResponse">
+        <wsdl:part element="tns:getCallbackBufferResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="clearCallbackBufferRequest">
+        <wsdl:part element="tns:clearCallbackBuffer" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="doDataTypeTestRequest">
+        <wsdl:part element="tns:doDataTypeTest" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="doOneHopPingRequest">
+        <wsdl:part element="tns:doOneHopPing" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:portType name="SCATestToolService">
+        <wsdl:operation name="doOneHopPing">
+            <wsdl:input message="tns:doOneHopPingRequest" name="doOneHopPingRequest" />
+
+            <wsdl:output message="tns:doOneHopPingResponse" name="doOneHopPingResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="doTwoHopPing">
+            <wsdl:input message="tns:doTwoHopPingRequest" name="doTwoHopPingRequest" />
+
+            <wsdl:output message="tns:doTwoHopPingResponse" name="doTwoHopPingResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="doDataTypeTest">
+            <wsdl:input message="tns:doDataTypeTestRequest" name="doDataTypeTestRequest" />
+
+            <wsdl:output message="tns:doDataTypeTestResponse" name="doDataTypeTestResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="getCallbackBuffer">
+            <wsdl:input message="tns:getCallbackBufferRequest" name="getCallbackBufferRequest" />
+
+            <wsdl:output message="tns:getCallbackBufferResponse" name="getCallbackBufferResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="clearCallbackBuffer">
+            <wsdl:input message="tns:clearCallbackBufferRequest" name="clearCallbackBufferRequest" />
+
+            <wsdl:output message="tns:clearCallbackBufferResponse" name="clearCallbackBufferResponse" />
+
+        </wsdl:operation>
+
+    </wsdl:portType>
+
+    <wsdl:binding name="SCATestToolServiceSoapBinding" type="tns:SCATestToolService">
+        <!-- <wsaw:UsingAddressing wsdl:required="false" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"/> -->
+
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+
+        <wsdl:operation name="doOneHopPing">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="doOneHopPingRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="doOneHopPingResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="doTwoHopPing">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="doTwoHopPingRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="doTwoHopPingResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="doDataTypeTest">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="doDataTypeTestRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="doDataTypeTestResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="getCallbackBuffer">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="getCallbackBufferRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="getCallbackBufferResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="clearCallbackBuffer">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="clearCallbackBufferRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="clearCallbackBufferResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+    </wsdl:binding>
+
+    <wsdl:service name="SCATestToolService">
+        <wsdl:port binding="tns:SCATestToolServiceSoapBinding" name="SCATestToolServiceSoapPort">
+            <wsdlsoap:address location="http://localhost:8080/services/SCATestToolWSService" />
+
+        </wsdl:port>
+
+    </wsdl:service>
+
+</wsdl:definitions>

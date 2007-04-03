@@ -1,0 +1,6 @@
+<manyFilePropertyValues>
+	<value>fileValueOne</value>
+	<value>fileValueTwo</value>
+	<value>fileValueThree</value>
+	<value>fileValueFour</value>
+</manyFilePropertyValues>

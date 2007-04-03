@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://www.apache.org/tuscany/interop" 
+        xmlns:tns="http://www.apache.org/tuscany/interop"
+        xmlns:sdo="commonj.sdo">
+
+  <complexType name="ComplexTypeReferencedDataObjectType">
+    <sequence>
+      <element name="SomeData" type="string"/>
+    </sequence>
+    <attribute name="DataObjectId" type="ID"/>
+  </complexType>
+    
+  <complexType name="ComplexTypeReferencingDataObjectType">
+    <sequence>
+      <element name="OppositeProperty" type="IDREF"/>
+    </sequence> 
+    <attribute name="AttributeWithSDOPropertyType" type="IDREF" 
+               sdo:propertyType="tns:ComplexTypeReferencedDataObjectType"/> 
+    <attribute name="DataObjectId" type="ID"/>
+  </complexType>     
+    
+  <complexType name="ComplexTypeWithOppositePropertyType">
+    <sequence>
+    </sequence> 
+    <attribute name="AttributeWithSDOPropertyType" type="IDREF" 
+               sdo:propertyType="tns:ComplexTypeReferencingDataObjectType"
+               sdo:oppositeProperty="OppositeProperty"/>
+    <attribute name="DataObjectId" type="ID"/> 
+  </complexType>   
+                 
+  <element name="ComplexTypeWithOppositeProperty">
+    <complexType>
+      <sequence>
+        <element name="ComplexTypeReferencedDataObject" type="tns:ComplexTypeReferencedDataObjectType"/>
+        <element name="ComplexTypeReferencingDataObject" type="tns:ComplexTypeReferencingDataObjectType"/>
+        <element name="ComplexTypeWithOppositePropertyElement" type="tns:ComplexTypeWithOppositePropertyType"/>
+      </sequence>
+    </complexType>
+  </element>
+</schema>

@@ -1,0 +1,116 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+package $template.getJavaPackage();
+
+import junit.framework.TestCase;
+
+import org.osoa.sca.CompositeContext;
+import org.osoa.sca.CurrentCompositeContext;
+
+import org.apache.tuscany.api.SCARuntime;
+import ${template.getJavaPackage()}.GreeterService;
+
+// Data types
+#foreach($file in $fileList)
+#set($typeList = $file.getType_())
+#foreach($typeInstance in $typeList)
+import $file.getJavaPackage().$typeInstance.getTypeName();
+import $file.getJavaPackage().$file.getFactory();
+#end
+#end
+
+/**
+ * Automatically generated test case. Calls the greeter client for a number of 
+ * bindings and a number of data types. 
+ *
+ * @version $Rev: 511417 $ $Date: 2007-02-25 03:06:42 +0000 (Sun, 25 Feb 2007) $
+ */
+public class DatabindingTestCase extends TestCase  {
+
+    private static boolean initalised = false;
+    private GreeterService greeterClient;
+
+    /**
+     * Runs before each test method
+     */
+    protected void setUp() throws Exception {
+        if (!initalised) {
+            SCARuntime.start("greeter.composite");
+            super.setUp();
+            initalised = true;
+        }
+    }
+
+    /**
+     * Runs after each test method
+     */
+    protected void tearDown() {
+
+    }
+
+    /**
+     * Finds the SCA component that relates to the protocol being tested. This test 
+     * always connects locally to the client component but the client component will
+     * connect to the back end component using the appropriate protocol
+     *
+     * @param ext the protcol required
+     */
+    private void setUpClient(String ext) throws Exception {
+        CompositeContext ctx = CurrentCompositeContext.getContext();
+        greeterClient = ctx.locateService(GreeterService.class, ext + "GreeterServiceClient");
+    }
+
+    /**
+     * Invokes the SDO Greet service using web service bindings with SDO payload
+     */
+    public void testWSGreet() throws Exception {
+        setUpClient("WS");
+        greet();
+    }
+
+    /**
+     * Invokes the SDO Greet service using default bindings with SDO payload
+     */
+    public void testDefaultGreet() throws Exception {
+        setUpClient("Default");
+        greet();
+    }
+
+    /**
+     * A generic method which, regarless of which client is connected, sends out a 
+     * series of requrests passing different data types. 
+     */
+    public void greet() {
+#foreach($file in $fileList)
+#set($typeList = $file.getType_())
+#foreach($typeInstance in $typeList)
+
+        // test $typeInstance.getTypeName()
+        { 
+            $typeInstance.getTypeName() param = null;
+            $typeInstance.getCreateTypeCode()
+            $typeInstance.getTypeName() result = greeterClient.greet$typeInstance.getTypeName()(param);
+            $typeInstance.getResultComparison()
+        }
+#end
+#end            
+    }
+
+}

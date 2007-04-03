@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://www.apache.org/tuscany/interop" 
+        xmlns:tns="http://www.apache.org/tuscany/interop">
+<!--        
+  <include schemaLocation="Annotation.xsd"/>
+  <include schemaLocation="Attribute.xsd"/>
+  <include schemaLocation="AttributeReference.xsd"/>
+  <include schemaLocation="AttributeWithDefaultValue.xsd"/>
+  <include schemaLocation="AttributeWithFixedValue.xsd"/>
+  <include schemaLocation="AttributeWithSDOAliasName.xsd"/>
+  <include schemaLocation="AttributeWithSDODataType.xsd"/>
+  <include schemaLocation="AttributeWithSDOName.xsd"/>
+  <include schemaLocation="AttributeWithSDOPropertySDOOppositePropertyType.xsd"/>
+  <include schemaLocation="AttributeWithSDOPropertyType.xsd"/>
+  <include schemaLocation="AttributeWithSDOString.xsd"/>
+  <include schemaLocation="BuiltInAnySimpleType.xsd"/>
+  <include schemaLocation="BuiltInAnyType.xsd"/>
+  <include schemaLocation="BuiltInAnyURI.xsd"/>
+  <include schemaLocation="BuiltInBase64Binary.xsd"/>
+  <include schemaLocation="BuiltInBoolean.xsd"/>
+  <include schemaLocation="BuiltInByte.xsd"/>
+  <include schemaLocation="BuiltInDate.xsd"/>
+  <include schemaLocation="BuiltInDateTime.xsd"/>
+  <include schemaLocation="BuiltInDecimal.xsd"/>
+  <include schemaLocation="BuiltInDouble.xsd"/>
+  <include schemaLocation="BuiltInDuration.xsd"/>
+  <include schemaLocation="BuiltInFloat.xsd"/>
+  <include schemaLocation="BuiltInGDay.xsd"/>
+  <include schemaLocation="BuiltInGMonth.xsd"/>
+  <include schemaLocation="BuiltInGMonthDay.xsd"/>
+  <include schemaLocation="BuiltInGYear.xsd"/>
+  <include schemaLocation="BuiltInGYearMonth.xsd"/>
+  <include schemaLocation="BuiltInHexBinary.xsd"/>
+  <include schemaLocation="BuiltInID.xsd"/>
+  <include schemaLocation="BuiltInIDREF.xsd"/>
+  <include schemaLocation="BuiltInIDREFS.xsd"/>
+  <include schemaLocation="BuiltInInt.xsd"/>
+  <include schemaLocation="BuiltInInteger.xsd"/>
+  <include schemaLocation="BuiltInLanguage.xsd"/>
+  <include schemaLocation="BuiltInLong.xsd"/>
+  <include schemaLocation="BuiltInNCName.xsd"/>
+  <include schemaLocation="BuiltInNMTOKEN.xsd"/>
+  <include schemaLocation="BuiltInNMTOKENS.xsd"/>
+  <include schemaLocation="BuiltInNOTATION.xsd"/>
+  <include schemaLocation="BuiltInName.xsd"/>
+  <include schemaLocation="BuiltInNegativeInteger.xsd"/>
+  <include schemaLocation="BuiltInNonNegativeInteger.xsd"/>
+  <include schemaLocation="BuiltInNonPositiveInteger.xsd"/>
+  <include schemaLocation="BuiltInNormalizedString.xsd"/>
+  <include schemaLocation="BuiltInPositiveInteger.xsd"/>
+  <include schemaLocation="BuiltInQName.xsd"/>
+  <include schemaLocation="BuiltInShort.xsd"/>
+  <include schemaLocation="BuiltInString.xsd"/>
+  <include schemaLocation="BuiltInTime.xsd"/>
+  <include schemaLocation="BuiltInToken.xsd"/>
+  <include schemaLocation="BuiltInUnsignedByte.xsd"/>
+  <include schemaLocation="BuiltInUnsignedInt.xsd"/>
+  <include schemaLocation="BuiltInUnsignedLong.xsd"/>
+  <include schemaLocation="BuiltInUnsignedShort.xsd"/>
+  <include schemaLocation="ComplexTypeComplexContentRestrictingComplexType.xsd"/>
+  <include schemaLocation="ComplexTypeExtendingComplexType.xsd"/>
+  <include schemaLocation="ComplexTypeExtendingSimpleType.xsd"/>
+  <include schemaLocation="ComplexTypeSimpleContentRestrictingComplexType.xsd"/>
+  <include schemaLocation="ComplexTypeWithAbstract.xsd"/>
+  <include schemaLocation="ComplexTypeWithCDATA.xsd"/>
+-->
+  <include schemaLocation="ComplexTypeWithContent.xsd"/>
+<!--
+  <include schemaLocation="ComplexTypeWithMixed.xsd"/>
+  <include schemaLocation="ComplexTypeWithOpenAttributes.xsd"/>
+  <include schemaLocation="ComplexTypeWithOpenContent.xsd"/>
+  <include schemaLocation="ComplexTypeWithOppositeProperty.xsd"/>
+  <include schemaLocation="ComplexTypeWithSDOAliasName.xsd"/>
+  <include schemaLocation="ComplexTypeWithSDOName.xsd"/>
+  <include schemaLocation="ComplexTypeWithSDOSequence.xsd"/>
+  <include schemaLocation="ComplexTypeWithoutContent.xsd"/>
+  <include schemaLocation="ComplexTypeWithoutName.xsd"/>
+  <include schemaLocation="DefaultNamespace.xsd"/>
+  <include schemaLocation="ElementInAll.xsd"/>
+  <include schemaLocation="ElementInChoice.xsd"/>
+  <include schemaLocation="ElementOfSDOChangeSummaryType.xsd"/>
+  <include schemaLocation="ElementOfSimpleTypeWithDefault.xsd"/>
+  <include schemaLocation="ElementOfSimpleTypeWithFixed.xsd"/>
+  <include schemaLocation="ElementOfSimpleTypeWithSDODataType.xsd"/>
+  <include schemaLocation="ElementOfSimpleTypeWithSDOOppositePropertyType.xsd"/>
+  <include schemaLocation="ElementOfSimpleTypeWithSDOPropertyType.xsd"/>
+  <include schemaLocation="ElementOfSimpleTypeWithSDOString.xsd"/>
+  <include schemaLocation="ElementSubstitutionGroupBase.xsd"/>
+  <include schemaLocation="ElementWithMaxOccurs.xsd"/>
+  <include schemaLocation="ElementWithNillable.xsd"/>
+  <include schemaLocation="ElementWithSDOAliasName.xsd"/>
+  <include schemaLocation="ElementWithSDOName.xsd"/>
+  <include schemaLocation="GlobalElementComplexType.xsd"/>
+  <include schemaLocation="GlobalElementSimpleType.xsd"/>
+  <include schemaLocation="Import.xsd"/>
+  <include schemaLocation="ImportedSchema.xsd"/>
+ -->
+  <include schemaLocation="Include.xsd"/>
+<!--
+  <include schemaLocation="Notation.xsd"/>
+  <include schemaLocation="SDOJavaPackage.xsd"/>
+  <include schemaLocation="SimpleTypeWithAbstract.xsd"/>
+  <include schemaLocation="SimpleTypeWithExtendedInstanceClass.xsd"/>
+  <include schemaLocation="SimpleTypeWithInstanceClass.xsd"/>
+  <include schemaLocation="SimpleTypeWithList.xsd"/>
+-->
+  <include schemaLocation="SimpleTypeWithName.xsd"/>
+<!--
+  <include schemaLocation="SimpleTypeWithSDOName.xsd"/>
+  <include schemaLocation="SimpleTypeWithUnion.xsd"/>
+  <include schemaLocation="SimpleTypeWithoutName.xsd"/>
+  <include schemaLocation="TargetNamespace.xsd"/>    
+-->
+</schema>

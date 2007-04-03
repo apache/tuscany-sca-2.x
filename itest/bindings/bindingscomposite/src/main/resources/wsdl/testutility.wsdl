@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<wsdl:definitions targetNamespace="http://scatestutil.scabeta1fvt" xmlns:impl="http://scatestutil.scabeta1fvt"
+    xmlns:tns="http://scatestutil.scabeta1fvt" xmlns:tns2="http://xml.apache.org/xml-soap" xmlns:tns3="http://util.java"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="testutility">
+    <wsdl:types>
+
+        <schema elementFormDefault="qualified" targetNamespace="http://scatestutil.scabeta1fvt"
+            xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns2="http://xml.apache.org/xml-soap"
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xml.apache.org/xml-soap" />
+            <element name="pingResponse">
+                <complexType>
+                    <sequence>
+                        <element name="pingReturn" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="asyncping">
+                <complexType>
+                    <sequence />
+                </complexType>
+            </element>
+            <element name="asyncpingResponse">
+                <complexType>
+                    <sequence />
+                </complexType>
+            </element>
+            <element name="echo_int">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="xsd:int" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_intResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_intReturn" type="xsd:int" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_short">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="xsd:short" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_shortResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_shortReturn" type="xsd:short" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_long">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="xsd:long" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_longResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_longReturn" type="xsd:long" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_float">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="xsd:float" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_floatResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_floatReturn" type="xsd:float" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_double">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="xsd:double" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_doubleResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_doubleReturn" type="xsd:double" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_boolean">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="xsd:boolean" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_booleanResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_booleanReturn" type="xsd:boolean" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_char">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="tns2:char" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_charResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_charReturn" type="tns2:char" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_String">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_StringResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_StringReturn" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_BigDecimal">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="xsd:decimal" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_BigDecimalResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_BigDecimalReturn" minOccurs="0" type="xsd:decimal" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_BigInteger">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="xsd:integer" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_BigIntegerResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_BigIntegerReturn" minOccurs="0" type="xsd:integer" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_Vector">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="tns2:Vector" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_VectorResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_VectorReturn" minOccurs="0" type="tns2:Vector" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_GregorianCalendar">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="xsd:anyType" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echo_GregorianCalendarResponse">
+                <complexType>
+                    <sequence>
+                        <element name="echo_GregorianCalendarReturn" minOccurs="0" type="xsd:anyType" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="ping">
+                <complexType>
+                    <sequence>
+                        <element name="input" minOccurs="0" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+        <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <simpleType name="char">
+                <restriction base="xsd:string">
+                    <length value="1" />
+                </restriction>
+            </simpleType>
+            <complexType name="Vector">
+                <sequence>
+                    <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType" />
+                </sequence>
+            </complexType>
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="echo_StringRequest">
+        <wsdl:part element="tns:echo_String" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_shortResponse">
+        <wsdl:part element="tns:echo_shortResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="asyncpingRequest">
+        <wsdl:part element="tns:asyncping" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="asyncpingResponse">
+        <wsdl:part element="tns:asyncpingResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_doubleResponse">
+        <wsdl:part element="tns:echo_doubleResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_BigDecimalResponse">
+        <wsdl:part element="tns:echo_BigDecimalResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_shortRequest">
+        <wsdl:part element="tns:echo_short" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_BigIntegerRequest">
+        <wsdl:part element="tns:echo_BigInteger" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_VectorRequest">
+        <wsdl:part element="tns:echo_Vector" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="pingResponse">
+        <wsdl:part element="tns:pingResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_charResponse">
+        <wsdl:part element="tns:echo_charResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_VectorResponse">
+        <wsdl:part element="tns:echo_VectorResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_longRequest">
+        <wsdl:part element="tns:echo_long" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_doubleRequest">
+        <wsdl:part element="tns:echo_double" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_BigDecimalRequest">
+        <wsdl:part element="tns:echo_BigDecimal" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_GregorianCalendarRequest">
+        <wsdl:part element="tns:echo_GregorianCalendar" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_floatResponse">
+        <wsdl:part element="tns:echo_floatResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_booleanRequest">
+        <wsdl:part element="tns:echo_boolean" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_booleanResponse">
+        <wsdl:part element="tns:echo_booleanResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_StringResponse">
+        <wsdl:part element="tns:echo_StringResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_floatRequest">
+        <wsdl:part element="tns:echo_float" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_GregorianCalendarResponse">
+        <wsdl:part element="tns:echo_GregorianCalendarResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_intResponse">
+        <wsdl:part element="tns:echo_intResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_longResponse">
+        <wsdl:part element="tns:echo_longResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_charRequest">
+        <wsdl:part element="tns:echo_char" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="pingRequest">
+        <wsdl:part element="tns:ping" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_intRequest">
+        <wsdl:part element="tns:echo_int" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:message name="echo_BigIntegerResponse">
+        <wsdl:part element="tns:echo_BigIntegerResponse" name="parameters" />
+
+    </wsdl:message>
+
+    <wsdl:portType name="SCATestUtilityService">
+        <wsdl:operation name="ping">
+            <wsdl:input message="tns:pingRequest" name="pingRequest" />
+
+            <wsdl:output message="tns:pingResponse" name="pingResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="asyncping">
+            <wsdl:input message="tns:asyncpingRequest" name="asyncpingRequest" />
+
+            <wsdl:output message="tns:asyncpingResponse" name="asyncpingResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_int">
+            <wsdl:input message="tns:echo_intRequest" name="echo_intRequest" />
+
+            <wsdl:output message="tns:echo_intResponse" name="echo_intResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_short">
+            <wsdl:input message="tns:echo_shortRequest" name="echo_shortRequest" />
+
+            <wsdl:output message="tns:echo_shortResponse" name="echo_shortResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_long">
+            <wsdl:input message="tns:echo_longRequest" name="echo_longRequest" />
+
+            <wsdl:output message="tns:echo_longResponse" name="echo_longResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_float">
+            <wsdl:input message="tns:echo_floatRequest" name="echo_floatRequest" />
+
+            <wsdl:output message="tns:echo_floatResponse" name="echo_floatResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_double">
+            <wsdl:input message="tns:echo_doubleRequest" name="echo_doubleRequest" />
+
+            <wsdl:output message="tns:echo_doubleResponse" name="echo_doubleResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_boolean">
+            <wsdl:input message="tns:echo_booleanRequest" name="echo_booleanRequest" />
+
+            <wsdl:output message="tns:echo_booleanResponse" name="echo_booleanResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_char">
+            <wsdl:input message="tns:echo_charRequest" name="echo_charRequest" />
+
+            <wsdl:output message="tns:echo_charResponse" name="echo_charResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_String">
+            <wsdl:input message="tns:echo_StringRequest" name="echo_StringRequest" />
+
+            <wsdl:output message="tns:echo_StringResponse" name="echo_StringResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_BigDecimal">
+            <wsdl:input message="tns:echo_BigDecimalRequest" name="echo_BigDecimalRequest" />
+
+            <wsdl:output message="tns:echo_BigDecimalResponse" name="echo_BigDecimalResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_BigInteger">
+            <wsdl:input message="tns:echo_BigIntegerRequest" name="echo_BigIntegerRequest" />
+
+            <wsdl:output message="tns:echo_BigIntegerResponse" name="echo_BigIntegerResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_Vector">
+            <wsdl:input message="tns:echo_VectorRequest" name="echo_VectorRequest" />
+
+            <wsdl:output message="tns:echo_VectorResponse" name="echo_VectorResponse" />
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_GregorianCalendar">
+            <wsdl:input message="tns:echo_GregorianCalendarRequest" name="echo_GregorianCalendarRequest" />
+
+            <wsdl:output message="tns:echo_GregorianCalendarResponse" name="echo_GregorianCalendarResponse" />
+
+        </wsdl:operation>
+
+    </wsdl:portType>
+
+    <wsdl:binding name="SCATestUtilityServiceSoapBinding" type="tns:SCATestUtilityService">
+        <!-- <wsaw:UsingAddressing wsdl:required="false" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"/> -->
+
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+
+        <wsdl:operation name="ping">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="pingRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="pingResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="asyncping">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="asyncpingRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="asyncpingResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_int">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_intRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_intResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_short">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_shortRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_shortResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_long">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_longRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_longResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_float">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_floatRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_floatResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_double">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_doubleRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_doubleResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_boolean">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_booleanRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_booleanResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_char">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_charRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_charResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_String">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_StringRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_StringResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_BigDecimal">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_BigDecimalRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_BigDecimalResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_BigInteger">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_BigIntegerRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_BigIntegerResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_Vector">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_VectorRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_VectorResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+        <wsdl:operation name="echo_GregorianCalendar">
+            <wsdlsoap:operation soapAction="" />
+
+            <wsdl:input name="echo_GregorianCalendarRequest">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:input>
+
+            <wsdl:output name="echo_GregorianCalendarResponse">
+                <wsdlsoap:body use="literal" />
+
+            </wsdl:output>
+
+        </wsdl:operation>
+
+    </wsdl:binding>
+
+    <wsdl:service name="SCATestUtilityService">
+        <wsdl:port binding="tns:SCATestUtilityServiceSoapBinding" name="SCATestUtilityServiceSoapPort">
+            <wsdlsoap:address location="http://localhost:8081/services/SCATestUtilityWSService" />
+
+        </wsdl:port>
+
+    </wsdl:service>
+
+</wsdl:definitions>
