@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.scdl.stax.impl;
+package org.apache.tuscany.assembly.xml.impl;
 
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.scdl.stax.LoaderException;
+import org.apache.tuscany.assembly.xml.LoaderException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

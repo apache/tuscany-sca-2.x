@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.scdl.stax;
+package org.apache.tuscany.assembly.xml;
 
 import javax.xml.namespace.QName;
 

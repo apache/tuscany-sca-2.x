@@ -16,33 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.scdl.stax;
+package org.apache.tuscany.assembly.xml;
 
-import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
- * Exception that indicates an element was encountered that could not be handled.
- *
+ * A content handler for SCDL implementation elements.
+ * 
  * @version $Rev$ $Date$
  */
-public class UnrecognizedElementException extends LoaderException {
-    private static final long serialVersionUID = 2549543622209829032L;
-    private final QName element;
-
-    /**
-     * Constructor that indicates which element could not be handled.
-     * @param element the element that could not be handled
-     */
-    public UnrecognizedElementException(QName element) {
-        super("Unrecognized element: " + element.toString());
-        this.element = element;
-    }
-
-    /**
-     * Returns the element that could not be handled.
-     * @return the element that could not be handled.
-     */
-    public QName getElement() {
-        return element;
-    }
+public interface Loader<T> {
+    T load(XMLStreamReader reader) throws XMLStreamException;
 }

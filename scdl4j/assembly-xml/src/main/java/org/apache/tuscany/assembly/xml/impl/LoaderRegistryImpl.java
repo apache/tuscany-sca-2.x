@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.scdl.stax.impl;
+package org.apache.tuscany.assembly.xml.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,14 +32,14 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.model.AssemblyFactory;
 import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.assembly.xml.InvalidConfigurationException;
+import org.apache.tuscany.assembly.xml.Loader;
+import org.apache.tuscany.assembly.xml.LoaderException;
+import org.apache.tuscany.assembly.xml.LoaderRegistry;
+import org.apache.tuscany.assembly.xml.UnrecognizedElementException;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
-import org.apache.tuscany.scdl.stax.Constants;
-import org.apache.tuscany.scdl.stax.InvalidConfigurationException;
-import org.apache.tuscany.scdl.stax.Loader;
-import org.apache.tuscany.scdl.stax.LoaderException;
-import org.apache.tuscany.scdl.stax.LoaderRegistry;
-import org.apache.tuscany.scdl.stax.UnrecognizedElementException;
 
 /**
  * The default implementation of a loader registry

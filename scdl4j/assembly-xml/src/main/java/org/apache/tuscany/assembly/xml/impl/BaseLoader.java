@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.scdl.stax.impl;
+package org.apache.tuscany.assembly.xml.impl;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
@@ -41,13 +41,13 @@ import org.apache.tuscany.assembly.model.AssemblyFactory;
 import org.apache.tuscany.assembly.model.ConstrainingType;
 import org.apache.tuscany.assembly.model.Multiplicity;
 import org.apache.tuscany.assembly.model.Property;
+import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.policy.model.Intent;
 import org.apache.tuscany.policy.model.IntentAttachPoint;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.policy.model.PolicySet;
 import org.apache.tuscany.policy.model.PolicySetAttachPoint;
 import org.apache.tuscany.sca.idl.Operation;
-import org.apache.tuscany.scdl.stax.Constants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

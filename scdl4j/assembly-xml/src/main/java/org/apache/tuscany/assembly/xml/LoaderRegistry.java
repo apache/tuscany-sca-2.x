@@ -16,16 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.scdl.stax;
+package org.apache.tuscany.assembly.xml;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.namespace.QName;
 
 /**
- * A content handler for SCDL implementation elements.
+ * A registry for SCDL content handlers.
  * 
  * @version $Rev$ $Date$
  */
-public interface Loader<T> {
-    T load(XMLStreamReader reader) throws XMLStreamException;
+public interface LoaderRegistry extends Loader {
+
+    /**
+     * Registers a content handler with an XML element qname.
+     * 
+     * @param qname
+     * @param handler
+     */
+    void addLoader(QName element, Loader handler);
+
+    /**
+     * Returns the handler registered with the given XML element qname.
+     * 
+     * @param qname
+     * @return
+     */
+    Loader getLoader(QName element);
+
 }

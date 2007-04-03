@@ -20,7 +20,7 @@ package org.apache.tuscany.idl.java.xml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.scdl.Constants;
+import org.apache.tuscany.assembly.xml.Constants;
 
 public interface JavaConstants {
 

@@ -25,9 +25,9 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.assembly.xml.Loader;
 import org.apache.tuscany.idl.WSDLFactory;
 import org.apache.tuscany.idl.WSDLInterface;
-import org.apache.tuscany.scdl.stax.Loader;
 
 public class WSDLInterfaceLoader implements Loader<WSDLInterface>, WSDLConstants {
 

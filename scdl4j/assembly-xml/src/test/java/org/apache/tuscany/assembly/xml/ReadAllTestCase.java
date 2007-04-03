@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.scdl.stax.impl;
+package org.apache.tuscany.assembly.xml;
 
 import java.net.URL;
 
@@ -36,7 +36,8 @@ import org.apache.tuscany.assembly.model.Multiplicity;
 import org.apache.tuscany.assembly.model.Property;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
-import org.apache.tuscany.scdl.stax.Constants;
+import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

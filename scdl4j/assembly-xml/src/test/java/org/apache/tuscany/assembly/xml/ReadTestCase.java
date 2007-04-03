@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.scdl.stax.impl;
+package org.apache.tuscany.assembly.xml;
 
 import java.io.InputStream;
 
@@ -28,13 +28,13 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.model.AssemblyFactory;
 import org.apache.tuscany.assembly.model.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.xml.LoaderRegistry;
+import org.apache.tuscany.assembly.xml.impl.ComponentTypeLoader;
+import org.apache.tuscany.assembly.xml.impl.CompositeLoader;
+import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeLoader;
+import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
 import org.apache.tuscany.policy.model.PolicyFactory;
 import org.apache.tuscany.policy.model.impl.DefaultPolicyFactory;
-import org.apache.tuscany.scdl.stax.LoaderRegistry;
-import org.apache.tuscany.scdl.stax.impl.ComponentTypeLoader;
-import org.apache.tuscany.scdl.stax.impl.CompositeLoader;
-import org.apache.tuscany.scdl.stax.impl.ConstrainingTypeLoader;
-import org.apache.tuscany.scdl.stax.impl.LoaderRegistryImpl;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
