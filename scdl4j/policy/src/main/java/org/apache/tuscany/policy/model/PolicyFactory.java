@@ -36,5 +36,11 @@ public interface PolicyFactory {
 	 * @return a new policy set
 	 */
 	PolicySet createPolicySet();
+        
+        /**
+         * Create a new intent map.
+         * @return a new intent map
+         */
+        IntentMap createIntentMap();
     
 }
