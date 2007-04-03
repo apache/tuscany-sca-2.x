@@ -18,42 +18,14 @@
  * under the License.    
 -->
 <project>
-
-    <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
-        <version>1.0.1-incubating-SNAPSHOT</version>
-    </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca</groupId>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>${version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
     <artifactId>tuscany-idl</artifactId>
-    <version>0.1-incubating-SNAPSHOT</version>
     <name>Apache Tuscany Interface Model</name>
-    <description>Apache Tuscany Interface Model.</description>
-
-    <!-- definition of repositories where the parent pom can be found -->
-    <repositories>
-        <repository>
-            <id>apache.incubator</id>
-            <name>Apache Incubator Repository</name>
-            <url>http://people.apache.org/repo/m2-incubating-repository/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
 </project>
