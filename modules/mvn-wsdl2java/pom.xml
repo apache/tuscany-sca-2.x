@@ -18,17 +18,16 @@
  * under the License.
 -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany.sca.extensions.axis2.plugins</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
-    </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-plugin-wsdl2java</artifactId>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>1.0-alpha1-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-mvn-wsdl2java</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Apache Tuscany Maven Plugin for WSDL2Java</name>
-    <description>Implementation of WSDL2Java Generator</description>
 
     <dependencies>
         <dependency>
@@ -36,11 +35,11 @@
             <artifactId>maven-plugin-api</artifactId>
             <version>2.0</version>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.tuscany.sca.extensions.axis2.tools</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-wsdl2java</artifactId>
-            <version>${extensionVersion}</version>
-            <scope>compile</scope>
+            <version>1.0-alpha1-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
