@@ -21,8 +21,9 @@ package org.apache.tuscany.databinding.sdo;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import commonj.sdo.DataObject;
@@ -33,12 +34,12 @@ import commonj.sdo.DataObject;
 public class DataObject2StringTestCase extends SDOTransformerTestCaseBase {
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<XMLType>(binding, PurchaseOrderType.class, new XMLType(ORDER_QNAME, null));
+        return new DataTypeImpl<XMLType>(binding, PurchaseOrderType.class, new XMLType(ORDER_QNAME, null));
     }
 
     @Override
     protected DataType<?> getTargetDataType() {
-        return new DataType<Class<String>>(String.class, String.class);
+        return new DataTypeImpl<Class<String>>(String.class, String.class);
     }
 
     public final void testTransform() {
@@ -55,7 +56,7 @@ public class DataObject2StringTestCase extends SDOTransformerTestCaseBase {
             "<foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
             + "xmlns:ipo=\"http://www.example.com/IPO\" xsi:type=\"ipo:USAddress\"/>";
         DataObject dataObject = new String2DataObject().transform(xml, reversedContext);
-        context.setSourceDataType(new DataType<XMLType>(DataObject.class.getName(), DataObject.class, null));
+        context.setSourceDataType(new DataTypeImpl<XMLType>(DataObject.class.getName(), DataObject.class, null));
         xml = new DataObject2String().transform(dataObject, context);
         Assert.assertTrue(xml.contains("xsi:type=\"ipo:USAddress\""));
     }

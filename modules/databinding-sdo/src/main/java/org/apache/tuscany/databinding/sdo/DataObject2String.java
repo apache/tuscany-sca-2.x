@@ -23,15 +23,12 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLHelper;
 
-@Service(Transformer.class)
 public class DataObject2String extends TransformerExtension<DataObject, String> implements
     PullTransformer<DataObject, String> {
 

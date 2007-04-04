@@ -29,7 +29,6 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.easymock.EasyMock;
 
 import commonj.sdo.helper.XSDHelper;

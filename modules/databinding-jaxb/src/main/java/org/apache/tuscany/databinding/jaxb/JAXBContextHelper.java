@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.XMLType;
 
 public class JAXBContextHelper {
     // TODO: Do we need to set them for source and target?

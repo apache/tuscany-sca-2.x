@@ -19,10 +19,11 @@
 
 package org.apache.tuscany.databinding.sdo;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
+import junit.framework.TestCase;
 
 import com.example.stock.sdo.InvalidSymbolFault;
 import com.example.stock.sdo.StockFactory;
@@ -48,7 +49,7 @@ public class SDOExceptionHandlerTestCase extends TestCase {
     }
 
     public void testGetFaultType() {
-        DataType execType = new DataType<XMLType>(InvalidSymbolFault_Exception.class, XMLType.UNKNOWN);
+        DataType execType = new DataTypeImpl<XMLType>(InvalidSymbolFault_Exception.class, XMLType.UNKNOWN);
         DataType<?> dataType = handler.getFaultType(execType);
         assertEquals(InvalidSymbolFault.class, dataType.getPhysical());
         assertEquals(InvalidSymbolFault_Exception.FAULT_ELEMENT, ((XMLType) dataType.getLogical()).getElementName());
@@ -56,12 +57,12 @@ public class SDOExceptionHandlerTestCase extends TestCase {
     }
 
     public void testCreate() {
-        DataType execType = new DataType<XMLType>(InvalidSymbolFault_Exception.class, XMLType.UNKNOWN);
+        DataType execType = new DataTypeImpl<XMLType>(InvalidSymbolFault_Exception.class, XMLType.UNKNOWN);
         DataType<?> faultType = handler.getFaultType(execType);
         InvalidSymbolFault fault = StockFactory.INSTANCE.createInvalidSymbolFault();
         fault.setMessage("ABC");
         fault.setSymbol("IBM0");
-        DataType<DataType> exType = new DataType<DataType>(InvalidSymbolFault_Exception.class, faultType);
+        DataType<DataType> exType = new DataTypeImpl<DataType>(InvalidSymbolFault_Exception.class, faultType);
         Exception ex = handler.createException(exType, "Invalid symbol", fault, null);
         assertTrue(ex instanceof InvalidSymbolFault_Exception);
         InvalidSymbolFault_Exception exception = (InvalidSymbolFault_Exception)ex;

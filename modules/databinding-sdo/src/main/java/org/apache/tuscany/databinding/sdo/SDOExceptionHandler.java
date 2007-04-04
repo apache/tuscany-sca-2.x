@@ -25,9 +25,10 @@ import java.lang.reflect.Method;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.ExceptionHandler;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
 
 import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
@@ -115,7 +116,7 @@ public class SDOExceptionHandler implements ExceptionHandler {
             return null;
         }
         DataType<XMLType> faultType =
-            new DataType<XMLType>(SDODataBinding.NAME, faultBeanClass, new XMLType(faultElement, null));
+            new DataTypeImpl<XMLType>(SDODataBinding.NAME, faultBeanClass, new XMLType(faultElement, null));
         return faultType;
 
     }

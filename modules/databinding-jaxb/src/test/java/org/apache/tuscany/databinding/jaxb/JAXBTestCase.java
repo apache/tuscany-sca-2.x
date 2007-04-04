@@ -29,9 +29,10 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
 import org.w3c.dom.Node;
 
 import com.example.ipo.jaxb.ObjectFactory;
@@ -77,7 +78,7 @@ public class JAXBTestCase extends TestCase {
     public void testTransform() throws Exception {
         Reader2JAXB t0 = new Reader2JAXB();
 
-        DataType targetDataType = new DataType<Class>(Object.class, null);
+        DataType targetDataType = new DataTypeImpl<Class>(Object.class, null);
         targetDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext = createMock(TransformationContext.class);
@@ -86,7 +87,7 @@ public class JAXBTestCase extends TestCase {
 
         Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
 
-        DataType sourceDataType = new DataType<Class>(Object.class, null);
+        DataType sourceDataType = new DataTypeImpl<Class>(Object.class, null);
         sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext1 = createMock(TransformationContext.class);
@@ -108,7 +109,7 @@ public class JAXBTestCase extends TestCase {
         Reader2JAXB t0 = new Reader2JAXB();
 
         QName root = new QName("http://www.example.com/IPO", "purchaseOrder");
-        DataType targetDataType = new DataType<XMLType>(PurchaseOrderType.class, new XMLType(root, null));
+        DataType targetDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, new XMLType(root, null));
         // targetDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext = createMock(TransformationContext.class);
@@ -117,7 +118,7 @@ public class JAXBTestCase extends TestCase {
 
         Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
 
-        DataType sourceDataType = new DataType<XMLType>(PurchaseOrderType.class, new XMLType(root, null));
+        DataType sourceDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, new XMLType(root, null));
         // sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext1 = createMock(TransformationContext.class);
@@ -137,7 +138,7 @@ public class JAXBTestCase extends TestCase {
 
     public void testTransform3() throws Exception {
 
-        DataType sourceDataType = new DataType<Class>(PurchaseOrderType.class, null);
+        DataType sourceDataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
         sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext1 = createMock(TransformationContext.class);

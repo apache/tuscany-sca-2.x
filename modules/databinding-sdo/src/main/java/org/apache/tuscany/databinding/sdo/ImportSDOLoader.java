@@ -32,14 +32,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderUtil;
-import org.apache.tuscany.spi.model.ModelObject;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
@@ -53,8 +45,7 @@ import commonj.sdo.impl.HelperProvider;
 public class ImportSDOLoader extends LoaderExtension {
     private HelperContextRegistry helperContextRegistry;
     
-    @Constructor({"registry", "helperContextRegistry"})
-    public ImportSDOLoader(@Reference LoaderRegistry registry, @Reference HelperContextRegistry helperContextRegistry) {
+    public ImportSDOLoader(LoaderRegistry registry, HelperContextRegistry helperContextRegistry) {
         super(registry);
         this.helperContextRegistry = helperContextRegistry;
     }

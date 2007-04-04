@@ -18,40 +18,28 @@
     * under the License.    
 -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-        <artifactId>parent</artifactId>
-        <version>2.0-alpha2-incubating-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>databinding-sdo</artifactId>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>1.0-alpha1-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-databinding-sdo</artifactId>
     <name>Apache Tuscany Data Binding for SDO</name>
-    <description>Data Binding based on SDO.</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-            <artifactId>databinding-framework</artifactId>
-            <version>2.0-alpha2-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding</artifactId>
+            <version>1.0-alpha1-incubating-SNAPSHOT</version>
         </dependency>
             
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>1.0-incubator-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>        
     </dependencies>
 
     <build>

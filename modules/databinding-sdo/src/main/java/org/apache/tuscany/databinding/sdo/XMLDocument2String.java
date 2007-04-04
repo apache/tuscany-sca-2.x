@@ -23,15 +23,12 @@ import java.io.StringWriter;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
 
-@Service(Transformer.class)
 public class XMLDocument2String extends TransformerExtension<XMLDocument, String> implements
     PullTransformer<XMLDocument, String> {
 

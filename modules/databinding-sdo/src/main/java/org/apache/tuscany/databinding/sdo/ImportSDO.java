@@ -21,8 +21,6 @@ package org.apache.tuscany.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.ModelObject;
-
 import commonj.sdo.helper.HelperContext;
 
 /**

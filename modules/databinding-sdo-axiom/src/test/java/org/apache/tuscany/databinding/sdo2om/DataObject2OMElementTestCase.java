@@ -7,8 +7,9 @@ import javax.xml.stream.XMLStreamException;
 import junit.framework.Assert;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 
 import commonj.sdo.DataObject;
 
@@ -19,12 +20,12 @@ public class DataObject2OMElementTestCase extends SDOTransformerTestCaseBase {
 
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<XMLType>(DataObject.class.getName(), DataObject.class, new XMLType(ORDER_QNAME, null));
+        return new DataTypeImpl<XMLType>(DataObject.class.getName(), DataObject.class, new XMLType(ORDER_QNAME, null));
     }
 
     @Override
     protected DataType<?> getTargetDataType() {
-        return new DataType<XMLType>(OMElement.class.getName(), OMElement.class, new XMLType(ORDER_QNAME, null));
+        return new DataTypeImpl<XMLType>(OMElement.class.getName(), OMElement.class, new XMLType(ORDER_QNAME, null));
     }
 
     public final void testTransform() throws XMLStreamException {

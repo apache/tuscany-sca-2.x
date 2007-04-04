@@ -25,9 +25,10 @@ import java.lang.reflect.Method;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebFault;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.ExceptionHandler;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
 
 /**
  * JAXB implementation of ExceptionHandler
@@ -96,7 +97,7 @@ public class JAXBExceptionHandler implements ExceptionHandler {
             // only part in
             // the fault message references
             DataType<XMLType> faultType =
-                new DataType<XMLType>(JAXBDataBinding.NAME, faultBeanClass, new XMLType(element, null));
+                new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, faultBeanClass, new XMLType(element, null));
             // faultType.setMetadata(ElementInfo.class.getName(), new
             // ElementInfo(element, null));
             return faultType;

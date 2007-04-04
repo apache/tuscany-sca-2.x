@@ -30,8 +30,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderException;
 import org.easymock.EasyMock;
 
 import com.example.ipo.sdo.SdoFactory;

@@ -23,8 +23,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.idl.DataType;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.model.DataType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import com.example.ipo.sdo.SdoFactory;

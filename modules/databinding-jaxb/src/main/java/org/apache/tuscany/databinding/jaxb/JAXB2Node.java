@@ -25,14 +25,11 @@ import javax.xml.bind.Marshaller;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-@Service(Transformer.class)
 public class JAXB2Node extends TransformerExtension<Object, Node> implements PullTransformer<Object, Node> {
 
     public Node transform(Object source, TransformationContext tContext) {

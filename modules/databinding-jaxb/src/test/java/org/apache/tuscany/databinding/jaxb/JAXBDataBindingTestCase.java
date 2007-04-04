@@ -26,8 +26,9 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 
 import com.example.ipo.jaxb.ObjectFactory;
 import com.example.ipo.jaxb.PurchaseOrderType;
@@ -53,24 +54,24 @@ public class JAXBDataBindingTestCase extends TestCase {
      * {@link org.apache.tuscany.databinding.jaxb.JAXBDataBinding#introspect(java.lang.Class, Annotation)}.
      */
     public final void testIntrospect() {
-        DataType dataType = new DataType(JAXBElement.class, null);
+        DataType dataType = new DataTypeImpl<Class>(JAXBElement.class, null);
         boolean yes = binding.introspect(dataType, null);
         assertTrue(yes);
         assertTrue(dataType.getDataBinding().equals(binding.getName()));
         assertTrue(dataType.getPhysical() == JAXBElement.class && dataType.getLogical() == XMLType.UNKNOWN);
-        dataType = new DataType(MockJAXBElement.class, null);
+        dataType = new DataTypeImpl<Class>(MockJAXBElement.class, null);
         yes = binding.introspect(dataType, null);
         assertTrue(yes);
         assertEquals(MockJAXBElement.class, dataType.getPhysical());
         assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), ((XMLType)dataType.getLogical())
             .getTypeName());
-        dataType = new DataType(USAddress.class, null);
+        dataType = new DataTypeImpl<Class>(USAddress.class, null);
         yes = binding.introspect(dataType, null);
         assertTrue(yes);
         assertEquals(USAddress.class, dataType.getPhysical());
         assertEquals(new QName("http://www.example.com/IPO", "USAddress"), ((XMLType)dataType.getLogical())
             .getTypeName());
-        dataType = new DataType(USState.class, null);
+        dataType = new DataTypeImpl<Class>(USState.class, null);
         yes = binding.introspect(dataType, null);
         assertTrue(yes);
         assertTrue(dataType.getDataBinding().equals(binding.getName()));

@@ -25,13 +25,11 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.databinding.sdo.SDOContextHelper;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
-import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
@@ -41,7 +39,6 @@ import commonj.sdo.helper.HelperContext;
  * 
  * @version $Rev$ $Date$
  */
-@Service(Transformer.class)
 public class DataObject2OMElement extends TransformerExtension<DataObject, OMElement> implements
     PullTransformer<DataObject, OMElement> {
 
