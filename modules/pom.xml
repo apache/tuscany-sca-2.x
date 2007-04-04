@@ -67,16 +67,18 @@
                 <!--
                 <module>impl-script</module>
                 <module>impl-spring</module>
+                -->
                 <module>java2wsdl</module>
+                <!--
                 <module>jmx</module>
+                -->
                 <module>mvn-java2wsdl</module>
                 <module>mvn-wsdl2java</module>
-                -->
                 <module>policy</module>
                 <!--
                 <module>runtime-embedded</module>
-                <module>wsdl2java</module>
                 -->
+                <module>wsdl2java</module>
             </modules>
         </profile>
 
