@@ -20,16 +20,13 @@
 package org.apache.tuscany.databinding.axiom;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.ExceptionHandler;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
-import org.osoa.sca.annotations.Service;
 
 /**
  * DataBinding for AXIOM
  */
-@Service(DataBinding.class)
 public class AxiomDataBinding extends DataBindingExtension {
     
     public static final String NAME = OMElement.class.getName();

@@ -28,9 +28,10 @@ import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.tuscany.spi.idl.ServiceFaultException;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.FaultException;
+import org.apache.tuscany.idl.util.XMLType;
 
 /**
  * Test case for SDOExceptionHandler
@@ -81,25 +82,25 @@ public class AxiomExceptionHandlerTestCase extends TestCase {
     }
 
     public void testGetFaultType() {
-        DataType<?> dataType = handler.getFaultType(new DataType<XMLType>(ServiceFaultException.class, null));
+        DataType<?> dataType = handler.getFaultType(new DataTypeImpl<XMLType>(FaultException.class, null));
         assertEquals(OMElement.class, dataType.getPhysical());
         assertEquals(XMLType.UNKNOWN, dataType.getLogical());
         assertEquals(AxiomDataBinding.NAME, dataType.getDataBinding());
-        dataType = handler.getFaultType(new DataType<XMLType>(Exception.class, null));
+        dataType = handler.getFaultType(new DataTypeImpl<XMLType>(Exception.class, null));
         assertNull(dataType);
     }
 
     public void testCreate() {
 
         Exception ex = handler.createException(null, "Order", faultElement, null);
-        assertTrue(ex instanceof ServiceFaultException);
-        ServiceFaultException exception = (ServiceFaultException)ex;
+        assertTrue(ex instanceof FaultException);
+        FaultException exception = (FaultException)ex;
         assertEquals("Order", exception.getMessage());
         assertSame(faultElement, exception.getFaultInfo());
     }
 
     public void testGetFaultInfo() {
-        ServiceFaultException exception = new ServiceFaultException("Order", faultElement, null);
+        FaultException exception = new FaultException("Order", faultElement, null);
         Object faultInfo = handler.getFaultInfo(exception);
         assertSame(faultElement, faultInfo);
     }

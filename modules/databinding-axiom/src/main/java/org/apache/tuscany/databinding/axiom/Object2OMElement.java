@@ -24,14 +24,11 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.Java2SimpleTypeTransformer;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Transformer to convert data from an simple OMElement to Java Object
  */
-@Service(Transformer.class)
 public class Object2OMElement extends Java2SimpleTypeTransformer<OMElement> {
 
     private OMFactory factory;

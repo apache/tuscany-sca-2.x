@@ -19,14 +19,11 @@
 package org.apache.tuscany.databinding.axiom;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.SimpleType2JavaTransformer;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Transformer to convert data from a simple java bject to OMElement
  */
-@Service(Transformer.class)
 public class OMElement2Object extends SimpleType2JavaTransformer<OMElement> {
 
     @Override
