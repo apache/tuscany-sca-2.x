@@ -23,6 +23,8 @@ import org.w3c.dom.Node;
 
 /**
  * An artifact processor that can read models from a DOM node.
+ * 
+ * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
 public interface DOMArtifactProcessor<M> extends ArtifactProcessor<Node, M> {
 
