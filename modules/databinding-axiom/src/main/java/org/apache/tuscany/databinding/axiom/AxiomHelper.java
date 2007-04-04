@@ -25,9 +25,9 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
 
 /**
  * Helper for AXIOM
