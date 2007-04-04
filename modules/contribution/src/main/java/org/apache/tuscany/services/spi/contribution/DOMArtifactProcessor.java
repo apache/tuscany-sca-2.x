@@ -21,6 +21,9 @@ package org.apache.tuscany.services.spi.contribution;
 
 import org.w3c.dom.Node;
 
+/**
+ * An artifact processor that can read models from a DOM node.
+ */
 public interface DOMArtifactProcessor<M> extends ArtifactProcessor<Node, M> {
 
 }

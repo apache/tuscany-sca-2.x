@@ -73,7 +73,7 @@ public interface ContributionService {
 
     /**
      * Adds or updates a deployment composite using a supplied composite
-     * ("composite by value" – a data structure, not an existing resource in the
+     * ("composite by value" ï¿½ a data structure, not an existing resource in the
      * domain) to the contribution identified by a supplied contribution URI.
      * The added or updated deployment composite is given a relative URI that
      * matches the "name" attribute of the composite, with a ".composite"
@@ -89,39 +89,6 @@ public interface ContributionService {
      */
     void remove(URI contribution) throws ContributionException;
 
-//    /**
-//     * Resolve an artifact by QName within the contribution
-//     * 
-//     * @param <T> The java type of the artifact such as javax.wsdl.Definition
-//     * @param contribution The URI of the contribution
-//     * @param definitionType The java type of the artifact
-//     * @param namespace The namespace of the artifact
-//     * @param name The name of the artifact
-//     * @return The resolved artifact
-//     */
-//    <T> T resolve(URI contribution, Class<T> definitionType, String namespace, String name);
-//
-//    /**
-//     * Resolve the reference to an artifact by the location URI within the given
-//     * contribution. Some typical use cases are:
-//     * <ul>
-//     * <li>Reference a XML schema using
-//     * {http://www.w3.org/2001/XMLSchema-instance}schemaLocation or
-//     * <li>Reference a list of WSDLs using
-//     * {http://www.w3.org/2004/08/wsdl-instance}wsdlLocation
-//     * </ul>
-//     * 
-//     * @param contribution The URI of the contribution
-//     * @param namespace The namespace of the artifact. This is for validation
-//     *            purpose. If the namespace is null, then no check will be
-//     *            performed.
-//     * @param uri The location URI
-//     * @param baseURI The URI of the base artifact where the reference is
-//     *            declared
-//     * @return The URL of the resolved artifact
-//     */
-//    URL resolve(URI contribution, String namespace, URI uri, URI baseURI);
-    
   /**
   * Resolve an artifact by QName within the contribution
   * 
@@ -133,4 +100,5 @@ public interface ContributionService {
   * @return The resolved artifact
   */
  <M> M resolve(Class modelClass, Class<M> elementClass, Object modelKey, Object elementKey, Map<String, Object> attributes);
+ 
 }
