@@ -68,7 +68,7 @@ public class DefaultStAXArtifactProcessorRegistry
     public void resolve(Object model, ArtifactResolver resolver) throws ContributionException {
 
         // Delegate to the processor associated with the model type
-        StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor(model.getClass());
+        StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
         if (processor != null) {
             processor.resolve(model, resolver);
         }
@@ -77,7 +77,7 @@ public class DefaultStAXArtifactProcessorRegistry
     public void optimize(Object model) throws ContributionException {
 
         // Delegate to the processor associated with the model type
-        StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor(model.getClass());
+        StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
         if (processor != null) {
             processor.optimize(model);
         }

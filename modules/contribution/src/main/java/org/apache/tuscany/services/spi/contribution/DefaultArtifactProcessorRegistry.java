@@ -50,8 +50,14 @@ abstract class DefaultArtifactProcessorRegistry<S, M, K> implements ArtifactProc
      * @param modelType a model type
      * @return the processor associated with the given model type
      */
-    protected ArtifactProcessor<S, M, K> getProcessor(Class<?> modelType) {
-        return processorsByModelType.get(modelType);
+    protected ArtifactProcessor<S, M, K> getProcessor(Class<M> modelType) {
+        Class<?>[] classes = modelType.getClasses();
+        for (Class<?> c: classes) {
+            ArtifactProcessor<S, M, K> processor = processorsByModelType.get(c);
+            if (processor != null)
+                return processor;
+        }
+        return null;
     }
 
     public void addArtifactProcessor(ArtifactProcessor<S, M, K> artifactProcessor) {
@@ -59,12 +65,12 @@ abstract class DefaultArtifactProcessorRegistry<S, M, K> implements ArtifactProc
     }
     
     public K getArtifactType() {
-        // Will match any type
+        // Will never match
         return null;
     }
     
-    public Class<?> getModelType() {
-        // Will match any type
-        return Object.class;
+    public Class<M> getModelType() {
+        // Will never match
+        return null;
     }
 }

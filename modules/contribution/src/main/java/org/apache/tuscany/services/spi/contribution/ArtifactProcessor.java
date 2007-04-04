@@ -62,6 +62,6 @@ public interface ArtifactProcessor <S, M, T> {
      * Returns the type of model handled by this artifact processor.
      * @return the type of model handled by this artifact processor
      */
-    Class<?> getModelType(); 
+    Class<M> getModelType(); 
     
 }
