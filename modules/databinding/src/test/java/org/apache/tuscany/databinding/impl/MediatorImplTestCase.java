@@ -91,8 +91,8 @@ public class MediatorImplTestCase extends TestCase {
 
     private TransformationContext createTransformationContext(Class sourceType, Class targetType) {
         TransformationContext context = new TransformationContextImpl();
-        DataType sourceDataType = new DataTypeImpl<Class>(sourceType, sourceType);
-        DataType targetDataType = new DataTypeImpl<Class>(targetType, targetType);
+        DataType sourceDataType = new DataTypeImpl<Class>(sourceType.getName(), sourceType, sourceType);
+        DataType targetDataType = new DataTypeImpl<Class>(targetType.getName(), targetType, targetType);
         context.setSourceDataType(sourceDataType);
         context.setTargetDataType(targetDataType);
         return context;
