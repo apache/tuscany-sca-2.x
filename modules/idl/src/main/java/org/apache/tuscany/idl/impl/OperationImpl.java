@@ -21,6 +21,7 @@ package org.apache.tuscany.idl.impl;
 import java.util.List;
 
 import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.Interface;
 import org.apache.tuscany.idl.Operation;
 
 /**
@@ -35,6 +36,8 @@ public class OperationImpl implements Operation {
     private DataType outputType;
     private DataType<List<DataType>> inputType;
     private List<DataType> faultTypes;    
+    private Interface interfaze;
+    private ConversationSequence conversationSequence;
 
     public String getName() {
         return name;
@@ -92,6 +95,34 @@ public class OperationImpl implements Operation {
      */
     public void setOutputType(DataType outputType) {
         this.outputType = outputType;
+    }
+
+    /**
+     * @return the interfaze
+     */
+    public Interface getInterface() {
+        return interfaze;
+    }
+
+    /**
+     * @param interfaze the interfaze to set
+     */
+    public void setInterface(Interface interfaze) {
+        this.interfaze = interfaze;
+    }
+
+    /**
+     * @return the conversationSequence
+     */
+    public ConversationSequence getConversationSequence() {
+        return conversationSequence;
+    }
+
+    /**
+     * @param conversationSequence the conversationSequence to set
+     */
+    public void setConversationSequence(ConversationSequence conversationSequence) {
+        this.conversationSequence = conversationSequence;
     }
 
 }

@@ -24,6 +24,9 @@ import java.util.List;
  * Represents an operation on a service interface.
  */
 public interface Operation {
+    enum ConversationSequence {
+        NO_CONVERSATION, CONVERSATION_CONTINUE, CONVERSATION_END
+    };
 
     /**
      * Returns the name of the operation.
@@ -54,8 +57,8 @@ public interface Operation {
     void setUnresolved(boolean unresolved);
 
     /**
-     * Get the data type that represents the input of this operation. The logic type is 
-     * a list of data types and each element represents a parameter
+     * Get the data type that represents the input of this operation. The logic
+     * type is a list of data types and each element represents a parameter
      * 
      * @return the inputType
      */
@@ -70,8 +73,14 @@ public interface Operation {
 
     /**
      * Get a list of data types to represent the faults/exceptions
+     * 
      * @return the faultTypes
      */
     List<DataType> getFaultTypes();
+    
+    Interface getInterface();
+    void setInterface(Interface interfaze);
+    ConversationSequence getConversationSequence();
+    void setConversationSequence(ConversationSequence sequence);
 
 }

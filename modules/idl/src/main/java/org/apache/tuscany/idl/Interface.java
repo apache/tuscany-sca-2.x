@@ -40,6 +40,18 @@ public interface Interface {
      * @param remotable indicates whether the interface is remotable or local
      */
     void setRemotable(boolean remotable);
+    
+    /**
+     * Test if the interface is conversational
+     * @return
+     */
+    boolean isConversational();
+    
+    /**
+     * Set whether the interface is conversational 
+     * @param conversational
+     */
+    void setConversational(boolean conversational);
 
     /**
      * Returns the operations defined on this interface.

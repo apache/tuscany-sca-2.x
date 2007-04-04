@@ -32,6 +32,7 @@ import org.apache.tuscany.idl.Operation;
 public class InterfaceImpl implements Interface {
 
     private boolean remotable;
+    private boolean conversational;
     private List<Operation> operations = new ArrayList<Operation>();
     private boolean unresolved;
 
@@ -53,6 +54,20 @@ public class InterfaceImpl implements Interface {
 
     public void setUnresolved(boolean undefined) {
         this.unresolved = undefined;
+    }
+
+    /**
+     * @return the conversational
+     */
+    public boolean isConversational() {
+        return conversational;
+    }
+
+    /**
+     * @param conversational the conversational to set
+     */
+    public void setConversational(boolean conversational) {
+        this.conversational = conversational;
     }
 
 }
