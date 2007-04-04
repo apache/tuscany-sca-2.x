@@ -29,10 +29,24 @@
     <name>Apache Tuscany SCA XML Java Implementation Extension</name>
 
     <dependencies>
+        
+        <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api-r1.0</artifactId>
+            <version>1.0.1-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+            
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>
             <version>1.0-alpha1-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-idl-java-xml</artifactId>
+            <version>${version}</version>
         </dependency>
 
         <dependency>
