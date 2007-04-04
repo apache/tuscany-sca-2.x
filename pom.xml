@@ -30,11 +30,7 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Implementation Project</name>
     <url>http://incubator.apache.org/tuscany/</url>
-    <version>${version}</version>
-
-    <properties>
-        <version>1.0-alpha1-incubating-SNAPSHOT</version>
-    </properties>
+    <version>1.0-alpha1-incubating-SNAPSHOT</version>
 
     <profiles>
         <profile>
