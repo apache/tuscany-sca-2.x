@@ -29,14 +29,11 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
-import org.osoa.sca.annotations.Service;
 
 /**
  * DataBinding for JavaBeans
  */
-@Service(DataBinding.class)
 public class JavaBeansDataBinding extends DataBindingExtension {
     /**
      * Defining a weight to a very high number so that the transformer won't be picked

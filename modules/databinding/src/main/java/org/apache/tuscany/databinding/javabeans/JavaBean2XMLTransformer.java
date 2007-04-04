@@ -31,15 +31,12 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Transformer to convert data from a JavaBean object to xml
  */
-@Service(Transformer.class)
 public abstract class JavaBean2XMLTransformer<T> extends TransformerExtension<Object, T> implements
         PullTransformer<Object, T> {
 
@@ -57,10 +54,13 @@ public abstract class JavaBean2XMLTransformer<T> extends TransformerExtension<Ob
     }
 
     public T transform(Object source, TransformationContext context) {
-        QName rootElementName = (QName)context.getTargetDataType().getMetadata("RootElementName");
-        if (rootElementName == null) {
-            rootElementName = new QName(resolveRootElementName(source.getClass()));
-        }
+        
+        //FIXME See how/if we still need to get the metadata here
+        //QName rootElementName = (QName)context.getTargetDataType().getMetadata("RootElementName");
+        //if (rootElementName == null) {
+        QName rootElementName = new QName(resolveRootElementName(source.getClass()));
+        //}
+        
         T root = createElement(rootElementName);
         appendChildElements(root,
                             resolveElementName(source.getClass()),

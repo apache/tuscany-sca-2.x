@@ -23,8 +23,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import org.apache.tuscany.idl.DataType;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
-import org.apache.tuscany.spi.model.DataType;
 
 /**
  * The base class for a special databinding which represents a group of other databindings

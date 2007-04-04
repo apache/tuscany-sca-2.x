@@ -20,18 +20,18 @@
 package org.apache.tuscany.databinding.javabeans;
 
 import java.io.StringWriter;
+
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Node;
-
-import org.apache.tuscany.databinding.javabeans.JavaBean2DOMNodeTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.model.DataType;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.easymock.EasyMock;
+import org.w3c.dom.Node;
 
 /**
  * Testcase to test the XMLTypeMapperExtension which is the back bone for all transformations supported by the JavaBeans
@@ -51,7 +51,7 @@ public class JavaBean2DOMNodeTransformerTestCase extends TestCase {
 
     public void testTranformation() throws Exception {
         TransformationContext context = EasyMock.createMock(TransformationContext.class);
-        DataType<Class> dataType = new DataType<Class>(null, SamplePropertyBean.class);
+        DataType<Class> dataType = new DataTypeImpl<Class>(null, SamplePropertyBean.class);
         EasyMock.expect(context.getTargetDataType()).andReturn(dataType).anyTimes();
         EasyMock.replay(context);
 

@@ -21,13 +21,11 @@ package org.apache.tuscany.databinding.javabeans;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.api.TuscanyRuntimeException;
-
 /**
  * This exception is used to encapsulate and rethrow exceptions that arise out
  * of converting XML Data to Java Objects.
  */
-public class XML2JavaMapperException extends TuscanyRuntimeException {
+public class XML2JavaMapperException extends RuntimeException {
     private static final long serialVersionUID = 6596530102591630642L;
     
     private QName xmlElementName;

@@ -29,18 +29,15 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.apache.tuscany.spi.model.XMLType;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Transformer to convert data from XML to JavaBean
  */
-@Service(Transformer.class)
 public abstract class XML2JavaBeanTransformer<T> extends TransformerExtension<T, Object> implements
         PullTransformer<T, Object> {
 

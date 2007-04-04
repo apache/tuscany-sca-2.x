@@ -25,16 +25,13 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
  * Push DOM InputSource to Node
  */
-@Service(Transformer.class)
 public class InputSource2Node extends TransformerExtension<InputSource, Node> implements
     PullTransformer<InputSource, Node> {
     private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();

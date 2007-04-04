@@ -28,9 +28,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.model.DataType;
 import org.easymock.EasyMock;
 import org.xml.sax.ContentHandler;
 
@@ -53,7 +54,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         DataBinding db1 = createMock(DataBinding.class);
         expect(db1.getAliases()).andReturn(new String[] {"db1"}).anyTimes();
         expect(db1.getName()).andReturn(ContentHandler.class.getName()).anyTimes();
-        DataType<Class> dataType1 = new DataType<Class>(ContentHandler.class, ContentHandler.class);
+        DataType<Class> dataType1 = new DataTypeImpl<Class>(ContentHandler.class, ContentHandler.class);
         expect(db1.introspect(dataType1, null)).andReturn(true);
         expect(db1.introspect(EasyMock.not(EasyMock.same(dataType1)), (Annotation[])EasyMock.isNull()))
             .andReturn(false).anyTimes();
@@ -64,7 +65,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         DataBinding db2 = createMock(DataBinding.class);
         expect(db2.getAliases()).andReturn(new String[] {"db2"}).anyTimes();
         expect(db2.getName()).andReturn(XMLStreamReader.class.getName()).anyTimes();
-        DataType<Class> dataType2 = new DataType<Class>(XMLStreamReader.class, XMLStreamReader.class);
+        DataType<Class> dataType2 = new DataTypeImpl<Class>(XMLStreamReader.class, XMLStreamReader.class);
         expect(db2.introspect(dataType2, null)).andReturn(true);
         expect(db2.introspect(EasyMock.not(EasyMock.same(dataType2)), (Annotation[])EasyMock.isNull()))
             .andReturn(false).anyTimes();
@@ -81,7 +82,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         DataBinding db5 = registry.getDataBinding("db1");
         assertSame(db1, db5);
         
-        DataType dt = new DataType(ContentHandler.class, null);
+        DataType dt = new DataTypeImpl<Class>(ContentHandler.class, null);
         registry.introspectType(dt, null);
         assertEquals(dataType1.getLogical(), ContentHandler.class);
         assertTrue(dt.getDataBinding().equalsIgnoreCase("java.lang.Object"));
@@ -90,7 +91,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         DataBinding db4 = registry.getDataBinding(name);
         assertNull(db4);
 
-        dt = new DataType(null, String.class, null);
+        dt = new DataTypeImpl<Class>(null, String.class, null);
         registry.introspectType(dt, null);
         assertEquals("java.lang.Object", dt.getDataBinding());
     }

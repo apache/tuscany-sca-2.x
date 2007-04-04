@@ -24,11 +24,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import org.apache.tuscany.spi.databinding.DataPipe;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 
-@Service(Transformer.class)
 public class Writer2ReaderDataPipe extends TransformerExtension<Writer, Reader> implements DataPipe<Writer, Reader> {
 
     private StringWriter writer = new StringWriter();

@@ -25,14 +25,11 @@ import javax.xml.parsers.DocumentBuilder;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-@Service(Transformer.class)
 public class String2Node extends TransformerExtension<String, Node> implements PullTransformer<String, Node> {
 
     public Node transform(String source, TransformationContext context) {

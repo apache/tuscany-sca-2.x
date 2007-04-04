@@ -21,8 +21,9 @@ package org.apache.tuscany.spi.databinding.extension;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.model.DataType;
 import org.easymock.EasyMock;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -43,9 +44,9 @@ public class DataBindingExtensionTestCase extends TestCase {
     public void testExtension() {
         DataBinding1 binding1 = new DataBinding1(Node.class);
         assertEquals(Node.class.getName(), binding1.getName());
-        DataType dt1 = new DataType(Element.class, null);
+        DataType dt1 = new DataTypeImpl<Class>(Element.class, null);
         assertTrue(binding1.introspect(dt1, null));
-        DataType dt2 = new DataType(String.class, null);
+        DataType dt2 = new DataTypeImpl<Class>(String.class, null);
         assertFalse(binding1.introspect(dt2, null));
         assertNull(binding1.getWrapperHandler());
         

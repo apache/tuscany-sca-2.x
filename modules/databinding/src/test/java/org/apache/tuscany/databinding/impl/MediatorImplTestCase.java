@@ -24,18 +24,15 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
-import org.apache.tuscany.databinding.impl.MediatorImpl;
-import org.apache.tuscany.databinding.impl.TransformationContextImpl;
-import org.apache.tuscany.databinding.impl.TransformerRegistryImpl;
 import org.apache.tuscany.databinding.xml.Node2String;
 import org.apache.tuscany.databinding.xml.Node2Writer;
 import org.apache.tuscany.databinding.xml.SAX2DOMPipe;
 import org.apache.tuscany.databinding.xml.String2SAX;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformerRegistry;
-import org.apache.tuscany.spi.model.DataType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -94,8 +91,8 @@ public class MediatorImplTestCase extends TestCase {
 
     private TransformationContext createTransformationContext(Class sourceType, Class targetType) {
         TransformationContext context = new TransformationContextImpl();
-        DataType sourceDataType = new DataType<Class>(sourceType, sourceType);
-        DataType targetDataType = new DataType<Class>(targetType, targetType);
+        DataType sourceDataType = new DataTypeImpl<Class>(sourceType, sourceType);
+        DataType targetDataType = new DataTypeImpl<Class>(targetType, targetType);
         context.setSourceDataType(sourceDataType);
         context.setTargetDataType(targetDataType);
         return context;

@@ -21,16 +21,13 @@ package org.apache.tuscany.databinding.javabeans;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
-import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
  * Transformer to convert data from a JavaBean object to DOM Node
  */
-@Service(Transformer.class)
 public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
 
     public static final String COLON = ":";

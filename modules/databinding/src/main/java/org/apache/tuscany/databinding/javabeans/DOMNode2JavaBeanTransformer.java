@@ -21,8 +21,6 @@ package org.apache.tuscany.databinding.javabeans;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.databinding.Transformer;
-import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -30,7 +28,6 @@ import org.w3c.dom.NodeList;
 /**
  * Transformer to convert data from DOM Node to JavaBean
  */
-@Service(Transformer.class)
 public class DOMNode2JavaBeanTransformer extends XML2JavaBeanTransformer<Node> {
 
     @Override

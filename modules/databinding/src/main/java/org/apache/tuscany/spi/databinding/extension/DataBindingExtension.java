@@ -22,26 +22,19 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.ExceptionHandler;
 import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
-import org.apache.tuscany.spi.model.DataType;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Base Implementation of DataBinding
  * 
  * @version $Rev$ $Date$
  */
-@Service(DataBinding.class)
-@Scope("COMPOSITE")
-@EagerInit
 public abstract class DataBindingExtension implements DataBinding {
 
     protected DataBindingRegistry registry;
@@ -87,12 +80,10 @@ public abstract class DataBindingExtension implements DataBinding {
         this.aliases = aliases;
     }    
 
-    @Reference
     public void setDataBindingRegistry(DataBindingRegistry registry) {
         this.registry = registry;
     }
 
-    @Init
     public void init() {
         registry.register(this);
     }
@@ -115,10 +106,10 @@ public abstract class DataBindingExtension implements DataBinding {
         return false;
     }
     
-    protected static org.apache.tuscany.api.annotation.DataType getDataTypeAnnotation(Annotation[] annotations) {
+    protected static org.apache.tuscany.databinding.DataType getDataTypeAnnotation(Annotation[] annotations) {
         for (Annotation a : annotations) {
-            if (a.annotationType() == org.apache.tuscany.api.annotation.DataType.class) {
-                return (org.apache.tuscany.api.annotation.DataType) a;
+            if (a.annotationType() == org.apache.tuscany.databinding.DataType.class) {
+                return (org.apache.tuscany.databinding.DataType) a;
             }
         }
         return null;
@@ -128,7 +119,7 @@ public abstract class DataBindingExtension implements DataBinding {
         if (value == null) {
             return null;
         } else {
-            DataType<Class> dataType = new DataType<Class>(value.getClass(), value.getClass());
+            DataType<Class> dataType = new DataTypeImpl<Class>(value.getClass(), value.getClass());
             if (introspect(dataType, null)) {
                 return dataType;
             } else {

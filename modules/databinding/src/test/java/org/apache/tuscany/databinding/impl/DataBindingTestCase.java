@@ -23,23 +23,21 @@ import java.lang.reflect.Method;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.api.annotation.DataType;
-
 public class DataBindingTestCase extends TestCase {
     @SuppressWarnings("unused")
     public void testDataType() throws Exception {
         Class<Test> testClass = Test.class;
-        DataType d = testClass.getAnnotation(DataType.class);
+        org.apache.tuscany.databinding.DataType d = testClass.getAnnotation(org.apache.tuscany.databinding.DataType.class);
         Assert.assertEquals(d.name(), "sdo");
 
         Method method = testClass.getMethod("test", new Class[] {Object.class});
-        DataType d2 = method.getAnnotation(DataType.class);
+        org.apache.tuscany.databinding.DataType d2 = method.getAnnotation(org.apache.tuscany.databinding.DataType.class);
         Assert.assertEquals(d2.name(), "jaxb");
     }
 
-    @DataType(name = "sdo")
+    @org.apache.tuscany.databinding.DataType(name = "sdo")
     private static interface Test {
-        @DataType(name = "jaxb")
+        @org.apache.tuscany.databinding.DataType(name = "jaxb")
         Object test(Object object);
     }
 }
