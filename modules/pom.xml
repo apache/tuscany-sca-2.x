@@ -51,10 +51,10 @@
                 -->
                 <module>databinding</module>
                 <module>databinding-axiom</module>
+                <!--
                 <module>databinding-jaxb</module>
                 <module>databinding-sdo</module>
                 <module>databinding-sdo-axiom</module>
-                <!--
                 <module>discovery-jms</module>
                 -->
                 <module>idl</module>
