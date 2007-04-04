@@ -21,6 +21,11 @@ package org.apache.tuscany.services.spi.contribution;
 
 import java.io.InputStream;
 
+/**
+ * An artifact processor that can read models from an InputStream.
+ * 
+ * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
+ */
 public interface StreamArtifactProcessor<M> extends ArtifactProcessor<InputStream, M> {
 
 }

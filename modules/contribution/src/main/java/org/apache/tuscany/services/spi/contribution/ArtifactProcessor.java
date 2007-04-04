@@ -22,11 +22,35 @@ import org.apache.tuscany.services.contribution.model.Contribution;
 
 
 /**
- * Interface for services that can process contributions.
+ * Interface for extensions that can process contributions.
  * 
  * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
-public interface ArtifactProcessor <S,M>{
+public interface ArtifactProcessor <S,M> {
+    
+    /**
+     * Read a model from a source. Examples of sources are: an inputstream, an
+     * XML reader, or an object representation of the source.
+     * @param source
+     * @return a model representation of the source.
+     */
     M read(S source);
+    
+    /**
+     * Resolve references from this model to other models. For example references
+     * from a composite to another one, or references from a composite to a WSDL
+     * model.
+     * @param contribution the contribution containing the model
+     * @param model the model to resolve
+     */
     void resolve(Contribution contribution, M model);
+    
+    /**
+     * Normalize a model. This can include normalize and applying policies at different
+     * levels, or determining the configuration of services, references and properties in
+     * nested compositions for example.
+     * @param contribution the contribution containing the model
+     * @param model the model to normalize
+     */
+    void normalize(Contribution contribution, M model);
 }
