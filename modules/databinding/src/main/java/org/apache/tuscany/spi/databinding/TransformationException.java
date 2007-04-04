@@ -18,12 +18,11 @@
  */
 package org.apache.tuscany.spi.databinding;
 
-import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
  * Reports problems during data transformation
  */
-public class TransformationException extends TuscanyRuntimeException {
+public class TransformationException extends RuntimeException {
 
     private static final long serialVersionUID = 7662385613693006428L;
     private String sourceDataBinding;

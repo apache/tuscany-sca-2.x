@@ -24,13 +24,11 @@ import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML String
  */
-@Service(org.apache.tuscany.spi.databinding.Transformer.class)
 public class Node2String extends TransformerExtension<Node, String> implements PullTransformer<Node, String> {
     private static final Node2Writer TRANSFORMER = new Node2Writer();
 

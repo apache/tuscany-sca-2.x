@@ -21,9 +21,6 @@ package org.apache.tuscany.databinding.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.EagerInit;
-
-import org.osoa.sca.annotations.Reference;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.Transformer;
@@ -32,7 +29,6 @@ import org.apache.tuscany.spi.databinding.TransformerRegistry;
 /**
  * @version $Rev$ $Date$
  */
-@EagerInit
 public class TransformerRegistryImpl implements TransformerRegistry {
     private DataBindingRegistry dataBindingRegistry;
     
@@ -79,7 +75,6 @@ public class TransformerRegistryImpl implements TransformerRegistry {
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
-    @Reference
     public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }

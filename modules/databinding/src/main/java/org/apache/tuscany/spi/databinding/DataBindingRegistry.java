@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.databinding;
 
 import java.lang.annotation.Annotation;
 
-import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.idl.DataType;
 
 /**
  * The registry for data bindings

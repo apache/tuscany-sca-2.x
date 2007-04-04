@@ -26,17 +26,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.model.DataType;
-import org.osoa.sca.annotations.EagerInit;
 
 /**
  * The default implementation of a data binding registry
  * 
  * @version $Rev$ $Date$
  */
-@EagerInit
 public class DataBindingRegistryImpl implements DataBindingRegistry {
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
 
@@ -115,7 +114,7 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
                 return dataType;
             }
         }
-        return new DataType<Class>(JavaBeansDataBinding.NAME, value.getClass(), value.getClass());
+        return new DataTypeImpl<Class>(JavaBeansDataBinding.NAME, value.getClass(), value.getClass());
     }
 
 }

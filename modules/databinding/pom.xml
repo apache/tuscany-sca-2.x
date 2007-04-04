@@ -18,28 +18,21 @@
     * under the License.    
 -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-        <artifactId>parent</artifactId>
-        <version>2.0-alpha2-incubating-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-    <artifactId>databinding-framework</artifactId>
-    <packaging>jar</packaging>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>1.0-alpha1-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-databinding</artifactId>
     <name>Apache Tuscany DataBinding Framework</name>
-    <description>Apache Tuscany DataBinding Framework</description>
+
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-idl</artifactId>
+            <version>1.0-alpha1-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -49,15 +42,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-            <scope>test</scope>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.0</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 </project>

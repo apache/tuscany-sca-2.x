@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.databinding;
 
 import java.util.Map;
 
-import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.idl.DataType;
 
 /**
  * Context for data transformation

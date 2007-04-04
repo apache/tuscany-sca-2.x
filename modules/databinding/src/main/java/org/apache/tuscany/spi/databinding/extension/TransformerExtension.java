@@ -20,20 +20,12 @@ package org.apache.tuscany.spi.databinding.extension;
 
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.TransformerRegistry;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Base Implementation of Transformer which provides the registration to the transformer registry
  *
  * @version $Rev$ $Date$
  */
-@Service(Transformer.class)
-@Scope("COMPOSITE")
-@EagerInit
 public abstract class TransformerExtension<S, T> implements Transformer {
 
     protected TransformerRegistry registry;
@@ -42,12 +34,10 @@ public abstract class TransformerExtension<S, T> implements Transformer {
         super();
     }
 
-    @Reference
     public void setTransformerRegistry(TransformerRegistry registry) {
         this.registry = registry;
     }
 
-    @Init
     public void init() {
         registry.registerTransformer(this);
     }

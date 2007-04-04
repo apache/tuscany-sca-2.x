@@ -25,11 +25,8 @@ import org.apache.tuscany.databinding.xml.XMLDocumentStreamReader;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 
-@Service(Transformer.class)
 public class JavaBean2XMLStreamReader extends TransformerExtension<Object, XMLStreamReader> implements
     PullTransformer<Object, XMLStreamReader> {
 

@@ -21,7 +21,8 @@ package org.apache.tuscany.databinding.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Reference;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.DataPipe;
 import org.apache.tuscany.spi.databinding.Mediator;
@@ -31,20 +32,16 @@ import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.TransformerRegistry;
-import org.apache.tuscany.spi.model.DataType;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * Default Mediator implementation
  */
-@Scope("COMPOSITE")
 public class MediatorImpl implements Mediator {
 
     private DataBindingRegistry dataBindingRegistry;
 
     private TransformerRegistry transformerRegistry;
 
-    @Reference
     public void setTransformerRegistry(TransformerRegistry transformerRegistry) {
         this.transformerRegistry = transformerRegistry;
     }
@@ -52,7 +49,6 @@ public class MediatorImpl implements Mediator {
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
-    @Reference
     public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }
@@ -107,10 +103,10 @@ public class MediatorImpl implements Mediator {
                                                               Transformer transformer,
                                                               Map<Class<?>, Object> metadata) {
         DataType sourceType =
-            (index == 0) ? sourceDataType : new DataType<Object>(transformer.getSourceDataBinding(),
+            (index == 0) ? sourceDataType : new DataTypeImpl<Object>(transformer.getSourceDataBinding(),
                                                                  Object.class, null);
         DataType targetType =
-            (index == size - 1) ? targetDataType : new DataType<Object>(transformer.getTargetDataBinding(),
+            (index == size - 1) ? targetDataType : new DataTypeImpl<Object>(transformer.getTargetDataBinding(),
                                                                         Object.class, null);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         TransformationContext context =

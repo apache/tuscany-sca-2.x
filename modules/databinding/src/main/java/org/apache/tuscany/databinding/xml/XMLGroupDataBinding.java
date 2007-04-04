@@ -33,7 +33,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
 import org.apache.tuscany.databinding.impl.GroupDataBinding;
-import org.apache.tuscany.spi.model.XMLType;
+import org.apache.tuscany.idl.util.XMLType;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 

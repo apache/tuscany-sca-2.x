@@ -21,9 +21,7 @@ package org.apache.tuscany.databinding.xml;
 import org.apache.tuscany.spi.databinding.PushTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -32,7 +30,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * Push InputSource to SAX
  */
-@Service(Transformer.class)
 public class InputSource2SAX extends TransformerExtension<InputSource, ContentHandler> implements
     PushTransformer<InputSource, ContentHandler> {
 

@@ -24,11 +24,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.tuscany.spi.databinding.DataPipe;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 
-@Service(Transformer.class)
 public class StreamDataPipe extends TransformerExtension<OutputStream, InputStream> implements
     DataPipe<OutputStream, InputStream> {
 

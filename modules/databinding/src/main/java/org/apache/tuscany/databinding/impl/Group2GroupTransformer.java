@@ -19,20 +19,16 @@
 
 package org.apache.tuscany.databinding.impl;
 
+import org.apache.tuscany.idl.DataType;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.apache.tuscany.spi.model.DataType;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 /**
  * This is a special transformer to transform the output from one IDL to the
  * other one
  */
-@Service(Transformer.class)
 public class Group2GroupTransformer extends TransformerExtension<Object, Object> implements
     PullTransformer<Object, Object> {
 
@@ -48,7 +44,6 @@ public class Group2GroupTransformer extends TransformerExtension<Object, Object>
     /**
      * @param mediator the mediator to set
      */
-    @Reference
     public void setMediator(Mediator mediator) {
         this.mediator = mediator;
     }

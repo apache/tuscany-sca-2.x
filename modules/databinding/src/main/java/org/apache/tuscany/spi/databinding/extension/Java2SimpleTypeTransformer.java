@@ -20,10 +20,10 @@ package org.apache.tuscany.spi.databinding.extension;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.model.XMLType;
 
 /**
  * Transformer to convert data from a simple java object to a databinding's representation
