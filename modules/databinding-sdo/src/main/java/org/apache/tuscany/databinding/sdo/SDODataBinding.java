@@ -23,12 +23,12 @@ import java.lang.annotation.Annotation;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.spi.databinding.ExceptionHandler;
 import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Type;

@@ -25,14 +25,11 @@ import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 
-@Service(Transformer.class)
 public class XMLStreamReader2XMLDocument extends TransformerExtension<XMLStreamReader, XMLDocument> implements
     PullTransformer<XMLStreamReader, XMLDocument> {
 

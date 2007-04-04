@@ -29,12 +29,9 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorExtension;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.model.ElementInfo;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.WrapperInfo;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.util.ElementInfo;
+import org.apache.tuscany.idl.util.WrapperInfo;
 
 /**
  * The databinding annotation processor for java interfaces

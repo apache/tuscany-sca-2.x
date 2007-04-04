@@ -23,8 +23,9 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import com.example.ipo.sdo.SdoFactory;
@@ -53,18 +54,18 @@ public class SDODataBindingTestCase extends TestCase {
     }
 
     public final void testIntrospect() {
-        DataType dataType = new DataType(DataObject.class, null);
+        DataType dataType = new DataTypeImpl<Class>(DataObject.class, null);
         boolean yes = binding.introspect(dataType, null);
         assertTrue(yes);
         assertTrue(dataType.getDataBinding().equals(binding.getName()));
         assertTrue(dataType.getPhysical() == DataObject.class && dataType.getLogical() == XMLType.UNKNOWN);
-        dataType = new DataType(PurchaseOrderType.class, null);
+        dataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
         yes = binding.introspect(dataType, null);
         assertTrue(yes);
         assertEquals(PurchaseOrderType.class, dataType.getPhysical());
         assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), ((XMLType)dataType.getLogical())
             .getTypeName());
-        dataType = new DataType(USAddress.class, null);
+        dataType = new DataTypeImpl<Class>(USAddress.class, null);
         yes = binding.introspect(dataType, null);
         assertTrue(yes);
         assertEquals(USAddress.class, dataType.getPhysical());

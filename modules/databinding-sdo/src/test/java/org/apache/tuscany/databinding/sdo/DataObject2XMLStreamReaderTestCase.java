@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.databinding.sdo;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 
@@ -36,12 +36,12 @@ public class DataObject2XMLStreamReaderTestCase extends SDOTransformerTestCaseBa
 
     @Override
     protected DataType<?> getSourceDataType() {
-        return new DataType<XMLType>(binding, PurchaseOrderType.class, new XMLType(ORDER_QNAME, null));
+        return new DataTypeImpl<XMLType>(binding, PurchaseOrderType.class, new XMLType(ORDER_QNAME, null));
     }
 
     @Override
     protected DataType<?> getTargetDataType() {
-        return new DataType<Class<XMLStreamReader>>(XMLStreamReader.class, XMLStreamReader.class);
+        return new DataTypeImpl<Class<XMLStreamReader>>(XMLStreamReader.class, XMLStreamReader.class);
     }
 
     public final void testTransform() throws XMLStreamException {

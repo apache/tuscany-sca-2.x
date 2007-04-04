@@ -22,8 +22,8 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.idl.DataType;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.model.DataType;
 
 public class MockTransformationContext implements TransformationContext {
     private DataType sourceDataType;

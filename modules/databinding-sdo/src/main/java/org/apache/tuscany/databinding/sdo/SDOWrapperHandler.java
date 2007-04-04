@@ -25,9 +25,9 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.util.ElementInfo;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
-import org.apache.tuscany.spi.model.ElementInfo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;

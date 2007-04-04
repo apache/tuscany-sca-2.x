@@ -19,17 +19,14 @@
 
 package org.apache.tuscany.databinding.sdo;
 
+import java.awt.Component;
+
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.util.XMLType;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.XMLType;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.impl.HelperProvider;

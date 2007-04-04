@@ -18,15 +18,50 @@
     * under the License.    
 -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-        <artifactId>parent</artifactId>
-        <version>2.0-alpha2-incubating-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>databinding-jaxb</artifactId>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>1.0-alpha1-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-databinding-jaxb</artifactId>
     <name>Apache Tuscany Data Binding for JAXB</name>
-    <description>Tuscany JAXB Data Binding</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding</artifactId>
+            <version>1.0-alpha1-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
+            <!-- Set to 2.1 to make jaxws-maven-plugin happy -->
+            <version>2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.0.5</version>
+            <scope>runtime</scope>
+            <!-- Replacing stax 1.0 with stax 1.0.1 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jsr173_api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 
     <repositories>
         <repository>
@@ -39,6 +74,7 @@
             <layout>legacy</layout>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <snapshots>
@@ -51,54 +87,7 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-            <artifactId>databinding-framework</artifactId>
-            <version>2.0-alpha2-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.ws</groupId>
-            <artifactId>jaxws-api</artifactId>
-            <!-- Set to 2.1 to make jaxws-maven-plugin happy -->
-            <version>2.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.0.5</version>
-            <scope>runtime</scope>
-            <!-- Relacing stax 1.0 with stax 1.0.1 -->
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jsr173_api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-
-    </dependencies>
-
     <build>
-
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
-import org.apache.tuscany.spi.model.ModelObject;
-
 import commonj.sdo.DataObject;
 
 /**

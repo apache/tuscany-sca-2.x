@@ -25,8 +25,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.jaxb.fault.InvalidSymbolFault;
 import org.apache.tuscany.databinding.jaxb.fault.InvalidSymbolFault_Exception;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.XMLType;
+import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.idl.util.XMLType;
 
 /**
  * Test case for JAXBExceptionHandler
@@ -44,7 +45,7 @@ public class JAXBExceptionHandlerTestCase extends TestCase {
     }
 
     public void testGetFaultType() {
-        DataType exType = new DataType<XMLType>(InvalidSymbolFault_Exception.class, XMLType.UNKNOWN);
+        DataType exType = new DataTypeImpl<XMLType>(InvalidSymbolFault_Exception.class, XMLType.UNKNOWN);
         DataType<?> dataType = handler.getFaultType(exType);
         assertEquals(InvalidSymbolFault.class, dataType.getPhysical());
         assertEquals(ELEMENT, ((XMLType) dataType.getLogical()).getElementName());
@@ -52,12 +53,12 @@ public class JAXBExceptionHandlerTestCase extends TestCase {
     }
 
     public void testCreate() {
-        DataType execType = new DataType<XMLType>(InvalidSymbolFault_Exception.class, XMLType.UNKNOWN);
+        DataType execType = new DataTypeImpl<XMLType>(InvalidSymbolFault_Exception.class, XMLType.UNKNOWN);
         DataType<?> faultType = handler.getFaultType(execType);
         InvalidSymbolFault fault = new InvalidSymbolFault();
         fault.setMessage("ABC");
         fault.setSymbol("IBM0");
-        DataType<DataType> exType = new DataType<DataType>(InvalidSymbolFault_Exception.class, faultType);
+        DataType<DataType> exType = new DataTypeImpl<DataType>(InvalidSymbolFault_Exception.class, faultType);
         Exception ex = handler.createException(exType, "Invalid symbol", fault, null);
         assertTrue(ex instanceof InvalidSymbolFault_Exception);
         InvalidSymbolFault_Exception exception = (InvalidSymbolFault_Exception)ex;

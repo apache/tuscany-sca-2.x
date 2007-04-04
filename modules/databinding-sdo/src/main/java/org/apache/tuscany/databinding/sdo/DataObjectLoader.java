@@ -24,14 +24,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sdo.helper.XMLStreamHelper;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.ModelObject;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
@@ -40,13 +32,12 @@ import commonj.sdo.helper.TypeHelper;
 /**
  * A SDO model-based Loader to load DataObject from the XML stream
  */
-@EagerInit
 public class DataObjectLoader extends LoaderExtension<ModelDataObject> {
     private QName elementName;
 
-    public DataObjectLoader(@Reference LoaderRegistry registry, 
-                            @Property(name = "namespace", required = true) String namespace, 
-                            @Property(name = "name", required = true) String name) {
+    public DataObjectLoader(LoaderRegistry registry, 
+                            String namespace, 
+                            String name) {
         super(registry);
         this.elementName = new QName(namespace, name);
     }

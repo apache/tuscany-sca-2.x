@@ -18,12 +18,11 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
-import org.apache.tuscany.spi.CoreRuntimeException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DuplicateHelperContextException extends CoreRuntimeException {
+public class DuplicateHelperContextException extends RuntimeException {
     private static final long serialVersionUID = -5229624905543066038L;
 
     /**

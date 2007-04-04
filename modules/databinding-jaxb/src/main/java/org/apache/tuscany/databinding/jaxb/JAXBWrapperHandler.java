@@ -29,10 +29,10 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.util.ElementInfo;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
-import org.apache.tuscany.spi.model.ElementInfo;
 
 /**
  * JAXB WrapperHandler implementation
