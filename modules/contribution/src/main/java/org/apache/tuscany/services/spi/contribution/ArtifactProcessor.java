@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.services.spi.contribution;
 
-import org.apache.tuscany.services.contribution.model.Contribution;
 
 
 /**
@@ -26,7 +25,7 @@ import org.apache.tuscany.services.contribution.model.Contribution;
  * 
  * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
-public interface ArtifactProcessor <S,M> {
+public interface ArtifactProcessor <S, M, T> {
     
     /**
      * Read a model from a source. Examples of sources are: an inputstream, an
@@ -34,23 +33,35 @@ public interface ArtifactProcessor <S,M> {
      * @param source
      * @return a model representation of the source.
      */
-    M read(S source);
+    M read(S source) throws ContributionReadException;
     
     /**
      * Resolve references from this model to other models. For example references
      * from a composite to another one, or references from a composite to a WSDL
      * model.
-     * @param contribution the contribution containing the model
      * @param model the model to resolve
+     * @param the resolver to use to resolve referenced models
      */
-    void resolve(Contribution contribution, M model);
+    void resolve(M model, ArtifactResolver resolver) throws ContributionException;
     
     /**
-     * Normalize a model. This can include normalize and applying policies at different
-     * levels, or determining the configuration of services, references and properties in
-     * nested compositions for example.
-     * @param contribution the contribution containing the model
-     * @param model the model to normalize
+     * Optimize a model for consumption by the runtime. This can include applying policies at different
+     * levels, or determining the configuration of services, references and properties in nested compositions
+     * for example.
+     * @param model the model to optimize
      */
-    void normalize(Contribution contribution, M model);
+    void optimize(M model) throws ContributionException;
+    
+    /**
+     * Returns the type of artifact handled by this artifact processor. 
+     * @return the type of artifact handled by this artifact processor
+     */
+    T getArtifactType();
+
+    /**
+     * Returns the type of model handled by this artifact processor.
+     * @return the type of model handled by this artifact processor
+     */
+    Class<?> getModelType(); 
+    
 }
