@@ -36,8 +36,7 @@ import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
-import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -47,7 +46,7 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class ReadAllTestCase extends TestCase {
-    private LoaderRegistryImpl loaderRegistry;
+    private StAXArtifactProcessorRegistry loaderRegistry;
 
     public void setUp() throws Exception {
         loaderRegistry = new LoaderRegistryImpl();

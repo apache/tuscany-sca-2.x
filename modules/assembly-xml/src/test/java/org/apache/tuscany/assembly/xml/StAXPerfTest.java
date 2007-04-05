@@ -28,7 +28,7 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.LoaderRegistry;
-import org.apache.tuscany.assembly.xml.impl.CompositeLoader;
+import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -84,7 +84,7 @@ public class StAXPerfTest {
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
-        CompositeLoader loader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeProcessor loader = new CompositeProcessor(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
 
         Composite composite = loader.load(reader);

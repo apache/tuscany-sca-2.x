@@ -29,9 +29,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.LoaderRegistry;
-import org.apache.tuscany.assembly.xml.impl.ComponentTypeLoader;
-import org.apache.tuscany.assembly.xml.impl.CompositeLoader;
-import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeLoader;
+import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
+import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
+import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -63,7 +63,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeLoader componentTypeReader = new ComponentTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        ComponentTypeProcessor componentTypeReader = new ComponentTypeProcessor(assemblyFactory, policyFactory, loaderRegistry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(componentTypeReader.load(reader));
@@ -72,7 +72,7 @@ public class ReadTestCase extends TestCase {
 
     public void testReadConstrainingType() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingTypeLoader constrainingTypeReader = new ConstrainingTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(constrainingTypeReader.load(reader));
         is.close();
@@ -81,7 +81,7 @@ public class ReadTestCase extends TestCase {
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
-        CompositeLoader compositeReader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeProcessor compositeReader = new CompositeProcessor(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(compositeReader.load(reader));
         is.close();
@@ -90,7 +90,7 @@ public class ReadTestCase extends TestCase {
 
     public void testReadCompositeAndWireIt() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
-        CompositeLoader compositeReader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeProcessor compositeReader = new CompositeProcessor(assemblyFactory, policyFactory, loaderRegistry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(compositeReader.load(reader));
         is.close();

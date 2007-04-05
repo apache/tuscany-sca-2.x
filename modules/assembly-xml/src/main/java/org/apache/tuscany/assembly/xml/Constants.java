@@ -21,6 +21,9 @@ package org.apache.tuscany.assembly.xml;
 
 import javax.xml.namespace.QName;
 
+/**
+ * Constants used in SCA assembly XML files.
+ */
 public interface Constants {
     String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     String COMPONENT_TYPE = "componentType";
