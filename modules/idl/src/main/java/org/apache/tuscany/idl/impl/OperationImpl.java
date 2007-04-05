@@ -35,9 +35,25 @@ public class OperationImpl implements Operation {
     private boolean unresolved;
     private DataType outputType;
     private DataType<List<DataType>> inputType;
-    private List<DataType> faultTypes;    
+    private List<DataType> faultTypes;
     private Interface interfaze;
-    private ConversationSequence conversationSequence;
+    private ConversationSequence conversationSequence = ConversationSequence.NO_CONVERSATION;
+    private boolean nonBlocking;
+
+    /**
+     * @param name
+     */
+    public OperationImpl() {
+        super();
+    }
+
+    /**
+     * @param name
+     */
+    public OperationImpl(String name) {
+        super();
+        this.name = name;
+    }
 
     public String getName() {
         return name;
@@ -123,6 +139,94 @@ public class OperationImpl implements Operation {
      */
     public void setConversationSequence(ConversationSequence conversationSequence) {
         this.conversationSequence = conversationSequence;
+    }
+
+    /**
+     * @return the nonBlocking
+     */
+    public boolean isNonBlocking() {
+        return nonBlocking;
+    }
+
+    /**
+     * @param nonBlocking the nonBlocking to set
+     */
+    public void setNonBlocking(boolean nonBlocking) {
+        this.nonBlocking = nonBlocking;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((conversationSequence == null) ? 0 : conversationSequence.hashCode());
+        // result = PRIME * result + ((faultTypes == null) ? 0 : faultTypes.hashCode());
+        result = PRIME * result + ((inputType == null) ? 0 : inputType.hashCode());
+        result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+        result = PRIME * result + (nonBlocking ? 1231 : 1237);
+        result = PRIME * result + ((outputType == null) ? 0 : outputType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OperationImpl other = (OperationImpl)obj;
+        if (conversationSequence == null) {
+            if (other.conversationSequence != null) {
+                return false;
+            }
+        } else if (!conversationSequence.equals(other.conversationSequence)) {
+            return false;
+        }
+        /*
+        if (faultTypes == null) {
+            if (other.faultTypes != null) {
+                return false;
+            }
+        } else if (!faultTypes.equals(other.faultTypes)) {
+            return false;
+        }
+        */
+        
+        if (inputType == null) {
+            if (other.inputType != null) {
+                return false;
+            }
+        } else if (!inputType.equals(other.inputType)) {
+            return false;
+        }
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        if (nonBlocking != other.nonBlocking) {
+            return false;
+        }
+        if (outputType == null) {
+            if (other.outputType != null) {
+                return false;
+            }
+        } else if (!outputType.equals(other.outputType)) {
+            return false;
+        }
+        return true;
     }
 
 }
