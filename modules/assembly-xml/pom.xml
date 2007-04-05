@@ -30,8 +30,14 @@
 
     <dependencies>
         <dependency>
-	        <groupId>org.apache.tuscany.sca</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 

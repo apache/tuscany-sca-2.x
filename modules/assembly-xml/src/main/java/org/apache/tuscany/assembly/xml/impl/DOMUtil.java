@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.assembly.xml.LoaderException;
+import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,11 +48,11 @@ public final class DOMUtil {
     private DOMUtil() {
     }
 
-    public static Document newDocument() {
+    public static Document newDocument() throws ContributionReadException {
         try {
             return newDocumentBuilder().newDocument();
         } catch (ParserConfigurationException e) {
-            throw new LoaderException(e);
+            throw new ContributionReadException(e);
         }
     }
 
