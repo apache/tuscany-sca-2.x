@@ -45,8 +45,8 @@
                 <module>binding-rmi</module>
                 -->
                 <module>contribution</module>
-                <!--
                 <module>contribution-impl</module>
+                <!--
                 <module>core</module>
                 -->
                 <module>core-spi</module>
