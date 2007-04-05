@@ -26,21 +26,16 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
-import org.apache.tuscany.assembly.xml.LoaderRegistry;
-import org.apache.tuscany.assembly.xml.impl.ComponentTypeLoader;
-import org.apache.tuscany.assembly.xml.impl.CompositeLoader;
-import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeLoader;
-import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
-import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
+import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
+import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
+import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
+import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
@@ -50,55 +45,49 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 public class ReadTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
-    AssemblyFactory assemblyFactory;
-    PolicyFactory policyFactory;
-    LoaderRegistry loaderRegistry;
+    StAXArtifactProcessorRegistry registry;
     
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
-        assemblyFactory = new DefaultAssemblyFactory();
-        policyFactory = new DefaultPolicyFactory();
-        loaderRegistry = new LoaderRegistryImpl();
+        registry = new DefaultStAXArtifactProcessorRegistry();
 
-        JavaImplementationLoader javaReader = new JavaImplementationLoader(new DefaultJavaImplementationFactory(assemblyFactory));
-        loaderRegistry.addLoader(JavaImplementationConstants.IMPLEMENTATION_JAVA_QNAME, javaReader);
+        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor();
+        registry.addArtifactProcessor(javaProcessor);
     }
 
     public void tearDown() throws Exception {
         inputFactory = null;
-        assemblyFactory = null;
-        policyFactory = null;
-        loaderRegistry = null;
+        registry = null;
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeLoader componentTypeReader = new ComponentTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        ComponentTypeProcessor componentTypeProcessor = new ComponentTypeProcessor(registry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ComponentType componentType = componentTypeReader.load(reader);
+        ComponentType componentType = componentTypeProcessor.read(reader);
         assertNotNull(componentType);
         
         new PrintUtil(System.out).print(componentType);
     }
 
     public void testReadConstrainingType() throws Exception {
-        ConstrainingTypeLoader constrainingTypeReader = new ConstrainingTypeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        ConstrainingTypeProcessor constrainingTypeProcessor = new ConstrainingTypeProcessor(registry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ConstrainingType constrainingType = constrainingTypeReader.load(reader);
+        ConstrainingType constrainingType = constrainingTypeProcessor.read(reader);
         assertNotNull(constrainingType);
 
         new PrintUtil(System.out).print(constrainingType);
     }
     
     public void testReadComposite() throws Exception {
-        CompositeLoader compositeReader = new CompositeLoader(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(registry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeReader.load(reader);
+        Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        new CompositeUtil(assemblyFactory, composite).configure(null);
+        new CompositeUtil(composite).configure(null);
 
         new PrintUtil(System.out).print(composite);
     }

@@ -152,7 +152,7 @@ public class ReadAllTestCase extends TestCase {
         URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
         Composite composite = registry.read(url, Composite.class);
         assertNotNull(composite);
-        new CompositeUtil(new DefaultAssemblyFactory(), composite).configure(null);
+        new CompositeUtil(composite).configure(null);
 
         Component calcComponent = composite.getComponents().get(0);
         CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);
