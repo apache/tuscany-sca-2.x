@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.idl.WSDLFactory;
-import org.apache.tuscany.idl.WSDLInterface;
+import org.apache.tuscany.idl.wsdl.WSDLFactory;
+import org.apache.tuscany.idl.wsdl.WSDLInterface;
 import org.apache.tuscany.idl.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionException;

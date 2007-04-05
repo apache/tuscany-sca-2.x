@@ -16,16 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.xml;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+package org.apache.tuscany.idl.wsdl;
 
 /**
- * A content handler for SCDL implementation elements.
+ * Factory for the WSDL model.
  * 
  * @version $Rev$ $Date$
  */
-public interface Loader<T> {
-    T load(XMLStreamReader reader) throws XMLStreamException;
+public interface WSDLFactory {
+
+    /**
+     * Creates a new WSDL interface.
+     * 
+     * @return a new WSDL interface
+     */
+    WSDLInterface createWSDLInterface();
+
 }

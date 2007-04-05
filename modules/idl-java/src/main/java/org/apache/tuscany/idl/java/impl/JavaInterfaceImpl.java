@@ -58,4 +58,18 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
         return getName();
     }
 
+    @Override
+    public int hashCode() {
+        return String.valueOf(className).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        else if (obj instanceof JavaInterface && className.equals(((JavaInterface)obj).getName()))
+             return true;
+        else
+            return false;
+    }
 }

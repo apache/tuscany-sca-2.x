@@ -22,6 +22,7 @@ package org.apache.tuscany.assembly.xml.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -37,6 +38,7 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
@@ -233,7 +235,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                             contract.setCallback(callback);
                             readPolicies(callback, reader);
     
-                        } else if (OPERATION.equals(name)) {
+                        } else if (OPERATION_QNAME.equals(name)) {
     
                             // Read an <operation>
                             Operation operation = factory.createOperation();
@@ -244,6 +246,14 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                             } else {
                                 readPolicies(contract, operation, reader);
                             }
+                        } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
+                            
+                            // Read an implementation.composite
+                            Composite implementation = factory.createComposite();
+                            implementation.setName(getQName(reader, NAME));
+                            implementation.setUnresolved(true);
+                            component.setImplementation(implementation);
+                            
                         } else {
     
                             // Read an extension element
@@ -316,11 +326,39 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         }
     }
     
-    public void resolve(Composite model, ArtifactResolver resolver) throws ContributionException {
-        // TODO Auto-generated method stub
+    public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionException {
         
+        // Resolve constraining type
+        ConstrainingType constrainingType = composite.getConstrainingType(); 
+        constrainingType = resolver.resolve(ConstrainingType.class, constrainingType); 
+        composite.setConstrainingType(constrainingType);
+        
+        // Resolve includes in the composite
+        for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
+            Composite include = composite.getIncludes().get(i);
+            include = resolver.resolve(Composite.class, include);
+            composite.getIncludes().set(i, include);
+        }
+        
+        // Resolve component implementations, services and references 
+        for (Component component: composite.getComponents()) {
+            constrainingType = component.getConstrainingType(); 
+            constrainingType = resolver.resolve(ConstrainingType.class, constrainingType); 
+            component.setConstrainingType(constrainingType);
+
+            Implementation implementation = component.getImplementation();
+            implementation = resolver.resolve(Implementation.class, implementation);
+            component.setImplementation(implementation);
+            
+            resolveContract(component.getServices(), resolver);
+            resolveContract(component.getReferences(), resolver);
+        }
+        
+        // Resolve composite services and references
+        resolveContract(composite.getServices(), resolver);
+        resolveContract(composite.getReferences(), resolver);
     }
-    
+
     public void optimize(Composite model) throws ContributionException {
         // TODO Auto-generated method stub
         

@@ -170,8 +170,11 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
         }
     }
     
-    public void resolve(ConstrainingType model, ArtifactResolver resolver) throws ContributionException {
-        // TODO Auto-generated method stub
+    public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionException {
+
+        // Resolve component type services and references
+        resolveAbstractContract(constrainingType.getServices(), resolver);
+        resolveAbstractContract(constrainingType.getReferences(), resolver);
     }
     
     public void optimize(ConstrainingType model) throws ContributionException {

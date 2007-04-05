@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.idl.wsdl.impl;
 
-import org.apache.tuscany.idl.WSDLFactory;
-import org.apache.tuscany.idl.WSDLInterface;
+import org.apache.tuscany.idl.wsdl.WSDLFactory;
+import org.apache.tuscany.idl.wsdl.WSDLInterface;
 
 /**
  * A factory for the WSDL model.

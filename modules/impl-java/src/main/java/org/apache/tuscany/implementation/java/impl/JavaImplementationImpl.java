@@ -54,4 +54,18 @@ public class JavaImplementationImpl extends ComponentTypeImpl implements JavaImp
         this.javaClass = javaClass;
     }
 
+    @Override
+    public int hashCode() {
+        return String.valueOf(className).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        else if (obj instanceof JavaImplementation && className.equals(((JavaImplementation)obj).getName()))
+             return true;
+        else
+            return false;
+    }
 }

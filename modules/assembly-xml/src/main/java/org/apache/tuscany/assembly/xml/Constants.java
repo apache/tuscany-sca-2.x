@@ -69,4 +69,6 @@ public interface Constants {
     String ZERO_N = "0..n";
     String ONE_ONE = "1..1";
     String ONE_N = "1..n";
+    String IMPLEMENTATION_COMPOSITE = "implementation.composite";
+    QName IMPLEMENTATION_COMPOSITE_QNAME = new QName(SCA10_NS, IMPLEMENTATION_COMPOSITE);
 }
