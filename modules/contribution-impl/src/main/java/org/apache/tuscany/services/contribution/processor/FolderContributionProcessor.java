@@ -36,18 +36,18 @@ import org.apache.tuscany.services.contribution.util.FileHelper;
 import org.apache.tuscany.services.contribution.util.IOHelper;
 import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
-import org.apache.tuscany.services.spi.contribution.extension.ContributionProcessorExtension;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
+import org.apache.tuscany.services.spi.contribution.extension.ContributionPackageProcessorExtension;
 
-public class FolderContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
+public class FolderContributionProcessor extends ContributionPackageProcessorExtension implements ContributionPackageProcessor {
     /**
-     * Content-type that this processor can handle
+     * Package-type that this package processor can handle
      */
-    public static final String CONTENT_TYPE = ContentType.FOLDER;
+    public static final String PACKAGE_TYPE = ContentType.FOLDER;
 
     @Override
     public String getContentType() {
-        return CONTENT_TYPE;
+        return PACKAGE_TYPE;
     }
 
     /**
@@ -122,6 +122,7 @@ public class FolderContributionProcessor extends ContributionProcessorExtension 
             ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
             String contentType = contentTypeDescriber.getContentType(artifactURL, null);
 
+            
             // just process scdl and contribution metadata for now
             if (ContentType.COMPOSITE.equals(contentType)) {
                 InputStream is = artifactURL.openStream();
@@ -134,10 +135,4 @@ public class FolderContributionProcessor extends ContributionProcessorExtension 
             }
         }
     }
-
-    public void processModel(Contribution contribution, URI source, Object modelObject) throws ContributionException,
-        IOException {
-        // NOOP
-    }
-
 }

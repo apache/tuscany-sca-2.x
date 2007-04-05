@@ -25,10 +25,10 @@ import java.net.URI;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.easymock.EasyMock;
 
-public class FolderContributionProcessorTestCase extends TestCase {
+public class FolderContributionPackageProcessorTestCase extends TestCase {
     private static final String CONTRIBUTION_URI = "sca://contributions/002/";
     private static final String DIRECTORY_CONTRIBUTION = "../../../../core-samples/common/calculator";
     
@@ -42,8 +42,8 @@ public class FolderContributionProcessorTestCase extends TestCase {
     }
     
     public final void testProcessJarArtifacts() throws Exception {
-        ContributionProcessorRegistry mockRegistry = EasyMock.createMock(ContributionProcessorRegistry.class);
-        mockRegistry.register(FolderContributionProcessor.CONTENT_TYPE, folderProcessor);
+        ContributionPackageProcessorRegistry mockRegistry = EasyMock.createMock(ContributionPackageProcessorRegistry.class);
+        mockRegistry.register(FolderContributionProcessor.PACKAGE_TYPE, folderProcessor);
         mockRegistry.processContent((Contribution)EasyMock.anyObject(), (URI) EasyMock.anyObject(), (InputStream) EasyMock.anyObject() );
         EasyMock.expectLastCall().anyTimes();
         EasyMock.replay(mockRegistry);

@@ -34,15 +34,16 @@ import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.util.IOHelper;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
-import org.apache.tuscany.services.spi.contribution.loader.ContributionLoaderException;
+import org.apache.tuscany.services.spi.contribution.loader.ContributionMetadataLoaderException;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ContributionServiceImpl implements ContributionService {
+
     /**
      * Repository where contributions are stored. Usually set by injection.
      */
@@ -51,7 +52,7 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * Registry of available processors. Usually set by injection.
      */
-    protected ContributionProcessorRegistry processorRegistry;
+    protected ContributionPackageProcessorRegistry processorRegistry;
 
     /**
      * xml factory used to create reader instance to load contribution metadata
@@ -60,7 +61,7 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * contribution metadata loader
      */
-    protected ContributionLoader contributionLoader;
+    protected ContributionMetadataLoaderImpl contributionLoader;
 
 
     /**
@@ -72,7 +73,7 @@ public class ContributionServiceImpl implements ContributionService {
     protected ArtifactResolverRegistry resolverRegistry;
 
     public ContributionServiceImpl(ContributionRepository repository,
-                                   ContributionProcessorRegistry processorRegistry,
+                                   ContributionPackageProcessorRegistry processorRegistry,
                                    ArtifactResolverRegistry resolverRegistry) {
         super();
         this.contributionRepository = repository;
@@ -80,7 +81,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.resolverRegistry = resolverRegistry;
         
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
-        this.contributionLoader = new ContributionLoader();
+        this.contributionLoader = new ContributionMetadataLoaderImpl();
     }
 
     public void contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
@@ -129,7 +130,7 @@ public class ContributionServiceImpl implements ContributionService {
                 } catch (XMLStreamException xmle) {
                     throw new 
                         InvalidContributionMetadataException(xmle.getMessage(), metadataURL.toExternalForm(), xmle);
-                } catch (ContributionLoaderException le) {
+                } catch (ContributionMetadataLoaderException le) {
                     throw new 
                         InvalidContributionMetadataException(le.getMessage(), metadataURL.toExternalForm(), le);
                 }
@@ -217,6 +218,7 @@ public class ContributionServiceImpl implements ContributionService {
         */
     }
 
+    /*
     public <T> T resolve(URI contribution, Class<T> definitionType, String namespace, String name) {
         Contribution contributionObject = getContribution(contribution);
         return resolverRegistry.resolve(contributionObject, definitionType, namespace, name, null);
@@ -226,5 +228,11 @@ public class ContributionServiceImpl implements ContributionService {
         Contribution contributionObject = getContribution(contribution);
         return resolverRegistry.resolve(contributionObject, namespace, uri.toString(), baseURI.toString());
     }
+    */
 
+    public <M> M resolve(Class modelClass, Class<M> elementClass, Object modelKey, Object elementKey, Map<String, Object> attributes) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
 }

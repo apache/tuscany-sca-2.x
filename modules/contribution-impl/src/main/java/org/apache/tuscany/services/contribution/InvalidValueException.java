@@ -19,9 +19,10 @@
 
 package org.apache.tuscany.services.contribution;
 
-import org.apache.tuscany.services.spi.contribution.loader.ContributionLoaderException;
+import org.apache.tuscany.services.spi.contribution.loader.ContributionMetadataLoaderException;
 
-public class InvalidValueException extends ContributionLoaderException {
+
+public class InvalidValueException extends ContributionMetadataLoaderException {
     /**
      * 
      */

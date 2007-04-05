@@ -29,8 +29,8 @@ import java.util.Map;
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.UnsupportedContentTypeException;
 
 /**
@@ -38,25 +38,25 @@ import org.apache.tuscany.services.spi.contribution.UnsupportedContentTypeExcept
  *
  * @version $Rev$ $Date$
  */
-public class ContributionProcessorRegistryImpl implements ContributionProcessorRegistry {
+public class ContributionPackageProcessorRegistryImpl implements ContributionPackageProcessorRegistry {
     /**
      * Processor registry
      */
-    private Map<String, ContributionProcessor> registry = new HashMap<String, ContributionProcessor>();
+    private Map<String, ContributionPackageProcessor> registry = new HashMap<String, ContributionPackageProcessor>();
     /**
      * Helper method to describe contentType for each artifact
      */
-    private ContentTypeDescriber contentTypeDescriber;
+    private ContentTypeDescriber packageTypeDescriber;
 
-    public ContributionProcessorRegistryImpl(ContentTypeDescriber contentTypeDescriber) {
+    public ContributionPackageProcessorRegistryImpl(ContentTypeDescriber contentTypeDescriber) {
         if (contentTypeDescriber == null) {
-            this.contentTypeDescriber = new ContentTypeDescriberImpl();
+            this.packageTypeDescriber = new PackageTypeDescriberImpl();
         } else {
-            this.contentTypeDescriber = contentTypeDescriber;
+            this.packageTypeDescriber = contentTypeDescriber;
         }
     }
 
-    public void register(String contentType, ContributionProcessor processor) {
+    public void register(String contentType, ContributionPackageProcessor processor) {
         registry.put(contentType, processor);
     }
 
@@ -68,21 +68,16 @@ public class ContributionProcessorRegistryImpl implements ContributionProcessorR
         throws ContributionException, IOException {
 
         URL locationURL = contribution.getArtifact(source).getLocation();
-        String contentType = this.contentTypeDescriber.getContentType(locationURL, null);
+        String contentType = this.packageTypeDescriber.getContentType(locationURL, null);
         if (contentType == null) {
-            throw new UnsupportedContentTypeException("Invalid contentType: null");
+            throw new UnsupportedContentTypeException("Unsupported contribution package", source.toString());
         }
 
-        ContributionProcessor processor = this.registry.get(contentType);
+        ContributionPackageProcessor processor = this.registry.get(contentType);
         if (processor == null) {
             throw new UnsupportedContentTypeException(contentType, locationURL.getPath());
         }
 
         processor.processContent(contribution, source, inputStream);
-
-    }
-
-    public void processModel(Contribution contribution, URI source, Object modelObject) throws ContributionException,
-                                                                                               IOException {
     }
 }

@@ -27,10 +27,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.contribution.util.IOHelper;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.easymock.EasyMock;
 
-public class JarContributionProcessorTestCase extends TestCase {
+public class JarContributionPackageProcessorTestCase extends TestCase {
     private static final String CONTRIBUTION_URI = "sca://contributions/001/";
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
     
@@ -43,8 +43,8 @@ public class JarContributionProcessorTestCase extends TestCase {
     }
     
     public final void testProcessJarArtifacts() throws Exception {
-        ContributionProcessorRegistry mockRegistry = EasyMock.createMock(ContributionProcessorRegistry.class);
-        mockRegistry.register(JarContributionProcessor.CONTENT_TYPE, jarProcessor);
+        ContributionPackageProcessorRegistry mockRegistry = EasyMock.createMock(ContributionPackageProcessorRegistry.class);
+        mockRegistry.register(JarContributionProcessor.PACKAGE_TYPE, jarProcessor);
         mockRegistry.processContent((Contribution)EasyMock.anyObject(), (URI) EasyMock.anyObject(), (InputStream) EasyMock.anyObject() );
         EasyMock.expectLastCall().anyTimes();
         EasyMock.replay(mockRegistry);

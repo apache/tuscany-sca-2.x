@@ -36,18 +36,18 @@ import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.contribution.util.IOHelper;
 import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
-import org.apache.tuscany.services.spi.contribution.extension.ContributionProcessorExtension;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
+import org.apache.tuscany.services.spi.contribution.extension.ContributionPackageProcessorExtension;
 
-public class JarContributionProcessor extends ContributionProcessorExtension implements ContributionProcessor {
+public class JarContributionProcessor extends ContributionPackageProcessorExtension implements ContributionPackageProcessor {
     /**
-     * Content-type that this processor can handle
+     * Package-type that this package processor can handle
      */
-    public static final String CONTENT_TYPE = ContentType.JAR;
+    public static final String PACKAGE_TYPE = ContentType.JAR;
 
     @Override
     public String getContentType() {
-        return CONTENT_TYPE;
+        return PACKAGE_TYPE;
     }
 
     /**
@@ -136,11 +136,4 @@ public class JarContributionProcessor extends ContributionProcessorExtension imp
         }
 
     }
-
-    public void processModel(Contribution contribution, URI source, Object modelObject) throws ContributionException,
-        IOException {
-        // TODO Auto-generated method stub
-
-    }
-
 }
