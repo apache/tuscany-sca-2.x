@@ -45,8 +45,8 @@
                 <module>binding-rmi</module>
                 -->
                 <module>contribution</module>
-                <module>contribution-impl</module>
                 <!--
+                <module>contribution-impl</module>
                 <module>core</module>
                 -->
                 <module>databinding</module>
@@ -72,8 +72,8 @@
                 <!--
                 <module>jmx</module>
                 -->
-                <module>mvn-java2wsdl</module>
-                <module>mvn-wsdl2java</module>
+                <module>maven-java2wsdl</module>
+                <module>maven-wsdl2java</module>
                 <module>policy</module>
                 <!--
                 <module>runtime-embedded</module>
