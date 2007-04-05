@@ -63,6 +63,11 @@ public interface Operation {
      * @return the inputType
      */
     DataType<List<DataType>> getInputType();
+    
+    /**
+     * @param inputType
+     */
+    void setInputType(DataType<List<DataType>> inputType);
 
     /**
      * Get the data type for the output
@@ -70,6 +75,11 @@ public interface Operation {
      * @return the outputType
      */
     DataType getOutputType();
+    
+    /**
+     * @param outputType
+     */
+    void setOutputType(DataType outputType);
 
     /**
      * Get a list of data types to represent the faults/exceptions
@@ -78,9 +88,35 @@ public interface Operation {
      */
     List<DataType> getFaultTypes();
     
+    /**
+     * @param faultTypes
+     */
+    void setFaultTypes(List<DataType> faultTypes);
+    
     Interface getInterface();
     void setInterface(Interface interfaze);
+    
+    /**
+     * Get the sequence of the conversation
+     * @return
+     */
     ConversationSequence getConversationSequence();
+    
+    /**
+     * Set the sequence of conversation for the operation
+     * @param sequence
+     */
     void setConversationSequence(ConversationSequence sequence);
+    
+    /**
+     * Indicate if the operation is non-blocking
+     * @return
+     */
+    boolean isNonBlocking();
+    
+    /**
+     * Set the operation to be non-blocking
+     */
+    void setNonBlocking(boolean nonBlocking);
 
 }

@@ -41,6 +41,8 @@ public interface Interface {
      */
     void setRemotable(boolean remotable);
     
+    
+    // FIXME: [rfeng] We need to re-consider the conversational as an intent
     /**
      * Test if the interface is conversational
      * @return

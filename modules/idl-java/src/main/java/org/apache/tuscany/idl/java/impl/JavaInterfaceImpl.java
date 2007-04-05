@@ -53,5 +53,9 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     public void setJavaClass(Class<?> javaClass) {
         this.javaClass = javaClass;
     }
+    
+    public String toString() {
+        return getName();
+    }
 
 }
