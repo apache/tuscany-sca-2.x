@@ -21,34 +21,34 @@ package org.apache.tuscany.services.spi.contribution.loader;
 
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 
-public class ContributionLoaderException extends ContributionException {
+public class ContributionMetadataLoaderException extends ContributionException {
 
     /**
      * 
      */
     private static final long serialVersionUID = 2442537028550702609L;
 
-    public ContributionLoaderException() {
+    public ContributionMetadataLoaderException() {
         super();
     }
 
-    public ContributionLoaderException(String message) {
+    public ContributionMetadataLoaderException(String message) {
         super(message);
     }
 
-    public ContributionLoaderException(String message, String identifier) {
+    public ContributionMetadataLoaderException(String message, String identifier) {
         super(message, identifier);
     }
 
-    public ContributionLoaderException(String message, Throwable cause) {
+    public ContributionMetadataLoaderException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ContributionLoaderException(String message, String identifier, Throwable cause) {
+    public ContributionMetadataLoaderException(String message, String identifier, Throwable cause) {
         super(message, identifier, cause);
     }
 
-    public ContributionLoaderException(Throwable cause) {
+    public ContributionMetadataLoaderException(Throwable cause) {
         super(cause);
     }
 

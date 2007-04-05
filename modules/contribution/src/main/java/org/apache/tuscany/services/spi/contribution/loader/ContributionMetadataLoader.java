@@ -30,7 +30,7 @@ public interface ContributionMetadataLoader {
      * @param reader    the XML stream reader positioned on the applicable START_ELEMENT
      * @return
      * @throws XMLStreamException
-     * @throws ContributionLoaderException
+     * @throws ContributionMetadataReadException
      */
-    public Contribution load(XMLStreamReader reader) throws XMLStreamException, ContributionLoaderException;
+    public Contribution load(XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException;
 }
