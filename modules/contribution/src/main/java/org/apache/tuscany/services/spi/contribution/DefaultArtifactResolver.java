@@ -16,45 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.idl;
 
-import javax.wsdl.PortType;
-import javax.xml.namespace.QName;
+package org.apache.tuscany.services.spi.contribution;
 
+import java.util.HashMap;
 
 /**
- * Represents a WSDL interface.
- * 
+ * A default implementation of an artifact resolver, based on a map.
+ *
  * @version $Rev$ $Date$
  */
-public interface WSDLInterface extends Interface {
+public class DefaultArtifactResolver extends HashMap<Object, Object> implements ArtifactResolver {
+    private static final long serialVersionUID = -7826976465762296634L;
 
-    /**
-     * Returns the name of the WSDL interface.
-     * 
-     * @return the name of the WSDL interface
-     */
-    QName getName();
-
-    /**
-     * Sets the name of the WSDL interface.
-     * 
-     * @param className the name of the WSDL interface
-     */
-    void setName(QName interfaceName);
-
-    /**
-     * Returns the WSDL interface portType.
-     * 
-     * @return the WSDL interface portType
-     */
-    PortType getPortType();
-
-    /**
-     * Sets the WSDL interface portType
-     * 
-     * @param portType the WSDL interface portType
-     */
-    void setPortType(PortType portType);
+    public <T> T resolve(Class<T> modelClass, T unresolved) {
+        return modelClass.cast(get(unresolved));
+    }
 
 }

@@ -35,19 +35,24 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.assembly.AbstractContract;
 import org.apache.tuscany.assembly.AbstractProperty;
 import org.apache.tuscany.assembly.AbstractReference;
 import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.ConstrainingType;
+import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.idl.Interface;
 import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.IntentAttachPoint;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.PolicySet;
 import org.apache.tuscany.policy.PolicySetAttachPoint;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -64,26 +69,45 @@ abstract class BaseArtifactProcessor implements Constants {
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
 
+    /**
+     * Constructs a new BaseArtifactProcessor.
+     */
     BaseArtifactProcessor() {
     }
 
+    /**
+     * Construcst a new BaseArtifactProcessor.
+     * @param factory
+     * @param policyFactory
+     */
     BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory) {
         this.factory = factory;
         this.policyFactory = policyFactory;
     }
 
+    /**
+     * Returns the string value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
     protected String getString(XMLStreamReader reader, String name) {
         return reader.getAttributeValue(null, name);
     }
 
+    /**
+     * Returns the qname value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
     protected QName getQName(XMLStreamReader reader, String name) {
         String qname = reader.getAttributeValue(null, name);
         return getQNameValue(reader, qname);
     }
 
     /**
-     * Get the value of xsi:type attribute
-     * 
+     * Returns the value of xsi:type attribute
      * @param reader The XML stream reader
      * @return The QName of the type, if the attribute is not present, null is
      *         returned.
@@ -93,6 +117,12 @@ abstract class BaseArtifactProcessor implements Constants {
         return getQNameValue(reader, qname);
     }
 
+    /**
+     * Returns a qname from a string.  
+     * @param reader
+     * @param value
+     * @return
+     */
     protected QName getQNameValue(XMLStreamReader reader, String value) {
         if (value != null) {
             int index = value.indexOf(':');
@@ -108,11 +138,23 @@ abstract class BaseArtifactProcessor implements Constants {
         }
     }
 
+    /**
+     * Returns the boolean value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
     protected boolean getBoolean(XMLStreamReader reader, String name) {
         String value = reader.getAttributeValue(null, name);
         return Boolean.valueOf(value);
     }
 
+    /**
+     * Returns the value of an attribute as a list of qnames.
+     * @param reader
+     * @param name
+     * @return
+     */
     protected List<QName> getQNames(XMLStreamReader reader, String name) {
         String value = reader.getAttributeValue(null, name);
         if (value != null) {
@@ -126,10 +168,21 @@ abstract class BaseArtifactProcessor implements Constants {
         }
     }
 
+    /**
+     * Read policy intents.
+     * @param attachPoint
+     * @param reader
+     */
     protected void readIntents(IntentAttachPoint attachPoint, XMLStreamReader reader) {
         readIntents(attachPoint, null, reader);
     }
 
+    /**
+     * Read policy intents associated with an operation.
+     * @param attachPoint
+     * @param operation
+     * @param reader
+     */
     protected void readIntents(IntentAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, Constants.REQUIRES);
         if (value != null) {
@@ -146,21 +199,21 @@ abstract class BaseArtifactProcessor implements Constants {
         }
     }
 
+    /**
+     * Reads policy intents and policy sets.
+     * @param attachPoint
+     * @param reader
+     */
     protected void readPolicies(PolicySetAttachPoint attachPoint, XMLStreamReader reader) {
         readPolicies(attachPoint, null, reader);
     }
 
-    protected void readMultiplicity(AbstractReference reference, XMLStreamReader reader) {
-        String value = reader.getAttributeValue(null, MULTIPLICITY);
-        if (ZERO_ONE.equals(value)) {
-            reference.setMultiplicity(Multiplicity.ZERO_ONE);
-        } else if (ONE_N.equals(value)) {
-            reference.setMultiplicity(Multiplicity.ONE_N);
-        } else if (ZERO_N.equals(value)) {
-            reference.setMultiplicity(Multiplicity.ZERO_N);
-        }
-    }
-
+    /**
+     * Reads policy intents and policy sets associated with an operation.
+     * @param attachPoint
+     * @param operation
+     * @param reader
+     */
     protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
         readIntents(attachPoint, operation, reader);
 
@@ -179,6 +232,27 @@ abstract class BaseArtifactProcessor implements Constants {
         }
     }
 
+    /**
+     * Read a multiplicity attribute.
+     * @param reference
+     * @param reader
+     */
+    protected void readMultiplicity(AbstractReference reference, XMLStreamReader reader) {
+        String value = reader.getAttributeValue(null, MULTIPLICITY);
+        if (ZERO_ONE.equals(value)) {
+            reference.setMultiplicity(Multiplicity.ZERO_ONE);
+        } else if (ONE_N.equals(value)) {
+            reference.setMultiplicity(Multiplicity.ONE_N);
+        } else if (ZERO_N.equals(value)) {
+            reference.setMultiplicity(Multiplicity.ZERO_N);
+        }
+    }
+
+    /**
+     * Returns the value of a constrainingType attribute.
+     * @param reader
+     * @return
+     */
     protected ConstrainingType getConstrainingType(XMLStreamReader reader) {
         QName constrainingTypeName = getQName(reader, "constrainingType");
         if (constrainingTypeName != null) {
@@ -191,6 +265,13 @@ abstract class BaseArtifactProcessor implements Constants {
         }
     }
 
+    /**
+     * Reads an abstract property element.
+     * @param prop
+     * @param reader
+     * @throws XMLStreamException
+     * @throws ContributionReadException
+     */
     protected void readAbstractProperty(AbstractProperty prop, XMLStreamReader reader)
         throws XMLStreamException, ContributionReadException {
         prop.setName(getString(reader, "name"));
@@ -202,11 +283,24 @@ abstract class BaseArtifactProcessor implements Constants {
         prop.setDefaultValue(value);
     }
 
+    /**
+     * Reads a property element.
+     * @param prop
+     * @param reader
+     * @throws XMLStreamException
+     * @throws ContributionReadException
+     */
     protected void readProperty(Property prop, XMLStreamReader reader)
         throws XMLStreamException, ContributionReadException {
         readAbstractProperty(prop, reader);
     }
 
+    /**
+     * Parse the next child element.
+     * @param reader
+     * @return
+     * @throws XMLStreamException
+     */
     protected boolean nextChildElement(XMLStreamReader reader) throws XMLStreamException {
         while (reader.hasNext()) {
             int event = reader.next();
@@ -223,7 +317,6 @@ abstract class BaseArtifactProcessor implements Constants {
     /**
      * Advance the stream to the next END_ELEMENT event skipping any nested
      * content.
-     * 
      * @param reader the reader to advance
      * @throws XMLStreamException if there was a problem reading the stream
      */
@@ -242,6 +335,61 @@ abstract class BaseArtifactProcessor implements Constants {
         }
     }
 
+    /**
+     * Resolve interface, callback interface and bindings on a list of contracts.
+     * @param contracts the list of contracts
+     * @param resolver the resolver to use to resolve models
+     */
+    protected <C extends Contract> void resolveContract(List<C> contracts, ArtifactResolver resolver) {
+        for (Contract contract: contracts) {
+            
+            // Resolve interface
+            Interface callInterface = contract.getInterface();
+            callInterface = resolver.resolve(Interface.class, callInterface);
+            contract.setInterface(callInterface);
+    
+            // Resolve callback interface 
+            Interface callbackInterface = contract.getCallbackInterface();
+            callbackInterface = resolver.resolve(Interface.class, callbackInterface);
+            contract.setCallbackInterface(callbackInterface);
+    
+            // Resolve bindings
+            for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
+                Binding binding = contract.getBindings().get(i);
+                binding = resolver.resolve(Binding.class, binding);
+                contract.getBindings().set(i, binding);
+            }
+        }
+    }
+
+    /**
+     * Resolve interface and callback interface on a list of abstract contracts.
+     * @param contracts the list of contracts
+     * @param resolver the resolver to use to resolve models
+     */
+    protected <C extends AbstractContract> void resolveAbstractContract(List<C> contracts, ArtifactResolver resolver) {
+        for (AbstractContract contract: contracts) {
+            
+            // Resolve interface
+            Interface callInterface = contract.getInterface();
+            callInterface = resolver.resolve(Interface.class, callInterface);
+            contract.setInterface(callInterface);
+    
+            // Resolve callback interface 
+            Interface callbackInterface = contract.getCallbackInterface();
+            callbackInterface = resolver.resolve(Interface.class, callbackInterface);
+            contract.setCallbackInterface(callbackInterface);
+        }
+    }
+
+    /**
+     * Read a property value.
+     * @param reader
+     * @param type
+     * @return
+     * @throws XMLStreamException
+     * @throws ContributionReadException
+     */
     public static Document readPropertyValue(XMLStreamReader reader, QName type)
         throws XMLStreamException, ContributionReadException {
         Document doc = DOMUtil.newDocument();

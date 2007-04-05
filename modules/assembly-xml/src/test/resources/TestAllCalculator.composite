@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<composite autowire="false" constrainingType="tns:Calculator" local="true" name="tns:TestAllCalculator" policySets="sns:secure"
+<composite autowire="false" constrainingType="tns:CalculatorComponent" local="true" name="tns:TestAllCalculator" policySets="sns:secure"
     requires="cns:confidentiality" targetNamespace="http://calc" xmlns:tns="http://calc"
     xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -24,7 +24,7 @@
         </callback>
     </service>
 
-    <component name="CalculatorServiceComponent" autowire="false" constrainingType="tns:CalculatorServiceComponent"
+    <component name="CalculatorServiceComponent" autowire="false" constrainingType="tns:CalculatorComponent"
         policySets="sns:secure" requires="cns:confidentiality">
         <service name="CalculatorService" policySets="sns:secure" requires="cns:confidentiality">
             <interface.java interface="calculator.CalculatorService" callbackInterface="calculator.CalculatorCallback" />
@@ -48,6 +48,13 @@
             <interface.java interface="calculator.AddService" />
         </service>
         <implementation.java class="calculator.AddServiceImpl" />
+    </component>
+
+    <component name="NestedCompositeComponent">
+        <service name="CalculatorService">
+            <interface.java interface="calculator.CalculatorService" />
+        </service>
+        <implementation.composite name="tns:Calculator" />
     </component>
 
     <component name="SubtractServiceComponent">

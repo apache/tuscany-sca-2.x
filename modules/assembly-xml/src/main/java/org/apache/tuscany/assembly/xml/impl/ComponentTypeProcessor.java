@@ -202,8 +202,11 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         return componentType;
     }
     
-    public void resolve(ComponentType model, ArtifactResolver resolver) throws ContributionException {
-        //TODO resolve pointers to other models
+    public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionException {
+
+        // Resolve componen type services and references
+        resolveContract(componentType.getServices(), resolver);
+        resolveContract(componentType.getReferences(), resolver);
     }
     
     public void optimize(ComponentType model) throws ContributionException {

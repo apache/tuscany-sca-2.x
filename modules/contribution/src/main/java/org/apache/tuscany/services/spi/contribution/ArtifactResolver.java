@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.services.spi.contribution;
 
-import java.net.URL;
-import java.util.Map;
-
-import org.apache.tuscany.services.contribution.model.Contribution;
 
 
 /**
@@ -44,41 +40,13 @@ import org.apache.tuscany.services.contribution.model.Contribution;
  * @version $Rev$ $Date$
  */
 public interface ArtifactResolver {
-    /**
-     * Resolve an artifact by the qualified name
-     * 
-     * @param contribution the model of the contribution
-     * @param modelClass The java type of the artifact 
-     * @param namespace The namespace of the artifact
-     * @param name The name of the artifact
-     * @param attributes Additional attributes that can be used to constrain the
-     *            resolution
-     * @param context The deployment context
-     * @return The resolved artifact
-     */
-    <T> T resolve(Contribution contribution,
-                  Class<T> modelClass,
-                  String namespace,
-                  String name,
-                  Map attributes/*,
-                  DeploymentContext context*/);
-    
-    /**
-     * Resolve an artifact by the URI. Some typical use cases are:
-     * <ul>
-     * <li>Reference a XML schema using
-     * {http://www.w3.org/2001/XMLSchema-instance}schemaLocation or
-     * <li>Reference a list of WSDLs using
-     * {http://www.w3.org/2004/08/wsdl-instance}wsdlLocation
-     * </ul>
-     * @param targetNamespace The target namespace of the referenced artifact,
-     *            if the targetNamespace is null, then it's not specified
-     * @param location The URI of the referenced artifact, it can be absolute or
-     *            relative
-     * @param baseURI The URI of the owning artifact
-     * 
-     * @return The URI of the resolved artifact
-     */
-    URL resolve(Contribution contribution, String targetNamespace, String location, String baseURI);
 
+    /**
+     * Resolve an artifact.
+     * @param modelClass the type of artifact
+     * @param unresolved the unresolved artifact
+     * @return the resolved artifact
+     */
+    <T> T resolve(Class<T> modelClass, T unresolved);
+    
 }

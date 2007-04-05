@@ -21,8 +21,8 @@ package org.apache.tuscany.idl.wsdl.impl;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.idl.WSDLInterface;
 import org.apache.tuscany.idl.impl.InterfaceImpl;
+import org.apache.tuscany.idl.wsdl.WSDLInterface;
 
 /**
  * Represents a WSDL interface.
@@ -31,7 +31,7 @@ import org.apache.tuscany.idl.impl.InterfaceImpl;
  */
 public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
 
-    private QName interfaceName;
+    private QName name;
     private PortType portType;
 
     public WSDLInterfaceImpl() {
@@ -40,7 +40,7 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
 
     public QName getName() {
         if (isUnresolved()) {
-            return interfaceName;
+            return name;
         } else {
             return portType.getQName();
         }
@@ -50,7 +50,7 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
         if (!isUnresolved()) {
             throw new IllegalStateException();
         }
-        this.interfaceName = interfaceName;
+        this.name = interfaceName;
     }
 
     public PortType getPortType() {
@@ -61,4 +61,18 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
         this.portType = portType;
     }
 
+    @Override
+    public int hashCode() {
+        return String.valueOf(name).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        else if (obj instanceof WSDLInterface && name.equals(((WSDLInterface)obj).getName()))
+             return true;
+        else
+            return false;
+    }
 }

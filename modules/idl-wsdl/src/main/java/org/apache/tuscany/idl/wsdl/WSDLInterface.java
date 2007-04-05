@@ -16,20 +16,47 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.idl;
+package org.apache.tuscany.idl.wsdl;
+
+import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.idl.Interface;
+
 
 /**
- * Factory for the WSDL model.
+ * Represents a WSDL interface.
  * 
  * @version $Rev$ $Date$
  */
-public interface WSDLFactory {
+public interface WSDLInterface extends Interface {
 
     /**
-     * Creates a new WSDL interface.
+     * Returns the name of the WSDL interface.
      * 
-     * @return a new WSDL interface
+     * @return the name of the WSDL interface
      */
-    WSDLInterface createWSDLInterface();
+    QName getName();
+
+    /**
+     * Sets the name of the WSDL interface.
+     * 
+     * @param className the name of the WSDL interface
+     */
+    void setName(QName interfaceName);
+
+    /**
+     * Returns the WSDL interface portType.
+     * 
+     * @return the WSDL interface portType
+     */
+    PortType getPortType();
+
+    /**
+     * Sets the WSDL interface portType
+     * 
+     * @param portType the WSDL interface portType
+     */
+    void setPortType(PortType portType);
 
 }
