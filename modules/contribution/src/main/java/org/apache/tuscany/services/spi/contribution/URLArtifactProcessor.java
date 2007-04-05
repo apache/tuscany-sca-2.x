@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.services.spi.contribution;
 
-import java.io.InputStream;
+import java.net.URL;
 
 /**
  * An artifact processor that can read models from an InputStream.
  * 
  * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
-public interface StreamArtifactProcessor<M> extends ArtifactProcessor<InputStream, M, String> {
+public interface URLArtifactProcessor<M> extends ArtifactProcessor<URL, M, String> {
 }
