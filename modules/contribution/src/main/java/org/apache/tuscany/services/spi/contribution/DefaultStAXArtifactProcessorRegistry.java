@@ -83,7 +83,7 @@ public class DefaultStAXArtifactProcessorRegistry
         }
     }
     
-    public <MO> MO load(URL url, Class<MO> type) throws ContributionReadException {
+    public <MO> MO read(URL url, Class<MO> type) throws ContributionReadException {
         try {
             XMLStreamReader reader;
             InputStream is;

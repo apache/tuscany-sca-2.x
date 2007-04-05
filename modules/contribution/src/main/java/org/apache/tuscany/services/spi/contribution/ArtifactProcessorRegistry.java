@@ -31,6 +31,6 @@ public interface ArtifactProcessorRegistry<S, M, T> extends ArtifactProcessor<S,
      * Add an artifact processor.
      * @param artifactProcessor the artifact processor to add
      */
-    void addArtifactProcessor(ArtifactProcessor<S, M, T> artifactProcessor);
+    void addArtifactProcessor(ArtifactProcessor<S, ?, T> artifactProcessor);
 
 }
