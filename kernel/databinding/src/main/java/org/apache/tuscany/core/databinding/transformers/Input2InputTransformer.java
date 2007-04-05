@@ -100,7 +100,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
 
         WrapperHandler sourceWrapperHandler = null;
         if (sourceWrapped) {
-            sourceWrapperHandler = getWapperHandler(sourceType.getOperation().getDataBinding(), true);
+            sourceWrapperHandler = getWrapperHandler(sourceType.getOperation().getDataBinding(), true);
         }
 
         DataType<List<DataType<XMLType>>> targetType = context.getTargetDataType();
@@ -108,7 +108,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
         WrapperHandler targetWrapperHandler = null;
         if (targetWrapped) {
-            targetWrapperHandler = getWapperHandler(targetType.getOperation().getDataBinding(), true);
+            targetWrapperHandler = getWrapperHandler(targetType.getOperation().getDataBinding(), true);
         }
 
         if ((!sourceWrapped) && targetWrapped) {
@@ -146,7 +146,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             // List<ElementInfo> childElements = sourceOp.getWrapper().getInputChildElements();
             Object[] target = null;
 
-            targetWrapperHandler = getWapperHandler(targetType.getOperation().getDataBinding(), false);
+            targetWrapperHandler = getWrapperHandler(targetType.getOperation().getDataBinding(), false);
             if (targetWrapperHandler != null) {
                 ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
                 // Object targetWrapper =
@@ -186,7 +186,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
         }
     }
 
-    private WrapperHandler getWapperHandler(String dataBindingId, boolean required) {
+    private WrapperHandler getWrapperHandler(String dataBindingId, boolean required) {
         DataBinding dataBinding = mediator.getDataBindingRegistry().getDataBinding(dataBindingId);
         WrapperHandler wrapperHandler = dataBinding == null ? null : dataBinding.getWrapperHandler();
         if (wrapperHandler == null && required) {

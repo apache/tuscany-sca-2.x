@@ -95,7 +95,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
         return 10;
     }
 
-    private WrapperHandler getWapperHandler(Operation<?> operation) {
+    private WrapperHandler getWrapperHandler(Operation<?> operation) {
         String dataBindingId;
         dataBindingId = operation.getDataBinding();
         DataBinding dataBinding = mediator.getDataBindingRegistry().getDataBinding(dataBindingId);
@@ -107,7 +107,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
         return wrapperHandler;
     }
 
-    private WrapperHandler getWapperHandler(String dataBindingId) {
+    private WrapperHandler getWrapperHandler(String dataBindingId) {
         DataBinding dataBinding = mediator.getDataBindingRegistry().getDataBinding(dataBindingId);
         return dataBinding == null ? null : dataBinding.getWrapperHandler();
     }
@@ -120,7 +120,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
             WrapperHandler sourceWrapperHandler = null;
             if (sourceWrapped) {
-                sourceWrapperHandler = getWapperHandler(sourceOp);
+                sourceWrapperHandler = getWrapperHandler(sourceOp);
             }
 
             DataType<DataType> targetType = context.getTargetDataType();
@@ -128,7 +128,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
             WrapperHandler targetWrapperHandler = null;
             if (targetWrapped) {
-                targetWrapperHandler = getWapperHandler(targetOp);
+                targetWrapperHandler = getWrapperHandler(targetOp);
             }
 
             if ((!sourceWrapped) && targetWrapped) {
@@ -156,7 +156,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
                     // The void output
                     return null;
                 }
-                targetWrapperHandler = getWapperHandler(targetType.getLogical().getDataBinding());
+                targetWrapperHandler = getWrapperHandler(targetType.getLogical().getDataBinding());
                 if (targetWrapperHandler != null) {
                     ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
                     // Object targetWrapper =
