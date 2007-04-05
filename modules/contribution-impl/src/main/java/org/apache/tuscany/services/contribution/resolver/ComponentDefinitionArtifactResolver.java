@@ -29,7 +29,7 @@ import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.extension.ArtifactResolverExtension;
 
-public class ComponentDefinitionArtifactResolver extends ArtifactResolverExtension implements ArtifactResolver {
+public class ComponentDefinitionArtifactResolver { /*extends ArtifactResolverExtension implements ArtifactResolver {
 
     public ComponentDefinitionArtifactResolver(ArtifactResolverRegistry registry) {
         super(registry);
@@ -44,8 +44,7 @@ public class ComponentDefinitionArtifactResolver extends ArtifactResolverExtensi
                                                              Class<ComponentDefinition> modelClass,
                                                              String namespace,
                                                              String name,
-                                                             Map attributes/*,
-                                                             DeploymentContext context*/) {
+                                                             Map attributes) {
 
         // generate artifact uri based on it's name
         URI artifactURI = contribution.getUri().resolve(name);
@@ -60,5 +59,5 @@ public class ComponentDefinitionArtifactResolver extends ArtifactResolverExtensi
         // TODO Auto-generated method stub
         return null;
     }
-
+*/
 }

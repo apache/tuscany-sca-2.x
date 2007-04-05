@@ -22,7 +22,7 @@ package org.apache.tuscany.services.contribution;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
 
@@ -33,7 +33,7 @@ public class ContributionServiceImplTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
     private ContributionRepository repository; 
     private ContentTypeDescriber contentTypeDescriber;
-    private ContributionProcessorRegistry registry;
+    private ContributionPackageProcessorRegistry registry;
     private ContributionService contributionService;
     
     protected void setUp() throws Exception {

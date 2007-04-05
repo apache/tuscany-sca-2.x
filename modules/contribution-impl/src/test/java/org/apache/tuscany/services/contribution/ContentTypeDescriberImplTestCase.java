@@ -25,28 +25,28 @@ import junit.framework.TestCase;
 import org.apache.tuscany.services.contribution.model.ContentType;
 
 public class ContentTypeDescriberImplTestCase extends TestCase {
-    private ContentTypeDescriberImpl contentTypeBuilder;
+    private ContentTypeDescriberImpl contentTypeDescriber;
 
     public void testResolveContentType() throws Exception {
         URL artifactURL = getClass().getResource("test.scdl");
-        assertEquals(ContentType.COMPOSITE, contentTypeBuilder.getContentType(artifactURL, null));
+        assertEquals(ContentType.COMPOSITE, contentTypeDescriber.getContentType(artifactURL, null));
     }
 
     
-    public void testUnknownResolveContentType() throws Exception {
+    public void testResolveUnknownContentType() throws Exception {
         URL artifactURL = getClass().getResource("test.ext");
-        assertNull(contentTypeBuilder.getContentType(artifactURL, null));
+        assertNull(contentTypeDescriber.getContentType(artifactURL, null));
     }
     
     public void testDefaultContentType() throws Exception {
         URL artifactURL = getClass().getResource("test.ext");
         assertEquals("application/vnd.tuscany.ext", 
-                contentTypeBuilder.getContentType(artifactURL, "application/vnd.tuscany.ext"));        
+                contentTypeDescriber.getContentType(artifactURL, "application/vnd.tuscany.ext"));        
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        contentTypeBuilder = new ContentTypeDescriberImpl();
+        contentTypeDescriber = new ContentTypeDescriberImpl();
     }
 
 }

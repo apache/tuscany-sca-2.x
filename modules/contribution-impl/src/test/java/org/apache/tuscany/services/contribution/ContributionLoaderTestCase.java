@@ -60,7 +60,7 @@ public class ContributionLoaderTestCase extends TestCase {
 
     public void testLoad() throws Exception {
         XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(VALID_XML));
-        ContributionLoader loader = new ContributionLoader();
+        ContributionMetadataLoaderImpl loader = new ContributionMetadataLoaderImpl();
         Contribution contribution = loader.load(reader);
         assertNotNull(contribution);
         assertEquals(1, contribution.getImports().size());
@@ -70,7 +70,7 @@ public class ContributionLoaderTestCase extends TestCase {
 
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(INVALID_XML));
-        ContributionLoader loader = new ContributionLoader();
+        ContributionMetadataLoaderImpl loader = new ContributionMetadataLoaderImpl();
         try {
             loader.load(reader);
             fail("InvalidException should have been thrown");
