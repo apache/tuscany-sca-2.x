@@ -36,6 +36,7 @@ import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 
 /**
  * A temporary utility class that resolves wires in a composite.
@@ -50,6 +51,10 @@ public class CompositeUtil {
     public CompositeUtil(AssemblyFactory assemblyFactory, Composite composite) {
         this.assemblyFactory = assemblyFactory;
         this.composite = composite;
+    }
+
+    public CompositeUtil(Composite composite) {
+        this(new DefaultAssemblyFactory(), composite);
     }
 
     public void configure(List<Base> problems) {
