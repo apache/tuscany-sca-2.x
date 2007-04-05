@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.tuscany.testing</groupId>
         <artifactId>sca-itest</artifactId>
-        <version>0.1-integration-incubating-SNAPSHOT</version>
+        <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -37,31 +37,31 @@
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-api</artifactId>
             <scope>compile</scope>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>        
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-core</artifactId>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.services.idl</groupId>
             <artifactId>tuscany-wsdl</artifactId>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
             <artifactId>tuscany-axis2</artifactId>
             <scope>runtime</scope>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>        
         <dependency>
             <groupId>org.apache.tuscany.sca.services</groupId>
             <artifactId>tuscany-http-jetty</artifactId>
             <scope>runtime</scope>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>        
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
