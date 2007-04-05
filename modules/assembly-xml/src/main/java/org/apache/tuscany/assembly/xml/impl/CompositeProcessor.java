@@ -44,6 +44,7 @@ import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.idl.Interface;
 import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
@@ -359,9 +360,11 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         resolveContract(composite.getReferences(), resolver);
     }
 
-    public void optimize(Composite model) throws ContributionException {
-        // TODO Auto-generated method stub
+    public void optimize(Composite composite) throws ContributionException {
         
+        // Process the composite configuration
+        CompositeUtil compositeUtil = new CompositeUtil(factory, composite);
+        compositeUtil.configure(null);
     }
 
     public QName getArtifactType() {
