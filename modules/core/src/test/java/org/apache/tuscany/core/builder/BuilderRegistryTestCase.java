@@ -19,17 +19,18 @@
 package org.apache.tuscany.core.builder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.impl.BindingImpl;
 import org.apache.tuscany.assembly.impl.ComponentImpl;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
@@ -37,7 +38,8 @@ import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.assembly.impl.CompositeImpl;
 import org.apache.tuscany.assembly.impl.CompositeReferenceImpl;
 import org.apache.tuscany.assembly.impl.CompositeServiceImpl;
-import org.apache.tuscany.core.implementation.composite.ServiceImpl;
+import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
+import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -75,7 +77,11 @@ public class BuilderRegistryTestCase extends TestCase {
 
         Component component = EasyMock.createMock(Component.class);
         // FIXME:
-        // component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
+        Map<String, Property> properties = new HashMap<String, Property>();
+        for (Property p : componentDefinition.getProperties()) {
+            properties.put(p.getName(), p);
+        }
+        component.setDefaultPropertyValues(properties);
         component.setScopeContainer(scopeContainer);
         EasyMock.expect(component.getUri()).andReturn(componentId);
         EasyMock.replay(component);
@@ -91,7 +97,9 @@ public class BuilderRegistryTestCase extends TestCase {
         EasyMock.expect(builder.build(componentDefinition, deploymentContext)).andReturn(component);
         EasyMock.replay(builder);
 
-        BuilderRegistry registry = new BuilderRegistryImpl(null);
+        ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
+        scopeRegistry.register(scopeContainer);
+        BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry);
         registry.register(Composite.class, builder);
 
         assertSame(component, registry.build(componentDefinition, deploymentContext));
@@ -150,7 +158,9 @@ public class BuilderRegistryTestCase extends TestCase {
         EasyMock.replay(scopeRegistry);
         BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry);
 
+        URI uri = URI.create("foo");
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.expect(component.getUri()).andReturn(uri);
         EasyMock.replay(component);
         ComponentBuilder builder = EasyMock.createMock(ComponentBuilder.class);
         EasyMock.expect(builder.build(
@@ -158,13 +168,18 @@ public class BuilderRegistryTestCase extends TestCase {
             EasyMock.isA(DeploymentContext.class))).andReturn(component);
         EasyMock.replay(builder);
         registry.register(FooImplementation.class, builder);
-
+        
         FooImplementation impl = new FooImplementation();
         // FIXME:
         // impl.setImplementationScope(Scope.CONVERSATION);
-        URI uri = URI.create("foo");
         org.apache.tuscany.assembly.Component definition = new ComponentImpl();
         definition.setImplementation(impl);
+
+        EasyMock.expect(deploymentContext.getComponents()).andReturn(components);
+        EasyMock.replay(deploymentContext);
+
+        EasyMock.expect(components.put(uri, component)).andReturn(null);
+        EasyMock.replay(components);
         try {
             registry.build(definition, deploymentContext);
             fail("Should throw NoConversationalContractException");
@@ -179,6 +194,8 @@ public class BuilderRegistryTestCase extends TestCase {
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         parent = EasyMock.createNiceMock(Component.class);
         scopeContainer = EasyMock.createMock(ScopeContainer.class);
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.STATELESS).anyTimes();
+        EasyMock.replay(scopeContainer);
         components = EasyMock.createMock(Map.class);
     }
 

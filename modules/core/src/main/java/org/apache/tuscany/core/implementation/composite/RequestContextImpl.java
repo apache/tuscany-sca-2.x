@@ -29,10 +29,10 @@ import org.apache.tuscany.spi.component.WorkContext;
 /**
  * @version $Rev$ $Date$
  */
-public class ManagedRequestContext implements RequestContext {
+public class RequestContextImpl implements RequestContext {
     private WorkContext workContext;
 
-    public ManagedRequestContext(WorkContext workContext) {
+    public RequestContextImpl(WorkContext workContext) {
         this.workContext = workContext;
     }
 

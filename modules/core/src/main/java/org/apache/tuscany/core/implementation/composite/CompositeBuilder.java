@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.composite;
 import java.net.URI;
 
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -38,7 +39,7 @@ public class CompositeBuilder extends AbstractCompositeBuilder<Composite> {
         Composite composite = (Composite) definition.getImplementation();
         // FIXME
         URI name = URI.create(composite.getName().getLocalPart());
-        CompositeComponentImpl component = new CompositeComponentImpl(name);
+        Component component = new CompositeComponentImpl(name);
 
         return build(component, composite, deploymentContext);
     }
