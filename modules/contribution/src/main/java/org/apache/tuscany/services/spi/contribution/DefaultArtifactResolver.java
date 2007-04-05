@@ -30,7 +30,12 @@ public class DefaultArtifactResolver extends HashMap<Object, Object> implements 
     private static final long serialVersionUID = -7826976465762296634L;
 
     public <T> T resolve(Class<T> modelClass, T unresolved) {
-        return modelClass.cast(get(unresolved));
+        T resolved = modelClass.cast(get(unresolved));
+        if (resolved != null) {
+            return resolved;
+        } else {
+            return unresolved;
+        }
     }
 
 }
