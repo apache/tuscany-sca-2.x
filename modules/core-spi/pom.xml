@@ -18,73 +18,66 @@
  * under the License.    
 -->
 <project>
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-modules</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-core-spi</artifactId>
-    <name>Apache Tuscany SCA SPI</name>
-    <description>Tuscany Service Provider Interfaces.</description>
+    <name>Apache Tuscany Core SPI</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-spi</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-idl</artifactId>
-            <version>${project.version}</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>                        
+
         <dependency>
             <groupId>stax</groupId>
             <artifactId>stax-api</artifactId>
+            <version>1.0.1</version>
         </dependency>
 		
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
         </dependency>
 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
+            <version>3.2.0</version>
+            <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-		
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-		
     </dependencies>
 </project>

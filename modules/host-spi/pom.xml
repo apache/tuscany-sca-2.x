@@ -18,33 +18,28 @@
  * under the License.    
 -->
 <project>
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-modules</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.kernel</groupId>
     <artifactId>tuscany-host-spi</artifactId>
     <name>Apache Tuscany Host SPI</name>
-    <description>Tuscany Host Programming Interfaces.</description>
 
     <dependencies>
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api-r1.0</artifactId>
             <version>1.0.1-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
         </dependency>
+
     </dependencies>
 </project>

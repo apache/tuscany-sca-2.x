@@ -49,6 +49,7 @@
                 <module>contribution-impl</module>
                 <module>core</module>
                 -->
+                <module>core-spi</module>
                 <module>databinding</module>
                 <module>databinding-axiom</module>
                 <!--
@@ -57,6 +58,7 @@
                 <module>databinding-sdo-axiom</module>
                 <module>discovery-jms</module>
                 -->
+                <module>host-spi</module>
                 <module>http</module>
                 <module>http-jetty</module>
                 <module>http-tomcat</module>
