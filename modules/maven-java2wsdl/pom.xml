@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-mvn-java2wsdl</artifactId>
+    <artifactId>tuscany-maven-java2wsdl</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Apache Tuscany Maven Plugin for Java2WSDL</name>
 
