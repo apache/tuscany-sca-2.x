@@ -23,11 +23,11 @@ import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 
 /**
- * The base class for ContributionProcessor implementations
+ * The base class for ContributionPackageProcessor implementations
  *
  * @version $Rev$ $Date$
  */
-public abstract class ContributionProcessorExtension implements ContributionPackageProcessor {
+public abstract class ContributionPackageProcessorExtension implements ContributionPackageProcessor {
     /**
      * The ContributionProcessorRegistry that this processor should register with; usually set by injection. This
      * registry may also be used to process other sub-artifacts.
