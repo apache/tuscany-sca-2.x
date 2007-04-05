@@ -16,27 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.service.jetty;
+package org.apache.tuscany.http.tomcat;
+
+import javax.servlet.Servlet;
+
+import org.apache.catalina.core.StandardWrapper;
 
 /**
- * The monitoring interfaces used by the Jetty system service
+ * A servlet wrapper.
  *
- * @version $$Rev$$ $$Date$$
+ *  @version $Rev$ $Date$
  */
-public interface TransportMonitor {
+public class ServletWrapper extends StandardWrapper {
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * Called after the service is initialized
-     */
-    void started();
+    private final Servlet servlet;
 
-    /**
-     * Called after the service is stopped
-     */
-    void shutdown();
+    public ServletWrapper(Servlet servlet) {
+        this.servlet = servlet;
+    }
 
-    void warn(String msg, Object...args);
+    public synchronized Servlet loadServlet() {
+        return servlet;
+    }
 
-    void debug(String msg, Object...args);
-
+    public Servlet getServlet() {
+        return servlet;
+    }
+    
 }

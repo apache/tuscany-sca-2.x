@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,33 +16,24 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-package org.apache.tuscany.service.tomcat;
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-http</artifactId>
+    <name>Apache Tuscany HTTP Servlet Host</name>
 
-import javax.servlet.Servlet;
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+    </dependencies>
 
-import org.apache.catalina.core.StandardWrapper;
-
-/**
- * A servlet wrapper.
- *
- *  @version $Rev$ $Date$
- */
-public class ServletWrapper extends StandardWrapper {
-    private static final long serialVersionUID = 1L;
-
-    private final Servlet servlet;
-
-    public ServletWrapper(Servlet servlet) {
-        this.servlet = servlet;
-    }
-
-    public synchronized Servlet loadServlet() {
-        return servlet;
-    }
-
-    public Servlet getServlet() {
-        return servlet;
-    }
-    
-}
+</project>

@@ -1,0 +1,219 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+package org.apache.tuscany.http.jetty;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+
+import org.apache.tuscany.http.ServletHost;
+import org.apache.tuscany.http.ServletMappingException;
+import org.mortbay.jetty.Connector;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.handler.ContextHandler;
+import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.security.SslSocketConnector;
+import org.mortbay.jetty.servlet.ServletHandler;
+import org.mortbay.jetty.servlet.ServletHolder;
+import org.mortbay.jetty.servlet.ServletMapping;
+import org.mortbay.jetty.servlet.SessionHandler;
+import org.mortbay.log.Log;
+import org.mortbay.log.Logger;
+import org.mortbay.thread.BoundedThreadPool;
+
+/**
+ * Implements an HTTP transport service using Jetty.
+ * 
+ * @version $$Rev$$ $$Date: 2007-02-21 13:28:30 +0000 (Wed, 21 Feb
+ *          2007) $$
+ */
+public class JettyServer implements ServletHost {
+
+    private static final String ROOT = "/";
+    private static final int ERROR = 0;
+    private static final int UNINITIALIZED = 0;
+    private static final int STARTING = 1;
+    private static final int STARTED = 2;
+    private static final int STOPPING = 3;
+    private static final int STOPPED = 4;
+
+    private final Object joinLock = new Object();
+    private int state = UNINITIALIZED;
+    private int httpPort = 8080;
+    private int httpsPort = 8484;
+    private String keystore;
+    private String certPassword;
+    private String keyPassword;
+    private boolean sendServerVersion;
+    private boolean https;
+    private boolean debug;
+    private Server server;
+    private Connector connector;
+    private ServletHandler servletHandler;
+
+    static {
+        // hack to replace the static Jetty logger
+        System.setProperty("org.mortbay.log.class", JettyLogger.class.getName());
+
+    }
+
+    public JettyServer() {
+
+        // Configure the Jetty logger
+        Logger logger = Log.getLogger(null);
+        if (logger instanceof JettyLogger) {
+            JettyLogger jettyLogger = (JettyLogger)logger;
+            if (debug) {
+                jettyLogger.setDebugEnabled(true);
+            }
+        }
+    }
+
+    public void setHttpPort(int httpPort) {
+        this.httpPort = httpPort;
+    }
+
+    public int getHttpPort() {
+        return httpPort;
+    }
+
+    public void setHttpsPort(int httpsPort) {
+        this.httpsPort = httpsPort;
+    }
+
+    public void setSendServerVersion(boolean sendServerVersion) {
+        this.sendServerVersion = sendServerVersion;
+    }
+
+    public void setHttps(boolean https) {
+        this.https = https;
+    }
+
+    public void setKeystore(String keystore) {
+        this.keystore = keystore;
+    }
+
+    public void setCertPassword(String certPassword) {
+        this.certPassword = certPassword;
+    }
+
+    public void setKeyPassword(String keyPassword) {
+        this.keyPassword = keyPassword;
+    }
+
+    public void setDebug(boolean val) {
+        debug = val;
+    }
+
+    public void init() throws Exception {
+        state = STARTING;
+    }
+
+    public void destroy() throws Exception {
+        if (state == STARTED) {
+            state = STOPPING;
+            synchronized (joinLock) {
+                joinLock.notifyAll();
+            }
+            server.stop();
+            state = STOPPED;
+        }
+    }
+
+    public void addServletMapping(String path, Servlet servlet) throws ServletMappingException {
+        if (state == STARTING) {
+
+            try {
+                server = new Server();
+                BoundedThreadPool threadPool = new BoundedThreadPool();
+                threadPool.setMaxThreads(100);
+                server.setThreadPool(threadPool);
+                if (connector == null) {
+                    if (https) {
+                        Connector httpConnector = new SelectChannelConnector();
+                        httpConnector.setPort(httpPort);
+                        SslSocketConnector sslConnector = new SslSocketConnector();
+                        sslConnector.setPort(httpsPort);
+                        sslConnector.setKeystore(keystore);
+                        sslConnector.setPassword(certPassword);
+                        sslConnector.setKeyPassword(keyPassword);
+                        server.setConnectors(new Connector[] {httpConnector, sslConnector});
+                    } else {
+                        SelectChannelConnector selectConnector = new SelectChannelConnector();
+                        selectConnector.setPort(httpPort);
+                        server.setConnectors(new Connector[] {selectConnector});
+                    }
+                } else {
+                    connector.setPort(httpPort);
+                    server.setConnectors(new Connector[] {connector});
+                }
+
+                ContextHandler contextHandler = new ContextHandler();
+                contextHandler.setContextPath(ROOT);
+                server.setHandler(contextHandler);
+
+                SessionHandler sessionHandler = new SessionHandler();
+                servletHandler = new ServletHandler();
+                sessionHandler.addHandler(servletHandler);
+
+                contextHandler.setHandler(sessionHandler);
+
+                server.setStopAtShutdown(true);
+                server.setSendServerVersion(sendServerVersion);
+                // monitor.started();
+                server.start();
+                state = STARTED;
+            } catch (Exception e) {
+                state = ERROR;
+                throw new ServletMappingException(e);
+            }
+        }
+
+        ServletHolder holder = new ServletHolder(servlet);
+        servletHandler.addServlet(holder);
+        ServletMapping mapping = new ServletMapping();
+        mapping.setServletName(holder.getName());
+        mapping.setPathSpec(path);
+        servletHandler.addServletMapping(mapping);
+    }
+
+    public Servlet removeServletMapping(String path) {
+        Servlet removedServlet = null;
+        List<ServletMapping> mappings = new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
+        for (ServletMapping mapping : mappings) {
+            if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
+                try {
+                    removedServlet = servletHandler.getServlet(mapping.getServletName()).getServlet();
+                } catch (ServletException e) {
+                    throw new IllegalStateException(e);
+                }
+                mappings.remove(mapping);
+                break;
+            }
+        }
+        if (removedServlet != null) {
+            servletHandler.setServletMappings((ServletMapping[])mappings.toArray(new ServletMapping[mappings.size()]));
+        }
+        return removedServlet;
+    }
+
+}

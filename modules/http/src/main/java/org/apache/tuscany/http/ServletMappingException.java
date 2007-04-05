@@ -16,23 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.service.jetty;
+package org.apache.tuscany.http;
 
-import org.apache.tuscany.spi.host.ServletHost;
-
-import org.mortbay.jetty.Server;
 
 /**
- * Implementations provide a Jetty transport service to the runtime
+ * Indicates an exception while registering a servlet mapping.
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface JettyService extends ServletHost {
-
-    /**
-     * Returns the active Jetty server
-     */
-    Server getServer();
+public class ServletMappingException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
 
 
+	public ServletMappingException() {
+        super();
+    }
+
+    public ServletMappingException(String message) {
+        super(message);
+    }
+
+
+    public ServletMappingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+
+    public ServletMappingException(Throwable cause) {
+        super(cause);
+    }
 }
