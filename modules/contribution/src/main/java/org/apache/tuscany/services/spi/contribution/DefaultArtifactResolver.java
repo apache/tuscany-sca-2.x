@@ -30,10 +30,25 @@ public class DefaultArtifactResolver extends HashMap<Object, Object> implements 
     private static final long serialVersionUID = -7826976465762296634L;
 
     public <T> T resolve(Class<T> modelClass, T unresolved) {
-        T resolved = modelClass.cast(get(unresolved));
+        Object resolved = get(unresolved);
         if (resolved != null) {
-            return resolved;
+            
+            // If the resolved object is an artifact resolver then delegate the
+            // resolution to it. This allows for nested resolutio, for example
+            // first resolve a WSDL document by namespace, then resolve
+            // a WSDL portType inside it.
+            if (resolved instanceof ArtifactResolver) {
+                ArtifactResolver resolver = (ArtifactResolver)resolved;
+                resolved = resolver.resolve(modelClass, unresolved);
+                return modelClass.cast(resolved);
+            } else {
+                
+                // Return the resolved object
+                return modelClass.cast(resolved);
+            }
         } else {
+            
+            // Return the unresolved object
             return unresolved;
         }
     }
