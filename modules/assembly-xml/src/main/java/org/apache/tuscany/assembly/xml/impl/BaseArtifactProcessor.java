@@ -48,26 +48,26 @@ import org.apache.tuscany.policy.IntentAttachPoint;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.PolicySet;
 import org.apache.tuscany.policy.PolicySetAttachPoint;
+import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * A test handler to test the usability of the assembly model API when loading
- * SCDL
+ * A base class with utility methods for the other artifact processors in this module. 
  * 
  * @version $Rev$ $Date$
  */
-abstract class BaseLoader implements Constants {
+abstract class BaseArtifactProcessor implements Constants {
 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
 
-    BaseLoader() {
+    BaseArtifactProcessor() {
     }
 
-    BaseLoader(AssemblyFactory factory, PolicyFactory policyFactory) {
+    BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory) {
         this.factory = factory;
         this.policyFactory = policyFactory;
     }
@@ -191,7 +191,8 @@ abstract class BaseLoader implements Constants {
         }
     }
 
-    protected void readAbstractProperty(AbstractProperty prop, XMLStreamReader reader) throws XMLStreamException {
+    protected void readAbstractProperty(AbstractProperty prop, XMLStreamReader reader)
+        throws XMLStreamException, ContributionReadException {
         prop.setName(getString(reader, "name"));
         prop.setMany(getBoolean(reader, "many"));
         prop.setMustSupply(getBoolean(reader, "mustSupply"));
@@ -201,7 +202,8 @@ abstract class BaseLoader implements Constants {
         prop.setDefaultValue(value);
     }
 
-    protected void readProperty(Property prop, XMLStreamReader reader) throws XMLStreamException {
+    protected void readProperty(Property prop, XMLStreamReader reader)
+        throws XMLStreamException, ContributionReadException {
         readAbstractProperty(prop, reader);
     }
 
@@ -241,7 +243,7 @@ abstract class BaseLoader implements Constants {
     }
 
     public static Document readPropertyValue(XMLStreamReader reader, QName type)
-        throws XMLStreamException {
+        throws XMLStreamException, ContributionReadException {
         Document doc = DOMUtil.newDocument();
 
         // root element has no namespace and local name "value"
