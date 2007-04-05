@@ -16,23 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.service.jetty;
+package org.apache.tuscany.http.jetty;
 
 import org.mortbay.log.Logger;
 
 /**
- * Serves as a wrapper for a {@link TransportMonitor} to replace Jetty's logging mechanism
+ * Replaces Jetty's logging mechanism
  *
  * @version $Rev$ $Date$
  */
 public class JettyLogger implements Logger {
 
-    private TransportMonitor monitor;
     private boolean debugEnabled;
-
-    public void setMonitor(TransportMonitor monitor) {
-        this.monitor = monitor;
-    }
 
     public boolean isDebugEnabled() {
         return debugEnabled;
@@ -43,46 +38,32 @@ public class JettyLogger implements Logger {
     }
 
     public void info(String msg, Object arg0, Object arg1) {
-        if (monitor != null) {
-            monitor.debug(msg, arg0, arg1);
-        } else if (debugEnabled) {
+        if (debugEnabled) {
             System.err.println(":INFO:  " + format(msg, arg0, arg1));
         }
     }
 
     public void debug(String msg, Throwable th) {
         if (debugEnabled) {
-            if (monitor != null) {
-                monitor.debug(msg, th);
-            } else {
-                System.err.println(":DEBUG:  " + msg);
-                th.printStackTrace();
-            }
+            System.err.println(":DEBUG:  " + msg);
+            th.printStackTrace();
         }
     }
 
     public void debug(String msg, Object arg0, Object arg1) {
         if (debugEnabled) {
-            if (monitor != null) {
-                monitor.debug(msg, arg0, arg1);
-            } else {
-                System.err.println(":DEBUG: " + format(msg, arg0, arg1));
-            }
+            System.err.println(":DEBUG: " + format(msg, arg0, arg1));
         }
     }
 
     public void warn(String msg, Object arg0, Object arg1) {
-        if (monitor != null) {
-            monitor.warn(msg, arg0, arg1);
-        } else if (debugEnabled) {
-            System.err.println(":WARN: " + format(msg, arg0, arg1));
+        if (debugEnabled) {
+        	System.err.println(":WARN: " + format(msg, arg0, arg1));
         }
     }
 
     public void warn(String msg, Throwable th) {
-        if (monitor != null) {
-            monitor.warn(msg, th);
-        } else if (debugEnabled) {
+        if (debugEnabled) {
             System.err.println(":WARN: " + msg);
             th.printStackTrace();
         }

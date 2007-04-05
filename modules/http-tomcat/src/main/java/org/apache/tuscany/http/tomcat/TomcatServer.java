@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.service.tomcat;
+package org.apache.tuscany.http.tomcat;
 
 import java.net.InetAddress;
 
@@ -31,37 +31,25 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Embedded;
 import org.apache.tomcat.util.buf.MessageBytes;
 import org.apache.tomcat.util.http.mapper.MappingData;
-import org.apache.tuscany.spi.host.ServletHost;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.apache.tuscany.http.ServletHost;
 
 /**
  * A Tomcat based implementation of ServletHost. 
  *
  *  @version $Rev$ $Date$
  */
-@Service(ServletHost.class)
-@Scope("COMPOSITE")
-@EagerInit
-public class TomcatServiceImpl implements ServletHost {
+public class TomcatServer implements ServletHost {
 	
 	private int httpPort = 8080;
 	private Embedded tomcat;
-	private Engine engine;
 	private Host host;
-	private Connector connector;
 	private boolean started;
 
-    @Init
     public void init() throws LifecycleException {
     	tomcat = new Embedded();
     	
     	// Create an engine
-    	engine = tomcat.createEngine();
+    	Engine engine = tomcat.createEngine();
     	engine.setDefaultHost("localhost");
     	
     	// Create a host
@@ -76,11 +64,10 @@ public class TomcatServiceImpl implements ServletHost {
 	    tomcat.addEngine(engine);
 
 	    // Install a default HTTP connector
-	    connector = tomcat.createConnector((InetAddress)null, httpPort, false);
+	    Connector connector = tomcat.createConnector((InetAddress)null, httpPort, false);
 	    tomcat.addConnector(connector);
     }
 
-    @Destroy
     public void destroy() throws LifecycleException {
     	
     	// Stop the server
@@ -90,20 +77,7 @@ public class TomcatServiceImpl implements ServletHost {
     	}
     }
     
-	public boolean isMappingRegistered(String mapping) {
-        Context context = host.map(mapping);
-        MappingData md = new MappingData();
-        MessageBytes mb = MessageBytes.newInstance();
-        mb.setString(mapping);
-        try {
-            context.getMapper().map(mb, md);
-        } catch (Exception e) {
-            return false;
-        }
-        return md.wrapper instanceof ServletWrapper;
-	}
-
-	public void registerMapping(String mapping, Servlet servlet) {
+	public void addServletMapping(String mapping, Servlet servlet) {
 		
         // Register the servlet mapping
 		Context context = host.map(mapping);
@@ -126,7 +100,7 @@ public class TomcatServiceImpl implements ServletHost {
 		}
 	}
 
-	public Servlet unregisterMapping(String mapping) {
+	public Servlet removeServletMapping(String mapping) {
         Context context = host.map(mapping);
         MappingData md = new MappingData();
         MessageBytes mb = MessageBytes.newInstance();
@@ -146,7 +120,6 @@ public class TomcatServiceImpl implements ServletHost {
         }
 	}
 	
-	@Property
 	public void setHttpPort(int httpPort) {
 		this.httpPort = httpPort;
 	}

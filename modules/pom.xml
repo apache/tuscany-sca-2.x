@@ -57,6 +57,9 @@
                 <module>databinding-sdo-axiom</module>
                 <module>discovery-jms</module>
                 -->
+                <module>http</module>
+                <module>http-jetty</module>
+                <module>http-tomcat</module>
                 <module>idl</module>
                 <module>idl-java</module>
                 <module>idl-java-xml</module>
@@ -66,7 +69,7 @@
                 <module>impl-java-xml</module>
                 <!--
                 <module>impl-script</module>
-                <module>impl-spring</module>
+                <module>implementation-spring</module>
                 -->
                 <module>java2wsdl</module>
                 <!--

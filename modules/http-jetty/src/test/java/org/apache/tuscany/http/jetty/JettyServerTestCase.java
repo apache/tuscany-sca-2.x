@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.service.tomcat;
+package org.apache.tuscany.http.jetty;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,15 +30,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tuscany.http.jetty.JettyServer;
+
 import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class TomcatServiceImplTestCase extends TestCase {
+public class JettyServerTestCase extends TestCase {
 
     private static final String REQUEST1_HEADER =
-        "GET /foo HTTP/1.0\n"
+        "GET / HTTP/1.0\n"
             + "Host: localhost\n"
             + "Content-Type: text/xml\n"
             + "Connection: close\n"
@@ -54,11 +56,11 @@ public class TomcatServiceImplTestCase extends TestCase {
      * Verifies requests are properly routed according to the servlet mapping
      */
     public void testRegisterServletMapping() throws Exception {
-        TomcatServiceImpl service = new TomcatServiceImpl();
+        JettyServer service = new JettyServer();
         service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.registerMapping("/foo", servlet);
+        service.addServletMapping("/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -68,35 +70,29 @@ public class TomcatServiceImplTestCase extends TestCase {
         assertTrue(servlet.invoked);
     }
 
-    public void testIsMappingRegistered() throws Exception {
-        TomcatServiceImpl service = new TomcatServiceImpl();
-        service.setHttpPort(HTTP_PORT);
-        service.init();
-        TestServlet servlet = new TestServlet();
-        service.registerMapping("/foo", servlet);
-        assertTrue(service.isMappingRegistered("/foo"));
-        assertFalse(service.isMappingRegistered("/bar"));
-        service.destroy();
-    }
-
     public void testUnregisterMapping() throws Exception {
-        TomcatServiceImpl service = new TomcatServiceImpl();
+        JettyServer service = new JettyServer();
         service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.registerMapping("/foo", servlet);
-        assertTrue(service.isMappingRegistered("/foo"));
-        service.unregisterMapping("/foo");
-        assertFalse(service.isMappingRegistered("/foo"));
+        service.addServletMapping("/foo", servlet);
+        service.removeServletMapping("/foo");
+        Socket client = new Socket("127.0.0.1", HTTP_PORT);
+        OutputStream os = client.getOutputStream();
+        os.write(REQUEST1.getBytes());
+        os.flush();
+        read(client);
         service.destroy();
+        assertFalse(servlet.invoked);
     }
 
     public void testRequestSession() throws Exception {
-        TomcatServiceImpl service = new TomcatServiceImpl();
+        JettyServer service = new JettyServer();
+        service.setDebug(true);
         service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.registerMapping("/foo", servlet);
+        service.addServletMapping("/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -108,7 +104,7 @@ public class TomcatServiceImplTestCase extends TestCase {
     }
 
     public void testRestart() throws Exception {
-        TomcatServiceImpl service = new TomcatServiceImpl();
+        JettyServer service = new JettyServer();
         service.setHttpPort(HTTP_PORT);
         service.init();
         service.destroy();
@@ -117,7 +113,7 @@ public class TomcatServiceImplTestCase extends TestCase {
     }
 
     public void testNoMappings() throws Exception {
-        TomcatServiceImpl service = new TomcatServiceImpl();
+        JettyServer service = new JettyServer();
         service.setHttpPort(HTTP_PORT);
         service.init();
         Exception ex = null;
