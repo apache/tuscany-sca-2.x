@@ -27,11 +27,11 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.xml.LoaderRegistry;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
-import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
+import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
@@ -43,7 +43,7 @@ public class StAXPerfTest {
     private XMLInputFactory inputFactory;
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
-    private LoaderRegistry loaderRegistry;
+    private StAXArtifactProcessorRegistry registry;
 
     public static void main(String[] args) throws Exception {
 
@@ -72,22 +72,22 @@ public class StAXPerfTest {
         inputFactory = XMLInputFactory.newInstance();
         assemblyFactory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
-        loaderRegistry = new LoaderRegistryImpl();
+        registry = new DefaultStAXArtifactProcessorRegistry();
     }
 
     public void tearDown() throws Exception {
         assemblyFactory = null;
         policyFactory = null;
         inputFactory = null;
-        loaderRegistry = null;
+        registry = null;
     }
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
-        CompositeProcessor loader = new CompositeProcessor(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeProcessor loader = new CompositeProcessor(assemblyFactory, policyFactory, registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
 
-        Composite composite = loader.load(reader);
+        Composite composite = loader.read(reader);
         is.close();
 
         if (composite == null) {

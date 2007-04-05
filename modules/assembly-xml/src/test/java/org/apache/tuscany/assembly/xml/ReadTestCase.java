@@ -26,15 +26,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.xml.LoaderRegistry;
 import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
-import org.apache.tuscany.assembly.xml.impl.LoaderRegistryImpl;
-import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
+import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
@@ -44,55 +40,49 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 public class ReadTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
-    private AssemblyFactory assemblyFactory;
-    private PolicyFactory policyFactory;
-    private LoaderRegistry loaderRegistry;
+    private StAXArtifactProcessorRegistry registry;
 
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
-        assemblyFactory = new DefaultAssemblyFactory();
-        policyFactory = new DefaultPolicyFactory();
-        loaderRegistry = new LoaderRegistryImpl();
+        registry = new DefaultStAXArtifactProcessorRegistry();
     }
 
     public void tearDown() throws Exception {
-        assemblyFactory = null;
-        policyFactory = null;
         inputFactory = null;
-        loaderRegistry = null;
+        registry = null;
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeProcessor componentTypeReader = new ComponentTypeProcessor(assemblyFactory, policyFactory, loaderRegistry);
+        ComponentTypeProcessor componentTypeReader = new ComponentTypeProcessor(registry);
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(componentTypeReader.load(reader));
+        assertNotNull(componentTypeReader.read(reader));
         is.close();
     }
 
     public void testReadConstrainingType() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(assemblyFactory, policyFactory, loaderRegistry);
+        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(constrainingTypeReader.load(reader));
+        assertNotNull(constrainingTypeReader.read(reader));
         is.close();
 
     }
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeProcessor compositeReader = new CompositeProcessor(registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(compositeReader.load(reader));
+        assertNotNull(compositeReader.read(reader));
         is.close();
 
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(assemblyFactory, policyFactory, loaderRegistry);
+        CompositeProcessor compositeReader = new CompositeProcessor(registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(compositeReader.load(reader));
+        assertNotNull(compositeReader.read(reader));
         is.close();
     }
 

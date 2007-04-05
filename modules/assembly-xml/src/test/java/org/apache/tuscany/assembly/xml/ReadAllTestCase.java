@@ -34,9 +34,13 @@ import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
+import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
+import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
+import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,19 +50,22 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class ReadAllTestCase extends TestCase {
-    private StAXArtifactProcessorRegistry loaderRegistry;
+    private DefaultStAXArtifactProcessorRegistry registry;
 
     public void setUp() throws Exception {
-        loaderRegistry = new LoaderRegistryImpl();
+        registry = new DefaultStAXArtifactProcessorRegistry();
+        registry.addArtifactProcessor(new CompositeProcessor(registry));
+        registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
+        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
     }
 
     public void tearDown() throws Exception {
-        loaderRegistry = null;
+        registry = null;
     }
 
     public void testReadComposite() throws Exception {
         URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
-        Composite composite = loaderRegistry.load(url, Composite.class);
+        Composite composite = registry.read(url, Composite.class);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "Calculator"));
@@ -138,14 +145,14 @@ public class ReadAllTestCase extends TestCase {
         assertNotNull(calcCallback);
         // TODO test operations
 
-        new PrintUtil(System.out).print(loaderRegistry.getLoader(Constants.COMPOSITE_QNAME));
+        new PrintUtil(System.out).print(composite);
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
         URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
-        Composite composite = loaderRegistry.load(url, Composite.class);
+        Composite composite = registry.read(url, Composite.class);
         assertNotNull(composite);
-        new CompositeUtil(loaderRegistry.getAssemblyFactory(), composite).configure(null);
+        new CompositeUtil(new DefaultAssemblyFactory(), composite).configure(null);
 
         Component calcComponent = composite.getComponents().get(0);
         CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);
