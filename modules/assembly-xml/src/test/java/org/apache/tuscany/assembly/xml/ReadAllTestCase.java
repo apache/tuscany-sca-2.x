@@ -67,7 +67,7 @@ public class ReadAllTestCase extends TestCase {
         Composite composite = registry.read(url, Composite.class);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
-        assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "Calculator"));
+        assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
         assertTrue(composite.isLocal());
         assertFalse(composite.isAutowire());
         assertEquals(composite.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality",
@@ -97,7 +97,7 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(calcComponent.getName(), "CalculatorServiceComponent");
         assertEquals(calcComponent.isAutowire(), false);
         assertEquals(calcComponent.getConstrainingType().getName(), new QName("http://calc",
-                                                                              "CalculatorServiceComponent"));
+                                                                              "CalculatorComponent"));
         assertEquals(calcComponent.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality",
                                                                                     "confidentiality"));
         assertEquals(calcComponent.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
