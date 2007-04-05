@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.idl.Interface;
+import org.apache.tuscany.idl.java.JavaInterface;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -31,8 +33,8 @@ import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * Uses a wire to return an object instance
- * @Deprecated 
- *
+ * 
+ * @Deprecated
  * @version $Rev$ $Date$
  */
 public class WireObjectFactory<T> implements ObjectFactory<T> {
@@ -45,9 +47,9 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
 
     /**
      * Constructor.
-     *
-     * @param interfaze   the interface to inject on the client
-     * @param wire        the backing wire
+     * 
+     * @param interfaze the interface to inject on the client
+     * @param wire the backing wire
      * @param proxyService the wire service to create the proxy
      * @throws NoMethodForOperationException
      */
@@ -57,11 +59,16 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
         this.wire = wire;
         this.proxyService = proxyService;
         this.mappings = WireUtils.createInterfaceToWireMapping(interfaze, wire);
-        if (wire.isOptimizable()
-            && wire.getSourceContract().getInterfaceClass() != null
-            && interfaze.isAssignableFrom(wire.getSourceContract().getInterfaceClass())) {
-            optimizable = true;
+        if (wire.isOptimizable()) {
+            Interface iface = wire.getSourceContract().getInterface();
+            if (iface instanceof JavaInterface) {
+                Class type = ((JavaInterface)iface).getJavaClass();
+                if (interfaze.isAssignableFrom(type)) {
+                    optimizable = true;
+                }
+            }
         }
+
     }
 
     public T getInstance() throws ObjectCreationException {
@@ -80,6 +87,5 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
             return interfaze.cast(proxyService.createProxy(interfaze, wire, newChains));
         }
     }
-
 
 }

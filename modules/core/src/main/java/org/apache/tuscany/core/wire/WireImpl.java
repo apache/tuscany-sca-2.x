@@ -22,13 +22,13 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -41,15 +41,11 @@ public class WireImpl implements Wire {
     private URI sourceUri;
     private URI targetUri;
     private QName bindingType;
-    private ServiceContract sourceContract;
-    private ServiceContract targetContract;
+    private Contract sourceContract;
+    private Contract targetContract;
     private boolean optimizable;
-    private Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
-    private Map<Operation<?>, InvocationChain> callbackChains = new HashMap<Operation<?>, InvocationChain>();
-    private Map<PhysicalOperationDefinition, InvocationChain> pChains =
-        new HashMap<PhysicalOperationDefinition, InvocationChain>();
-    private Map<PhysicalOperationDefinition, InvocationChain> pCallbackChains =
-        new HashMap<PhysicalOperationDefinition, InvocationChain>();
+    private Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
+    private Map<Operation, InvocationChain> callbackChains = new HashMap<Operation, InvocationChain>();
     private AtomicComponent target;
 
     /**
@@ -88,20 +84,20 @@ public class WireImpl implements Wire {
     }
 
 
-    public ServiceContract getSourceContract() {
+    public Contract getSourceContract() {
         return sourceContract;
     }
 
-    public void setSourceContract(ServiceContract contract) {
+    public void setSourceContract(Contract contract) {
         this.sourceContract = contract;
     }
 
 
-    public ServiceContract getTargetContract() {
+    public Contract getTargetContract() {
         return targetContract;
     }
 
-    public void setTargetContract(ServiceContract contract) {
+    public void setTargetContract(Contract contract) {
         this.targetContract = contract;
     }
 
@@ -124,36 +120,20 @@ public class WireImpl implements Wire {
         this.target = target;
     }
 
-    public Map<Operation<?>, InvocationChain> getInvocationChains() {
+    public Map<Operation, InvocationChain> getInvocationChains() {
         return Collections.unmodifiableMap(chains);
     }
 
-    public void addInvocationChain(Operation<?> operation, InvocationChain chain) {
+    public void addInvocationChain(Operation operation, InvocationChain chain) {
         chains.put(operation, chain);
     }
 
-    public void addInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain) {
-        pChains.put(operation, chain);
-    }
-
-    public Map<PhysicalOperationDefinition, InvocationChain> getPhysicalInvocationChains() {
-        return Collections.unmodifiableMap(pChains);
-    }
-
-    public Map<Operation<?>, InvocationChain> getCallbackInvocationChains() {
+    public Map<Operation, InvocationChain> getCallbackInvocationChains() {
         return Collections.unmodifiableMap(callbackChains);
     }
 
-    public void addCallbackInvocationChain(Operation<?> operation, InvocationChain chain) {
+    public void addCallbackInvocationChain(Operation operation, InvocationChain chain) {
         callbackChains.put(operation, chain);
-    }
-
-    public Map<PhysicalOperationDefinition, InvocationChain> getCallbackPhysicalInvocationChains() {
-        return Collections.unmodifiableMap(pCallbackChains);
-    }
-
-    public void addCallbackInvocationChain(PhysicalOperationDefinition operation, InvocationChain chain) {
-        pCallbackChains.put(operation, chain);
     }
 
 }

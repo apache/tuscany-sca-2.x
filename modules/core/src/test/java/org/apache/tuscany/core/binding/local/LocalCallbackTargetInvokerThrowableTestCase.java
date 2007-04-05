@@ -18,18 +18,17 @@
  */
 package org.apache.tuscany.core.binding.local;
 
-import java.lang.reflect.Type;
+import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.OperationImpl;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.InvocationChainImpl;
-import org.apache.tuscany.core.wire.WireImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -54,7 +53,8 @@ public class LocalCallbackTargetInvokerThrowableTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        Operation<Type> operation = new Operation<Type>("echo", null, null, null);
+        Operation operation = new OperationImpl();
+        operation.setName("echo");
         InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(new InsidiuousInterceptor());
         Wire wire = new WireImpl();

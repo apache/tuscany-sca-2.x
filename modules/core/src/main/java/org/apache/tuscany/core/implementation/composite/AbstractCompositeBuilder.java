@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
@@ -26,38 +30,30 @@ import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Abstract builder for composites
- *
+ * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractCompositeBuilder<T extends Implementation<CompositeComponentType>>
-    extends ComponentBuilderExtension<T> {
+public abstract class AbstractCompositeBuilder<T extends Implementation> extends ComponentBuilderExtension<T> {
 
-    public Component build(
-        Component component,
-        CompositeComponentType<?, ?, ?> componentType,
-        DeploymentContext deploymentContext) throws BuilderException {
-        for (ComponentDefinition<? extends Implementation<?>> definition : componentType.getComponents().values()) {
+    public Component build(Component component, Composite componentType, DeploymentContext deploymentContext)
+        throws BuilderException {
+        for (org.apache.tuscany.assembly.Component definition : componentType.getComponents()) {
             builderRegistry.build(definition, deploymentContext);
         }
-        for (ServiceDefinition definition : componentType.getServices().values()) {
+        for (org.apache.tuscany.assembly.Service definition : componentType.getServices()) {
             try {
-                Service service = builderRegistry.build(definition, deploymentContext);
+                Service service = builderRegistry.build((CompositeService)definition, deploymentContext);
                 component.register(service);
             } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering service", e);
             }
         }
-        for (ReferenceDefinition definition : componentType.getReferences().values()) {
+        for (org.apache.tuscany.assembly.Reference definition : componentType.getReferences()) {
             try {
-                Reference reference = builderRegistry.build(definition, deploymentContext);
+                Reference reference = builderRegistry.build((CompositeReference)definition, deploymentContext);
                 component.register(reference);
             } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering reference", e);

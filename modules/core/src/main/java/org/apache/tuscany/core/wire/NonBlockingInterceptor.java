@@ -21,15 +21,14 @@ package org.apache.tuscany.core.wire;
 import java.net.URI;
 import java.util.LinkedList;
 
-import org.osoa.sca.ServiceRuntimeException;
-
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Adds non-blocking behavior to an invocation chain

@@ -18,27 +18,27 @@
  */
 package org.apache.tuscany.core.monitor;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.HashMap;
-import java.util.ResourceBundle;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
 
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.host.monitor.ExceptionFormatter;
-import org.apache.tuscany.api.annotation.LogLevel;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
+import org.apache.tuscany.spi.LogLevel;
 
 /**
  * @version $Rev$ $Date$

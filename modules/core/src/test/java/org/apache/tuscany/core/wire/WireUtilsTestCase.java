@@ -19,15 +19,15 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Map;
 
-import org.apache.tuscany.spi.model.Operation;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.OperationImpl;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
@@ -37,7 +37,8 @@ public class WireUtilsTestCase extends TestCase {
 
     public void testCreateInterfaceToWireMapping() throws Exception {
         Wire wire = new WireImpl();
-        Operation<Type> op = new Operation<Type>("hello", null, null, null);
+        Operation op = new OperationImpl();
+        op.setName("hello");
         InvocationChain chain = new InvocationChainImpl(op);
         wire.addInvocationChain(op, chain);
         Map<Method, ChainHolder> chains = WireUtils.createInterfaceToWireMapping(Foo.class, wire);
@@ -47,7 +48,8 @@ public class WireUtilsTestCase extends TestCase {
 
     public void testCreateInterfaceToWireMappingNoOperation() throws Exception {
         Wire wire = new WireImpl();
-        Operation<Type> op = new Operation<Type>("goodbye", null, null, null);
+        Operation op = new OperationImpl();
+        op.setName("goodbye");
         InvocationChain chain = new InvocationChainImpl(op);
         wire.addInvocationChain(op, chain);
         try {

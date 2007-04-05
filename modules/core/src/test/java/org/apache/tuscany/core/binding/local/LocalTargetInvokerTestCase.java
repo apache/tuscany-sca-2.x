@@ -20,25 +20,29 @@ package org.apache.tuscany.core.binding.local;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.OperationImpl;
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.InvocationChainImpl;
-import org.apache.tuscany.core.wire.WireImpl;
 import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class LocalTargetInvokerTestCase extends TestCase {
-    private ServiceContract<Object> serviceContract;
-    private Operation<Object> operation;
+    private Contract serviceContract;
+    private Operation operation;
 
     public void testInvoke() {
         TargetInvoker targetInvoker = EasyMock.createMock(TargetInvoker.class);
@@ -56,10 +60,10 @@ public class LocalTargetInvokerTestCase extends TestCase {
     }
 
     public void testCallbackSetInvoke() {
-        ServiceContract<?> contract = new ServiceContract<Object>() {
-
-        };
-        contract.setCallbackClass(Object.class);
+        Contract contract = new ComponentServiceImpl();
+        JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
+        javaInterface.setJavaClass(Object.class);
+        contract.setCallbackInterface(javaInterface);
         TargetInvoker targetInvoker = EasyMock.createMock(TargetInvoker.class);
         EasyMock.expect(targetInvoker.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
         EasyMock.replay(targetInvoker);
@@ -100,14 +104,12 @@ public class LocalTargetInvokerTestCase extends TestCase {
         EasyMock.verify(targetInvoker);
     }
 
-
     protected void setUp() throws Exception {
         super.setUp();
-        serviceContract = new ServiceContract<Object>() {
-        };
-        operation = new Operation<Object>("foo", null, null, null);
+        serviceContract = new ComponentServiceImpl();
+        operation = new OperationImpl();
+        operation.setName("foo");
     }
-
 
     private class TestException extends RuntimeException {
 

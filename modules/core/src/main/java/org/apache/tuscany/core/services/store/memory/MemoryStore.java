@@ -24,12 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Service;
-
+import org.apache.tuscany.spi.Monitor;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.DuplicateRecordException;
@@ -38,8 +33,11 @@ import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.apache.tuscany.spi.services.store.StoreWriteException;
-
-import org.apache.tuscany.api.annotation.Monitor;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Implements a non-durable, non-transactional store using a simple in-memory map

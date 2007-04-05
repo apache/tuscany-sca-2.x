@@ -22,47 +22,53 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.spi.component.TargetException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemSingletonAtomicComponentTestCase extends TestCase {
+public class SingletonAtomicComponentTestCase extends TestCase {
+    private <S> ComponentService createContract(Class<S> type) {
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        ComponentService contract = factory.createComponentService();
+        JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
+        javaInterface.setJavaClass(type);
+        contract.setInterface(javaInterface);
+        return contract;
+    }
 
     public void testGetInstance() throws TargetException {
-        JavaServiceContract<Foo> contract = new JavaServiceContract<Foo>(Foo.class) {
-
-        };
+        ComponentService contract = createContract(Foo.class);
         FooImpl foo = new FooImpl();
-        SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), contract, foo);
+        SingletonAtomicComponent<Foo> component = new SingletonAtomicComponent<Foo>(URI.create("foo"), contract, foo);
         assertEquals(foo, component.getTargetInstance());
     }
 
     public void testGetInstanceMultipleServices() throws TargetException {
         FooImpl foo = new FooImpl();
-        List<JavaServiceContract<?>> services = new ArrayList<JavaServiceContract<?>>();
-        services.add(new JavaServiceContract<Foo>(Foo.class) {
-        });
-        services.add(new JavaServiceContract<Bar>(Bar.class) {
-        });
-        SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), services, foo);
+        ComponentService contract1 = createContract(Foo.class);
+        ComponentService contract2 = createContract(Bar.class);
+
+        List<ComponentService> services = new ArrayList<ComponentService>();
+        services.add(contract1);
+        services.add(contract2);
+        SingletonAtomicComponent<Foo> component = new SingletonAtomicComponent<Foo>(URI.create("foo"), services, foo);
         assertEquals(foo, component.getTargetInstance());
     }
 
     public void testOptimizable() {
-        JavaServiceContract<Foo> contract = new JavaServiceContract<Foo>(Foo.class) {
-        };
+        ComponentService contract = createContract(Foo.class);
         FooImpl foo = new FooImpl();
-        SystemSingletonAtomicComponent<Foo, FooImpl> component =
-            new SystemSingletonAtomicComponent<Foo, FooImpl>(URI.create("foo"), contract, foo);
+        SingletonAtomicComponent<Foo> component = new SingletonAtomicComponent<Foo>(URI.create("foo"), contract, foo);
         assertTrue(component.isOptimizable());
     }
-
 
     protected void setUp() throws Exception {
         super.setUp();

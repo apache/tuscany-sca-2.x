@@ -18,17 +18,16 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Service;
-
+import org.apache.tuscany.spi.Monitor;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.api.annotation.Monitor;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Service;
 
 /**
  * A scope context which manages stateless atomic component instances in a non-pooled fashion.

@@ -21,16 +21,25 @@ package org.apache.tuscany.core.builder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Constructor;
-
-import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.ComponentType;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.NonBlockingInterceptor;
+import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.core.wire.WireUtils;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
-import org.apache.tuscany.spi.builder.interceptor.InterceptorBuilderRegistry;
-import org.apache.tuscany.spi.builder.physical.WireAttacherRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
@@ -41,144 +50,94 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalInterceptorDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalWireDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalWireSourceDefinition;
-import org.apache.tuscany.spi.model.physical.PhysicalWireTargetDefinition;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.util.UriHelper;
-import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
-
-import org.apache.tuscany.core.wire.InvocationChainImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.NonBlockingInterceptor;
-import org.apache.tuscany.core.wire.WireImpl;
-import org.apache.tuscany.core.wire.WireUtils;
+import org.osoa.sca.annotations.Constructor;
 
 /**
  * The default connector implmentation
- *
- * @version $$Rev$$ $$Date$$
+ * 
+ * @version $$Rev$$ $$Date: 2007-04-03 10:40:40 -0700 (Tue, 03 Apr
+ *          2007) $$
  */
 public class ConnectorImpl implements Connector {
     private WirePostProcessorRegistry postProcessorRegistry;
     private ComponentManager componentManager;
     private WorkContext workContext;
     private WorkScheduler scheduler;
-    private InterceptorBuilderRegistry interceptorBuilderRegistry;
-    private WireAttacherRegistry attacherRegistry;
 
     public ConnectorImpl(ComponentManager componentManager) {
         this.componentManager = componentManager;
     }
 
     @Constructor
-    public ConnectorImpl(
-        @org.osoa.sca.annotations.Reference InterceptorBuilderRegistry interceptorBuilderRegistry,
-        @org.osoa.sca.annotations.Reference WireAttacherRegistry attacherRegistry,
-        @org.osoa.sca.annotations.Reference WirePostProcessorRegistry processorRegistry,
-        @org.osoa.sca.annotations.Reference ComponentManager componentManager,
-        @org.osoa.sca.annotations.Reference WorkScheduler scheduler,
-        @org.osoa.sca.annotations.Reference WorkContext workContext) {
-        this.attacherRegistry = attacherRegistry;
-        this.interceptorBuilderRegistry = interceptorBuilderRegistry;
+    public ConnectorImpl(@org.osoa.sca.annotations.Reference
+    WirePostProcessorRegistry processorRegistry, @org.osoa.sca.annotations.Reference
+    ComponentManager componentManager, @org.osoa.sca.annotations.Reference
+    WorkScheduler scheduler, @org.osoa.sca.annotations.Reference
+    WorkContext workContext) {
         this.postProcessorRegistry = processorRegistry;
         this.componentManager = componentManager;
         this.scheduler = scheduler;
         this.workContext = workContext;
     }
 
-    /**
-     * <strong>Note this method will not work yet</strong>
-     * <p/>
-     * Wires a source and target component based on a wire defintion
-     *
-     * @param definition the wire definition
-     * @throws WiringException
-     */
-    public void connect(PhysicalWireDefinition definition) throws BuilderException {
-        URI sourceUri = definition.getSourceUri();
-        assert sourceUri != null;
-        URI targetUri = definition.getTargetUri();
-        assert targetUri != null;
-        URI baseSourceUri = UriHelper.getDefragmentedName(sourceUri);
-        URI baseTargetUri = UriHelper.getDefragmentedName(targetUri);
-        Component source = componentManager.getComponent(baseSourceUri);
-        if (source == null) {
-            throw new ComponentNotFoundException("Wire source component not found", baseSourceUri);
-        }
-        Wire wire = createWire(definition);
-
-        PhysicalWireSourceDefinition sourceDefinition = definition.getSource();
-        PhysicalWireTargetDefinition targetDefinition = definition.getTarget();
-        Component target;
-        if (baseTargetUri != null) {
-            target = componentManager.getComponent(baseTargetUri);
-            if (target == null) {
-                throw new ComponentNotFoundException("Wire target component not found", baseTargetUri);
+    private org.apache.tuscany.assembly.Reference getReference(List<org.apache.tuscany.assembly.Reference> refs,
+                                                               String name) {
+        for (org.apache.tuscany.assembly.Reference ref : refs) {
+            if (ref.getName().equals(name)) {
+                return ref;
             }
-        } else {
-            target = null;
         }
-        attacherRegistry.attachToSource(source, sourceDefinition, target, targetDefinition, wire);
-        attacherRegistry.attachToTarget(source, sourceDefinition, target, targetDefinition, wire);
+        return null;
     }
 
-    public void connect(ComponentDefinition<? extends Implementation<?>> definition) throws WiringException {
-        URI sourceUri = definition.getUri();
+    public void connect(URI groupId, org.apache.tuscany.assembly.Component definition) throws WiringException {
+        URI sourceUri = URI.create(groupId.toString() + "/" + definition.getName());
         Component source = componentManager.getComponent(sourceUri);
         if (source == null) {
             throw new ComponentNotFoundException("Source not found", sourceUri);
         }
-        ComponentType<?, ?, ?> type = definition.getImplementation().getComponentType();
-        if (type instanceof CompositeComponentType) {
-            CompositeComponentType<?, ?, ?> compositeType = (CompositeComponentType<?, ?, ?>) type;
-            for (ComponentDefinition<? extends Implementation<?>> child : compositeType.getComponents().values()) {
-                connect(child);
+        ComponentType type = definition.getImplementation();
+        if (type instanceof Composite) {
+            Composite composite = (Composite)type;
+            for (org.apache.tuscany.assembly.Component child : composite.getComponents()) {
+                connect(sourceUri, child);
             }
-            for (ServiceDefinition child : compositeType.getServices().values()) {
-                connect(child);
+            for (org.apache.tuscany.assembly.Service child : composite.getServices()) {
+                connect(groupId, (CompositeService)child);
             }
-            for (ReferenceDefinition child : compositeType.getReferences().values()) {
-                connect(child);
+            for (org.apache.tuscany.assembly.Reference child : composite.getReferences()) {
+                connect(groupId, (CompositeReference)child);
             }
         }
-        Map<String, ReferenceTarget> targets = definition.getReferenceTargets();
-        for (ReferenceTarget referenceTarget : targets.values()) {
+
+        for (org.apache.tuscany.assembly.Reference ref : definition.getReferences()) {
             List<Wire> wires = new ArrayList<Wire>();
-            String refName = referenceTarget.getReferenceName().getFragment();
-            ReferenceDefinition refDefinition = type.getReferences().get(refName);
+            String refName = ref.getName();
+            org.apache.tuscany.assembly.Reference refDefinition = getReference(type.getReferences(), refName);
             assert refDefinition != null;
-            List<URI> uris = referenceTarget.getTargets();
-            for (URI uri : uris) {
-                URI targetUri = UriHelper.getDefragmentedName(uri);
+            for (ComponentService service : ref.getTargets()) {
+                URI targetUri = groupId;
                 Component target = componentManager.getComponent(targetUri);
-                if (target == null && !refDefinition.isRequired()) {
+                boolean required = refDefinition.getMultiplicity() == Multiplicity.ONE_N || refDefinition
+                                       .getMultiplicity() == Multiplicity.ONE_ONE;
+
+                if (target == null && !required) {
                     // a non-required reference, just skip
                     continue;
                 }
                 if (target == null) {
                     throw new ComponentNotFoundException("Target not found", targetUri);
                 }
-                String fragment = uri.getFragment();
-                URI sourceURI = refDefinition.getUri();
-                Wire wire = createWire(sourceURI, uri, refDefinition.getServiceContract(), Wire.LOCAL_BINDING);
+                URI sourceURI = URI.create(groupId + "#" + refName);
+                URI uri = URI.create(groupId + "#" + service.getName());
+                Wire wire = createWire(sourceURI, uri, refDefinition, Wire.LOCAL_BINDING);
                 try {
-                    attachInvokers(fragment, wire, source, target);
+                    attachInvokers(service.getName(), wire, source, target);
                 } catch (TargetInvokerCreationException e) {
                     throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
                 }
@@ -202,13 +161,11 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    protected void connect(ServiceDefinition definition) throws WiringException {
-        URI uri = definition.getUri();
-        URI sourceUri = UriHelper.getDefragmentedName(uri);
-        URI targetUri = definition.getTarget();
+    protected void connect(URI groupId, CompositeService definition) throws WiringException {
+        URI uri = URI.create(groupId + "#" + definition.getName());
+        URI sourceUri = groupId;
+        // FIXME: How to access the URI of the promoted service
+        URI targetUri = URI.create(groupId + "#" + definition.getPromotedService().getName());
         URI baseTargetUri = UriHelper.getDefragmentedName(targetUri);
         Component source = componentManager.getComponent(sourceUri);
         if (source == null) {
@@ -222,7 +179,7 @@ public class ConnectorImpl implements Connector {
         if (target == null) {
             throw new ComponentNotFoundException("Target not found", sourceUri);
         }
-        ServiceContract<?> contract = definition.getServiceContract();
+        Contract contract = definition;
         // TODO if no binding, do local
         for (ServiceBinding binding : service.getServiceBindings()) {
             Wire wire = createWire(uri, targetUri, contract, binding.getBindingType());
@@ -231,33 +188,29 @@ public class ConnectorImpl implements Connector {
                 postProcessorRegistry.process(wire);
             }
             try {
-                attachInvokers(definition.getTarget().getFragment(), wire, binding, target);
+                attachInvokers(definition.getName(), wire, binding, target);
             } catch (TargetInvokerCreationException e) {
                 throw new WireCreationException("Error creating invoker", sourceUri, baseTargetUri, e);
             }
         }
     }
 
-    /**
-     * @deprecated
-     */
-    protected void connect(ReferenceDefinition definition) throws WiringException {
-        URI uri = definition.getUri();
-        URI sourceUri = UriHelper.getDefragmentedName(uri);
+    protected void connect(URI groupId, CompositeReference definition) throws WiringException {
+        URI sourceUri = groupId;
         Component source = componentManager.getComponent(sourceUri);
         if (source == null) {
             throw new ComponentNotFoundException("Source not found", sourceUri);
         }
-        Reference reference = source.getReference(uri.getFragment());
+        Reference reference = source.getReference(definition.getName());
         if (reference == null) {
-            throw new SourceServiceNotFoundException("Reference not found on composite", uri);
+            throw new SourceServiceNotFoundException("Reference not found on composite", groupId);
         }
 
         for (ReferenceBinding binding : reference.getReferenceBindings()) {
             // create wire
             if (Wire.LOCAL_BINDING.equals(binding.getBindingType())) {
                 URI targetUri = binding.getTargetUri();
-                ServiceContract<?> contract = binding.getBindingServiceContract();
+                Contract contract = binding.getBindingServiceContract();
                 QName type = binding.getBindingType();
                 Wire wire = createWire(sourceUri, targetUri, contract, type);
                 binding.setWire(wire);
@@ -281,30 +234,13 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    protected Wire createWire(PhysicalWireDefinition definition) throws BuilderException {
-        URI sourceURI = definition.getSourceUri();
-        URI targetUri = definition.getTargetUri();
-        Wire wire = new WireImpl();
-        wire.setSourceUri(sourceURI);
-        wire.setTargetUri(targetUri);
-        for (PhysicalOperationDefinition operation : definition.getOperations()) {
-            InvocationChain chain = new InvocationChainImpl(operation);
-            for (PhysicalInterceptorDefinition interceptorDefinition : operation.getInterceptors()) {
-                Interceptor interceptor = interceptorBuilderRegistry.build(interceptorDefinition);
-                chain.addInterceptor(interceptor);
-            }
-            wire.addInvocationChain(operation, chain);
-        }
-        return wire;
-    }
-
-    protected Wire createWire(URI sourceURI, URI targetUri, ServiceContract<?> contract, QName bindingType) {
+    protected Wire createWire(URI sourceURI, URI targetUri, Contract contract, QName bindingType) {
         Wire wire = new WireImpl(bindingType);
         wire.setSourceContract(contract);
         wire.setTargetContract(contract);
         wire.setSourceUri(sourceURI);
         wire.setTargetUri(targetUri);
-        for (Operation<?> operation : contract.getOperations().values()) {
+        for (Operation operation : contract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             if (operation.isNonBlocking()) {
                 chain.addInterceptor(new NonBlockingInterceptor(scheduler, workContext));
@@ -313,7 +249,7 @@ public class ConnectorImpl implements Connector {
             wire.addInvocationChain(operation, chain);
 
         }
-        for (Operation<?> operation : contract.getCallbackOperations().values()) {
+        for (Operation operation : contract.getCallbackInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             if (operation.isNonBlocking()) {
                 chain.addInterceptor(new NonBlockingInterceptor(scheduler, workContext));
@@ -329,12 +265,13 @@ public class ConnectorImpl implements Connector {
      */
     private void attachInvokers(String name, Wire wire, Invocable source, Invocable target)
         throws TargetInvokerCreationException {
-        // TODO section will deleted be replaced when we cut-over to the physical marshallers
+        // TODO section will deleted be replaced when we cut-over to the
+        // physical marshallers
         for (InvocationChain chain : wire.getInvocationChains().values()) {
-            chain.setTargetInvoker(target.createTargetInvoker(name, chain.getOperation()));
+            chain.setTargetInvoker(target.createTargetInvoker(name, chain.getOperation(), false));
         }
         for (InvocationChain chain : wire.getCallbackInvocationChains().values()) {
-            chain.setTargetInvoker(source.createTargetInvoker(null, chain.getOperation()));
+            chain.setTargetInvoker(source.createTargetInvoker(null, chain.getOperation(), true));
         }
     }
 
@@ -345,15 +282,14 @@ public class ConnectorImpl implements Connector {
         boolean optimizableScopes = isOptimizable(source.getScope(), target.getScope());
         if (optimizableScopes && target.isOptimizable() && WireUtils.isOptimizable(wire)) {
             wire.setOptimizable(true);
-            wire.setTarget((AtomicComponent) target);
+            wire.setTarget((AtomicComponent)target);
         } else {
             wire.setOptimizable(false);
         }
     }
 
     protected boolean isOptimizable(Scope pReferrer, Scope pReferee) {
-        if (pReferrer == Scope.UNDEFINED
-            || pReferee == Scope.UNDEFINED
+        if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED
             || pReferrer == Scope.CONVERSATION
             || pReferee == Scope.CONVERSATION) {
             return false;
@@ -374,12 +310,13 @@ public class ConnectorImpl implements Connector {
             return true;
         } else if (pReferrer == Scope.SESSION && pReferee == Scope.SYSTEM) {
             return true;
-        } else //noinspection SimplifiableIfStatement
-            if (pReferrer == Scope.SYSTEM && pReferee == Scope.COMPOSITE) {
-                // case where a service context points to a composite scoped component
-                return true;
-            } else {
-                return pReferrer == Scope.COMPOSITE && pReferee == Scope.SYSTEM;
-            }
+        } else // noinspection SimplifiableIfStatement
+        if (pReferrer == Scope.SYSTEM && pReferee == Scope.COMPOSITE) {
+            // case where a service context points to a composite scoped
+            // component
+            return true;
+        } else {
+            return pReferrer == Scope.COMPOSITE && pReferee == Scope.SYSTEM;
+        }
     }
 }

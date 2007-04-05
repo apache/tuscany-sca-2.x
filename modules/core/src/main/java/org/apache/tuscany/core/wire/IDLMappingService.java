@@ -6,36 +6,55 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.
+ * under the License.    
  */
+
 package org.apache.tuscany.core.wire;
 
 import java.util.List;
 
 import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.idl.DataType;
 import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
-import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
- * Base class for wire service extensions
- * 
  * @version $Rev$ $Date$
  */
-public abstract class ProxyServiceExtension implements ProxyService {
-    protected WorkContext context;
+public class IDLMappingService {
+    public boolean isCompatible(Contract source, Contract target) {
+        return true;
+    }
 
-    protected ProxyServiceExtension(WorkContext context) {
-        this.context = context;
+    public Operation map(Contract target, Operation sourceOp) {
+        return null;
+    }
+    
+    public boolean isCompatible(DataType source, DataType target) {
+        if(source == target) {
+            return true;
+        } else {
+            return target.getPhysical().isAssignableFrom(source.getPhysical());
+        }
+        
+    }
+    
+    public boolean isCompatible(Operation source, Operation target) {
+        if(!source.getName().equals(target.getName())) {
+            return false;
+        }
+        DataType<List<DataType>> inputType = source.getInputType();
+        DataType outputType = source.getOutputType();
+        
+        return true;
     }
 
     // FIXME: How to improve the performance for the lookup
@@ -92,25 +111,22 @@ public abstract class ProxyServiceExtension implements ProxyService {
             return true;
         }
 
-        if (source.getCallbackInterface() != null) {
-            for (Operation operation : source.getCallbackInterface().getOperations()) {
-                Operation targetOperation = getOperation(target.getCallbackInterface().getOperations(), operation
-                    .getName());
-                if (targetOperation == null) {
-                    if (!silent) {
-                        throw new IncompatibleServiceContractException("Callback operation not found on target",
-                                                                       source, target, null, targetOperation);
-                    } else {
-                        return false;
-                    }
+        for (Operation operation : source.getCallbackInterface().getOperations()) {
+            Operation targetOperation = getOperation(target.getCallbackInterface().getOperations(), operation.getName());
+            if (targetOperation == null) {
+                if (!silent) {
+                    throw new IncompatibleServiceContractException("Callback operation not found on target", source,
+                                                                   target, null, targetOperation);
+                } else {
+                    return false;
                 }
-                if (!operation.equals(targetOperation)) {
-                    if (!silent) {
-                        throw new IncompatibleServiceContractException("Target callback operation is not compatible",
-                                                                       source, target, operation, targetOperation);
-                    } else {
-                        return false;
-                    }
+            }
+            if (!operation.equals(targetOperation)) {
+                if (!silent) {
+                    throw new IncompatibleServiceContractException("Target callback operation is not compatible",
+                                                                   source, target, operation, targetOperation);
+                } else {
+                    return false;
                 }
             }
         }

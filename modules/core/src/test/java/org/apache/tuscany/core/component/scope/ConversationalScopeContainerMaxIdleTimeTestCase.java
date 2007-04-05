@@ -21,13 +21,13 @@ package org.apache.tuscany.core.component.scope;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.component.SimpleWorkContext;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.Store;
 import org.easymock.EasyMock;
 

@@ -22,8 +22,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.services.store.memory.MemoryStore;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.easymock.EasyMock;

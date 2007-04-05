@@ -19,12 +19,12 @@
 package org.apache.tuscany.core.component.scope;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.model.Scope;
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 
 /**
  * Unit tests for the composite scope container

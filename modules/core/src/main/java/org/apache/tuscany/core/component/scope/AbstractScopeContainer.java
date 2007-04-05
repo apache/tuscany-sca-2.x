@@ -28,11 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-
 import org.apache.tuscany.spi.AbstractLifecycle;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.GroupInitializationException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
@@ -43,7 +40,9 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.model.Scope;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Implements functionality common to scope contexts.

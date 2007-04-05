@@ -22,43 +22,42 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AbstractComponentExtension;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
- * An {@link org.apache.tuscany.spi.component.AtomicComponent} used when registering objects directly into a composite
- *
- * @version $$Rev$$ $$Date$$
+ * An {@link org.apache.tuscany.spi.component.AtomicComponent} used when
+ * registering objects directly into a composite
+ * 
+ * @version $$Rev$$ $$Date: 2007-04-03 10:40:40 -0700 (Tue, 03 Apr
+ *          2007) $$
  */
-public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComponentExtension
-    implements AtomicComponent<T> {
+public class SingletonAtomicComponent<T> extends AbstractComponentExtension implements
+    AtomicComponent<T> {
     private T instance;
-    private List<ServiceContract> serviceContracts = new ArrayList<ServiceContract>();
+    private List<ComponentService> contracts = new ArrayList<ComponentService>();
 
-    public SystemSingletonAtomicComponent(URI name, JavaServiceContract<S> contract, T instance) {
+    public SingletonAtomicComponent(URI name, ComponentService contract, T instance) {
         super(name);
         this.instance = instance;
-        this.serviceContracts.add(contract);
+        this.contracts.add(contract);
     }
 
-    public SystemSingletonAtomicComponent(URI name, List<JavaServiceContract<?>> services, T instance) {
+    public SingletonAtomicComponent(URI name, List<ComponentService> services, T instance) {
         super(name);
         this.instance = instance;
-        for (ServiceContract<?> contract : services) {
-            serviceContracts.add(contract);
+        for (ComponentService contract : services) {
+            contracts.add(contract);
         }
     }
 
@@ -122,17 +121,12 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         throw new UnsupportedOperationException();
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback) {
         return null;
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
-        throws TargetInvokerCreationException {
-        return null;
-    }
-
-    public List<ServiceContract> getServiceContracts() {
-        return serviceContracts;
+    public List<ComponentService> getContracts() {
+        return contracts;
     }
 
 }

@@ -22,7 +22,6 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
-import org.apache.tuscany.core.binding.local.LocalBindingLoader;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
@@ -33,31 +32,16 @@ import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeBuilder;
-import org.apache.tuscany.core.implementation.composite.CompositeComponentTypeLoader;
-import org.apache.tuscany.core.implementation.composite.CompositeLoader;
-import org.apache.tuscany.core.loader.ComponentLoader;
-import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
-import org.apache.tuscany.core.loader.IncludeLoader;
-import org.apache.tuscany.core.loader.LoaderRegistryImpl;
-import org.apache.tuscany.core.loader.PropertyLoader;
-import org.apache.tuscany.core.loader.ReferenceLoader;
-import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
+import org.apache.tuscany.core.wire.IDLMappingService;
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.implementation.java.Introspector;
-import org.apache.tuscany.spi.loader.Loader;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.PropertyObjectFactory;
-import org.apache.tuscany.spi.model.CompositeImplementation;
 
 /**
  * A default implementation of a Bootstrapper. Please see the documentation on
@@ -102,7 +86,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     public DefaultBootstrapper(MonitorFactory monitorFactory) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
-        this.resolver = new DefaultAutowireResolver();
+        this.resolver = new DefaultAutowireResolver(new IDLMappingService());
         this.componentManager = new ComponentManagerImpl(null, this.resolver);
         this.connector = new ConnectorImpl(componentManager);
         this.scopeRegistry = createScopeRegistry();
@@ -127,13 +111,12 @@ public class DefaultBootstrapper implements Bootstrapper {
     public Deployer createDeployer() {
         ScopeRegistry scopeRegistry = getScopeRegistry();
         BuilderRegistry builder = createBuilder(scopeRegistry);
-        LoaderRegistry loader = createLoader(null, null);
-        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder, componentManager, resolver, connector);
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager, resolver, connector);
         deployer.setMonitor(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
         deployer.setScopeRegistry(getScopeRegistry());
         extensionRegistry.addExtension(ScopeRegistry.class, scopeRegistry);
         extensionRegistry.addExtension(BuilderRegistry.class, builder);
-        extensionRegistry.addExtension(LoaderRegistry.class, loader);
+        // extensionRegistry.addExtension(LoaderRegistry.class, loader);
         extensionRegistry.addExtension(Deployer.class, deployer);
         return deployer;
     }
@@ -176,35 +159,6 @@ public class DefaultBootstrapper implements Bootstrapper {
         return resolver;
     }
 
-    /**
-     * Helper method for registering a loader with the registry. The Loader is
-     * registered once for the QName returned by its
-     * {@link LoaderExtension#getXMLType()} method.
-     * 
-     * @param registry the LoaderRegistry to register with
-     * @param loader the Loader to register
-     */
-    protected void registerLoader(LoaderRegistry registry, LoaderExtension<?> loader) {
-        registry.registerLoader(loader.getXMLType(), loader);
-    }
-
-    public LoaderRegistry createLoader(PropertyObjectFactory propertyFactory, Introspector introspector) {
-        LoaderRegistryImpl loaderRegistry = new LoaderRegistryImpl(monitorFactory
-            .getMonitor(LoaderRegistryImpl.Monitor.class));
-
-        // register element loaders
-        registerLoader(loaderRegistry, new ComponentLoader(loaderRegistry, propertyFactory));
-        registerLoader(loaderRegistry, new ComponentTypeElementLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry, null));
-        registerLoader(loaderRegistry, new IncludeLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new PropertyLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new ReferenceLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new ServiceLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new LocalBindingLoader(loaderRegistry));
-
-        loaderRegistry.registerLoader(CompositeImplementation.class, new CompositeComponentTypeLoader(loaderRegistry));
-        return loaderRegistry;
-    }
 
     /**
      * Create a Builder that can be used to build the components in the system

@@ -18,17 +18,20 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import java.net.URI;
+
+import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Creates runtime artifacts for the local binding
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDefinition> {
@@ -37,16 +40,18 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
         return LocalBindingDefinition.class;
     }
 
-    public ServiceBinding build(ServiceDefinition serviceDefinition,
+    @Override
+    public ServiceBinding build(CompositeService serviceDefinition,
                                 LocalBindingDefinition bindingDefinition,
                                 DeploymentContext context) throws BuilderException {
-        return new LocalServiceBinding(serviceDefinition.getUri());
+        return new LocalServiceBinding(URI.create("#" + serviceDefinition.getName()));
     }
 
-
-    public ReferenceBinding build(ReferenceDefinition referenceDefinition,
+    @Override
+    public ReferenceBinding build(CompositeReference referenceDefinition,
                                   LocalBindingDefinition bindingDefinition,
                                   DeploymentContext context) throws BuilderException {
-        return new LocalReferenceBinding(referenceDefinition.getUri(), bindingDefinition.getTargetUri());
+        return new LocalReferenceBinding(URI.create("#" + referenceDefinition.getName()), URI.create(bindingDefinition
+            .getURI()));
     }
 }

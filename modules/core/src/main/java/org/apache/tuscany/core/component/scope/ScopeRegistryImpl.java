@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
  * The default implementation of a scope registry

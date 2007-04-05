@@ -20,7 +20,7 @@ package org.apache.tuscany.core.binding.local;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.model.BindingDefinition;
+import org.apache.tuscany.assembly.impl.BindingImpl;
 
 
 /**
@@ -28,12 +28,15 @@ import org.apache.tuscany.spi.model.BindingDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class LocalBindingDefinition extends BindingDefinition {
+public class LocalBindingDefinition extends BindingImpl {
 
     public LocalBindingDefinition() {
+        super();
+        setURI("default");
     }
 
     public LocalBindingDefinition(URI targetUri) {
-        super(targetUri);
+        super();
+        setURI(targetUri.toString());
     }
 }
