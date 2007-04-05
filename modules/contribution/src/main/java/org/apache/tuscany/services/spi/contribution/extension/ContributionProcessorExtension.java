@@ -19,25 +19,25 @@
 
 package org.apache.tuscany.services.spi.contribution.extension;
 
-import org.apache.tuscany.services.spi.contribution.ContributionProcessor;
-import org.apache.tuscany.services.spi.contribution.ContributionProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 
 /**
  * The base class for ContributionProcessor implementations
  *
  * @version $Rev$ $Date$
  */
-public abstract class ContributionProcessorExtension implements ContributionProcessor {
+public abstract class ContributionProcessorExtension implements ContributionPackageProcessor {
     /**
      * The ContributionProcessorRegistry that this processor should register with; usually set by injection. This
      * registry may also be used to process other sub-artifacts.
      */
-    protected ContributionProcessorRegistry registry;
+    protected ContributionPackageProcessorRegistry registry;
 
     /**
      * @param registry the registry to set
      */
-    public void setContributionProcessorRegistry(ContributionProcessorRegistry registry) {
+    public void setContributionProcessorRegistry(ContributionPackageProcessorRegistry registry) {
         this.registry = registry;
     }
 

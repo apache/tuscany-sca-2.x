@@ -27,13 +27,13 @@ import org.apache.tuscany.services.contribution.model.Contribution;
 /**
  * Interface for services that can process contributions.
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
-public interface ContributionProcessor {
+public interface ContributionPackageProcessor {
     /**
-     * Process a contribution or an artifact in the contribution from the input
-     * stream. The processor might add artifacts or model objects to the
-     * contribution object.
+     * Process a contribution from the input stream. 
+     * The processor will then scan each artifact and invoke 
+     * the respective artifactProcessor to handle the artifact
      * 
      * @param contribution The contribution model that will be used to hold the
      *            results from the processing
@@ -45,21 +45,5 @@ public interface ContributionProcessor {
      * @throws IOException if there was a problem reading the stream
      */
     void processContent(Contribution contribution, URI source, InputStream inputStream) throws ContributionException,
-        IOException;
-
-    /**
-     * Process a contribution from another model object. It will be used for the
-     * case that one artifact has other inline artifacts, for example, the WSDL
-     * with inline schemas. The schema contribution processor should be able to
-     * load the schema model from the WSDL definition.
-     * 
-     * @param contribution The contribution model that will be used to hold the
-     *            results from the processing
-     * @param source The URI for the contribution/artifact. 
-     * @param modelObject A model object for further processing by the processor
-     * @throws DeploymentException
-     * @throws IOException
-     */
-    void processModel(Contribution contribution, URI source, Object modelObject) throws ContributionException,
         IOException;
 }

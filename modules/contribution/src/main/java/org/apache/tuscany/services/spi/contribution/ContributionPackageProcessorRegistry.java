@@ -21,12 +21,12 @@ package org.apache.tuscany.services.spi.contribution;
 /**
  * @version $Rev$ $Date$
  */
-public interface ContributionProcessorRegistry extends ContributionProcessor {
+public interface ContributionPackageProcessorRegistry extends ContributionPackageProcessor {
     /**
      * Register a ContributionProcessor using the content type as the key
      * @param processor
      */
-    void register(String contentType, ContributionProcessor processor);
+    void register(String contentType, ContributionPackageProcessor processor);
     
     /**
      * Unregister a ContributionProcessor by content type
