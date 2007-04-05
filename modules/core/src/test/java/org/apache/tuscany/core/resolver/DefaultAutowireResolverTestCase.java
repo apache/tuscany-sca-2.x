@@ -131,6 +131,7 @@ public class DefaultAutowireResolverTestCase extends TestCase {
 
     private Component createComposite(String uri) {
         Composite type = factory.createComposite();
+        type.setAutowire(true);
         Component component = factory.createComponent();
         component.setImplementation(type);
         component.setName(uri);
@@ -138,9 +139,6 @@ public class DefaultAutowireResolverTestCase extends TestCase {
     }
 
     private Component createSourceAtomic(Class<?> requiredInterface) {
-        ComponentReference reference = factory.createComponentReference();
-        reference.setName("ref");
-
         ComponentService service = factory.createComponentService();
         service.setName("service");
 
@@ -148,6 +146,9 @@ public class DefaultAutowireResolverTestCase extends TestCase {
         javaInterface.setJavaClass(requiredInterface);
         service.setInterface(javaInterface);
 
+        Reference reference = factory.createReference();
+        reference.setName("ref");
+        reference.setAutowire(true);
         reference.setInterface(javaInterface);
         reference.setMultiplicity(Multiplicity.ONE_ONE);
 
@@ -155,19 +156,15 @@ public class DefaultAutowireResolverTestCase extends TestCase {
         Component definition = factory.createComponent();
         definition.setImplementation(impl);
         definition.setName("source");
-        definition.getReferences().add(reference);
-        definition.getServices().add(service);
+        // definition.getServices().add(service);
 
-        Reference target = factory.createReference();
-        target.setName("ref");
-        target.setAutowire(true);
-        impl.getReferences().add(target);
+        impl.getServices().add(service);
+        impl.getReferences().add(reference);
 
         return definition;
     }
 
     private Component createTargetAtomic(Class<?> serviceInterface) {
-        URI uri = URI.create("target");
         ComponentService service = factory.createComponentService();
         service.setName("service");
 

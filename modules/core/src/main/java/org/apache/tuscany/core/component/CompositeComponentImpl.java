@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.component;
 
 import java.net.URI;
 import java.util.List;
@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.wire.Wire;
 
 import org.apache.tuscany.core.component.event.ComponentStop;
+import org.apache.tuscany.core.implementation.composite.ComponentTimeoutException;
 
 /**
  * The standard implementation of a composite component. Autowiring is performed by delegating to the parent composite.

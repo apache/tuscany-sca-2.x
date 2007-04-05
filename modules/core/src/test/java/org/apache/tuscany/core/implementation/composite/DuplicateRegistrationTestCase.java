@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
 
+import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.Reference;

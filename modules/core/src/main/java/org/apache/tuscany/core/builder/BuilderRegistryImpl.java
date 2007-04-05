@@ -32,6 +32,7 @@ import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -75,11 +76,21 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder) {
         bindingBuilders.put(implClass, builder);
     }
+    
+    // FIXME: Hack to get the registry working
+    private <T extends Implementation> Class<T> getImplementationType(Class<?> implClass) {
+        for(Class<?> interfaze: JavaIntrospectionHelper.getAllInterfaces(implClass)) {
+            if(interfaze!=Implementation.class && Implementation.class.isAssignableFrom(interfaze)) {
+                return (Class<T>) interfaze;
+            }
+        }
+        return (Class<T>) implClass;
+    }
 
     @SuppressWarnings("unchecked")
     public Component build(org.apache.tuscany.assembly.Component componentDef, DeploymentContext context)
         throws BuilderException {
-        Class<?> implClass = componentDef.getImplementation().getClass();
+        Class<?> implClass = getImplementationType(componentDef.getImplementation().getClass());
         // noinspection SuspiciousMethodCalls
         ComponentBuilder componentBuilder = componentBuilders.get(implClass);
         if (componentBuilder == null) {

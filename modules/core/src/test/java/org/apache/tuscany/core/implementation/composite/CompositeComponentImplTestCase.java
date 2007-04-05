@@ -28,6 +28,7 @@ import java.net.URI;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;

@@ -34,7 +34,7 @@ public class ManagedRequestContextTestCase extends TestCase {
         WorkContext workContext = EasyMock.createMock(WorkContext.class);
         EasyMock.expect(workContext.getCurrentServiceName()).andReturn("foo");
         EasyMock.replay(workContext);
-        RequestContext context = new ManagedRequestContext(workContext);
+        RequestContext context = new RequestContextImpl(workContext);
         assertEquals("foo", context.getServiceName());
         EasyMock.verify(workContext);
     }
