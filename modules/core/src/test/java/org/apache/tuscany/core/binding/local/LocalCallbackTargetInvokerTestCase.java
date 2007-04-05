@@ -18,19 +18,19 @@
  */
 package org.apache.tuscany.core.binding.local;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.model.Operation;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.OperationImpl;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
@@ -62,7 +62,8 @@ public class LocalCallbackTargetInvokerTestCase extends TestCase {
         message.setBody("foo");
         Message response = new MessageImpl();
         response.setBody("response");
-        Operation<Type> operation = new Operation<Type>("echo", null, null, null);
+        Operation operation = new OperationImpl();
+        operation.setName("echo");
         head = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(head.invoke(EasyMock.isA(Message.class))).andReturn(response);
         EasyMock.replay(head);
@@ -70,7 +71,7 @@ public class LocalCallbackTargetInvokerTestCase extends TestCase {
         EasyMock.expect(chain.getTargetInvoker()).andReturn(null);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(head);
         EasyMock.replay(chain);
-        Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
+        Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
         chains.put(operation, chain);
         wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.getCallbackInvocationChains()).andReturn(chains);

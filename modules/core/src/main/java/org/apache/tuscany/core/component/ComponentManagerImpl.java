@@ -23,21 +23,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-
-import org.apache.tuscany.core.resolver.AutowireResolver;
 
 /**
  * Default implementation of the component manager
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ComponentManagerImpl implements ComponentManager {
@@ -65,31 +64,26 @@ public class ComponentManagerImpl implements ComponentManager {
         components.put(uri, component);
 
         if (managementService != null && component instanceof AtomicComponent) {
-            // FIXME shouldn't it take the canonical name and also not distinguish atomic components?
+            // FIXME shouldn't it take the canonical name and also not
+            // distinguish atomic components?
             managementService.registerComponent(component.getUri().toString(), component);
         }
     }
 
-    public <S, I extends S> void registerJavaObject(URI uri, JavaServiceContract<S> service, I instance)
-        throws RegistrationException {
-        SystemSingletonAtomicComponent<S, I> component =
-            new SystemSingletonAtomicComponent<S, I>(uri, service, instance);
+    public <I> void registerJavaObject(URI uri, ComponentService service, I instance) throws RegistrationException {
+        SingletonAtomicComponent<I> component = new SingletonAtomicComponent<I>(uri, service, instance);
         register(component);
         if (resolver != null) {
-            for (ServiceContract contract : component.getServiceContracts()) {
-                resolver.addHostUri(contract, uri);
-            }
+            resolver.addPrimordialService(service, uri);
         }
     }
 
-    public <S, I extends S> void registerJavaObject(URI uri, List<JavaServiceContract<?>> services, I instance)
-        throws RegistrationException {
-        SystemSingletonAtomicComponent<S, I> component =
-            new SystemSingletonAtomicComponent<S, I>(uri, services, instance);
+    public <I> void registerJavaObject(URI uri, List<ComponentService> services, I instance) throws RegistrationException {
+        SingletonAtomicComponent<I> component = new SingletonAtomicComponent<I>(uri, services, instance);
         register(component);
         if (resolver != null) {
-            for (ServiceContract contract : component.getServiceContracts()) {
-                resolver.addHostUri(contract, uri);
+            for (ComponentService contract : services) {
+                resolver.addPrimordialService(contract, uri);
             }
         }
     }

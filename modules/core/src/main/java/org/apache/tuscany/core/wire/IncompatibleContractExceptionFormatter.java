@@ -20,16 +20,14 @@ package org.apache.tuscany.core.wire;
 
 import java.io.PrintWriter;
 
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.host.monitor.ExceptionFormatter;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
-
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
-
-import org.apache.tuscany.host.monitor.ExceptionFormatter;
-import org.apache.tuscany.host.monitor.FormatterRegistry;
 
 /**
  * Formats {@link org.apache.tuscany.spi.wire.IncompatibleServiceContractException} for JDK logging
@@ -37,10 +35,10 @@ import org.apache.tuscany.host.monitor.FormatterRegistry;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class IncompatibleServiceContractExceptionFormatter implements ExceptionFormatter {
+public class IncompatibleContractExceptionFormatter implements ExceptionFormatter {
     private FormatterRegistry factory;
 
-    public IncompatibleServiceContractExceptionFormatter(@Reference FormatterRegistry factory) {
+    public IncompatibleContractExceptionFormatter(@Reference FormatterRegistry factory) {
         this.factory = factory;
         factory.register(this);
     }
@@ -58,12 +56,12 @@ public class IncompatibleServiceContractExceptionFormatter implements ExceptionF
         assert exception instanceof IncompatibleServiceContractException;
         IncompatibleServiceContractException e = (IncompatibleServiceContractException) exception;
         e.appendBaseMessage(writer);
-        ServiceContract<?> source = e.getSource();
+        Contract source = e.getSource();
         String sourceContractName = null;
         if (source != null) {
-            sourceContractName = source.getInterfaceName();
+            sourceContractName = source.getInterface().toString();
         }
-        Operation<?> sourceOperation = e.getSourceOperation();
+        Operation sourceOperation = e.getSourceOperation();
         String sourceOpName = null;
         if (sourceOperation != null) {
             sourceOpName = sourceOperation.getName();
@@ -73,12 +71,12 @@ public class IncompatibleServiceContractExceptionFormatter implements ExceptionF
         } else {
             writer.write("\nSource Contract: " + sourceContractName + "/" + sourceOpName);
         }
-        ServiceContract<?> target = e.getTarget();
+        Contract target = e.getTarget();
         String targetContractName = null;
         if (target != null) {
-            targetContractName = target.getInterfaceName();
+            targetContractName = target.getInterface().toString();
         }
-        Operation<?> targetOperation = e.getTargetOperation();
+        Operation targetOperation = e.getTargetOperation();
         String targetOpName = null;
         if (targetOperation != null) {
             targetOpName = targetOperation.getName();

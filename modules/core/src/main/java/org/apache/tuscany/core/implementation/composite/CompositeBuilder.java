@@ -20,32 +20,30 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
 
+import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.CompositeImplementation;
 
 /**
  * Instantiates a composite component from an assembly definition
  *
  * @version $Rev$ $Date$
  */
-public class CompositeBuilder extends AbstractCompositeBuilder<CompositeImplementation> {
+public class CompositeBuilder extends AbstractCompositeBuilder<Composite> {
 
-    public Component build(ComponentDefinition<CompositeImplementation> componentDefinition,
+    public Component build(org.apache.tuscany.assembly.Component definition,
         DeploymentContext deploymentContext) throws BuilderException {
 
-        CompositeImplementation implementation = componentDefinition.getImplementation();
-        CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
-        URI name = componentDefinition.getUri();
+        Composite composite = (Composite) definition.getImplementation();
+        // FIXME
+        URI name = URI.create(composite.getName().getLocalPart());
         CompositeComponentImpl component = new CompositeComponentImpl(name);
 
-        return build(component, componentType, deploymentContext);
+        return build(component, composite, deploymentContext);
     }
 
-    protected Class<CompositeImplementation> getImplementationType() {
-        return CompositeImplementation.class;
+    protected Class<Composite> getImplementationType() {
+        return Composite.class;
     }
 }

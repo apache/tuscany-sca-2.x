@@ -18,14 +18,12 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Type;
-
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.InvocationChain;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.idl.impl.OperationImpl;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Message;
 
 /**
  * @version $Rev$ $Date$
@@ -33,7 +31,7 @@ import junit.framework.TestCase;
 public class InvocationChainImplTestCase extends TestCase {
 
     public void testInsertAtPos() throws Exception {
-        InvocationChain chain = new InvocationChainImpl(new Operation<Type>("foo", null, null, null));
+        InvocationChain chain = new InvocationChainImpl(new OperationImpl("foo"));
         Interceptor inter3 = new MockInterceptor();
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
@@ -47,7 +45,7 @@ public class InvocationChainImplTestCase extends TestCase {
     }
 
     public void testInsertAtEnd() throws Exception {
-        InvocationChain chain = new InvocationChainImpl(new Operation<Type>("foo", null, null, null));
+        InvocationChain chain = new InvocationChainImpl(new OperationImpl("foo"));
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
         chain.addInterceptor(0, inter1);
@@ -79,6 +77,5 @@ public class InvocationChainImplTestCase extends TestCase {
             return false;
         }
     }
-
 
 }

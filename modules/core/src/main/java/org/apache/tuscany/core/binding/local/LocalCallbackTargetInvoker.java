@@ -20,7 +20,7 @@ package org.apache.tuscany.core.binding.local;
 
 import java.util.Map;
 
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
@@ -55,7 +55,7 @@ public class LocalCallbackTargetInvoker extends AbstractLocalTargetInvoker {
 
     private Message invoke(Operation operation, Message msg) throws Throwable {
         //TODO optimize as this is slow in local invocations
-        Map<Operation<?>, InvocationChain> chains = wire.getCallbackInvocationChains();
+        Map<Operation, InvocationChain> chains = wire.getCallbackInvocationChains();
         InvocationChain chain = chains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
         return invoke(chain, invoker, msg);

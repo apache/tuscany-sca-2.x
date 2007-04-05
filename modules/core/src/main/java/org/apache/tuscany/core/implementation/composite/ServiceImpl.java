@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * The default implementation of a {@link Service}
@@ -34,21 +34,21 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * @version $Rev$ $Date$
  */
 public class ServiceImpl extends AbstractSCAObject implements Service {
-    private ServiceContract<?> serviceContract;
+    private Contract serviceContract;
     private List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
     private URI targetUri;
 
-    public ServiceImpl(URI name, ServiceContract<?> contract) {
+    public ServiceImpl(URI name, Contract contract) {
         this(name, contract, null);
     }
 
-    public ServiceImpl(URI name, ServiceContract<?> contract, URI targetUri) {
+    public ServiceImpl(URI name, Contract contract, URI targetUri) {
         super(name);
         this.serviceContract = contract;
         this.targetUri = targetUri;
     }
 
-    public ServiceContract<?> getServiceContract() {
+    public Contract getServiceContract() {
         return serviceContract;
     }
 

@@ -22,8 +22,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.api.TuscanyException;
-import org.apache.tuscany.api.TuscanyRuntimeException;
+
+import org.apache.tuscany.spi.TuscanyException;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 /**
  * @version $Rev$ $Date$

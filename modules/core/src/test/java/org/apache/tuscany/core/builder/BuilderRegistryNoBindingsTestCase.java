@@ -18,8 +18,19 @@
  */
 package org.apache.tuscany.core.builder;
 
-import java.net.URI;
+import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
+import org.apache.tuscany.assembly.impl.CompositeReferenceImpl;
+import org.apache.tuscany.assembly.impl.CompositeServiceImpl;
+import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
+import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
+import org.apache.tuscany.core.binding.local.LocalServiceBinding;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
@@ -27,15 +38,6 @@ import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.Multiplicity;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
-import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
-import org.apache.tuscany.core.binding.local.LocalServiceBinding;
 import org.easymock.EasyMock;
 
 /**
@@ -49,8 +51,11 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     public void testNoServiceBindings() throws Exception {
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
-        ServiceDefinition definition = new ServiceDefinition(URI.create("#foo"), null, false);
-        definition.setTarget(new URI("foo"));
+        CompositeService definition = new CompositeServiceImpl();
+        definition.setName("foo");
+        ComponentService componentService = new ComponentServiceImpl();
+        componentService.setName("foo");
+        definition.setPromotedService(componentService);
         EasyMock.replay(deploymentContext);
         EasyMock.replay(parent);
 
@@ -65,7 +70,9 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     public void testReferenceBindingBuilderDispatch() throws Exception {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
-        ReferenceDefinition definition = new ReferenceDefinition(URI.create("#foo"), null, Multiplicity.ONE_ONE);
+        CompositeReference definition = new CompositeReferenceImpl();
+        definition.setName("foo");
+        definition.setMultiplicity(Multiplicity.ONE_ONE);
         EasyMock.replay(deploymentContext);
         EasyMock.replay(parent);
 

@@ -20,10 +20,10 @@ package org.apache.tuscany.core.resolver;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.spi.resolver.ResolutionException;
 
 /**
@@ -41,8 +41,8 @@ public interface AutowireResolver {
      * @param definition       the component definition to resolve autowires for
      * @throws ResolutionException
      */
-    void resolve(ComponentDefinition<Implementation<CompositeComponentType<?, ?, ?>>> parentDefinition,
-                 ComponentDefinition<? extends Implementation<?>> definition) throws ResolutionException;
+    void resolve(Composite parentDefinition,
+                 Component definition) throws ResolutionException;
 
     /**
      * Resolves autowires for a composite component type and its decendents
@@ -51,7 +51,7 @@ public interface AutowireResolver {
      * @throws ResolutionException
      */
     @SuppressWarnings({"unchecked"})
-    public void resolve(CompositeComponentType<?, ?, ?> compositeType) throws ResolutionException;
+    public void resolve(Composite compositeType) throws ResolutionException;
 
     /**
      * Adds the uri of a host system service that can be an autowire target
@@ -59,6 +59,6 @@ public interface AutowireResolver {
      * @param contract the service contract of the system service
      * @param uri      the component uri
      */
-    void addHostUri(ServiceContract contract, URI uri);
+    void addPrimordialService(ComponentService contract, URI uri);
 
 }

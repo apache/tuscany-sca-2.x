@@ -37,6 +37,10 @@ import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.bootstrap.ExtensionActivator;
@@ -44,33 +48,29 @@ import org.apache.tuscany.core.bootstrap.ExtensionRegistry;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
-import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
-import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
 import org.apache.tuscany.core.services.classloading.ClassLoaderRegistryImpl;
 import org.apache.tuscany.core.util.IOHelper;
+import org.apache.tuscany.core.wire.IDLMappingService;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.RegistrationException;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.osoa.sca.ComponentContext;
@@ -244,7 +244,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     protected Bootstrapper createBootstrapper() {
         TuscanyManagementService tms = (TuscanyManagementService)getManagementService();
-        resolver = new DefaultAutowireResolver();
+        resolver = new DefaultAutowireResolver(new IDLMappingService());
         componentManager = new ComponentManagerImpl(tms, resolver);
         Connector connector = new ConnectorImpl(componentManager);
         return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, connector);
@@ -276,7 +276,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected <S, I extends S> void registerSystemComponent(URI uri, Class<S> type, I component)
         throws InitializationException {
         try {
-            JavaServiceContract<S> contract = new JavaServiceContract<S>(type);
+            ComponentService contract = createContract(type);
             componentManager.registerJavaObject(uri, contract, component);
             extensionRegistry.addExtension(type, component);
         } catch (RegistrationException e) {
@@ -284,13 +284,21 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         }
     }
 
+    private <S> ComponentService createContract(Class<S> type) {
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        ComponentService contract = factory.createComponentService();
+        JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
+        javaInterface.setJavaClass(type);
+        contract.setInterface(javaInterface);
+        return contract;
+    }
+
     protected <I> void registerSystemComponent(URI uri, List<Class<?>> types, I component)
         throws InitializationException {
         try {
-            List<JavaServiceContract<?>> contracts = new ArrayList<JavaServiceContract<?>>();
+            List<ComponentService> contracts = new ArrayList<ComponentService>();
             for (Class<?> type : types) {
-                contracts.add(new JavaServiceContract(type));
-
+                contracts.add(createContract(type));
             }
             componentManager.registerJavaObject(uri, contracts, component);
         } catch (RegistrationException e) {

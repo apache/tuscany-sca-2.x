@@ -18,22 +18,23 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+
 import java.net.URI;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.model.Scope;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
 
 /**
  * @version $Rev$ $Date$

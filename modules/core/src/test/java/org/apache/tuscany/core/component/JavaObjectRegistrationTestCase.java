@@ -20,25 +20,38 @@ package org.apache.tuscany.core.component;
 
 import java.net.URI;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.DuplicateNameException;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JavaObjectRegistrationTestCase extends TestCase {
     private ComponentManager componentManager;
-
+    
+    private <S> ComponentService createContract(Class<S> type) {
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        ComponentService contract = factory.createComponentService();
+        JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
+        javaInterface.setJavaClass(type);
+        contract.setInterface(javaInterface);
+        return contract;
+    }
+    
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         URI uri = URI.create("foo");
-        JavaServiceContract<MockComponent> contract = new JavaServiceContract<MockComponent>(MockComponent.class) {
-        };
+        
+        ComponentService contract = createContract(MockComponent.class);
         componentManager.registerJavaObject(uri, contract, instance);
         Component component = componentManager.getComponent(URI.create("foo"));
         assertTrue(component instanceof AtomicComponent);
@@ -49,8 +62,7 @@ public class JavaObjectRegistrationTestCase extends TestCase {
     public void testDuplicateRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         URI uri = URI.create("foo");
-        JavaServiceContract<MockComponent> contract = new JavaServiceContract<MockComponent>(MockComponent.class) {
-        };
+        ComponentService contract = createContract(MockComponent.class);
         componentManager.registerJavaObject(uri, contract, instance);
         try {
             componentManager.registerJavaObject(uri, contract, instance);

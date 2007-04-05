@@ -19,19 +19,23 @@
 package org.apache.tuscany.core.resolver;
 
 import java.net.URI;
-
-import org.apache.tuscany.spi.model.AtomicImplementation;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.CompositeImplementation;
-import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
+import java.util.List;
 
 import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.Reference;
+import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.core.wire.IDLMappingService;
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.impl.JavaInterfaceImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -39,39 +43,49 @@ import junit.framework.TestCase;
 public class DefaultAutowireResolverTestCase extends TestCase {
     private static final URI REFERENCE_URI = URI.create("source#ref");
     private static final URI TARGET_URI = URI.create("target#service");
+    private AssemblyFactory factory;
     private DefaultAutowireResolver resolver;
 
+    private <T extends Reference> T getReference(List<T> refs, String name) {
+        for (T ref : refs) {
+            if (ref.getName().equals(name)) {
+                return ref;
+            }
+        }
+        return null;
+    }
+
     public void testAutowireAtomicToAtomic() throws Exception {
-        ComponentDefinition<CompositeImplementation> composite = createComposite("composite");
-        CompositeComponentType<?, ?, ?> type = composite.getImplementation().getComponentType();
-        ComponentDefinition<MockAtomicImpl> source = createSourceAtomic(Foo.class);
-        type.add(source);
-        ComponentDefinition<MockAtomicImpl> target = createTargetAtomic(Foo.class);
-        type.add(target);
+        Component composite = createComposite("composite");
+        Composite type = (Composite)composite.getImplementation();
+        Component source = createSourceAtomic(Foo.class);
+        type.getComponents().add(source);
+        Component target = createTargetAtomic(Foo.class);
+        type.getComponents().add(target);
         resolver.resolve(null, composite);
-        ReferenceTarget refTarget = source.getReferenceTargets().get(REFERENCE_URI.getFragment());
-        assertEquals(TARGET_URI, refTarget.getTargets().get(0));
+        Reference refTarget = getReference(source.getReferences(), "ref");
+        assertEquals("service", refTarget.getTargets().get(0).getName());
     }
 
     public void testAutowireAtomicToAtomicRequiresSuperInterface() throws Exception {
-        ComponentDefinition<CompositeImplementation> composite = createComposite("composite");
-        CompositeComponentType<?, ?, ?> type = composite.getImplementation().getComponentType();
-        ComponentDefinition<MockAtomicImpl> source = createSourceAtomic(SuperFoo.class);
-        type.add(source);
-        ComponentDefinition<MockAtomicImpl> target = createTargetAtomic(Foo.class);
-        type.add(target);
+        Component composite = createComposite("composite");
+        Composite type = (Composite)composite.getImplementation();
+        Component source = createSourceAtomic(SuperFoo.class);
+        type.getComponents().add(source);
+        Component target = createTargetAtomic(Foo.class);
+        type.getComponents().add(target);
         resolver.resolve(null, composite);
-        ReferenceTarget refTarget = source.getReferenceTargets().get(REFERENCE_URI.getFragment());
-        assertEquals(TARGET_URI, refTarget.getTargets().get(0));
+        Reference refTarget = getReference(source.getReferences(), "ref");
+        assertEquals("service", refTarget.getTargets().get(0).getName());
     }
 
     public void testAutowireAtomicToAtomicRequiresSubInterface() throws Exception {
-        ComponentDefinition<CompositeImplementation> composite = createComposite("composite");
-        CompositeComponentType<?, ?, ?> type = composite.getImplementation().getComponentType();
-        ComponentDefinition<MockAtomicImpl> source = createSourceAtomic(Foo.class);
-        type.add(source);
-        ComponentDefinition<MockAtomicImpl> target = createTargetAtomic(SuperFoo.class);
-        type.add(target);
+        Component composite = createComposite("composite");
+        Composite type = (Composite)composite.getImplementation();
+        Component source = createSourceAtomic(Foo.class);
+        type.getComponents().add(source);
+        Component target = createTargetAtomic(SuperFoo.class);
+        type.getComponents().add(target);
         try {
             resolver.resolve(null, composite);
             fail();
@@ -81,12 +95,12 @@ public class DefaultAutowireResolverTestCase extends TestCase {
     }
 
     public void testAutowireAtomicToAtomicIncompatibleInterfaces() throws Exception {
-        ComponentDefinition<CompositeImplementation> composite = createComposite("composite");
-        CompositeComponentType<?, ?, ?> type = composite.getImplementation().getComponentType();
-        ComponentDefinition<MockAtomicImpl> source = createSourceAtomic(Foo.class);
-        type.add(source);
-        ComponentDefinition<MockAtomicImpl> target = createTargetAtomic(String.class);
-        type.add(target);
+        Component composite = createComposite("composite");
+        Composite type = (Composite)composite.getImplementation();
+        Component source = createSourceAtomic(Foo.class);
+        type.getComponents().add(source);
+        Component target = createTargetAtomic(String.class);
+        type.getComponents().add(target);
         try {
             resolver.resolve(null, composite);
             fail();
@@ -96,73 +110,80 @@ public class DefaultAutowireResolverTestCase extends TestCase {
     }
 
     public void testNestedAutowireAtomicToAtomic() throws Exception {
-        ComponentDefinition<CompositeImplementation> composite = createComposite("composite");
-        CompositeComponentType<?, ?, ?> type = composite.getImplementation().getComponentType();
-        ComponentDefinition<MockAtomicImpl> source = createSourceAtomic(Foo.class);
-        type.add(source);
-        ComponentDefinition<MockAtomicImpl> target = createTargetAtomic(Foo.class);
-        type.add(target);
-        ComponentDefinition<CompositeImplementation> parent = createComposite("parent");
-        parent.getImplementation().getComponentType().add(composite);
+        Component composite = createComposite("composite");
+        Composite type = (Composite)composite.getImplementation();
+        Component source = createSourceAtomic(Foo.class);
+        type.getComponents().add(source);
+        Component target = createTargetAtomic(Foo.class);
+        type.getComponents().add(target);
+        Component parent = createComposite("parent");
+        ((Composite)parent.getImplementation()).getComponents().add(composite);
         resolver.resolve(null, parent);
-        ReferenceTarget refTarget = source.getReferenceTargets().get(REFERENCE_URI.getFragment());
-        assertEquals(TARGET_URI, refTarget.getTargets().get(0));
+        Reference refTarget = getReference(source.getReferences(), "ref");
+        assertEquals("service", refTarget.getTargets().get(0).getName());
     }
-
 
     protected void setUp() throws Exception {
         super.setUp();
-        resolver = new DefaultAutowireResolver();
+        resolver = new DefaultAutowireResolver(new IDLMappingService());
+        factory = new DefaultAssemblyFactory();
     }
 
-    private ComponentDefinition<CompositeImplementation> createComposite(String uri) {
-        URI parentUri = URI.create(uri);
-        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
-            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        CompositeImplementation impl = new CompositeImplementation();
-        impl.setComponentType(type);
-        return new ComponentDefinition<CompositeImplementation>(parentUri, impl);
+    private Component createComposite(String uri) {
+        Composite type = factory.createComposite();
+        Component component = factory.createComponent();
+        component.setImplementation(type);
+        component.setName(uri);
+        return component;
     }
 
-    private ComponentDefinition<MockAtomicImpl> createSourceAtomic(Class<?> requiredInterface) {
-        URI uri = URI.create("source");
-        ServiceContract contract = new ServiceContract() {
-        };
-        contract.setInterfaceClass(requiredInterface);
-        ReferenceDefinition reference = new ReferenceDefinition(URI.create("#ref"), contract);
-        reference.setRequired(true);
-        MockComponentType type = new MockComponentType();
-        type.add(reference);
+    private Component createSourceAtomic(Class<?> requiredInterface) {
+        ComponentReference reference = factory.createComponentReference();
+        reference.setName("ref");
+
+        ComponentService service = factory.createComponentService();
+        service.setName("service");
+
+        JavaInterface javaInterface = new JavaInterfaceImpl();
+        javaInterface.setJavaClass(requiredInterface);
+        service.setInterface(javaInterface);
+
+        reference.setInterface(javaInterface);
+        reference.setMultiplicity(Multiplicity.ONE_ONE);
+
         MockAtomicImpl impl = new MockAtomicImpl();
-        impl.setComponentType(type);
-        ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<MockAtomicImpl>(uri, impl);
-        ReferenceTarget target = new ReferenceTarget();
-        target.setReferenceName(REFERENCE_URI);
+        Component definition = factory.createComponent();
+        definition.setImplementation(impl);
+        definition.setName("source");
+        definition.getReferences().add(reference);
+        definition.getServices().add(service);
+
+        Reference target = factory.createReference();
+        target.setName("ref");
         target.setAutowire(true);
-        definition.add(target);
+        impl.getReferences().add(target);
+
         return definition;
     }
 
-    private ComponentDefinition<MockAtomicImpl> createTargetAtomic(Class<?> serviceInterface) {
+    private Component createTargetAtomic(Class<?> serviceInterface) {
         URI uri = URI.create("target");
-        ServiceDefinition service = new ServiceDefinition();
-        service.setUri(URI.create("#service"));
-        ServiceContract contract = new ServiceContract() {
-        };
-        contract.setInterfaceClass(serviceInterface);
-        service.setServiceContract(contract);
-        MockComponentType type = new MockComponentType();
-        type.add(service);
+        ComponentService service = factory.createComponentService();
+        service.setName("service");
+
+        JavaInterface javaInterface = new JavaInterfaceImpl();
+        javaInterface.setJavaClass(serviceInterface);
+        service.setInterface(javaInterface);
+
         MockAtomicImpl impl = new MockAtomicImpl();
-        impl.setComponentType(type);
-        return new ComponentDefinition<MockAtomicImpl>(uri, impl);
+        impl.getServices().add(service);
+        Component component = factory.createComponent();
+        component.setName("target");
+        component.setImplementation(impl);
+        return component;
     }
 
-    private class MockAtomicImpl extends AtomicImplementation<MockComponentType> {
-
-    }
-
-    private class MockComponentType extends ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> {
+    private class MockAtomicImpl extends ComponentTypeImpl implements Implementation {
 
     }
 

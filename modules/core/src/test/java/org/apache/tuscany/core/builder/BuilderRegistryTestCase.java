@@ -21,6 +21,24 @@ package org.apache.tuscany.core.builder;
 import java.net.URI;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.ComponentType;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.impl.BindingImpl;
+import org.apache.tuscany.assembly.impl.ComponentImpl;
+import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
+import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.assembly.impl.CompositeImpl;
+import org.apache.tuscany.assembly.impl.CompositeReferenceImpl;
+import org.apache.tuscany.assembly.impl.CompositeServiceImpl;
+import org.apache.tuscany.core.implementation.composite.ServiceImpl;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -34,18 +52,6 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.CompositeImplementation;
-import org.apache.tuscany.spi.model.Implementation;
-import static org.apache.tuscany.spi.model.Multiplicity.ONE_ONE;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
@@ -62,13 +68,14 @@ public class BuilderRegistryTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testRegistration() throws Exception {
         URI componentId = URI.create("sca://localhost/component");
-        CompositeImplementation implementation = new CompositeImplementation();
-        ComponentDefinition<CompositeImplementation> componentDefinition =
-            new ComponentDefinition<CompositeImplementation>(implementation);
-        componentDefinition.getImplementation().setComponentType(new CompositeComponentType());
+        Composite implementation = new CompositeImpl();
+        org.apache.tuscany.assembly.Component componentDefinition =
+            new ComponentImpl();
+        componentDefinition.setImplementation(implementation);
 
         Component component = EasyMock.createMock(Component.class);
-        component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
+        // FIXME:
+        // component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
         component.setScopeContainer(scopeContainer);
         EasyMock.expect(component.getUri()).andReturn(componentId);
         EasyMock.replay(component);
@@ -85,7 +92,7 @@ public class BuilderRegistryTestCase extends TestCase {
         EasyMock.replay(builder);
 
         BuilderRegistry registry = new BuilderRegistryImpl(null);
-        registry.register(CompositeImplementation.class, builder);
+        registry.register(Composite.class, builder);
 
         assertSame(component, registry.build(componentDefinition, deploymentContext));
         EasyMock.verify(builder);
@@ -98,15 +105,18 @@ public class BuilderRegistryTestCase extends TestCase {
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
         EasyMock.expect(builder.build(
-            EasyMock.isA(ServiceDefinition.class),
+            EasyMock.isA(CompositeService.class),
             EasyMock.isA(MockBindingDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(binding).times(2);
         EasyMock.replay(builder);
         registry.register(MockBindingDefinition.class, builder);
-        ServiceDefinition definition = new ServiceDefinition(URI.create("#foo"), null, false);
-        definition.addBinding(new MockBindingDefinition());
-        definition.addBinding(new MockBindingDefinition());
-        definition.setTarget(new URI("foo"));
+        CompositeService definition = new CompositeServiceImpl();
+        definition.setName("foo");
+        definition.getBindings().add(new MockBindingDefinition());
+        definition.getBindings().add(new MockBindingDefinition());
+        ComponentService target = new ComponentServiceImpl();
+        target.setName("foo");
+        definition.setPromotedService(target);
         Service service = registry.build(definition, deploymentContext);
         assertEquals(2, service.getServiceBindings().size());
     }
@@ -118,14 +128,16 @@ public class BuilderRegistryTestCase extends TestCase {
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
         EasyMock.expect(builder.build(
-            EasyMock.isA(ReferenceDefinition.class),
+            EasyMock.isA(CompositeReference.class),
             EasyMock.isA(MockBindingDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(binding).times(2);
         EasyMock.replay(builder);
         registry.register(MockBindingDefinition.class, builder);
-        ReferenceDefinition definition = new ReferenceDefinition(URI.create("#foo"), null, ONE_ONE);
-        definition.addBinding(new MockBindingDefinition());
-        definition.addBinding(new MockBindingDefinition());
+        CompositeReference definition = new CompositeReferenceImpl();
+        definition.setName("foo");
+        definition.setMultiplicity(Multiplicity.ONE_ONE);
+        definition.getBindings().add(new MockBindingDefinition());
+        definition.getBindings().add(new MockBindingDefinition());
         Reference reference = registry.build(definition, deploymentContext);
         assertEquals(2, reference.getReferenceBindings().size());
     }
@@ -140,19 +152,19 @@ public class BuilderRegistryTestCase extends TestCase {
 
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        ComponentBuilder<FooImplementation> builder = EasyMock.createMock(ComponentBuilder.class);
+        ComponentBuilder builder = EasyMock.createMock(ComponentBuilder.class);
         EasyMock.expect(builder.build(
-            EasyMock.isA(ComponentDefinition.class),
+            EasyMock.isA(org.apache.tuscany.assembly.Component.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(component);
         EasyMock.replay(builder);
         registry.register(FooImplementation.class, builder);
 
         FooImplementation impl = new FooImplementation();
-        ComponentType componentType = new ComponentType();
-        componentType.setImplementationScope(Scope.CONVERSATION);
-        impl.setComponentType(componentType);
+        // FIXME:
+        // impl.setImplementationScope(Scope.CONVERSATION);
         URI uri = URI.create("foo");
-        ComponentDefinition<FooImplementation> definition = new ComponentDefinition<FooImplementation>(uri, impl);
+        org.apache.tuscany.assembly.Component definition = new ComponentImpl();
+        definition.setImplementation(impl);
         try {
             registry.build(definition, deploymentContext);
             fail("Should throw NoConversationalContractException");
@@ -170,19 +182,19 @@ public class BuilderRegistryTestCase extends TestCase {
         components = EasyMock.createMock(Map.class);
     }
 
-    private class MockBuilder implements ComponentBuilder<CompositeImplementation> {
+    private class MockBuilder implements ComponentBuilder {
         public Component build(
-            ComponentDefinition componentDefinition,
+            org.apache.tuscany.assembly.Component componentDefinition,
             DeploymentContext deploymentContext) throws BuilderConfigException {
             return null;
         }
     }
 
-    private class MockBindingDefinition extends BindingDefinition {
+    private class MockBindingDefinition extends BindingImpl {
 
     }
 
-    private class FooImplementation extends Implementation<ComponentType> {
+    private class FooImplementation extends ComponentTypeImpl implements Implementation {
 
     }
 

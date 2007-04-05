@@ -18,8 +18,7 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -31,14 +30,9 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class InvocationChainImpl implements InvocationChain {
     protected Operation operation;
-    protected PhysicalOperationDefinition physicalOperation;
     protected TargetInvoker targetInvoker;
     protected Interceptor interceptorChainHead;
     protected Interceptor interceptorChainTail;
-
-    public InvocationChainImpl(PhysicalOperationDefinition operation) {
-        this.physicalOperation = operation;
-    }
 
     public InvocationChainImpl(Operation operation) {
         assert operation != null;
@@ -47,10 +41,6 @@ public class InvocationChainImpl implements InvocationChain {
 
     public Operation getOperation() {
         return operation;
-    }
-
-    public PhysicalOperationDefinition getPhysicalOperation() {
-        return physicalOperation;
     }
 
     public void setTargetInvoker(TargetInvoker invoker) {

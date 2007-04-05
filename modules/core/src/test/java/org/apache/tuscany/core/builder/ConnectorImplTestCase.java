@@ -23,29 +23,40 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentManager;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Wire;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.ComponentType;
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.Reference;
+import org.apache.tuscany.assembly.impl.ComponentImpl;
+import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
+import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
+import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.impl.ReferenceImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.NonBlockingInterceptor;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.OperationImpl;
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.impl.JavaInterfaceImpl;
+import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentManager;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
 
 /**
@@ -55,33 +66,32 @@ public class ConnectorImplTestCase extends TestCase {
     private TestConnector connector;
     private ComponentManager manager;
 
+    private static class TestImplementation extends ComponentTypeImpl implements Implementation {
+
+    }
+
     public void testConnectTargetNotFound() throws Exception {
-        Implementation<ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>> impl =
-            new Implementation<ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>>() {
-            };
-        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
-            new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        Implementation impl = new TestImplementation();
         URI refUri = URI.create("ref");
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition(refUri, null);
-        referenceDefinition.setRequired(true);
-        type.add(referenceDefinition);
-        impl.setComponentType(type);
+        Reference referenceDefinition = new ReferenceImpl();
+        referenceDefinition.setName("ref");
+        referenceDefinition.setMultiplicity(Multiplicity.ONE_ONE);
+        impl.getReferences().add(referenceDefinition);
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> definition =
-            new ComponentDefinition<Implementation<ComponentType<ServiceDefinition,
-                ReferenceDefinition, Property<?>>>>(impl);
-        definition.setUri(sourceUri);
-        ReferenceTarget referenceTarget = new ReferenceTarget();
-        referenceTarget.setReferenceName(refUri);
-        referenceTarget.addTarget(URI.create("NotThere"));
-        definition.add(referenceTarget);
+        org.apache.tuscany.assembly.Component definition = new ComponentImpl();
+        definition.setImplementation(impl);
+        definition.setName("source");
+
+        ComponentReference referenceTarget = new ComponentReferenceImpl();
+        referenceTarget.setName("ref");
+        definition.getReferences().add(referenceTarget);
         Component component = EasyMock.createMock(Component.class);
         EasyMock.expect(component.getUri()).andReturn(sourceUri);
         EasyMock.replay(component);
         manager.register(component);
         try {
-            connector.connect(definition);
+            connector.connect(URI.create("/default"), definition);
             fail();
         } catch (ComponentNotFoundException e) {
             // expected
@@ -89,37 +99,34 @@ public class ConnectorImplTestCase extends TestCase {
     }
 
     /**
-     * Verifies a non-existent target does not throw an error.
-     * <p/>
-     * TODO JFM when the allocator is in place it should optimize connecting to non-existent targets but keep it for
-     * now
+     * Verifies a non-existent target does not throw an error. <p/> TODO JFM
+     * when the allocator is in place it should optimize connecting to
+     * non-existent targets but keep it for now
      */
     public void testConnectTargetNotFoundNonRequiredReference() throws Exception {
-        Implementation<ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>> impl =
-            new Implementation<ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>>() {
-            };
-        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
-            new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        URI refUri = URI.create("ref");
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition(refUri, null);
-        referenceDefinition.setRequired(false);
-        type.add(referenceDefinition);
-        impl.setComponentType(type);
+        TestImplementation impl = new TestImplementation();
+        Reference referenceDefinition = new ReferenceImpl();
+        referenceDefinition.setName("ref");
+        referenceDefinition.setMultiplicity(Multiplicity.ZERO_ONE);
+        impl.getReferences().add(referenceDefinition);
 
         URI sourceUri = URI.create("source");
-        ComponentDefinition<?> definition =
-            new ComponentDefinition<Implementation<ComponentType<ServiceDefinition,
-                ReferenceDefinition, Property<?>>>>(impl);
-        definition.setUri(sourceUri);
-        ReferenceTarget referenceTarget = new ReferenceTarget();
-        referenceTarget.setReferenceName(refUri);
-        referenceTarget.addTarget(URI.create("NotThere"));
-        definition.add(referenceTarget);
+        org.apache.tuscany.assembly.Component definition = new ComponentImpl();
+        definition.setImplementation(impl);
+
+        definition.setName("source");
+        ComponentReference referenceTarget = new ComponentReferenceImpl();
+        referenceTarget.setName("ref");
+        ComponentService service = new ComponentServiceImpl();
+
+        // FIXME: 
+        // referenceTarget.getTargets().add(URI.create("NotThere"));
+        definition.getReferences().add(referenceTarget);
         Component component = EasyMock.createMock(Component.class);
         EasyMock.expect(component.getUri()).andReturn(sourceUri);
         EasyMock.replay(component);
         manager.register(component);
-        connector.connect(definition);
+        connector.connect(URI.create("/default"), definition);
     }
 
     public void testNonOptimizableTargetComponent() throws Exception {
@@ -217,13 +224,11 @@ public class ConnectorImplTestCase extends TestCase {
     }
 
     public void testCreateSyncForwardWire() throws Exception {
-        ServiceContract<Type> contract = new ServiceContract<Type>() {
-
-        };
-        Operation<Type> operation = new Operation<Type>("operation", null, null, null);
-        Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
+        Contract contract = createContract();
+        Operation operation = new OperationImpl("operation");
+        Map<String, Operation> operations = new HashMap<String, Operation>();
         operations.put("operation", operation);
-        contract.setOperations(operations);
+        contract.getInterface().getOperations().addAll(operations.values());
         Wire wire = connector.createWire(URI.create("target"), URI.create("#ref"), contract, Wire.LOCAL_BINDING);
         assertEquals(1, wire.getInvocationChains().size());
         InvocationChain chain = wire.getInvocationChains().get(operation);
@@ -232,19 +237,17 @@ public class ConnectorImplTestCase extends TestCase {
     }
 
     public void testCreateSyncCallbackWire() throws Exception {
-        ServiceContract<Type> contract = new ServiceContract<Type>() {
+        Contract contract = createContract();
 
-        };
-
-        Operation<Type> operation = new Operation<Type>("operation", null, null, null);
-        Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
+        Operation operation = new OperationImpl("operation");
+        Map<String, Operation> operations = new HashMap<String, Operation>();
         operations.put("operation", operation);
-        contract.setOperations(operations);
+        contract.getInterface().getOperations().addAll(operations.values());
 
-        Operation<Type> callbackOperation = new Operation<Type>("operation", null, null, null);
-        Map<String, Operation<Type>> callbackOperations = new HashMap<String, Operation<Type>>();
+        Operation callbackOperation = new OperationImpl("operation");
+        Map<String, Operation> callbackOperations = new HashMap<String, Operation>();
         callbackOperations.put("operation", callbackOperation);
-        contract.setCallbackOperations(callbackOperations);
+        contract.getCallbackInterface().getOperations().addAll(callbackOperations.values());
 
         Wire wire = connector.createWire(URI.create("target"), URI.create("#ref"), contract, Wire.LOCAL_BINDING);
         assertEquals(1, wire.getCallbackInvocationChains().size());
@@ -254,14 +257,12 @@ public class ConnectorImplTestCase extends TestCase {
     }
 
     public void testCreateNonBlockingForwardWire() throws Exception {
-        ServiceContract<Type> contract = new ServiceContract<Type>() {
-
-        };
-        Operation<Type> operation = new Operation<Type>("operation", null, null, null);
+        Contract contract = createContract();
+        Operation operation = new OperationImpl("operation");
         operation.setNonBlocking(true);
-        Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
+        Map<String, Operation> operations = new HashMap<String, Operation>();
         operations.put("operation", operation);
-        contract.setOperations(operations);
+        contract.getInterface().getOperations().addAll(operations.values());
         Wire wire = connector.createWire(URI.create("target"), URI.create("#ref"), contract, Wire.LOCAL_BINDING);
         assertEquals(1, wire.getInvocationChains().size());
         InvocationChain chain = wire.getInvocationChains().get(operation);
@@ -271,21 +272,19 @@ public class ConnectorImplTestCase extends TestCase {
     }
 
     public void testCreateNonBlockingCallbackWire() throws Exception {
-        ServiceContract<Type> contract = new ServiceContract<Type>() {
+        Contract contract = createContract();
 
-        };
-
-        Operation<Type> operation = new Operation<Type>("operation", null, null, null);
+        Operation operation = new OperationImpl("operation");
         operation.setNonBlocking(true);
-        Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
+        Map<String, Operation> operations = new HashMap<String, Operation>();
         operations.put("operation", operation);
-        contract.setOperations(operations);
+        contract.getInterface().getOperations().addAll(operations.values());
 
-        Operation<Type> callbackOperation = new Operation<Type>("operation", null, null, null);
+        Operation callbackOperation = new OperationImpl("operation");
         callbackOperation.setNonBlocking(true);
-        Map<String, Operation<Type>> callbackOperations = new HashMap<String, Operation<Type>>();
+        Map<String, Operation> callbackOperations = new HashMap<String, Operation>();
         callbackOperations.put("operation", callbackOperation);
-        contract.setCallbackOperations(callbackOperations);
+        contract.getCallbackInterface().getOperations().addAll(callbackOperations.values());
 
         Wire wire = connector.createWire(URI.create("target"), URI.create("#ref"), contract, Wire.LOCAL_BINDING);
         assertEquals(1, wire.getCallbackInvocationChains().size());
@@ -301,13 +300,22 @@ public class ConnectorImplTestCase extends TestCase {
         connector = new TestConnector(manager);
     }
 
+    private Contract createContract() {
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        ComponentService service = factory.createComponentService();
+        JavaInterface javaInterface = new JavaInterfaceImpl();
+        javaInterface.setJavaClass(Object.class);
+        service.setInterface(javaInterface);
+        return service;
+    }
+
     private class TestConnector extends ConnectorImpl {
 
         public TestConnector(ComponentManager componentManager) {
             super(componentManager);
         }
 
-        protected Wire createWire(URI sourceURI, URI targetUri, ServiceContract<?> contract, QName bindingType) {
+        protected Wire createWire(URI sourceURI, URI targetUri, Contract contract, QName bindingType) {
             return super.createWire(sourceURI, targetUri, contract, bindingType);
         }
 

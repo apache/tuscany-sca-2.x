@@ -19,13 +19,13 @@
 package org.apache.tuscany.core.binding.local;
 
 import java.net.URI;
+
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -45,18 +45,13 @@ public class LocalReferenceBinding extends ReferenceBindingExtension {
         return Wire.LOCAL_BINDING;
     }
 
-    public TargetInvoker createTargetInvoker(String name, Operation operation)
+    public TargetInvoker createTargetInvoker(String name, Operation operation, boolean isCallback)
         throws TargetInvokerCreationException {
-        if (operation.isCallback()) {
+        if (isCallback) {
             return new LocalCallbackTargetInvoker(operation, wire);
         } else {
             return new LocalTargetInvoker(operation, wire);
         }
-    }
-
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
-        throws TargetInvokerCreationException {
-        return null;
     }
 
 }

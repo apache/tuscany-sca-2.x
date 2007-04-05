@@ -21,12 +21,18 @@ package org.apache.tuscany.core.wire;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.OperationImpl;
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.easymock.EasyMock;
 
 /**
@@ -34,49 +40,55 @@ import org.easymock.EasyMock;
  */
 public class IncompatibleServiceContractExceptionFormatterTestCase extends TestCase {
     FormatterRegistry registry = EasyMock.createNiceMock(FormatterRegistry.class);
-    IncompatibleServiceContractExceptionFormatter formatter =
-        new IncompatibleServiceContractExceptionFormatter(registry);
+    IncompatibleContractExceptionFormatter formatter = new IncompatibleContractExceptionFormatter(registry);
+
+    private <S> ComponentService createContract(Class<S> type) {
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        ComponentService contract = factory.createComponentService();
+        JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
+        javaInterface.setJavaClass(type);
+        contract.setInterface(javaInterface);
+        return contract;
+    }
 
     public void testFormat() throws Exception {
-        ServiceContract<Object> source = new ServiceContract<Object>() {
-        };
-        source.setInterfaceName("sourceInterface");
-        ServiceContract<Object> target = new ServiceContract<Object>() {
-        };
-        target.setInterfaceName("targetInterface");
-        Operation<Object> sourceOp = new Operation<Object>("sourceOp", null, null, null);
-        Operation<Object> targetOp = new Operation<Object>("targetOp", null, null, null);
+        Contract source = createContract(Foo.class);
+        Contract target = createContract(Bar.class);
+        Operation sourceOp = new OperationImpl("sourceOp");
+        Operation targetOp = new OperationImpl("targetOp");
 
-        IncompatibleServiceContractException e =
-            new IncompatibleServiceContractException("message", source, target, sourceOp, targetOp);
+        IncompatibleServiceContractException e = new IncompatibleServiceContractException("message", source, target,
+                                                                                          sourceOp, targetOp);
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
         formatter.write(pw, e);
         String buffer = writer.toString();
         assertTrue(buffer.indexOf("message") >= 0);
-        assertTrue(buffer.indexOf("sourceInterface") >= 0);
-        assertTrue(buffer.indexOf("targetInterface") >= 0);
+        assertTrue(buffer.indexOf("Foo") >= 0);
+        assertTrue(buffer.indexOf("Bar") >= 0);
         assertTrue(buffer.indexOf("sourceOp") >= 0);
         assertTrue(buffer.indexOf("targetOp") >= 0);
     }
 
-
     public void testFormatNulls() throws Exception {
-        ServiceContract<Object> source = new ServiceContract<Object>() {
-        };
-        source.setInterfaceName("sourceInterface");
-        ServiceContract<Object> target = new ServiceContract<Object>() {
-        };
-        target.setInterfaceName("targetInterface");
+        Contract source = createContract(Foo.class);
+        Contract target = createContract(Bar.class);
 
-        IncompatibleServiceContractException e =
-            new IncompatibleServiceContractException("message", source, target);
+        IncompatibleServiceContractException e = new IncompatibleServiceContractException("message", source, target);
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
         formatter.write(pw, e);
         String buffer = writer.toString();
         assertTrue(buffer.indexOf("message") >= 0);
-        assertTrue(buffer.indexOf("sourceInterface") >= 0);
-        assertTrue(buffer.indexOf("targetInterface") >= 0);
+        assertTrue(buffer.indexOf("Foo") >= 0);
+        assertTrue(buffer.indexOf("Bar") >= 0);
+    }
+
+    private static interface Foo {
+
+    }
+
+    private static interface Bar {
+
     }
 }

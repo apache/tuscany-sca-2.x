@@ -18,16 +18,14 @@
  */
 package org.apache.tuscany.core.component;
 
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
-
-import org.apache.tuscany.api.TuscanyRuntimeException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Component;
 
 /**
  * Implementation of ComponentContext that delegates to a ComponentContextProvider.

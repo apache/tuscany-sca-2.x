@@ -22,14 +22,11 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod2;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
+import org.apache.tuscany.core.util.JavaIDLUtils;
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
@@ -54,35 +51,16 @@ public final class WireUtils {
      */
     public static Map<Method, ChainHolder> createInterfaceToWireMapping(Class<?> interfaze, Wire wire)
         throws NoMethodForOperationException {
-        Map<Operation<?>, InvocationChain> invocationChains = wire.getInvocationChains();
+        Map<Operation, InvocationChain> invocationChains = wire.getInvocationChains();
 
         Map<Method, ChainHolder> chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        for (Map.Entry<Operation<?>, InvocationChain> entry : invocationChains.entrySet()) {
+        for (Map.Entry<Operation, InvocationChain> entry : invocationChains.entrySet()) {
             Operation operation = entry.getKey();
             try {
-                Method method = findMethod(interfaze, operation);
+                Method method = JavaIDLUtils.findMethod(interfaze, operation);
                 chains.put(method, new ChainHolder(entry.getValue()));
             } catch (NoSuchMethodException e) {
                 throw new NoMethodForOperationException(operation.getName());
-            }
-        }
-        return chains;
-    }
-
-    public static Map<Method, InvocationChain> createInterfaceToWireMapping2(Class<?> interfaze, Wire wire)
-        throws NoMethodForOperationException {
-        Map<PhysicalOperationDefinition, InvocationChain> invocationChains = wire.getPhysicalInvocationChains();
-
-        Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>(invocationChains.size());
-        for (Map.Entry<PhysicalOperationDefinition, InvocationChain> entry : invocationChains.entrySet()) {
-            PhysicalOperationDefinition operation = entry.getKey();
-            try {
-                Method method = findMethod2(interfaze, operation);
-                chains.put(method, entry.getValue());
-            } catch (NoSuchMethodException e) {
-                throw new NoMethodForOperationException(operation.getName());
-            } catch (ClassNotFoundException e) {
-                throw new ProxyCreationException(e);
             }
         }
         return chains;

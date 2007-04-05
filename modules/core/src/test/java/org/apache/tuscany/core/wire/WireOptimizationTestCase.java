@@ -20,15 +20,15 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Type;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.impl.OperationImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.model.Operation;
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
@@ -68,8 +68,9 @@ public class WireOptimizationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        operation = new Operation<Type>("foo", null, null, null, false, null, NO_CONVERSATION);
-
+        operation = new OperationImpl();
+        operation.setName("foo");
+        operation.setConversationSequence(Operation.ConversationSequence.NO_CONVERSATION);
     }
 
     private class OptimizableInterceptor implements Interceptor {

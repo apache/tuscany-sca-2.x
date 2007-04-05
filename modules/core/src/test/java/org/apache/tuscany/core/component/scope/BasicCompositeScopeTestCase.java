@@ -21,14 +21,14 @@ package org.apache.tuscany.core.component.scope;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.model.Scope;
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 
 /**
  * @version $$Rev$$ $$Date$$
