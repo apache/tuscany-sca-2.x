@@ -50,6 +50,7 @@
                 <module>core</module>
                 -->
                 <module>core-spi</module>
+                <module>core-spring</module>
                 <module>databinding</module>
                 <module>databinding-axiom</module>
                 <!--
