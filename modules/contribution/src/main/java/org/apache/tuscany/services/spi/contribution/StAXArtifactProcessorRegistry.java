@@ -25,7 +25,6 @@ package org.apache.tuscany.services.spi.contribution;
  * 
  * @version $Rev$ $Date$
  */
-public interface StAXArtifactProcessorRegistry extends
-    ArtifactProcessorRegistry<StAXArtifactProcessor<Object>> {
+public interface StAXArtifactProcessorRegistry extends ArtifactProcessorRegistry<StAXArtifactProcessor> {
     
 }

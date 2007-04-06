@@ -26,9 +26,9 @@ import java.util.Map;
  * 
  * @version $Rev$ $Date$
  */
-abstract class DefaultArtifactProcessorRegistry<P extends ArtifactProcessor> implements ArtifactProcessorRegistry<P> {
-    private final Map<Object, P> processorsByArtifactType = new HashMap<Object, P>();
-    private final Map<Class<?>, P> processorsByModelType = new HashMap<Class<?>, P>();
+abstract class DefaultArtifactProcessorRegistry {
+    protected final Map<Object, ArtifactProcessor> processorsByArtifactType = new HashMap<Object, ArtifactProcessor>();
+    protected final Map<Class<?>, ArtifactProcessor> processorsByModelType = new HashMap<Class<?>, ArtifactProcessor>();
 
     /**
      * Constructs a new loader registry.
@@ -41,7 +41,7 @@ abstract class DefaultArtifactProcessorRegistry<P extends ArtifactProcessor> imp
      * @param artifactType an artifact type
      * @return the processor associated with the given artifact type
      */
-    protected P getProcessor(Object artifactType) {
+    protected ArtifactProcessor getProcessor(Object artifactType) {
         return processorsByArtifactType.get(artifactType);
     }
 
@@ -50,20 +50,14 @@ abstract class DefaultArtifactProcessorRegistry<P extends ArtifactProcessor> imp
      * @param modelType a model type
      * @return the processor associated with the given model type
      */
-    protected P getProcessor(Class<?> modelType) {
-        Class<?>[] classes = modelType.getClasses();
+    protected ArtifactProcessor getProcessor(Class<?> modelType) {
+        Class<?>[] classes = modelType.getInterfaces();
         for (Class<?> c: classes) {
-            P processor = processorsByModelType.get(c);
+            ArtifactProcessor processor = processorsByModelType.get(c);
             if (processor != null)
                 return processor;
         }
         return null;
     }
 
-    public void addArtifactProcessor(Object artifactProcessor) {
-        P processor = (P)artifactProcessor;
-        processorsByArtifactType.put((Object)processor.getArtifactType(), processor);
-        processorsByModelType.put(processor.getModelType(), processor);
-    }
-    
 }

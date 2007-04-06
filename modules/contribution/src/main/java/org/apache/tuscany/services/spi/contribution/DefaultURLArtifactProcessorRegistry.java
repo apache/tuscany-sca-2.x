@@ -26,7 +26,7 @@ import java.net.URL;
  * @version $Rev$ $Date$
  */
 public class DefaultURLArtifactProcessorRegistry
-    extends DefaultArtifactProcessorRegistry<URLArtifactProcessor<Object>>
+    extends DefaultArtifactProcessorRegistry
     implements URLArtifactProcessorRegistry, URLArtifactProcessor<Object> {
 
     /**
@@ -88,6 +88,11 @@ public class DefaultURLArtifactProcessorRegistry
             e.setResourceURI(url.toString());
             throw e;
         }
+    }
+    
+    public void addArtifactProcessor(URLArtifactProcessor artifactProcessor) {
+        processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
+        processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
     public String getArtifactType() {

@@ -41,6 +41,7 @@ import org.apache.tuscany.assembly.AbstractProperty;
 import org.apache.tuscany.assembly.AbstractReference;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Multiplicity;
@@ -390,7 +391,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @throws XMLStreamException
      * @throws ContributionReadException
      */
-    public static Document readPropertyValue(XMLStreamReader reader, QName type)
+    protected Document readPropertyValue(XMLStreamReader reader, QName type)
         throws XMLStreamException, ContributionReadException {
         Document doc = DOMUtil.newDocument();
 
@@ -425,7 +426,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param attrs
      * @throws XMLStreamException
      */
-    protected void start(XMLStreamWriter writer, String uri, String name, Attr... attrs) throws XMLStreamException {
+    protected void writeStart(XMLStreamWriter writer, String uri, String name, Attr... attrs) throws XMLStreamException {
         writer.writeStartElement(uri, name);
         writeAttributes(writer, attrs);
     }
@@ -437,7 +438,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param attrs
      * @throws XMLStreamException
      */
-    protected void start(XMLStreamWriter writer, String name, Attr... attrs) throws XMLStreamException {
+    protected void writeStart(XMLStreamWriter writer, String name, Attr... attrs) throws XMLStreamException {
         writer.writeStartElement(SCA10_NS, name);
         writeAttributes(writer, attrs);
     }
@@ -447,8 +448,27 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param writer
      * @throws XMLStreamException
      */
-    protected void end(XMLStreamWriter writer) throws XMLStreamException {
+    protected void writeEnd(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeEndElement();
+    }
+
+    /**
+     * Start a document.
+     * @param writer
+     * @throws XMLStreamException
+     */
+    protected void writeStartDocument(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartDocument();
+        writer.setDefaultNamespace(SCA10_NS);
+    }
+    
+    /**
+     * End a document.
+     * @param writer
+     * @throws XMLStreamException
+     */
+    protected void writeEndDocument(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeEndDocument();
     }
 
     /**
@@ -480,4 +500,18 @@ abstract class BaseArtifactProcessor implements Constants {
     protected void writeProperty(XMLStreamWriter writer, Property prop) throws XMLStreamException {
         writeAbstractProperty(writer, prop);
     }
+
+    /**
+     * Returns a constrainingType attribute.
+     * @param componentType
+     * @return
+     */
+    protected QName getConstrainingTypeAttr(ComponentType componentType) {
+        ConstrainingType constrainingType = componentType.getConstrainingType();
+        if (constrainingType != null)
+            return constrainingType.getName();
+        else
+            return null;
+    }
+
 }

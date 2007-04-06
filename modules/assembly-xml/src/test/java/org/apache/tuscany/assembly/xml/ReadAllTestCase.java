@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.assembly.xml;
 
-import java.net.URL;
+import java.io.InputStream;
 
 import javax.xml.namespace.QName;
 
@@ -34,11 +34,11 @@ import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
 import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
+import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,8 +63,8 @@ public class ReadAllTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
-        Composite composite = registry.read(url, Composite.class);
+        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        Composite composite = registry.read(is, Composite.class);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
@@ -148,10 +148,11 @@ public class ReadAllTestCase extends TestCase {
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
-        URL url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
-        Composite composite = registry.read(url, Composite.class);
+        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        Composite composite = registry.read(is, Composite.class);
         assertNotNull(composite);
-        new CompositeUtil(composite).configure(null);
+        registry.resolve(composite, new DefaultArtifactResolver());
+        registry.wire(composite);
 
         Component calcComponent = composite.getComponents().get(0);
         CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);

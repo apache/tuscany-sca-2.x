@@ -20,11 +20,12 @@ package org.apache.tuscany.services.spi.contribution;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.io.OutputStream;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -35,24 +36,26 @@ import javax.xml.stream.XMLStreamWriter;
  * @version $Rev$ $Date$
  */
 public class DefaultStAXArtifactProcessorRegistry
-    extends DefaultArtifactProcessorRegistry<StAXArtifactProcessor<Object>>
+    extends DefaultArtifactProcessorRegistry
     implements StAXArtifactProcessorRegistry, StAXArtifactProcessor<Object> {
 
-    private XMLInputFactory factory;
+    private XMLInputFactory inputFactory;
+    private XMLOutputFactory outputFactory;
 
     /**
      * Constructs a new loader registry.
      * @param assemblyFactory
      * @param policyFactory
-     * @param factory
+     * @param inputFactory
      */
-    public DefaultStAXArtifactProcessorRegistry(XMLInputFactory factory) {
+    public DefaultStAXArtifactProcessorRegistry(XMLInputFactory inputFactory, XMLOutputFactory outputFactory) {
         super();
-        this.factory = factory;
+        this.inputFactory = inputFactory;
+        this.outputFactory = outputFactory;
     }
 
     public DefaultStAXArtifactProcessorRegistry() {
-        this(XMLInputFactory.newInstance());
+        this(XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
     }
 
     public Object read(XMLStreamReader source) throws ContributionReadException {
@@ -92,14 +95,19 @@ public class DefaultStAXArtifactProcessorRegistry
             processor.wire(model);
         }
     }
-    
-    public <MO> MO read(URL url, Class<MO> type) throws ContributionReadException {
+
+    /**
+     * Read a model from an input stream.
+     * @param is
+     * @param type
+     * @return
+     * @throws ContributionReadException
+     */
+    public <MO> MO read(InputStream is, Class<MO> type) throws ContributionReadException {
         try {
             XMLStreamReader reader;
-            InputStream is;
-            is = url.openStream();
             try {
-                reader = factory.createXMLStreamReader(is);
+                reader = inputFactory.createXMLStreamReader(is);
                 try {
                     reader.nextTag();
                     QName name = reader.getName();
@@ -108,7 +116,6 @@ public class DefaultStAXArtifactProcessorRegistry
                         return type.cast(mo);
                     } else {
                         UnrecognizedElementException e = new UnrecognizedElementException(name);
-                        e.setResourceURI(url.toString());
                         throw e;
                     }
                 } catch (ContributionReadException e) {
@@ -130,15 +137,34 @@ public class DefaultStAXArtifactProcessorRegistry
                     // ignore
                 }
             }
-        } catch (IOException e) {
-            ContributionReadException ce = new ContributionReadException(e);
-            ce.setResourceURI(url.toString());
-            throw ce;
         } catch (XMLStreamException e) {
-            throw new InvalidConfigurationException("Invalid or missing resource: " + url.toString(), e);
+            ContributionReadException ce = new ContributionReadException(e);
+            throw ce;
         }
     }
 
+    /**
+     * Write a model to an ouput stream.
+     * @param model
+     * @param os
+     * @throws ContributionWriteException
+     */
+    public void write(Object model, OutputStream os) throws ContributionWriteException {
+        try {
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(os);
+            write(model, writer);
+            writer.flush();
+            writer.close();
+        } catch (XMLStreamException e) {
+            throw new ContributionWriteException(e);
+        }
+    }
+
+    public void addArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
+        processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
+        processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
+    }
+    
     public QName getArtifactType() {
         return null;
     }

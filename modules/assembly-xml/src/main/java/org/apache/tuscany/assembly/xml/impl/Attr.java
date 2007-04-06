@@ -23,6 +23,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.xml.Constants;
+
 /**
  * Represents an XML attribute that needs to be written to a document.
  *
@@ -30,7 +32,7 @@ import javax.xml.stream.XMLStreamWriter;
  */
 public class Attr {
 
-    String uri;
+    String uri = Constants.SCA10_NS;
     String name;
     Object value;
 
