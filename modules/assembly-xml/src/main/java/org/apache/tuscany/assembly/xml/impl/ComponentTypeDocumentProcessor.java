@@ -37,7 +37,7 @@ import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
 import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
 
 /**
@@ -46,7 +46,7 @@ import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
  * @version $Rev$ $Date$
  */
 public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessor<ComponentType> {
-    private StAXArtifactProcessorRegistry registry;
+    private StAXArtifactProcessor<Object> staxProcessor;
     private XMLInputFactory inputFactory;
     
     /**
@@ -55,9 +55,9 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorRegistry registry, XMLInputFactory inputFactory) {
+    public ComponentTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> staxProcessor, XMLInputFactory inputFactory) {
         super(factory, policyFactory);
-        this.registry = registry;
+        this.staxProcessor = staxProcessor;
         this.inputFactory = inputFactory;
     }
     
@@ -65,8 +65,8 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
      * Constructs a new componentType processor.
      * @param registry
      */
-    public ComponentTypeDocumentProcessor(StAXArtifactProcessorRegistry registry) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), registry, XMLInputFactory.newInstance());
+    public ComponentTypeDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor) {
+        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
     }
     
     public ComponentType read(URL url) throws ContributionReadException {
@@ -75,7 +75,7 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
-            ComponentType componentType = (ComponentType)registry.read(reader);
+            ComponentType componentType = (ComponentType)staxProcessor.read(reader);
             return componentType;
             
         } catch (XMLStreamException e) {
@@ -98,11 +98,11 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
     }
     
     public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {
-        registry.resolve(componentType, resolver);
+        staxProcessor.resolve(componentType, resolver);
     }
     
     public void wire(ComponentType componentType) throws ContributionWireException {
-        registry.wire(componentType);
+        staxProcessor.wire(componentType);
     }
     
     public String getArtifactType() {

@@ -25,12 +25,12 @@ package org.apache.tuscany.services.spi.contribution;
  * 
  * @version $Rev$ $Date$
  */
-public interface ArtifactProcessorRegistry<I, O, M, T> extends ArtifactProcessor<I, O, M, T> {
+public interface ArtifactProcessorRegistry<P> {
     
     /**
      * Add an artifact processor.
      * @param artifactProcessor the artifact processor to add
      */
-    void addArtifactProcessor(ArtifactProcessor<I, O, ?, T> artifactProcessor);
+    void addArtifactProcessor(Object artifactProcessor);
 
 }

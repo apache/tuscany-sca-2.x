@@ -55,7 +55,6 @@ import org.apache.tuscany.services.spi.contribution.ContributionResolveException
 import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * A composite processor.
@@ -64,26 +63,26 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistr
  */
 public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Composite> {
     private AssemblyFactory factory;
-    private StAXArtifactProcessorRegistry registry;
+    private StAXArtifactProcessor<Object> extensionProcessor;
 
     /**
      * Construct a new composite processor
      * @param assemblyFactory
      * @param policyFactory
-     * @param registry
+     * @param extensionProcessor
      */
-    public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorRegistry registry) {
+    public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         super(factory, policyFactory);
         this.factory = factory;
-        this.registry = registry;
+        this.extensionProcessor = extensionProcessor;
     }
 
     /**
      * Construct a new composite processor.
-     * @param registry
+     * @param extensionProcessor
      */
-    public CompositeProcessor(StAXArtifactProcessorRegistry registry) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), registry);
+    public CompositeProcessor(StAXArtifactProcessor<Object> extensionProcessor) {
+        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
     }
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException {
@@ -260,7 +259,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         } else {
     
                             // Read an extension element
-                            Object extension = registry.read(reader);
+                            Object extension = extensionProcessor.read(reader);
                             if (extension != null) {
                                 if (extension instanceof Interface) {
     

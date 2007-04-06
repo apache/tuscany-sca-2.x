@@ -35,7 +35,6 @@ import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
@@ -45,7 +44,7 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistr
 public class ReadTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
-    StAXArtifactProcessorRegistry registry;
+    DefaultStAXArtifactProcessorRegistry registry;
     
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
