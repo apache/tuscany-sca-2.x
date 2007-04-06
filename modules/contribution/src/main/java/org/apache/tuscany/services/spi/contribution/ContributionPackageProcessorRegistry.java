@@ -23,14 +23,14 @@ package org.apache.tuscany.services.spi.contribution;
  */
 public interface ContributionPackageProcessorRegistry extends ContributionPackageProcessor {
     /**
-     * Register a ContributionProcessor using the content type as the key
+     * Register a ContributionPackageProcessor using the package type as the key
      * @param processor
      */
-    void register(String contentType, ContributionPackageProcessor processor);
+    void register(String packageType, ContributionPackageProcessor processor);
     
     /**
-     * Unregister a ContributionProcessor by content type
-     * @param contentType
+     * Unregister a ContributionProcessor by package type
+     * @param packageType
      */
-    void unregister(String contentType);
+    void unregister(String packageType);
 }
