@@ -20,6 +20,8 @@ package org.apache.tuscany.services.spi.contribution;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -29,19 +31,29 @@ import java.util.List;
  * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
 public interface ContributionPackageProcessor {
-//    /**
-//     * Returns the type of package handled by this package processor. 
-//     * @return the type of package handled by this package processor
-//     */    
-//    String getPackageType();
-    
+    // /**
+    // * Returns the type of package handled by this package processor.
+    // * @return the type of package handled by this package processor
+    // */
+    // String getPackageType();
+
     /**
      * Retrieve a list of artifacts for the specific package type
+     * 
      * @param packageSourceURL location of the artifact
      * @param inputStream optional content of the package
      * @return
      * @throws ContributionException
      * @throws IOException
      */
-    List<URL> getArtifacts(URL packageSourceURL,InputStream inputStream) throws ContributionException, IOException;
+    List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException, IOException;
+
+    /**
+     * Return the URL for an artifact in the package
+     * 
+     * @param packageSourceURL The package URL
+     * @param artifact The relative URI for the artifact
+     * @return
+     */
+    URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException;
 }
