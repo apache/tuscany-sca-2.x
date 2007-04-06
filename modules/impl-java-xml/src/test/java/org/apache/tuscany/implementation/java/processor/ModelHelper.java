@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.implementation.processor;
+package org.apache.tuscany.implementation.java.processor;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentService;
@@ -26,13 +26,13 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.core.implementation.processor.HeuristicConstructorTestCase.Foo1;
 import org.apache.tuscany.idl.Interface;
 import org.apache.tuscany.idl.java.JavaFactory;
 import org.apache.tuscany.idl.java.JavaInterface;
 import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.idl.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.processor.HeuristicConstructorTestCase.Foo1;
 
 /**
  * @version $Rev$ $Date$

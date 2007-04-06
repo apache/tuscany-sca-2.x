@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.processor;
+package org.apache.tuscany.implementation.java.processor;
 
-import static org.apache.tuscany.core.implementation.processor.ModelHelper.getReference;
+import static org.apache.tuscany.implementation.java.processor.ModelHelper.getReference;
 
 import java.util.Collection;
 import java.util.List;

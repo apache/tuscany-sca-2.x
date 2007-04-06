@@ -6,61 +6,58 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.core.implementation.processor;
-
-import static org.apache.tuscany.core.implementation.processor.ModelHelper.getProperty;
+package org.apache.tuscany.implementation.java.processor;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
 
+import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspection.DuplicatePropertyException;
+import org.apache.tuscany.implementation.java.processor.DuplicateResourceException;
 import org.apache.tuscany.implementation.java.processor.InvalidConstructorException;
-import org.apache.tuscany.implementation.java.processor.InvalidPropertyException;
-import org.osoa.sca.annotations.Property;
+import org.apache.tuscany.implementation.java.processor.InvalidResourceException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ConstructorPropertyTestCase extends AbstractProcessorTest {
+public class ConstructorResourceTestCase extends AbstractProcessorTest {
 
-    public void testProperty() throws Exception {
+    public void testResource() throws Exception {
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
-        org.apache.tuscany.assembly.Property property = getProperty(type, "myProp");
-        assertTrue(property.isMustSupply());
-        assertEquals("myProp", property.getName());
+        org.apache.tuscany.implementation.java.impl.Resource resource = type.getResources().get("myResource");
+        assertFalse(resource.isOptional());
     }
 
-    public void testTwoPropertiesSameType() throws Exception {
+    public void testTwoResourcesSameType() throws Exception {
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
         visitConstructor(ctor, type);
-        assertNotNull(getProperty(type, "myProp1"));
-        assertNotNull(getProperty(type, "myProp2"));
+        assertNotNull(type.getResources().get("myResource1"));
+        assertNotNull(type.getResources().get("myResource2"));
     }
 
-    public void testDuplicateProperty() throws Exception {
+    public void testDuplicateResource() throws Exception {
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
         try {
             visitConstructor(ctor, type);
             fail();
-        } catch (DuplicatePropertyException e) {
+        } catch (DuplicateResourceException e) {
             // expected
         }
     }
@@ -68,11 +65,12 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     public void testNoName() throws Exception {
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
-        Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class);
+        Constructor<ConstructorResourceTestCase.BadFoo> ctor =
+            ConstructorResourceTestCase.BadFoo.class.getConstructor(String.class);
         try {
             visitConstructor(ctor, type);
             fail();
-        } catch (InvalidPropertyException e) {
+        } catch (InvalidResourceException e) {
             // expected
         }
     }
@@ -82,13 +80,14 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
             new JavaImplementationDefinition();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
         visitConstructor(ctor, type);
-        assertNotNull(getProperty(type, "myProp"));
+        assertNotNull(type.getResources().get("myResource"));
     }
 
     public void testInvalidNumberOfNames() throws Exception {
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
-        Constructor<BadFoo> ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
+        Constructor<ConstructorResourceTestCase.BadFoo> ctor =
+            ConstructorResourceTestCase.BadFoo.class.getConstructor(Integer.class, Integer.class);
         try {
             visitConstructor(ctor, type);
             fail();
@@ -100,7 +99,8 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     public void testNoMatchingNames() throws Exception {
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
-        Constructor<BadFoo> ctor = BadFoo.class.getConstructor(List.class, List.class);
+        Constructor<ConstructorResourceTestCase.BadFoo> ctor =
+            ConstructorResourceTestCase.BadFoo.class.getConstructor(List.class, List.class);
         try {
             visitConstructor(ctor, type);
             fail();
@@ -109,52 +109,48 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
         }
     }
 
-//    public void testMultiplicityRequired() throws Exception {
-    // TODO multiplicity
-//    }
-
     private static class Foo {
 
-        @org.osoa.sca.annotations.Constructor()
-        public Foo(@Property(name = "myProp", required = true)String prop) {
+        @org.osoa.sca.annotations.Constructor
+        public Foo(@Resource(name = "myResource") String resource) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor("myProp")
-        public Foo(@Property Integer prop) {
+        @org.osoa.sca.annotations.Constructor("myResource")
+        public Foo(@Resource Integer resource) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
-        public Foo(@Property(name = "myProp1")String prop1, @Property(name = "myProp2")String prop2) {
+        @org.osoa.sca.annotations.Constructor
+        public Foo(@Resource(name = "myResource1") String res1, @Resource(name = "myResource2") String res2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
-        public Foo(@Property List prop) {
+        @org.osoa.sca.annotations.Constructor
+        public Foo(@Resource List res) {
 
         }
     }
 
     private static class BadFoo {
 
-        @org.osoa.sca.annotations.Constructor()
-        public BadFoo(@Property(name = "myProp")String prop1, @Property(name = "myProp")String prop2) {
+        @org.osoa.sca.annotations.Constructor
+        public BadFoo(@Resource(name = "myResource") String res1, @Resource(name = "myResource") String res2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
-        public BadFoo(@Property String prop) {
+        @org.osoa.sca.annotations.Constructor
+        public BadFoo(@Resource String res) {
 
         }
 
         @org.osoa.sca.annotations.Constructor("myProp")
-        public BadFoo(@Property Integer prop, @Property Integer prop2) {
+        public BadFoo(@Resource Integer res, @Resource Integer res2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor({"myRef", "myRef2"})
-        public BadFoo(@Property List ref, @Property(name = "myOtherRef")List ref2) {
+        @org.osoa.sca.annotations.Constructor({"myRes", "myRes2"})
+        public BadFoo(@Resource List res, @Resource(name = "myOtherRes") List res2) {
 
         }
 

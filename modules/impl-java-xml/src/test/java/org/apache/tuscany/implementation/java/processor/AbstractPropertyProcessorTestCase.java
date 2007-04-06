@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.processor;
+package org.apache.tuscany.implementation.java.processor;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static org.apache.tuscany.core.implementation.processor.ModelHelper.getProperty;
+import static org.apache.tuscany.implementation.java.processor.ModelHelper.getProperty;
 
 import java.lang.annotation.Retention;
 import java.lang.reflect.Constructor;
