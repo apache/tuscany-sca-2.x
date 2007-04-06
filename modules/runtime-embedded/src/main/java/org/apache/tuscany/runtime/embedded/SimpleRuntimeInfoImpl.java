@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.apache.tuscany.core.util.FileHelper;
 import org.apache.tuscany.host.AbstractRuntimeInfo;
+import org.apache.tuscany.services.contribution.util.FileHelper;
 
 /**
  * @version $Rev$ $Date$

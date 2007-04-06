@@ -35,8 +35,6 @@ import org.apache.tuscany.idl.impl.DataTypeImpl;
 import org.apache.tuscany.idl.impl.OperationImpl;
 import org.apache.tuscany.idl.java.JavaInterface;
 import org.apache.tuscany.idl.java.impl.JavaInterfaceImpl;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -410,10 +408,6 @@ public class ContractCompatibilityTestCase extends TestCase {
         }
 
         public Object createCallbackProxy(Class<?> interfaze) throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public void createWires(ReferenceBinding referenceBinding, Contract contract, QualifiedName targetName) {
             throw new UnsupportedOperationException();
         }
 

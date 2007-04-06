@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.deployer;
 
 import java.util.Collection;
 
+import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
@@ -44,6 +45,6 @@ public interface Deployer {
      *            assembly
      * @return the newly deployed component
      */
-    Collection<Component> deploy(Component parent, org.apache.tuscany.assembly.Component componentDefinition)
+    Collection<Component> deploy(Component parent, Composite composite)
         throws BuilderException, ComponentException, ResolutionException;
 }

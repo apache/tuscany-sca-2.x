@@ -20,13 +20,39 @@ package org.apache.tuscany.runtime.embedded;
 
 import static org.apache.tuscany.runtime.embedded.SimpleRuntimeInfo.DEFAULT_COMPOSITE;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 
-import org.apache.tuscany.api.annotation.LogLevel;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
+import org.apache.tuscany.assembly.xml.impl.CompositeDocumentProcessor;
+import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
+import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
+import org.apache.tuscany.core.bootstrap.ExtensionRegistry;
+import org.apache.tuscany.core.bootstrap.ExtensionRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
-import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.host.runtime.InitializationException;
+import org.apache.tuscany.services.contribution.ContributionPackageProcessorRegistryImpl;
+import org.apache.tuscany.services.contribution.ContributionRepositoryImpl;
+import org.apache.tuscany.services.contribution.ContributionServiceImpl;
+import org.apache.tuscany.services.contribution.PackageTypeDescriberImpl;
+import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.services.contribution.model.DeployedArtifact;
+import org.apache.tuscany.services.contribution.processor.FolderContributionProcessor;
+import org.apache.tuscany.services.contribution.processor.JarContributionProcessor;
+import org.apache.tuscany.services.contribution.util.FileHelper;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.ContributionRepository;
+import org.apache.tuscany.services.spi.contribution.ContributionService;
+import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.URLArtifactProcessorRegistry;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -34,9 +60,6 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeImplementation;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $Rev$ $Date$
@@ -53,33 +76,78 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         setRuntimeInfo(runtimeInfo);
     }
 
-    public interface SimpleMonitor {
-        @LogLevel("SEVERE")
-        void runError(Exception e);
+    public void initialize() throws InitializationException {
+    }
+
+    private static URL getContributionLocation(URL applicationSCDL, String compositePath) {
+        URL root = null;
+        // "jar:file://....../something.jar!/a/b/c/app.composite"
+        try {
+            String scdlUrl = applicationSCDL.toExternalForm();
+            String protocol = applicationSCDL.getProtocol();
+            if ("file".equals(protocol)) {
+                // directory contribution
+                if (scdlUrl.endsWith(compositePath)) {
+                    String location = scdlUrl.substring(0, scdlUrl.lastIndexOf(compositePath));
+                    // workaround from evil url/uri form maven
+                    root = FileHelper.toFile(new URL(location)).toURI().toURL();
+                }
+
+            } else if ("jar".equals(protocol)) {
+                // jar contribution
+                String location = scdlUrl.substring(4, scdlUrl.lastIndexOf("!/"));
+                // workaround from evil url/uri form maven
+                root = FileHelper.toFile(new URL(location)).toURI().toURL();
+            }
+        } catch (MalformedURLException mfe) {
+            throw new IllegalArgumentException(mfe);
+        }
+
+        return root;
     }
 
     @SuppressWarnings("unchecked")
     public Component start() throws Exception {
-        
-        initialize();
+        ExtensionRegistry extensionRegistry = new ExtensionRegistryImpl();
+        ContributionRepository repository = new ContributionRepositoryImpl("target");
+        DefaultStAXArtifactProcessorRegistry registry = new DefaultStAXArtifactProcessorRegistry();
+        registry.addArtifactProcessor(new CompositeProcessor(registry));
+        registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
+        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
+
+        extensionRegistry.addExtension(StAXArtifactProcessorRegistry.class, registry);
+
+        DefaultURLArtifactProcessorRegistry registry2 = new DefaultURLArtifactProcessorRegistry();
+        CompositeDocumentProcessor compositeProcessor = new CompositeDocumentProcessor(registry);
+
+        registry2.addArtifactProcessor(compositeProcessor);
+
+        PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
+        ContributionPackageProcessorRegistry pkgRegistry = new ContributionPackageProcessorRegistryImpl(describer);
+        new JarContributionProcessor(pkgRegistry);
+        new FolderContributionProcessor(pkgRegistry);
+
+        ArtifactResolverRegistry resolverRegistry = null;
+
+        ContributionService contributionService = new ContributionServiceImpl(repository, pkgRegistry, registry2,
+                                                                              resolverRegistry);
+
+        extensionRegistry.addExtension(ContributionService.class, contributionService);
+        initialize(extensionRegistry, contributionService);
 
         ScopeRegistry scopeRegistry = getScopeRegistry();
         container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
 
-        // int i = 0;
-        // for (URL ext : runtimeInfo.getExtensionSCDLs()) {
-        // URI uri = URI.create("/extensions/extension" + (i++));
-        // deployExtension(null, uri, ext, runtimeInfo.getClassLoader());
-        // }
+        URI uri = URI.create("sca://default/");
+        URL root = getContributionLocation(getApplicationScdl(), runtimeInfo.getCompositePath());
+        contributionService.contribute(uri, root, false);
+        Contribution contribution = contributionService.getContribution(uri);
 
-        CompositeImplementation impl = new CompositeImplementation();
-        impl.setScdlLocation(getApplicationScdl());
-        impl.setClassLoader(runtimeInfo.getClassLoader());
+        // FIXME: Need to getDeployables() as list of Composites
+        DeployedArtifact artifact = contribution.getArtifact(URI.create(uri + runtimeInfo.getCompositePath()));
+        Composite composite = (Composite)artifact.getModelObjects(Composite.class).get(0);
 
-        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(
-                                                                                                                   DEFAULT_COMPOSITE,
-                                                                                                                   impl);
-        Collection<Component> components = getDeployer().deploy(null, definition);
+        Collection<Component> components = getDeployer().deploy(null, composite);
         for (Component component : components) {
             component.start();
         }
@@ -88,7 +156,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         WorkContext workContext = new SimpleWorkContext();
         workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
         PojoWorkContextTunnel.setThreadWorkContext(workContext);
-        return getComponentManager().getComponent(definition.getUri());
+        return getComponentManager().getComponent(URI.create(composite.getName().getLocalPart()));
     }
 
     @SuppressWarnings("deprecation")

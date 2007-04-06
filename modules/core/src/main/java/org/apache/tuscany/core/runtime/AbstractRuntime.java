@@ -39,21 +39,17 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.bootstrap.ExtensionActivator;
 import org.apache.tuscany.core.bootstrap.ExtensionRegistry;
-import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.bootstrap.ExtensionRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.core.resolver.AutowireResolver;
-import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
 import org.apache.tuscany.core.services.classloading.ClassLoaderRegistryImpl;
 import org.apache.tuscany.core.util.IOHelper;
-import org.apache.tuscany.core.wire.IDLMappingService;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
@@ -62,7 +58,7 @@ import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.idl.java.JavaInterface;
 import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
-import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.services.spi.contribution.ContributionService;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
@@ -82,8 +78,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     private static final URI MONITOR_URI = TUSCANY_SYSTEM_ROOT.resolve("MonitorFactory");
 
     private static final URI COMPONENT_MGR_URI = TUSCANY_SYSTEM_ROOT.resolve("ComponentManager");
-
-    private static final URI AUTOWIRE_RESOLVER_URI = TUSCANY_SYSTEM_ROOT.resolve("AutowireResolver");
 
     private static final URI SCOPE_REGISTRY_URI = TUSCANY_SYSTEM_ROOT.resolve("ScopeRegistry");
 
@@ -127,10 +121,10 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
      */
     protected ClassLoaderRegistry classLoaderRegistry;
 
-    protected AutowireResolver resolver;
-
     protected Component systemComponent;
     protected Component tuscanySystem;
+
+    protected ContributionService contributionService;
 
     protected ScopeRegistry scopeRegistry;
     protected Collection<ExtensionActivator> activators;
@@ -203,21 +197,25 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         this.managementService = managementService;
     }
 
-    public void initialize() throws InitializationException {
-        // URI name = TUSCANY_SYSTEM_ROOT.resolve("main");
+    public void initialize(ExtensionRegistry extensionRegistry, ContributionService contributionService)
+        throws InitializationException {
+        this.contributionService = contributionService;
+        this.extensionRegistry = extensionRegistry;
+
         Bootstrapper bootstrapper = createBootstrapper();
-        Deployer deployer = bootstrapper.createDeployer();
-        this.extensionRegistry = bootstrapper.getExtensionRegistry();
-        
+
+        Deployer deployer = bootstrapper.createDeployer(extensionRegistry);
+
+        extensionRegistry.addExtension(ContributionService.class, contributionService);
+
         registerSystemComponent(TUSCANY_DEPLOYER, Deployer.class, deployer);
         registerSystemComponent(WORK_CONTEXT_URI, WorkContext.class, new SimpleWorkContext());
 
         this.scopeRegistry = bootstrapper.getScopeRegistry();
 
         activators = getInstances(getHostClassLoader(), ExtensionActivator.class);
-        ExtensionRegistry registry = bootstrapper.getExtensionRegistry();
         for (ExtensionActivator activator : activators) {
-            activator.start(registry);
+            activator.start(extensionRegistry);
         }
 
         registerBaselineSystemComponents();
@@ -244,10 +242,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     protected Bootstrapper createBootstrapper() {
         TuscanyManagementService tms = (TuscanyManagementService)getManagementService();
-        resolver = new DefaultAutowireResolver(new IDLMappingService());
-        componentManager = new ComponentManagerImpl(tms, resolver);
-        Connector connector = new ConnectorImpl(componentManager);
-        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, resolver, connector);
+        componentManager = new ComponentManagerImpl(tms);
+        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager);
     }
 
     protected void registerBaselineSystemComponents() throws InitializationException {
@@ -265,9 +261,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
         // register the ComponentManager to that the fabric can wire to it
         registerSystemComponent(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
-
-        // register the AutowireResolver
-        registerSystemComponent(AUTOWIRE_RESOLVER_URI, AutowireResolver.class, resolver);
 
         // register the ScopeRegistry
         registerSystemComponent(SCOPE_REGISTRY_URI, ScopeRegistry.class, scopeRegistry);
@@ -390,5 +383,12 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
             throw new IllegalStateException(e);
         }
         return instances;
+    }
+
+    /**
+     * @return the contributionService
+     */
+    public ContributionService getContributionService() {
+        return contributionService;
     }
 }

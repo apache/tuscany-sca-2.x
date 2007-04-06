@@ -44,15 +44,15 @@ public class JAXWSJavaInterfaceProcessor extends JavaInterfaceProcessorExtension
         super();
     }
 
-    public void visitInterface(Class<?> clazz, Class<?> callbackClass, JavaServiceContract contract)
+    public void visitInterface(Class<?> clazz, Class<?> callbackClass, Contract contract)
         throws InvalidServiceContractException {
         if (!contract.isRemotable()) {
             return;
         }
-        Map<String, Operation<Type>> operations = contract.getOperations();
+        Map<String, Operation> operations = contract.getOperations();
         processInterface(clazz, contract, operations);
         if (callbackClass != null) {
-            Map<String, Operation<Type>> callbackOperations = contract.getCallbackOperations();
+            Map<String, Operation> callbackOperations = contract.getCallbackOperations();
             processInterface(callbackClass, contract, callbackOperations);
         }
     }
@@ -61,7 +61,7 @@ public class JAXWSJavaInterfaceProcessor extends JavaInterfaceProcessorExtension
         return "".equals(value) ? defaultValue : value;
     }
 
-    private void processInterface(Class<?> clazz, JavaServiceContract contract, Map<String, Operation<Type>> operations) {
+    private void processInterface(Class<?> clazz, Contract contract, Map<String, Operation> operations) {
 
         for (Method method : clazz.getMethods()) {
             Operation<?> operation = operations.get(method.getName());

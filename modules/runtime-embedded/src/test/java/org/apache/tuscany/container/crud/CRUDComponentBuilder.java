@@ -18,11 +18,13 @@
  */
 package org.apache.tuscany.container.crud;
 
+import java.net.URI;
+
+import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.ComponentDefinition;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -33,10 +35,9 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 public class CRUDComponentBuilder extends ComponentBuilderExtension<CRUDImplementation> {
 
     @SuppressWarnings("unchecked")
-    public AtomicComponent build(ComponentDefinition<CRUDImplementation> definition, DeploymentContext context)
-        throws BuilderConfigException {
-        CRUDAtomicComponent component = new CRUDAtomicComponent(definition.getUri(), context.getGroupId(), definition
-            .getImplementation().getDirectory());
+    public AtomicComponent build(Component definition, DeploymentContext context) throws BuilderConfigException {
+        CRUDAtomicComponent component = new CRUDAtomicComponent(URI.create(definition.getName()), context.getGroupId(),
+                                                                (CRUDImplementation)definition.getImplementation());
         return component;
     }
 

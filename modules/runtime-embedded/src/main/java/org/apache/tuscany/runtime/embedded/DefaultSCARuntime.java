@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.tuscany.api.SCARuntime;
-import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceUnavailableException;
@@ -49,7 +48,7 @@ public class DefaultSCARuntime extends SCARuntime {
 
         try {
             runtime.start();
-        } catch (TuscanyException e) {
+        } catch (Exception e) {
             throw e;
         }
 

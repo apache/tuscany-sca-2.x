@@ -26,13 +26,12 @@ import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 import org.osoa.sca.CallableReference;
@@ -45,18 +44,18 @@ import org.osoa.sca.ServiceReference;
  * @version $Rev$ $Date$
  */
 public class CRUDAtomicComponent extends AtomicComponentExtension implements ComponentContextProvider {
-    private String directory;
+    private CRUDImplementation impl;
     private ComponentContext componentContext;
 
-    public CRUDAtomicComponent(URI uri, URI groupId, String directory) {
+    public CRUDAtomicComponent(URI uri, URI groupId, CRUDImplementation impl) {
         super(uri, null, null, groupId, 50);
-        this.directory = directory;
+        this.impl = impl;
         componentContext = new ComponentContextImpl(this);
 
     }
 
     public Object createInstance() throws ObjectCreationException {
-        return new CRUDImpl(directory);
+        return new CRUDImpl(impl.getDirectory());
     }
 
     public InstanceWrapper createInstanceWrapper() throws ObjectCreationException {
@@ -64,7 +63,7 @@ public class CRUDAtomicComponent extends AtomicComponentExtension implements Com
     }
 
     public Object getTargetInstance() throws TargetResolutionException {
-        return new CRUDImpl(directory);
+        return new CRUDImpl(impl.getDirectory());
     }
 
     public void attachCallbackWire(Wire arg0) {
@@ -80,15 +79,10 @@ public class CRUDAtomicComponent extends AtomicComponentExtension implements Com
         return null;
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, final Operation operation)
+    public TargetInvoker createTargetInvoker(String targetName, final Operation operation, boolean callback)
         throws TargetInvokerCreationException {
-        return new CRUDTargetInvoker(operation, directory);
+        return new CRUDTargetInvoker(operation, impl.getDirectory());
 
-    }
-
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition arg1)
-        throws TargetInvokerCreationException {
-        return null;
     }
 
     @Override
