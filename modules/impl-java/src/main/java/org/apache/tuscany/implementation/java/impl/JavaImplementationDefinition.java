@@ -31,17 +31,22 @@ import java.util.Map;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class JavaImplementationDefinition {
-    private Class<?> implClass;
+public class JavaImplementationDefinition extends JavaImplementationImpl {
     private ConstructorDefinition<?> constructorDefinition;
     private Map<Constructor, ConstructorDefinition> constructors = new HashMap<Constructor, ConstructorDefinition>();
     private Method initMethod;
     private Method destroyMethod;
     private final Map<String, Resource> resources = new HashMap<String, Resource>();
+    private final Map<String, JavaElement> propertyMembers = new HashMap<String, JavaElement>();
+    private final Map<String, JavaElement> referenceMembers = new HashMap<String, JavaElement>();
+    private final Map<String, JavaElement> callbackMembers = new HashMap<String, JavaElement>();
     private Member conversationIDMember;
-    
+    private boolean eagerInit;
     private boolean allowsPassByReference;
     private List<Method> allowsPassByReferenceMethods = new ArrayList<Method>();
+    private long maxAge = -1;
+    private long maxIdleTime = -1;
+    private Scope scope = Scope.STATELESS;
 
     /**
      * Constructor specifying the java class for the POJO this is describing.
@@ -49,26 +54,13 @@ public class JavaImplementationDefinition {
      * @param implClass the java class for the POJO this is describing
      */
     public JavaImplementationDefinition(Class<?> implClass) {
-        this.implClass = implClass;
+        super();
+        setJavaClass(implClass);
     }
-
-    /**
-     * Returns the java class for the POJO this is describing.
-     *
-     * @return the java class for the POJO this is describing
-     */
-    public Class<?> getImplClass() {
-        return implClass;
-    }
-
-    /**
-     * Sets the java class for the POJO this is describing.
-     *
-     * @param implClass the java class for the POJO this is describing
-     */
-    public void setImplClass(Class<?> implClass) {
-        this.implClass = implClass;
-    }
+    
+    public JavaImplementationDefinition() {
+        super();
+    }    
 
     /**
      * Returns the constructor used to instantiate implementation instances.
@@ -170,5 +162,82 @@ public class JavaImplementationDefinition {
      */
     public Map<Constructor, ConstructorDefinition> getConstructors() {
         return constructors;
+    }
+
+    /**
+     * @return the eagerInit
+     */
+    public boolean isEagerInit() {
+        return eagerInit;
+    }
+
+    /**
+     * @param eagerInit the eagerInit to set
+     */
+    public void setEagerInit(boolean eagerInit) {
+        this.eagerInit = eagerInit;
+    }
+
+    /**
+     * @return the callbacks
+     */
+    public Map<String, JavaElement> getCallbackMembers() {
+        return callbackMembers;
+    }
+
+    /**
+     * @return the properties
+     */
+    public Map<String, JavaElement> getPropertyMembers() {
+        return propertyMembers;
+    }
+
+    /**
+     * @return the references
+     */
+    public Map<String, JavaElement> getReferenceMembers() {
+        return referenceMembers;
+    }
+
+    /**
+     * @return the scope
+     */
+    public Scope getScope() {
+        return scope;
+    }
+
+    /**
+     * @param scope the scope to set
+     */
+    public void setScope(Scope scope) {
+        this.scope = scope;
+    }
+
+    /**
+     * @return the maxAge
+     */
+    public long getMaxAge() {
+        return maxAge;
+    }
+
+    /**
+     * @param maxAge the maxAge to set
+     */
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
+    }
+
+    /**
+     * @return the maxIdleTime
+     */
+    public long getMaxIdleTime() {
+        return maxIdleTime;
+    }
+
+    /**
+     * @param maxIdleTime the maxIdleTime to set
+     */
+    public void setMaxIdleTime(long maxIdleTime) {
+        this.maxIdleTime = maxIdleTime;
     }
 }

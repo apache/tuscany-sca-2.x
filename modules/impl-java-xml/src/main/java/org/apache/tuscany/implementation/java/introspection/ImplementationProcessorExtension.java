@@ -22,6 +22,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.idl.java.introspection.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
@@ -38,15 +40,22 @@ import org.osoa.sca.annotations.Reference;
  */
 @EagerInit
 public abstract class ImplementationProcessorExtension implements ImplementationProcessor {
+    protected AssemblyFactory factory;
     protected IntrospectionRegistry registry;
     protected JavaInterfaceProcessorRegistry interfaceProcessorRegistry;
 
+    public ImplementationProcessorExtension() {
+        super();
+        this.factory = new DefaultAssemblyFactory();
+    }
+    
     /**
      * @param registry
      */
     public ImplementationProcessorExtension(IntrospectionRegistry registry) {
         super();
         this.registry = registry;
+        this.factory = new DefaultAssemblyFactory();
     }
 
     @Reference

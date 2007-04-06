@@ -52,6 +52,9 @@ public class JavaImplementationImpl extends ComponentTypeImpl implements JavaImp
 
     public void setJavaClass(Class<?> javaClass) {
         this.javaClass = javaClass;
+        if (this.className == null) {
+            this.className = javaClass.getName();
+        }
     }
 
     @Override

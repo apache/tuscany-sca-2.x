@@ -16,45 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspection;
+package org.apache.tuscany.implementation.java.processor;
 
-import java.lang.reflect.Member;
+import org.apache.tuscany.implementation.java.introspection.ProcessingException;
 
 /**
- * Denotes a problem processing annotations on a POJO implementation
- * 
+ * Thrown when a service type specified by an {@link org.osoa.sca.annotations.Service} annotation is invalid, e.g. it is
+ * not an interface
+ *
  * @version $Rev$ $Date$
  */
-public class ProcessingException extends Exception {
-    private static final long serialVersionUID = -361025119035104470L;
-    private Member member;
+public class InvalidServiceType extends ProcessingException {
+    private static final long serialVersionUID = -1076466639416644386L;
+    private Class<?> serviceType;
 
-    public ProcessingException() {
-    }
-
-    public ProcessingException(String message) {
+    public InvalidServiceType(String message) {
         super(message);
     }
-
-    public ProcessingException(String message, Member member) {
+    
+    public InvalidServiceType(String message, Class<?> clazz) {
         super(message);
-        this.member = member;
+        this.serviceType = clazz;
     }
 
-    public ProcessingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ProcessingException(Throwable cause) {
-        super(cause);
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
+    /**
+     * @return the serviceType
+     */
+    public Class<?> getServiceType() {
+        return serviceType;
+    }    
 }

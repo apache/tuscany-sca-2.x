@@ -6,55 +6,35 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.implementation.java.introspection;
+package org.apache.tuscany.implementation.java.processor;
 
 import java.lang.reflect.Member;
 
+import org.apache.tuscany.implementation.java.introspection.ProcessingException;
+
 /**
- * Denotes a problem processing annotations on a POJO implementation
- * 
+ * Denotes an invalid usage of {@link @org.apache.tuscany.api.annotation.Resource}
+ *
  * @version $Rev$ $Date$
  */
-public class ProcessingException extends Exception {
-    private static final long serialVersionUID = -361025119035104470L;
-    private Member member;
+public class InvalidResourceException extends ProcessingException {
+    private static final long serialVersionUID = 511728001735534934L;
 
-    public ProcessingException() {
-    }
-
-    public ProcessingException(String message) {
+    public InvalidResourceException(String message) {
         super(message);
     }
-
-    public ProcessingException(String message, Member member) {
-        super(message);
-        this.member = member;
-    }
-
-    public ProcessingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ProcessingException(Throwable cause) {
-        super(cause);
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
+    
+    public InvalidResourceException(String message, Member member) {
+        super(message, member);
+    }    
 }
