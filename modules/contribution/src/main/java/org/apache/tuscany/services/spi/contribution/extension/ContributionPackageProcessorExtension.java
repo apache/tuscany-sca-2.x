@@ -19,33 +19,43 @@
 
 package org.apache.tuscany.services.spi.contribution.extension;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 
 /**
  * The base class for ContributionPackageProcessor implementations
- *
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class ContributionPackageProcessorExtension implements ContributionPackageProcessor {
     /**
-     * The ContributionProcessorRegistry that this processor should register with; usually set by injection. This
-     * registry may also be used to process other sub-artifacts.
+     * The ContributionProcessorRegistry that this processor should register
+     * with; usually set by injection. This registry may also be used to process
+     * other sub-artifacts.
      */
     protected final ContributionPackageProcessorRegistry registry;
 
     /**
      * @param registry the registry to set
      */
-    public ContributionPackageProcessorExtension(ContributionPackageProcessorRegistry registry){
+    public ContributionPackageProcessorExtension(ContributionPackageProcessorRegistry registry) {
         this.registry = registry;
         this.registry.register(this.getPackageType(), this);
     }
-    
+
+    public URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException {
+        return new URL(packageSourceURL, artifact.toString());
+    }
+
     /**
-     * Returns the type of package handled by this package processor. 
+     * Returns the type of package handled by this package processor.
+     * 
      * @return the type of package handled by this package processor
-     */    
+     */
     public abstract String getPackageType();
 
 }
