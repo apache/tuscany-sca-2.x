@@ -63,7 +63,7 @@ public class TestRuntimeContext {
             
             // Resolve and configure the composite
             compositeProcessor.resolve(composite, resolver);
-            compositeProcessor.optimize(composite);
+            compositeProcessor.wire(composite);
     
             // Create a Spring application composite context for the composite
             applicationContext = new CompositeApplicationContext(composite);

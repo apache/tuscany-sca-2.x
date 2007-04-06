@@ -25,15 +25,23 @@ package org.apache.tuscany.services.spi.contribution;
  * 
  * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
-public interface ArtifactProcessor <S, M, T> {
+public interface ArtifactProcessor <I, O, M, T> {
     
     /**
-     * Read a model from a source. Examples of sources are: an inputstream, an
-     * XML reader, or an object representation of the source.
+     * Reads a model from an input source. Examples of input sources are: a URI, a
+     * DOM node, an XML reader.
+     * @param source
+     * @return a model representation of the input.
+     */
+    M read(I inputSource) throws ContributionReadException;
+    
+    /**
+     * Writes a model to an ouput source. Examples of output sources are: a URI, a
+     * DOM node, an XML writer.
      * @param source
      * @return a model representation of the source.
      */
-    M read(S source) throws ContributionReadException;
+    void write(M model, O outputSource) throws ContributionWriteException;
     
     /**
      * Resolve references from this model to other models. For example references
@@ -42,15 +50,15 @@ public interface ArtifactProcessor <S, M, T> {
      * @param model the model to resolve
      * @param the resolver to use to resolve referenced models
      */
-    void resolve(M model, ArtifactResolver resolver) throws ContributionException;
+    void resolve(M model, ArtifactResolver resolver) throws ContributionResolveException;
     
     /**
-     * Optimize a model for consumption by the runtime. This can include applying policies at different
-     * levels, or determining the configuration of services, references and properties in nested compositions
-     * for example.
+     * Wire and optimize a model for consumption by an SCA runtime. In addition to wiring references
+     * to services, this can include applying policies at different levels, or determining the configuration
+     * of services, references and properties in nested compositions for example.
      * @param model the model to optimize
      */
-    void optimize(M model) throws ContributionException;
+    void wire(M model) throws ContributionWireException;
     
     /**
      * Returns the type of artifact handled by this artifact processor. 

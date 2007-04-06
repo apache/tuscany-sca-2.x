@@ -33,8 +33,10 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
 
@@ -91,12 +93,15 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
         }
     }
     
-    public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionException {
+    public void write(ComponentType model, URL outputSource) throws ContributionWriteException {
+    }
+    
+    public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {
         registry.resolve(componentType, resolver);
     }
     
-    public void optimize(ComponentType componentType) throws ContributionException {
-        registry.optimize(componentType);
+    public void wire(ComponentType componentType) throws ContributionWireException {
+        registry.wire(componentType);
     }
     
     public String getArtifactType() {

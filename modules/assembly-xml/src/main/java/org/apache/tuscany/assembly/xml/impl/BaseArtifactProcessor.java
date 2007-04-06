@@ -34,6 +34,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AbstractContract;
 import org.apache.tuscany.assembly.AbstractProperty;
@@ -54,7 +55,6 @@ import org.apache.tuscany.policy.PolicySet;
 import org.apache.tuscany.policy.PolicySetAttachPoint;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -397,7 +397,7 @@ abstract class BaseArtifactProcessor implements Constants {
         // root element has no namespace and local name "value"
         Element root = doc.createElementNS(null, "value");
         if (type != null) {
-            Attr xsi = doc.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
+            org.w3c.dom.Attr xsi = doc.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
             xsi.setValue(W3C_XML_SCHEMA_INSTANCE_NS_URI);
             root.setAttributeNodeNS(xsi);
 
@@ -408,7 +408,7 @@ abstract class BaseArtifactProcessor implements Constants {
 
             DOMUtil.declareNamespace(root, prefix, type.getNamespaceURI());
 
-            Attr xsiType = doc.createAttributeNS(W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:type");
+            org.w3c.dom.Attr xsiType = doc.createAttributeNS(W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:type");
             xsiType.setValue(prefix + ":" + type.getLocalPart());
             root.setAttributeNodeNS(xsiType);
         }
@@ -418,5 +418,66 @@ abstract class BaseArtifactProcessor implements Constants {
         return doc;
     }
 
+    /**
+     * Start an element.
+     * @param uri
+     * @param name
+     * @param attrs
+     * @throws XMLStreamException
+     */
+    protected void start(XMLStreamWriter writer, String uri, String name, Attr... attrs) throws XMLStreamException {
+        writer.writeStartElement(uri, name);
+        writeAttributes(writer, attrs);
+    }
 
+    /**
+     * Start an element.
+     * @param writer
+     * @param name
+     * @param attrs
+     * @throws XMLStreamException
+     */
+    protected void start(XMLStreamWriter writer, String name, Attr... attrs) throws XMLStreamException {
+        writer.writeStartElement(SCA10_NS, name);
+        writeAttributes(writer, attrs);
+    }
+
+    /**
+     * End an element. 
+     * @param writer
+     * @throws XMLStreamException
+     */
+    protected void end(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeEndElement();
+    }
+
+    /**
+     * Write attributes to the current element.
+     * @param writer
+     * @param attrs
+     * @throws XMLStreamException
+     */
+    protected void writeAttributes(XMLStreamWriter writer, Attr... attrs) throws XMLStreamException {
+        for (Attr attr : attrs) {
+            if (attr != null)
+                attr.write(writer);
+        }
+    }
+
+    /**
+     * Write an SCA abstract property declaration.
+     * @param writer
+     * @param prop
+     */
+    protected void writeAbstractProperty(XMLStreamWriter writer, AbstractProperty prop) throws XMLStreamException {
+    }
+
+    /**
+     * Write an SCA property declaration.
+     * @param writer
+     * @param prop
+     */
+    protected void writeProperty(XMLStreamWriter writer, Property prop) throws XMLStreamException {
+        writeAbstractProperty(writer, prop);
+    }
 }

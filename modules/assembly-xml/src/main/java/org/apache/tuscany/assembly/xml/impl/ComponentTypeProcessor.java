@@ -25,6 +25,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Binding;
@@ -42,8 +43,10 @@ import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
@@ -201,15 +204,20 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         }
         return componentType;
     }
+
+    public void write(ComponentType model, XMLStreamWriter outputSource) throws ContributionWriteException {
+        // TODO Auto-generated method stub
+        
+    }
     
-    public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionException {
+    public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Resolve componen type services and references
         resolveContract(componentType.getServices(), resolver);
         resolveContract(componentType.getReferences(), resolver);
     }
     
-    public void optimize(ComponentType model) throws ContributionException {
+    public void wire(ComponentType model) throws ContributionWireException {
         //TODO optimize the model 
     }
     

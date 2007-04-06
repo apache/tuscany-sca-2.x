@@ -73,7 +73,7 @@ public class OptimizeTestCase extends TestCase {
         assertNotNull(composite);
         
         compositeReader.resolve(composite, resolver);
-        compositeReader.optimize(composite);
+        compositeReader.wire(composite);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
@@ -97,7 +97,7 @@ public class OptimizeTestCase extends TestCase {
         is.close();
         
         compositeReader.resolve(composite, resolver);
-        compositeReader.optimize(composite);
+        compositeReader.wire(composite);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }

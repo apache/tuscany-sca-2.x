@@ -19,18 +19,24 @@
 package org.apache.tuscany.services.spi.contribution;
 
 
-
 /**
- * A registry for artifact processors.
- * 
+ * Denotes a problem while resolving models inside an SCA contribution.
+ *
  * @version $Rev$ $Date$
  */
-public interface ArtifactProcessorRegistry<I, O, M, T> extends ArtifactProcessor<I, O, M, T> {
-    
-    /**
-     * Add an artifact processor.
-     * @param artifactProcessor the artifact processor to add
-     */
-    void addArtifactProcessor(ArtifactProcessor<I, O, ?, T> artifactProcessor);
+public class ContributionResolveException extends ContributionException {
+    private static final long serialVersionUID = -7459051598906813461L;
 
+    public ContributionResolveException(String message) {
+        super(message);
+    }
+
+    public ContributionResolveException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ContributionResolveException(Throwable cause) {
+        super(cause);
+    }
+    
 }

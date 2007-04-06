@@ -26,5 +26,5 @@ import java.net.URL;
  * 
  * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
-public interface URLArtifactProcessor<M> extends ArtifactProcessor<URL, M, String> {
+public interface URLArtifactProcessor<M> extends ArtifactProcessor<URL, URL, M, String> {
 }

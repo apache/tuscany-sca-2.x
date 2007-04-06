@@ -24,13 +24,16 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.idl.java.JavaFactory;
 import org.apache.tuscany.idl.java.JavaInterface;
 import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterface>, JavaConstants {
@@ -67,11 +70,16 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         }
     }
     
-    public void resolve(JavaInterface model, ArtifactResolver resolver) throws ContributionException {
+    public void write(JavaInterface model, XMLStreamWriter outputSource) throws ContributionWriteException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public void resolve(JavaInterface model, ArtifactResolver resolver) throws ContributionResolveException {
         // TODO Auto-generated method stub
     }
     
-    public void optimize(JavaInterface model) throws ContributionException {
+    public void wire(JavaInterface model) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
     

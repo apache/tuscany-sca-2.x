@@ -20,8 +20,7 @@ package org.apache.tuscany.services.spi.contribution;
 
 
 /**
- * Base class for Exceptions raised during the loading process. Loader implementations should throw a subclass of this
- * to indicate the actual problem.
+ * Denotes an exception while reading artifacts inside an SCA contribution.
  *
  * @version $Rev$ $Date$
  */
@@ -45,35 +44,51 @@ public class ContributionReadException extends ContributionException {
     }
     
     /**
-     * Returns the location of the resource that was being loaded.
+     * Returns the location of the resource that was being read.
      *
-     * @return the location of the resource that was being loaded
+     * @return the location of the resource that was being read
      */
     public String getResourceURI() {
         return resourceURI;
     }
 
     /**
-     * Sets the location of the resource that was being loaded.
+     * Sets the location of the resource that was being read.
      *
-     * @param resourceURI the location of the resource that was being loaded
+     * @param resourceURI the location of the resource that was being read
      */
     public void setResourceURI(String resourceURI) {
         this.resourceURI = resourceURI;
     }
 
+    /**
+     * Returns the line inside the resource that was being read.
+     * @return the line inside the resource that was being read
+     */
     public int getLine() {
         return line;
     }
 
+    /**
+     * Sets the line inside the resource that was being read.
+     * @param line the line inside the resource that was being read
+     */
     public void setLine(int line) {
         this.line = line;
     }
 
+    /**
+     * Returns the column inside the resource that was being read.
+     * @return the column inside the resource that was being read
+     */
     public int getColumn() {
         return column;
     }
 
+    /**
+     * Sets the column inside the resource that was being read.
+     * @param column the column inside the resource that was being read
+     */
     public void setColumn(int column) {
         this.column = column;
     }
