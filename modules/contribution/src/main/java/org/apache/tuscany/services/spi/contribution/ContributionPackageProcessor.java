@@ -20,9 +20,8 @@ package org.apache.tuscany.services.spi.contribution;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-
-import org.apache.tuscany.services.contribution.model.Contribution;
+import java.net.URL;
+import java.util.List;
 
 /**
  * Interface for services that can process contributions.
@@ -30,20 +29,19 @@ import org.apache.tuscany.services.contribution.model.Contribution;
  * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
 public interface ContributionPackageProcessor {
+//    /**
+//     * Returns the type of package handled by this package processor. 
+//     * @return the type of package handled by this package processor
+//     */    
+//    String getPackageType();
+    
     /**
-     * Process a contribution from the input stream. 
-     * The processor will then scan each artifact and invoke 
-     * the respective artifactProcessor to handle the artifact
-     * 
-     * @param contribution The contribution model that will be used to hold the
-     *            results from the processing
-     * @param source The URI for the contribution/artifact
-     * @param inputStream The input stream for the contribution. The stream will
-     *            not be closed but the read position after the call is
-     *            undefined
-     * @throws DeploymentException if there was a problem with the contribution
-     * @throws IOException if there was a problem reading the stream
+     * Retrieve a list of artifacts for the specific package type
+     * @param packageSourceURL location of the artifact
+     * @param inputStream optional content of the package
+     * @return
+     * @throws ContributionException
+     * @throws IOException
      */
-    void processContent(Contribution contribution, URI source, InputStream inputStream) throws ContributionException,
-        IOException;
+    List<URL> getArtifacts(URL packageSourceURL,InputStream inputStream) throws ContributionException, IOException;
 }

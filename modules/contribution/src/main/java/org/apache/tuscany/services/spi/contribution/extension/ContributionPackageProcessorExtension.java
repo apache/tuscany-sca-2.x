@@ -32,34 +32,20 @@ public abstract class ContributionPackageProcessorExtension implements Contribut
      * The ContributionProcessorRegistry that this processor should register with; usually set by injection. This
      * registry may also be used to process other sub-artifacts.
      */
-    protected ContributionPackageProcessorRegistry registry;
+    protected final ContributionPackageProcessorRegistry registry;
 
     /**
      * @param registry the registry to set
      */
-    public void setContributionProcessorRegistry(ContributionPackageProcessorRegistry registry) {
+    public ContributionPackageProcessorExtension(ContributionPackageProcessorRegistry registry){
         this.registry = registry;
+        this.registry.register(this.getPackageType(), this);
     }
-
+    
     /**
-     * Initialize the processor. It registers itself to the registry by content type it supports.
-     */
-    public void start() {
-        registry.register(this.getContentType(), this);
-    }
-
-    /**
-     * Destroy the processor. It unregisters itself from the registry.
-     */
-    public void stop() {
-        registry.unregister(this.getContentType());
-    }
-
-    /**
-     * Returns the content type that this implementation can handle.
-     *
-     * @return the content type that this implementation can handle
-     */
-    public abstract String getContentType();
+     * Returns the type of package handled by this package processor. 
+     * @return the type of package handled by this package processor
+     */    
+    public abstract String getPackageType();
 
 }

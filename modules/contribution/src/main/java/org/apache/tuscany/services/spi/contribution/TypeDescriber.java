@@ -26,11 +26,11 @@ import java.net.URL;
  *
  * @version $Rev$ $Date$
  */
-public interface ContentTypeDescriber {
+public interface TypeDescriber {
     /**
-     * @param resourceURL        the resource url
-     * @param defaultContentType the default content type
+     * @param resourceURL the resource url
+     * @param defaultType the default content type
      * @return the content type
      */
-    String getContentType(URL resourceURL, String defaultContentType);
+    String getType(URL resourceURL, String defaultType);
 }
