@@ -75,6 +75,7 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
         try {
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
+            reader.nextTag();
             ConstrainingType constrainingType = (ConstrainingType)registry.read(reader);
             return constrainingType;
             
