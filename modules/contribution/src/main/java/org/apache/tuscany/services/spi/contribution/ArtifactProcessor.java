@@ -25,23 +25,7 @@ package org.apache.tuscany.services.spi.contribution;
  * 
  * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
  */
-public interface ArtifactProcessor <I, O, M, T> {
-    
-    /**
-     * Reads a model from an input source. Examples of input sources are: a URI, a
-     * DOM node, an XML reader.
-     * @param source
-     * @return a model representation of the input.
-     */
-    M read(I inputSource) throws ContributionReadException;
-    
-    /**
-     * Writes a model to an ouput source. Examples of output sources are: a URI, a
-     * DOM node, an XML writer.
-     * @param source
-     * @return a model representation of the source.
-     */
-    void write(M model, O outputSource) throws ContributionWriteException;
+public interface ArtifactProcessor <M> {
     
     /**
      * Resolve references from this model to other models. For example references
@@ -60,12 +44,6 @@ public interface ArtifactProcessor <I, O, M, T> {
      */
     void wire(M model) throws ContributionWireException;
     
-    /**
-     * Returns the type of artifact handled by this artifact processor. 
-     * @return the type of artifact handled by this artifact processor
-     */
-    T getArtifactType();
-
     /**
      * Returns the type of model handled by this artifact processor.
      * @return the type of model handled by this artifact processor

@@ -40,7 +40,7 @@ import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorR
  * 
  * @version $Rev$ $Date$
  */
-public class ReadAndResolveDocumentTestCase extends TestCase {
+public class ReadDocumentTestCase extends TestCase {
 
     private DefaultURLArtifactProcessorRegistry registry;
 

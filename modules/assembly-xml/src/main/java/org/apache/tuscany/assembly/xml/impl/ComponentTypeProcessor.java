@@ -204,14 +204,55 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         return componentType;
     }
 
-    public void write(ComponentType model, XMLStreamWriter outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
+    public void write(ComponentType componentType, XMLStreamWriter writer) throws ContributionWriteException {
         
+        try {
+            writeStartDocument(writer);
+            writer.setPrefix("sca", SCA10_NS);
+            
+            writeStart(writer, COMPONENT_TYPE,
+                       new Attr(Constants.CONSTRAINING_TYPE, getConstrainingTypeAttr(componentType)));
+            writer.writeDefaultNamespace(SCA10_NS);
+    
+            for (Service service : componentType.getServices()) {
+                writeStart(writer, SERVICE, new Attr(NAME, service.getName()));
+                if (service.getCallback() != null) {
+                    writeStart(writer, CALLBACK);
+                    writeEnd(writer);
+                }
+                writeEnd(writer);
+            }
+    
+            for (Reference reference : componentType.getReferences()) {
+                // TODO handle multivalued target attribute
+                String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
+                writeStart(writer, REFERENCE,
+                      new Attr(NAME, reference.getName()),
+                      new Attr(TARGET, target));
+                if (reference.getCallback() != null) {
+                    writeStart(writer, CALLBACK);
+                    writeEnd(writer);
+                }
+                writeEnd(writer);
+            }
+    
+            for (Property property : componentType.getProperties()) {
+                writeStart(writer, PROPERTY, new Attr(NAME, property.getName()));
+                writeEnd(writer);
+            }
+    
+            writeEnd(writer);
+            
+            writeEndDocument(writer);
+            
+        } catch (XMLStreamException e) {
+            throw new ContributionWriteException(e);
+        }
     }
     
     public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {
 
-        // Resolve componen type services and references
+        // Resolve component type services and references
         resolveContract(componentType.getServices(), resolver);
         resolveContract(componentType.getReferences(), resolver);
     }
