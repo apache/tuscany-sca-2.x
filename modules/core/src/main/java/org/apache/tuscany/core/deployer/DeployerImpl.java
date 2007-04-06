@@ -23,20 +23,18 @@ import java.util.Collection;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.core.resolver.AutowireResolver;
-import org.apache.tuscany.spi.Monitor;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -51,22 +49,15 @@ import org.osoa.sca.annotations.Reference;
 public class DeployerImpl implements Deployer {
     private XMLInputFactory xmlFactory;
     private Builder builder;
-    private ScopeContainerMonitor monitor;
-    private AutowireResolver resolver;
-    private Connector connector;
     private ComponentManager componentManager;
     private ScopeRegistry scopeRegistry;
 
     public DeployerImpl(XMLInputFactory xmlFactory,
                         Builder builder,
-                        ComponentManager componentManager,
-                        AutowireResolver resolver,
-                        Connector connector) {
+                        ComponentManager componentManager) {
         this.xmlFactory = xmlFactory;
         this.builder = builder;
         this.componentManager = componentManager;
-        this.resolver = resolver;
-        this.connector = connector;
     }
 
     public DeployerImpl() {
@@ -76,21 +67,6 @@ public class DeployerImpl implements Deployer {
     @Reference
     public void setBuilder(BuilderRegistry builder) {
         this.builder = builder;
-    }
-
-    @Monitor
-    public void setMonitor(ScopeContainerMonitor monitor) {
-        this.monitor = monitor;
-    }
-
-    @Reference
-    public void setResolver(AutowireResolver resolver) {
-        this.resolver = resolver;
-    }
-
-    @Reference
-    public void setConnector(Connector connector) {
-        this.connector = connector;
     }
 
     @Reference
@@ -103,26 +79,20 @@ public class DeployerImpl implements Deployer {
         this.scopeRegistry = scopeRegistry;
     }
 
-    public Collection<Component> deploy(Component parent, org.apache.tuscany.assembly.Component componentDef)
+    public Collection<Component> deploy(Component parent, Composite composite)
         throws BuilderException, ResolutionException {
         @SuppressWarnings("unchecked")
         ScopeContainer<URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
         URI groupId = parent != null ? parent.getUri() : URI.create("/");
         DeploymentContext deploymentContext = new RootDeploymentContext(null, null, groupId, xmlFactory,
                                                                         scopeContainer, false);
-        // load the model
-        // load(parent, componentDefinition, deploymentContext);
-        // resolve autowires
-        resolver.resolve(null, componentDef);
+        
+        org.apache.tuscany.assembly.Component componentDef = new DefaultAssemblyFactory().createComponent();
+        componentDef.setName(composite.getName().getLocalPart());
+        componentDef.setImplementation(composite);
+        
         // build runtime artifacts
         build(parent, componentDef, deploymentContext);
-        /*
-         * // create a listener so the scope container is shutdown when the
-         * top-level composite stops RuntimeEventListener listener = new
-         * RuntimeEventListener() { public void onEvent(Event event) {
-         * scopeContainer.onEvent(event); if (event instanceof ComponentStop) {
-         * scopeContainer.stop(); } } }; component.addListener(listener);
-         */
 
         Collection<Component> components = deploymentContext.getComponents().values();
         for (Component toRegister : components) {
@@ -132,7 +102,6 @@ public class DeployerImpl implements Deployer {
                 throw new BuilderInstantiationException("Error registering component", e);
             }
         }
-        connector.connect(groupId, componentDef);
         return components;
     }
 

@@ -18,42 +18,60 @@
  */
 package org.apache.tuscany.container.crud;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static org.osoa.sca.Constants.SCA_NS;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
-import static org.osoa.sca.Constants.SCA_NS;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
+import org.apache.tuscany.services.spi.contribution.ContributionException;
+import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderUtil;
-import org.apache.tuscany.spi.model.ModelObject;
-
-public class CRUDImplementationLoader extends LoaderExtension {
+public class CRUDImplementationLoader implements StAXArtifactProcessor<CRUDImplementation> {
     public static final QName IMPLEMENTATION_CRUD = new QName(SCA_NS, "implementation.crud");
 
-    @Constructor
-    public CRUDImplementationLoader(@Reference LoaderRegistry registry) {
-        super(registry);
-    }
-
-    @Override
-    public QName getXMLType() {
+    public QName getArtifactType() {
         return IMPLEMENTATION_CRUD;
     }
 
-    public ModelObject load(ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
-        throws XMLStreamException, LoaderException {
-        assert IMPLEMENTATION_CRUD.equals(reader.getName());
-        String dir = reader.getAttributeValue(null, "directory");
-
-        CRUDImplementation implementation = new CRUDImplementation(dir);
-        LoaderUtil.skipToEndElement(reader);
-        return implementation;
+    public Class<CRUDImplementation> getModelType() {
+        return CRUDImplementation.class;
     }
 
+    public void optimize(CRUDImplementation impl) throws ContributionException {
+    }
+
+    public CRUDImplementation read(XMLStreamReader reader) throws ContributionReadException {
+        assert IMPLEMENTATION_CRUD.equals(reader.getName());
+        try {
+            String dir = reader.getAttributeValue(null, "directory");
+
+            CRUDImplementation implementation = new CRUDImplementation(dir);
+            // Skip to end element
+            while (reader.hasNext()) {
+                if (reader.next() == END_ELEMENT && IMPLEMENTATION_CRUD.equals(reader.getName())) {
+                    break;
+                }
+            }
+            return implementation;
+        } catch (XMLStreamException e) {
+            throw new ContributionReadException(e);
+        }
+    }
+
+    public void resolve(CRUDImplementation impl, ArtifactResolver resolver) throws ContributionResolveException {
+    }
+
+    public void wire(CRUDImplementation model) throws ContributionWireException {
+    }
+
+    public void write(CRUDImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    }
 }

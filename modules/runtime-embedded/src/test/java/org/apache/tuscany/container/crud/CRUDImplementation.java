@@ -18,17 +18,34 @@
  */
 package org.apache.tuscany.container.crud;
 
-import org.apache.tuscany.spi.model.AtomicImplementation;
-import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.idl.java.impl.JavaInterfaceImpl;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev$$ $$Date: 2007-04-03 11:08:56 -0700 (Tue, 03 Apr
+ *          2007) $$
  */
-public class CRUDImplementation extends AtomicImplementation<ComponentType> {
+public class CRUDImplementation extends ComponentTypeImpl implements Implementation {
     private String directory;
 
     public CRUDImplementation(String directory) {
         this.directory = directory;
+        ComponentService service = createService(CRUD.class);
+        getServices().add(service);
+    }
+
+    private ComponentService createService(Class<?> type) {
+        org.apache.tuscany.assembly.ComponentService service = new DefaultAssemblyFactory().createComponentService();
+        service.setName(type.getSimpleName());
+        JavaInterface i = new JavaInterfaceImpl();
+        i.setJavaClass(type);
+        service.setInterface(i);
+        return service;
     }
 
     /**

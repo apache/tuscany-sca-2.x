@@ -23,7 +23,6 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.scope.AbstractScopeContainer;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
@@ -32,12 +31,9 @@ import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeBuilder;
-import org.apache.tuscany.core.resolver.AutowireResolver;
-import org.apache.tuscany.core.resolver.DefaultAutowireResolver;
-import org.apache.tuscany.core.wire.IDLMappingService;
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.services.spi.contribution.ContributionService;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -53,11 +49,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private final MonitorFactory monitorFactory;
     private final XMLInputFactory xmlFactory;
     private final ComponentManager componentManager;
-    private final AutowireResolver resolver;
-    private final Connector connector;
     private final ScopeRegistry scopeRegistry;
-    private final ExtensionRegistry extensionRegistry;
-
     /**
      * Create a default bootstrapper.
      * 
@@ -71,26 +63,18 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
                                XMLInputFactory xmlFactory,
-                               ComponentManager componentManager,
-                               AutowireResolver resolver,
-                               Connector connector) {
+                               ComponentManager componentManager) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = xmlFactory;
         this.componentManager = componentManager;
-        this.resolver = resolver;
-        this.connector = connector;
         this.scopeRegistry = createScopeRegistry();
-        this.extensionRegistry = new ExtensionRegistryImpl();
     }
     
     public DefaultBootstrapper(MonitorFactory monitorFactory) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
-        this.resolver = new DefaultAutowireResolver(new IDLMappingService());
-        this.componentManager = new ComponentManagerImpl(null, this.resolver);
-        this.connector = new ConnectorImpl(componentManager);
+        this.componentManager = new ComponentManagerImpl(null);
         this.scopeRegistry = createScopeRegistry();
-        this.extensionRegistry = new ExtensionRegistryImpl();
     }    
 
     /**
@@ -108,11 +92,10 @@ public class DefaultBootstrapper implements Bootstrapper {
      * 
      * @return the primordial deployer
      */
-    public Deployer createDeployer() {
+    public Deployer createDeployer(ExtensionRegistry extensionRegistry) {
         ScopeRegistry scopeRegistry = getScopeRegistry();
         BuilderRegistry builder = createBuilder(scopeRegistry);
-        DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager, resolver, connector);
-        deployer.setMonitor(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager);
         deployer.setScopeRegistry(getScopeRegistry());
         extensionRegistry.addExtension(ScopeRegistry.class, scopeRegistry);
         extensionRegistry.addExtension(BuilderRegistry.class, builder);
@@ -144,21 +127,6 @@ public class DefaultBootstrapper implements Bootstrapper {
 
         return scopeRegistry;
     }
-
-    /**
-     * Create a new Connector that can be used to wire primordial components
-     * together.
-     * 
-     * @return a new Connector
-     */
-    public Connector getConnector() {
-        return connector;
-    }
-
-    public AutowireResolver getAutowireResolver() {
-        return resolver;
-    }
-
 
     /**
      * Create a Builder that can be used to build the components in the system
@@ -193,13 +161,6 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     public ScopeRegistry getScopeRegistry() {
         return scopeRegistry;
-    }
-
-    /**
-     * @return the extensionRegistry
-     */
-    public ExtensionRegistry getExtensionRegistry() {
-        return extensionRegistry;
     }
 
 }

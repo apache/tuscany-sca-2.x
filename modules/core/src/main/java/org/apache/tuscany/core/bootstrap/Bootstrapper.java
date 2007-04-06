@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
-import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.services.spi.contribution.ContributionService;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;
@@ -47,7 +46,7 @@ public interface Bootstrapper {
      *
      * @return a new primordial Deployer
      */
-    Deployer createDeployer();
+    Deployer createDeployer(ExtensionRegistry registry);
 
     /**
      * Create a ScopeRegistry that supports the Scopes supported for primordial components
@@ -56,21 +55,6 @@ public interface Bootstrapper {
      */
     ScopeRegistry getScopeRegistry();
 
-    /**
-     * Create a Connector that can wire together primordial components.
-     *
-     * @return a new primordial Connector
-     */
-    Connector getConnector();
-
-    /**
-     * Returns the AutowireResolver that resolves autowire targets
-     *
-     * @return the AutowireResolver that resolves autowire targets
-     */
-    AutowireResolver getAutowireResolver();
-    
     ComponentManager getComponentManager();
-    ExtensionRegistry getExtensionRegistry();
 
 }

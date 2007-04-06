@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.core.resolver.AutowireResolver;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
@@ -41,17 +39,15 @@ import org.apache.tuscany.spi.services.management.TuscanyManagementService;
  */
 public class ComponentManagerImpl implements ComponentManager {
     private TuscanyManagementService managementService;
-    private AutowireResolver resolver;
     private Map<URI, Component> components;
 
     public ComponentManagerImpl() {
         components = new ConcurrentHashMap<URI, Component>();
     }
 
-    public ComponentManagerImpl(TuscanyManagementService managementService, AutowireResolver resolver) {
+    public ComponentManagerImpl(TuscanyManagementService managementService) {
         this();
         this.managementService = managementService;
-        this.resolver = resolver;
     }
 
     public synchronized void register(Component component) throws RegistrationException {
@@ -73,19 +69,11 @@ public class ComponentManagerImpl implements ComponentManager {
     public <I> void registerJavaObject(URI uri, ComponentService service, I instance) throws RegistrationException {
         SingletonAtomicComponent<I> component = new SingletonAtomicComponent<I>(uri, service, instance);
         register(component);
-        if (resolver != null) {
-            resolver.addPrimordialService(service, uri);
-        }
     }
 
     public <I> void registerJavaObject(URI uri, List<ComponentService> services, I instance) throws RegistrationException {
         SingletonAtomicComponent<I> component = new SingletonAtomicComponent<I>(uri, services, instance);
         register(component);
-        if (resolver != null) {
-            for (ComponentService contract : services) {
-                resolver.addPrimordialService(contract, uri);
-            }
-        }
     }
 
     public synchronized void unregister(Component component) throws RegistrationException {

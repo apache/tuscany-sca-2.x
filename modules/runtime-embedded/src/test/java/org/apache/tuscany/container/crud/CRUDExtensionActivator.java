@@ -21,25 +21,22 @@ package org.apache.tuscany.container.crud;
 
 import org.apache.tuscany.core.bootstrap.ExtensionActivator;
 import org.apache.tuscany.core.bootstrap.ExtensionRegistry;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CRUDExtensionActivator implements ExtensionActivator {
-    private CRUDComponentTypeLoader componentTypeLoader;
     private CRUDImplementationLoader implementationLoader;
     private CRUDComponentBuilder builder;
 
     public void start(ExtensionRegistry registry) {
-        LoaderRegistry loaderRegistry = registry.getExtension(LoaderRegistry.class);
+        StAXArtifactProcessorRegistry processors = registry.getExtension(StAXArtifactProcessorRegistry.class);
         BuilderRegistry builderRegistry = registry.getExtension(BuilderRegistry.class);
-        componentTypeLoader = new CRUDComponentTypeLoader(loaderRegistry);
-        componentTypeLoader.start();
 
-        implementationLoader = new CRUDImplementationLoader(loaderRegistry);
-        implementationLoader.start();
+        implementationLoader = new CRUDImplementationLoader();
+        processors.addArtifactProcessor(implementationLoader);
 
         builder = new CRUDComponentBuilder();
         builder.setBuilderRegistry(builderRegistry);
@@ -47,7 +44,5 @@ public class CRUDExtensionActivator implements ExtensionActivator {
     }
 
     public void stop(ExtensionRegistry registry) {
-        componentTypeLoader.stop();
-        implementationLoader.stop();
     }
 }
