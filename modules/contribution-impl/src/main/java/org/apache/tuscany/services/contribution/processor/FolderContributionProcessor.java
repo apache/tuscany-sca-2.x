@@ -22,6 +22,7 @@ package org.apache.tuscany.services.contribution.processor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -68,6 +69,10 @@ public class FolderContributionProcessor extends ContributionPackageProcessorExt
                 traverse(fileList, files[i], root);
             }
         }
+    }
+    
+    public URL getArtifactURL(URL sourceURL, URI artifact) throws MalformedURLException {
+        return new URL(sourceURL, artifact.toString());
     }
 
     /**

@@ -56,7 +56,6 @@ public class JarContributionProcessor extends ContributionPackageProcessorExtens
         } else {
             return new URL("jar:" + sourceURL.toExternalForm() + "!/" + artifact);
         }
-
     }
 
     public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException,
