@@ -16,31 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.idl.java.introspection;
+package org.apache.tuscany.idl;
 
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.idl.InvalidInterfaceException;
+import java.lang.reflect.Method;
 
 /**
- * Processor for creating JavaServiceContract definitions from Java Classes.
- *
+ * Exception thrown to indicate that a service contract specification contains
+ * an overloaded method.
+ * 
  * @version $Rev$ $Date$
  */
-public interface JavaInterfaceIntrospector {
+public class OverloadedOperationException extends InvalidInterfaceException {
+    private static final long serialVersionUID = -4658711318608885638L;
+    private final Method operation;
 
-    /**
-     * Introspect a Java interface and return a service contract definition.
-     *
-     * @param type the interface to inspect
-     * @return a JavaServiceContract corresponding to the Java interface
-     */
-    void introspect(Contract contract, Class<?> type) throws InvalidInterfaceException;
-    /**
-     * @param contract
-     * @param type
-     * @param callback
-     * @throws InvalidInterfaceException
-     */
-    void introspect(Contract contract, Class<?> type, Class<?> callback) throws InvalidInterfaceException;
+    public OverloadedOperationException(Method operation) {
+        super();
+        this.operation = operation;
+    }
+
+    public Method getOperation() {
+        return operation;
+    }
 
 }
