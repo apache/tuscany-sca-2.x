@@ -27,6 +27,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
  * The default implementation of a StAX artifact processor registry.
@@ -34,7 +35,7 @@ import javax.xml.stream.XMLStreamReader;
  * @version $Rev$ $Date$
  */
 public class DefaultStAXArtifactProcessorRegistry
-    extends DefaultArtifactProcessorRegistry<XMLStreamReader, Object, QName>
+    extends DefaultArtifactProcessorRegistry<XMLStreamReader, XMLStreamWriter, Object, QName>
     implements StAXArtifactProcessorRegistry {
 
     private XMLInputFactory factory;
@@ -65,7 +66,16 @@ public class DefaultStAXArtifactProcessorRegistry
         return processor.read(source);
     }
     
-    public void resolve(Object model, ArtifactResolver resolver) throws ContributionException {
+    public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException {
+        
+        // Delegate to the processor associated with the model type
+        StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
+        if (processor != null) {
+            processor.write(model, outputSource);
+        }
+    }
+    
+    public void resolve(Object model, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Delegate to the processor associated with the model type
         StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
@@ -74,12 +84,12 @@ public class DefaultStAXArtifactProcessorRegistry
         }
     }
     
-    public void optimize(Object model) throws ContributionException {
+    public void wire(Object model) throws ContributionWireException {
 
         // Delegate to the processor associated with the model type
         StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
         if (processor != null) {
-            processor.optimize(model);
+            processor.wire(model);
         }
     }
     

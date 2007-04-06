@@ -20,6 +20,7 @@ package org.apache.tuscany.services.spi.contribution;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 
 /**
@@ -28,6 +29,6 @@ import javax.xml.stream.XMLStreamReader;
  * @version $Rev$ $Date$
  */
 public interface StAXArtifactProcessorRegistry extends
-    ArtifactProcessorRegistry<XMLStreamReader, Object, QName> {
+    ArtifactProcessorRegistry<XMLStreamReader, XMLStreamWriter, Object, QName> {
     
 }

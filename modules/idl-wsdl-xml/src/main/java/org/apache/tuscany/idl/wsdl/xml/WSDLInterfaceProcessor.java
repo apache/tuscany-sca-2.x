@@ -24,13 +24,16 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.idl.wsdl.WSDLFactory;
 import org.apache.tuscany.idl.wsdl.WSDLInterface;
 import org.apache.tuscany.idl.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterface>, WSDLConstants {
@@ -68,11 +71,15 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         }
     }
     
-    public void resolve(WSDLInterface model, ArtifactResolver resolver) throws ContributionException {
+    public void write(WSDLInterface model, XMLStreamWriter outputSource) throws ContributionWriteException {
         // TODO Auto-generated method stub
     }
     
-    public void optimize(WSDLInterface model) throws ContributionException {
+    public void resolve(WSDLInterface model, ArtifactResolver resolver) throws ContributionResolveException {
+        // TODO Auto-generated method stub
+    }
+    
+    public void wire(WSDLInterface model) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
     

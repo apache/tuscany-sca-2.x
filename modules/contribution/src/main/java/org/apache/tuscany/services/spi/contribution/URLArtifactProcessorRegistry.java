@@ -27,6 +27,6 @@ import java.net.URL;
  * @version $Rev: 525638 $ $Date: 2007-04-04 16:36:03 -0700 (Wed, 04 Apr 2007) $
  */
 public interface URLArtifactProcessorRegistry extends
-    ArtifactProcessorRegistry<URL, Object, String> {
+    ArtifactProcessorRegistry<URL, URL, Object, String> {
     
 }

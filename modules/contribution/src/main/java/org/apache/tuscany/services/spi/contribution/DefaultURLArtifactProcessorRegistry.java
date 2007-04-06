@@ -26,7 +26,7 @@ import java.net.URL;
  * @version $Rev$ $Date$
  */
 public class DefaultURLArtifactProcessorRegistry
-    extends DefaultArtifactProcessorRegistry<URL, Object, String>
+    extends DefaultArtifactProcessorRegistry<URL, URL, Object, String>
     implements URLArtifactProcessorRegistry {
 
     /**
@@ -49,8 +49,19 @@ public class DefaultURLArtifactProcessorRegistry
         }
         return processor.read(source);
     }
+
+    public void write(Object model, URL outputSource) throws ContributionWriteException {
+        
+        // Delegate to the processor associated with the particular model type
+        URLArtifactProcessor<Object> processor = (URLArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
+        if (processor != null) {
+            processor.write(model, outputSource);
+        }
+    }
     
-    public void resolve(Object model, ArtifactResolver resolver) throws ContributionException {
+    
+    
+    public void resolve(Object model, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Delegate to the processor associated with the model type
         URLArtifactProcessor<Object> processor = (URLArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
@@ -59,12 +70,12 @@ public class DefaultURLArtifactProcessorRegistry
         }
     }
     
-    public void optimize(Object model) throws ContributionException {
+    public void wire(Object model) throws ContributionWireException {
 
         // Delegate to the processor associated with the model type
         URLArtifactProcessor<Object> processor = (URLArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
         if (processor != null) {
-            processor.optimize(model);
+            processor.wire(model);
         }
     }
     

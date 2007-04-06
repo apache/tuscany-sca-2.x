@@ -78,7 +78,7 @@ public class VariantRuntimeContext {
             
             // Resolve and configure the composite
             compositeProcessor.resolve(composite, resolver);
-            compositeProcessor.optimize(composite);
+            compositeProcessor.wire(composite);
             
         } catch (ContributionException e) {
             throw new RuntimeException(e);

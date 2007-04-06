@@ -22,11 +22,11 @@ package org.apache.tuscany.assembly.xml.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Binding;
@@ -50,8 +50,10 @@ import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
@@ -327,7 +329,12 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         }
     }
     
-    public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionException {
+    public void write(Composite model, XMLStreamWriter outputSource) throws ContributionWriteException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {
         
         // Resolve constraining type
         ConstrainingType constrainingType = composite.getConstrainingType(); 
@@ -360,7 +367,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         resolveContract(composite.getReferences(), resolver);
     }
 
-    public void optimize(Composite composite) throws ContributionException {
+    public void wire(Composite composite) throws ContributionWireException {
         
         // Process the composite configuration
         CompositeUtil compositeUtil = new CompositeUtil(factory, composite);

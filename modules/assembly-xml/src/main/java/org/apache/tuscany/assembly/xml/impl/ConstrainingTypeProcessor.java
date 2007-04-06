@@ -25,6 +25,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AbstractContract;
 import org.apache.tuscany.assembly.AbstractProperty;
@@ -39,8 +40,10 @@ import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
@@ -170,14 +173,19 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
         }
     }
     
-    public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionException {
+    public void write(ConstrainingType model, XMLStreamWriter outputSource) throws ContributionWriteException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Resolve component type services and references
         resolveAbstractContract(constrainingType.getServices(), resolver);
         resolveAbstractContract(constrainingType.getReferences(), resolver);
     }
     
-    public void optimize(ConstrainingType model) throws ContributionException {
+    public void wire(ConstrainingType model) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
 

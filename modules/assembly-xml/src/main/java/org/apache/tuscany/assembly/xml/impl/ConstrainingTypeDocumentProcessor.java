@@ -33,8 +33,10 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
 
@@ -90,15 +92,19 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
                 //ignore
             }
         }
-
     }
     
-    public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionException {
+    public void write(ConstrainingType model, URL outputSource) throws ContributionWriteException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {
         registry.resolve(constrainingType, resolver);
     }
     
-    public void optimize(ConstrainingType constrainingType) throws ContributionException {
-        registry.optimize(constrainingType);
+    public void wire(ConstrainingType constrainingType) throws ContributionWireException {
+        registry.wire(constrainingType);
     }
 
     public String getArtifactType() {

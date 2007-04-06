@@ -33,8 +33,10 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
 
@@ -91,12 +93,17 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
         }
     }
     
-    public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionException {
+    public void write(Composite model, URL outputSource) throws ContributionWriteException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {
         registry.resolve(composite, resolver);
     }
 
-    public void optimize(Composite composite) throws ContributionException {
-        registry.optimize(composite);
+    public void wire(Composite composite) throws ContributionWireException {
+        registry.wire(composite);
     }
 
     public String getArtifactType() {
