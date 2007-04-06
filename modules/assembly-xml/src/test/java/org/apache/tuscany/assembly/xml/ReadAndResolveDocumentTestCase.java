@@ -19,11 +19,7 @@
 
 package org.apache.tuscany.assembly.xml;
 
-import java.io.InputStream;
 import java.net.URL;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
@@ -38,8 +34,6 @@ import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.URLArtifactProcessorRegistry;
 
 /**
  * Test the resolving SCA XML assemblies.
@@ -48,15 +42,13 @@ import org.apache.tuscany.services.spi.contribution.URLArtifactProcessorRegistry
  */
 public class ReadAndResolveDocumentTestCase extends TestCase {
 
-    private XMLInputFactory inputFactory;
-    private URLArtifactProcessorRegistry registry;
+    private DefaultURLArtifactProcessorRegistry registry;
 
     public void setUp() throws Exception {
-        inputFactory = XMLInputFactory.newInstance();
         registry = new DefaultURLArtifactProcessorRegistry();
         
         // Create Stax processors
-        StAXArtifactProcessorRegistry staxRegistry = new DefaultStAXArtifactProcessorRegistry();
+        DefaultStAXArtifactProcessorRegistry staxRegistry = new DefaultStAXArtifactProcessorRegistry();
         staxRegistry.addArtifactProcessor(new CompositeProcessor(staxRegistry));
         staxRegistry.addArtifactProcessor(new ComponentTypeProcessor(staxRegistry));
         staxRegistry.addArtifactProcessor(new ConstrainingTypeProcessor(staxRegistry));
@@ -68,7 +60,6 @@ public class ReadAndResolveDocumentTestCase extends TestCase {
     }
 
     public void tearDown() throws Exception {
-        inputFactory = null;
         registry = null;
     }
 

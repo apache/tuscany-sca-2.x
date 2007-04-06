@@ -35,8 +35,8 @@ import javax.xml.stream.XMLStreamWriter;
  * @version $Rev$ $Date$
  */
 public class DefaultStAXArtifactProcessorRegistry
-    extends DefaultArtifactProcessorRegistry<XMLStreamReader, XMLStreamWriter, Object, QName>
-    implements StAXArtifactProcessorRegistry {
+    extends DefaultArtifactProcessorRegistry<StAXArtifactProcessor<Object>>
+    implements StAXArtifactProcessorRegistry, StAXArtifactProcessor<Object> {
 
     private XMLInputFactory factory;
 
@@ -139,4 +139,11 @@ public class DefaultStAXArtifactProcessorRegistry
         }
     }
 
+    public QName getArtifactType() {
+        return null;
+    }
+    
+    public Class<Object> getModelType() {
+        return null;
+    }
 }

@@ -32,7 +32,6 @@ import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * Test the resolving SCA XML assemblies.
@@ -42,7 +41,7 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistr
 public class ResolveTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
-    private StAXArtifactProcessorRegistry registry;
+    private DefaultStAXArtifactProcessorRegistry registry;
 
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();

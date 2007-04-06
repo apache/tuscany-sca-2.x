@@ -26,8 +26,8 @@ import java.net.URL;
  * @version $Rev$ $Date$
  */
 public class DefaultURLArtifactProcessorRegistry
-    extends DefaultArtifactProcessorRegistry<URL, URL, Object, String>
-    implements URLArtifactProcessorRegistry {
+    extends DefaultArtifactProcessorRegistry<URLArtifactProcessor<Object>>
+    implements URLArtifactProcessorRegistry, URLArtifactProcessor<Object> {
 
     /**
      * Constructs a new loader registry.
@@ -88,6 +88,14 @@ public class DefaultURLArtifactProcessorRegistry
             e.setResourceURI(url.toString());
             throw e;
         }
+    }
+    
+    public String getArtifactType() {
+        return null;
+    }
+    
+    public Class<Object> getModelType() {
+        return null;
     }
 
 }

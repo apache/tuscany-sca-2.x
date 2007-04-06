@@ -48,7 +48,6 @@ import org.apache.tuscany.services.spi.contribution.ContributionResolveException
 import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * A componentType processor.
@@ -57,7 +56,7 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistr
  */
 public class ComponentTypeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<ComponentType> {
     private AssemblyFactory factory;
-    private StAXArtifactProcessorRegistry registry;
+    private StAXArtifactProcessor<Object> extensionProcessor;
     
     /**
      * Constructs a new componentType processor.
@@ -65,18 +64,18 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorRegistry registry) {
+    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         super(factory, policyFactory);
         this.factory = factory;
-        this.registry = registry;
+        this.extensionProcessor = extensionProcessor;
     }
     
     /**
      * Constructs a new componentType processor.
-     * @param registry
+     * @param extensionProcessor
      */
-    public ComponentTypeProcessor(StAXArtifactProcessorRegistry registry) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), registry);
+    public ComponentTypeProcessor(StAXArtifactProcessor<Object> extensionProcessor) {
+        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
     }
     
     public ComponentType read(XMLStreamReader reader) throws ContributionReadException {
@@ -159,7 +158,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                         } else {
     
                             // Read an extension element
-                            Object extension = registry.read(reader);
+                            Object extension = extensionProcessor.read(reader);
                             if (extension != null) {
                                 if (extension instanceof Interface) {
     

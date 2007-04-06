@@ -26,9 +26,9 @@ import java.util.Map;
  * 
  * @version $Rev$ $Date$
  */
-abstract class DefaultArtifactProcessorRegistry<I, O, M, K> implements ArtifactProcessorRegistry<I, O, M, K> {
-    private final Map<K, ArtifactProcessor<I, O, ?, K>> processorsByArtifactType = new HashMap<K, ArtifactProcessor<I, O, ?, K>>();
-    private final Map<Class<?>, ArtifactProcessor<I, O, ?, K>> processorsByModelType = new HashMap<Class<?>, ArtifactProcessor<I, O, ?, K>>();
+abstract class DefaultArtifactProcessorRegistry<P extends ArtifactProcessor> implements ArtifactProcessorRegistry<P> {
+    private final Map<Object, P> processorsByArtifactType = new HashMap<Object, P>();
+    private final Map<Class<?>, P> processorsByModelType = new HashMap<Class<?>, P>();
 
     /**
      * Constructs a new loader registry.
@@ -41,7 +41,7 @@ abstract class DefaultArtifactProcessorRegistry<I, O, M, K> implements ArtifactP
      * @param artifactType an artifact type
      * @return the processor associated with the given artifact type
      */
-    protected ArtifactProcessor<I, O, ?, K> getProcessor(K artifactType) {
+    protected P getProcessor(Object artifactType) {
         return processorsByArtifactType.get(artifactType);
     }
 
@@ -50,28 +50,20 @@ abstract class DefaultArtifactProcessorRegistry<I, O, M, K> implements ArtifactP
      * @param modelType a model type
      * @return the processor associated with the given model type
      */
-    protected ArtifactProcessor<I, O, ?, K> getProcessor(Class<M> modelType) {
+    protected P getProcessor(Class<?> modelType) {
         Class<?>[] classes = modelType.getClasses();
         for (Class<?> c: classes) {
-            ArtifactProcessor<I, O, ?, K> processor = processorsByModelType.get(c);
+            P processor = processorsByModelType.get(c);
             if (processor != null)
                 return processor;
         }
         return null;
     }
 
-    public void addArtifactProcessor(ArtifactProcessor<I, O, ?, K> artifactProcessor) {
-        processorsByArtifactType.put(artifactProcessor.getArtifactType(), artifactProcessor);
-        processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
+    public void addArtifactProcessor(Object artifactProcessor) {
+        P processor = (P)artifactProcessor;
+        processorsByArtifactType.put((Object)processor.getArtifactType(), processor);
+        processorsByModelType.put(processor.getModelType(), processor);
     }
     
-    public K getArtifactType() {
-        // Will never match
-        return null;
-    }
-    
-    public Class<M> getModelType() {
-        // Will never match
-        return null;
-    }
 }

@@ -37,7 +37,7 @@ import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
 import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
 
 /**
@@ -46,28 +46,28 @@ import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
  * @version $Rev$ $Date$
  */
 public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessor<ConstrainingType> {
-    private StAXArtifactProcessorRegistry registry;
+    private StAXArtifactProcessor<Object> staxProcessor;
     private XMLInputFactory inputFactory;
 
     /**
      * Construct a new constrainingType processor.
      * @param factory
      * @param policyFactory
-     * @param registry
+     * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorRegistry registry, XMLInputFactory inputFactory) {
+    public ConstrainingTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> staxProcessor, XMLInputFactory inputFactory) {
         super(factory, policyFactory);
-        this.registry = registry;
+        this.staxProcessor = staxProcessor;
         this.inputFactory = inputFactory;
     }
 
     /**
      * Construct a new constrainingType processor.
-     * @param registry
+     * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessorRegistry registry) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), registry, XMLInputFactory.newInstance());
-        this.registry = registry;
+    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor) {
+        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
+        this.staxProcessor = staxProcessor;
     }
 
     public ConstrainingType read(URL url) throws ContributionReadException {
@@ -76,7 +76,7 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
-            ConstrainingType constrainingType = (ConstrainingType)registry.read(reader);
+            ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(reader);
             return constrainingType;
             
         } catch (XMLStreamException e) {
@@ -101,11 +101,11 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
     }
     
     public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {
-        registry.resolve(constrainingType, resolver);
+        staxProcessor.resolve(constrainingType, resolver);
     }
     
     public void wire(ConstrainingType constrainingType) throws ContributionWireException {
-        registry.wire(constrainingType);
+        staxProcessor.wire(constrainingType);
     }
 
     public String getArtifactType() {

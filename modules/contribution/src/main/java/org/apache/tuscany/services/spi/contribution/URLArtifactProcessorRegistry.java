@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.services.spi.contribution;
 
-import java.net.URL;
 
 
 /**
@@ -27,6 +26,6 @@ import java.net.URL;
  * @version $Rev: 525638 $ $Date: 2007-04-04 16:36:03 -0700 (Wed, 04 Apr 2007) $
  */
 public interface URLArtifactProcessorRegistry extends
-    ArtifactProcessorRegistry<URL, URL, Object, String> {
+    ArtifactProcessorRegistry<URLArtifactProcessor<Object>> {
     
 }

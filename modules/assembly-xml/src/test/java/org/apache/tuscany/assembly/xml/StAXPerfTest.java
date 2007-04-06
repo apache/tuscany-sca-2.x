@@ -31,7 +31,6 @@ import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * Test the usability of the assembly model API when loading SCDL
@@ -43,7 +42,7 @@ public class StAXPerfTest {
     private XMLInputFactory inputFactory;
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
-    private StAXArtifactProcessorRegistry registry;
+    private DefaultStAXArtifactProcessorRegistry registry;
 
     public static void main(String[] args) throws Exception {
 

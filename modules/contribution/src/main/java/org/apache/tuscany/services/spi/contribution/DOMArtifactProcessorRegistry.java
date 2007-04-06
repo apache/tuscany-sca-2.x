@@ -21,11 +21,11 @@ package org.apache.tuscany.services.spi.contribution;
 
 
 /**
- * A registry for DOM artifact processors.
+ * A registry for StAX artifact processors.
  * 
  * @version $Rev$ $Date$
  */
-public interface StAXArtifactProcessorRegistry extends
-    ArtifactProcessorRegistry<StAXArtifactProcessor<Object>> {
+public interface DOMArtifactProcessorRegistry extends
+    ArtifactProcessorRegistry<DOMArtifactProcessor<Object>> {
     
 }

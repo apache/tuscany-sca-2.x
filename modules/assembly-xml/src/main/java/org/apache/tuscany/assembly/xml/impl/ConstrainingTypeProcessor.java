@@ -45,7 +45,6 @@ import org.apache.tuscany.services.spi.contribution.ContributionResolveException
 import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 /**
  * A contrainingType content handler.
@@ -54,27 +53,27 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistr
  */
 public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<ConstrainingType> {
     private AssemblyFactory factory;
-    private StAXArtifactProcessorRegistry registry;
+    private StAXArtifactProcessor<Object> extensionProcessor;
 
     /**
      * Construct a new constrainingType processor.
      * @param factory
      * @param policyFactory
-     * @param registry
+     * @param extensionProcessor
      */
-    public ConstrainingTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorRegistry registry) {
+    public ConstrainingTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         super(factory, policyFactory);
         this.factory = factory;
-        this.registry = registry;
+        this.extensionProcessor = extensionProcessor;
     }
 
     /**
      * Construct a new constrainingType processor.
-     * @param registry
+     * @param extensionProcessor
      */
-    public ConstrainingTypeProcessor(StAXArtifactProcessorRegistry registry) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), registry);
-        this.registry = registry;
+    public ConstrainingTypeProcessor(StAXArtifactProcessor<Object> extensionProcessor) {
+        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
+        this.extensionProcessor = extensionProcessor;
     }
 
     public ConstrainingType read(XMLStreamReader reader) throws ContributionReadException {
@@ -139,7 +138,7 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                         } else {
     
                             // Read an extension element
-                            Object extension = registry.read(reader);
+                            Object extension = extensionProcessor.read(reader);
                             if (extension instanceof Interface) {
                                 // <service><interface> and <reference><interface>
                                 abstractContract.setInterface((Interface)extension);
