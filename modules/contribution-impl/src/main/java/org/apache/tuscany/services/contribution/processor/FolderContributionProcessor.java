@@ -22,21 +22,16 @@ package org.apache.tuscany.services.contribution.processor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.services.contribution.ContentTypeDescriberImpl;
 import org.apache.tuscany.services.contribution.model.ContentType;
-import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.contribution.util.FileHelper;
-import org.apache.tuscany.services.contribution.util.IOHelper;
-import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.extension.ContributionPackageProcessorExtension;
 
 public class FolderContributionProcessor extends ContributionPackageProcessorExtension implements ContributionPackageProcessor {
@@ -45,8 +40,11 @@ public class FolderContributionProcessor extends ContributionPackageProcessorExt
      */
     public static final String PACKAGE_TYPE = ContentType.FOLDER;
 
-    @Override
-    public String getContentType() {
+    public FolderContributionProcessor(ContributionPackageProcessorRegistry registry){
+        super(registry);
+    }
+    
+    public String getPackageType() {
         return PACKAGE_TYPE;
     }
 
@@ -76,15 +74,18 @@ public class FolderContributionProcessor extends ContributionPackageProcessorExt
      * @return
      * @throws IOException
      */
-    protected List<URL> getArtifacts(URL rootURL) throws ContributionException,
-        IOException {
+    public List<URL> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException, IOException{
+        if (packageSourceURL == null) {
+            throw new IllegalArgumentException("Invalid null package source URL.");
+        }
+        
         List<URL> artifacts = new ArrayList<URL>();
 
         // Assume the root is a jar file
         File rootFolder;
         
         try {
-            rootFolder = new File(rootURL.toURI());
+            rootFolder = new File(packageSourceURL.toURI());
             if (rootFolder.isDirectory()) {
                 if(! rootFolder.exists()){
                     throw new InvalidFolderContributionException(rootFolder.getAbsolutePath());
@@ -94,45 +95,9 @@ public class FolderContributionProcessor extends ContributionPackageProcessorExt
             }
 
         } catch (URISyntaxException e) {
-            throw new InvalidFolderContributionURIException(rootURL.toExternalForm(), e);
+            throw new InvalidFolderContributionURIException(packageSourceURL.toExternalForm(), e);
         }
-
+        
         return artifacts;
-    }
-
-    public void processContent(Contribution contribution, URI source, InputStream inputStream)
-        throws ContributionException, IOException {
-        if (contribution == null) {
-            throw new IllegalArgumentException("Invalid null contribution.");
-        }
-
-        if (source == null) {
-            throw new IllegalArgumentException("Invalid null source uri.");
-        }
-
-        URL contributionURL = contribution.getArtifact(source).getLocation();
-
-        for (URL artifactURL : getArtifacts(contributionURL)) {
-            String artifactPath = artifactURL.toExternalForm().substring(contributionURL.toExternalForm().length());
-            URI artifactURI = contribution.getUri().resolve(artifactPath);
-            DeployedArtifact artifact = new DeployedArtifact(artifactURI);
-            artifact.setLocation(artifactURL);
-            contribution.addArtifact(artifact);
-
-            ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
-            String contentType = contentTypeDescriber.getContentType(artifactURL, null);
-
-            
-            // just process scdl and contribution metadata for now
-            if (ContentType.COMPOSITE.equals(contentType)) {
-                InputStream is = artifactURL.openStream();
-                try {
-                    this.registry.processContent(contribution, artifactURI, is);
-                } finally {
-                    IOHelper.closeQuietly(is);
-                    is = null;
-                }
-            }
-        }
     }
 }

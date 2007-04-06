@@ -27,14 +27,14 @@ import java.util.Map;
 
 import org.apache.tuscany.services.contribution.model.ContentType;
 import org.apache.tuscany.services.contribution.util.FileHelper;
-import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
+import org.apache.tuscany.services.spi.contribution.TypeDescriber;
 
 /**
  * Implementation of the content describer
  *
  * @version $Rev$ $Date$
  */
-public class PackageTypeDescriberImpl implements ContentTypeDescriber {
+public class PackageTypeDescriberImpl implements TypeDescriber {
     private final Map<String, String> contentTypeRegistry = new HashMap<String, String>();
 
     public PackageTypeDescriberImpl() {
@@ -67,7 +67,7 @@ public class PackageTypeDescriberImpl implements ContentTypeDescriber {
      * @param defaultContentType
      * @return
      */
-    public String getContentType(URL resourceURL, String defaultContentType) {
+    public String getType(URL resourceURL, String defaultContentType) {
         URLConnection connection = null;
         String contentType = defaultContentType;
 

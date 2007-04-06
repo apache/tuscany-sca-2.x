@@ -19,58 +19,37 @@
 package org.apache.tuscany.services.contribution.processor;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.model.DeployedArtifact;
+import org.apache.tuscany.services.contribution.ContributionPackageProcessorRegistryImpl;
+import org.apache.tuscany.services.contribution.PackageTypeDescriberImpl;
 import org.apache.tuscany.services.contribution.util.IOHelper;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
-import org.easymock.EasyMock;
 
 public class JarContributionPackageProcessorTestCase extends TestCase {
-    private static final String CONTRIBUTION_URI = "sca://contributions/001/";
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
-    
-    private JarContributionProcessor jarProcessor;
     
     protected void setUp() throws Exception {
         super.setUp();
-        
-        this.jarProcessor = new JarContributionProcessor();
     }
     
-    public final void testProcessJarArtifacts() throws Exception {
-        ContributionPackageProcessorRegistry mockRegistry = EasyMock.createMock(ContributionPackageProcessorRegistry.class);
-        mockRegistry.register(JarContributionProcessor.PACKAGE_TYPE, jarProcessor);
-        mockRegistry.processContent((Contribution)EasyMock.anyObject(), (URI) EasyMock.anyObject(), (InputStream) EasyMock.anyObject() );
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.replay(mockRegistry);
-        jarProcessor.setContributionProcessorRegistry(mockRegistry);
-        jarProcessor.start();
-        EasyMock.verify(mockRegistry);
+    public final void testProcessPackageArtifacts() throws Exception {
+        ContributionPackageProcessorRegistry packageProcessorRegistry = new ContributionPackageProcessorRegistryImpl(new PackageTypeDescriberImpl()); 
+        JarContributionProcessor jarProcessor = new JarContributionProcessor(packageProcessorRegistry);
 
-
-        //start processing the jar
         URL jarURL = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionURI = URI.create(CONTRIBUTION_URI);
-        URI artifactURI = contributionURI.resolve(JAR_CONTRIBUTION);
-       
-        Contribution contribution = new Contribution(contributionURI);
-        contribution.setLocation(jarURL);
-        
-        DeployedArtifact artifact = new DeployedArtifact(artifactURI);
-        artifact.setLocation(jarURL);
-        contribution.addArtifact(artifact);
-        
         InputStream jarStream = jarURL.openStream();
-        
+        List<URL> artifacts = null;
         try{
-            jarProcessor.processContent(contribution, contributionURI.resolve(JAR_CONTRIBUTION), jarStream);
+            artifacts = jarProcessor.getArtifacts(jarURL, jarStream);
         }finally{
             IOHelper.closeQuietly(jarStream);
         }
+        
+        assertNotNull(artifacts);
     }
-}
+    
+    }

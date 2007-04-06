@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
@@ -31,7 +32,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.contribution.util.IOHelper;
+import org.apache.tuscany.services.spi.contribution.ArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
@@ -50,10 +53,16 @@ public class ContributionServiceImpl implements ContributionService {
     protected ContributionRepository contributionRepository;
 
     /**
-     * Registry of available processors. Usually set by injection.
+     * Registry of available package processors. 
      */
-    protected ContributionPackageProcessorRegistry processorRegistry;
+    protected ContributionPackageProcessorRegistry packageProcessorRegistry;
 
+    /**
+     * Registry of available artifact processors
+     */
+    
+    protected ArtifactProcessorRegistry artifactProcessorRegistry;
+    
     /**
      * xml factory used to create reader instance to load contribution metadata
      */
@@ -73,11 +82,13 @@ public class ContributionServiceImpl implements ContributionService {
     protected ArtifactResolverRegistry resolverRegistry;
 
     public ContributionServiceImpl(ContributionRepository repository,
-                                   ContributionPackageProcessorRegistry processorRegistry,
+                                   ContributionPackageProcessorRegistry packageProcessorRegistry,
+                                   ArtifactProcessorRegistry artifactProcessorRegistry,
                                    ArtifactResolverRegistry resolverRegistry) {
         super();
         this.contributionRepository = repository;
-        this.processorRegistry = processorRegistry;
+        this.packageProcessorRegistry = packageProcessorRegistry;
+        this.artifactProcessorRegistry = artifactProcessorRegistry;
         this.resolverRegistry = resolverRegistry;
         
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
@@ -148,55 +159,6 @@ public class ContributionServiceImpl implements ContributionService {
 
     }
     
-    /**
-     * Note: 
-     * @param contributionURI ContributionID
-     * @param sourceURL contribution location
-     * @param contributionStream contribution content
-     * @param storeInRepository flag if we store the contribution into the repository or not
-     * @throws IOException
-     * @throws DeploymentException
-     */
-    private void addContribution(URI contributionURI, URL sourceURL, InputStream contributionStream, boolean storeInRepository)
-        throws IOException, ContributionException {
-        if (contributionStream == null && sourceURL == null) {
-            throw new IllegalArgumentException("The content of the contribution is null");
-        }
-
-        // store the contribution in the contribution repository
-        URL locationURL = sourceURL;
-        if (contributionRepository != null && storeInRepository) {
-            if (sourceURL != null) {
-                locationURL = contributionRepository.store(contributionURI, sourceURL);
-            } else {
-                locationURL = contributionRepository.store(contributionURI, contributionStream);
-            }
-        }
-
-        Contribution contribution = initializeContributionMetadata(locationURL);
-        contribution.setURI(contributionURI);
-        contribution.setLocation(locationURL);
-        
-        if (contributionStream == null) {
-            contributionStream = sourceURL.openStream();
-            try {
-                // process the contribution
-                this.processorRegistry.processContent(contribution, contribution.getUri(), contributionStream);
-            } finally {
-                IOHelper.closeQuietly(contributionStream);
-                contributionStream = null;
-            }
-
-        } else {
-            // process the contribution
-            this.processorRegistry.processContent(contribution, contribution.getUri(), contributionStream);
-        }
-            
-
-        // store the contribution on the registry
-        this.contributionRegistry.put(contribution.getUri(), contribution);
-    }
-
     public Contribution getContribution(URI id) {
         return this.contributionRegistry.get(id);
     }
@@ -233,6 +195,84 @@ public class ContributionServiceImpl implements ContributionService {
     public <M> M resolve(Class modelClass, Class<M> elementClass, Object modelKey, Object elementKey, Map<String, Object> attributes) {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    
+    /**
+     * 
+     */
+    
+    /**
+     * Note: 
+     * @param contributionURI ContributionID
+     * @param sourceURL contribution location
+     * @param contributionStream contribution content
+     * @param storeInRepository flag if we store the contribution into the repository or not
+     * @throws IOException
+     * @throws DeploymentException
+     */
+    private void addContribution(URI contributionURI, URL sourceURL, InputStream contributionStream, boolean storeInRepository)
+        throws IOException, ContributionException {
+        if (contributionStream == null && sourceURL == null) {
+            throw new IllegalArgumentException("The content of the contribution is null");
+        }
+
+        // store the contribution in the contribution repository
+        URL locationURL = sourceURL;
+        if (contributionRepository != null && storeInRepository) {
+            if (sourceURL != null) {
+                locationURL = contributionRepository.store(contributionURI, sourceURL);
+            } else {
+                locationURL = contributionRepository.store(contributionURI, contributionStream);
+            }
+        }
+
+        Contribution contribution = initializeContributionMetadata(locationURL);
+        contribution.setURI(contributionURI);
+        contribution.setLocation(locationURL);
+        
+        List<URL> contributionArtifacts = null;
+        
+        if (contributionStream == null) {
+            contributionStream = sourceURL.openStream();
+            try {
+                // process the contribution
+                contributionArtifacts = this.packageProcessorRegistry.getArtifacts(locationURL, contributionStream);
+            } finally {
+                IOHelper.closeQuietly(contributionStream);
+                contributionStream = null;
+            }
+        } else {
+            // process the contribution
+            contributionArtifacts = this.packageProcessorRegistry.getArtifacts(locationURL, contributionStream);
+        }
+        
+        //processArtifactRead(contribution, contributionArtifacts);
+        
+        // store the contribution on the registry
+        this.contributionRegistry.put(contribution.getUri(), contribution);
+    }
+
+    
+    private void processArtifactRead(Contribution contribution, List<URL> artifacts) throws ContributionException{
+        for(URL artifactURL : artifacts){
+            Object model = this.artifactProcessorRegistry.read(artifactURL);
+
+            if(model != null){
+                URI artifactURI = getArtifactURI(contribution.getUri(), artifactURL);
+                DeployedArtifact artifact = new DeployedArtifact(artifactURI);
+                artifact.setLocation(artifactURL);
+                contribution.addArtifact(artifact);
+            }
+        }
+    }
+    
+    
+    
+    private URI getArtifactURI(URI baseURI, URL artifactURL){
+        String artifactPath = artifactURL.toExternalForm().substring(artifactURL.toExternalForm().length());
+        return baseURI.resolve(artifactPath);
+
     }
     
 }

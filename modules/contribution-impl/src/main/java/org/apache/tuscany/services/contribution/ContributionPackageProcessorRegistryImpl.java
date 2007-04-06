@@ -24,10 +24,11 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
+import org.apache.tuscany.services.spi.contribution.TypeDescriber;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
@@ -46,13 +47,13 @@ public class ContributionPackageProcessorRegistryImpl implements ContributionPac
     /**
      * Helper method to describe contentType for each artifact
      */
-    private ContentTypeDescriber packageTypeDescriber;
+    private TypeDescriber packageTypeDescriber;
 
-    public ContributionPackageProcessorRegistryImpl(ContentTypeDescriber contentTypeDescriber) {
-        if (contentTypeDescriber == null) {
+    public ContributionPackageProcessorRegistryImpl(TypeDescriber packageTypeDescriber) {
+        if (packageTypeDescriber == null) {
             this.packageTypeDescriber = new PackageTypeDescriberImpl();
         } else {
-            this.packageTypeDescriber = contentTypeDescriber;
+            this.packageTypeDescriber = packageTypeDescriber;
         }
     }
 
@@ -64,20 +65,17 @@ public class ContributionPackageProcessorRegistryImpl implements ContributionPac
         registry.remove(contentType);
     }
 
-    public void processContent(Contribution contribution, URI source, InputStream inputStream)
-        throws ContributionException, IOException {
-
-        URL locationURL = contribution.getArtifact(source).getLocation();
-        String contentType = this.packageTypeDescriber.getContentType(locationURL, null);
+    public List<URL> getArtifacts(URL packageSourceURL,InputStream inputStream) throws ContributionException, IOException{
+        String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
         if (contentType == null) {
-            throw new UnsupportedContentTypeException("Unsupported contribution package", source.toString());
+            throw new UnsupportedContentTypeException("Unsupported contribution package", packageSourceURL.toString());
         }
 
-        ContributionPackageProcessor processor = this.registry.get(contentType);
-        if (processor == null) {
-            throw new UnsupportedContentTypeException(contentType, locationURL.getPath());
+        ContributionPackageProcessor packageProcessor = this.registry.get(contentType);
+        if (packageProcessor == null) {
+            throw new UnsupportedContentTypeException(contentType, packageSourceURL.getPath());
         }
 
-        processor.processContent(contribution, source, inputStream);
+        return packageProcessor.getArtifacts(packageSourceURL, inputStream);
     }
 }
