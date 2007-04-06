@@ -29,18 +29,18 @@ public class PackageTypeDescriberImplTestCase extends TestCase {
 
     public void testResolvePackageType() throws Exception {
         URL artifactURL = getClass().getResource("/deployables/sample-calculator.jar");
-        assertEquals(ContentType.JAR, this.packageTypeDescriber.getContentType(artifactURL, null));
+        assertEquals(ContentType.JAR, this.packageTypeDescriber.getType(artifactURL, null));
     }
     
     public void testResolveUnknownPackageType() throws Exception {
         URL artifactURL = getClass().getResource("test.ext");
-        assertNull(this.packageTypeDescriber.getContentType(artifactURL, null));
+        assertNull(this.packageTypeDescriber.getType(artifactURL, null));
     }
     
     public void testDefaultPackageType() throws Exception {
         URL artifactURL = getClass().getResource("test.ext");
         assertEquals("application/vnd.tuscany.ext", 
-                packageTypeDescriber.getContentType(artifactURL, "application/vnd.tuscany.ext"));        
+                packageTypeDescriber.getType(artifactURL, "application/vnd.tuscany.ext"));        
     }
 
     protected void setUp() throws Exception {

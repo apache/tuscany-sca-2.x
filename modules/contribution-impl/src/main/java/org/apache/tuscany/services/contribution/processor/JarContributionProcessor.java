@@ -22,21 +22,16 @@ package org.apache.tuscany.services.contribution.processor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.apache.tuscany.services.contribution.ContentTypeDescriberImpl;
 import org.apache.tuscany.services.contribution.model.ContentType;
-import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.model.DeployedArtifact;
-import org.apache.tuscany.services.contribution.util.IOHelper;
-import org.apache.tuscany.services.spi.contribution.ContentTypeDescriber;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.extension.ContributionPackageProcessorExtension;
 
 public class JarContributionProcessor extends ContributionPackageProcessorExtension implements ContributionPackageProcessor {
@@ -44,23 +39,39 @@ public class JarContributionProcessor extends ContributionPackageProcessorExtens
      * Package-type that this package processor can handle
      */
     public static final String PACKAGE_TYPE = ContentType.JAR;
+        
+    public JarContributionProcessor(ContributionPackageProcessorRegistry registry){
+        super(registry);
+    }
 
-    @Override
-    public String getContentType() {
+    public String getPackageType() {
         return PACKAGE_TYPE;
     }
 
-    /**
-     * Get a list of resources inside the jar
-     * 
-     * @return
-     * @throws IOException
-     */
-    protected List<URL> getArtifacts(URL rootURL, InputStream sourceInputStream) throws IOException {
-        List<URL> artifacts = new ArrayList<URL>();
+    private URL forceJarURL(URL sourceURL) throws MalformedURLException {
+        if (sourceURL.toString().startsWith("jar:")) {
+            return sourceURL;
+        } else {
+            return new URL("jar:" + sourceURL.toExternalForm() + "!/");
+        }
 
+    }
+    
+    public List<URL> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException, IOException{
+        if (packageSourceURL == null) {
+            throw new IllegalArgumentException("Invalid null package source URL.");
+        }
+
+        if (inputStream == null) {
+            throw new IllegalArgumentException("Invalid null source inputstream.");
+        }
+
+        List<URL> artifacts = new ArrayList<URL>();
+        
+        packageSourceURL = forceJarURL(packageSourceURL);
+        
         // Assume the root is a jar file
-        JarInputStream jar = new JarInputStream(sourceInputStream);
+        JarInputStream jar = new JarInputStream(inputStream);
         try {
             while (true) {
                 JarEntry entry = jar.getNextJarEntry();
@@ -74,66 +85,12 @@ public class JarContributionProcessor extends ContributionPackageProcessorExtens
 
                 // FIXME: Maybe we should externalize the filter as a property
                 if (!entry.getName().startsWith(".")) {
-                    artifacts.add(new URL(rootURL, entry.getName()));
+                    artifacts.add(new URL(packageSourceURL, entry.getName()));
                 }
             }
         } finally {
             jar.close();
         }
         return artifacts;
-    }
-
-    private URL forceJarURL(URL sourceURL) throws MalformedURLException {
-        if (sourceURL.toString().startsWith("jar:")) {
-            return sourceURL;
-        } else {
-            return new URL("jar:" + sourceURL.toExternalForm() + "!/");
-        }
-
-    }
-
-    public void processContent(Contribution contribution, URI source, InputStream inputStream)
-        throws ContributionException, IOException {
-        if (contribution == null) {
-            throw new IllegalArgumentException("Invalid null contribution.");
-        }
-
-        if (source == null) {
-            throw new IllegalArgumentException("Invalid null source uri.");
-        }
-
-        if (inputStream == null) {
-            throw new IllegalArgumentException("Invalid null source inputstream.");
-        }
-
-        URL sourceURL = contribution.getArtifact(source).getLocation();
-
-        sourceURL = forceJarURL(sourceURL);
-
-        for (URL artifactURL : getArtifacts(sourceURL, inputStream)) {
-            URI artifactURI;
-
-            String artifactPath = artifactURL.toExternalForm().substring(sourceURL.toExternalForm().length());
-            artifactURI = contribution.getUri().resolve(artifactPath);
-            DeployedArtifact artifact = new DeployedArtifact(artifactURI);
-            artifact.setLocation(artifactURL);
-            contribution.addArtifact(artifact);
-
-
-            ContentTypeDescriber contentTypeDescriber = new ContentTypeDescriberImpl();
-            String contentType = contentTypeDescriber.getContentType(artifactURL, null);
-
-            // just process scdl for now
-            if (ContentType.COMPOSITE.equals(contentType)) {
-                InputStream is = IOHelper.getInputStream(artifactURL);
-                try {
-                    this.registry.processContent(contribution, artifactURI, is);
-                } finally {
-                    IOHelper.closeQuietly(is);
-                    is = null;
-                }
-            }
-        }
-
     }
 }
