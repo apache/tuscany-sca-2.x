@@ -20,6 +20,7 @@
 package org.apache.tuscany.assembly.xml.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
@@ -68,8 +69,10 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
     }
 
     public ConstrainingType read(URL url) throws ContributionReadException {
+        InputStream urlStream = null;
         try {
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(url.openStream());
+            urlStream = url.openStream();
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             ConstrainingType constrainingType = (ConstrainingType)registry.read(reader);
             return constrainingType;
             
@@ -77,7 +80,17 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
             throw new ContributionReadException(e);
         } catch (IOException e) {
             throw new ContributionReadException(e);
+        } finally {
+            try {
+                if (urlStream != null) {
+                    urlStream.close();
+                    urlStream = null;
+                }
+            } catch (IOException ioe) {
+                //ignore
+            }
         }
+
     }
     
     public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionException {
