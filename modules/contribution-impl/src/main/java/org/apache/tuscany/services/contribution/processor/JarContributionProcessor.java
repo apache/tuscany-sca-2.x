@@ -22,6 +22,7 @@ package org.apache.tuscany.services.contribution.processor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +35,14 @@ import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.extension.ContributionPackageProcessorExtension;
 
-public class JarContributionProcessor extends ContributionPackageProcessorExtension implements ContributionPackageProcessor {
+public class JarContributionProcessor extends ContributionPackageProcessorExtension implements
+    ContributionPackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
     public static final String PACKAGE_TYPE = ContentType.JAR;
-        
-    public JarContributionProcessor(ContributionPackageProcessorRegistry registry){
+
+    public JarContributionProcessor(ContributionPackageProcessorRegistry registry) {
         super(registry);
     }
 
@@ -48,16 +50,17 @@ public class JarContributionProcessor extends ContributionPackageProcessorExtens
         return PACKAGE_TYPE;
     }
 
-    private URL forceJarURL(URL sourceURL) throws MalformedURLException {
+    public URL getArtifactURL(URL sourceURL, URI artifact) throws MalformedURLException {
         if (sourceURL.toString().startsWith("jar:")) {
-            return sourceURL;
+            return new URL(sourceURL, artifact.toString());
         } else {
-            return new URL("jar:" + sourceURL.toExternalForm() + "!/");
+            return new URL("jar:" + sourceURL.toExternalForm() + "!/" + artifact);
         }
 
     }
-    
-    public List<URL> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException, IOException{
+
+    public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException,
+        IOException {
         if (packageSourceURL == null) {
             throw new IllegalArgumentException("Invalid null package source URL.");
         }
@@ -66,10 +69,8 @@ public class JarContributionProcessor extends ContributionPackageProcessorExtens
             throw new IllegalArgumentException("Invalid null source inputstream.");
         }
 
-        List<URL> artifacts = new ArrayList<URL>();
-        
-        packageSourceURL = forceJarURL(packageSourceURL);
-        
+        List<URI> artifacts = new ArrayList<URI>();
+
         // Assume the root is a jar file
         JarInputStream jar = new JarInputStream(inputStream);
         try {
@@ -85,7 +86,7 @@ public class JarContributionProcessor extends ContributionPackageProcessorExtens
 
                 // FIXME: Maybe we should externalize the filter as a property
                 if (!entry.getName().startsWith(".")) {
-                    artifacts.add(new URL(packageSourceURL, entry.getName()));
+                    artifacts.add(URI.create(entry.getName()));
                 }
             }
         } finally {

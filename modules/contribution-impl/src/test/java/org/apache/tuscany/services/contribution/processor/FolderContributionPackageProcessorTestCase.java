@@ -19,7 +19,7 @@
 package org.apache.tuscany.services.contribution.processor;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -29,7 +29,7 @@ import org.apache.tuscany.services.contribution.PackageTypeDescriberImpl;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 
 public class FolderContributionPackageProcessorTestCase extends TestCase {
-    private static final String FOLDER_CONTRIBUTION = "../../../../core-samples/common/calculator";
+    private static final String FOLDER_CONTRIBUTION = ".";
     
     private File contributionRoot;
 
@@ -42,7 +42,7 @@ public class FolderContributionPackageProcessorTestCase extends TestCase {
         ContributionPackageProcessorRegistry packageProcessorRegistry = new ContributionPackageProcessorRegistryImpl(new PackageTypeDescriberImpl()); 
         FolderContributionProcessor folderProcessor = new FolderContributionProcessor(packageProcessorRegistry);
 
-        List<URL> artifacts = folderProcessor.getArtifacts(contributionRoot.toURL(), null);
+        List<URI> artifacts = folderProcessor.getArtifacts(contributionRoot.toURL(), null);
         assertNotNull(artifacts);
     }
 }

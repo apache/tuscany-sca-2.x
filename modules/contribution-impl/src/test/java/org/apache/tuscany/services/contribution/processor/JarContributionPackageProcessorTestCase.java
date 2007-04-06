@@ -19,6 +19,7 @@
 package org.apache.tuscany.services.contribution.processor;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class JarContributionPackageProcessorTestCase extends TestCase {
 
         URL jarURL = getClass().getResource(JAR_CONTRIBUTION);
         InputStream jarStream = jarURL.openStream();
-        List<URL> artifacts = null;
+        List<URI> artifacts = null;
         try{
             artifacts = jarProcessor.getArtifacts(jarURL, jarStream);
         }finally{

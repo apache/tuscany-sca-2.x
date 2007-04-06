@@ -20,6 +20,7 @@ package org.apache.tuscany.services.contribution;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -53,16 +54,16 @@ public class ContributionServiceImpl implements ContributionService {
     protected ContributionRepository contributionRepository;
 
     /**
-     * Registry of available package processors. 
+     * Registry of available package processors.
      */
     protected ContributionPackageProcessorRegistry packageProcessorRegistry;
 
     /**
      * Registry of available artifact processors
      */
-    
+
     protected ArtifactProcessorRegistry artifactProcessorRegistry;
-    
+
     /**
      * xml factory used to create reader instance to load contribution metadata
      */
@@ -71,7 +72,6 @@ public class ContributionServiceImpl implements ContributionService {
      * contribution metadata loader
      */
     protected ContributionMetadataLoaderImpl contributionLoader;
-
 
     /**
      * Contribution registry This is a registry of processed Contributios index
@@ -90,7 +90,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.packageProcessorRegistry = packageProcessorRegistry;
         this.artifactProcessorRegistry = artifactProcessorRegistry;
         this.resolverRegistry = resolverRegistry;
-        
+
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         this.contributionLoader = new ContributionMetadataLoaderImpl();
     }
@@ -127,8 +127,8 @@ public class ContributionServiceImpl implements ContributionService {
             if (contributionMetadataURL == null && generatedContributionMetadataURL == null) {
                 contributionMetadata = new Contribution();
             } else {
-                URL metadataURL =
-                    contributionMetadataURL != null ? contributionMetadataURL : generatedContributionMetadataURL;
+                URL metadataURL = contributionMetadataURL != null ? contributionMetadataURL
+                                                                 : generatedContributionMetadataURL;
 
                 try {
                     metadataStream = metadataURL.openStream();
@@ -136,14 +136,12 @@ public class ContributionServiceImpl implements ContributionService {
                     contributionMetadata = this.contributionLoader.load(xmlReader);
 
                 } catch (IOException ioe) {
-                    throw new 
-                        InvalidContributionMetadataException(ioe.getMessage(), metadataURL.toExternalForm(), ioe);
+                    throw new InvalidContributionMetadataException(ioe.getMessage(), metadataURL.toExternalForm(), ioe);
                 } catch (XMLStreamException xmle) {
-                    throw new 
-                        InvalidContributionMetadataException(xmle.getMessage(), metadataURL.toExternalForm(), xmle);
+                    throw new InvalidContributionMetadataException(xmle.getMessage(), metadataURL.toExternalForm(),
+                                                                   xmle);
                 } catch (ContributionMetadataLoaderException le) {
-                    throw new 
-                        InvalidContributionMetadataException(le.getMessage(), metadataURL.toExternalForm(), le);
+                    throw new InvalidContributionMetadataException(le.getMessage(), metadataURL.toExternalForm(), le);
                 }
             }
         } finally {
@@ -158,7 +156,7 @@ public class ContributionServiceImpl implements ContributionService {
         return contributionMetadata;
 
     }
-    
+
     public Contribution getContribution(URI id) {
         return this.contributionRegistry.get(id);
     }
@@ -170,49 +168,57 @@ public class ContributionServiceImpl implements ContributionService {
 
     public void addDeploymentComposite(URI contribution, Object composite) {
         /*
-        CompositeComponentType model = (CompositeComponentType)composite;
-        URI compositeURI = contribution.resolve(model.getName() + ".composite");
-        DeployedArtifact artifact = new DeployedArtifact(compositeURI);
-        // FIXME: the namespace should be from the CompositeComponentType model
-        artifact.addModelObject(composite.getClass(), null, composite);
-        Contribution contributionObject = (Contribution)getContribution(contribution);
-        contributionObject.addArtifact(artifact);
-        */
+         * CompositeComponentType model = (CompositeComponentType)composite; URI
+         * compositeURI = contribution.resolve(model.getName() + ".composite");
+         * DeployedArtifact artifact = new DeployedArtifact(compositeURI); //
+         * FIXME: the namespace should be from the CompositeComponentType model
+         * artifact.addModelObject(composite.getClass(), null, composite);
+         * Contribution contributionObject =
+         * (Contribution)getContribution(contribution);
+         * contributionObject.addArtifact(artifact);
+         */
     }
 
     /*
-    public <T> T resolve(URI contribution, Class<T> definitionType, String namespace, String name) {
-        Contribution contributionObject = getContribution(contribution);
-        return resolverRegistry.resolve(contributionObject, definitionType, namespace, name, null);
-    }
+     * public <T> T resolve(URI contribution, Class<T> definitionType, String
+     * namespace, String name) { Contribution contributionObject =
+     * getContribution(contribution); return
+     * resolverRegistry.resolve(contributionObject, definitionType, namespace,
+     * name, null); } public URL resolve(URI contribution, String namespace, URI
+     * uri, URI baseURI) { Contribution contributionObject =
+     * getContribution(contribution); return
+     * resolverRegistry.resolve(contributionObject, namespace, uri.toString(),
+     * baseURI.toString()); }
+     */
 
-    public URL resolve(URI contribution, String namespace, URI uri, URI baseURI) {
-        Contribution contributionObject = getContribution(contribution);
-        return resolverRegistry.resolve(contributionObject, namespace, uri.toString(), baseURI.toString());
-    }
-    */
-
-    public <M> M resolve(Class modelClass, Class<M> elementClass, Object modelKey, Object elementKey, Map<String, Object> attributes) {
+    public <M> M resolve(Class modelClass,
+                         Class<M> elementClass,
+                         Object modelKey,
+                         Object elementKey,
+                         Map<String, Object> attributes) {
         // TODO Auto-generated method stub
         return null;
     }
-    
-    
+
     /**
      * 
      */
-    
+
     /**
-     * Note: 
+     * Note:
+     * 
      * @param contributionURI ContributionID
      * @param sourceURL contribution location
      * @param contributionStream contribution content
-     * @param storeInRepository flag if we store the contribution into the repository or not
+     * @param storeInRepository flag if we store the contribution into the
+     *            repository or not
      * @throws IOException
      * @throws DeploymentException
      */
-    private void addContribution(URI contributionURI, URL sourceURL, InputStream contributionStream, boolean storeInRepository)
-        throws IOException, ContributionException {
+    private void addContribution(URI contributionURI,
+                                 URL sourceURL,
+                                 InputStream contributionStream,
+                                 boolean storeInRepository) throws IOException, ContributionException {
         if (contributionStream == null && sourceURL == null) {
             throw new IllegalArgumentException("The content of the contribution is null");
         }
@@ -230,9 +236,9 @@ public class ContributionServiceImpl implements ContributionService {
         Contribution contribution = initializeContributionMetadata(locationURL);
         contribution.setURI(contributionURI);
         contribution.setLocation(locationURL);
-        
-        List<URL> contributionArtifacts = null;
-        
+
+        List<URI> contributionArtifacts = null;
+
         if (contributionStream == null) {
             contributionStream = sourceURL.openStream();
             try {
@@ -246,19 +252,20 @@ public class ContributionServiceImpl implements ContributionService {
             // process the contribution
             contributionArtifacts = this.packageProcessorRegistry.getArtifacts(locationURL, contributionStream);
         }
-        
-        //processArtifactRead(contribution, contributionArtifacts);
-        
+
+        processArtifactRead(contribution, contributionArtifacts);
+
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getUri(), contribution);
     }
 
-    
-    private void processArtifactRead(Contribution contribution, List<URL> artifacts) throws ContributionException{
-        for(URL artifactURL : artifacts){
+    private void processArtifactRead(Contribution contribution, List<URI> artifacts) throws ContributionException,
+        MalformedURLException {
+        for (URI a : artifacts) {
+            URL artifactURL = packageProcessorRegistry.getArtifactURL(contribution.getLocation(), a);
             Object model = this.artifactProcessorRegistry.read(artifactURL);
 
-            if(model != null){
+            if (model != null) {
                 URI artifactURI = getArtifactURI(contribution.getUri(), artifactURL);
                 DeployedArtifact artifact = new DeployedArtifact(artifactURI);
                 artifact.setLocation(artifactURL);
@@ -266,13 +273,11 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
     }
-    
-    
-    
-    private URI getArtifactURI(URI baseURI, URL artifactURL){
+
+    private URI getArtifactURI(URI baseURI, URL artifactURL) {
         String artifactPath = artifactURL.toExternalForm().substring(artifactURL.toExternalForm().length());
         return baseURI.resolve(artifactPath);
 
     }
-    
+
 }

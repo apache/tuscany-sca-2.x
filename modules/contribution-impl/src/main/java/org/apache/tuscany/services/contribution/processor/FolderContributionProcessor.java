@@ -22,6 +22,7 @@ package org.apache.tuscany.services.contribution.processor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,16 +35,17 @@ import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.extension.ContributionPackageProcessorExtension;
 
-public class FolderContributionProcessor extends ContributionPackageProcessorExtension implements ContributionPackageProcessor {
+public class FolderContributionProcessor extends ContributionPackageProcessorExtension implements
+    ContributionPackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
     public static final String PACKAGE_TYPE = ContentType.FOLDER;
 
-    public FolderContributionProcessor(ContributionPackageProcessorRegistry registry){
+    public FolderContributionProcessor(ContributionPackageProcessorRegistry registry) {
         super(registry);
     }
-    
+
     public String getPackageType() {
         return PACKAGE_TYPE;
     }
@@ -52,18 +54,18 @@ public class FolderContributionProcessor extends ContributionPackageProcessorExt
      * Recursively traverse a root directory
      * 
      * @param fileList
-     * @param root
+     * @param file
      * @throws IOException
      */
-    private void traverse(List<URL> fileList, File root) throws IOException {
-        if (root.isFile()) {
-            fileList.add(root.toURL());
-        } else if (root.isDirectory()) {
+    private void traverse(List<URI> fileList, File file, File root) throws IOException {
+        if (file.isFile()) {
+            fileList.add(root.toURI().relativize(file.toURI()));
+        } else if (file.isDirectory()) {
             // FIXME: Maybe we should externalize it as a property
             // Regular expression to exclude .xxx files
-            File[] files = root.listFiles(FileHelper.getFileFilter("[^\u002e].*", true));
+            File[] files = file.listFiles(FileHelper.getFileFilter("[^\u002e].*", true));
             for (int i = 0; i < files.length; i++) {
-                traverse(fileList, files[i]);
+                traverse(fileList, files[i], root);
             }
         }
     }
@@ -74,30 +76,31 @@ public class FolderContributionProcessor extends ContributionPackageProcessorExt
      * @return
      * @throws IOException
      */
-    public List<URL> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException, IOException{
+    public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException,
+        IOException {
         if (packageSourceURL == null) {
             throw new IllegalArgumentException("Invalid null package source URL.");
         }
-        
-        List<URL> artifacts = new ArrayList<URL>();
+
+        List<URI> artifacts = new ArrayList<URI>();
 
         // Assume the root is a jar file
         File rootFolder;
-        
+
         try {
             rootFolder = new File(packageSourceURL.toURI());
             if (rootFolder.isDirectory()) {
-                if(! rootFolder.exists()){
+                if (!rootFolder.exists()) {
                     throw new InvalidFolderContributionException(rootFolder.getAbsolutePath());
                 }
 
-                this.traverse(artifacts, rootFolder);
+                this.traverse(artifacts, rootFolder, rootFolder);
             }
 
         } catch (URISyntaxException e) {
             throw new InvalidFolderContributionURIException(packageSourceURL.toExternalForm(), e);
         }
-        
+
         return artifacts;
     }
 }
