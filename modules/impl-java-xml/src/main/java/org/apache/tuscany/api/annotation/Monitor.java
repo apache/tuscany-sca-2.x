@@ -16,23 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspection;
+package org.apache.tuscany.api.annotation;
 
-import java.lang.reflect.Member;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Denotes an illegal property definition in a component type
- * 
+ * A system annotation to inject a monitor
+ *
  * @version $Rev$ $Date$
  */
-public class IllegalPropertyException extends ProcessingException {
-    private static final long serialVersionUID = -2836849110706758494L;
-
-    public IllegalPropertyException(String message) {
-        super(message);
-    }
-    
-    public IllegalPropertyException(String message, Member member) {
-        super(message, member);
-    }    
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Monitor {
 }

@@ -63,22 +63,6 @@ public class JavaElement {
         this.name = field.getName();
     }
 
-    public JavaElement(Method method) {
-        this.anchor = method;
-        this.elementType = ElementType.METHOD;
-        this.type = method.getReturnType();
-        this.genericType = method.getGenericReturnType();
-        this.name = method.getName();
-    }
-
-    public JavaElement(Constructor<?> constructor) {
-        this.anchor = constructor;
-        this.elementType = ElementType.CONSTRUCTOR;
-        this.type = null;
-        this.genericType = null;
-        this.name = constructor.getName();
-    }
-
     public JavaElement(Constructor<?> constructor, int index) {
         this.anchor = constructor;
         this.elementType = ElementType.PARAMETER;
@@ -97,6 +81,18 @@ public class JavaElement {
         this.name = "";
     }
 
+    /**
+     * For testing purpose
+     * @param elementType
+     * @param type
+     * @param name
+     */
+    public JavaElement(String name, Class<?> type) {
+        super();
+        this.type = type;
+        this.name = name;
+    }
+    
     /**
      * @return the anchor
      */

@@ -16,45 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspection;
+package org.apache.tuscany.implementation.java.processor;
 
-import java.lang.reflect.Member;
+import org.apache.tuscany.implementation.java.introspection.ProcessingException;
 
 /**
- * Denotes a problem processing annotations on a POJO implementation
- * 
+ * Thrown when an implementation has more than one reference injection site with the same name
+ *
  * @version $Rev$ $Date$
  */
-public class ProcessingException extends Exception {
-    private static final long serialVersionUID = -361025119035104470L;
-    private Member member;
+public class DuplicateReferenceException extends ProcessingException {
+    private static final long serialVersionUID = 907910648213477158L;
 
-    public ProcessingException() {
-    }
-
-    public ProcessingException(String message) {
+    public DuplicateReferenceException(String message) {
         super(message);
-    }
-
-    public ProcessingException(String message, Member member) {
-        super(message);
-        this.member = member;
-    }
-
-    public ProcessingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ProcessingException(Throwable cause) {
-        super(cause);
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
     }
 
 }

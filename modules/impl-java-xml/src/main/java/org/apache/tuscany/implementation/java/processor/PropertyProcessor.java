@@ -16,45 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspection;
+package org.apache.tuscany.implementation.java.processor;
 
-import java.lang.reflect.Member;
+import org.osoa.sca.annotations.Property;
 
 /**
- * Denotes a problem processing annotations on a POJO implementation
+ * Processes an {@link @Property} annotation, updating the component type with
+ * corresponding {@link JavaMappedProperty}
  * 
  * @version $Rev$ $Date$
  */
-public class ProcessingException extends Exception {
-    private static final long serialVersionUID = -361025119035104470L;
-    private Member member;
-
-    public ProcessingException() {
+public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
+    public PropertyProcessor() {
+        super(Property.class);
     }
 
-    public ProcessingException(String message) {
-        super(message);
+    protected String getName(Property annotation) {
+        return annotation.name();
     }
 
-    public ProcessingException(String message, Member member) {
-        super(message);
-        this.member = member;
-    }
-
-    public ProcessingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ProcessingException(Throwable cause) {
-        super(cause);
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
+    protected void initProperty(org.apache.tuscany.assembly.Property property, Property annotation) {
+        property.setMustSupply(annotation.required());
     }
 
 }

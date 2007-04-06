@@ -25,10 +25,8 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 public final class JavaXMLMapper {
+    public static final String URI_2001_SCHEMA_XSD = "http://www.w3.org/2001/XMLSchema";
     private static final Map<Class, QName> JAVA2XML = new HashMap<Class, QName>();
-
-    private static final String URI_2001_SCHEMA_XSD = "http://www.w3.org/2001/XMLSchema";
-
     private static final Map<String, Class> XML2JAVA = new HashMap<String, Class>();
 
     private JavaXMLMapper() {

@@ -16,45 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspection;
+package org.apache.tuscany.implementation.java.processor;
 
 import java.lang.reflect.Member;
 
+import org.apache.tuscany.implementation.java.introspection.ProcessingException;
+
 /**
- * Denotes a problem processing annotations on a POJO implementation
- * 
+ * Denotes an illegal reference definition in a component type
+ *
  * @version $Rev$ $Date$
  */
-public class ProcessingException extends Exception {
-    private static final long serialVersionUID = -361025119035104470L;
-    private Member member;
+public class IllegalReferenceException extends ProcessingException {
+    private static final long serialVersionUID = 4612984122225271395L;
 
-    public ProcessingException() {
-    }
-
-    public ProcessingException(String message) {
+    public IllegalReferenceException(String message) {
         super(message);
     }
-
-    public ProcessingException(String message, Member member) {
-        super(message);
-        this.member = member;
+    
+    public IllegalReferenceException(String message, Member member) {
+        super(message, member);
     }
-
-    public ProcessingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ProcessingException(Throwable cause) {
-        super(cause);
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
 }
