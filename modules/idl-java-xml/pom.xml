@@ -30,6 +30,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api-r1.0</artifactId>
+            <version>1.0.1-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+            
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>

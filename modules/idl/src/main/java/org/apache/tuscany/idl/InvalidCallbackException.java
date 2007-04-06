@@ -16,31 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.idl.java.introspection;
+package org.apache.tuscany.idl;
 
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.idl.InvalidInterfaceException;
 
 /**
- * Processor for creating JavaServiceContract definitions from Java Classes.
+ * Denotes an illegal callback interface
  *
  * @version $Rev$ $Date$
  */
-public interface JavaInterfaceIntrospector {
 
-    /**
-     * Introspect a Java interface and return a service contract definition.
-     *
-     * @param type the interface to inspect
-     * @return a JavaServiceContract corresponding to the Java interface
-     */
-    void introspect(Contract contract, Class<?> type) throws InvalidInterfaceException;
-    /**
-     * @param contract
-     * @param type
-     * @param callback
-     * @throws InvalidInterfaceException
-     */
-    void introspect(Contract contract, Class<?> type, Class<?> callback) throws InvalidInterfaceException;
+public class InvalidCallbackException extends InvalidInterfaceException {
+    private static final long serialVersionUID = 2727755895702116397L;
 
+    public InvalidCallbackException(String message) {
+        super(message);
+    }
 }
