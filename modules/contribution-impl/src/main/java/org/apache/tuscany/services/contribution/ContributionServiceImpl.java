@@ -35,6 +35,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.contribution.util.IOHelper;
+import org.apache.tuscany.services.spi.contribution.ArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.ArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
@@ -253,31 +254,43 @@ public class ContributionServiceImpl implements ContributionService {
             contributionArtifacts = this.packageProcessorRegistry.getArtifacts(locationURL, contributionStream);
         }
 
-        processArtifactRead(contribution, contributionArtifacts);
-
+        //processReadPhase(contribution, contributionArtifacts);
+        //processResolvePhase(contribution);
+        //processOptimizationPhase();
+        
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getUri(), contribution);
     }
 
-    private void processArtifactRead(Contribution contribution, List<URI> artifacts) throws ContributionException,
+    private void processReadPhase(Contribution contribution, List<URI> artifacts) throws ContributionException,
         MalformedURLException {
         for (URI a : artifacts) {
             URL artifactURL = packageProcessorRegistry.getArtifactURL(contribution.getLocation(), a);
-            Object model = this.artifactProcessorRegistry.read(artifactURL);
+            Object model = ((ArtifactProcessor)this.artifactProcessorRegistry).read(artifactURL);
 
             if (model != null) {
-                URI artifactURI = getArtifactURI(contribution.getUri(), artifactURL);
+                URI artifactURI = contribution.getUri().resolve(a);
                 DeployedArtifact artifact = new DeployedArtifact(artifactURI);
                 artifact.setLocation(artifactURL);
                 contribution.addArtifact(artifact);
             }
         }
     }
-
-    private URI getArtifactURI(URI baseURI, URL artifactURL) {
-        String artifactPath = artifactURL.toExternalForm().substring(artifactURL.toExternalForm().length());
-        return baseURI.resolve(artifactPath);
-
+    
+    private void processResolvePhase(Contribution contribution){
+        //for each artifact that was processed on the contribution
+        for(DeployedArtifact artifact : contribution.getArtifacts().values()){
+            //for each model object for the artifact
+            for(Object model : artifact.getModelObjects(Class.class).values()){
+                //resolve it
+                
+            }
+        }
+        
+    }
+    
+    private void processOptimizationPhase(){
+        //TODO
     }
 
 }
