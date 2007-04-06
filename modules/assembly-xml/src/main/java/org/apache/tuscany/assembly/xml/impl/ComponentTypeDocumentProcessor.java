@@ -74,6 +74,7 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
         try {
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
+            reader.nextTag();
             ComponentType componentType = (ComponentType)registry.read(reader);
             return componentType;
             

@@ -74,6 +74,7 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
         try {
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
+            reader.nextTag();
             Composite composite = (Composite)registry.read(reader);
             return composite;
             
