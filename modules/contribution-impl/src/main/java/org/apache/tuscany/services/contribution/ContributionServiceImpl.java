@@ -39,6 +39,7 @@ import org.apache.tuscany.services.spi.contribution.ArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.ArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
+import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
@@ -57,13 +58,13 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * Registry of available package processors.
      */
-    protected ContributionPackageProcessorRegistry packageProcessorRegistry;
+    protected ContributionPackageProcessor packageProcessor;
 
     /**
      * Registry of available artifact processors
      */
 
-    protected ArtifactProcessorRegistry artifactProcessorRegistry;
+    protected ArtifactProcessor artifactProcessor;
 
     /**
      * xml factory used to create reader instance to load contribution metadata
@@ -83,13 +84,13 @@ public class ContributionServiceImpl implements ContributionService {
     protected ArtifactResolverRegistry resolverRegistry;
 
     public ContributionServiceImpl(ContributionRepository repository,
-                                   ContributionPackageProcessorRegistry packageProcessorRegistry,
-                                   ArtifactProcessorRegistry artifactProcessorRegistry,
+                                   ContributionPackageProcessor packageProcessor,
+                                   ArtifactProcessor artifactProcessor,
                                    ArtifactResolverRegistry resolverRegistry) {
         super();
         this.contributionRepository = repository;
-        this.packageProcessorRegistry = packageProcessorRegistry;
-        this.artifactProcessorRegistry = artifactProcessorRegistry;
+        this.packageProcessor = packageProcessor;
+        this.artifactProcessor = artifactProcessor;
         this.resolverRegistry = resolverRegistry;
 
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
@@ -244,14 +245,14 @@ public class ContributionServiceImpl implements ContributionService {
             contributionStream = sourceURL.openStream();
             try {
                 // process the contribution
-                contributionArtifacts = this.packageProcessorRegistry.getArtifacts(locationURL, contributionStream);
+                contributionArtifacts = this.packageProcessor.getArtifacts(locationURL, contributionStream);
             } finally {
                 IOHelper.closeQuietly(contributionStream);
                 contributionStream = null;
             }
         } else {
             // process the contribution
-            contributionArtifacts = this.packageProcessorRegistry.getArtifacts(locationURL, contributionStream);
+            contributionArtifacts = this.packageProcessor.getArtifacts(locationURL, contributionStream);
         }
 
         //processReadPhase(contribution, contributionArtifacts);
@@ -265,8 +266,8 @@ public class ContributionServiceImpl implements ContributionService {
     private void processReadPhase(Contribution contribution, List<URI> artifacts) throws ContributionException,
         MalformedURLException {
         for (URI a : artifacts) {
-            URL artifactURL = packageProcessorRegistry.getArtifactURL(contribution.getLocation(), a);
-            Object model = ((ArtifactProcessor)this.artifactProcessorRegistry).read(artifactURL);
+            URL artifactURL = packageProcessor.getArtifactURL(contribution.getLocation(), a);
+            Object model = ((ArtifactProcessor)this.artifactProcessor).read(artifactURL);
 
             if (model != null) {
                 URI artifactURI = contribution.getUri().resolve(a);
