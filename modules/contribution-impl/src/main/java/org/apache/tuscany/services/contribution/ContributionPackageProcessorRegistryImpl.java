@@ -21,17 +21,17 @@ package org.apache.tuscany.services.contribution;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.spi.contribution.TypeDescriber;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.TypeDescriber;
 import org.apache.tuscany.services.spi.contribution.UnsupportedContentTypeException;
 
 /**
@@ -65,7 +65,7 @@ public class ContributionPackageProcessorRegistryImpl implements ContributionPac
         registry.remove(contentType);
     }
 
-    public List<URL> getArtifacts(URL packageSourceURL,InputStream inputStream) throws ContributionException, IOException{
+    public List<URI> getArtifacts(URL packageSourceURL,InputStream inputStream) throws ContributionException, IOException{
         String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
         if (contentType == null) {
             throw new UnsupportedContentTypeException("Unsupported contribution package", packageSourceURL.toString());
@@ -78,4 +78,13 @@ public class ContributionPackageProcessorRegistryImpl implements ContributionPac
 
         return packageProcessor.getArtifacts(packageSourceURL, inputStream);
     }
+    
+    /**
+     * @see org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor#getArtifactURL(java.net.URL, java.net.URI)
+     */
+    public URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException {
+        String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
+        ContributionPackageProcessor packageProcessor = this.registry.get(contentType);
+        return packageProcessor.getArtifactURL(packageSourceURL, artifact);
+    }    
 }
