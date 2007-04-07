@@ -66,12 +66,12 @@ public class ReadDocumentTestCase extends TestCase {
     public void testResolveConstrainingType() throws Exception {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
-        URL url = getClass().getClassLoader().getResource("CalculatorComponent.constrainingType");
+        URL url = getClass().getResource("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = (ConstrainingType)registry.read(url);
         assertNotNull(constrainingType);
         resolver.put(constrainingType, constrainingType);
 
-        url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
+        url = getClass().getResource("TestAllCalculator.composite");
         Composite composite = (Composite)registry.read(url);
         assertNotNull(composite);
         
@@ -84,12 +84,12 @@ public class ReadDocumentTestCase extends TestCase {
     public void testResolveComposite() throws Exception {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
-        URL url = getClass().getClassLoader().getResource("Calculator.composite");
+        URL url = getClass().getResource("Calculator.composite");
         Composite nestedComposite = (Composite)registry.read(url);
         assertNotNull(nestedComposite);
         resolver.put(nestedComposite, nestedComposite);
 
-        url = getClass().getClassLoader().getResource("TestAllCalculator.composite");
+        url = getClass().getResource("TestAllCalculator.composite");
         Composite composite = (Composite)registry.read(url);
         
         registry.resolve(composite, resolver);

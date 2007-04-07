@@ -56,7 +56,7 @@ public class OptimizeTestCase extends TestCase {
     public void testResolveConstrainingType() throws Exception {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
-        InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
+        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ConstrainingType constrainingType = constrainingTypeReader.read(reader);
@@ -64,7 +64,7 @@ public class OptimizeTestCase extends TestCase {
         assertNotNull(constrainingType);
         resolver.put(constrainingType, constrainingType);
 
-        is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        is = getClass().getResourceAsStream("TestAllCalculator.composite");
         CompositeProcessor compositeReader = new CompositeProcessor(registry);
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);
@@ -81,7 +81,7 @@ public class OptimizeTestCase extends TestCase {
     public void testResolveComposite() throws Exception {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
-        InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
+        InputStream is = getClass().getResourceAsStream("Calculator.composite");
         CompositeProcessor compositeReader = new CompositeProcessor(registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite nestedComposite = compositeReader.read(reader);
@@ -89,7 +89,7 @@ public class OptimizeTestCase extends TestCase {
         assertNotNull(nestedComposite);
         resolver.put(nestedComposite, nestedComposite);
 
-        is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        is = getClass().getResourceAsStream("TestAllCalculator.composite");
         compositeReader = new CompositeProcessor(registry);
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);

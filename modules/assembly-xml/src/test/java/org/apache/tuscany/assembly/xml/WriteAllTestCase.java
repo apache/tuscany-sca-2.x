@@ -52,13 +52,13 @@ public class WriteAllTestCase extends TestCase {
     }
 
     public void testReadWriteComposite() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = registry.read(is, Composite.class);
         registry.write(composite, System.out);
     }
 
     public void testReadWireWriteComposite() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = registry.read(is, Composite.class);
         registry.resolve(composite, new DefaultArtifactResolver());
         registry.wire(composite);
@@ -66,7 +66,7 @@ public class WriteAllTestCase extends TestCase {
     }
     
     public void testReadWriteComponentType() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorImpl.componentType");
+        InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         ComponentType componentType = registry.read(is, ComponentType.class);
         registry.resolve(componentType, new DefaultArtifactResolver());
         registry.wire(componentType);
@@ -74,7 +74,7 @@ public class WriteAllTestCase extends TestCase {
     }
 
     public void testReadWriteConstrainingType() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
+        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = registry.read(is, ConstrainingType.class);
         registry.resolve(constrainingType, new DefaultArtifactResolver());
         registry.wire(constrainingType);

@@ -82,7 +82,7 @@ public class StAXPerfTest {
     }
 
     public void testReadComposite() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         CompositeProcessor loader = new CompositeProcessor(assemblyFactory, policyFactory, registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
 
