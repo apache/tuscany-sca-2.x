@@ -18,7 +18,7 @@
  */
 package test.model.variant;
 
-import java.net.URL;
+import java.io.InputStream;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
@@ -72,8 +72,8 @@ public class VariantRuntimeContext {
 
         try {
             // Parse the composite file
-            URL url = getClass().getClassLoader().getResource(compositeFile);
-            Composite composite = registry.read(url, Composite.class);
+            InputStream is = getClass().getClassLoader().getResourceAsStream(compositeFile);
+            Composite composite = registry.read(is, Composite.class);
             resolver.put(composite, composite);
             
             // Resolve and configure the composite
