@@ -32,9 +32,8 @@
         
         <dependency>
             <groupId>org.osoa</groupId>
-            <artifactId>sca-api-r1.0</artifactId>
-            <version>1.0.1-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
+            <artifactId>sca-api</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
             
         <dependency>

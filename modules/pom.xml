@@ -84,70 +84,12 @@
                 <!--
                 <module>runtime-embedded</module>
                 -->
+                <module>sca-api</module>
                 <module>wsdl2java</module>
             </modules>
         </profile>
 
     </profiles>
-
-    <!-- dependencies used by the kernel -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- org.osoa.sca API -->
-            <dependency>
-                <groupId>org.osoa</groupId>
-                <artifactId>sca-api-r1.0</artifactId>
-                <version>1.0.1-incubating-SNAPSHOT</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- javax.servlet API -->
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.4</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!-- java.xml.stream API -->
-            <dependency>
-                <groupId>stax</groupId>
-                <artifactId>stax-api</artifactId>
-                <version>1.0.1</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- StAX implementation -->
-            <dependency>
-                <groupId>org.codehaus.woodstox</groupId>
-                <artifactId>wstx-asl</artifactId>
-                <version>3.2.0</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <!-- junit version -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.2</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- EasyMock version -->
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>2.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymockclassextension</artifactId>
-                <version>2.2</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
