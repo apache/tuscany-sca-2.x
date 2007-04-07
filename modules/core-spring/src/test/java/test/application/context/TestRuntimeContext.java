@@ -18,7 +18,7 @@
  */
 package test.application.context;
 
-import java.net.URL;
+import java.io.InputStream;
 
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
@@ -57,8 +57,8 @@ public class TestRuntimeContext {
 
         try {
             // Parse the composite file
-            URL url = getClass().getClassLoader().getResource(compositeFile);
-            Composite composite = registry.read(url, Composite.class);
+            InputStream is = getClass().getClassLoader().getResourceAsStream(compositeFile);
+            Composite composite = registry.read(is, Composite.class);
             resolver.put(composite, composite);
             
             // Resolve and configure the composite
