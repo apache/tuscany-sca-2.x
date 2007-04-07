@@ -172,9 +172,32 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
         }
     }
     
-    public void write(ConstrainingType model, XMLStreamWriter outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
+    public void write(ConstrainingType constrainingType, XMLStreamWriter writer) throws ContributionWriteException {
         
+        try {
+            writeStartDocument(writer, CONSTRAINING_TYPE);
+    
+            for (AbstractService service : constrainingType.getServices()) {
+                writeStart(writer, SERVICE, new Attr(NAME, service.getName()));
+                writeEnd(writer);
+            }
+    
+            for (AbstractReference reference : constrainingType.getReferences()) {
+                writeStart(writer, REFERENCE,
+                      new Attr(NAME, reference.getName()));
+                writeEnd(writer);
+            }
+    
+            for (AbstractProperty property : constrainingType.getProperties()) {
+                writeStart(writer, PROPERTY, new Attr(NAME, property.getName()));
+                writeEnd(writer);
+            }
+    
+            writeEndDocument(writer);
+            
+        } catch (XMLStreamException e) {
+            throw new ContributionWriteException(e);
+        }
     }
     
     public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {

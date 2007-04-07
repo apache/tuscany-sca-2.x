@@ -207,12 +207,8 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
     public void write(ComponentType componentType, XMLStreamWriter writer) throws ContributionWriteException {
         
         try {
-            writeStartDocument(writer);
-            writer.setPrefix("sca", SCA10_NS);
-            
-            writeStart(writer, COMPONENT_TYPE,
+            writeStartDocument(writer, COMPONENT_TYPE,
                        new Attr(Constants.CONSTRAINING_TYPE, getConstrainingTypeAttr(componentType)));
-            writer.writeDefaultNamespace(SCA10_NS);
     
             for (Service service : componentType.getServices()) {
                 writeStart(writer, SERVICE, new Attr(NAME, service.getName()));
@@ -241,8 +237,6 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 writeEnd(writer);
             }
     
-            writeEnd(writer);
-            
             writeEndDocument(writer);
             
         } catch (XMLStreamException e) {

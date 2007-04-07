@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.assembly.xml.impl;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -69,9 +70,53 @@ public class Attr {
         this.value = value;
     }
 
+    /**
+     * Writes a string from a qname and registers a prefix for its namespace.  
+     * @param reader
+     * @param value
+     * @return
+     */
+    protected String writeQNameValue(XMLStreamWriter writer, QName qname) throws XMLStreamException {
+        if (qname != null) {
+            String prefix = qname.getPrefix();
+            String uri = qname.getNamespaceURI();
+            prefix = writer.getPrefix(uri);
+            if (prefix != null) {
+
+                // Use the prefix already bound to the given uri
+                return prefix + ":" + qname.getLocalPart();
+            } else {
+                
+                // Find an available prefix and bind it to the given uri 
+                NamespaceContext nsc = writer.getNamespaceContext();
+                for (int i=1; ; i++) {
+                    prefix = "ns" + i;
+                    if (nsc.getNamespaceURI(prefix) == null) {
+                        break;
+                    }
+                }
+                writer.setPrefix(prefix, uri);
+                writer.writeNamespace(prefix, uri);
+                return prefix + ":" + qname.getLocalPart();
+            }
+        } else {
+            return null;
+        }
+    }
+
     void write(XMLStreamWriter writer) throws XMLStreamException {
         if (value != null) {
-            writer.writeAttribute(uri, name, String.valueOf(value));
+            String str;
+            if (value instanceof QName) {
+                str = writeQNameValue(writer, (QName)value);
+            } else {
+                str = String.valueOf(value);
+            }
+            if (uri != null && !uri.equals(Constants.SCA10_NS)) {
+                writer.writeAttribute(uri, name, str);
+            } else {
+                writer.writeAttribute(name,str);
+            }
         }
     }
 
