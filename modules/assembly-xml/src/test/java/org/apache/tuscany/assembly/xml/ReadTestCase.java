@@ -53,14 +53,14 @@ public class ReadTestCase extends TestCase {
 
     public void testReadComponentType() throws Exception {
         ComponentTypeProcessor componentTypeReader = new ComponentTypeProcessor(registry);
-        InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorImpl.componentType");
+        InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(componentTypeReader.read(reader));
         is.close();
     }
 
     public void testReadConstrainingType() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("CalculatorComponent.constrainingType");
+        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(constrainingTypeReader.read(reader));
@@ -69,7 +69,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
+        InputStream is = getClass().getResourceAsStream("Calculator.composite");
         CompositeProcessor compositeReader = new CompositeProcessor(registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(compositeReader.read(reader));
@@ -78,7 +78,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("Calculator.composite");
+        InputStream is = getClass().getResourceAsStream("Calculator.composite");
         CompositeProcessor compositeReader = new CompositeProcessor(registry);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(compositeReader.read(reader));

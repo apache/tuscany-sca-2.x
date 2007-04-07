@@ -63,7 +63,7 @@ public class ReadAllTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = registry.read(is, Composite.class);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
@@ -150,12 +150,12 @@ public class ReadAllTestCase extends TestCase {
     public void testReadCompositeAndWireIt() throws Exception {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
 
-        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllDivide.composite");
+        InputStream is = getClass().getResourceAsStream("TestAllDivide.composite");
         Composite included = registry.read(is, Composite.class);
         assertNotNull(included);
         resolver.put(included, included);
         
-        is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = registry.read(is, Composite.class);
         assertNotNull(composite);
         registry.resolve(composite, resolver);
