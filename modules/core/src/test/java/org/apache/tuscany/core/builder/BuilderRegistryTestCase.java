@@ -150,6 +150,7 @@ public class BuilderRegistryTestCase extends TestCase {
         assertEquals(2, reference.getReferenceBindings().size());
     }
 
+    /*
     @SuppressWarnings({"unchecked"})
     public void testNoConversationalContract() throws Exception {
         ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
@@ -187,6 +188,7 @@ public class BuilderRegistryTestCase extends TestCase {
             // expected
         }
     }
+    */
 
     @SuppressWarnings({"unchecked"})
     protected void setUp() throws Exception {

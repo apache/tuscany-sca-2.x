@@ -52,9 +52,7 @@ public class DeployerImpl implements Deployer {
     private ComponentManager componentManager;
     private ScopeRegistry scopeRegistry;
 
-    public DeployerImpl(XMLInputFactory xmlFactory,
-                        Builder builder,
-                        ComponentManager componentManager) {
+    public DeployerImpl(XMLInputFactory xmlFactory, Builder builder, ComponentManager componentManager) {
         this.xmlFactory = xmlFactory;
         this.builder = builder;
         this.componentManager = componentManager;
@@ -79,20 +77,20 @@ public class DeployerImpl implements Deployer {
         this.scopeRegistry = scopeRegistry;
     }
 
-    public Collection<Component> deploy(Component parent, Composite composite)
-        throws BuilderException, ResolutionException {
+    public Collection<Component> deploy(Composite composite) throws BuilderException, ResolutionException {
         @SuppressWarnings("unchecked")
         ScopeContainer<URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
-        URI groupId = parent != null ? parent.getUri() : URI.create("/");
-        DeploymentContext deploymentContext = new RootDeploymentContext(null, null, groupId, xmlFactory,
-                                                                        scopeContainer, false);
-        
+        URI groupId = URI.create(composite.getName().getLocalPart());
+        URI componentId = URI.create("/");
+        DeploymentContext deploymentContext = new RootDeploymentContext(null, groupId, componentId, xmlFactory,
+                                                                        scopeContainer);
+
         org.apache.tuscany.assembly.Component componentDef = new DefaultAssemblyFactory().createComponent();
         componentDef.setName(composite.getName().getLocalPart());
         componentDef.setImplementation(composite);
-        
+
         // build runtime artifacts
-        build(parent, componentDef, deploymentContext);
+        build(componentDef, deploymentContext);
 
         Collection<Component> components = deploymentContext.getComponents().values();
         for (Component toRegister : components) {
@@ -113,8 +111,7 @@ public class DeployerImpl implements Deployer {
      * @param deploymentContext the current deployment context
      * @return the new runtime context
      */
-    protected SCAObject build(Component parent,
-                              org.apache.tuscany.assembly.Component componentDefinition,
+    protected SCAObject build(org.apache.tuscany.assembly.Component componentDefinition,
                               DeploymentContext deploymentContext) throws BuilderException {
         return builder.build(componentDefinition, deploymentContext);
     }

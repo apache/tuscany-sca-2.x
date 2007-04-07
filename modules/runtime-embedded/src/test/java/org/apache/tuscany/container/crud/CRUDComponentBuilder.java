@@ -36,7 +36,8 @@ public class CRUDComponentBuilder extends ComponentBuilderExtension<CRUDImplemen
 
     @SuppressWarnings("unchecked")
     public AtomicComponent build(Component definition, DeploymentContext context) throws BuilderConfigException {
-        CRUDAtomicComponent component = new CRUDAtomicComponent(URI.create(definition.getName()), context.getGroupId(),
+        URI id = URI.create(context.getComponentId() + definition.getName());
+        CRUDAtomicComponent component = new CRUDAtomicComponent(id, context.getGroupId(),
                                                                 (CRUDImplementation)definition.getImplementation());
         return component;
     }

@@ -41,8 +41,7 @@ public class SimpleRuntimeImplTestCase extends TestCase {
     }
 
     public void testStart() throws Exception {
-        ComponentContext context = runtime.getComponentContext(URI
-            .create("sca://root.application/default/CRUDServiceComponent"));
+        ComponentContext context = runtime.getComponentContext(URI.create("CRUDServiceComponent"));
         assertNotNull(context);
     }
 

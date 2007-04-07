@@ -31,6 +31,7 @@ import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor
 import org.apache.tuscany.services.spi.contribution.ContributionService;
 import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.TypeDescriber;
+import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
 
 /**
  * This is more intended to be a integration test then a unit test. *
@@ -41,7 +42,7 @@ public class ContributionServiceImplTestCase extends TestCase {
     
     private TypeDescriber contentTypeDescriber;
     private ContributionPackageProcessorRegistry packageProcessorRegistry;
-    private ArtifactProcessorRegistry artifactProcessorRegistry;
+    private URLArtifactProcessor artifactProcessorRegistry;
     private ContributionService contributionService;
     
     protected void setUp() throws Exception {
@@ -58,7 +59,7 @@ public class ContributionServiceImplTestCase extends TestCase {
         this.artifactProcessorRegistry = new DefaultURLArtifactProcessorRegistry();
         //new CompositeDocumentProcessor(this.artifactProcessorRegistry);
         
-        this.contributionService = new ContributionServiceImpl(null, this.packageProcessorRegistry, null, null);
+        this.contributionService = new ContributionServiceImpl(null, this.packageProcessorRegistry, artifactProcessorRegistry, null);
     }
 
     public void testContributeURL() throws Exception {

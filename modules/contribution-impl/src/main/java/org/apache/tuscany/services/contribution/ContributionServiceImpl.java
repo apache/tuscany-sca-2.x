@@ -65,7 +65,7 @@ public class ContributionServiceImpl implements ContributionService {
      * Registry of available artifact processors
      */
 
-    protected ArtifactProcessor artifactProcessor;
+    protected URLArtifactProcessor<?> artifactProcessor;
 
     /**
      * xml factory used to create reader instance to load contribution metadata
@@ -86,7 +86,7 @@ public class ContributionServiceImpl implements ContributionService {
 
     public ContributionServiceImpl(ContributionRepository repository,
                                    ContributionPackageProcessor packageProcessor,
-                                   ArtifactProcessor artifactProcessor,
+                                   URLArtifactProcessor artifactProcessor,
                                    ArtifactResolverRegistry resolverRegistry) {
         super();
         this.contributionRepository = repository;
@@ -256,10 +256,10 @@ public class ContributionServiceImpl implements ContributionService {
             contributionArtifacts = this.packageProcessor.getArtifacts(locationURL, contributionStream);
         }
 
-        //processReadPhase(contribution, contributionArtifacts);
-        //processResolvePhase(contribution);
-        //processOptimizationPhase();
-        
+         processReadPhase(contribution, contributionArtifacts);
+        // processResolvePhase(contribution);
+        // processOptimizationPhase();
+
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getUri(), contribution);
     }
@@ -268,31 +268,32 @@ public class ContributionServiceImpl implements ContributionService {
         MalformedURLException {
         for (URI a : artifacts) {
             URL artifactURL = packageProcessor.getArtifactURL(contribution.getLocation(), a);
-            Object model = ((URLArtifactProcessor)this.artifactProcessor).read(artifactURL);
+            Object model = this.artifactProcessor.read(artifactURL);
 
             if (model != null) {
                 URI artifactURI = contribution.getUri().resolve(a);
                 DeployedArtifact artifact = new DeployedArtifact(artifactURI);
                 artifact.setLocation(artifactURL);
                 contribution.addArtifact(artifact);
+                artifact.addModelObject(Object.class, "*", model);
             }
         }
     }
-    
-    private void processResolvePhase(Contribution contribution){
-        //for each artifact that was processed on the contribution
-        for(DeployedArtifact artifact : contribution.getArtifacts().values()){
-            //for each model object for the artifact
-            for(Object model : artifact.getModelObjects(Class.class).values()){
-                //resolve it
-                
+
+    private void processResolvePhase(Contribution contribution) {
+        // for each artifact that was processed on the contribution
+        for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
+            // for each model object for the artifact
+            for (Object model : artifact.getModelObjects(Class.class).values()) {
+                // resolve it
+
             }
         }
-        
+
     }
-    
-    private void processOptimizationPhase(){
-        //TODO
+
+    private void processOptimizationPhase() {
+        // TODO
     }
 
 }

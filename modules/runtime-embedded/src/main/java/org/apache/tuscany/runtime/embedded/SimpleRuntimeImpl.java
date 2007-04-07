@@ -145,9 +145,10 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         // FIXME: Need to getDeployables() as list of Composites
         DeployedArtifact artifact = contribution.getArtifact(URI.create(uri + runtimeInfo.getCompositePath()));
-        Composite composite = (Composite)artifact.getModelObjects(Composite.class).get(0);
+        Composite composite = (Composite)artifact.getModelObjects().values().iterator().next().values().iterator()
+            .next();
 
-        Collection<Component> components = getDeployer().deploy(null, composite);
+        Collection<Component> components = getDeployer().deploy(composite);
         for (Component component : components) {
             component.start();
         }
@@ -156,7 +157,8 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         WorkContext workContext = new SimpleWorkContext();
         workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
         PojoWorkContextTunnel.setThreadWorkContext(workContext);
-        return getComponentManager().getComponent(URI.create(composite.getName().getLocalPart()));
+        tuscanySystem = getComponentManager().getComponent(URI.create("/" + composite.getName().getLocalPart()));
+        return tuscanySystem;
     }
 
     @SuppressWarnings("deprecation")
