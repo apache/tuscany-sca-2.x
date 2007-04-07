@@ -43,6 +43,7 @@ import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
+import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.loader.ContributionMetadataLoaderException;
 
 /**
@@ -267,7 +268,7 @@ public class ContributionServiceImpl implements ContributionService {
         MalformedURLException {
         for (URI a : artifacts) {
             URL artifactURL = packageProcessor.getArtifactURL(contribution.getLocation(), a);
-            Object model = ((ArtifactProcessor)this.artifactProcessor).read(artifactURL);
+            Object model = ((URLArtifactProcessor)this.artifactProcessor).read(artifactURL);
 
             if (model != null) {
                 URI artifactURI = contribution.getUri().resolve(a);
