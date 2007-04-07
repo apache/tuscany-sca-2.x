@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
@@ -49,7 +50,6 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
     }
 
     public JavaInterface read(XMLStreamReader reader) throws ContributionReadException {
-        
         try {
     
             // Read an <interface.java>
@@ -70,9 +70,18 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         }
     }
     
-    public void write(JavaInterface model, XMLStreamWriter outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
-        
+    public void write(JavaInterface javaInterface, XMLStreamWriter writer) throws ContributionWriteException {
+        try {
+            // Write an <interface.java>
+            writer.writeStartElement(Constants.SCA10_NS, INTERFACE_JAVA);
+            if (javaInterface.getName() != null) {
+                writer.writeAttribute(INTERFACE, javaInterface.getName());
+            }
+            writer.writeEndElement();
+            
+        } catch (XMLStreamException e) {
+            throw new ContributionWriteException(e);
+        }
     }
     
     public void resolve(JavaInterface model, ArtifactResolver resolver) throws ContributionResolveException {

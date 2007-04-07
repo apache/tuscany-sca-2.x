@@ -36,7 +36,7 @@ import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessor
 import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
 
 /**
- * Test the resolving SCA XML assemblies.
+ * Test reading SCA XML assembly documents.
  * 
  * @version $Rev$ $Date$
  */

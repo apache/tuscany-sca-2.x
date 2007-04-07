@@ -34,11 +34,11 @@ import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**
- * Test the resolving SCA XML assemblies.
+ * Test the wiring of SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
-public class OptimizeTestCase extends TestCase {
+public class WireTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private DefaultStAXArtifactProcessorRegistry registry;

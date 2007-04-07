@@ -181,12 +181,16 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
     
             for (AbstractService service : constrainingType.getServices()) {
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
+                //TODO write callback interface 
+                extensionProcessor.write(service.getInterface(), writer);
                 writeEnd(writer);
             }
     
             for (AbstractReference reference : constrainingType.getReferences()) {
                 writeStart(writer, REFERENCE,
                       new XAttr(NAME, reference.getName()));
+                //TODO write callback interface 
+                extensionProcessor.write(reference.getInterface(), writer);
                 writeEnd(writer);
             }
     

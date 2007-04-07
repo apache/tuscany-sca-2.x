@@ -32,7 +32,7 @@ import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**
- * Test the usability of the assembly model API when loading SCDL
+ * Test reading SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */

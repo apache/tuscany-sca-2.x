@@ -33,7 +33,7 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**
- * Test the usability of the assembly model API when loading SCDL
+ * Test the performance of StAX parsing.
  * 
  * @version $Rev$ $Date$
  */
