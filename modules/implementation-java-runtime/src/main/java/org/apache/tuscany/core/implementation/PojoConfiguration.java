@@ -25,14 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.wire.ProxyService;
-
+import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.component.InstanceFactory;
+import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * Encapsulates confuration for a Java-based atomic component

@@ -20,17 +20,15 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Wire;
-
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.util.JavaIDLUtils;
 import org.apache.tuscany.core.wire.WireObjectFactory;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -43,11 +41,11 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         super(configuration);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback)
         throws TargetInvokerCreationException {
 
         Class<?> implClass;
-        if (operation.isCallback()) {
+        if (isCallback) {
             implClass = operation.getServiceContract().getCallbackClass();
         } else {
             implClass = implementationClass;
@@ -59,11 +57,6 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
             throw new TargetMethodNotFoundException(operation);
         }
 
-    }
-
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
-        throws TargetInvokerCreationException {
-        throw new UnsupportedOperationException();
     }
 
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {

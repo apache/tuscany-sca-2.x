@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.injection;
 
-import org.apache.tuscany.api.TuscanyRuntimeException;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 /**
  * Root unchecked exception for the injection package

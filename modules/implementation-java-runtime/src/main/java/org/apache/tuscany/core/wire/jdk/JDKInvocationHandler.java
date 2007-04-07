@@ -30,22 +30,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
+import org.apache.tuscany.core.wire.NoMethodForOperationException;
+import org.apache.tuscany.core.wire.WireUtils;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.TargetInvocationException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-
-import org.apache.tuscany.core.wire.NoMethodForOperationException;
-import org.apache.tuscany.core.wire.WireUtils;
-import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 
 
 /**
@@ -205,10 +204,10 @@ public final class JDKInvocationHandler extends AbstractInvocationHandler
      */
     private void init(Class<?> interfaze, Wire wire, Map<Method, ChainHolder> mapping)
         throws NoMethodForOperationException {
-        ServiceContract contract = wire.getSourceContract();
+        Contract contract = wire.getSourceContract();
         this.referenceName = wire.getSourceUri().getFragment();
-        this.conversational = contract.isConversational();
-        this.callback = contract.getCallbackClass() != null;
+        this.conversational = contract.getInterface().isConversational();
+        this.callback = contract.getCallbackInterface() != null;
         // FIXME JFM this should not be dependent on PojoAtomicComponent
         // JFM commenting out as this should not be specific to pojo types
 //        this.wireContainerIsAtomicComponent = scaObject instanceof PojoAtomicComponent;

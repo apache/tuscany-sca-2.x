@@ -29,30 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-
-import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.extension.AtomicComponentExtension;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.Parameter;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.Wire;
-
 import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.InstanceFactory;
+import org.apache.tuscany.core.component.ReflectiveInstanceWrapper;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
-import org.apache.tuscany.core.component.scope.ReflectiveInstanceWrapper;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory;
 import org.apache.tuscany.core.injection.ConversationIDObjectFactory;
@@ -66,6 +48,22 @@ import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.wire.Wire;
+import org.osoa.sca.CallableReference;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Base implementation of an

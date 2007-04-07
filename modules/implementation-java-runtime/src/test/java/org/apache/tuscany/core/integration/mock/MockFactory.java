@@ -26,19 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.ProxyService;
-
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -46,6 +34,16 @@ import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKProxyService;
+import org.apache.tuscany.idl.InvalidInterfaceException;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.idl.java.introspection.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.ProxyService;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -165,12 +163,12 @@ public final class MockFactory {
     }
 
     public static <T> Wire createWire(String serviceName, Class<T> interfaze)
-        throws InvalidServiceContractException {
+        throws InvalidInterfaceException {
         return createWire(serviceName, interfaze, null);
     }
 
     public static <T> Wire createWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
-        throws InvalidServiceContractException {
+        throws InvalidInterfaceException {
         Wire wire = new WireImpl();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setSourceContract(contract);
@@ -195,10 +193,10 @@ public final class MockFactory {
     }
 
     private static void createChains(Class<?> interfaze, Interceptor interceptor, Wire wire)
-        throws InvalidServiceContractException {
+        throws InvalidInterfaceException {
 
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        for (Operation<?> method : contract.getOperations().values()) {
+        for (Operation method : contract.getOperations().values()) {
             InvocationChain chain = new InvocationChainImpl(method);
             if (interceptor != null) {
                 chain.addInterceptor(interceptor);

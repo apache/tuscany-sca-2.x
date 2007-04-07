@@ -18,29 +18,25 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
 public class TargetMethodNotFoundException extends TargetInvokerCreationException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8565552977647191863L;
     private Operation operation;
-    private PhysicalOperationDefinition pOperation;
 
     /**
-     * @deprecated
      * @param operation
      */
     public TargetMethodNotFoundException(Operation operation) {
         super("Target method not found for operation");
         this.operation = operation;
-    }
-
-    public TargetMethodNotFoundException(PhysicalOperationDefinition operation) {
-        super("Target method not found for operation");
-        this.pOperation = operation;
     }
 
     public Operation getOperation() {

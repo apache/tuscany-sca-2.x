@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
@@ -29,24 +30,21 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
- * Responsible for synchronously dispatching an invocation to a Java component implementation instance
- *
+ * Responsible for synchronously dispatching an invocation to a Java component
+ * implementation instance
+ * 
  * @version $Rev$ $Date$
  */
 public class JavaTargetInvoker<T> extends TargetInvokerExtension {
     protected Method operation;
+    protected boolean stateless;
+    protected InstanceWrapper<T> target;
     private final AtomicComponent<T> component;
     private final ScopeContainer scopeContainer;
-    protected InstanceWrapper<T> target;
-    protected boolean stateless;
 
-    public JavaTargetInvoker(Method operation,
-                             AtomicComponent<T> component,
-                             ScopeContainer scopeContainer
-    ) {
+    public JavaTargetInvoker(Method operation, AtomicComponent<T> component, ScopeContainer scopeContainer) {
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
@@ -54,7 +52,45 @@ public class JavaTargetInvoker<T> extends TargetInvokerExtension {
         stateless = Scope.STATELESS == scopeContainer.getScope();
     }
 
-    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
+    @Override
+    public JavaTargetInvoker clone() throws CloneNotSupportedException {
+        try {
+            JavaTargetInvoker invoker = (JavaTargetInvoker)super.clone();
+            invoker.target = null;
+            return invoker;
+        } catch (CloneNotSupportedException e) {
+            return null; // will not happen
+        }
+    }
+
+    /**
+     * Resolves the target service instance or returns a cached one
+     */
+    protected InstanceWrapper<T> getInstance(short sequence, Object contextId) throws TargetException {
+        switch (sequence) {
+            case NONE:
+                if (cacheable) {
+                    if (target == null) {
+                        target = scopeContainer.getWrapper(component, contextId);
+                    }
+                    return target;
+                } else {
+                    return scopeContainer.getWrapper(component, contextId);
+                }
+            case START:
+                assert !cacheable;
+                return scopeContainer.getWrapper(component, contextId);
+            case CONTINUE:
+            case END:
+                assert !cacheable;
+                return scopeContainer.getAssociatedWrapper(component, contextId);
+            default:
+                throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
+        }
+    }
+
+    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext)
+        throws InvocationTargetException {
         Object contextId = workContext.getIdentifier(scopeContainer.getScope());
         try {
             InstanceWrapper<T> wrapper = getInstance(sequence, contextId);
@@ -63,7 +99,7 @@ public class JavaTargetInvoker<T> extends TargetInvokerExtension {
             if (payload != null && !payload.getClass().isArray()) {
                 ret = operation.invoke(instance, payload);
             } else {
-                ret = operation.invoke(instance, (Object[]) payload);
+                ret = operation.invoke(instance, (Object[])payload);
             }
             scopeContainer.returnWrapper(component, wrapper, contextId);
             if (sequence == END) {
@@ -77,43 +113,5 @@ public class JavaTargetInvoker<T> extends TargetInvokerExtension {
             throw new InvocationTargetException(e);
         }
     }
-
-    @Override
-    public JavaTargetInvoker clone() throws CloneNotSupportedException {
-        try {
-            JavaTargetInvoker invoker = (JavaTargetInvoker) super.clone();
-            invoker.target = null;
-            return invoker;
-        } catch (CloneNotSupportedException e) {
-            return null; // will not happen
-        }
-    }
-
-    /**
-     * Resolves the target service instance or returns a cached one
-     */
-    protected InstanceWrapper<T> getInstance(short sequence, Object contextId) throws TargetException {
-        switch (sequence) {
-        case NONE:
-            if (cacheable) {
-                if (target == null) {
-                    target = scopeContainer.getWrapper(component, contextId);
-                }
-                return target;
-            } else {
-                return scopeContainer.getWrapper(component, contextId);
-            }
-        case START:
-            assert !cacheable;
-            return scopeContainer.getWrapper(component, contextId);
-        case CONTINUE:
-        case END:
-            assert !cacheable;
-            return scopeContainer.getAssociatedWrapper(component, contextId);
-        default:
-            throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
-        }
-    }
-
 
 }
