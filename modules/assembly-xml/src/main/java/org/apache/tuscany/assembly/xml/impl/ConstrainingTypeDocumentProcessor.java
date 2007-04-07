@@ -96,8 +96,8 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
     }
     
     public void write(ConstrainingType model, URL outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
-        
+        // Can't write to a URL
+        throw new UnsupportedOperationException();
     }
     
     public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {

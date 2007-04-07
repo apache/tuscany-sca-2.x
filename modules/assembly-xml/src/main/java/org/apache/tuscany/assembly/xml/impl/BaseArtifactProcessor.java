@@ -457,9 +457,11 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param writer
      * @throws XMLStreamException
      */
-    protected void writeStartDocument(XMLStreamWriter writer) throws XMLStreamException {
+    protected void writeStartDocument(XMLStreamWriter writer, String name, Attr... attrs) throws XMLStreamException {
         writer.writeStartDocument();
         writer.setDefaultNamespace(SCA10_NS);
+        writeStart(writer, name, attrs);
+        writer.writeDefaultNamespace(SCA10_NS);
     }
     
     /**

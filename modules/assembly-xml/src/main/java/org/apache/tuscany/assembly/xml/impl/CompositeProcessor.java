@@ -42,6 +42,8 @@ import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.Reference;
+import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
@@ -328,9 +330,84 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         }
     }
     
-    public void write(Composite model, XMLStreamWriter outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
-        
+    public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException {
+
+        try {
+            writeStartDocument(writer, COMPOSITE, new Attr(CONSTRAINING_TYPE, getConstrainingTypeAttr(composite)));
+    
+            for (Service service : composite.getServices()) {
+                CompositeService compositeService = (CompositeService)service;
+                ComponentService promotedService = compositeService.getPromotedService();
+                String promote = promotedService != null ? promotedService.getName() : null;
+                writeStart(writer, SERVICE, new Attr(NAME, service.getName()), new Attr(PROMOTE, promote));
+                if (service.getCallback() != null) {
+                    writeStart(writer, CALLBACK);
+                    writeEnd(writer);
+                }
+                writeEnd(writer);
+            }
+    
+            for (Component component : composite.getComponents()) {
+                writeStart(writer, COMPONENT, new Attr(NAME, component.getName()));
+    
+                for (ComponentService service : component.getServices()) {
+                    writeStart(writer, SERVICE, new Attr(NAME, service.getName()));
+                    writeEnd(writer);
+                    if (service.getCallback() != null) {
+                        writeStart(writer, CALLBACK);
+                        writeEnd(writer);
+                    }
+                }
+    
+                for (ComponentReference reference : component.getReferences()) {
+                    // TODO handle multivalued target attribute
+                    String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
+                    writeStart(writer, REFERENCE,
+                               new Attr(NAME, reference.getName()),
+                               new Attr(TARGET,target));
+                    if (reference.getCallback() != null) {
+                        writeStart(writer, CALLBACK);
+                        writeEnd(writer);
+                    }
+                    writeEnd(writer);
+                }
+    
+                for (ComponentProperty property : component.getProperties()) {
+                    writeStart(writer, PROPERTY, new Attr(NAME, property.getName()));
+                    writeEnd(writer);
+                }
+    
+                writeEnd(writer);
+            }
+    
+            for (Reference reference : composite.getReferences()) {
+                // TODO handle multivalued promote attribute
+                CompositeReference compositeReference = (CompositeReference)reference;
+                String promote;
+                if (!compositeReference.getPromotedReferences().isEmpty())
+                    promote = compositeReference.getPromotedReferences().get(0).getName();
+                else
+                    promote = null;
+                writeStart(writer, REFERENCE,
+                           new Attr(NAME, reference.getName()),
+                           new Attr(PROMOTE, promote));
+                if (reference.getCallback() != null) {
+                    writeStart(writer, CALLBACK);
+                    writeEnd(writer);
+                }
+                writeEnd(writer);
+            }
+    
+            for (Property property : composite.getProperties()) {
+                writeStart(writer, PROPERTY, new Attr(NAME, property.getName()));
+                writeEnd(writer);
+            }
+    
+            writeEndDocument(writer);
+            
+        } catch (XMLStreamException e) {
+            throw new ContributionWriteException(e);
+        }
     }
     
     public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {

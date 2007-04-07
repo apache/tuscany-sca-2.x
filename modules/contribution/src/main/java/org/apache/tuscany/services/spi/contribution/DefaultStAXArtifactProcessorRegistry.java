@@ -52,6 +52,7 @@ public class DefaultStAXArtifactProcessorRegistry
         super();
         this.inputFactory = inputFactory;
         this.outputFactory = outputFactory;
+        this.outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces",Boolean.TRUE);
     }
 
     public DefaultStAXArtifactProcessorRegistry() {

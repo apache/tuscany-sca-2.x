@@ -95,6 +95,8 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
     }
     
     public void write(ComponentType model, URL outputSource) throws ContributionWriteException {
+        // Can't write to a URL
+        throw new UnsupportedOperationException();
     }
     
     public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {

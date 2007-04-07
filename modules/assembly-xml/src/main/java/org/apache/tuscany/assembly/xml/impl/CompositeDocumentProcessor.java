@@ -94,9 +94,9 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
         }
     }
     
-    public void write(Composite model, URL outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
-        
+    public void write(Composite model, URL url) throws ContributionWriteException {
+        // Can't write to a URL
+        throw new UnsupportedOperationException();
     }
     
     public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {
