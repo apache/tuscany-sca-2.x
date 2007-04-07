@@ -63,15 +63,15 @@
                 <module>http</module>
                 <module>http-jetty</module>
                 <module>http-tomcat</module>
-                <module>idl</module>
-                <module>idl-java</module>
-                <module>idl-java-xml</module>
-                <module>idl-wsdl</module>
-                <module>idl-wsdl-xml</module>
-                <module>impl-java</module>
-                <module>impl-java-xml</module>
+                <module>interface</module>
+                <module>interface-java</module>
+                <module>interface-java-xml</module>
+                <module>interface-wsdl</module>
+                <module>interface-wsdl-xml</module>
+                <module>implementation-java</module>
+                <module>implementation-java-xml</module>
                 <!--
-                <module>impl-script</module>
+                <module>implementation-script</module>
                 <module>implementation-spring</module>
                 -->
                 <module>java2wsdl</module>

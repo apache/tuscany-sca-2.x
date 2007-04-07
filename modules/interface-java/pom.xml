@@ -25,14 +25,15 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-impl-java</artifactId>
-    <name>Apache Tuscany Java Implementation Model</name>
+    <artifactId>tuscany-interface-java</artifactId>
+    <name>Apache Tuscany Java Interface Model</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly</artifactId>
+            <artifactId>tuscany-interface</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
 </project>

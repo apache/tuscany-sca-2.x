@@ -25,32 +25,13 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-impl-java-xml</artifactId>
-    <name>Apache Tuscany SCA XML Java Implementation Extension</name>
+    <artifactId>tuscany-implementation-java</artifactId>
+    <name>Apache Tuscany Java Implementation Model</name>
 
     <dependencies>
-        
-        <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-            
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-idl-java-xml</artifactId>
-            <version>${version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-impl-java</artifactId>
+            <artifactId>tuscany-assembly</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
