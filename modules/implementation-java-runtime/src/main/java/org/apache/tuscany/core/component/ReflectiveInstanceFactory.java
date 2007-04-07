@@ -21,6 +21,7 @@ package org.apache.tuscany.core.component;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.core.component.scope.ReflectiveInstanceWrapper;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.ObjectCreationException;

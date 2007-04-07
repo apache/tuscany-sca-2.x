@@ -28,15 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$

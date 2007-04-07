@@ -18,88 +18,41 @@
     * under the License.    
 -->
 <project>
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>kernel</artifactId>
-        <version>2.0-alpha2-incubating-SNAPSHOT</version>
+        <artifactId>tuscany-modules</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.kernel</groupId>
-    <artifactId>tuscany-core</artifactId>
-    <packaging>jar</packaging>
-    <name>Apache Tuscany SCA Core</name>
-    <description>Core Tuscany runtime.</description>
+    <artifactId>tuscany-implementation-java-runtime</artifactId>
+    <name>Apache Tuscany Implementation Java Runtime</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-core-databinding</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>commonj-api_r1.1</artifactId>
-            <version>1.0-incubator-M2</version>
-            <scope>compile</scope>
-        </dependency>
-
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-impl-java</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
         <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-        </dependency>
-
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-impl-java-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>                        
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>${notice.dir}</directory>
-                <targetPath>META-INF</targetPath>
-                <filtering>true</filtering>
-                <includes>
-                    <include>LICENSE.txt</include>
-                    <include>NOTICE.txt</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
 </project>
