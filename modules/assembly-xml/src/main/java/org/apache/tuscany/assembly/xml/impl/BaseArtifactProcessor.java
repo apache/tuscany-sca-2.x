@@ -31,6 +31,8 @@ import java.util.StringTokenizer;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -58,6 +60,7 @@ import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
@@ -69,6 +72,11 @@ abstract class BaseArtifactProcessor implements Constants {
 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
+
+    private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+    static {
+        domFactory.setNamespaceAware(true);
+    }
 
     /**
      * Constructs a new BaseArtifactProcessor.
@@ -280,8 +288,12 @@ abstract class BaseArtifactProcessor implements Constants {
         prop.setMustSupply(getBoolean(reader, "mustSupply"));
         prop.setXSDElement(getQName(reader, "element"));
         prop.setXSDType(getQName(reader, "type"));
-        Node value = readPropertyValue(reader, prop.getXSDType());
-        prop.setDefaultValue(value);
+        try {
+            Document value = readPropertyValue(reader, prop.getXSDType());
+            prop.setDefaultValue(value);
+        } catch (ParserConfigurationException e) {
+            throw new ContributionReadException(e);
+        }
     }
 
     /**
@@ -384,49 +396,13 @@ abstract class BaseArtifactProcessor implements Constants {
     }
 
     /**
-     * Read a property value.
-     * @param reader
-     * @param type
-     * @return
-     * @throws XMLStreamException
-     * @throws ContributionReadException
-     */
-    protected Document readPropertyValue(XMLStreamReader reader, QName type)
-        throws XMLStreamException, ContributionReadException {
-        Document doc = DOMUtil.newDocument();
-
-        // root element has no namespace and local name "value"
-        Element root = doc.createElementNS(null, "value");
-        if (type != null) {
-            org.w3c.dom.Attr xsi = doc.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
-            xsi.setValue(W3C_XML_SCHEMA_INSTANCE_NS_URI);
-            root.setAttributeNodeNS(xsi);
-
-            String prefix = type.getPrefix();
-            if (prefix == null || prefix.length() == 0) {
-                prefix = "ns";
-            }
-
-            DOMUtil.declareNamespace(root, prefix, type.getNamespaceURI());
-
-            org.w3c.dom.Attr xsiType = doc.createAttributeNS(W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:type");
-            xsiType.setValue(prefix + ":" + type.getLocalPart());
-            root.setAttributeNodeNS(xsiType);
-        }
-        doc.appendChild(root);
-
-        DOMUtil.loadDOM(reader, root);
-        return doc;
-    }
-
-    /**
      * Start an element.
      * @param uri
      * @param name
      * @param attrs
      * @throws XMLStreamException
      */
-    protected void writeStart(XMLStreamWriter writer, String uri, String name, Attr... attrs) throws XMLStreamException {
+    protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs) throws XMLStreamException {
         writer.writeStartElement(uri, name);
         writeAttributes(writer, attrs);
     }
@@ -438,7 +414,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param attrs
      * @throws XMLStreamException
      */
-    protected void writeStart(XMLStreamWriter writer, String name, Attr... attrs) throws XMLStreamException {
+    protected void writeStart(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
         writer.writeStartElement(SCA10_NS, name);
         writeAttributes(writer, attrs);
     }
@@ -457,7 +433,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param writer
      * @throws XMLStreamException
      */
-    protected void writeStartDocument(XMLStreamWriter writer, String name, Attr... attrs) throws XMLStreamException {
+    protected void writeStartDocument(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
         writer.writeStartDocument();
         writer.setDefaultNamespace(SCA10_NS);
         writeStart(writer, name, attrs);
@@ -479,8 +455,8 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param attrs
      * @throws XMLStreamException
      */
-    protected void writeAttributes(XMLStreamWriter writer, Attr... attrs) throws XMLStreamException {
-        for (Attr attr : attrs) {
+    protected void writeAttributes(XMLStreamWriter writer, XAttr... attrs) throws XMLStreamException {
+        for (XAttr attr : attrs) {
             if (attr != null)
                 attr.write(writer);
         }
@@ -516,4 +492,158 @@ abstract class BaseArtifactProcessor implements Constants {
             return null;
     }
 
+    /**
+     * Read a property value into a DOM document.
+     * @param reader
+     * @param type
+     * @return
+     * @throws XMLStreamException
+     * @throws ContributionReadException
+     * @throws ParserConfigurationException 
+     */
+    protected Document readPropertyValue(XMLStreamReader reader, QName type)
+        throws XMLStreamException, ParserConfigurationException {
+        
+        Document doc = createDocument();
+
+        // root element has no namespace and local name "value"
+        Element root = doc.createElementNS(null, "value");
+        if (type != null) {
+            org.w3c.dom.Attr xsi = doc.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
+            xsi.setValue(W3C_XML_SCHEMA_INSTANCE_NS_URI);
+            root.setAttributeNodeNS(xsi);
+
+            String prefix = type.getPrefix();
+            if (prefix == null || prefix.length() == 0) {
+                prefix = "ns";
+            }
+
+            declareNamespace(root, prefix, type.getNamespaceURI());
+
+            org.w3c.dom.Attr xsiType = doc.createAttributeNS(W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:type");
+            xsiType.setValue(prefix + ":" + type.getLocalPart());
+            root.setAttributeNodeNS(xsiType);
+        }
+        doc.appendChild(root);
+
+        loadElement(reader, root);
+        return doc;
+    }
+
+    /**
+     * Create a new DOM document.
+     * @return
+     * @throws ContributionReadException
+     */
+    private Document createDocument() throws ParserConfigurationException {
+        return domFactory.newDocumentBuilder().newDocument();
+    }
+
+    /**
+     * Create a DOM element
+     * @param document
+     * @param name
+     * @return
+     */
+    private Element createElement(Document document, QName name) {
+        String prefix = name.getPrefix();
+        String qname = (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name
+            .getLocalPart();
+        return document.createElementNS(name.getNamespaceURI(), qname);
+    }
+
+    /**
+     * Declare a namespace.
+     * @param element
+     * @param prefix
+     * @param ns
+     */
+    private void declareNamespace(Element element, String prefix, String ns) {
+        String qname = null;
+        if ("".equals(prefix)) {
+            qname = "xmlns";
+        } else {
+            qname = "xmlns:" + prefix;
+        }
+        Node node = element;
+        boolean declared = false;
+        while (node != null && node.getNodeType() == Node.ELEMENT_NODE) {
+            NamedNodeMap attrs = node.getAttributes();
+            if (attrs == null) {
+                break;
+            }
+            Node attr = attrs.getNamedItem(qname);
+            if (attr != null) {
+                declared = ns.equals(attr.getNodeValue());
+                break;
+            }
+            node = node.getParentNode();
+        }
+        if (!declared) {
+            org.w3c.dom.Attr attr = element.getOwnerDocument().createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, qname);
+            attr.setValue(ns);
+            element.setAttributeNodeNS(attr);
+        }
+    }
+
+    /**
+     * Load a property value specification from an StAX stream into a DOM
+     * Document. Only elements, text and attributes are processed; all comments
+     * and other whitespace are ignored.
+     * 
+     * @param reader the stream to read from
+     * @param root the DOM node to load
+     * @throws javax.xml.stream.XMLStreamException
+     */
+    private void loadElement(XMLStreamReader reader, Element root) throws XMLStreamException {
+        Document document = root.getOwnerDocument();
+        Node current = root;
+        while (true) {
+            switch (reader.next()) {
+                case XMLStreamConstants.START_ELEMENT:
+                    QName name = reader.getName();
+                    Element child = createElement(document, name);
+
+                    // push the new element and make it the current one
+                    current.appendChild(child);
+                    current = child;
+
+                    declareNamespace(child, name.getPrefix(), name.getNamespaceURI());
+
+                    int count = reader.getNamespaceCount();
+                    for (int i = 0; i < count; i++) {
+                        String prefix = reader.getNamespacePrefix(i);
+                        String ns = reader.getNamespaceURI(i);
+                        declareNamespace(child, prefix, ns);
+                    }
+
+                    // add the attributes for this element
+                    count = reader.getAttributeCount();
+                    for (int i = 0; i < count; i++) {
+                        String ns = reader.getAttributeNamespace(i);
+                        String prefix = reader.getAttributePrefix(i);
+                        String localPart = reader.getAttributeLocalName(i);
+                        String value = reader.getAttributeValue(i);
+                        child.setAttributeNS(ns, localPart, value);
+                        declareNamespace(child, prefix, ns);
+                    }
+
+                    break;
+                case XMLStreamConstants.CDATA:
+                    current.appendChild(document.createCDATASection(reader.getText()));
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    current.appendChild(document.createTextNode(reader.getText()));
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    // if we are back at the root then we are done
+                    if (current == root) {
+                        return;
+                    }
+
+                    // pop the element off the stack
+                    current = current.getParentNode();
+            }
+        }
+    }
 }

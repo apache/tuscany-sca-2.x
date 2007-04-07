@@ -208,10 +208,10 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         
         try {
             writeStartDocument(writer, COMPONENT_TYPE,
-                       new Attr(Constants.CONSTRAINING_TYPE, getConstrainingTypeAttr(componentType)));
+                       new XAttr(Constants.CONSTRAINING_TYPE, getConstrainingTypeAttr(componentType)));
     
             for (Service service : componentType.getServices()) {
-                writeStart(writer, SERVICE, new Attr(NAME, service.getName()));
+                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
                 if (service.getCallback() != null) {
                     writeStart(writer, CALLBACK);
                     writeEnd(writer);
@@ -223,8 +223,8 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 // TODO handle multivalued target attribute
                 String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
                 writeStart(writer, REFERENCE,
-                      new Attr(NAME, reference.getName()),
-                      new Attr(TARGET, target));
+                      new XAttr(NAME, reference.getName()),
+                      new XAttr(TARGET, target));
                 if (reference.getCallback() != null) {
                     writeStart(writer, CALLBACK);
                     writeEnd(writer);
@@ -233,7 +233,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
             }
     
             for (Property property : componentType.getProperties()) {
-                writeStart(writer, PROPERTY, new Attr(NAME, property.getName()));
+                writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
                 writeEnd(writer);
             }
     

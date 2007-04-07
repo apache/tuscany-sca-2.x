@@ -333,13 +333,13 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException {
 
         try {
-            writeStartDocument(writer, COMPOSITE, new Attr(CONSTRAINING_TYPE, getConstrainingTypeAttr(composite)));
+            writeStartDocument(writer, COMPOSITE, new XAttr(CONSTRAINING_TYPE, getConstrainingTypeAttr(composite)));
     
             for (Service service : composite.getServices()) {
                 CompositeService compositeService = (CompositeService)service;
                 ComponentService promotedService = compositeService.getPromotedService();
                 String promote = promotedService != null ? promotedService.getName() : null;
-                writeStart(writer, SERVICE, new Attr(NAME, service.getName()), new Attr(PROMOTE, promote));
+                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote));
                 if (service.getCallback() != null) {
                     writeStart(writer, CALLBACK);
                     writeEnd(writer);
@@ -348,10 +348,10 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
             }
     
             for (Component component : composite.getComponents()) {
-                writeStart(writer, COMPONENT, new Attr(NAME, component.getName()));
+                writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()));
     
                 for (ComponentService service : component.getServices()) {
-                    writeStart(writer, SERVICE, new Attr(NAME, service.getName()));
+                    writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
                     writeEnd(writer);
                     if (service.getCallback() != null) {
                         writeStart(writer, CALLBACK);
@@ -363,8 +363,8 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                     // TODO handle multivalued target attribute
                     String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
                     writeStart(writer, REFERENCE,
-                               new Attr(NAME, reference.getName()),
-                               new Attr(TARGET,target));
+                               new XAttr(NAME, reference.getName()),
+                               new XAttr(TARGET,target));
                     if (reference.getCallback() != null) {
                         writeStart(writer, CALLBACK);
                         writeEnd(writer);
@@ -373,7 +373,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 }
     
                 for (ComponentProperty property : component.getProperties()) {
-                    writeStart(writer, PROPERTY, new Attr(NAME, property.getName()));
+                    writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
                     writeEnd(writer);
                 }
     
@@ -389,8 +389,8 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 else
                     promote = null;
                 writeStart(writer, REFERENCE,
-                           new Attr(NAME, reference.getName()),
-                           new Attr(PROMOTE, promote));
+                           new XAttr(NAME, reference.getName()),
+                           new XAttr(PROMOTE, promote));
                 if (reference.getCallback() != null) {
                     writeStart(writer, CALLBACK);
                     writeEnd(writer);
@@ -399,7 +399,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
             }
     
             for (Property property : composite.getProperties()) {
-                writeStart(writer, PROPERTY, new Attr(NAME, property.getName()));
+                writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
                 writeEnd(writer);
             }
     

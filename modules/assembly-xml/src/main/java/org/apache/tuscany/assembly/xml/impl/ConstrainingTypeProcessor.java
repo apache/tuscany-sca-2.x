@@ -178,18 +178,18 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
             writeStartDocument(writer, CONSTRAINING_TYPE);
     
             for (AbstractService service : constrainingType.getServices()) {
-                writeStart(writer, SERVICE, new Attr(NAME, service.getName()));
+                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
                 writeEnd(writer);
             }
     
             for (AbstractReference reference : constrainingType.getReferences()) {
                 writeStart(writer, REFERENCE,
-                      new Attr(NAME, reference.getName()));
+                      new XAttr(NAME, reference.getName()));
                 writeEnd(writer);
             }
     
             for (AbstractProperty property : constrainingType.getProperties()) {
-                writeStart(writer, PROPERTY, new Attr(NAME, property.getName()));
+                writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
                 writeEnd(writer);
             }
     
