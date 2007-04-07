@@ -58,6 +58,7 @@
                 <module>databinding-sdo-axiom</module>
                 <module>discovery-jms</module>
                 -->
+                <module>host-embedded</module>
                 <module>host-spi</module>
                 <module>http</module>
                 <module>http-jetty</module>
@@ -80,9 +81,6 @@
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
                 <module>policy</module>
-                <!--
-                <module>runtime-embedded</module>
-                -->
                 <module>sca-api</module>
                 <module>wsdl2java</module>
             </modules>
