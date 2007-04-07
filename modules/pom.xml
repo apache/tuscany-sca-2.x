@@ -46,7 +46,7 @@
                 -->
                 <module>contribution</module>
                 <module>contribution-impl</module>
-                <module>runtime-embedded</module>
+                <module>host-embedded</module>
                 <module>core</module>
                 <module>core-spi</module>
                 <module>core-spring</module>
