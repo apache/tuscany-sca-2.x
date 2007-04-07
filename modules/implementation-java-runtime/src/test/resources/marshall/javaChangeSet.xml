@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<core:changeSet xmlns:core="http://tuscany.apache.org/xmlns/marshaller/1.0-SNAPSHOT">
+	
+	<!-- Component 1 -->
+	<java:component initLevel="0" groupId="xyz" xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp1" scope="STATELESS">
+		<java:classLoaderId>#123</java:classLoaderId>
+		<bc:instanceFactoryProvider xmlns:bc="http://tuscany.apache.org/xmlns/marshaller/byteCode/1.0-SNAPSHOT">
+			<bc:byteCode>AB12345</bc:byteCode>
+		</bc:instanceFactoryProvider>
+	</java:component>
+	
+	<!-- Component 2 -->
+	<java:component initLevel="0" groupId="xyz" xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" componentId="cmp2" scope="STATELESS">
+		<java:classLoaderId>#123</java:classLoaderId>
+		<reflect:instanceFactoryProvider xmlns:reflect="http://tuscany.apache.org/xmlns/marshaller/reflect/1.0-SNAPSHOT">
+			<reflect:implementationClass>com.acme.Foo</reflect:implementationClass>
+			<reflect:initMethod>init</reflect:initMethod>
+			<reflect:destroyMethod>destroy</reflect:destroyMethod>
+			<reflect:constructorArgument>java.lang.String</reflect:constructorArgument>
+			<reflect:constructorArgument>java.lang.Long</reflect:constructorArgument>
+			<reflect:cdiSource type="REFERENCE" name="abc"/>
+			<reflect:injectionSite elementType="FIELD" type="PROPERTY" name="xyz" physicalName="xyz"/>
+			<reflect:injectionSite elementType="METHOD" type="CALLBACK" name="abc" physicalName="abc"/>
+			<reflect:property name="abc" value="123"/>
+		</reflect:instanceFactoryProvider>
+	</java:component>
+	
+	<!-- Wire 1 -->
+	<core:wire>
+		<java:wireSource uri="cmp1#rf1" callbackUri="a#b" optimizable="true" conversational="false" 
+			xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
+		<java:wireTarget uri="cmp2#sv2" callbackUri="a#b" optimizable="true" 
+			xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
+		<core:operation name="op2" conversationSequence="1">
+			<core:parameter>java.lang.String</core:parameter>
+			<core:parameter>java.lang.Long</core:parameter>
+			<core:returnType>java.lang.Object</core:returnType>
+		</core:operation>
+	</core:wire>
+	
+	<!-- Wire 2 -->
+	<core:wire>
+		<java:wireSource uri="cmp2#rf2" callbackUri="a#b" optimizable="true" conversational="true" 
+			xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
+		<java:wireTarget uri="cmp1#sv1" callbackUri="a#b" optimizable="true" 
+			xmlns:java="http://tuscany.apache.org/xmlns/marshaller/java/1.0-SNAPSHOT" />
+		<core:operation name="op1" conversationSequence="2">
+			<core:parameter>java.lang.String</core:parameter>
+			<core:parameter>java.lang.Long</core:parameter>
+			<core:returnType>java.lang.Object</core:returnType>
+		</core:operation>
+	</core:wire>
+	
+</core:changeSet>
