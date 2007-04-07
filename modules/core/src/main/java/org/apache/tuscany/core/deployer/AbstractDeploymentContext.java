@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.deployer;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,53 +27,41 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Base class for DeploymentContext implementations.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class AbstractDeploymentContext implements DeploymentContext {
     private final URI componentId;
-    private boolean autowire;
     private final ClassLoader classLoader;
-    private final URL scdlLocation;
     private final Map<URI, Component> components = new HashMap<URI, Component>();
 
     /**
      * Constructor defining properties of this context.
-     *
-     * @param classLoader  the classloader for loading application resources
+     * 
+     * @param classLoader the classloader for loading application resources
      * @param scdlLocation the location of the SCDL defining this composite
-     * @param componentId  the id of the component being deployed
-     * @param autowire     if autowire is enabled
+     * @param componentId the id of the component being deployed
+     * @param autowire if autowire is enabled
      */
-    protected AbstractDeploymentContext(ClassLoader classLoader, URL scdlLocation, URI componentId, boolean autowire) {
+    protected AbstractDeploymentContext(ClassLoader classLoader, URI componentId) {
         this.classLoader = classLoader;
-        this.scdlLocation = scdlLocation;
         this.componentId = componentId;
-        this.autowire = autowire;
     }
 
     public ClassLoader getClassLoader() {
         return classLoader;
     }
 
-    public URL getScdlLocation() {
-        return scdlLocation;
-    }
-
     public URI getComponentId() {
         return componentId;
     }
 
-    public boolean isAutowire() {
-        return autowire;
-    }
-
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
-    }
-
     @Deprecated
     public Map<URI, Component> getComponents() {
-        return components;
+        if (getParent() != null) {
+            return getParent().getComponents();
+        } else {
+            return components;
+        }
     }
 }

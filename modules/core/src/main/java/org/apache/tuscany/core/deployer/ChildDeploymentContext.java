@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.deployer;
 
 import java.net.URI;
-import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -39,16 +38,12 @@ public class ChildDeploymentContext extends AbstractDeploymentContext {
      *
      * @param parent       the parent of this context
      * @param classLoader  the classloader for loading application resources
-     * @param scdlLocation the location of the SCDL defining this composite
      * @param componentId  the id of the component being deployed
-     * @param autowire     if autowire is enabled
      */
     public ChildDeploymentContext(DeploymentContext parent,
                                   ClassLoader classLoader,
-                                  URL scdlLocation,
-                                  URI componentId,
-                                  boolean autowire) {
-        super(classLoader, scdlLocation, componentId, autowire);
+                                  URI componentId) {
+        super(classLoader, componentId);
         assert parent != null;
         this.parent = parent;
     }

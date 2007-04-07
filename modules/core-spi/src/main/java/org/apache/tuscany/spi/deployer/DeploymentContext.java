@@ -19,8 +19,8 @@
 package org.apache.tuscany.spi.deployer;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.Map;
+
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.Component;
@@ -69,32 +69,11 @@ public interface DeploymentContext {
     URI getGroupId();
 
     /**
-     * Returns the location of the SCDL definition being deployed.
-     *
-     * @return the location of the SCDL definition being deployed
-     */
-    URL getScdlLocation();
-
-    /**
      * Returns the URI of the composite component currently being deployed.
      *
      * @return the URI of the composite component currently being deployed
      */
     URI getComponentId();
-
-    /**
-     * Returns true if the autowire is enabled for the current deployment.
-     *
-     * @return true if the autowire is enabled for the current deployment
-     */
-    boolean isAutowire();
-
-    /**
-     * Sets if the autowire is enabled for the current deployment.
-     *
-     * @param autowire true if autowire is enabled
-     */
-    void setAutowire(boolean autowire);
 
     @Deprecated
     Map<URI, Component> getComponents();

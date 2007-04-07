@@ -40,20 +40,24 @@ public class CRUDImpl implements CRUD {
     }
 
     public String create(Object resource) {
+        System.out.println("create(" + resource + ")");
         String key = String.valueOf(counter++);
         STORE.put(key, resource);
         return key;
     }
 
     public void delete(String id) {
+        System.out.println("delete(" + id + ")");
         STORE.remove(id);
     }
 
     public Object retrieve(String id) {
+        System.out.println("retrieve(" + id + ")");
         return STORE.get(id);
     }
 
     public Object update(String id, Object resource) {
+        System.out.println("update(" + id + ")");
         return STORE.put(id, resource);
     }
 

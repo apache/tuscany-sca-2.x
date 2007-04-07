@@ -232,8 +232,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         }
     }
 
-    public ComponentContext getComponentContext(URI componentId) {
-        Component component = componentManager.getComponent(componentId);
+    public ComponentContext getComponentContext(URI componentName) {
+        Component component = componentManager.getComponent(URI.create(tuscanySystem.getUri() + "/" + componentName));
         if (component == null) {
             return null;
         }

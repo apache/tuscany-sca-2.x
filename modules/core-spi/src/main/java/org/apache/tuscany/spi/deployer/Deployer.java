@@ -40,11 +40,9 @@ public interface Deployer {
      * of the component definition is a composite then typically a
      * CompositeComponent would be returned.
      * 
-     * @param parent the parent context
      * @param componentDefinition the component definition as parsed from an
      *            assembly
      * @return the newly deployed component
      */
-    Collection<Component> deploy(Component parent, Composite composite)
-        throws BuilderException, ComponentException, ResolutionException;
+    Collection<Component> deploy(Composite composite) throws BuilderException, ComponentException, ResolutionException;
 }

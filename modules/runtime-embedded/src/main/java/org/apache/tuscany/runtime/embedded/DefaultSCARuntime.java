@@ -60,7 +60,7 @@ public class DefaultSCARuntime extends SCARuntime {
 
     @Override
     protected ComponentContext getContext(String componentName) {
-        return runtime.getComponentContext(URI.create(SimpleRuntimeInfo.DEFAULT_COMPOSITE + "/" + componentName));
+        return runtime.getComponentContext(URI.create(componentName));
     }
 
     @Override

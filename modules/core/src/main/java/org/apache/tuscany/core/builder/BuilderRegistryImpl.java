@@ -40,6 +40,7 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -56,12 +57,12 @@ import org.osoa.sca.annotations.EagerInit;
 @EagerInit
 public class BuilderRegistryImpl implements BuilderRegistry {
     private ScopeRegistry scopeRegistry;
+    private ComponentManager componentManager;
 
     private final Map<Class<? extends Implementation>, ComponentBuilder> componentBuilders = new HashMap<Class<? extends Implementation>, ComponentBuilder>();
     private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
 
-    public BuilderRegistryImpl(@org.osoa.sca.annotations.Reference
-    ScopeRegistry scopeRegistry) {
+    public BuilderRegistryImpl(@org.osoa.sca.annotations.Reference ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
     }
 
@@ -90,7 +91,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     @SuppressWarnings("unchecked")
     public Component build(org.apache.tuscany.assembly.Component componentDef, DeploymentContext context)
         throws BuilderException {
-        Class<?> implClass = getImplementationType(componentDef.getImplementation().getClass());
+        Class<? extends Implementation> implClass = getImplementationType(componentDef.getImplementation().getClass());
         // noinspection SuspiciousMethodCalls
         ComponentBuilder componentBuilder = componentBuilders.get(implClass);
         if (componentBuilder == null) {
