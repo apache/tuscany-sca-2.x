@@ -31,41 +31,41 @@ import org.apache.tuscany.assembly.xml.Constants;
  *
  * @version $Rev$ $Date$
  */
-public class Attr {
+class XAttr {
 
     String uri = Constants.SCA10_NS;
     String name;
     Object value;
 
-    public Attr(String uri, String name, String value) {
+    public XAttr(String uri, String name, String value) {
         this.uri = uri;
         this.name = name;
         this.value = value;
     }
 
-    public Attr(String name, String value) {
+    public XAttr(String name, String value) {
         this.name = name;
         this.value = value;
     }
 
-    public Attr(String uri, String name, boolean value) {
+    public XAttr(String uri, String name, boolean value) {
         this.uri = uri;
         this.name = name;
         this.value = value;
     }
 
-    public Attr(String name, boolean value) {
+    public XAttr(String name, boolean value) {
         this.name = name;
         this.value = value;
     }
 
-    public Attr(String uri, String name, QName value) {
+    public XAttr(String uri, String name, QName value) {
         this.uri = uri;
         this.name = name;
         this.value = value;
     }
 
-    public Attr(String name, QName value) {
+    public XAttr(String name, QName value) {
         this.name = name;
         this.value = value;
     }
