@@ -40,13 +40,13 @@ import org.apache.tuscany.spi.wire.Message;
  */
 public class JavaInvokerInterceptor<T, CONTEXT> implements Interceptor {
     /* indicates that no conversational sequence is associated with the message */
-    public final static short NONE = 0;
+    public static final short NONE = 0;
     /* indicates that the message initiates a conversation */
-    public final static short START = 1;
+    public static final short START = 1;
     /* indicates that the message continues a conversation */
-    public final static short CONTINUE = 2;
+    public static final short CONTINUE = 2;
     /* indicates that the message ends a conversation */
-    public final static short END = 3;
+    public static final short END = 3;
 
     private Method operation;
     private AtomicComponent<T> component;

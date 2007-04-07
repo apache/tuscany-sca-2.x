@@ -29,9 +29,9 @@ import java.util.Map;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
+import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
@@ -40,15 +40,15 @@ import org.apache.tuscany.spi.ObjectFactory;
 public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProvider<T> {
     private final Class<T> implementationClass;
     private final Constructor<T> constructor;
-    private final List<InjectionSource> constructorNames;
-    private final Map<InjectionSource, Member> injectionSites;
+    private final List<JavaElement> constructorNames;
+    private final Map<JavaElement, Member> injectionSites;
     private final EventInvoker<T> initInvoker;
     private final EventInvoker<T> destroyInvoker;
-    private final Map<InjectionSource, ObjectFactory<?>> factories = new HashMap<InjectionSource, ObjectFactory<?>>();
+    private final Map<JavaElement, ObjectFactory<?>> factories = new HashMap<JavaElement, ObjectFactory<?>>();
 
     public ReflectiveInstanceFactoryProvider(Constructor<T> constructor,
-                                             List<InjectionSource> constructorNames,
-                                             Map<InjectionSource, Member> injectionSites,
+                                             List<JavaElement> constructorNames,
+                                             Map<JavaElement, Member> injectionSites,
                                              Method initMethod,
                                              Method destroyMethod) {
         this.implementationClass = constructor.getDeclaringClass();
@@ -59,11 +59,11 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         this.destroyInvoker = destroyMethod == null ? null : new MethodEventInvoker<T>(destroyMethod);
     }
 
-    public void setObjectFactory(InjectionSource name, ObjectFactory<?> objectFactory) {
+    public void setObjectFactory(JavaElement name, ObjectFactory<?> objectFactory) {
         factories.put(name, objectFactory);
     }
 
-    public Class<?> getMemberType(InjectionSource injectionSource) {
+    public Class<?> getMemberType(JavaElement injectionSource) {
         
         // TODO How do we decide whether this is a member or constructor arg
         Member member = injectionSites.get(injectionSource);
@@ -95,7 +95,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
     protected ObjectFactory<?>[] getConstructorArgs() {
         ObjectFactory<?>[] initArgs = new ObjectFactory<?>[constructorNames.size()];
         for (int i = 0; i < initArgs.length; i++) {
-            InjectionSource name = constructorNames.get(i);
+            JavaElement name = constructorNames.get(i);
             ObjectFactory<?> factory = factories.get(name);
             assert factory != null;
             initArgs[i] = factory;
@@ -109,8 +109,8 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         Injector<T>[] injectors = (Injector<T>[]) new Injector[injectionSites.size()];
 
         int i = 0;
-        for (Map.Entry<InjectionSource, Member> entry : injectionSites.entrySet()) {
-            InjectionSource name = entry.getKey();
+        for (Map.Entry<JavaElement, Member> entry : injectionSites.entrySet()) {
+            JavaElement name = entry.getKey();
             Member site = entry.getValue();
             ObjectFactory<?> factory = factories.get(name);
             assert factory != null;

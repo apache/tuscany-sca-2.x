@@ -22,10 +22,15 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.osoa.sca.ComponentContext;
-
+import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.core.component.ComponentObjectFactory;
+import org.apache.tuscany.core.component.InstanceFactory;
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
@@ -36,17 +41,9 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.PropertyValue;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-
-import org.apache.tuscany.core.component.InstanceFactory;
-import org.apache.tuscany.core.component.InstanceFactoryProvider;
-import org.apache.tuscany.core.component.ComponentObjectFactory;
-import org.apache.tuscany.core.model.physical.instancefactory.InjectionSource;
+import org.osoa.sca.ComponentContext;
 
 /**
  * Base class for Component implementations based on Java objects.
@@ -124,11 +121,6 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
         return new ComponentObjectFactory(this, scopeContainer);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
-        throws TargetInvokerCreationException {
-        return null;
-    }
-
     public ComponentContext getComponentContext() {
         return null;
     }
@@ -137,11 +129,11 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
         return null;
     }
 
-    public Map<String, PropertyValue<?>> getDefaultPropertyValues() {
+    public Map<String, Property> getDefaultPropertyValues() {
         return null;
     }
 
-    public void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues) {
+    public void setDefaultPropertyValues(Map<String, Property> defaultPropertyValues) {
     }
 
     public ScopeContainer getScopeContainer() {
@@ -152,11 +144,11 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
         return provider.getImplementationClass();
     }
 
-    public void setObjectFactory(InjectionSource name, ObjectFactory<?> objectFactory) {
+    public void setObjectFactory(JavaElement name, ObjectFactory<?> objectFactory) {
         provider.setObjectFactory(name, objectFactory);
     }
 
-    public Class<?> getMemberType(InjectionSource injectionSite) {
+    public Class<?> getMemberType(JavaElement injectionSite) {
         return provider.getMemberType(injectionSite);
     }
 

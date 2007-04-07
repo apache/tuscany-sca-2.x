@@ -32,18 +32,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.osoa.sca.NoRegisteredCallbackException;
-
+import org.apache.tuscany.idl.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
+import org.osoa.sca.NoRegisteredCallbackException;
 
 
 /**
@@ -98,7 +96,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
         assert targetAddress != null;
         Wire wire = wires.get(targetAddress);
         assert wire != null;
-        Map<Operation<?>, InvocationChain> chains = wire.getCallbackInvocationChains();
+        Map<Operation, InvocationChain> chains = wire.getCallbackInvocationChains();
         Operation operation = findOperation(method, chains.keySet());
         InvocationChain chain = chains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();

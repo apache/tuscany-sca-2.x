@@ -24,18 +24,15 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Map;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
+import org.apache.tuscany.core.wire.ProxyServiceExtension;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.InvocationChain;
-
-import org.apache.tuscany.core.wire.ProxyServiceExtension;
+import org.osoa.sca.CallableReference;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * the default implementation of a wire service that uses JDK dynamic proxies
@@ -62,14 +59,6 @@ public class JDKProxyService extends ProxyServiceExtension {
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
-    public <T> T createProxy2(Class<T> interfaze, boolean conversational, Wire wire) throws ProxyCreationException {
-        assert interfaze != null;
-        assert wire != null;
-        JDKInvocationHandler2 handler = new JDKInvocationHandler2(interfaze, conversational, wire, context);
-        ClassLoader cl = interfaze.getClassLoader();
-        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
-    }
-
     public <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, ChainHolder> mapping)
         throws ProxyCreationException {
         assert interfaze != null;
@@ -83,12 +72,6 @@ public class JDKProxyService extends ProxyServiceExtension {
     public Object createCallbackProxy(Class<?> interfaze, List<Wire> wires) throws ProxyCreationException {
         ClassLoader cl = interfaze.getClassLoader();
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wires, context);
-        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
-    }
-
-    public Object createCallbackProxy(Class<?> interfaze) throws ProxyCreationException {
-        ClassLoader cl = interfaze.getClassLoader();
-        JDKCallbackInvocationHandler2 handler = new JDKCallbackInvocationHandler2(context);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 

@@ -22,30 +22,25 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Reference;
-
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.core.implementation.PojoComponentContextFactory;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.ResourceObjectFactory;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.implementation.java.impl.JavaElement;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.impl.Resource;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.host.ResourceHost;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.Parameter;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.Resource;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.PropertyValue;
-
-import org.apache.tuscany.core.implementation.PojoComponentContextFactory;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.injection.ResourceObjectFactory;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -62,17 +57,12 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     }
 
     @SuppressWarnings("unchecked")
-    public AtomicComponent build(ComponentDefinition<JavaImplementation> definition, DeploymentContext context)
+    public AtomicComponent build(Component definition, DeploymentContext context)
         throws BuilderConfigException {
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
-            definition.getImplementation().getComponentType();
+        JavaImplementationDefinition componentType = (JavaImplementationDefinition)
+            definition.getImplementation();
 
         PojoConfiguration configuration = new PojoConfiguration();
-        if (definition.getInitLevel() != null) {
-            configuration.setInitLevel(definition.getInitLevel());
-        } else {
-            configuration.setInitLevel(componentType.getInitLevel());
-        }
         if (componentType.getMaxAge() > 0) {
             configuration.setMaxAge(componentType.getMaxAge());
         } else if (componentType.getMaxIdleTime() > 0) {
@@ -93,12 +83,12 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setImplementationClass(definition.getImplementation().getImplementationClass());
 
         // setup property injection sites
-        for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
-            configuration.addPropertySite(property.getName(), property.getMember());
+        for (JavaElement property : componentType.getPropertyMembers().values()) {
+            configuration.addPropertySite(property.getName(), property);
         }
 
         // setup reference injection sites
-        for (JavaMappedReference reference : componentType.getReferences().values()) {
+        for (JavaElement reference : componentType.getReferenceMembers().values()) {
             Member member = reference.getMember();
             if (member != null) {
                 // could be null if the reference is mapped to a constructor
@@ -179,7 +169,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         return new ResourceObjectFactory<T>(type, mappedName, optional, host);
     }
 
-    private void handleProperties(ComponentDefinition<JavaImplementation> definition, JavaAtomicComponent component) {
+    private void handleProperties(Component definition, JavaAtomicComponent component) {
         for (PropertyValue<?> property : definition.getPropertyValues().values()) {
             ObjectFactory<?> factory = property.getValueFactory();
             if (factory != null) {

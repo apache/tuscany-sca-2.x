@@ -19,8 +19,8 @@
 package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
 
 public class ConversationIDObjectFactory implements ObjectFactory<String> {
     

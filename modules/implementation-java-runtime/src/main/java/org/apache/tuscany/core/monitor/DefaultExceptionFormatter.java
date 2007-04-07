@@ -20,9 +20,9 @@ package org.apache.tuscany.core.monitor;
 
 import java.io.PrintWriter;
 
-import org.apache.tuscany.api.TuscanyException;
-import org.apache.tuscany.api.TuscanyRuntimeException;
 import org.apache.tuscany.host.monitor.ExceptionFormatter;
+import org.apache.tuscany.spi.TuscanyException;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 /**
  * Performs basics formatting of exceptions for JDK logging
