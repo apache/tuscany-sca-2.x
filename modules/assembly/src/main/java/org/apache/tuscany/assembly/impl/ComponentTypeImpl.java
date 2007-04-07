@@ -42,6 +42,34 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType {
     private List<Service> services = new ArrayList<Service>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    
+    /**
+     * Constructs a new component type.
+     */
+    public ComponentTypeImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public ComponentTypeImpl(ComponentType other) {
+        super(other);
+        constrainingType = other.getConstrainingType();
+        getServices().clear();
+        for (Service service: other.getServices()) {
+            getServices().add(new ServiceImpl(service));
+        }
+        getReferences().clear();
+        for (Reference reference: other.getReferences()) {
+            getReferences().add(new ReferenceImpl(reference));
+        }
+        for (Property property: other.getProperties()) {
+            getProperties().add(new PropertyImpl(property));
+        }
+        requiredIntents.addAll(other.getRequiredIntents());
+        policySets.addAll(other.getPolicySets());
+    }
 
     public ConstrainingType getConstrainingType() {
         return constrainingType;

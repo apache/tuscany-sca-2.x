@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.assembly.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.CompositeService;
 
@@ -32,13 +28,23 @@ import org.apache.tuscany.assembly.CompositeService;
  * @version $Rev$ $Date$
  */
 public class CompositeServiceImpl extends ServiceImpl implements CompositeService {
-    private List<Binding> callbackBindings = new ArrayList<Binding>();
     private ComponentService promotedService;
 
-    public List<Binding> getCallbackBindings() {
-        return callbackBindings;
+    /**
+     * Constructs a new composite service.
+     */
+    public CompositeServiceImpl() {
     }
 
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public CompositeServiceImpl(CompositeService other) {
+        super(other);
+        promotedService = other.getPromotedService();
+    }
+    
     public ComponentService getPromotedService() {
         return promotedService;
     }

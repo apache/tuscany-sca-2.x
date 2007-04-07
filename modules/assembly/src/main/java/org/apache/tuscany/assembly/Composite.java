@@ -96,4 +96,9 @@ public interface Composite extends Implementation {
      */
     void setAutowire(boolean autowire);
 
+    /**
+     * Returns a copy of the composite. 
+     * @return a copy of the composite.
+     */
+    Composite copy();
 }

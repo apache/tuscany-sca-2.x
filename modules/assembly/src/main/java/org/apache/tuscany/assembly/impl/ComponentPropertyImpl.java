@@ -32,6 +32,23 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
     private Property property;
     private String source;
 
+    /**
+     * Constructs a new component property.
+     */
+    public ComponentPropertyImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public ComponentPropertyImpl(ComponentProperty other) {
+        super(other);
+        file = other.getFile();
+        property = other.getProperty();
+        source = other.getSource();
+    }
+
     public String getFile() {
         return file;
     }

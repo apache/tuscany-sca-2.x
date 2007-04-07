@@ -30,6 +30,24 @@ public class ContractImpl extends BaseImpl implements AbstractContract {
     private Interface callInterface;
     private String name;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    
+    /**
+     * Constructs a new contract.
+     */
+    public ContractImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public ContractImpl(AbstractContract other) {
+        super(other);
+        callbackInterface = other.getCallbackInterface();
+        callInterface = other.getInterface();
+        name = other.getName();
+        requiredIntents.addAll(other.getRequiredIntents());
+    }
 
     public Interface getCallbackInterface() {
         return callbackInterface;

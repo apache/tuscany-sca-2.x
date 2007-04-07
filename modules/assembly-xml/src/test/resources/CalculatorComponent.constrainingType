@@ -19,7 +19,8 @@
 -->
 <constrainingType xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:calc="http://calc"
-	name="calc:CalculatorComponent">
+	targetNamespace="http://calc"
+	name="CalculatorComponent">
 
   <service name="CalculatorService">
         <interface.java class="calculator.CalculatorService" />

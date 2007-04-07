@@ -38,6 +38,24 @@ public class WireImpl extends BaseImpl implements Wire {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
+    /**
+     * Constructs a new wire.
+     */
+    public WireImpl() {
+    }
+
+    /**
+     * Copy constructor.
+     * @param wire
+     */
+    public WireImpl(Wire other) {
+        super(other);
+        source = other.getSource();
+        target = other.getTarget();
+        requiredIntents.addAll(other.getRequiredIntents());
+        policySets.addAll(other.getPolicySets());
+    }
+
     public ComponentReference getSource() {
         return source;
     }

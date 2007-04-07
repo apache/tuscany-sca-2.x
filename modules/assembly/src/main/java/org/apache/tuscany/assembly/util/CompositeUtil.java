@@ -65,7 +65,29 @@ public class CompositeUtil {
         wire(problems);
     }
 
+    private void collectIncludes(Composite composite, List<Composite> includes) {
+        for (Composite include: composite.getIncludes()) {
+            includes.add(include);
+            collectIncludes(include, includes);
+        }
+    }
+    
     private void init(List<Base> problems) {
+        
+        // Bring includes in
+        List<Composite> includes = new ArrayList<Composite>();
+        collectIncludes(composite, includes);
+        for (Composite include: includes) {
+            include = include.copy();
+            composite.getComponents().addAll(include.getComponents());
+            composite.getServices().addAll(include.getServices());
+            composite.getReferences().addAll(include.getReferences());
+            composite.getProperties().addAll(include.getProperties());
+            composite.getWires().addAll(include.getWires());
+            composite.getPolicySets().addAll(include.getPolicySets());
+            composite.getRequiredIntents().addAll(include.getRequiredIntents());
+        }
+        composite.getIncludes().clear();
 
         // Init all component services and references
         for (Component component : composite.getComponents()) {
@@ -267,6 +289,9 @@ public class CompositeUtil {
                 resolvedReference.getTargets().add(resolvedService);
             }
         }
+        
+        // Clear wires
+        composite.getWires().clear();
     }
 
 }

@@ -97,7 +97,7 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                         // Read a <constrainingType>
                         if (Constants.CONSTRAINING_TYPE_QNAME.equals(name)) {
                             constrainingType = factory.createConstrainingType();
-                            constrainingType.setName(getQName(reader, Constants.NAME));
+                            constrainingType.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
                             readIntents(constrainingType, reader);
     
                         } else if (Constants.SERVICE_QNAME.equals(name)) {
@@ -175,7 +175,9 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
     public void write(ConstrainingType constrainingType, XMLStreamWriter writer) throws ContributionWriteException {
         
         try {
-            writeStartDocument(writer, CONSTRAINING_TYPE);
+            writeStartDocument(writer, CONSTRAINING_TYPE,
+               new XAttr(TARGET_NAMESPACE, constrainingType.getName().getNamespaceURI()),
+               new XAttr(NAME, constrainingType.getName().getLocalPart()));
     
             for (AbstractService service : constrainingType.getServices()) {
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));

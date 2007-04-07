@@ -41,6 +41,27 @@ public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
     private boolean mustSupply;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
 
+    /**
+     * Constructs a new abstract property.
+     */
+    public AbstractPropertyImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public AbstractPropertyImpl(AbstractProperty other) {
+        super(other);
+        defaultValue = other.getDefaultValue();
+        many = other.isMany();
+        mustSupply = other.isMustSupply();
+        name = other.getName();
+        xsdElement = other.getXSDElement();
+        xsdType = other.getXSDType();
+        requiredIntents.addAll(other.getRequiredIntents());
+    }
+
     public Object getDefaultValue() {
         return defaultValue;
     }

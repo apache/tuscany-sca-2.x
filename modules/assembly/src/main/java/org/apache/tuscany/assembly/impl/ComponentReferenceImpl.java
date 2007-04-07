@@ -30,6 +30,21 @@ import org.apache.tuscany.assembly.Reference;
 public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference {
     private Reference reference;
 
+    /**
+     * Constructs a new component reference.
+     */
+    public ComponentReferenceImpl() {
+    }
+
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public ComponentReferenceImpl(ComponentReference other) {
+        super(other);
+        reference = other.getReference();
+    }
+
     public Reference getReference() {
         return reference;
     }

@@ -29,6 +29,21 @@ import org.apache.tuscany.assembly.Multiplicity;
 public class AbstractReferenceImpl extends ContractImpl implements AbstractReference {
     private Multiplicity multiplicity = Multiplicity.ONE_ONE;
 
+    /**
+     * Constructs a new abstract reference.
+     */
+    public AbstractReferenceImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public AbstractReferenceImpl(AbstractReference other) {
+        super(other);
+        multiplicity = other.getMultiplicity();
+    }
+
     public Multiplicity getMultiplicity() {
         return multiplicity;
     }

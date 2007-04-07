@@ -26,5 +26,19 @@ import org.apache.tuscany.assembly.AbstractService;
  * @version $Rev$ $Date$
  */
 public class AbstractServiceImpl extends ContractImpl implements AbstractService {
+    
+    /**
+     * Constructs a new abstract service.
+     */
+    public AbstractServiceImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param service
+     */
+    public AbstractServiceImpl(AbstractService other) {
+        super(other);
+    }
 
 }

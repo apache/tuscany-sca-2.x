@@ -34,6 +34,21 @@ public abstract class BaseImpl implements Base, Visitable {
     private List<Object> extensions = new ArrayList<Object>();
     private boolean unresolved;
 
+    /**
+     * Constructs a new base model object.
+     */
+    public BaseImpl() {
+    }
+
+    /**
+     * Copy constructor
+     * @param other
+     */
+    public BaseImpl(Base other) {
+        unresolved = other.isUnresolved();
+        extensions.addAll(other.getExtensions());
+    }
+
     public List<Object> getExtensions() {
         return extensions;
     }
