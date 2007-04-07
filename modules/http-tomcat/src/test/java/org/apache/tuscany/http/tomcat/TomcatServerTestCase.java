@@ -22,15 +22,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.Socket;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.tuscany.http.tomcat.TomcatServer;
 
 import junit.framework.TestCase;
 
@@ -117,8 +114,11 @@ public class TomcatServerTestCase extends TestCase {
         service.init();
         Exception ex = null;
         try {
-            new Socket("127.0.0.1", HTTP_PORT);
-        } catch (ConnectException e) {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+        } catch (Exception e) {
         	ex = e;
         }
         assertNotNull(ex);
