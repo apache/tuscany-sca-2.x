@@ -115,7 +115,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
                             // Read a <composite>
                             composite = factory.createComposite();
-                            composite.setName(getQName(reader, NAME));
+                            composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
                             composite.setAutowire(getBoolean(reader, AUTOWIRE));
                             composite.setLocal(getBoolean(reader, LOCAL));
                             composite.setConstrainingType(getConstrainingType(reader));
@@ -333,7 +333,10 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException {
 
         try {
-            writeStartDocument(writer, COMPOSITE, new XAttr(CONSTRAINING_TYPE, getConstrainingTypeAttr(composite)));
+            writeStartDocument(writer, COMPOSITE,
+                new XAttr(CONSTRAINING_TYPE, getConstrainingTypeAttr(composite)),
+                new XAttr(TARGET_NAMESPACE, composite.getName().getNamespaceURI()),
+                new XAttr(NAME, composite.getName().getLocalPart()));
     
             for (Service service : composite.getServices()) {
                 CompositeService compositeService = (CompositeService)service;

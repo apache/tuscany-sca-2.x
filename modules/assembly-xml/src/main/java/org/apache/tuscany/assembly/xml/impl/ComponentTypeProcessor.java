@@ -208,7 +208,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         
         try {
             writeStartDocument(writer, COMPONENT_TYPE,
-                       new XAttr(Constants.CONSTRAINING_TYPE, getConstrainingTypeAttr(componentType)));
+                   new XAttr(CONSTRAINING_TYPE, getConstrainingTypeAttr(componentType)));
     
             for (Service service : componentType.getServices()) {
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));

@@ -148,10 +148,17 @@ public class ReadAllTestCase extends TestCase {
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
+        DefaultArtifactResolver resolver = new DefaultArtifactResolver();
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("TestAllDivide.composite");
+        Composite included = registry.read(is, Composite.class);
+        assertNotNull(included);
+        resolver.put(included, included);
+        
+        is = getClass().getClassLoader().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = registry.read(is, Composite.class);
         assertNotNull(composite);
-        registry.resolve(composite, new DefaultArtifactResolver());
+        registry.resolve(composite, resolver);
         registry.wire(composite);
 
         Component calcComponent = composite.getComponents().get(0);

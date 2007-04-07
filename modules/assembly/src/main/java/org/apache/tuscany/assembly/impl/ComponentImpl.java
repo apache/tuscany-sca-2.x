@@ -46,6 +46,30 @@ public class ComponentImpl extends BaseImpl implements Component {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private boolean autowire;
+    
+    /**
+     * Constructs a new component.
+     */
+    public ComponentImpl() {
+    }
+    
+    public ComponentImpl(Component other) {
+        constrainingType = other.getConstrainingType();
+        implementation = other.getImplementation();
+        name = other.getName();
+        for (ComponentProperty property: other.getProperties()) {
+            properties.add(new ComponentPropertyImpl(property));
+        }
+        for (ComponentReference reference: other.getReferences()) {
+            references.add(new ComponentReferenceImpl(reference));
+        }
+        for (ComponentService service: other.getServices()) {
+            services.add(new ComponentServiceImpl(service));
+        }
+        requiredIntents.addAll(other.getRequiredIntents());
+        policySets.addAll(other.getPolicySets());
+        autowire = other.isAutowire();
+    }
 
     public ConstrainingType getConstrainingType() {
         return constrainingType;

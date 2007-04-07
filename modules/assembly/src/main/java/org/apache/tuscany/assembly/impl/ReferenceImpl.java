@@ -41,6 +41,26 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference {
     private Callback callback;
     private boolean autowire;
 
+    /**
+     * Constructs a new reference.
+     */
+    public ReferenceImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param reference
+     */
+    public ReferenceImpl(Reference other) {
+        super(other);
+        bindings.addAll(other.getBindings());
+        wiredByImpl = other.isWiredByImpl();
+        policySets.addAll(other.getPolicySets());
+        targets.addAll(other.getTargets());
+        callback = other.getCallback();
+        autowire = other.isAutowire();
+    }
+
     public List<Binding> getBindings() {
         return bindings;
     }

@@ -26,7 +26,13 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.Reference;
+import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
+import org.apache.tuscany.assembly.util.Visitor;
 
 public class CompositeImpl extends ComponentTypeImpl implements Composite {
     private List<Component> components = new ArrayList<Component>();
@@ -35,6 +41,40 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
     private List<Wire> wires = new ArrayList<Wire>();
     private boolean autowire;
     private boolean local = true;
+    
+    /**
+     * Constructs a new composite.
+     */
+    public CompositeImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public CompositeImpl(Composite other) {
+        super(other);
+        for (Component component: other.getComponents()) {
+            components.add(new ComponentImpl(component));
+        }
+        getServices().clear();
+        for (Service service: other.getServices()) {
+            getServices().add(new CompositeServiceImpl((CompositeService)service));
+        }
+        getReferences().clear();
+        for (Reference reference: other.getReferences()) {
+            getReferences().add(new CompositeReferenceImpl((CompositeReference)reference));
+        }
+        for (Property property: other.getProperties()) {
+            getProperties().add(new PropertyImpl(property));
+        }
+        name = other.getName();
+        for (Wire wire: other.getWires()) {
+            wires.add(new WireImpl(wire));
+        }
+        autowire = other.isAutowire();
+        local = other.isLocal();
+    }
 
     public List<Component> getComponents() {
         return components;
@@ -70,6 +110,25 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
 
     public void setName(QName name) {
         this.name = name;
+    }
+    
+    @Override
+    public boolean accept(Visitor visitor) {
+        boolean result = super.accept(visitor);
+        if (!result) {
+            return false;
+        }
+        
+        for (Wire wire: wires) {
+            if (!wire.accept(visitor))
+                return false;
+        }
+        return true;
+    }
+    
+    public Composite copy() {
+        CompositeImpl copy = new CompositeImpl(this);
+        return copy;
     }
 
     @Override

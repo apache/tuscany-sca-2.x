@@ -36,6 +36,23 @@ public class ServiceImpl extends AbstractServiceImpl implements Service {
     private List<Binding> bindings = new ArrayList<Binding>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private Callback callback;
+    
+    /**
+     * Constructs a new service.
+     */
+    public ServiceImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public ServiceImpl(Service other) {
+        super(other);
+        bindings.addAll(other.getBindings());
+        policySets.addAll(other.getPolicySets());
+        callback = other.getCallback();
+    }
 
     public List<Binding> getBindings() {
         return bindings;

@@ -18,8 +18,9 @@
  * under the License.
 -->
 <constrainingType xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	xmlns:calc="http://sample.calculator"
-	name="calc:CalculatorComponent">
+	xmlns:calc="http://calc"
+    targetNamespace="http://calc"
+	name="CalculatorComponent">
 
   <service name="CalculatorService">
         <interface.wsdl interface="http://sample/calculator#wsdl.interface(Calculator)"/>

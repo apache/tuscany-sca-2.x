@@ -33,6 +33,20 @@ import org.apache.tuscany.policy.PolicySet;
 public class PropertyImpl extends AbstractPropertyImpl implements Property {
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
+    /**
+     * Constructs a new property.
+     */
+    public PropertyImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     */
+    public PropertyImpl(Property other) {
+        super(other);
+        policySets.addAll(other.getPolicySets());
+    }
+
     public List<PolicySet> getPolicySets() {
         return policySets;
     }

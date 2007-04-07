@@ -33,6 +33,21 @@ import org.apache.tuscany.assembly.CompositeReference;
 public class CompositeReferenceImpl extends ReferenceImpl implements CompositeReference {
     private List<ComponentReference> promotedReferences = new ArrayList<ComponentReference>();
 
+    /**
+     * Constructs a new composite reference.
+     */
+    public CompositeReferenceImpl() {
+    }
+
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public CompositeReferenceImpl(CompositeReference other) {
+        super(other);
+        promotedReferences.addAll(other.getPromotedReferences());
+    }
+
     public List<ComponentReference> getPromotedReferences() {
         return promotedReferences;
     }

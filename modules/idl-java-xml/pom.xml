@@ -33,7 +33,6 @@
             <groupId>org.osoa</groupId>
             <artifactId>sca-api</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
             
         <dependency>

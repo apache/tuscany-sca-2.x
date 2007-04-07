@@ -2,7 +2,7 @@
 <composite autowire="false"
 	constrainingType="tns:Calculator"
 	local="true"
-	name="CompleteCalculator"
+	name="TestAllDivide"
 	policySets="" requires=""
 	targetNamespace="http://calc"
 	xmlns:tns="http://calc"
@@ -13,67 +13,26 @@
 	
   <include>tns:CompleteDivide</include>
   
-  <service name="CalculatorService" policySets="" promote="CalculatorComponent/CalculatorService" requires="">
-    <interface.java interface="calculator.CalculatorService" callbackInterface="calculator.CalculatorCallback"/>
-    <operation name="add" policySets="" requires=""/>
+  <service name="DivideService" policySets="" promote="CalculatorDivideComponent/DivideService" requires="">
+    <interface.java interface="calculator.DivideService" callbackInterface="calculator.DivideCallback"/>
+    <operation name="divide" policySets="" requires=""/>
 
     <binding.ws name="CalculatorWS" policySets="" port="" requires="" uri="http://calc/ws">
-      <operation name="add" policySets="" requires=""/>
+      <operation name="divide" policySets="" requires=""/>
     </binding.ws>
 
     <callback policySets="" requires="">
       <binding.ws name="CalculatorCallbackWS" policySets="" port="" requires="" uri="http://calc/callback/ws">
-        <operation name="addCallback" policySets="" requires=""/>
+        <operation name="divideCallback" policySets="" requires=""/>
       </binding.ws>
     </callback>
   </service>
   
-   <component name="CalculatorServiceComponent" autowire="false" constrainingType="tns:CalculatorServiceComponent" policySets="" requires="">
-   		<service name="CalculatorService" policySets="" requires="">
-   			<interface.java interface="calculator.CalculatorService" callbackInterface="calculator.CalculatorCallback"/>
+   <component name="CalculatorDivideComponent" autowire="false" constrainingType="tns:CalculatorServiceComponent" policySets="" requires="">
+   		<service name="DivideService" policySets="" requires="">
+   			<interface.java interface="calculator.DivideService" callbackInterface="calculator.DivideCallback"/>
    		</service>
-
-   		<reference name="addService" target="AddServiceComponent" autowire="false" multiplicity="1..1" policySets="" requires="" wiredByImpl="false">
-   			<interface.java interface="calculator.AddService" callbackInterface="calculator.AddCallback"/>
-   		</reference>
-   		<reference name="subtractService" target="SubtractServiceComponent"/>
-   		<reference name="multiplyService"/>
-   		<reference name="divideService" target="DivideServiceComponent"/>
-
-   		<property name="round" type="xsd:boolean" many="false">true</property>
-
-		<implementation.java class="calculator.CalculatorServiceImpl" policySets="" requires=""/>
+		<implementation.java class="calculator.DivideImpl" policySets="" requires=""/>
    </component>
 
-   <component name="AddServiceComponent">
-       <implementation.java class="calculator.AddServiceImpl"/>
-   </component>
-
-   <component name="SubtractServiceComponent">
-       <implementation.java class="calculator.SubtractServiceImpl"/>
-   </component>
-
-   <component name="MultiplyServiceComponent">
-       <implementation.java class="calculator.MultiplyServiceImpl"/>
-   </component>
-
-   <component name="DivideServiceComponent">
-       <implementation.java class="calculator.DivideServiceImpl"/>
-   </component>
-
-  <reference name="MultiplyService" policySets="" promote="CalculatorComponent/multiplyService" requires="">
-    <interface.java interface="calculator.MultiplyService" callbackInterface="calculator.MultiplyCallback"/>
-    <operation name="multiply" policySets="" requires=""/>
-
-    <binding.ws name="MultiplyWS" policySets="" port="" requires="" uri="http://calc/ws">
-      <operation name="multiply" policySets="" requires=""/>
-    </binding.ws>
-
-    <callback policySets="" requires="">
-      <binding.ws name="MultiplyCallbackWS" policySets="" port="" requires="" uri="http://calc/callback/ws">
-        <operation name="multiplyCallback" policySets="" requires=""/>
-      </binding.ws>
-    </callback>
-  </reference>
-  
 </composite>

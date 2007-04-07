@@ -29,6 +29,21 @@ import org.apache.tuscany.assembly.Service;
  */
 public class ComponentServiceImpl extends ServiceImpl implements ComponentService {
     private Service service;
+    
+    /**
+     * Constructs a new component service.
+     */
+    public ComponentServiceImpl() {
+    }
+
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public ComponentServiceImpl(ComponentService other) {
+        super(other);
+        service = other.getService();
+    }
 
     public Service getService() {
         return service;
