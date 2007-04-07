@@ -20,7 +20,7 @@ package org.apache.tuscany.core.binding.local;
 
 import java.net.URI;
 
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;

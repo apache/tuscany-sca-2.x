@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.assembly;
 
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 
 /**
  * A factory for the assembly model

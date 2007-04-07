@@ -22,12 +22,12 @@ import java.lang.reflect.Constructor;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.java.introspection.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.processor.HeuristicPojoProcessor;
 import org.apache.tuscany.implementation.java.processor.PropertyProcessor;
+import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.osoa.sca.annotations.Property;
 
 /**

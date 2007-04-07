@@ -20,13 +20,13 @@ package org.apache.tuscany.implementation.java.processor;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.java.JavaInterface;
-import org.apache.tuscany.idl.java.introspection.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.processor.IllegalServiceDefinitionException;
 import org.apache.tuscany.implementation.java.processor.InvalidServiceType;
 import org.apache.tuscany.implementation.java.processor.ServiceProcessor;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;

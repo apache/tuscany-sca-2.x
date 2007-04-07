@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.assembly;
 
-import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.idl.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
 
 /**
  * A test operation model.

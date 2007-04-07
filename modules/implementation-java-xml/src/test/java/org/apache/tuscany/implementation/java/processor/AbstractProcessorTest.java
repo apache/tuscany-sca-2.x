@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
@@ -33,6 +32,7 @@ import org.apache.tuscany.implementation.java.processor.ConstructorProcessor;
 import org.apache.tuscany.implementation.java.processor.PropertyProcessor;
 import org.apache.tuscany.implementation.java.processor.ReferenceProcessor;
 import org.apache.tuscany.implementation.java.processor.ResourceProcessor;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 
 
 /**

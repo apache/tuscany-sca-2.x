@@ -26,12 +26,12 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.idl.InvalidInterfaceException;
-import org.apache.tuscany.idl.java.JavaInterface;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspection.ImplementationProcessorExtension;
 import org.apache.tuscany.implementation.java.introspection.ProcessingException;
+import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 

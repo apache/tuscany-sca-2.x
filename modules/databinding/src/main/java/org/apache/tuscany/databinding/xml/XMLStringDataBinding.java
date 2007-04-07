@@ -21,8 +21,8 @@ package org.apache.tuscany.databinding.xml;
 
 import java.lang.annotation.Annotation;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.util.XMLType;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 
 /**

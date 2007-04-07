@@ -23,8 +23,8 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
 
 /**
  * Contains methods for mapping between an operation in a

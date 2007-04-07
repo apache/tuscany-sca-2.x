@@ -21,8 +21,8 @@ package org.apache.tuscany.java.bean.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.policy.Intent;
 
 /**

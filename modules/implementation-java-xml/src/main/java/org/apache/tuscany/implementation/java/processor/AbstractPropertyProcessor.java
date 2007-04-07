@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.idl.util.JavaXMLMapper;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
@@ -33,6 +32,7 @@ import org.apache.tuscany.implementation.java.introspection.DuplicatePropertyExc
 import org.apache.tuscany.implementation.java.introspection.IllegalPropertyException;
 import org.apache.tuscany.implementation.java.introspection.ImplementationProcessorExtension;
 import org.apache.tuscany.implementation.java.introspection.ProcessingException;
+import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 
 /**
  * Base class for ImplementationProcessors that handle annotations that add

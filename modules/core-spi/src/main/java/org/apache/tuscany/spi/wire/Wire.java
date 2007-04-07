@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 

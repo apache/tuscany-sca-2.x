@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 
 /**
  * A wire consists of 1..n invocation chains associated with the operations of its source service contract.

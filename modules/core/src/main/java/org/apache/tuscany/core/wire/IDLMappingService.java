@@ -22,8 +22,8 @@ package org.apache.tuscany.core.wire;
 import java.util.List;
 
 import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 
 /**

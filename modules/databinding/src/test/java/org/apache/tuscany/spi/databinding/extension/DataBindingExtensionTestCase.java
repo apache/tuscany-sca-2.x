@@ -21,8 +21,8 @@ package org.apache.tuscany.spi.databinding.extension;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.easymock.EasyMock;
 import org.w3c.dom.Element;

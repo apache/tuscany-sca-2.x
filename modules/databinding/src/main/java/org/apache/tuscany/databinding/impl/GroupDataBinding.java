@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 
 /**

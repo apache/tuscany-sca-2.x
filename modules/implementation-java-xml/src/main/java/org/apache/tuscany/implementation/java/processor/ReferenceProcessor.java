@@ -27,12 +27,12 @@ import java.util.Collection;
 
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.impl.ReferenceImpl;
-import org.apache.tuscany.idl.InvalidInterfaceException;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.introspection.ImplementationProcessorExtension;
 import org.apache.tuscany.implementation.java.introspection.ProcessingException;
+import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.osoa.sca.annotations.Reference;
 
 /**
