@@ -22,22 +22,21 @@ package org.apache.tuscany.implementation.java.xml;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.util.CompositeUtil;
-import org.apache.tuscany.assembly.util.PrintUtil;
+import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
+import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**
- * Test reading Java implementations.
+ * Test writing Java implementations.
  * 
  * @version $Rev$ $Date$
  */
-public class ReadTestCase extends TestCase {
+public class WriteTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
     DefaultStAXArtifactProcessorRegistry registry;
@@ -45,6 +44,10 @@ public class ReadTestCase extends TestCase {
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
         registry = new DefaultStAXArtifactProcessorRegistry();
+
+        registry.addArtifactProcessor(new CompositeProcessor(registry));
+        registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
+        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
 
         JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor();
         registry.addArtifactProcessor(javaProcessor);
@@ -55,16 +58,11 @@ public class ReadTestCase extends TestCase {
         registry = null;
     }
 
-    public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(registry);
+    public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeProcessor.read(reader);
+        Composite composite = registry.read(is, Composite.class);
         assertNotNull(composite);
-
-        new CompositeUtil(composite).configure(null);
-
-        new PrintUtil(System.out).print(composite);
+        registry.write(composite, System.out);
     }
 
 }

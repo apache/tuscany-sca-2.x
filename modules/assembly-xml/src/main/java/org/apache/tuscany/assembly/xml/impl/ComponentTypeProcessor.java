@@ -212,6 +212,8 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
     
             for (Service service : componentType.getServices()) {
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
+                //TODO write callback interface 
+                extensionProcessor.write(service.getInterface(), writer);
                 if (service.getCallback() != null) {
                     writeStart(writer, CALLBACK);
                     writeEnd(writer);
@@ -225,6 +227,8 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 writeStart(writer, REFERENCE,
                       new XAttr(NAME, reference.getName()),
                       new XAttr(TARGET, target));
+                //TODO write callback interface 
+                extensionProcessor.write(reference.getInterface(), writer);
                 if (reference.getCallback() != null) {
                     writeStart(writer, CALLBACK);
                     writeEnd(writer);

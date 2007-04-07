@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
@@ -49,15 +50,26 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     }
 
     public WSDLInterface read(XMLStreamReader reader) throws ContributionReadException {
-        
         try {
     
-            // Read an <interface.java>
+            // Read an <interface.wsdl>
             WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
             wsdlInterface.setUnresolved(true);
-            // TODO handle qname
-            wsdlInterface.setName(new QName("", reader.getAttributeValue(null, INTERFACE)));
-    
+
+            // Read a qname in the form:
+            // namespace#wsdl.interface(name)
+            String uri = reader.getAttributeValue(null, INTERFACE);
+            if (uri != null) {
+                int index = uri.indexOf('#');
+                if (index == -1) {
+                    throw new ContributionReadException("Invalid WSDL interface attribute: " + uri);
+                }
+                String namespace = uri.substring(0, index);
+                String name = uri.substring(index + 1);
+                name = name.substring("wsdl.interface(".length(), name.length() - 1);
+                wsdlInterface.setName(new QName(namespace, name));
+            }
+                
             // Skip to end element
             while (reader.hasNext()) {
                 if (reader.next() == END_ELEMENT && INTERFACE_WSDL_QNAME.equals(reader.getName())) {
@@ -71,8 +83,21 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         }
     }
     
-    public void write(WSDLInterface model, XMLStreamWriter outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
+    public void write(WSDLInterface wsdlInterface, XMLStreamWriter writer) throws ContributionWriteException {
+        try {
+            // Write an <interface.wsdl>
+            writer.writeStartElement(Constants.SCA10_NS, INTERFACE_WSDL);
+            if (wsdlInterface.getName() != null) {
+                //FIXME Write portType QName
+                QName qname = wsdlInterface.getName();
+                String uri = qname.getNamespaceURI() + "#wsdl.interface(" + qname.getLocalPart() + ")";
+                writer.writeAttribute(INTERFACE, uri);
+            }
+            writer.writeEndElement();
+            
+        } catch (XMLStreamException e) {
+            throw new ContributionWriteException(e);
+        }
     }
     
     public void resolve(WSDLInterface model, ArtifactResolver resolver) throws ContributionResolveException {

@@ -17,9 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.xml;
+package org.apache.tuscany.interfacedef.java.xml;
 
 import java.io.InputStream;
+
+import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
@@ -29,56 +31,54 @@ import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
-import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**
- * Test writing SCA XML assemblies.
+ * Test writing Java interfaces.
  * 
  * @version $Rev$ $Date$
  */
-public class WriteAllTestCase extends TestCase {
-    private DefaultStAXArtifactProcessorRegistry registry;
+public class WriteTestCase extends TestCase {
+
+    XMLInputFactory inputFactory;
+    DefaultStAXArtifactProcessorRegistry registry;
 
     public void setUp() throws Exception {
+        inputFactory = XMLInputFactory.newInstance();
         registry = new DefaultStAXArtifactProcessorRegistry();
+
         registry.addArtifactProcessor(new CompositeProcessor(registry));
         registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
         registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
+
+        JavaInterfaceProcessor javaProcessor = new JavaInterfaceProcessor();
+        registry.addArtifactProcessor(javaProcessor);
     }
 
     public void tearDown() throws Exception {
+        inputFactory = null;
         registry = null;
     }
 
-    public void testReadWriteComposite() throws Exception {
-        InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = registry.read(is, Composite.class);
-        registry.write(composite, System.out);
-    }
-
-    public void testReadWireWriteComposite() throws Exception {
-        InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = registry.read(is, Composite.class);
-        registry.resolve(composite, new DefaultArtifactResolver());
-        registry.wire(composite);
-        registry.write(composite, System.out);
-    }
-    
     public void testReadWriteComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         ComponentType componentType = registry.read(is, ComponentType.class);
-        registry.resolve(componentType, new DefaultArtifactResolver());
-        registry.wire(componentType);
+        assertNotNull(componentType);
         registry.write(componentType, System.out);
     }
 
     public void testReadWriteConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = registry.read(is, ConstrainingType.class);
-        registry.resolve(constrainingType, new DefaultArtifactResolver());
-        registry.wire(constrainingType);
+        assertNotNull(constrainingType);
         registry.write(constrainingType, System.out);
+    }
+
+    public void testReadWriteComposite() throws Exception {
+        InputStream is = getClass().getResourceAsStream("Calculator.composite");
+        Composite composite = registry.read(is, Composite.class);
+        assertNotNull(composite);
+        registry.write(composite, System.out);
     }
 
 }

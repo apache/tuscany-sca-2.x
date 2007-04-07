@@ -23,11 +23,11 @@
 	name="CalculatorComponent">
 
   <service name="CalculatorService">
-        <interface.java class="calculator.CalculatorService" />
+        <interface.java interface="calculator.CalculatorService" />
   </service>
 
   <reference name="divideService">
-        <interface.java class="calculator.DivideService" />
+        <interface.java interface="calculator.DivideService" />
   </reference>  
 
 </constrainingType>              

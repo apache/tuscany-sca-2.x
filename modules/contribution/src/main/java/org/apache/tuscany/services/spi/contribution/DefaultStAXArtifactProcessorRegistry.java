@@ -73,27 +73,33 @@ public class DefaultStAXArtifactProcessorRegistry
     public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException {
         
         // Delegate to the processor associated with the model type
-        StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
-        if (processor != null) {
-            processor.write(model, outputSource);
+        if (model != null) {
+            StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
+            if (processor != null) {
+                processor.write(model, outputSource);
+            }
         }
     }
     
     public void resolve(Object model, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Delegate to the processor associated with the model type
-        StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
-        if (processor != null) {
-            processor.resolve(model, resolver);
+        if (model != null) {
+            StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
+            if (processor != null) {
+                processor.resolve(model, resolver);
+            }
         }
     }
     
     public void wire(Object model) throws ContributionWireException {
 
         // Delegate to the processor associated with the model type
-        StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
-        if (processor != null) {
-            processor.wire(model);
+        if (model != null) {
+            StAXArtifactProcessor<Object> processor = (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
+            if (processor != null) {
+                processor.wire(model);
+            }
         }
     }
 

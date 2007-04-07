@@ -24,7 +24,7 @@
   </service>
 
   <reference name="divideService">
-        <interface.java class="calculator.DivideService" />
+        <interface.wsdl interface="http://sample/calculator#wsdl.interface(Divide)"/>
   </reference>  
 
 </componentType>              

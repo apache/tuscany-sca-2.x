@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
@@ -71,8 +72,18 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         }
     }
     
-    public void write(JavaImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
+    public void write(JavaImplementation javaImplementation, XMLStreamWriter writer) throws ContributionWriteException {
+        try {
+            // Write an <interface.java>
+            writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_JAVA);
+            if (javaImplementation.getName() != null) {
+                writer.writeAttribute(CLASS, javaImplementation.getName());
+            }
+            writer.writeEndElement();
+            
+        } catch (XMLStreamException e) {
+            throw new ContributionWriteException(e);
+        }
     }
     
     public void resolve(JavaImplementation model, ArtifactResolver resolver) throws ContributionResolveException {

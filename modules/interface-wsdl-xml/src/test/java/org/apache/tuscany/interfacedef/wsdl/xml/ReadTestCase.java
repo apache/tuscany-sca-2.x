@@ -38,7 +38,7 @@ import org.apache.tuscany.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**
- * Test the usability of the assembly model API when loading SCDL
+ * Test reading WSDL interfaces.
  * 
  * @version $Rev$ $Date$
  */

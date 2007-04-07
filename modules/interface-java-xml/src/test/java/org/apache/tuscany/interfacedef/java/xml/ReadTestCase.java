@@ -38,7 +38,7 @@ import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**
- * Test the usability of the assembly model API when loading SCDL
+ * Test reading Java interfaces.
  * 
  * @version $Rev$ $Date$
  */

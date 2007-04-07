@@ -44,7 +44,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Test the usability of the assembly model API when loading SCDL
+ * Test reading SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
