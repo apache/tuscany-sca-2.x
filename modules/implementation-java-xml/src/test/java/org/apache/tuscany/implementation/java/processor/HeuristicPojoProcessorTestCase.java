@@ -24,13 +24,13 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.idl.java.introspection.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
-import org.apache.tuscany.idl.util.JavaXMLMapper;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspection.ProcessingException;
+import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;

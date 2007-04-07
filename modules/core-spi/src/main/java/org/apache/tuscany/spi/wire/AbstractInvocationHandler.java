@@ -23,8 +23,8 @@ import java.net.URI;
 import java.util.LinkedList;
 
 import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.idl.Interface;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**

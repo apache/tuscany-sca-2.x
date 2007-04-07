@@ -21,7 +21,7 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 
 import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.ServiceBinding;

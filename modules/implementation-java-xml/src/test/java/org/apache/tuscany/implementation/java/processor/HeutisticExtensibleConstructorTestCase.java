@@ -21,12 +21,12 @@ package org.apache.tuscany.implementation.java.processor;
 import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.idl.java.introspection.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspection.ProcessingException;
+import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * Verifies constructors that have extensible annotation types, i.e. that have

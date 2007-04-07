@@ -29,7 +29,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.idl.util.XMLType;
+import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;

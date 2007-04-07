@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.Scope;

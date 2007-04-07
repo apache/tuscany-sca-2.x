@@ -25,12 +25,12 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.InvalidCallbackException;
-import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspection.ProcessingException;
 import org.apache.tuscany.implementation.java.processor.IllegalCallbackReferenceException;
 import org.apache.tuscany.implementation.java.processor.ServiceProcessor;
+import org.apache.tuscany.interfacedef.InvalidCallbackException;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Service;
 

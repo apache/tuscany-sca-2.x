@@ -28,10 +28,10 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
-import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.idl.impl.OperationImpl;
-import org.apache.tuscany.idl.java.JavaInterface;
-import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.easymock.EasyMock;
 

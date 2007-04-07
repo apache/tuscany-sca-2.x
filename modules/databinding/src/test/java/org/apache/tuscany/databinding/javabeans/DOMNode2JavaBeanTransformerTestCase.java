@@ -29,10 +29,10 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.impl.DataTypeImpl;
-import org.apache.tuscany.idl.util.TypeInfo;
-import org.apache.tuscany.idl.util.XMLType;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.util.TypeInfo;
+import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.easymock.EasyMock;

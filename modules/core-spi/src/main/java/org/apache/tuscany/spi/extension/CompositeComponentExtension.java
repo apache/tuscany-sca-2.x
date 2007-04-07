@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.extension;
 
 import java.net.URI;
 
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;

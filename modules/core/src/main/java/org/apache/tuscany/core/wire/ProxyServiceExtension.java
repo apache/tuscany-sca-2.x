@@ -21,7 +21,7 @@ package org.apache.tuscany.core.wire;
 import java.util.List;
 
 import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.ProxyService;

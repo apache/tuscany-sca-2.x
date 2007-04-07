@@ -29,7 +29,6 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.processor.ConstructorProcessor;
@@ -37,6 +36,7 @@ import org.apache.tuscany.implementation.java.processor.DuplicateConstructorExce
 import org.apache.tuscany.implementation.java.processor.InvalidConstructorException;
 import org.apache.tuscany.implementation.java.processor.PropertyProcessor;
 import org.apache.tuscany.implementation.java.processor.ReferenceProcessor;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 

@@ -23,7 +23,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;

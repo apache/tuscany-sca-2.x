@@ -26,7 +26,7 @@ import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;

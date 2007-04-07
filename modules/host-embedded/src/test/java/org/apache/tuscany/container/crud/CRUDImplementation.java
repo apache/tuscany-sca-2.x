@@ -22,9 +22,9 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.idl.java.JavaInterface;
-import org.apache.tuscany.idl.java.impl.DefaultJavaFactory;
-import org.apache.tuscany.idl.java.impl.JavaInterfaceImpl;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 
 /**
  * @version $$Rev$$ $$Date: 2007-04-03 11:08:56 -0700 (Tue, 03 Apr

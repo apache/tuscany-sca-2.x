@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**

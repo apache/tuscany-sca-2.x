@@ -22,8 +22,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.idl.Interface;
-import org.apache.tuscany.idl.java.JavaInterface;
+import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetResolutionException;

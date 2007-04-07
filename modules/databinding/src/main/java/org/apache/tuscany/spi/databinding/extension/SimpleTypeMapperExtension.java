@@ -30,7 +30,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.idl.util.TypeInfo;
+import org.apache.tuscany.interfacedef.util.TypeInfo;
 import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 

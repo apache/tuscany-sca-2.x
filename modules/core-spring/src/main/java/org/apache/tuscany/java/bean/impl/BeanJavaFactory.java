@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.java.bean.impl;
 
-import org.apache.tuscany.idl.java.JavaFactory;
-import org.apache.tuscany.idl.java.JavaInterface;
 import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**

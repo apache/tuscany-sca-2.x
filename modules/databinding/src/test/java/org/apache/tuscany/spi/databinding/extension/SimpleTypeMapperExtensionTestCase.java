@@ -26,7 +26,7 @@ import javax.xml.namespace.NamespaceContext;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.util.TypeInfo;
+import org.apache.tuscany.interfacedef.util.TypeInfo;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.easymock.EasyMock;
 

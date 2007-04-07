@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.host.monitor.ExceptionFormatter;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;

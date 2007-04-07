@@ -21,8 +21,8 @@ package org.apache.tuscany.databinding.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.DataPipe;
 import org.apache.tuscany.spi.databinding.Mediator;

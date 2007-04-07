@@ -26,10 +26,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
-import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.idl.impl.OperationImpl;
-import org.apache.tuscany.idl.java.JavaInterface;
-import org.apache.tuscany.idl.java.impl.JavaInterfaceImpl;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.Wire;

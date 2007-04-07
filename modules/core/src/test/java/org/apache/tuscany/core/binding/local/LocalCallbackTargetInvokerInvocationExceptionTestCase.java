@@ -22,8 +22,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
-import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.idl.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;

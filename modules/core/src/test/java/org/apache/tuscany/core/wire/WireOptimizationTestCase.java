@@ -22,8 +22,8 @@ import java.lang.reflect.Type;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.idl.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;

@@ -26,12 +26,12 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.idl.java.JavaInterface;
-import org.apache.tuscany.idl.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.processor.DuplicateReferenceException;
 import org.apache.tuscany.implementation.java.processor.IllegalReferenceException;
 import org.apache.tuscany.implementation.java.processor.ReferenceProcessor;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.osoa.sca.annotations.Reference;
 
 /**

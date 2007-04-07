@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.assembly;
 
-import org.apache.tuscany.idl.Interface;
+import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.policy.IntentAttachPoint;
 
 /**

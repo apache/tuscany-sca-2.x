@@ -24,7 +24,7 @@ import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.util.JavaIDLUtils;
 import org.apache.tuscany.core.wire.WireObjectFactory;
-import org.apache.tuscany.idl.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.wire.TargetInvoker;

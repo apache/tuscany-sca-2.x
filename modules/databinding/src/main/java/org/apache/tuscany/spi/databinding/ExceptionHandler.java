@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.spi.databinding;
 
-import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.interfacedef.DataType;
 
 /**
  * ExceptionHandler provides databinding-specific logic for exception handling

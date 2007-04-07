@@ -33,7 +33,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.idl.util.TypeInfo;
+import org.apache.tuscany.interfacedef.util.TypeInfo;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 
 public final class BeanUtil {

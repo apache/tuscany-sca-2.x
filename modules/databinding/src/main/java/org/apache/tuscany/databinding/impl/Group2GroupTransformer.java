@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.databinding.impl;
 
-import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
