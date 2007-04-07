@@ -25,36 +25,26 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-idl-wsdl</artifactId>
-    <name>Apache Tuscany WSDL Interface Model</name>
+    <artifactId>tuscany-interface-wsdl-xml</artifactId>
+    <name>Apache Tuscany SCA XML WSDL Interface Extension</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-idl</artifactId>
+            <artifactId>tuscany-contribution</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
-         <dependency>
-             <groupId>wsdl4j</groupId>
-             <artifactId>wsdl4j</artifactId>
-             <version>1.6.2</version>
-         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
     </dependencies>
-
-    <repositories>
-        <!-- Apache repository for Web Services artifacts -->
-        <repository>
-            <id>apache.ws.zone</id>
-            <name>Apache WS Zone Repository</name>
-            <url>http://ws.zones.apache.org/repository2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
 </project>

@@ -25,32 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-idl-java-xml</artifactId>
-    <name>Apache Tuscany SCA XML Java Interface Extension</name>
+    <artifactId>tuscany-interface</artifactId>
+    <name>Apache Tuscany Interface Model</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-            
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-idl-java</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 </project>

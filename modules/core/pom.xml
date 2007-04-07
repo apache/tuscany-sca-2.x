@@ -43,7 +43,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-idl-java</artifactId>
+            <artifactId>tuscany-interface-java</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>

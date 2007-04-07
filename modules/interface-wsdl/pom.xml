@@ -25,7 +25,36 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-idl</artifactId>
-    <name>Apache Tuscany Interface Model</name>
+    <artifactId>tuscany-interface-wsdl</artifactId>
+    <name>Apache Tuscany WSDL Interface Model</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+         <dependency>
+             <groupId>wsdl4j</groupId>
+             <artifactId>wsdl4j</artifactId>
+             <version>1.6.2</version>
+         </dependency>
+    </dependencies>
+
+    <repositories>
+        <!-- Apache repository for Web Services artifacts -->
+        <repository>
+            <id>apache.ws.zone</id>
+            <name>Apache WS Zone Repository</name>
+            <url>http://ws.zones.apache.org/repository2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

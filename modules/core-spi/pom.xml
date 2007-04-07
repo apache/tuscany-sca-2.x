@@ -49,7 +49,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-idl</artifactId>
+            <artifactId>tuscany-interface</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

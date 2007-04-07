@@ -27,6 +27,6 @@
     </parent>
     <groupId>org.osoa</groupId>
     <artifactId>sca-api</artifactId>
-    <name>SCA API</name>
+    <name>Apache Tuscany SCA API</name>
 
 </project>
