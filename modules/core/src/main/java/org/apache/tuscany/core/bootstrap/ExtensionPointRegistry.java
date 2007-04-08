@@ -19,37 +19,32 @@
 
 package org.apache.tuscany.core.bootstrap;
 
-import java.util.List;
 
 /**
+ * The registry for extension points
+ * 
  * @version $Rev$ $Date$
  */
-public interface ExtensionRegistry {
+public interface ExtensionPointRegistry {
+    
     /**
+     * Add an extension point to the registry
      * @param <T>
-     * @param extensionPoint
-     * @param extension
+     * @param extensionPointType The interface of the extension point
+     * @param extensionPoint The instance of the extension point
      */
-    <T> void addExtension(Class<T> extensionPoint, T extension);
+    <T> void addExtensionPoint(Class<T> extensionPointType, T extensionPoint);
+    
     /**
+     * Get the extension point by the interface
      * @param <T>
-     * @param extensionPoint
+     * @param extensionPointType
      * @return
      */
-    <T> List<T> getExtensions(Class<T> extensionPoint);
+    <T> T getExtensionPoint(Class<T> extensionPointType);
+    
     /**
-     * @param <T>
-     * @param extensionPoint
-     * @return
-     */
-    <T> T getExtension(Class<T> extensionPoint);
-    /**
-     * @param <T>
-     * @param extensionPoint
-     * @param extension
-     */
-    <T> void removeExtension(Class<T> extensionPoint, T extension);
-    /**
+     * Remove an extension point
      * @param extensionPoint
      */
     void removeExtensionPoint(Class extensionPoint);

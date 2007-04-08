@@ -46,7 +46,7 @@ public interface Bootstrapper {
      *
      * @return a new primordial Deployer
      */
-    Deployer createDeployer(ExtensionRegistry registry);
+    Deployer createDeployer(ExtensionPointRegistry registry);
 
     /**
      * Create a ScopeRegistry that supports the Scopes supported for primordial components

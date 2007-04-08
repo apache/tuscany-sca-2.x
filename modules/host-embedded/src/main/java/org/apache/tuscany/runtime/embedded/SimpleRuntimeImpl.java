@@ -30,8 +30,8 @@ import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
-import org.apache.tuscany.core.bootstrap.ExtensionRegistry;
-import org.apache.tuscany.core.bootstrap.ExtensionRegistryImpl;
+import org.apache.tuscany.core.bootstrap.ExtensionPointRegistry;
+import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
@@ -108,14 +108,14 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
     @SuppressWarnings("unchecked")
     public Component start() throws Exception {
-        ExtensionRegistry extensionRegistry = new ExtensionRegistryImpl();
+        ExtensionPointRegistry extensionRegistry = new ExtensionPointRegistryImpl();
         ContributionRepository repository = new ContributionRepositoryImpl("target");
         DefaultStAXArtifactProcessorRegistry registry = new DefaultStAXArtifactProcessorRegistry();
         registry.addArtifactProcessor(new CompositeProcessor(registry));
         registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
         registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
 
-        extensionRegistry.addExtension(StAXArtifactProcessorRegistry.class, registry);
+        extensionRegistry.addExtensionPoint(StAXArtifactProcessorRegistry.class, registry);
 
         DefaultURLArtifactProcessorRegistry artifactRegistry = new DefaultURLArtifactProcessorRegistry();
         CompositeDocumentProcessor compositeProcessor = new CompositeDocumentProcessor(registry);
@@ -132,7 +132,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         ContributionService contributionService = 
             new ContributionServiceImpl(repository, pkgRegistry, artifactRegistry, artifactResolver);
 
-        extensionRegistry.addExtension(ContributionService.class, contributionService);
+        extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
         initialize(extensionRegistry, contributionService);
 
         ScopeRegistry scopeRegistry = getScopeRegistry();

@@ -92,15 +92,15 @@ public class DefaultBootstrapper implements Bootstrapper {
      * 
      * @return the primordial deployer
      */
-    public Deployer createDeployer(ExtensionRegistry extensionRegistry) {
+    public Deployer createDeployer(ExtensionPointRegistry extensionRegistry) {
         ScopeRegistry scopeRegistry = getScopeRegistry();
         BuilderRegistry builder = createBuilder(scopeRegistry);
         DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager);
         deployer.setScopeRegistry(getScopeRegistry());
-        extensionRegistry.addExtension(ScopeRegistry.class, scopeRegistry);
-        extensionRegistry.addExtension(BuilderRegistry.class, builder);
+        extensionRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
+        extensionRegistry.addExtensionPoint(BuilderRegistry.class, builder);
         // extensionRegistry.addExtension(LoaderRegistry.class, loader);
-        extensionRegistry.addExtension(Deployer.class, deployer);
+        extensionRegistry.addExtensionPoint(Deployer.class, deployer);
         return deployer;
     }
 
