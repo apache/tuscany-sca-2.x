@@ -17,35 +17,19 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.bootstrap;
+package org.apache.tuscany.spi.bootstrap;
 
 
 /**
- * The registry for extension points
- * 
  * @version $Rev$ $Date$
  */
-public interface ExtensionPointRegistry {
-    
+public interface ExtensionActivator {
     /**
-     * Add an extension point to the registry
-     * @param <T>
-     * @param extensionPointType The interface of the extension point
-     * @param extensionPoint The instance of the extension point
+     * @param registry
      */
-    <T> void addExtensionPoint(Class<T> extensionPointType, T extensionPoint);
-    
+    void start(ExtensionPointRegistry registry);
     /**
-     * Get the extension point by the interface
-     * @param <T>
-     * @param extensionPointType
-     * @return
+     * @param registry
      */
-    <T> T getExtensionPoint(Class<T> extensionPointType);
-    
-    /**
-     * Remove an extension point
-     * @param extensionPoint
-     */
-    void removeExtensionPoint(Class extensionPoint);
+    void stop(ExtensionPointRegistry registry);
 }

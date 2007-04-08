@@ -30,7 +30,6 @@ import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
-import org.apache.tuscany.core.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
@@ -53,6 +52,7 @@ import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessor
 import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.SCAObject;

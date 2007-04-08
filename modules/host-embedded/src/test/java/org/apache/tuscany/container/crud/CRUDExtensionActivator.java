@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.container.crud;
 
-import org.apache.tuscany.core.bootstrap.ExtensionActivator;
-import org.apache.tuscany.core.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.spi.bootstrap.ExtensionActivator;
+import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 /**

@@ -20,6 +20,7 @@ package org.apache.tuscany.core.bootstrap;
 
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
+import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;
