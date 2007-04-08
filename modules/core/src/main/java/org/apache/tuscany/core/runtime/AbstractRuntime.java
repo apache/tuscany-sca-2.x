@@ -43,8 +43,8 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.bootstrap.ExtensionActivator;
-import org.apache.tuscany.core.bootstrap.ExtensionRegistry;
-import org.apache.tuscany.core.bootstrap.ExtensionRegistryImpl;
+import org.apache.tuscany.core.bootstrap.ExtensionPointRegistry;
+import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
@@ -114,7 +114,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
      * The ComponentManager that manages all components in this runtime.
      */
     protected ComponentManager componentManager;
-    protected ExtensionRegistry extensionRegistry;
+    protected ExtensionPointRegistry extensionRegistry;
 
     /**
      * Registry for ClassLoaders used by this runtime.
@@ -197,7 +197,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         this.managementService = managementService;
     }
 
-    public void initialize(ExtensionRegistry extensionRegistry, ContributionService contributionService)
+    public void initialize(ExtensionPointRegistry extensionRegistry, ContributionService contributionService)
         throws InitializationException {
         this.contributionService = contributionService;
         this.extensionRegistry = extensionRegistry;
@@ -206,7 +206,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
         Deployer deployer = bootstrapper.createDeployer(extensionRegistry);
 
-        extensionRegistry.addExtension(ContributionService.class, contributionService);
+        extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
 
         registerSystemComponent(TUSCANY_DEPLOYER, Deployer.class, deployer);
         registerSystemComponent(WORK_CONTEXT_URI, WorkContext.class, new SimpleWorkContext());
@@ -271,7 +271,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         try {
             ComponentService contract = createContract(type);
             componentManager.registerJavaObject(uri, contract, component);
-            extensionRegistry.addExtension(type, component);
+            extensionRegistry.addExtensionPoint(type, component);
         } catch (RegistrationException e) {
             throw new InitializationException(e);
         }

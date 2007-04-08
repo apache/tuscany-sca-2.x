@@ -19,17 +19,29 @@
 
 package org.apache.tuscany.core.bootstrap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
+ * A registry to hold all the extension points and extensions
+ * 
  * @version $Rev$ $Date$
  */
-public interface ExtensionActivator {
-    /**
-     * @param registry
-     */
-    void start(ExtensionPointRegistry registry);
-    /**
-     * @param registry
-     */
-    void stop(ExtensionPointRegistry registry);
+public class ExtensionPointRegistryImpl implements ExtensionPointRegistry {
+    private Map<Class, Object> extensionPoints = new HashMap<Class, Object>();
+
+    public <T> void addExtensionPoint(Class<T> extensionPointType, T extensionPoint) {
+        extensionPoints.put(extensionPointType, extensionPoint);
+    }
+
+    public <T> T getExtensionPoint(Class<T> extensionPointType) {
+        return extensionPointType.cast(extensionPoints.get(extensionPointType));
+    }
+
+    public void removeExtensionPoint(Class extensionPoint) {
+        extensionPoints.remove(extensionPoint);
+    }
+
 }
