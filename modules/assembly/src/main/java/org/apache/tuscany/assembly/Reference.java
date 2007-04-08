@@ -52,18 +52,4 @@ public interface Reference extends AbstractReference, Contract {
      * @return the targets of this reference.
      */
     List<ComponentService> getTargets();
-
-    /**
-     * Returns true if the reference should be autowired.
-     * 
-     * @return whether the reference should be autowired.
-     */
-    boolean isAutowire();
-
-    /**
-     * Sets whether the reference should be autowired.
-     * 
-     * @param autowire whether the reference should be autowired
-     */
-    void setAutowire(boolean autowire);
 }

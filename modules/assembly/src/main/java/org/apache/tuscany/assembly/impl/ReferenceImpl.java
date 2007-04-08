@@ -39,7 +39,6 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference {
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<ComponentService> targets = new ArrayList<ComponentService>();
     private Callback callback;
-    private boolean autowire;
 
     /**
      * Constructs a new reference.
@@ -58,7 +57,6 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference {
         policySets.addAll(other.getPolicySets());
         targets.addAll(other.getTargets());
         callback = other.getCallback();
-        autowire = other.isAutowire();
     }
 
     public List<Binding> getBindings() {
@@ -96,13 +94,5 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference {
 
     public void setCallback(Callback callback) {
         this.callback = callback;
-    }
-
-    public boolean isAutowire() {
-        return autowire;
-    }
-
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
     }
 }

@@ -29,6 +29,7 @@ import org.apache.tuscany.assembly.Reference;
  */
 public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference {
     private Reference reference;
+    private boolean autowire;
 
     /**
      * Constructs a new component reference.
@@ -43,6 +44,7 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     public ComponentReferenceImpl(ComponentReference other) {
         super(other);
         reference = other.getReference();
+        autowire = other.isAutowire();
     }
 
     public Reference getReference() {
@@ -53,4 +55,11 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
         this.reference = reference;
     }
 
+    public boolean isAutowire() {
+        return autowire;
+    }
+
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
+    }
 }
