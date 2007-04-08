@@ -69,6 +69,9 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 name = name.substring("wsdl.interface(".length(), name.length() - 1);
                 wsdlInterface.setName(new QName(namespace, name));
             }
+            
+            // Read wsdlLocation
+            wsdlInterface.setLocation(reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION));
                 
             // Skip to end element
             while (reader.hasNext()) {
@@ -87,12 +90,19 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         try {
             // Write an <interface.wsdl>
             writer.writeStartElement(Constants.SCA10_NS, INTERFACE_WSDL);
+
+            // Write interface name
             if (wsdlInterface.getName() != null) {
-                //FIXME Write portType QName
                 QName qname = wsdlInterface.getName();
                 String uri = qname.getNamespaceURI() + "#wsdl.interface(" + qname.getLocalPart() + ")";
                 writer.writeAttribute(INTERFACE, uri);
             }
+            
+            // Write location
+            if (wsdlInterface.getLocation() != null) {
+                writer.writeAttribute(WSDLI_NS, WSDL_LOCATION, wsdlInterface.getLocation());
+            }
+            
             writer.writeEndElement();
             
         } catch (XMLStreamException e) {

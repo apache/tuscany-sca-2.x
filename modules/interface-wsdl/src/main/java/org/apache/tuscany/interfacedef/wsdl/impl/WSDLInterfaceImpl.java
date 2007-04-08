@@ -33,6 +33,7 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
 
     private QName name;
     private PortType portType;
+    private String location;
 
     public WSDLInterfaceImpl() {
         setRemotable(true);
@@ -51,6 +52,14 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
             throw new IllegalStateException();
         }
         this.name = interfaceName;
+    }
+    
+    public String getLocation() {
+        return location;
+    }
+    
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public PortType getPortType() {

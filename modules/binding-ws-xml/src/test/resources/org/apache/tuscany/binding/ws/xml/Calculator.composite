@@ -24,8 +24,11 @@
 	name="Calculator">
 
     <service name="CalculatorService" promote="CalculatorServiceComponent">
-        <interface.wsdl interface="http://sample/calculator#wsdl.interface(Calculator)"
-        	wsdli:wsdlLocation="http://tempuri.org"/>
+        <interface.wsdl interface="http://sample/calculator#wsdl.interface(Calculator)"/>
+        <binding.ws uri="http://localhost:8080/Calculator" wsdlElement="http://sample/calculator#wsdl.service(CalculatorService)"/>
+        <binding.ws wsdli:wsdlLocation="http://tempuri.org" wsdlElement="http://sample/calculator#wsdl.binding(CalculatorBinding)"/>
+        <binding.ws wsdlElement="http://sample/calculator#wsdl.port(CalculatorService/CalculatorPort)"/>
+        <binding.ws wsdlElement="http://sample/calculator#wsdl.endpoint(CalculatorService/CalculatorEndpoint)"/>
     </service>
 
     <component name="CalculatorServiceComponent">
