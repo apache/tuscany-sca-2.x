@@ -48,10 +48,10 @@ import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
+import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.URLArtifactProcessorRegistry;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
@@ -117,20 +117,20 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         extensionRegistry.addExtension(StAXArtifactProcessorRegistry.class, registry);
 
-        DefaultURLArtifactProcessorRegistry registry2 = new DefaultURLArtifactProcessorRegistry();
+        DefaultURLArtifactProcessorRegistry artifactRegistry = new DefaultURLArtifactProcessorRegistry();
         CompositeDocumentProcessor compositeProcessor = new CompositeDocumentProcessor(registry);
 
-        registry2.addArtifactProcessor(compositeProcessor);
+        artifactRegistry.addArtifactProcessor(compositeProcessor);
 
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         ContributionPackageProcessorRegistry pkgRegistry = new ContributionPackageProcessorRegistryImpl(describer);
         new JarContributionProcessor(pkgRegistry);
         new FolderContributionProcessor(pkgRegistry);
 
-        ArtifactResolverRegistry resolverRegistry = null;
+        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
 
-        ContributionService contributionService = new ContributionServiceImpl(repository, pkgRegistry, registry2,
-                                                                              resolverRegistry);
+        ContributionService contributionService = 
+            new ContributionServiceImpl(repository, pkgRegistry, artifactRegistry, artifactResolver);
 
         extensionRegistry.addExtension(ContributionService.class, contributionService);
         initialize(extensionRegistry, contributionService);
@@ -145,8 +145,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         // FIXME: Need to getDeployables() as list of Composites
         DeployedArtifact artifact = contribution.getArtifact(URI.create(uri + runtimeInfo.getCompositePath()));
-        Composite composite = (Composite)artifact.getModelObjects().values().iterator().next().values().iterator()
-            .next();
+        Composite composite = (Composite)artifact.getModelObject();
 
         Collection<Component> components = getDeployer().deploy(composite);
         for (Component component : components) {
