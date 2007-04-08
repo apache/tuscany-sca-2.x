@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
@@ -53,6 +54,10 @@ import org.osoa.sca.NoRegisteredCallbackException;
  */
 public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
     implements InvocationHandler, Externalizable, SCAExternalizable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3350283555825935609L;
     private transient WorkContext context;
     private transient Map<URI, Wire> wires;
     private List<String> sourceWireNames;
@@ -97,7 +102,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
         Wire wire = wires.get(targetAddress);
         assert wire != null;
         Map<Operation, InvocationChain> chains = wire.getCallbackInvocationChains();
-        Operation operation = findOperation(method, chains.keySet());
+        Operation operation = JavaInterfaceUtil.findOperation(method, chains.keySet());
         InvocationChain chain = chains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
         Object correlationId = context.getCorrelationId();
