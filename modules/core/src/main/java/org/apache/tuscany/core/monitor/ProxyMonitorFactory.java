@@ -38,7 +38,7 @@ import java.util.logging.Level;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.monitor.ExceptionFormatter;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
-import org.apache.tuscany.spi.LogLevel;
+import org.apache.tuscany.spi.annotation.LogLevel;
 
 /**
  * @version $Rev$ $Date$

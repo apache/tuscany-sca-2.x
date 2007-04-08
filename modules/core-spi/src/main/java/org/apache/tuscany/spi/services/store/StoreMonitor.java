@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.services.store;
 
-import org.apache.tuscany.spi.LogLevel;
+import org.apache.tuscany.spi.annotation.LogLevel;
 
 /**
  * A generic monintor interface for services to log events
