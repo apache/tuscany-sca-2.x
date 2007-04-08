@@ -21,8 +21,6 @@ package org.apache.tuscany.services.contribution.model;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Representation of a deployed artifact
@@ -33,12 +31,7 @@ public class DeployedArtifact {
     protected Contribution contribution;
     protected URI uri;
     protected URL location;
-    /**
-     * The map keeps all the model objects loaded/introspected from this artifact. The objects
-     * are keyed by the java type of the model such as javax.wsdl.ModelObject. The value is also
-     * a map with namespace as the key and the model object as the value.
-     */
-    protected Map<Class, Map<String, Object>> modelObjects = new HashMap<Class, Map<String, Object>>();
+    protected Object modelObject;
 
     public DeployedArtifact() {
         super();
@@ -83,30 +76,11 @@ public class DeployedArtifact {
     public void setContribution(Contribution contribution) {
         this.contribution = contribution;
     }
-    public Map<Class, Map<String, Object>> getModelObjects() {
-        return modelObjects;
+    public Object getModelObject() {
+        return modelObject;
     }
-
-    public Map<String, Object> getModelObjects(Class type) {
-        return modelObjects.get(type);
+    
+    public void setModelObject(Object modelObject){
+        this.modelObject = modelObject;
     }
-
-    public Object getModelObject(Class type, String namespace) {
-        Map<String, Object> map = modelObjects.get(type);
-        if (map == null) {
-            return null;
-        } else {
-            return map.get(namespace);
-        }
-    }
-
-    public void addModelObject(Class type, String namespace, Object modelObject) {
-        Map<String, Object> map = modelObjects.get(type);
-        if (map == null) {
-            map = new HashMap<String, Object>();
-            modelObjects.put(type, map);
-        }
-        map.put(namespace, modelObject);
-    }
-
 }

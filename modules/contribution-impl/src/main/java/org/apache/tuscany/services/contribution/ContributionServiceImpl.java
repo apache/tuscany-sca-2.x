@@ -35,14 +35,12 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.services.contribution.model.Contribution;
 import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.contribution.util.IOHelper;
-import org.apache.tuscany.services.spi.contribution.ArtifactProcessor;
-import org.apache.tuscany.services.spi.contribution.ArtifactProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
-import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
+import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
 import org.apache.tuscany.services.spi.contribution.loader.ContributionMetadataLoaderException;
 
@@ -65,7 +63,7 @@ public class ContributionServiceImpl implements ContributionService {
      * Registry of available artifact processors
      */
 
-    protected URLArtifactProcessor<?> artifactProcessor;
+    protected URLArtifactProcessor artifactProcessor;
 
     /**
      * xml factory used to create reader instance to load contribution metadata
@@ -82,17 +80,17 @@ public class ContributionServiceImpl implements ContributionService {
      */
     protected Map<URI, Contribution> contributionRegistry = new HashMap<URI, Contribution>();
 
-    protected ArtifactResolverRegistry resolverRegistry;
+    protected ArtifactResolver artifactResolver;
 
     public ContributionServiceImpl(ContributionRepository repository,
                                    ContributionPackageProcessor packageProcessor,
                                    URLArtifactProcessor artifactProcessor,
-                                   ArtifactResolverRegistry resolverRegistry) {
+                                   ArtifactResolver artifactResolver) {
         super();
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
         this.artifactProcessor = artifactProcessor;
-        this.resolverRegistry = resolverRegistry;
+        this.artifactResolver = artifactResolver;
 
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         this.contributionLoader = new ContributionMetadataLoaderImpl();
@@ -256,10 +254,10 @@ public class ContributionServiceImpl implements ContributionService {
             contributionArtifacts = this.packageProcessor.getArtifacts(locationURL, contributionStream);
         }
 
-         processReadPhase(contribution, contributionArtifacts);
-        // processResolvePhase(contribution);
-        // processOptimizationPhase();
-
+        processReadPhase(contribution, contributionArtifacts);
+        processResolvePhase(contribution);
+        processOptimizationPhase(contribution);
+        
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getUri(), contribution);
     }
@@ -269,31 +267,35 @@ public class ContributionServiceImpl implements ContributionService {
         for (URI a : artifacts) {
             URL artifactURL = packageProcessor.getArtifactURL(contribution.getLocation(), a);
             Object model = this.artifactProcessor.read(artifactURL);
-
+            
             if (model != null) {
+                ((DefaultArtifactResolver)artifactResolver).put(model,model);
+                
                 URI artifactURI = contribution.getUri().resolve(a);
                 DeployedArtifact artifact = new DeployedArtifact(artifactURI);
                 artifact.setLocation(artifactURL);
+                artifact.setModelObject(model);
                 contribution.addArtifact(artifact);
-                artifact.addModelObject(Object.class, "*", model);
             }
         }
     }
 
-    private void processResolvePhase(Contribution contribution) {
+    private void processResolvePhase(Contribution contribution) throws ContributionException {
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
-            // for each model object for the artifact
-            for (Object model : artifact.getModelObjects(Class.class).values()) {
-                // resolve it
-
-            }
+            // resolve the model object
+           this.artifactProcessor.resolve(artifact.getModelObject(), artifactResolver);
         }
 
     }
 
-    private void processOptimizationPhase() {
-        // TODO
+    private void processOptimizationPhase(Contribution contribution) throws ContributionException {
+        // for each artifact that was processed on the contribution
+        for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
+            // resolve the model object
+           this.artifactProcessor.wire(artifact.getModelObject());
+        }
+
     }
 
 }
