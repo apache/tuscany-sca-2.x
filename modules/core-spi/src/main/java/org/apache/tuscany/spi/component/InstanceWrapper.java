@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
 
 /**
  * Provides lifecycle management for an implementation instance associated with an {@link

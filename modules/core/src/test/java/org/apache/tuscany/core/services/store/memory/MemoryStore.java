@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tuscany.spi.Monitor;
+import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.DuplicateRecordException;

@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.spi.deployer;
 
-import org.apache.tuscany.spi.LogLevel;
 import org.apache.tuscany.spi.TuscanyException;
+import org.apache.tuscany.spi.annotation.LogLevel;
 
 /**
  * @version $Rev$ $Date$

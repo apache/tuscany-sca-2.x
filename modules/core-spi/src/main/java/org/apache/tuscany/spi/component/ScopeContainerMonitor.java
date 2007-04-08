@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.LogLevel;
+import org.apache.tuscany.spi.annotation.LogLevel;
 
 /**
  * Defines monitor events for scope containers

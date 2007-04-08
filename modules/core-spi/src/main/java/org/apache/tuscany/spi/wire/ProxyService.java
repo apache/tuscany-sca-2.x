@@ -43,9 +43,6 @@ public interface ProxyService {
      */
     <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException;
 
-    <T> T createProxy2(Class<T> interfaze, boolean conversational, Wire wire) throws ProxyCreationException;
-
-
     /**
      * Creates a Java proxy for the given wire
      *

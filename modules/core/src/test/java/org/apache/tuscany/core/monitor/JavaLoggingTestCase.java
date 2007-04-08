@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.spi.LogLevel;
+import org.apache.tuscany.spi.annotation.LogLevel;
 
 /**
  * Test case for the JavaLoggingMonitorFactory.
