@@ -39,11 +39,16 @@ public class DefaultURLArtifactProcessorRegistry
     }
 
     public Object read(URL source) throws ContributionReadException {
+        URLArtifactProcessor<Object> processor = null;
         
         // Delegate to the processor associated with file extension
         String extension = source.getFile();
-        extension = extension.substring(extension.lastIndexOf('.'));
-        URLArtifactProcessor<Object> processor = (URLArtifactProcessor<Object>)this.getProcessor(extension);
+        int extensionStart = extension.lastIndexOf('.');
+        //handle files without extension (e.g NOTICE)
+        if(extensionStart > 0){
+            extension = extension.substring(extensionStart);
+            processor = (URLArtifactProcessor<Object>)this.getProcessor(extension);            
+        }
         if (processor == null) {
             return null;
         }
