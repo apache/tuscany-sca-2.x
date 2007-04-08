@@ -27,5 +27,8 @@ public interface WSDLConstants {
     String INTERFACE_WSDL = "interface.wsdl";
     QName INTERFACE_WSDL_QNAME = new QName(Constants.SCA10_NS, "interface.wsdl");
     String INTERFACE = "interface";
+    String WSDL_LOCATION = "wsdlLocation";
+    String WSDLI_NS = "http://www.w3.org/2004/08/wsdl-instance";
+    QName WSDL_LOCATION_QNAME = new QName(WSDLI_NS, WSDL_LOCATION); 
 
 }

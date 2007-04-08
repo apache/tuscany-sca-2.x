@@ -21,12 +21,19 @@
 	xmlns:wsdli="http://www.w3.org/2004/08/wsdl-instance">
 
   <service name="CalculatorService">
-        <interface.wsdl interface="http://sample/calculator#wsdl.interface(Calculator)"
-        	wsdli:wsdlLocation="http://tempuri.org"/>
+        <interface.wsdl interface="http://sample/calculator#wsdl.interface(Calculator)"/>
+        <binding.ws uri="http://localhost:8080/Calculator" wsdlElement="http://sample/calculator#wsdl.service(CalculatorService)"/>
+        <binding.ws wsdli:wsdlLocation="http://tempuri.org" wsdlElement="http://sample/calculator#wsdl.binding(CalculatorBinding)"/>
+        <binding.ws wsdlElement="http://sample/calculator#wsdl.port(CalculatorService/CalculatorPort)"/>
+        <binding.ws wsdlElement="http://sample/calculator#wsdl.endpoint(CalculatorService/CalculatorEndpoint)"/>
   </service>
 
   <reference name="divideService">
         <interface.wsdl interface="http://sample/calculator#wsdl.interface(Divide)"/>
+        <binding.ws uri="tempuri.org" wsdlElement="http://sample/calculator#wsdl.service(DivideService)"/>
+        <binding.ws uri="tempuri.org" wsdlElement="http://sample/calculator#wsdl.binding(DivideBinding)"/>
+        <binding.ws uri="tempuri.org" wsdlElement="http://sample/calculator#wsdl.port(DivideService/DividePort)"/>
+        <binding.ws uri="tempuri.org" wsdlElement="http://sample/calculator#wsdl.endpoint(DivideService/DivideEndpoint)"/>
   </reference>  
 
 </componentType>              

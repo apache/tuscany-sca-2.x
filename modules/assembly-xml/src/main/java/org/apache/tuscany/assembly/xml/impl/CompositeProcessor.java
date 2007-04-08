@@ -343,8 +343,14 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 ComponentService promotedService = compositeService.getPromotedService();
                 String promote = promotedService != null ? promotedService.getName() : null;
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote));
+
                 //TODO write callback interface 
                 extensionProcessor.write(service.getInterface(), writer);
+                
+                for (Binding binding: service.getBindings()) {
+                    extensionProcessor.write(binding, writer);
+                }
+                
                 if (service.getCallback() != null) {
                     writeStart(writer, CALLBACK);
                     writeEnd(writer);
@@ -357,8 +363,14 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
                 for (ComponentService service : component.getServices()) {
                     writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
+
                     //TODO write callback interface 
                     extensionProcessor.write(service.getInterface(), writer);
+
+                    for (Binding binding: service.getBindings()) {
+                        extensionProcessor.write(binding, writer);
+                    }
+                    
                     if (service.getCallback() != null) {
                         writeStart(writer, CALLBACK);
                         writeEnd(writer);
@@ -372,8 +384,14 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                     writeStart(writer, REFERENCE,
                                new XAttr(NAME, reference.getName()),
                                new XAttr(TARGET,target));
+                    
                     //TODO write callback interface 
                     extensionProcessor.write(reference.getInterface(), writer);
+                    
+                    for (Binding binding: reference.getBindings()) {
+                        extensionProcessor.write(binding, writer);
+                    }
+                    
                     if (reference.getCallback() != null) {
                         writeStart(writer, CALLBACK);
                         writeEnd(writer);
@@ -410,8 +428,14 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 writeStart(writer, REFERENCE,
                            new XAttr(NAME, reference.getName()),
                            new XAttr(PROMOTE, promote));
+
                 //TODO write callback interface 
                 extensionProcessor.write(reference.getInterface(), writer);
+                
+                for (Binding binding: reference.getBindings()) {
+                    extensionProcessor.write(binding, writer);
+                }
+                
                 if (reference.getCallback() != null) {
                     writeStart(writer, CALLBACK);
                     writeEnd(writer);

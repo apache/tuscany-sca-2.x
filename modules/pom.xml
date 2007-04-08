@@ -44,6 +44,8 @@
                 <module>binding-jsonrpc</module>
                 <module>binding-rmi</module>
                 -->
+                <module>binding-ws</module>
+                <module>binding-ws-xml</module>
                 <module>contribution</module>
                 <module>contribution-impl</module>
                 <module>host-embedded</module>
