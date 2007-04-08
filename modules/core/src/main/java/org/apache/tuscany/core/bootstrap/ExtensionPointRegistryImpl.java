@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
+
 /**
  * A registry to hold all the extension points and extensions
  * 

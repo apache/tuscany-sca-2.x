@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.bootstrap;
 
+import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
+
 import junit.framework.TestCase;
 
 public class ExtensionPointRegistryImplTestCase extends TestCase {
