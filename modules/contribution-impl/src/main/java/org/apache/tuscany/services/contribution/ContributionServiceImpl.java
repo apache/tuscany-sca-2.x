@@ -284,7 +284,9 @@ public class ContributionServiceImpl implements ContributionService {
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
             // resolve the model object
-           this.artifactProcessor.resolve(artifact.getModelObject(), artifactResolver);
+            if (artifact.getModelObject() != null) {
+                this.artifactProcessor.resolve(artifact.getModelObject(), artifactResolver);
+            }
         }
 
     }
