@@ -1,0 +1,110 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+ -->
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Tuscany RDB DAS exposed as an SCA service</title>
+
+<style>
+.code {font-size: 11px; color: #006699}
+.codebox {border: 1px solid #6699CC; background-color: #F1F7FA;padding:15px}
+.codebox2 {border: 1px solid #6699CC; background-color: #F1F7FA;padding:15px; width:85%}
+.codeboxW {border: 1px solid #6699CC; background-color: #FFFFFF;padding:15px}
+.codeboxB {background-color: #C9DBED;padding:1px 10px 10px 10px}
+</style>
+
+</head>
+
+
+
+
+<body>
+
+<h1>Tuscany RDB DAS exposed as an SCA service</h1>
+
+
+<h3>Introduction</h3>
+
+<p>This is a sample SCA service that exposes DAS functionality.</p>
+<p>This service would allow you to utilize DAS in a language neutral fashion, consuming existent or adHoc commands.</p>
+
+
+<h3>Consuming the DAS service</h3>
+
+
+<p>You should add the dependency on your client project pom file</p>
+
+
+<p>
+<div class="codebox2">
+<pre>
+&lt;!-- DAS Service --&gt;
+&lt;dependency&gt;
+   &lt;groupId&gt;org.apache.tuscany.das.samples&lt;/groupId&gt;
+   &lt;artifactId&gt;sample-das-service&lt;/artifactId&gt;
+   &lt;version&gt;${pom.version}&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+</div>
+</p>
+
+<br>
+<p>In order to consume the service, you would have to create a SCDL that references it, see sample below:</p>
+
+<p>
+<div class="codebox2">
+<pre>
+&lt;composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="DASServiceComposite"&gt;
+  &lt;component name="DASServiceComponent"&gt;
+     &lt;implementation.composite name="DASServiceComposite" jarLocation="lib/sample-das-service-1.0-incubator-SNAPSHOT.jar"/&gt;
+  &lt;/component&gt;
+&lt;/composite&gt;
+</pre>
+</div>
+</p>
+
+
+<h3>Sample Architecture</h3>
+
+<p>This service utilizes the following Interface as its definition:</p>
+
+
+<p>
+<div class="codebox2">
+<pre>
+
+public interface DASService {
+
+    public void configureService(InputStream configStream) throws DASServiceException;
+
+    public DataObject executeCommand(String commandName, Vector commandArguments) throws DASServiceException;
+
+    public DataObject execute(String adHocQuery, Vector commandArguments) throws DASServiceException;
+
+    public void applyChanges(DataObject graphRoot) throws DASServiceException;
+
+}
+</pre>
+</div>
+</p>
+
+</body>
+
+</html>
