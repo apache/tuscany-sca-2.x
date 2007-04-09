@@ -21,8 +21,12 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentProperty;
+import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.core.implementation.PojoComponentContextFactory;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -80,19 +84,19 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setGroupId(context.getGroupId());
         configuration.setProxyService(proxyService);
         configuration.setWorkContext(workContext);
-        configuration.setImplementationClass(definition.getImplementation().getImplementationClass());
+        configuration.setImplementationClass(((JavaImplementation) definition.getImplementation()).getJavaClass());
 
         // setup property injection sites
         for (JavaElement property : componentType.getPropertyMembers().values()) {
-            configuration.addPropertySite(property.getName(), property);
+            configuration.addPropertySite(property.getName(), (Member) property.getAnchor());
         }
 
         // setup reference injection sites
         for (JavaElement reference : componentType.getReferenceMembers().values()) {
-            Member member = reference.getMember();
+            Member member = (Member) reference.getAnchor();
             if (member != null) {
                 // could be null if the reference is mapped to a constructor
-                configuration.addReferenceSite(reference.getUri().getFragment(), member);
+                configuration.addReferenceSite(reference.getName(), member);
             }
         }
 
@@ -111,7 +115,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setInstanceFactory(instanceFactory);
         configuration.setConstructor(ctorDef);
 
-        configuration.setName(definition.getUri());
+        // FIXME: [rfeng] Hack
+        configuration.setName(URI.create(definition.getName()));
         handleCallbackSites(componentType, configuration);
 
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
@@ -130,24 +135,24 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     }
 
     private void handleCallbackSites(
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
+        JavaImplementationDefinition componentType,
         PojoConfiguration configuration) {
-        for (JavaMappedService service : componentType.getServices().values()) {
+        for (Service service : componentType.getServices()) {
             // setup callback injection sites
-            String name = service.getServiceContract().getCallbackName();
-            if (name != null) {
+            JavaElement element = componentType.getCallbackMembers().get(service.getName());
+            if (element != null) {
                 // Only if there is a callback reference in the service
-                configuration.addCallbackSite(name, service.getCallbackMember());
+                configuration.addCallbackSite(service.getName(), (Member) element.getAnchor());
             }
         }
     }
 
     private void handleResources(
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
+        JavaImplementationDefinition componentType,
         JavaAtomicComponent component) {
         for (Resource<?> resource : componentType.getResources().values()) {
             String name = resource.getName();
-            ObjectFactory<?> objectFactory = resource.getObjectFactory();
+            ObjectFactory<?> objectFactory = null;
             if (objectFactory == null) {
                 Class<?> type = resource.getType();
                 if (ComponentContext.class.equals(type)) {
@@ -170,12 +175,15 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     }
 
     private void handleProperties(Component definition, JavaAtomicComponent component) {
-        for (PropertyValue<?> property : definition.getPropertyValues().values()) {
+        throw new UnsupportedOperationException("Not implemented");
+        /*
+        for (ComponentProperty property : definition.getProperties()) {
             ObjectFactory<?> factory = property.getValueFactory();
             if (factory != null) {
                 component.addPropertyFactory(property.getName(), factory);
             }
         }
+        */
     }
 
     protected Class<JavaImplementation> getImplementationType() {

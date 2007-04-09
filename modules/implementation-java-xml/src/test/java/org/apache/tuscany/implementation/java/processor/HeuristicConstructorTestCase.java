@@ -63,7 +63,7 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
         prop.setName("foo");
         type.getProperties().add(prop);
         // Hack to add a property member
-        JavaElement element = new JavaElement("foo", String.class);
+        JavaElement element = new JavaElement("foo", String.class, null);
         type.getPropertyMembers().put("foo", element);
         visitEnd(Foo1.class, type);
         assertNotNull(type.getConstructorDefinition().getConstructor());
@@ -78,7 +78,7 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
         org.apache.tuscany.assembly.Reference ref = factory.createReference();
         ref.setName("foo");
         type.getReferences().add(ref);
-        type.getReferenceMembers().put("foo", new JavaElement("foo", String.class));
+        type.getReferenceMembers().put("foo", new JavaElement("foo", String.class, null));
         visitEnd(Foo1.class, type);
         assertNotNull(type.getConstructorDefinition().getConstructor());
         assertEquals("foo", type.getConstructorDefinition().getParameters()[0].getName());
@@ -95,12 +95,12 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
         prop.setName("foo");
         type.getProperties().add(prop);
         // Hack to add a property member
-        JavaElement element = new JavaElement("foo", String.class);
+        JavaElement element = new JavaElement("foo", String.class, null);
         type.getPropertyMembers().put("foo", element);
 
         org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference("ref", Foo1.class);
         type.getReferences().add(ref);
-        type.getReferenceMembers().put("ref", new JavaElement("ref", Foo1.class));
+        type.getReferenceMembers().put("ref", new JavaElement("ref", Foo1.class, null));
         visitEnd(Foo2.class, type);
         assertNotNull(type.getConstructorDefinition().getConstructor());
         assertEquals(2, type.getConstructorDefinition().getParameters().length);
@@ -122,10 +122,10 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference("ref", Foo1.class);
         type.getReferences().add(ref);
-        type.getReferenceMembers().put("ref", new JavaElement("ref", Foo1.class));
+        type.getReferenceMembers().put("ref", new JavaElement("ref", Foo1.class, null));
         org.apache.tuscany.assembly.Reference ref2 = ModelHelper.createReference("ref2", Foo1.class);
         type.getReferences().add(ref2);
-        type.getReferenceMembers().put("ref2", new JavaElement("ref2", Foo1.class));
+        type.getReferenceMembers().put("ref2", new JavaElement("ref2", Foo1.class, null));
         try {
             visitEnd(Foo4.class, type);
             fail();

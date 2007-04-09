@@ -50,6 +50,7 @@ import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -233,7 +234,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             }
         }
 
-        Class<?> type = attachWires.get(0).getSourceContract().getInterfaceClass();
+        Class<?> type = ((JavaInterface) attachWires.get(0).getSourceContract().getInterface()).getJavaClass();
         if (type == null) {
             throw new NoMultiplicityTypeException("Java interface must be specified for multiplicity", referenceName);
         }
@@ -243,7 +244,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     public void attachCallbackWire(Wire wire) {
         assert wire.getSourceUri().getFragment() != null;
-        String callbackName = wire.getSourceContract().getCallbackName();
+        // FIXME: [rfeng] This is a hack to get it compiled
+        String callbackName = wire.getSourceContract().getCallbackInterface().toString();
         assert callbackSites.get(callbackName) != null;
         List<Wire> wireList = callBackwires.get(callbackName);
         if (wireList == null) {

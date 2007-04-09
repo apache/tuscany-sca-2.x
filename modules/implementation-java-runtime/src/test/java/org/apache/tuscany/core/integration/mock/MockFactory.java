@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
@@ -107,7 +109,7 @@ public final class MockFactory {
         sourceComponent.setScopeContainer(sourceScope);
         Wire wire = createWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
         for (InvocationChain chain : wire.getInvocationChains().values()) {
-            chain.setTargetInvoker(targetComponent.createTargetInvoker(targetName, chain.getOperation()));
+            chain.setTargetInvoker(targetComponent.createTargetInvoker(targetName, chain.getOperation(), false));
         }
         sourceComponent.attachWire(wire);
         targetScope.register(targetComponent, configuration.getGroupId());
@@ -148,7 +150,7 @@ public final class MockFactory {
         Wire wire = createWire(targetName, sourceReferenceClass, null);
         wire.setTargetUri(URI.create(targetName + "#" + serviceName));
         for (InvocationChain chain : wire.getInvocationChains().values()) {
-            chain.setTargetInvoker(targetComponent.createTargetInvoker("target", chain.getOperation()));
+            chain.setTargetInvoker(targetComponent.createTargetInvoker("target", chain.getOperation(), false));
         }
         List<Wire> wires = new ArrayList<Wire>();
         wires.add(wire);
@@ -170,7 +172,8 @@ public final class MockFactory {
     public static <T> Wire createWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
         throws InvalidInterfaceException {
         Wire wire = new WireImpl();
-        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
+        Contract contract = new DefaultAssemblyFactory().createComponentService();
+        REGISTRY.introspect(contract, interfaze);
         wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("#" + serviceName));
         createChains(interfaze, interceptor, wire);
@@ -195,8 +198,9 @@ public final class MockFactory {
     private static void createChains(Class<?> interfaze, Interceptor interceptor, Wire wire)
         throws InvalidInterfaceException {
 
-        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        for (Operation method : contract.getOperations().values()) {
+        Contract contract = new DefaultAssemblyFactory().createComponentService();
+        REGISTRY.introspect(contract, interfaze);
+        for (Operation method : contract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(method);
             if (interceptor != null) {
                 chain.addInterceptor(interceptor);

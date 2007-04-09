@@ -23,19 +23,19 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.ProxyService;
-
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.ProxyService;
+import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
@@ -57,7 +57,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(ctr));
         Wire wire = EasyMock.createMock(Wire.class);
         wire.getInvocationChains();
-        EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, InvocationChain>()).atLeastOnce();
+        EasyMock.expectLastCall().andReturn(new HashMap<Operation, InvocationChain>()).atLeastOnce();
         URI uri = URI.create("#target");
         EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(wire.isOptimizable()).andReturn(false);

@@ -21,30 +21,30 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.core.component.SimpleWorkContext;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
+import org.apache.tuscany.core.implementation.java.ModelHelper;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
-
-import org.apache.tuscany.core.component.SimpleWorkContext;
-import org.apache.tuscany.core.wire.InvocationChainImpl;
-import org.apache.tuscany.core.wire.WireImpl;
-import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 
 /**
  * @version $Rev$ $Date$
@@ -53,8 +53,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
     public void testToString() {
         Wire wire = new WireImpl();
-        ServiceContract contract = new JavaServiceContract(Foo.class);
-        contract.setConversational(false);
+        Contract contract = ModelHelper.createReference("foo", Foo.class);
         wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("foo#bar"));
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
@@ -64,8 +63,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
     public void testHashCode() {
         Wire wire = new WireImpl();
-        ServiceContract contract = new JavaServiceContract(Foo.class);
-        contract.setConversational(false);
+        Contract contract = ModelHelper.createReference("foo", Foo.class);
         wire.setSourceContract(contract);
         wire.setSourceUri(URI.create("foo#bar"));
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
@@ -75,15 +73,16 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
     public void testConversational() throws Throwable {
         Wire wire = new WireImpl();
-        DataType<Type> type1 = new DataType<Type>(String.class, String.class);
-        List<DataType<Type>> types = new ArrayList<DataType<Type>>();
+        DataType<Class> type1 = new DataTypeImpl<Class>(String.class, String.class);
+        List<DataType> types = new ArrayList<DataType>();
         types.add(type1);
-        DataType<List<DataType<Type>>> inputType1 = new DataType<List<DataType<Type>>>(Object[].class, types);
-        DataType<Type> outputType1 = new DataType<Type>(String.class, String.class);
-        Operation<Type> op1 = new Operation<Type>("test", inputType1, outputType1, null);
-        ServiceContract<Type> contract = new JavaServiceContract(Foo.class);
-        contract.setConversational(true);
-        op1.setServiceContract(contract);
+        DataType<List<DataType>> inputType1 = new DataTypeImpl<List<DataType>>(Object[].class, types);
+        DataType<Class> outputType1 = new DataTypeImpl<Class>(String.class, String.class);
+        Operation op1 = new OperationImpl("test");
+        op1.setInputType(inputType1);
+        op1.setOutputType(outputType1);
+        Contract contract = ModelHelper.createReference("foo", Foo.class);
+        op1.setInterface(contract.getInterface());
 
         WorkContext wc = new SimpleWorkContext();
         PojoWorkContextTunnel.setThreadWorkContext(wc);

@@ -176,19 +176,19 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         org.apache.tuscany.assembly.Reference ref = factory.createReference();
         ref.setName("reference");
         type.getReferences().add(ref);
-        type.getReferenceMembers().put("reference", new JavaElement("reference", Ref.class));
+        type.getReferenceMembers().put("reference", new JavaElement("reference", Ref.class, null));
         org.apache.tuscany.assembly.Reference ref2 = factory.createReference();
         ref2.setName("reference2");
         type.getReferences().add(ref2);
-        type.getReferenceMembers().put("reference2", new JavaElement("reference2", Ref.class));
+        type.getReferenceMembers().put("reference2", new JavaElement("reference2", Ref.class, null));
         org.apache.tuscany.assembly.Property prop1 = factory.createProperty();
         prop1.setName("string1");
         type.getProperties().add(prop1);
-        type.getPropertyMembers().put("string1", new JavaElement("string1", String.class));
+        type.getPropertyMembers().put("string1", new JavaElement("string1", String.class, null));
         org.apache.tuscany.assembly.Property prop2 = factory.createProperty();
         prop2.setName("string2");
         type.getProperties().add(prop2);
-        type.getPropertyMembers().put("string2", new JavaElement("string2", String.class));
+        type.getPropertyMembers().put("string2", new JavaElement("string2", String.class, null));
         visitEnd(MockService.class, type);
         assertEquals(1, type.getServices().size());
     }

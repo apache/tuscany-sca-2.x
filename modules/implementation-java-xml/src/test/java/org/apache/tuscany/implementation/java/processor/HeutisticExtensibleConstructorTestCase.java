@@ -113,7 +113,7 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
         definition.getParameters()[0].setName("");
         Property property = factory.createProperty();
         // Hack to add a property member
-        JavaElement element = new JavaElement("myBar", String.class);
+        JavaElement element = new JavaElement("myBar", String.class, null);
         type.getPropertyMembers().put("myBar", element);
         property.setName("myBar");
         definition.getParameters()[1].setName("myBar");

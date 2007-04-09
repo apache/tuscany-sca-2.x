@@ -20,13 +20,13 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.WorkContext;
-
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+
+import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.easymock.EasyMock;
 
 public class JavaTargetInvokerStatelessDestroyTestCase extends TestCase {
     private JavaAtomicComponent component;

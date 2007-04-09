@@ -28,24 +28,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
+import org.apache.tuscany.core.implementation.java.ModelHelper;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Operation;
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.wire.InvocationChainImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
-
 import org.easymock.EasyMock;
 
 /**
@@ -82,20 +82,14 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         SCAObject container = EasyMock.createMock(SCAObject.class);
-        ServiceContract<Foo> contract = new ServiceContract<Foo>() {
-        };
-        contract.setInterfaceClass(Foo.class);
-        contract.setConversational(false);
+        Contract contract = ModelHelper.createReference("foo", Foo.class);
         EasyMock.expect(container.getUri()).andReturn(URI.create("bar")).atLeastOnce();
 
         wire = EasyMock.createMock(Wire.class);
-        Map<Operation<?>, InvocationChain> map = new HashMap<Operation<?>, InvocationChain>();
-        Operation<Object> operation = new Operation<Object>("invoke", null, null, null, false, null, NO_CONVERSATION);
-        ServiceContract<Object> opContract = new ServiceContract<Object>() {
-        };
-        contract.setInterfaceClass(Foo.class);
-        contract.setConversational(false);
-        operation.setServiceContract(opContract);
+        Map<Operation, InvocationChain> map = new HashMap<Operation, InvocationChain>();
+        Operation operation = new OperationImpl("invoke");
+        Contract opContract = ModelHelper.createReference("foo", Foo.class);
+        operation.setInterface(opContract.getInterface());
         map.put(operation, createChain(operation));
         EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();
         URI uri = URI.create("#foo");

@@ -19,15 +19,12 @@
 
 package org.apache.tuscany.implementation.java.impl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 
 /**
  * @version $Rev$ $Date$
  */
 public class Parameter extends JavaElement {
-    private Class<? extends Annotation> classifer;
-
     /**
      * @param constructor
      * @param index
@@ -35,19 +32,4 @@ public class Parameter extends JavaElement {
     public Parameter(Constructor<?> constructor, int index) {
         super(constructor, index);
     }
-
-    /**
-     * @return the classifer
-     */
-    public Class<? extends Annotation> getClassifer() {
-        return classifer;
-    }
-
-    /**
-     * @param classifer the classifer to set
-     */
-    public void setClassifer(Class<? extends Annotation> classifer) {
-        this.classifer = classifer;
-    }
-
 }

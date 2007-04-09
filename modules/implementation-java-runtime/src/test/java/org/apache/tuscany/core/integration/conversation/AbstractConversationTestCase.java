@@ -18,15 +18,15 @@
  */
 package org.apache.tuscany.core.integration.conversation;
 
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.services.store.StoreMonitor;
-
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
 import org.apache.tuscany.core.services.store.memory.MemoryStore;
-import org.easymock.classextension.EasyMock;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.services.store.StoreMonitor;
+import org.easymock.EasyMock;
 
 /**
  * Provides helper methods for setting up a partial runtime for conversational test cases.
