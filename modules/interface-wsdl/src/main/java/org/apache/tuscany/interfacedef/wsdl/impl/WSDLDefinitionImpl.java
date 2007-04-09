@@ -16,70 +16,68 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.interfacedef.wsdl.impl;
 
-import javax.wsdl.PortType;
-import javax.xml.namespace.QName;
+import javax.wsdl.Definition;
 
-import org.apache.tuscany.interfacedef.impl.InterfaceImpl;
-import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 
 /**
- * Represents a WSDL interface.
- * 
+ * Represents a WSDL definition.
+ *
  * @version $Rev$ $Date$
  */
-public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
+public class WSDLDefinitionImpl implements WSDLDefinition {
+    
+    private Definition definition;
+    private String namespace;
+    private boolean unresolved;
 
-    private QName name;
-    private PortType portType;
-    private String location;
-
-    public WSDLInterfaceImpl() {
-        setRemotable(true);
+    public Definition getDefinition() {
+        return definition;
     }
 
-    public QName getName() {
+    public void setDefinition(Definition definition) {
+        this.definition = definition;
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean undefined) {
+        this.unresolved = undefined;
+    }
+    
+    public String getNamespace() {
         if (isUnresolved()) {
-            return name;
+            return namespace;
+        } else if (definition != null) {
+            return definition.getTargetNamespace();
         } else {
-            return portType.getQName();
+            return null;
         }
     }
-
-    public void setName(QName interfaceName) {
+    
+    public void setNamespace(String namespace) {
         if (!isUnresolved()) {
             throw new IllegalStateException();
+        } else {
+            this.namespace = namespace;
         }
-        this.name = interfaceName;
     }
     
-    public String getLocation() {
-        return location;
-    }
-    
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public PortType getPortType() {
-        return portType;
-    }
-
-    public void setPortType(PortType portType) {
-        this.portType = portType;
-    }
-
     @Override
     public int hashCode() {
-        return String.valueOf(getName()).hashCode();
+        return String.valueOf(getNamespace()).hashCode();
     }
     
     @Override
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
-        else if (obj instanceof WSDLInterface && getName().equals(((WSDLInterface)obj).getName()))
+        else if (obj instanceof WSDLDefinition && getNamespace().equals(((WSDLDefinition)obj).getNamespace()))
              return true;
         else
             return false;

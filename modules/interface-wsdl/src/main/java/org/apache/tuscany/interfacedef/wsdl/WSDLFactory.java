@@ -31,5 +31,12 @@ public interface WSDLFactory {
      * @return a new WSDL interface
      */
     WSDLInterface createWSDLInterface();
+    
+    /**
+     * Creates a new WSDL definition.
+     * 
+     * @return a new WSDL definition
+     */
+    WSDLDefinition createWSDLDefinition();
 
 }
