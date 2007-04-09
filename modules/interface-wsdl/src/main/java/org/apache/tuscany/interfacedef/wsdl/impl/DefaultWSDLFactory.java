@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.interfacedef.wsdl.impl;
 
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 
@@ -30,6 +31,10 @@ public class DefaultWSDLFactory implements WSDLFactory {
 
     public WSDLInterface createWSDLInterface() {
         return new WSDLInterfaceImpl();
+    }
+    
+    public WSDLDefinition createWSDLDefinition() {
+        return new WSDLDefinitionImpl();
     }
 
 }
