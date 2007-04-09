@@ -18,18 +18,19 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
-import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 public class JavaTargetInvokerBasicInvocationTestCase extends TestCase {
     private Method echoMethod;

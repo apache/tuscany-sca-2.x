@@ -202,8 +202,7 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
         throw new UnsupportedOperationException();
     }
 
-    @Deprecated
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation)
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback)
         throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }

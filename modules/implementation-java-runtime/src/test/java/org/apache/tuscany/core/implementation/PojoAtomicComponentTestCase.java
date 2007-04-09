@@ -20,19 +20,18 @@ package org.apache.tuscany.core.implementation;
 
 import java.net.URI;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.core.injection.EventInvoker;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.easymock.EasyMock;
 
 /**
@@ -151,12 +150,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
             return factory;
         }
 
-        public TargetInvoker createTargetInvoker(String targetName, Operation operation)
-            throws TargetInvokerCreationException {
-            return null;
-        }
-
-        public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation)
+        public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback)
             throws TargetInvokerCreationException {
             return null;
         }

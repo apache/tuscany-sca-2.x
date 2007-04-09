@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 

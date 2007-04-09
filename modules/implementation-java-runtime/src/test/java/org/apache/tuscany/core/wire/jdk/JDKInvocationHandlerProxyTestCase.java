@@ -21,18 +21,19 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.model.Operation;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.core.wire.InvocationChainImpl;
+import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
-import org.apache.tuscany.core.wire.InvocationChainImpl;
-import org.apache.tuscany.core.wire.WireImpl;
 import org.easymock.EasyMock;
 
 /**
@@ -43,12 +44,15 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
     private Method clientHello;
 
     /**
-     * Verifies a handler configured to use a different interface than the wire target can dispatch
+     * Verifies a handler configured to use a different interface than the wire
+     * target can dispatch
      */
     public void testDifferentInterface() throws Throwable {
         Wire wire = new WireImpl();
-        JavaServiceContract<Target> contract = registry.introspect(Target.class);
-        for (Operation<?> operation : contract.getOperations().values()) {
+
+        Contract contract = new DefaultAssemblyFactory().createComponentReference();
+        registry.introspect(contract, Target.class);
+        for (Operation operation : contract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             wire.addInvocationChain(operation, chain);
         }

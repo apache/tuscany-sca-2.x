@@ -25,6 +25,7 @@ import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.util.JavaIDLUtils;
 import org.apache.tuscany.core.wire.WireObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -46,7 +47,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
 
         Class<?> implClass;
         if (isCallback) {
-            implClass = operation.getServiceContract().getCallbackClass();
+            implClass = ((JavaInterface) operation.getInterface()).getJavaClass();
         } else {
             implClass = implementationClass;
         }

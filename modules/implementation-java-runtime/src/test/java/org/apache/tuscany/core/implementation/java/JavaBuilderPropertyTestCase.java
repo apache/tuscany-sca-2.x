@@ -20,78 +20,87 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.ObjectFactory;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.ComponentProperty;
+import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.implementation.java.impl.JavaElement;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.impl.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.PropertyValue;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.easymock.EasyMock;
 
 /**
- * Verifies that the java component builder handles configured properties correctly
- *
+ * Verifies that the java component builder handles configured properties
+ * correctly
+ * 
  * @version $Rev$ $Date$
  */
 public class JavaBuilderPropertyTestCase extends TestCase {
     private DeploymentContext deploymentContext;
     private Component parent;
     private ScopeRegistry registry;
+    private AssemblyFactory factory = new DefaultAssemblyFactory();
 
     @SuppressWarnings("unchecked")
     public void testPropertyHandling() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setScopeRegistry(registry);
-        PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> type =
-            new PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
-        JavaMappedProperty<String> property = new JavaMappedProperty<String>();
+        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        Property property = factory.createProperty();
         property.setName("test");
-        property.setDefaultValueFactory(new SingletonObjectFactory<String>("foo"));
-        property.setMember(JavaBuilderPropertyTestCase.Foo.class.getMethod("setTest", String.class));
-        type.add(property);
-        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[]) null)));
-        type.setImplementationScope(Scope.STATELESS);
-        JavaImplementation impl = new JavaImplementation(Foo.class, type);
-        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
-        definition.setUri(URI.create("component"));
-        PropertyValue propertyValue = new PropertyValue(property.getName(), property.getDefaultValueFactory());
-        definition.getPropertyValues().put(property.getName(), propertyValue);
+        // property.setDefaultValueFactory(new
+        // SingletonObjectFactory<String>("foo"));
+        JavaElement element = new JavaElement(JavaBuilderPropertyTestCase.Foo.class.getMethod("setTest", String.class),
+                                              0);
+        type.getPropertyMembers().put("test", element);
+        type.getProperties().add(property);
+        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[])null)));
+        type.setScope(Scope.STATELESS);
+        type.setJavaClass(Foo.class);
+        org.apache.tuscany.assembly.Component definition = factory.createComponent();
+        definition.setImplementation(type);
+        definition.setName("component");
+        ComponentProperty propertyValue = factory.createComponentProperty();
+        propertyValue.setName(property.getName());
+        definition.getProperties().add(propertyValue);
         AtomicComponent component = builder.build(definition, deploymentContext);
-        JavaBuilderPropertyTestCase.Foo foo = (JavaBuilderPropertyTestCase.Foo) component.createInstance();
+        JavaBuilderPropertyTestCase.Foo foo = (JavaBuilderPropertyTestCase.Foo)component.createInstance();
         assertEquals("foo", foo.getTest());
     }
 
     public void testIntPropertyHandling() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setScopeRegistry(registry);
-        PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> type =
-            new PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
-        JavaMappedProperty<Integer> property = new JavaMappedProperty<Integer>();
+        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        Property property = factory.createProperty();
         property.setName("test");
-        property.setDefaultValueFactory(new SingletonObjectFactory<Integer>(1));
-        property.setMember(JavaBuilderPropertyTestCase.FooInt.class.getMethod("setTest", Integer.TYPE));
-        type.add(property);
-        type.setConstructorDefinition(new ConstructorDefinition<FooInt>(FooInt.class.getConstructor((Class[]) null)));
-        type.setImplementationScope(Scope.STATELESS);
-        JavaImplementation impl = new JavaImplementation(Foo.class, type);
-        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
-        definition.setUri(URI.create("component"));
-        ObjectFactory<Integer> defaultValueFactory = property.getDefaultValueFactory();
-        PropertyValue<Integer> propertyValue = new PropertyValue<Integer>(property.getName(), defaultValueFactory);
-        definition.getPropertyValues().put(property.getName(), propertyValue);
+        // property.setDefaultValueFactory(new
+        // SingletonObjectFactory<Integer>(1));
+        JavaElement element = new JavaElement(JavaBuilderPropertyTestCase.Foo.class.getMethod("setTest", String.class),
+                                              0);
+        type.getPropertyMembers().put("test", element);
+        type.getProperties().add(property);
+        type.setConstructorDefinition(new ConstructorDefinition<FooInt>(FooInt.class.getConstructor((Class[])null)));
+        type.setScope(Scope.STATELESS);
+        type.setJavaClass(Foo.class);
+        org.apache.tuscany.assembly.Component definition = factory.createComponent();
+        definition.setImplementation(type);
+        definition.setName("component");
+        // ObjectFactory<Integer> defaultValueFactory =
+        // property.getDefaultValueFactory();
+        ComponentProperty propertyValue = factory.createComponentProperty();
+        propertyValue.setName(property.getName());
+        definition.getProperties().add(propertyValue);
         AtomicComponent component = builder.build(definition, deploymentContext);
-        FooInt foo = (FooInt) component.createInstance();
+        FooInt foo = (FooInt)component.createInstance();
         assertEquals(1, foo.getTest());
     }
 
@@ -104,7 +113,8 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         ScopeContainer mockContainer = EasyMock.createNiceMock(ScopeContainer.class);
         EasyMock.replay(mockContainer);
         registry = EasyMock.createMock(ScopeRegistry.class);
-        EasyMock.expect(registry.getScopeContainer(EasyMock.isA(Scope.class))).andReturn(mockContainer);
+        EasyMock.expect(registry.getScopeContainer(EasyMock.isA(org.apache.tuscany.spi.Scope.class)))
+            .andReturn(mockContainer);
         EasyMock.replay(registry);
     }
 

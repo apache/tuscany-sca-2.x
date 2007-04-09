@@ -21,15 +21,15 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
-import org.easymock.IMocksControl;
-import org.easymock.classextension.EasyMock;
 
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.Message;
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 
 public class JavaInvokerInterceptorBasicTestCase<CONTEXT> extends TestCase {
     private TestBean bean;

@@ -28,8 +28,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
- * This class represents a java element such as a Package, Class, Constructor, Field, Method or
- * Parameter.
+ * This class represents a java element such as a Package, Class, Constructor,
+ * Field, Method or Parameter.
  * 
  * @version $Rev$ $Date$
  */
@@ -40,6 +40,7 @@ public class JavaElement {
     private Type genericType;
     private int index = -1;
     private String name;
+    private Class<? extends Annotation> classifer;
 
     public JavaElement(Package pkg) {
         this.anchor = pkg;
@@ -83,16 +84,19 @@ public class JavaElement {
 
     /**
      * For testing purpose
-     * @param elementType
-     * @param type
+     * 
      * @param name
+     * @param type
+     * @param classifer TODO
+     * @param elementType
      */
-    public JavaElement(String name, Class<?> type) {
+    public JavaElement(String name, Class<?> type, Class<? extends Annotation> classifer) {
         super();
         this.type = type;
         this.name = name;
+        this.classifer = classifer;
     }
-    
+
     /**
      * @return the anchor
      */
@@ -200,6 +204,20 @@ public class JavaElement {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the classifer
+     */
+    public Class<? extends Annotation> getClassifer() {
+        return classifer;
+    }
+
+    /**
+     * @param classifer the classifer to set
+     */
+    public void setClassifer(Class<? extends Annotation> classifer) {
+        this.classifer = classifer;
     }
 
 }

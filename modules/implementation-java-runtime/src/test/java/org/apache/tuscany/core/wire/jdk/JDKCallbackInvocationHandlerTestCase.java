@@ -23,12 +23,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.wire.Wire;
-
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.implementation.java.ModelHelper;
 import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
@@ -41,21 +41,21 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
         wire.setSourceUri(uri);
         List<Wire> wires = new ArrayList<Wire>();
         wires.add(wire);
-        wire.setSourceContract(new JavaServiceContract(Foo.class));
+        wire.setSourceContract(ModelHelper.createReference("foo", Foo.class));
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wires, new WorkContextImpl());
-        Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
+        Foo foo = (Foo)Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {Foo.class}, handler);
         assertNotNull(foo.toString());
     }
 
     public void testHashCode() {
         Wire wire = new WireImpl();
-        wire.setSourceContract(new JavaServiceContract(Foo.class));
+        wire.setSourceContract(ModelHelper.createReference("foo", Foo.class));
         URI uri = URI.create("#wire");
         wire.setSourceUri(uri);
         List<Wire> wires = new ArrayList<Wire>();
         wires.add(wire);
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wires, new WorkContextImpl());
-        Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
+        Foo foo = (Foo)Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }
 

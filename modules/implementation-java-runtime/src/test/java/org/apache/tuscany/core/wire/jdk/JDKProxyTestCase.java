@@ -21,11 +21,12 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Proxy;
 import java.net.URI;
 
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.Wire;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
@@ -37,8 +38,7 @@ public class JDKProxyTestCase extends TestCase {
         URI uri = URI.create("#service");
         Wire wire = new WireImpl();
         wire.setSourceUri(uri);
-        ServiceContract contract = new ServiceContract() {
-        };
+        Contract contract = new DefaultAssemblyFactory().createComponentReference();
         wire.setSourceContract(contract);
         TestInterface proxy = proxyService.createProxy(TestInterface.class, wire);
         assertTrue(Proxy.isProxyClass(proxy.getClass()));

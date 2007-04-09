@@ -20,18 +20,19 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URI;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.impl.Resource;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.host.ResourceHost;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.Resource;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-
-import junit.framework.TestCase;
+import org.apache.tuscany.spi.host.ResourceHost;
+import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
 
 /**
@@ -55,14 +56,16 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         builder.setHost(host);
         builder.setScopeRegistry(registry);
         ConstructorDefinition<Foo> ctorDef = new ConstructorDefinition<Foo>(Foo.class.getConstructor());
-        PojoComponentType type = new PojoComponentType();
+        JavaImplementationDefinition type = new JavaImplementationDefinition();
         Resource resource = new Resource("resource", String.class, Foo.class.getDeclaredField("resource"));
         type.add(resource);
-        type.setImplementationScope(Scope.STATELESS);
+        type.setScope(org.apache.tuscany.implementation.java.impl.Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);
-        JavaImplementation impl = new JavaImplementation(Foo.class, type);
+        type.setJavaClass(Foo.class);
         URI uri = URI.create("foo");
-        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(uri, impl);
+        Component definition = new DefaultAssemblyFactory().createComponent();
+        definition.setImplementation(type);
+        definition.setName("foo");
         Wire resourceWire = EasyMock.createMock(Wire.class);
         EasyMock.expect(resourceWire.getTargetInstance()).andReturn("result");
         EasyMock.replay(resourceWire);

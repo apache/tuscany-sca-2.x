@@ -21,13 +21,6 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.host.ResourceHost;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 
@@ -35,6 +28,10 @@ import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.ResourceObjectFactory;
+import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.host.ResourceHost;
+import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
 
 /**
