@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
@@ -57,7 +58,7 @@ import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
-import org.apache.tuscany.spi.bootstrap.ExtensionActivator;
+import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
@@ -127,7 +128,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected ContributionService contributionService;
 
     protected ScopeRegistry scopeRegistry;
-    protected Collection<ExtensionActivator> activators;
+    protected Collection<ModuleActivator> activators;
 
     protected AbstractRuntime(Class<I> runtimeInfoType) {
         this(runtimeInfoType, new NullMonitorFactory());
@@ -197,6 +198,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         this.managementService = managementService;
     }
 
+    @SuppressWarnings("unchecked")
     public void initialize(ExtensionPointRegistry extensionRegistry, ContributionService contributionService)
         throws InitializationException {
         this.contributionService = contributionService;
@@ -213,8 +215,14 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
         this.scopeRegistry = bootstrapper.getScopeRegistry();
 
-        activators = getInstances(getHostClassLoader(), ExtensionActivator.class);
-        for (ExtensionActivator activator : activators) {
+        activators = getInstances(getHostClassLoader(), ModuleActivator.class);
+        for (ModuleActivator activator : activators) {
+            Map<Class, Object> extensionPoints = activator.getExtensionPoints();
+            if (extensionPoints != null) {
+                for (Map.Entry<Class, Object> e : extensionPoints.entrySet()) {
+                    extensionRegistry.addExtensionPoint(e.getKey(), e.getValue());
+                }
+            }
             activator.start(extensionRegistry);
         }
 

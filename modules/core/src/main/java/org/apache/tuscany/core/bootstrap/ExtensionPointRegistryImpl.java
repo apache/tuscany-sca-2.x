@@ -19,9 +19,7 @@
 
 package org.apache.tuscany.core.bootstrap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
