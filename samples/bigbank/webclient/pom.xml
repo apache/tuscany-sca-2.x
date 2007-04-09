@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<project>
+    <parent>
+        <groupId>org.apache.tuscany.samples.bigbank</groupId>
+        <artifactId>bigbank-scenario</artifactId>
+        <version>0.1-integration-incubating-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>sample-bigbank-webclient</artifactId>
+    <packaging>war</packaging>
+    <name>Tuscany BigBank Web Client Module</name>
+    <description>BigBank Scenario Sample - Web Front-End Module</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-api</artifactId>
+            <version>${scaKernelVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commonj</groupId>
+            <artifactId>sdo-api-r2.1</artifactId>
+            <version>${sdo.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- SDO's XMLStreamHelper requires StAX API and impl (it's not pulled by 
+            tuscany-sdo-impl because the maven dependency scope is provided -->
+        <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-impl</artifactId>
+            <version>${sdo.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
+            <artifactId>webapp-api</artifactId>
+            <version>${scaKernelVersion}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${artifactId}</finalName>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.tuscany.sdo</groupId>
+                <artifactId>tuscany-sdo-plugin</artifactId>
+                <version>${sdo.version}</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <schemaFile>${basedir}/src/main/resources/wsdl/AccountService.wsdl</schemaFile>
+                            <noNotification>true</noNotification>
+                            <noContainer>true</noContainer>
+                            <noUnsettable>true</noUnsettable>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tuscany.sca.extensions.axis2.plugins</groupId>
+                <artifactId>tuscany-plugin-wsdl2java</artifactId>
+                <version>${scaKernelVersion}</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <wsdlFile>${basedir}/src/main/resources/wsdl/AccountService.wsdl</wsdlFile>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
+                <artifactId>tuscany-war-plugin</artifactId>
+                <version>${scaKernelVersion}</version>
+                <executions>
+                    <execution>
+                        <id>tuscany-war</id>
+                        <goals>
+                            <goal>tuscany-war</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Set to true to embed external jars for extensions in the WAR -->
+                    <!-- Set to false to leave external jars for extensions to be resolved from maven repository -->
+                    <loadExtensionDependencies>false</loadExtensionDependencies>
+
+                    <extensions>
+                        <dependency>
+                            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+                            <artifactId>databinding-sdo</artifactId>
+                            <version>${scaKernelVersion}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
+                            <artifactId>tuscany-axis2</artifactId>
+                            <version>${scaKernelVersion}</version>
+                        </dependency>
+
+                    </extensions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
