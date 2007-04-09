@@ -133,14 +133,14 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
 
     @Override
     public int hashCode() {
-        return String.valueOf(name).hashCode();
+        return String.valueOf(getName()).hashCode();
     }
     
     @Override
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
-        else if (obj instanceof Composite && name.equals(((Composite)obj).getName()))
+        else if (obj instanceof Composite && getName().equals(((Composite)obj).getName()))
              return true;
         else
             return false;
