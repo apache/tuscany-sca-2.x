@@ -21,6 +21,11 @@ package org.apache.tuscany.core.databinding.transformers;
 
 import java.util.List;
 
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.util.ElementInfo;
+import org.apache.tuscany.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.databinding.PullTransformer;
@@ -29,11 +34,6 @@ import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.ElementInfo;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.WrapperInfo;
-import org.apache.tuscany.spi.model.XMLType;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -95,7 +95,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     @SuppressWarnings("unchecked")
     public Object[] transform(Object[] source, TransformationContext context) {
         DataType<List<DataType<?>>> sourceType = context.getSourceDataType();
-        Operation<?> sourceOp = (Operation<?>)sourceType.getOperation();
+        Operation sourceOp = (Operation)sourceType.getOperation();
         boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
 
         WrapperHandler sourceWrapperHandler = null;
@@ -104,7 +104,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
         }
 
         DataType<List<DataType<XMLType>>> targetType = context.getTargetDataType();
-        Operation<?> targetOp = (Operation<?>)targetType.getOperation();
+        Operation targetOp = (Operation)targetType.getOperation();
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
         WrapperHandler targetWrapperHandler = null;
         if (targetWrapped) {

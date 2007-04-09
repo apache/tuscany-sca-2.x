@@ -40,10 +40,10 @@ import org.osoa.sca.annotations.Remotable;
  *
  * @version $Rev$ $Date$
  */
-public class JavaInterfaceIntrospector implements org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceIntrospector {
+public class DataBindingJavaInterfaceIntrospector implements org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceIntrospector {
     private static final String UNKNOWN_DATABINDING = null;
 
-    public JavaInterfaceIntrospector() {
+    public DataBindingJavaInterfaceIntrospector() {
     }
 
     public <T> JavaServiceContract<T> introspect(Class<T> type) throws InvalidServiceContractException {

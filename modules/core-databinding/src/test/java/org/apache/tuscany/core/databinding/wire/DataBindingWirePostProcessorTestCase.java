@@ -33,7 +33,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.processor.JavaInterfaceIntrospector;
+import org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceIntrospector;
 import org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor;
 import org.apache.tuscany.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.databinding.xml.StAXDataBinding;
@@ -139,9 +139,9 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
     }
 
     private Wire createWire(URI sourceUri, URI targetUri, QName bindingType) throws InvalidServiceContractException {
-        ServiceContract<?> contract1 = new JavaInterfaceIntrospector().introspect(TestInterface1.class);
+        ServiceContract<?> contract1 = new DataBindingJavaInterfaceIntrospector().introspect(TestInterface1.class);
         contract1.setDataBinding(DOMDataBinding.NAME);
-        ServiceContract<?> contract2 = new JavaInterfaceIntrospector().introspect(TestInterface2.class);
+        ServiceContract<?> contract2 = new DataBindingJavaInterfaceIntrospector().introspect(TestInterface2.class);
         contract2.setDataBinding(StAXDataBinding.NAME);
         Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
         for (Operation<?> op : contract1.getOperations().values()) {
