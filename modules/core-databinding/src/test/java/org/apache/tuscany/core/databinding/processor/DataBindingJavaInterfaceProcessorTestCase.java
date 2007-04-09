@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.core.databinding.processor;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,13 +26,10 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.api.annotation.DataType;
-import org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceProcessor;
+import org.apache.tuscany.databinding.DataType;
 import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.model.Operation;
 import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 

@@ -28,8 +28,6 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
-import org.apache.tuscany.core.databinding.transformers.Output2OutputTransformer;
 import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
 import org.apache.tuscany.databinding.impl.MediatorImpl;
 import org.apache.tuscany.databinding.impl.TransformationContextImpl;
@@ -39,15 +37,15 @@ import org.apache.tuscany.databinding.javabeans.JavaBean2DOMNodeTransformer;
 import org.apache.tuscany.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.databinding.xml.Node2String;
 import org.apache.tuscany.databinding.xml.String2Node;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.util.ElementInfo;
+import org.apache.tuscany.interfacedef.util.TypeInfo;
+import org.apache.tuscany.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.ElementInfo;
-import org.apache.tuscany.spi.model.TypeInfo;
-import org.apache.tuscany.spi.model.WrapperInfo;
-import org.apache.tuscany.spi.model.XMLType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
