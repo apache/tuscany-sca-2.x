@@ -34,9 +34,9 @@ public class DefaultArtifactResolver extends HashMap<Object, Object> implements 
         if (resolved != null) {
             
             // If the resolved object is an artifact resolver then delegate the
-            // resolution to it. This allows for nested resolutio, for example
+            // resolution to it. This allows for nested resolution, for example
             // first resolve a WSDL document by namespace, then resolve
-            // a WSDL portType inside it.
+            // an XML schema inside it.
             if (resolved instanceof ArtifactResolver) {
                 ArtifactResolver resolver = (ArtifactResolver)resolved;
                 resolved = resolver.resolve(modelClass, unresolved);
@@ -52,5 +52,9 @@ public class DefaultArtifactResolver extends HashMap<Object, Object> implements 
             return unresolved;
         }
     }
-
+    
+    public void add(Object resolved) {
+        super.put(resolved, resolved);
+    }
+    
 }

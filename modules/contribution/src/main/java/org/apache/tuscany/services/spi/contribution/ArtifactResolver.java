@@ -49,4 +49,17 @@ public interface ArtifactResolver {
      */
     <T> T resolve(Class<T> modelClass, T unresolved);
     
+    /**
+     * Add a resolved artifact.
+     * @param resolved
+     */
+    void add(Object resolved);
+    
+    /**
+     * Remove a resolved artifact.
+     * @param resolved
+     * @return the removed artifact, or null if the artifact was not removed
+     */
+    Object remove(Object resolved);
+    
 }
