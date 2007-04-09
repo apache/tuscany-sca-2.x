@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<definitions name="StockQuote" targetNamespace="http://example.com/echo.wsdl" xmlns:tns="http://example.com/echo.wsdl"
+    xmlns:xsd1="http://example.com/echo.xsd" xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <types>
+        <schema targetNamespace="http://example.com/echo.xsd" xmlns:tns="http://example.com/echo.xsd"
+            xmlns="http://www.w3.org/2001/XMLSchema">
+            <complexType name="messageType">
+                <sequence>
+                    <element name="foo" type="string"></element>
+                </sequence>
+            </complexType>
+            <element name="echo">
+                <complexType>
+                    <sequence>
+                        <element name="message" type="tns:messageType" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="echoResponse">
+                <complexType>
+                    <sequence>
+                        <element name="message" type="tns:messageType" />
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+
+    <message name="EchoInput">
+        <part name="body" element="xsd1:echo" />
+    </message>
+
+    <message name="EchoOutput">
+        <part name="body" element="xsd1:echoResponse" />
+    </message>
+
+    <portType name="EchoPortType">
+        <operation name="echo">
+            <input message="tns:EchoInput" />
+            <output message="tns:EchoOutput" />
+        </operation>
+    </portType>
+
+</definitions>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> <meta http-equiv="Content-Style-Type" content="text/css"><title>Tuscany
+Supply Chain</title><!-- LINK rel="stylesheet" href="ait.css" type="text/css" -->
+<style type="text/css" media="all">
+@import url("../../../../css/maven-base.css");
+@import url("../../../../css/maven-theme.css");
+@import url("../../../../css/site.css");
+</style><link rel="stylesheet" href="./css/print.css" type="text/css" media="print"></head>
+<body><h2>Tuscany
+Supply Chain Sample</h2>
+<h3>Overview</h3>
+<p>The Tuscany supply chain sample shows using the Tuscany SCA
+runtime in a J2SE environment&nbsp;executing the SCA asynchronous API.</p>
+<h3>Location</h3>This
+sample is located &nbsp;in the samples\sca\supplychain directory.<br>
+<h3>Setup</h3>This sample depends on the Tuscany runtime
+and the sample jar,&nbsp;<span style="font-weight: bold;">sample-supplychain-incubating-M1.jar</span>
+, both of these must be available on the classpath to run the sample.
+<h3>Running</h3> In the directory&nbsp;samples\sca\supplychain
+use the JDK 1.5 java command to run the class <span style="font-weight: bold;">supplychain.SupplyChainClient</span> <pre>Linux: java -cp ../../../lib/tuscany-runtime-incubating-M1.jar:target/sample-supplychain-incubating-M1.jar supplychain.SupplyChainClient</pre>
+<pre>Windows: java -cp ../../../lib/tuscany-runtime-incubating-M1.jar;target/sample-supplychain-incubating-M1.jar supplychain.SupplyChainClient</pre><h3>Results</h3>
+<p>The sample when run should simply display to the standard
+output: <code></code></p><p>May 16, 2006
+3:12:13 PM org.apache.tuscany.core.client.TuscanyRuntime$Monitor
+moduleStarted<br>INFO: Started application module [supplychain]<br>Main
+thread Thread[main,5,main]<br>Work thread Thread[Thread-1,5,main]
+- <span style="font-weight: bold;">Order, submitted, fulfilled, shipped</span><code></code></p>
+<h3>Code Overview</h3>
+The source files are physically organized as shown below:
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2"> <tbody> <tr><td>src<br>+---main<br>&nbsp;&nbsp;&nbsp;
++---java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp; +---supplychain<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Customer.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CustomerComponentImpl.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Retailer.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RetailerComponentImpl.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Shipper.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ShipperComponentImpl.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SupplyChainClient.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Warehouse.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+WarehouseComponentImpl.java<br>&nbsp;&nbsp;&nbsp;
+&brvbar;<br>&nbsp;&nbsp;&nbsp; +---resources<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+logging.properties<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sca.module<br></td></tr></tbody></table>
+<br><table style="text-align: left; width: 879px; height: 154px;" border="0" cellpadding="2" cellspacing="2"> <tbody> <tr> <td style="vertical-align: top;">Customer.java</td>
+<td>Defines the Java interface implemented by the Customer
+component.</td>
+</tr> <tr> <td style="vertical-align: top;">CustomerComponentImpl.java</td>
+<td>Implements the SCA Customer component.</td>
+</tr> <tr> <td style="vertical-align: top;">Retailer.java</td>
+<td>Defines the Java interface implemented by the Retailer
+component.</td>
+</tr><tr><td>RetailerComponentImpl.java</td><td>Implements
+the SCA&nbsp;RetailerComponent component.</td></tr><tr><td>Shipper.java</td><td>Defines
+the Java interface implemented by the&nbsp;Shipper component</td></tr><tr><td>ShipperComponentImpl.java</td><td>Implements
+the SCA&nbsp;ShipperComponent component.</td></tr><tr><td>SupplyChainClient.java</td><td>SupplyChainClient.java
+loads SCA runtime</td></tr><tr><td>Warehouse.java</td><td>Defines
+the Java interface implemented by the&nbsp;Warehouse component.</td></tr><tr><td>WarehouseComponentImpl.java</td><td>Implements
+the SCA&nbsp;WarehouseComponent component.</td></tr><tr><td>logging.properties</td><td>Configures
+Tuscany logging. Provides the output of this demo.</td></tr><tr><td>sca.module</td><td>Defines
+and assembles the SCA components</td></tr> </tbody></table><br></body></html>
