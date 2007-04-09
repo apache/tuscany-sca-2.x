@@ -102,7 +102,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
             }
         }
         
-        wsdlExtensionRegistry = wsdlFactory.newPopulatedExtensionRegistry();
+        wsdlExtensionRegistry = this.wsdlFactory.newPopulatedExtensionRegistry();
     }
     
     public WSDLDocumentProcessor() {
