@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<p:op xmlns:p="http://www.example.com/wrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.example.com/wrapper wrapper.xsd ">
-    <message>message</message>
-    <symbol>symbol</symbol>
-    <message>message1</message>
-    <symbol>symbol1</symbol>
-    <symbol>symbol2</symbol>
-</p:op>
