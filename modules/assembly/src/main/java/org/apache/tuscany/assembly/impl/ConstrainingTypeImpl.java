@@ -90,14 +90,14 @@ public class ConstrainingTypeImpl extends BaseImpl implements ConstrainingType {
 
     @Override
     public int hashCode() {
-        return String.valueOf(name).hashCode();
+        return String.valueOf(getName()).hashCode();
     }
     
     @Override
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
-        else if (obj instanceof ConstrainingType && name.equals(((ConstrainingType)obj).getName()))
+        else if (obj instanceof ConstrainingType && getName().equals(((ConstrainingType)obj).getName()))
              return true;
         else
             return false;
