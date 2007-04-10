@@ -46,7 +46,6 @@ import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
  * @version $Rev$ $Date$
  */
 public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessor<ConstrainingType> {
-    private StAXArtifactProcessor<Object> staxProcessor;
     private XMLInputFactory inputFactory;
 
     /**
@@ -55,9 +54,8 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
      * @param policyFactory
      * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> staxProcessor, XMLInputFactory inputFactory) {
-        super(factory, policyFactory);
-        this.staxProcessor = staxProcessor;
+    public ConstrainingTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
+        super(factory, policyFactory, staxProcessor);
         this.inputFactory = inputFactory;
     }
 
@@ -65,9 +63,8 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
      * Construct a new constrainingType processor.
      * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor) {
+    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessor staxProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
-        this.staxProcessor = staxProcessor;
     }
 
     public ConstrainingType read(URL url) throws ContributionReadException {
@@ -76,7 +73,7 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
-            ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(reader);
+            ConstrainingType constrainingType = (ConstrainingType)extensionProcessor.read(reader);
             return constrainingType;
             
         } catch (XMLStreamException e) {
@@ -101,11 +98,11 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
     }
     
     public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {
-        staxProcessor.resolve(constrainingType, resolver);
+        extensionProcessor.resolve(constrainingType, resolver);
     }
     
     public void wire(ConstrainingType constrainingType) throws ContributionWireException {
-        staxProcessor.wire(constrainingType);
+        extensionProcessor.wire(constrainingType);
     }
 
     public String getArtifactType() {

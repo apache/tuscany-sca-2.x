@@ -52,8 +52,6 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
  * @version $Rev$ $Date$
  */
 public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<ConstrainingType> {
-    private AssemblyFactory factory;
-    private StAXArtifactProcessor<Object> extensionProcessor;
 
     /**
      * Construct a new constrainingType processor.
@@ -61,19 +59,16 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
      * @param policyFactory
      * @param extensionProcessor
      */
-    public ConstrainingTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super(factory, policyFactory);
-        this.factory = factory;
-        this.extensionProcessor = extensionProcessor;
+    public ConstrainingTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+        super(factory, policyFactory, extensionProcessor);
     }
 
     /**
      * Construct a new constrainingType processor.
      * @param extensionProcessor
      */
-    public ConstrainingTypeProcessor(StAXArtifactProcessor<Object> extensionProcessor) {
+    public ConstrainingTypeProcessor(StAXArtifactProcessor extensionProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
-        this.extensionProcessor = extensionProcessor;
     }
 
     public ConstrainingType read(XMLStreamReader reader) throws ContributionReadException {
@@ -209,8 +204,8 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
     public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Resolve component type services and references
-        resolveAbstractContract(constrainingType.getServices(), resolver);
-        resolveAbstractContract(constrainingType.getReferences(), resolver);
+        resolveAbstractContracts(constrainingType.getServices(), resolver);
+        resolveAbstractContracts(constrainingType.getReferences(), resolver);
     }
     
     public void wire(ConstrainingType model) throws ContributionWireException {

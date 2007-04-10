@@ -55,8 +55,6 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
  * @version $Rev$ $Date$
  */
 public class ComponentTypeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<ComponentType> {
-    private AssemblyFactory factory;
-    private StAXArtifactProcessor<Object> extensionProcessor;
     
     /**
      * Constructs a new componentType processor.
@@ -64,17 +62,15 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super(factory, policyFactory);
-        this.factory = factory;
-        this.extensionProcessor = extensionProcessor;
+    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+        super(factory, policyFactory, extensionProcessor);
     }
     
     /**
      * Constructs a new componentType processor.
      * @param extensionProcessor
      */
-    public ComponentTypeProcessor(StAXArtifactProcessor<Object> extensionProcessor) {
+    public ComponentTypeProcessor(StAXArtifactProcessor extensionProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
     }
     
@@ -263,8 +259,8 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
     public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Resolve component type services and references
-        resolveContract(componentType.getServices(), resolver);
-        resolveContract(componentType.getReferences(), resolver);
+        resolveContracts(componentType.getServices(), resolver);
+        resolveContracts(componentType.getReferences(), resolver);
     }
     
     public void wire(ComponentType model) throws ContributionWireException {

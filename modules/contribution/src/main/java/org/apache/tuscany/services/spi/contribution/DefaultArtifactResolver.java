@@ -36,19 +36,8 @@ public class DefaultArtifactResolver implements ArtifactResolver {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
             
-            // If the resolved object is an artifact resolver then delegate the
-            // resolution to it. This allows for nested resolution, for example
-            // first resolve a WSDL document by namespace, then resolve
-            // an XML schema inside it.
-            if (resolved instanceof ArtifactResolver) {
-                ArtifactResolver resolver = (ArtifactResolver)resolved;
-                resolved = resolver.resolve(modelClass, unresolved);
-                return modelClass.cast(resolved);
-            } else {
-                
-                // Return the resolved object
-                return modelClass.cast(resolved);
-            }
+            // Return the resolved object
+            return modelClass.cast(resolved);
         } else {
             
             // Return the unresolved object
