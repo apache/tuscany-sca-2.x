@@ -22,9 +22,8 @@ package org.apache.tuscany.implementation.java.impl;
  * A factory for the Java model.
  */
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 
 public class DefaultJavaImplementationFactory implements JavaImplementationFactory {
 
@@ -36,11 +35,6 @@ public class DefaultJavaImplementationFactory implements JavaImplementationFacto
 
     public JavaImplementation createJavaImplementation() {
         JavaImplementation javaImplementation = new JavaImplementationImpl();
-
-        // TODO temporary, services should be created by introspecting
-        // the implementation
-        Service service = assemblyFactory.createService();
-        javaImplementation.getServices().add(service);
         return javaImplementation;
     }
 

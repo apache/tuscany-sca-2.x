@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.assembly.impl;
 
+import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.SCABinding;
 
 /**
@@ -26,5 +27,15 @@ import org.apache.tuscany.assembly.SCABinding;
  * @version $Rev$ $Date$
  */
 public class SCABindingImpl extends BindingImpl implements SCABinding {
+    
+    private Component component;
+    
+    public Component getComponent() {
+        return component;
+    }
+    
+    public void setComponent(Component component) {
+        this.component = component;
+    }
 
 }

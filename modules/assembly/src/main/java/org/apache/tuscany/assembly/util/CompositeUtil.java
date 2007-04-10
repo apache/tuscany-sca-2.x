@@ -162,14 +162,17 @@ public class CompositeUtil {
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
         Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
         for (Component component : composite.getComponents()) {
+            int i =0;
             for (ComponentService componentService : component.getServices()) {
-                String uri;
-                if (componentService.getName() != null) {
-                    uri = component.getName() + '/' + componentService.getName();
-                } else {
-                    uri = component.getName();
-                }
+                
+                // Index services as component name / service name
+                String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
+                if (i ==0) {
+                    // Index the first service of a component as the component name
+                    componentServices.put(component.getName(), componentService);
+                }
+                i++;
 
                 // Create and configure an SCA binding for the service
                 SCABinding scaBinding = componentService.getBinding(SCABinding.class);
@@ -178,6 +181,7 @@ public class CompositeUtil {
                     componentService.getBindings().add(scaBinding);
                 }
                 scaBinding.setURI(uri);
+                scaBinding.setComponent(component);
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 String uri = component.getName() + '/' + componentReference.getName();
@@ -190,6 +194,7 @@ public class CompositeUtil {
                     componentReference.getBindings().add(scaBinding);
                 }
                 scaBinding.setURI(uri);
+                scaBinding.setComponent(component);
             }
         }
 
