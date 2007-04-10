@@ -22,6 +22,8 @@ package org.apache.tuscany.assembly.xml.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.StringTokenizer;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -47,6 +49,7 @@ import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
+import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
@@ -69,7 +72,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      * Construct a new composite processor
      * @param assemblyFactory
      * @param policyFactory
-     * @param extensionProcessor
+     * @param extensionProcessor 
      */
     public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
@@ -151,45 +154,36 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
                         } else if (REFERENCE_QNAME.equals(name)) {
                             if (component != null) {
-    
                                 // Read a <component><reference>
                                 componentReference = factory.createComponentReference();
                                 contract = componentReference;
                                 componentReference.setName(getString(reader, NAME));
                                 readMultiplicity(componentReference, reader);
-    
-                                // TODO support multivalued attribute
-                                ComponentService target = factory.createComponentService();
-                                target.setUnresolved(true);
-                                target.setName(getString(reader, TARGET));
-                                componentReference.getTargets().add(target);
-    
+                                componentReference.setAutowire(getBoolean(reader, AUTOWIRE));
+                                readTargets(componentReference, reader);
+                                componentReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
                                 component.getReferences().add(componentReference);
                                 readPolicies(contract, reader);
                             } else {
-    
                                 // Read a <composite><reference>
                                 compositeReference = factory.createCompositeReference();
                                 contract = compositeReference;
                                 compositeReference.setName(getString(reader, NAME));
                                 readMultiplicity(compositeReference, reader);
-    
-                                // TODO support multivalued attribute
-                                ComponentReference promoted = factory.createComponentReference();
-                                promoted.setUnresolved(true);
-                                promoted.setName(getString(reader, PROMOTE));
-                                compositeReference.getPromotedReferences().add(promoted);
-    
+                                readTargets(compositeReference, reader);
+                                readPromotes(compositeReference, reader);
+                                compositeReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
                                 composite.getReferences().add(compositeReference);
                                 readPolicies(contract, reader);
                             }
     
                         } else if (PROPERTY_QNAME.equals(name)) {
                             if (component != null) {
-    
                                 // Read a <component><property>
                                 componentProperty = factory.createComponentProperty();
                                 property = componentProperty;
+                                componentProperty.setSource(getString(reader, SOURCE));
+                                componentProperty.setFile(getString(reader, FILE));
                                 readPolicies(property, reader);
                                 readProperty(componentProperty, reader);
                                 component.getProperties().add(componentProperty);
@@ -497,5 +491,23 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
     public Class<Composite> getModelType() {
         return Composite.class;
+    }
+    
+    /**
+     * Read list of refence targets
+     * @param reference
+     * @param reader
+     */
+    protected void readPromotes(CompositeReference reference, XMLStreamReader reader) {
+        String value = reader.getAttributeValue(null, Constants.PROMOTE);
+        ComponentReference promoted = null;
+        if (value != null) {
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                promoted = factory.createComponentReference();
+                promoted.setUnresolved(true);
+                promoted.setName(tokens.nextToken());
+                reference.getPromotedReferences().add(promoted);
+            }
+        }
     }
 }

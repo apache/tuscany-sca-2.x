@@ -43,12 +43,14 @@ import org.apache.tuscany.assembly.AbstractProperty;
 import org.apache.tuscany.assembly.AbstractReference;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
@@ -161,6 +163,9 @@ abstract class BaseArtifactProcessor implements Constants {
      */
     protected boolean getBoolean(XMLStreamReader reader, String name) {
         String value = reader.getAttributeValue(null, name);
+        if (value == null) {
+            value = Boolean.toString(false);
+        }
         return Boolean.valueOf(value);
     }
 
@@ -213,7 +218,7 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
-
+    
     /**
      * Reads policy intents and policy sets.
      * @param attachPoint
@@ -246,7 +251,25 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
-
+    
+    /**
+     * Read list of refence targets
+     * @param reference
+     * @param reader
+     */
+    protected void readTargets(Reference reference, XMLStreamReader reader) {
+        String value = reader.getAttributeValue(null, Constants.TARGET);
+        ComponentService target = null;
+        if (value != null) {
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                target = factory.createComponentService();
+                target.setUnresolved(true);
+                target.setName(tokens.nextToken());
+                reference.getTargets().add(target);
+            }
+        }
+    }
+    
     /**
      * Read a multiplicity attribute.
      * @param reference
@@ -296,7 +319,7 @@ abstract class BaseArtifactProcessor implements Constants {
         prop.setXSDType(getQName(reader, "type"));
         try {
             Document value = readPropertyValue(reader, prop.getXSDType());
-            prop.setDefaultValue(value);
+            prop.setValue(value);
         } catch (ParserConfigurationException e) {
             throw new ContributionReadException(e);
         }

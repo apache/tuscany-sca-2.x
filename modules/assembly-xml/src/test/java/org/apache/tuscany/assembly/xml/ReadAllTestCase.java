@@ -121,7 +121,7 @@ public class ReadAllTestCase extends TestCase {
 
         Property property = calcComponent.getProperties().get(0);
         assertEquals(property.getName(), "round");
-        Document doc = (Document) property.getDefaultValue();
+        Document doc = (Document) property.getValue();
         Element element = doc.getDocumentElement();
         String value = element.getTextContent();
         assertEquals(value, "true");

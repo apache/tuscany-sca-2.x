@@ -22,12 +22,16 @@ package org.apache.tuscany.assembly.xml.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.Callback;
 import org.apache.tuscany.assembly.ComponentService;
@@ -109,19 +113,13 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                             readPolicies(service, reader);
     
                         } else if (Constants.REFERENCE_QNAME.equals(name)) {
-    
                             // Read a <reference>
                             reference = factory.createReference();
                             contract = reference;
                             reference.setName(getString(reader, Constants.NAME));
+                            reference.setWiredByImpl(getBoolean(reader, Constants.WIRED_BY_IMPL));
                             readMultiplicity(reference, reader);
-    
-                            // TODO support multivalued attribute
-                            ComponentService target = factory.createComponentService();
-                            target.setUnresolved(true);
-                            target.setName(getString(reader, Constants.TARGET));
-                            reference.getTargets().add(target);
-    
+                            readTargets(reference, reader);
                             componentType.getReferences().add(reference);
                             readPolicies(reference, reader);
     
@@ -198,6 +196,21 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
             throw new ContributionReadException(e);
         }
         return componentType;
+    }
+    
+    public void validate(ComponentType componentType, List<Base> problems) {
+        if (problems == null) {
+            problems = new ArrayList<Base>();
+        }
+        validatePropertyDefinitions(componentType.getProperties(), problems);
+    }
+    
+    public void validatePropertyDefinitions(List<Property> properties, List<Base> problems) {
+        for(Property aProperty : properties) {
+            if (aProperty.isMustSupply() && aProperty.getValue() != null) {
+                problems.add(aProperty);
+            }
+        }
     }
 
     public void write(ComponentType componentType, XMLStreamWriter writer) throws ContributionWriteException {
