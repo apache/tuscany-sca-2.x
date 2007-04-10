@@ -85,7 +85,7 @@ public class BeanJavaImplementationImpl extends RootBeanDefinition implements Ja
 		public boolean add(Property property) {
 			
 			// Add corresponding bean property value
-			getPropertyValues().addPropertyValue(property.getName(), property.getDefaultValue());
+			getPropertyValues().addPropertyValue(property.getName(), property.getValue());
 			
 			return super.add(property);
 		}
