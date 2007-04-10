@@ -67,8 +67,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             definition.getImplementation();
 
         PojoConfiguration configuration = new PojoConfiguration(componentType);
-
-        configuration.setName(URI.create(definition.getName()));
+        URI id = URI.create(context.getComponentId() + definition.getName());
+        configuration.setName(id);
         configuration.setGroupId(context.getGroupId());
         configuration.setProxyService(proxyService);
         configuration.setWorkContext(workContext);
