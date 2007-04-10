@@ -58,7 +58,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
         try {
 
-            // Read an <interface.java>
+            // Read an <implementation.java>
             JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
             javaImplementation.setUnresolved(true);
             javaImplementation.setName(reader.getAttributeValue(null, CLASS));
@@ -90,13 +90,11 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         }
     }
 
-    public void resolve(JavaImplementation model, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(JavaImplementation javaImplementation, ArtifactResolver resolver) throws ContributionResolveException {
         try {
-            Class javaClass = Class.forName(model.getName(), true, Thread.currentThread().getContextClassLoader());
-            model.setJavaClass(javaClass);
-            introspectionRegistry.introspect(model.getJavaClass(), (JavaImplementationDefinition)model);
-            model.setUnresolved(false);
-            resolver.add(model);
+            Class javaClass = Class.forName(javaImplementation.getName(), true, Thread.currentThread().getContextClassLoader());
+            javaImplementation.setJavaClass(javaClass);
+            introspectionRegistry.introspect(javaImplementation.getJavaClass(), (JavaImplementationDefinition)javaImplementation);
         } catch (Exception e) {
             throw new ContributionResolveException(e);
         }
