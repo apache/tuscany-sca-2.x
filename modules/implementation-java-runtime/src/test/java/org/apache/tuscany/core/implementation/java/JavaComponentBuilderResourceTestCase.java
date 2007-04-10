@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
 import org.apache.tuscany.spi.Scope;
@@ -57,7 +58,7 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         builder.setScopeRegistry(registry);
         ConstructorDefinition<Foo> ctorDef = new ConstructorDefinition<Foo>(Foo.class.getConstructor());
         JavaImplementationDefinition type = new JavaImplementationDefinition();
-        Resource resource = new Resource("resource", String.class, Foo.class.getDeclaredField("resource"));
+        Resource resource = new Resource(new JavaElement(Foo.class.getDeclaredField("resource")));
         type.add(resource);
         type.setScope(org.apache.tuscany.implementation.java.impl.Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);

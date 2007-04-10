@@ -64,8 +64,8 @@ public class JavaComponentBuilderConversationIDTestCase extends TestCase {
         type.setConstructorDefinition(ctorDef);
         type.setJavaClass(Foo.class);
 
-        URI uri = URI.create("foo");
         Component definition = new DefaultAssemblyFactory().createComponent();
+        definition.setName("foo");
         definition.setImplementation(type);
         JavaAtomicComponent component = (JavaAtomicComponent)builder.build(definition, ctx);
         Foo foo = (Foo)component.createInstance();

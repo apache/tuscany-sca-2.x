@@ -49,7 +49,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         if (isCallback) {
             implClass = ((JavaInterface) operation.getInterface()).getJavaClass();
         } else {
-            implClass = implementationClass;
+            implClass = configuration.getImplementationClass();
         }
         try {
             Method method = JavaIDLUtils.findMethod(implClass, operation);

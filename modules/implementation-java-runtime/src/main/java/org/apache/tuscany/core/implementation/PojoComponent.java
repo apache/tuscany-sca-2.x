@@ -149,7 +149,7 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
     }
 
     public Class<?> getMemberType(JavaElement injectionSite) {
-        return provider.getMemberType(injectionSite);
+        return injectionSite.getType();
     }
 
     @Deprecated
