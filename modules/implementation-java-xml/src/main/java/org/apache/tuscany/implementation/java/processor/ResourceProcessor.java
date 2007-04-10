@@ -93,7 +93,9 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
 
     @SuppressWarnings("unchecked")
     public <T> Resource<T> createResource(String name, JavaElement element) {
-        return new Resource<T>(name, (Class<T>)element.getType(), (Member)element.getAnchor());
+        element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
+        element.setName(name);
+        return new Resource<T>(element);
     }
 
     public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type)
@@ -125,8 +127,6 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
                 resource.setMappedName(mappedName);
             }
             type.add(resource);
-            parameter.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
-            parameter.setName(name);
         }
     }
 

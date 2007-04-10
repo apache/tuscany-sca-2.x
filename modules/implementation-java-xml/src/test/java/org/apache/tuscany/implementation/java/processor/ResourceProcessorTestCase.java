@@ -43,7 +43,7 @@ public class ResourceProcessorTestCase extends TestCase {
         Resource resource = type.getResources().get("bar");
         assertFalse(resource.isOptional());
         assertNull(resource.getMappedName());
-        assertEquals(field.getType(), resource.getType());
+        assertEquals(field.getType(), resource.getElement().getType());
     }
 
     public void testVisitMethod() throws Exception {
@@ -52,7 +52,7 @@ public class ResourceProcessorTestCase extends TestCase {
         Resource resource = type.getResources().get("bar");
         assertFalse(resource.isOptional());
         assertNull(resource.getMappedName());
-        assertEquals(method.getParameterTypes()[0], resource.getType());
+        assertEquals(method.getParameterTypes()[0], resource.getElement().getType());
     }
 
     public void testVisitNamedMethod() throws Exception {
