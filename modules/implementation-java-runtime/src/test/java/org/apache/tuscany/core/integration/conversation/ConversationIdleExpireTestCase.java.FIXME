@@ -28,7 +28,10 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.integration.mock.MockFactory;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
@@ -36,11 +39,11 @@ import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 
 /**
- * Verifies conversational resources are cleaned up if the maximum age is exceeded
+ * Verifies conversational resources are cleaned up if the maximum idle time is exceeded
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 526852 $ $Date: 2007-04-09 10:47:45 -0700 (Mon, 09 Apr 2007) $
  */
-public abstract class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCase {
+public abstract class ConversationIdleExpireTestCase extends AbstractConversationTestCase {
     protected AtomicComponent target;
     private JDKInvocationHandler handler;
     private FooImpl targetInstance;
@@ -49,8 +52,7 @@ public abstract class ConversationMaxAgeExpireTestCase extends AbstractConversat
     private final Object mutex = new Object();
 
     public void testConversationExpire() throws Throwable {
-/*
-        workContext.setIdentifier(org.apache.tuscany.spi.model.Scope.CONVERSATION, "12345A");
+        workContext.setIdentifier(Scope.CONVERSATION, "12345A");
         // start the conversation
         handler.invoke(operation1, null);
         // verify the instance was persisted
@@ -67,7 +69,6 @@ public abstract class ConversationMaxAgeExpireTestCase extends AbstractConversat
         } catch (TargetNotFoundException e) {
             // expected
         }
-*/
     }
 
 
@@ -83,10 +84,6 @@ public abstract class ConversationMaxAgeExpireTestCase extends AbstractConversat
         targetInstance.end();
         EasyMock.replay(targetInstance);
         target = createTarget();
-        // create source component mock
-        JavaAtomicComponent source = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(source.getUri()).andReturn(URI.create("source")).atLeastOnce();
-        EasyMock.replay(source);
 
         Wire wire = MockFactory.createWire("foo", Foo.class);
         for (InvocationChain chain : wire.getInvocationChains().values()) {
@@ -103,12 +100,11 @@ public abstract class ConversationMaxAgeExpireTestCase extends AbstractConversat
         store.destroy();
     }
 
-    private AtomicComponent createTarget() throws Exception {
+    private JavaAtomicComponent createTarget() throws Exception {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName(new URI("target"));
-        configuration.setMaxAge(50);
-        Constructor<FooImpl> ctor = FooImpl.class.getConstructor();
-        configuration.setInstanceFactory(new MockPojoFactory(ctor));
+        configuration.setMaxIdleTime(50);
+        configuration.setInstanceFactory(new MockPojoFactory(FooImpl.class.getConstructor()));
         configuration.setImplementationClass(FooImpl.class);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(container);

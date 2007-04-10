@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 526976 $ $Date: 2007-04-09 17:38:35 -0700 (Mon, 09 Apr 2007) $
  */
 public class PojoAtomicComponentTestCase extends TestCase {
     private PojoConfiguration config;

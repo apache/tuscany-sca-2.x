@@ -36,7 +36,7 @@ import org.apache.tuscany.host.MonitorFactory;
  *
  * @version $Rev$ $Date$
  */
-public class JavaLoggingTestCase extends TestCase {
+public class JavaLoggingTestCaseFIXME extends TestCase {
     private static final Logger LOGGER = Logger.getLogger(Monitor.class.getName());
     private static final MockHandler HANDLER = new MockHandler();
 

@@ -37,7 +37,7 @@ import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev: 526399 $$ $$Date: 2007-04-07 01:14:49 -0700 (Sat, 07 Apr 2007) $$
  */
 public class ReferenceInjectionTestCase extends TestCase {
     private Map<String, Member> members;

@@ -46,7 +46,7 @@ import org.easymock.EasyMock;
  * @version $$Rev$$ $$Date: 2007-03-29 20:36:39 -0700 (Thu, 29 Mar
  *          2007) $$
  */
-public class JavaComponentBuilderMetadataTestCase extends TestCase {
+public class JavaComponentBuilderMetadataTestCaseFIXME extends TestCase {
     private DeploymentContext deploymentContext;
     private Constructor<SourceImpl> constructor;
     private Component parent;

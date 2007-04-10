@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 526852 $ $Date: 2007-04-09 10:47:45 -0700 (Mon, 09 Apr 2007) $
  */
 public class ResourceInjectionTestCase extends TestCase {
 

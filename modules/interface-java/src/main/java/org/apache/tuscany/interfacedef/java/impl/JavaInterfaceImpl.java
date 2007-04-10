@@ -34,8 +34,10 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     public String getName() {
         if (isUnresolved()) {
             return className;
-        } else {
+        } else if (javaClass != null) {
             return javaClass.getName();
+        } else {
+            return null;
         }
     }
 

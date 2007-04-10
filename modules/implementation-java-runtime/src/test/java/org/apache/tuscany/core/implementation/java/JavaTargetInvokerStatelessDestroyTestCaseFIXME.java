@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.easymock.EasyMock;
 
-public class JavaTargetInvokerStatelessDestroyTestCase extends TestCase {
+public class JavaTargetInvokerStatelessDestroyTestCaseFIXME extends TestCase {
     private JavaAtomicComponent component;
     private ScopeContainer scopeContainer;
     private InstanceWrapper wrapper;

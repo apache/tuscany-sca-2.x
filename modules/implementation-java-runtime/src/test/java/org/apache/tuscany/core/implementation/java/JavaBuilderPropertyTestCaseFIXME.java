@@ -43,7 +43,7 @@ import org.easymock.EasyMock;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaBuilderPropertyTestCase extends TestCase {
+public class JavaBuilderPropertyTestCaseFIXME extends TestCase {
     private DeploymentContext deploymentContext;
     private Component parent;
     private ScopeRegistry registry;
@@ -58,7 +58,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         property.setName("test");
         // property.setDefaultValueFactory(new
         // SingletonObjectFactory<String>("foo"));
-        JavaElement element = new JavaElement(JavaBuilderPropertyTestCase.Foo.class.getMethod("setTest", String.class),
+        JavaElement element = new JavaElement(JavaBuilderPropertyTestCaseFIXME.Foo.class.getMethod("setTest", String.class),
                                               0);
         type.getPropertyMembers().put("test", element);
         type.getProperties().add(property);
@@ -72,7 +72,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         propertyValue.setName(property.getName());
         definition.getProperties().add(propertyValue);
         AtomicComponent component = builder.build(definition, deploymentContext);
-        JavaBuilderPropertyTestCase.Foo foo = (JavaBuilderPropertyTestCase.Foo)component.createInstance();
+        JavaBuilderPropertyTestCaseFIXME.Foo foo = (JavaBuilderPropertyTestCaseFIXME.Foo)component.createInstance();
         assertEquals("foo", foo.getTest());
     }
 
@@ -84,7 +84,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         property.setName("test");
         // property.setDefaultValueFactory(new
         // SingletonObjectFactory<Integer>(1));
-        JavaElement element = new JavaElement(JavaBuilderPropertyTestCase.Foo.class.getMethod("setTest", String.class),
+        JavaElement element = new JavaElement(JavaBuilderPropertyTestCaseFIXME.Foo.class.getMethod("setTest", String.class),
                                               0);
         type.getPropertyMembers().put("test", element);
         type.getProperties().add(property);
