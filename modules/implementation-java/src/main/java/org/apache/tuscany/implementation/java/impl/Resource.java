@@ -27,17 +27,12 @@ import java.lang.reflect.Member;
  * @param <T> the Java type of the resource
  */
 public class Resource<T> {
-
-    private String name;
+    private JavaElement element;
     private String mappedName;
     private boolean optional;
-    private Member member;
-    private Class<T> type;
 
-    public Resource(String name, Class<T> type, Member member) {
-        this.name = name;
-        this.type = type;
-        this.member = member;
+    public Resource(JavaElement element) {
+        this.element = element;
     }
 
     /**
@@ -46,16 +41,7 @@ public class Resource<T> {
      * @return the name of the resource
      */
     public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name of the resource
-     * 
-     * @param name the name of the resource
-     */
-    public void setName(String name) {
-        this.name = name;
+        return element.getName();
     }
 
     /**
@@ -91,37 +77,11 @@ public class Resource<T> {
     }
 
     /**
-     * Returns the Member that this resource is mapped to.
-     * 
-     * @return the Member that this resource is mapped to
+     * @return the element
      */
-    public Member getMember() {
-        return member;
+    public JavaElement getElement() {
+        return element;
     }
 
-    /**
-     * Sets the Member that this resource is mapped to
-     * 
-     * @param member the Member that this resource is mapped to
-     */
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
-    /**
-     * Returns the resource type
-     * 
-     * @return the resource type
-     */
-    public Class<T> getType() {
-        return type;
-    }
-
-    /**
-     * Sets the resource type
-     */
-    public void setType(Class<T> type) {
-        this.type = type;
-    }
 
 }

@@ -21,6 +21,7 @@ package org.apache.tuscany.implementation.java.processor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
 import org.apache.tuscany.implementation.java.introspection.ImplementationProcessorExtension;
@@ -46,16 +47,13 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             throw new IllegalContextException("Context setter must have one parameter", method);
         }
         Class<?> paramType = method.getParameterTypes()[0];
-        if (ComponentContext.class.equals(paramType)) {
-            String name = JavaIntrospectionHelper.toPropertyName(method.getName());
-            Resource<ComponentContext> resource = new Resource<ComponentContext>(name, ComponentContext.class, method);
-            type.getResources().put(name, resource);
-        } else if (RequestContext.class.equals(paramType)) {
-            String name = JavaIntrospectionHelper.toPropertyName(method.getName());
-            Resource<RequestContext> resource = new Resource<RequestContext>(name, RequestContext.class, method);
-            // FIXME: Move the association with ObjectFactory to a later stage
-            // resource.setObjectFactory(new RequestContextObjectFactory(workContext));
-            type.getResources().put(name, resource);
+        String name = JavaIntrospectionHelper.toPropertyName(method.getName());
+        if (ComponentContext.class.equals(paramType) || RequestContext.class.equals(paramType)) {
+            JavaElement element = new JavaElement(method, 0);
+            element.setName(name);
+            element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
+            Resource resource = new Resource(element);
+            type.getResources().put(resource.getName(), resource);
         } else {
             throw new UnknownContextTypeException(paramType.getName());
         }
@@ -66,18 +64,11 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             return;
         }
         Class<?> paramType = field.getType();
-        if (ComponentContext.class.equals(paramType)) {
-            String name = field.getName();
-            Resource<ComponentContext> resource = new Resource<ComponentContext>(name, ComponentContext.class, field);
-            type.getResources().put(name, resource);
-        } else if (RequestContext.class.equals(paramType)) {
-            String name = field.getName();
-            name = JavaIntrospectionHelper.toPropertyName(name);
-            Resource<RequestContext> resource = new Resource<RequestContext>(name, RequestContext.class, field);
-            
-            // FIXME: Move the association with ObjectFactory to a later stage
-            // resource.setObjectFactory(new RequestContextObjectFactory(workContext));
-            type.getResources().put(name, resource);
+        if (ComponentContext.class.equals(paramType) || RequestContext.class.equals(paramType)) {
+            JavaElement element = new JavaElement(field);
+            element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
+            Resource resource = new Resource(element);
+            type.getResources().put(resource.getName(), resource);
         } else {
             throw new UnknownContextTypeException(paramType.getName());
         }
