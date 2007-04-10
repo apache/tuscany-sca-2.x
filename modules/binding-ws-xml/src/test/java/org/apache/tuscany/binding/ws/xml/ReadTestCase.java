@@ -64,7 +64,7 @@ public class ReadTestCase extends TestCase {
         ComponentType componentType = componentTypeProcessor.read(reader);
         assertNotNull(componentType);
 
-        new PrintUtil(System.out).print(componentType);
+        //new PrintUtil(System.out).print(componentType);
     }
 
     public void testReadComposite() throws Exception {
@@ -76,7 +76,7 @@ public class ReadTestCase extends TestCase {
 
         new CompositeUtil(composite).configure(null);
 
-        new PrintUtil(System.out).print(composite);
+        //new PrintUtil(System.out).print(composite);
     }
 
 }

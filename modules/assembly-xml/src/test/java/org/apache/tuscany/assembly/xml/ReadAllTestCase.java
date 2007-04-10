@@ -144,7 +144,7 @@ public class ReadAllTestCase extends TestCase {
         assertNotNull(calcCallback);
         // TODO test operations
 
-        new PrintUtil(System.out).print(composite);
+        //new PrintUtil(System.out).print(composite);
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
@@ -153,7 +153,7 @@ public class ReadAllTestCase extends TestCase {
         InputStream is = getClass().getResourceAsStream("TestAllDivide.composite");
         Composite included = registry.read(is, Composite.class);
         assertNotNull(included);
-        resolver.put(included, included);
+        resolver.add(included);
         
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = registry.read(is, Composite.class);
@@ -173,7 +173,7 @@ public class ReadAllTestCase extends TestCase {
         ComponentReference addReference = calcComponent.getReferences().get(0);
         assertEquals(addReference.getTargets().get(0), addComponent.getServices().get(0));
 
-        new PrintUtil(System.out).print(composite);
+        //new PrintUtil(System.out).print(composite);
     }
 
 }

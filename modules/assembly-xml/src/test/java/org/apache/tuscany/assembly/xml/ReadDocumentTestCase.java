@@ -69,7 +69,7 @@ public class ReadDocumentTestCase extends TestCase {
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = (ConstrainingType)registry.read(url);
         assertNotNull(constrainingType);
-        resolver.put(constrainingType, constrainingType);
+        resolver.add(constrainingType);
 
         url = getClass().getResource("TestAllCalculator.composite");
         Composite composite = (Composite)registry.read(url);
@@ -87,7 +87,7 @@ public class ReadDocumentTestCase extends TestCase {
         URL url = getClass().getResource("Calculator.composite");
         Composite nestedComposite = (Composite)registry.read(url);
         assertNotNull(nestedComposite);
-        resolver.put(nestedComposite, nestedComposite);
+        resolver.add(nestedComposite);
 
         url = getClass().getResource("TestAllCalculator.composite");
         Composite composite = (Composite)registry.read(url);

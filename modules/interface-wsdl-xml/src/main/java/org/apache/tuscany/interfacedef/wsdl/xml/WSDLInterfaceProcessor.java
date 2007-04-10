@@ -110,8 +110,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         }
     }
     
-    public void resolve(WSDLInterface model, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
+    public void resolve(WSDLInterface wsdlInterface, ArtifactResolver resolver) throws ContributionResolveException {
     }
     
     public void wire(WSDLInterface model) throws ContributionWireException {
