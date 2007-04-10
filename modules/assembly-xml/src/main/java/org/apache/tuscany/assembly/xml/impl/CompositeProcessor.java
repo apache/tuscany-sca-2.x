@@ -64,8 +64,6 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
  * @version $Rev$ $Date$
  */
 public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Composite> {
-    private AssemblyFactory factory;
-    private StAXArtifactProcessor<Object> extensionProcessor;
 
     /**
      * Construct a new composite processor
@@ -73,17 +71,15 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      * @param policyFactory
      * @param extensionProcessor
      */
-    public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super(factory, policyFactory);
-        this.factory = factory;
-        this.extensionProcessor = extensionProcessor;
+    public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+        super(factory, policyFactory, extensionProcessor);
     }
 
     /**
      * Construct a new composite processor.
      * @param extensionProcessor
      */
-    public CompositeProcessor(StAXArtifactProcessor<Object> extensionProcessor) {
+    public CompositeProcessor(StAXArtifactProcessor extensionProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
     }
 
@@ -476,25 +472,16 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
             component.setConstrainingType(constrainingType);
 
             Implementation implementation = component.getImplementation();
-            implementation = resolver.resolve(Implementation.class, implementation);
-            if (implementation.isUnresolved()) {
-                
-                // TODO we need to find a better way to do this
-                // Lazily resolve the implementation
-                extensionProcessor.resolve(implementation, resolver);
-                implementation.setUnresolved(false);
-                resolver.add(implementation);
-            } else {
-                component.setImplementation(implementation);
-            }
+            implementation = resolveImplementation(implementation, resolver);
+            component.setImplementation(implementation);
             
-            resolveContract(component.getServices(), resolver);
-            resolveContract(component.getReferences(), resolver);
+            resolveContracts(component.getServices(), resolver);
+            resolveContracts(component.getReferences(), resolver);
         }
         
         // Resolve composite services and references
-        resolveContract(composite.getServices(), resolver);
-        resolveContract(composite.getReferences(), resolver);
+        resolveContracts(composite.getServices(), resolver);
+        resolveContracts(composite.getReferences(), resolver);
     }
 
     public void wire(Composite composite) throws ContributionWireException {

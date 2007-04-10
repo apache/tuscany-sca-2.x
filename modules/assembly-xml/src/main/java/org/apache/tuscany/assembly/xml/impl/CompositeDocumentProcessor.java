@@ -46,7 +46,6 @@ import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
  * @version $Rev$ $Date$
  */
 public class CompositeDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessor<Composite> {
-    private StAXArtifactProcessor<Object> staxProcessor;
     private XMLInputFactory inputFactory;
 
     /**
@@ -55,9 +54,8 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
      * @param policyFactory
      * @param staxProcessor
      */
-    public CompositeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> staxProcessor, XMLInputFactory inputFactory) {
-        super(factory, policyFactory);
-        this.staxProcessor = staxProcessor;
+    public CompositeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
+        super(factory, policyFactory, staxProcessor);
         this.inputFactory = inputFactory;
     }
 
@@ -65,7 +63,7 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
      * Construct a new composite processor.
      * @param staxProcessor
      */
-    public CompositeDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor) {
+    public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
     }
 
@@ -75,7 +73,7 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
-            Composite composite = (Composite)staxProcessor.read(reader);
+            Composite composite = (Composite)extensionProcessor.read(reader);
             return composite;
             
         } catch (XMLStreamException e) {
@@ -100,11 +98,11 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
     }
     
     public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {
-        staxProcessor.resolve(composite, resolver);
+        extensionProcessor.resolve(composite, resolver);
     }
 
     public void wire(Composite composite) throws ContributionWireException {
-        staxProcessor.wire(composite);
+        extensionProcessor.wire(composite);
     }
 
     public String getArtifactType() {

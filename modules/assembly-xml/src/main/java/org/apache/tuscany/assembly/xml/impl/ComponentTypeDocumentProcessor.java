@@ -46,7 +46,6 @@ import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
  * @version $Rev$ $Date$
  */
 public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessor<ComponentType> {
-    private StAXArtifactProcessor<Object> staxProcessor;
     private XMLInputFactory inputFactory;
     
     /**
@@ -55,9 +54,8 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor<Object> staxProcessor, XMLInputFactory inputFactory) {
-        super(factory, policyFactory);
-        this.staxProcessor = staxProcessor;
+    public ComponentTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
+        super(factory, policyFactory, staxProcessor);
         this.inputFactory = inputFactory;
     }
     
@@ -65,7 +63,7 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
      * Constructs a new componentType processor.
      * @param registry
      */
-    public ComponentTypeDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor) {
+    public ComponentTypeDocumentProcessor(StAXArtifactProcessor staxProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
     }
     
@@ -75,7 +73,7 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
-            ComponentType componentType = (ComponentType)staxProcessor.read(reader);
+            ComponentType componentType = (ComponentType)extensionProcessor.read(reader);
             return componentType;
             
         } catch (XMLStreamException e) {
@@ -100,11 +98,11 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
     }
     
     public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {
-        staxProcessor.resolve(componentType, resolver);
+        extensionProcessor.resolve(componentType, resolver);
     }
     
     public void wire(ComponentType componentType) throws ContributionWireException {
-        staxProcessor.wire(componentType);
+        extensionProcessor.wire(componentType);
     }
     
     public String getArtifactType() {

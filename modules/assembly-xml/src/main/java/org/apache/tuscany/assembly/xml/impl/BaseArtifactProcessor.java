@@ -46,6 +46,7 @@ import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.xml.Constants;
@@ -58,6 +59,8 @@ import org.apache.tuscany.policy.PolicySet;
 import org.apache.tuscany.policy.PolicySetAttachPoint;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -70,8 +73,9 @@ import org.w3c.dom.Node;
  */
 abstract class BaseArtifactProcessor implements Constants {
 
-    private AssemblyFactory factory;
-    private PolicyFactory policyFactory;
+    protected AssemblyFactory factory;
+    protected PolicyFactory policyFactory;
+    protected StAXArtifactProcessor<Object> extensionProcessor;
 
     private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
     static {
@@ -89,9 +93,11 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param factory
      * @param policyFactory
      */
-    BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory) {
+    @SuppressWarnings("unchecked")
+    BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
         this.factory = factory;
         this.policyFactory = policyFactory;
+        this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
     }
 
     /**
@@ -347,23 +353,61 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
+    
+    /**
+     * Resolve an interface.
+     * @param interfaze
+     * @param resolver
+     * @return
+     * @throws ContributionResolveException
+     */
+    protected Interface resolveInterface(Interface interfaze, ArtifactResolver resolver) throws ContributionResolveException {
+        if (interfaze != null) {
+            interfaze = resolver.resolve(Interface.class, interfaze);
+            if (interfaze.isUnresolved()) {
+                extensionProcessor.resolve(interfaze, resolver);
+                interfaze.setUnresolved(false);
+                resolver.add(interfaze);
+            }
+        }
+        return interfaze;
+    }
+
+    /**
+     * Resolve an implementation.
+     * @param implementation
+     * @param resolver
+     * @return
+     * @throws ContributionResolveException
+     */
+    protected Implementation resolveImplementation(Implementation implementation, ArtifactResolver resolver) throws ContributionResolveException {
+        if (implementation != null) {
+            implementation = resolver.resolve(Implementation.class, implementation);
+            if (implementation.isUnresolved()) {
+                extensionProcessor.resolve(implementation, resolver);
+                implementation.setUnresolved(false);
+                resolver.add(implementation);
+            }
+        }
+        return implementation;
+    }
 
     /**
      * Resolve interface, callback interface and bindings on a list of contracts.
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
-    protected <C extends Contract> void resolveContract(List<C> contracts, ArtifactResolver resolver) {
+    protected <C extends Contract> void resolveContracts(List<C> contracts, ArtifactResolver resolver) throws ContributionResolveException {
         for (Contract contract: contracts) {
             
             // Resolve interface
             Interface callInterface = contract.getInterface();
-            callInterface = resolver.resolve(Interface.class, callInterface);
+            callInterface = resolveInterface(callInterface, resolver);
             contract.setInterface(callInterface);
     
             // Resolve callback interface 
             Interface callbackInterface = contract.getCallbackInterface();
-            callbackInterface = resolver.resolve(Interface.class, callbackInterface);
+            callbackInterface = resolveInterface(callbackInterface, resolver);
             contract.setCallbackInterface(callbackInterface);
     
             // Resolve bindings
@@ -380,7 +424,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
-    protected <C extends AbstractContract> void resolveAbstractContract(List<C> contracts, ArtifactResolver resolver) {
+    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ArtifactResolver resolver) {
         for (AbstractContract contract: contracts) {
             
             // Resolve interface
