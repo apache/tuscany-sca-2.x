@@ -230,6 +230,10 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     }
 
     public void destroy() {
+        for (ModuleActivator activator : activators) {
+            activator.stop(extensionRegistry);
+        }
+        
         if (tuscanySystem != null) {
             tuscanySystem.stop();
             tuscanySystem = null;
