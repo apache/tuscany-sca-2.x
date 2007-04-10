@@ -52,7 +52,7 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
 
         Contract contract = new DefaultAssemblyFactory().createComponentReference();
         registry.introspect(contract, Target.class);
-        for (Operation operation : contract.getInterface().getOperations()) {
+        for (Operation operation : contract.getInterfaceContract().getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             wire.addInvocationChain(operation, chain);
         }

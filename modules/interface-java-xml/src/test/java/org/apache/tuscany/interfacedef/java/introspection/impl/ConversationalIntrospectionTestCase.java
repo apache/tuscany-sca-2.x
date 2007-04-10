@@ -49,7 +49,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     public void testServiceContractConversationalInformationIntrospection() throws Exception {
         Contract contract = factory.createComponentService();
         registry.introspect(contract, Foo.class);
-        Interface i = contract.getInterface();
+        Interface i = contract.getInterfaceContract().getInterface();
         assertNotNull(i);
         assertTrue(i.isConversational());
         Operation.ConversationSequence seq = getOperation(i, "operation").getConversationSequence();
@@ -71,8 +71,8 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     public void testNonConversationalInformationIntrospection() throws Exception {
         Contract contract = factory.createComponentService();
         registry.introspect(contract, NonConversationalFoo.class);
-        assertFalse(contract.getInterface().isConversational());
-        Operation.ConversationSequence seq = getOperation(contract.getInterface(), "operation")
+        assertFalse(contract.getInterfaceContract().getInterface().isConversational());
+        Operation.ConversationSequence seq = getOperation(contract.getInterfaceContract().getInterface(), "operation")
             .getConversationSequence();
         assertEquals(Operation.ConversationSequence.NO_CONVERSATION, seq);
     }

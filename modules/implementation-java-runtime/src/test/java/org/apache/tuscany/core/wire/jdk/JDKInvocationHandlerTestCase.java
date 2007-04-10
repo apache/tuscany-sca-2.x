@@ -82,7 +82,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         op1.setInputType(inputType1);
         op1.setOutputType(outputType1);
         Contract contract = ModelHelper.createReference("foo", Foo.class);
-        op1.setInterface(contract.getInterface());
+        op1.setInterface(contract.getInterfaceContract().getInterface());
 
         WorkContext wc = new SimpleWorkContext();
         PojoWorkContextTunnel.setThreadWorkContext(wc);

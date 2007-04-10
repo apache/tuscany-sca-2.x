@@ -22,12 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.AbstractContract;
-import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.policy.Intent;
 
 public class ContractImpl extends BaseImpl implements AbstractContract {
-    private Interface callbackInterface;
-    private Interface callInterface;
+    private InterfaceContract interfaceContract;
     private String name;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     
@@ -43,36 +42,27 @@ public class ContractImpl extends BaseImpl implements AbstractContract {
      */
     public ContractImpl(AbstractContract other) {
         super(other);
-        callbackInterface = other.getCallbackInterface();
-        callInterface = other.getInterface();
+        interfaceContract = other.getInterfaceContract();
         name = other.getName();
         requiredIntents.addAll(other.getRequiredIntents());
-    }
-
-    public Interface getCallbackInterface() {
-        return callbackInterface;
-    }
-
-    public Interface getInterface() {
-        return callInterface;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setCallbackInterface(Interface callbackInterface) {
-        this.callbackInterface = callbackInterface;
-    }
-
-    public void setInterface(Interface callInterface) {
-        this.callInterface = callInterface;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
+    public InterfaceContract getInterfaceContract() {
+        return interfaceContract;
+    }
+    
+    public void setInterfaceContract(InterfaceContract interfaceContract) {
+        this.interfaceContract = interfaceContract;
+    }
+    
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
     }

@@ -34,7 +34,6 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.Callback;
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Property;
@@ -42,7 +41,7 @@ import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -154,10 +153,10 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                             // Read an extension element
                             Object extension = extensionProcessor.read(reader);
                             if (extension != null) {
-                                if (extension instanceof Interface) {
+                                if (extension instanceof InterfaceContract) {
     
                                     // <service><interface> and <reference><interface>
-                                    contract.setInterface((Interface)extension);
+                                    contract.setInterfaceContract((InterfaceContract)extension);
     
                                 } else if (extension instanceof Binding) {
     
@@ -222,8 +221,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
             for (Service service : componentType.getServices()) {
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
 
-                //TODO write callback interface 
-                extensionProcessor.write(service.getInterface(), writer);
+                extensionProcessor.write(service.getInterfaceContract(), writer);
                 
                 for (Binding binding: service.getBindings()) {
                     extensionProcessor.write(binding, writer);
@@ -243,8 +241,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                       new XAttr(NAME, reference.getName()),
                       new XAttr(TARGET, target));
 
-                //TODO write callback interface 
-                extensionProcessor.write(reference.getInterface(), writer);
+                extensionProcessor.write(reference.getInterfaceContract(), writer);
                 
                 for (Binding binding: reference.getBindings()) {
                     extensionProcessor.write(binding, writer);

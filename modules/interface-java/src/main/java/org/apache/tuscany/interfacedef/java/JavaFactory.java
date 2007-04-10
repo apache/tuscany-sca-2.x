@@ -31,5 +31,12 @@ public interface JavaFactory {
      * @return
      */
     JavaInterface createJavaInterface();
+    
+    /**
+     * Creates a new Java interface contract.
+     * 
+     * @return
+     */
+    JavaInterfaceContract createJavaInterfaceContract();
 
 }

@@ -164,7 +164,7 @@ public class CompositeUtil {
                 componentReference.setReference(reference);
                 componentReference.setMultiplicity(reference.getMultiplicity());
                 componentReference.getTargets().addAll(reference.getTargets());
-                componentReference.setInterface(reference.getInterface());
+                componentReference.setInterfaceContract(reference.getInterfaceContract());
                 component.getReferences().add(componentReference);
                 if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), 
                                                                   componentReference.getTargets())) {
@@ -181,15 +181,15 @@ public class CompositeUtil {
                     compRef.setMultiplicity(reference.getMultiplicity());
                 }
                 
-                if (compRef.getInterface() != null) {
-                    if (!compRef.getInterface().equals(reference.getInterface())) {
-                        if (!InterfaceUtil.checkInterfaceCompatibility(reference.getInterface(), 
-                                                                       compRef.getInterface())) {
+                if (compRef.getInterfaceContract() != null) {
+                    if (!compRef.getInterfaceContract().equals(reference.getInterfaceContract())) {
+                        if (!InterfaceUtil.checkInterfaceCompatibility(reference.getInterfaceContract(), 
+                                                                       compRef.getInterfaceContract())) {
                             problems.add(compRef);
                         }
                     }
                 } else {
-                    compRef.setInterface(reference.getInterface());
+                    compRef.setInterfaceContract(reference.getInterfaceContract());
                 }
                 
                 if (compRef.getTargets().isEmpty()) {
@@ -277,17 +277,17 @@ public class CompositeUtil {
 
         // Index and bind all component services and references
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-        Map<String, ComponentReference> componentReferences =
-            new HashMap<String, ComponentReference>();
+        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+        
         for (Component component : composite.getComponents()) {
+            int i =0;
             for (ComponentService componentService : component.getServices()) {
-                String uri;
-                if (componentService.getName() != null) {
-                    uri = component.getName() + '/' + componentService.getName();
-                } else {
-                    uri = component.getName();
-                }
+                String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
+                if (i == 0) {
+                    componentServices.put(component.getName(), componentService);
+                }
+                i++;
 
                 // Create and configure an SCA binding for the service
                 SCABinding scaBinding = componentService.getBinding(SCABinding.class);
@@ -296,6 +296,7 @@ public class CompositeUtil {
                     componentService.getBindings().add(scaBinding);
                 }
                 scaBinding.setURI(uri);
+                scaBinding.setComponent(component);
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 String uri = component.getName() + '/' + componentReference.getName();
@@ -308,6 +309,7 @@ public class CompositeUtil {
                     componentReference.getBindings().add(scaBinding);
                 }
                 scaBinding.setURI(uri);
+                scaBinding.setComponent(component);
             }
         }
 

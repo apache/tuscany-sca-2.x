@@ -47,13 +47,13 @@ public class TestImplementation extends ComponentTypeImpl implements Implementat
         Reference ref2 = factory.createReference();
         ref2.setName("stockQuoteService");
         ref2.setMultiplicity(Multiplicity.ONE_ONE);
-        ref2.setInterface(new TestInterface(factory));
+        ref2.setInterfaceContract(new TestInterfaceContract(factory));
         getReferences().add(ref2);
         ref2.getBindings().add(new TestBinding(factory));
 
         Service s = factory.createService();
         s.setName("AccountService");
-        s.setInterface(new TestInterface(factory));
+        s.setInterfaceContract(new TestInterfaceContract(factory));
         getServices().add(s);
         s.getBindings().add(new TestBinding(factory));
 

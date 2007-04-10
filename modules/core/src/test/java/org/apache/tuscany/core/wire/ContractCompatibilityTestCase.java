@@ -34,6 +34,8 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
@@ -63,12 +65,12 @@ public class ContractCompatibilityTestCase extends TestCase {
         Operation opSource1 = new OperationImpl("op1");
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
         Contract target = new MockContract("FooContract");
         Operation opSource2 = new OperationImpl("op1");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opSource2);
-        target.getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
         proxyService.checkCompatibility(source, target, false, false);
     }
 
@@ -77,12 +79,12 @@ public class ContractCompatibilityTestCase extends TestCase {
         Operation opSource1 = new OperationImpl("op1");
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
         Contract target = new MockContract("FooContract");
         Operation opSource2 = new OperationImpl("op2");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op2", opSource2);
-        target.getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
         try {
             proxyService.checkCompatibility(source, target, false, false);
             fail();
@@ -100,7 +102,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setInputType(inputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
 
         Contract target = new MockContract("FooContract");
         List<DataType> targetInputTypes = new ArrayList<DataType>();
@@ -111,7 +113,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opTarget.setInputType(targetInputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
         proxyService.checkCompatibility(source, target, false, false);
     }
 
@@ -124,7 +126,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setInputType(inputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
 
         Contract target = new MockContract("FooContract");
         List<DataType> targetInputTypes = new ArrayList<DataType>();
@@ -135,7 +137,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opTarget.setInputType(targetInputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
         try {
             proxyService.checkCompatibility(source, target, false, false);
             fail();
@@ -184,7 +186,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setOutputType(sourceOutputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
 
         Contract target = new MockContract("FooContract");
         DataType targetOutputType = new DataTypeImpl<Type>(String.class, String.class);
@@ -192,7 +194,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opTarget.setOutputType(targetOutputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
         proxyService.checkCompatibility(source, target, false, false);
     }
 
@@ -229,7 +231,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setOutputType(sourceOutputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
 
         Contract target = new MockContract("FooContract");
         DataType targetOutputType = new DataTypeImpl<Type>(Integer.class, Integer.class);
@@ -237,7 +239,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opTarget.setOutputType(targetOutputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
         try {
             proxyService.checkCompatibility(source, target, false, false);
             fail();
@@ -255,7 +257,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setFaultTypes(sourceFaultTypes);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
 
         Contract target = new MockContract("FooContract");
         DataType targetFaultType = new DataTypeImpl<Type>(String.class, String.class);
@@ -266,7 +268,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         opTarget.setFaultTypes(targetFaultTypes);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
         proxyService.checkCompatibility(source, target, false, false);
     }
 
@@ -279,13 +281,13 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setFaultTypes(sourceFaultTypes);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
 
         Contract target = new MockContract("FooContract");
         Operation opTarget = new OperationImpl("op1");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
         proxyService.checkCompatibility(source, target, false, false);
     }
 
@@ -365,14 +367,18 @@ public class ContractCompatibilityTestCase extends TestCase {
         public MockContract(Class interfaceClass) {
             JavaInterface jInterface = new JavaInterfaceImpl();
             jInterface.setJavaClass(interfaceClass);
-            setInterface(jInterface);
+            JavaInterfaceContract javaInterfaceContract = new JavaInterfaceContractImpl();
+            setInterfaceContract(javaInterfaceContract);
+            javaInterfaceContract.setInterface(jInterface);
         }
 
         public MockContract(String interfaceClass) {
             JavaInterface jInterface = new JavaInterfaceImpl();
             jInterface.setUnresolved(true);
             jInterface.setName(interfaceClass);
-            setInterface(jInterface);
+            JavaInterfaceContract javaInterfaceContract = new JavaInterfaceContractImpl();
+            setInterfaceContract(javaInterfaceContract);
+            javaInterfaceContract.setInterface(jInterface);
         }
     }
 

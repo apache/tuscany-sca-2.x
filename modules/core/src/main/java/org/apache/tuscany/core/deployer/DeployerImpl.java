@@ -226,7 +226,7 @@ public class DeployerImpl implements Deployer {
         wire.setTargetContract(contract);
         wire.setSourceUri(sourceURI);
         wire.setTargetUri(targetUri);
-        for (Operation operation : contract.getInterface().getOperations()) {
+        for (Operation operation : contract.getInterfaceContract().getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             /*
              * if (operation.isNonBlocking()) { chain.addInterceptor(new
@@ -236,8 +236,8 @@ public class DeployerImpl implements Deployer {
             wire.addInvocationChain(operation, chain);
 
         }
-        if (contract.getCallbackInterface() != null) {
-            for (Operation operation : contract.getCallbackInterface().getOperations()) {
+        if (contract.getInterfaceContract().getCallbackInterface() != null) {
+            for (Operation operation : contract.getInterfaceContract().getCallbackInterface().getOperations()) {
                 InvocationChain chain = new InvocationChainImpl(operation);
                 /*
                  * if (operation.isNonBlocking()) { chain.addInterceptor(new

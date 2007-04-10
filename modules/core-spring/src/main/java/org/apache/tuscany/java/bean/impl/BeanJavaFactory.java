@@ -21,6 +21,8 @@ package org.apache.tuscany.java.bean.impl;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**
@@ -44,5 +46,9 @@ public class BeanJavaFactory implements JavaFactory {
 	public JavaInterface createJavaInterface() {
 		return new BeanJavaInterfaceImpl();
 	}
+        
+        public JavaInterfaceContract createJavaInterfaceContract() {
+            return new JavaInterfaceContractImpl();
+        }
 
 }

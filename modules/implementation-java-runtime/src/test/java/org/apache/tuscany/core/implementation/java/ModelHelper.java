@@ -30,6 +30,7 @@ import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 
 /**
@@ -67,7 +68,7 @@ public class ModelHelper {
     }
 
     public static boolean matches(Contract contract, Class<?> type) {
-        Interface interface1 = contract.getInterface();
+        Interface interface1 = contract.getInterfaceContract().getInterface();
         if (interface1 instanceof JavaInterface) {
             return type == ((JavaInterface)interface1).getJavaClass();
         } else {
@@ -80,7 +81,9 @@ public class ModelHelper {
         ref.setName(type.getSimpleName());
         JavaInterface i = javaFactory.createJavaInterface();
         i.setJavaClass(type);
-        ref.setInterface(i);
+        JavaInterfaceContract ic = javaFactory.createJavaInterfaceContract();
+        ic.setInterface(i);
+        ref.setInterfaceContract(ic);
         return ref;
     }
 
@@ -89,7 +92,9 @@ public class ModelHelper {
         ref.setName(name);
         JavaInterface i = javaFactory.createJavaInterface();
         i.setJavaClass(type);
-        ref.setInterface(i);
+        JavaInterfaceContract ic = javaFactory.createJavaInterfaceContract();
+        ic.setInterface(i);
+        ref.setInterfaceContract(ic);
         return ref;
     }
 

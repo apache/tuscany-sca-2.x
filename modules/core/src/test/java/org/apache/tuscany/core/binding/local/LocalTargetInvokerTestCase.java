@@ -29,6 +29,7 @@ import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
@@ -63,7 +64,9 @@ public class LocalTargetInvokerTestCase extends TestCase {
         Contract contract = new ComponentServiceImpl();
         JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
         javaInterface.setJavaClass(Object.class);
-        contract.setCallbackInterface(javaInterface);
+        JavaInterfaceContract javaInterfaceContract = new DefaultJavaFactory().createJavaInterfaceContract();
+        contract.setInterfaceContract(javaInterfaceContract);
+        javaInterfaceContract.setCallbackInterface(javaInterface);
         TargetInvoker targetInvoker = EasyMock.createMock(TargetInvoker.class);
         EasyMock.expect(targetInvoker.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
         EasyMock.replay(targetInvoker);

@@ -27,11 +27,12 @@ import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.processor.HeuristicConstructorTestCase.Foo1;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 
 /**
@@ -69,7 +70,7 @@ public class ModelHelper {
     }
 
     public static boolean matches(Contract contract, Class<?> type) {
-        Interface interface1 = contract.getInterface();
+        Interface interface1 = contract.getInterfaceContract().getInterface();
         if (interface1 instanceof JavaInterface) {
             return type == ((JavaInterface)interface1).getJavaClass();
         } else {
@@ -82,7 +83,9 @@ public class ModelHelper {
         ref.setName(type.getSimpleName());
         JavaInterface i = new JavaInterfaceImpl();
         i.setJavaClass(type);
-        ref.setInterface(i);
+        JavaInterfaceContract ic = new JavaInterfaceContractImpl();
+        ic.setInterface(i);
+        ref.setInterfaceContract(ic);
         return ref;
     }
 
@@ -91,7 +94,9 @@ public class ModelHelper {
         ref.setName(name);
         JavaInterface i = new JavaInterfaceImpl();
         i.setJavaClass(type);
-        ref.setInterface(i);
+        JavaInterfaceContract ic = new JavaInterfaceContractImpl();
+        ic.setInterface(i);
+        ref.setInterfaceContract(ic);
         return ref;
     }
 

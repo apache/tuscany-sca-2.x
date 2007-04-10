@@ -29,6 +29,8 @@ import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.ProxyService;
@@ -88,7 +90,9 @@ public class WireObjectFactoryTestCase extends TestCase {
         JavaInterface jInterface = new JavaInterfaceImpl();
         jInterface.setJavaClass(cls);
         ComponentService service = new ComponentServiceImpl();
-        service.setInterface(jInterface);
+        JavaInterfaceContract javaInterfaceContract = new JavaInterfaceContractImpl();
+        service.setInterfaceContract(javaInterfaceContract);
+        javaInterfaceContract.setInterface(jInterface);
         service.setName(cls.getSimpleName());
         return service;
     }

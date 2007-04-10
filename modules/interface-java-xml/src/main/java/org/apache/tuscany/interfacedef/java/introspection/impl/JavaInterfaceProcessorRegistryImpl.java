@@ -35,6 +35,7 @@ import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessor;
 import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
@@ -87,13 +88,15 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         // Scope interactionScope = type.getAnnotation(Scope.class);
         boolean conversational = type.isAnnotationPresent(Conversational.class);
         javaInterface.setConversational(conversational);
-        contract.setInterface(javaInterface);
+        JavaInterfaceContract javaInterfaceContract = javaFactory.createJavaInterfaceContract();
+        contract.setInterfaceContract(javaInterfaceContract);
+        javaInterfaceContract.setInterface(javaInterface);
         javaInterface.getOperations().addAll(getOperations(type, remotable, conversational).values());
 
         if (callback != null) {
             JavaInterface callbackInterface = javaFactory.createJavaInterface();
             callbackInterface.setJavaClass(callback);
-            contract.setCallbackInterface(callbackInterface);
+            javaInterfaceContract.setCallbackInterface(callbackInterface);
             callbackInterface.getOperations().addAll(getOperations(callback, remotable, conversational).values());
         }
 

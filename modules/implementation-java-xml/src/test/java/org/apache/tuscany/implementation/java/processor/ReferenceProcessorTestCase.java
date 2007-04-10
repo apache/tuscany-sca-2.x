@@ -46,7 +46,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         processor.visitMethod(ReferenceProcessorTestCase.Foo.class.getMethod("setFoo", Ref.class), type);
         org.apache.tuscany.assembly.Reference reference = getReference(type, "foo");
         assertNotNull(reference);
-        assertEquals(Ref.class, ((JavaInterface)reference.getInterface()).getJavaClass());
+        assertEquals(Ref.class, ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass());
     }
 
     public void testMethodRequired() throws Exception {
@@ -65,7 +65,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         processor.visitField(ReferenceProcessorTestCase.Foo.class.getDeclaredField("baz"), type);
         org.apache.tuscany.assembly.Reference reference = getReference(type, "baz");
         assertNotNull(reference);
-        assertEquals(Ref.class, ((JavaInterface)reference.getInterface()).getJavaClass());
+        assertEquals(Ref.class, ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass());
     }
 
     public void testFieldRequired() throws Exception {
@@ -185,7 +185,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         processor.visitField(Multiple.class.getDeclaredField("refs1"), type);
         org.apache.tuscany.assembly.Reference ref = getReference(type, "refs1");
         assertNotNull(ref);
-        assertSame(Ref.class, ((JavaInterface)ref.getInterface()).getJavaClass());
+        assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ONE_N, ref.getMultiplicity());
         // assertEquals(Multiplicity.ONE_ONE, ref.getMultiplicity());
     }
@@ -194,7 +194,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         processor.visitField(Multiple.class.getDeclaredField("refs2"), type);
         org.apache.tuscany.assembly.Reference ref = getReference(type, "refs2");
         assertNotNull(ref);
-        assertSame(Ref.class, ((JavaInterface)ref.getInterface()).getJavaClass());
+        assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ZERO_N, ref.getMultiplicity());
         // assertFalse(ref.isMustSupply());
     }
@@ -203,7 +203,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         processor.visitMethod(Multiple.class.getMethod("setRefs3", Ref[].class), type);
         org.apache.tuscany.assembly.Reference ref = getReference(type, "refs3");
         assertNotNull(ref);
-        assertSame(Ref.class, ((JavaInterface)ref.getInterface()).getJavaClass());
+        assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ONE_N, ref.getMultiplicity());
         // assertEquals(Multiplicity.ONE_ONE, ref.getMultiplicity());
     }
@@ -212,7 +212,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         processor.visitMethod(Multiple.class.getMethod("setRefs4", Collection.class), type);
         org.apache.tuscany.assembly.Reference ref = getReference(type, "refs4");
         assertNotNull(ref);
-        assertSame(Ref.class, ((JavaInterface)ref.getInterface()).getJavaClass());
+        assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ZERO_N, ref.getMultiplicity());
         // assertFalse(ref.isMustSupply());
     }

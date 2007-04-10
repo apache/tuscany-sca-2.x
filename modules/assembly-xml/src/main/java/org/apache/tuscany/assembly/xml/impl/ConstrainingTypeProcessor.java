@@ -35,7 +35,7 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -134,9 +134,10 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
     
                             // Read an extension element
                             Object extension = extensionProcessor.read(reader);
-                            if (extension instanceof Interface) {
+                            if (extension instanceof InterfaceContract) {
+                                
                                 // <service><interface> and <reference><interface>
-                                abstractContract.setInterface((Interface)extension);
+                                abstractContract.setInterfaceContract((InterfaceContract)extension);
                             }
                         }
                         break;
@@ -176,16 +177,14 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
     
             for (AbstractService service : constrainingType.getServices()) {
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
-                //TODO write callback interface 
-                extensionProcessor.write(service.getInterface(), writer);
+                extensionProcessor.write(service.getInterfaceContract(), writer);
                 writeEnd(writer);
             }
     
             for (AbstractReference reference : constrainingType.getReferences()) {
                 writeStart(writer, REFERENCE,
                       new XAttr(NAME, reference.getName()));
-                //TODO write callback interface 
-                extensionProcessor.write(reference.getInterface(), writer);
+                extensionProcessor.write(reference.getInterfaceContract(), writer);
                 writeEnd(writer);
             }
     

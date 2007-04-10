@@ -53,6 +53,7 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.IntentAttachPoint;
@@ -422,16 +423,19 @@ abstract class BaseArtifactProcessor implements Constants {
      */
     protected <C extends Contract> void resolveContracts(List<C> contracts, ArtifactResolver resolver) throws ContributionResolveException {
         for (Contract contract: contracts) {
+            InterfaceContract interfaceContract = contract.getInterfaceContract();
+            if (interfaceContract == null)
+                continue;
             
             // Resolve interface
-            Interface callInterface = contract.getInterface();
+            Interface callInterface = interfaceContract.getInterface();
             callInterface = resolveInterface(callInterface, resolver);
-            contract.setInterface(callInterface);
+            interfaceContract.setInterface(callInterface);
     
             // Resolve callback interface 
-            Interface callbackInterface = contract.getCallbackInterface();
+            Interface callbackInterface = interfaceContract.getCallbackInterface();
             callbackInterface = resolveInterface(callbackInterface, resolver);
-            contract.setCallbackInterface(callbackInterface);
+            interfaceContract.setCallbackInterface(callbackInterface);
     
             // Resolve bindings
             for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
@@ -449,16 +453,19 @@ abstract class BaseArtifactProcessor implements Constants {
      */
     protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ArtifactResolver resolver) {
         for (AbstractContract contract: contracts) {
+            InterfaceContract interfaceContract = contract.getInterfaceContract();
+            if (interfaceContract == null)
+                continue;
             
             // Resolve interface
-            Interface callInterface = contract.getInterface();
+            Interface callInterface = interfaceContract.getInterface();
             callInterface = resolver.resolve(Interface.class, callInterface);
-            contract.setInterface(callInterface);
+            interfaceContract.setInterface(callInterface);
     
             // Resolve callback interface 
-            Interface callbackInterface = contract.getCallbackInterface();
+            Interface callbackInterface = interfaceContract.getCallbackInterface();
             callbackInterface = resolver.resolve(Interface.class, callbackInterface);
-            contract.setCallbackInterface(callbackInterface);
+            interfaceContract.setCallbackInterface(callbackInterface);
         }
     }
 

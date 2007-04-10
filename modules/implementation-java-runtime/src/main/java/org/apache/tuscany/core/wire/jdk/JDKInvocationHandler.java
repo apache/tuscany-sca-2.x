@@ -206,8 +206,8 @@ public final class JDKInvocationHandler extends AbstractInvocationHandler
         throws NoMethodForOperationException {
         Contract contract = wire.getSourceContract();
         this.referenceName = wire.getSourceUri().getFragment();
-        this.conversational = contract.getInterface().isConversational();
-        this.callback = contract.getCallbackInterface() != null;
+        this.conversational = contract.getInterfaceContract().getInterface().isConversational();
+        this.callback = contract.getInterfaceContract().getCallbackInterface() != null;
         // FIXME JFM this should not be dependent on PojoAtomicComponent
         // JFM commenting out as this should not be specific to pojo types
 //        this.wireContainerIsAtomicComponent = scaObject instanceof PojoAtomicComponent;
