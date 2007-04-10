@@ -49,14 +49,14 @@ public interface AbstractProperty extends Base, IntentAttachPoint {
      * 
      * @return the default value of ths property
      */
-    Object getDefaultValue();
+    Object getValue();
 
     /**
      * Sets the default value of the property.
      * 
      * @param defaultValue the default value of ths property
      */
-    void setDefaultValue(Object defaultValue);
+    void setValue(Object defaultValue);
 
     /**
      * Returns true if the property allows multiple values.

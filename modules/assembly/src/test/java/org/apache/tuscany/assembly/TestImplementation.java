@@ -33,7 +33,7 @@ public class TestImplementation extends ComponentTypeImpl implements Implementat
 
         Property p = factory.createProperty();
         p.setName("currency");
-        p.setDefaultValue("USD");
+        p.setValue("USD");
         p.setMustSupply(true);
         p.setXSDType(new QName("", ""));
         getProperties().add(p);

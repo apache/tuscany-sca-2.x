@@ -26,12 +26,14 @@ import java.util.Map;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.Service;
@@ -66,18 +68,47 @@ public class CompositeUtil {
     }
 
     private void collectIncludes(Composite composite, List<Composite> includes) {
-        for (Composite include: composite.getIncludes()) {
+        for (Composite include : composite.getIncludes()) {
             includes.add(include);
             collectIncludes(include, includes);
         }
     }
-    
-    private void init(List<Base> problems) {
-        
-        // Bring includes in
-        List<Composite> includes = new ArrayList<Composite>();
-        collectIncludes(composite, includes);
-        for (Composite include: includes) {
+
+    private void initializePropsSvcRefs(Component component,
+                                        Map<String, Service> implServices,
+                                        Map<String, Reference> implReferences,
+                                        Map<String, Property> implProperties,
+                                        Map<String, ComponentService> compServices,
+                                        Map<String, ComponentReference> compReferences,
+                                        Map<String, ComponentProperty> compProperties) {
+        // Index services and references
+        Implementation implementation = component.getImplementation();
+        if (implementation != null) {
+            for (Service service : implementation.getServices()) {
+                implServices.put(service.getName(), service);
+            }
+            for (Reference reference : implementation.getReferences()) {
+                implReferences.put(reference.getName(), reference);
+            }
+            for (Property property : implementation.getProperties()) {
+                implProperties.put(property.getName(), property);
+            }
+        }
+
+        for (ComponentService componentService : component.getServices()) {
+            compServices.put(componentService.getName(), componentService);
+        }
+        for (ComponentReference componentReference : component.getReferences()) {
+            compReferences.put(componentReference.getName(), componentReference);
+        }
+        for (ComponentProperty componentProperty : component.getProperties()) {
+            compProperties.put(componentProperty.getName(), componentProperty);
+        }
+
+    }
+
+    private void fuseIncludes(Composite composite, List<Composite> includes) {
+        for (Composite include : includes) {
             include = include.copy();
             composite.getComponents().addAll(include.getComponents());
             composite.getServices().addAll(include.getServices());
@@ -88,71 +119,157 @@ public class CompositeUtil {
             composite.getRequiredIntents().addAll(include.getRequiredIntents());
         }
         composite.getIncludes().clear();
+    }
+
+    private void reconcileComponentServices(Component component,
+                                            Map<String, Service> implServices,
+                                            Map<String, ComponentService> compServices,
+                                            List<Base> problems) {
+        for (ComponentService componentService : compServices.values()) {
+            Service service = implServices.get(componentService.getName());
+            if (service != null) {
+                componentService.setService(service);
+            } else {
+                problems.add(componentService);
+            }
+        }
+
+        for (Service service : implServices.values()) {
+            if (!compServices.containsKey(service.getName())) {
+                ComponentService componentService = assemblyFactory.createComponentService();
+                componentService.setName(service.getName());
+                componentService.setService(service);
+                component.getServices().add(componentService);
+            }
+        }
+    }
+
+    private void reconcileComponentReferences(Component component,
+                                              Map<String, Reference> implReferences,
+                                              Map<String, ComponentReference> compReferences,
+                                              List<Base> problems) {
+        for (ComponentReference componentReference : compReferences.values()) {
+            Reference reference = implReferences.get(componentReference.getName());
+            if (reference != null) {
+                componentReference.setReference(reference);
+            } else {
+                problems.add(componentReference);
+            }
+        }
+
+        for (Reference reference : implReferences.values()) {
+            if (!compReferences.containsKey(reference.getName())) {
+                ComponentReference componentReference = assemblyFactory.createComponentReference();
+                componentReference.setName(reference.getName());
+                componentReference.setReference(reference);
+                componentReference.setMultiplicity(reference.getMultiplicity());
+                componentReference.getTargets().addAll(reference.getTargets());
+                componentReference.setInterface(reference.getInterface());
+                component.getReferences().add(componentReference);
+                if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), 
+                                                                  componentReference.getTargets())) {
+                     problems.add(componentReference);
+                 }
+            } else {
+                ComponentReference compRef = compReferences.get(reference.getName());
+                if (compRef.getMultiplicity() != null) {
+                    if (!ReferenceUtil.isValidMultiplicityOverride(reference.getMultiplicity(), 
+                                                                  compRef.getMultiplicity())) {
+                        problems.add(compRef);
+                    }
+                } else {
+                    compRef.setMultiplicity(reference.getMultiplicity());
+                }
+                
+                if (compRef.getInterface() != null) {
+                    if (!compRef.getInterface().equals(reference.getInterface())) {
+                        if (!InterfaceUtil.checkInterfaceCompatibility(reference.getInterface(), 
+                                                                       compRef.getInterface())) {
+                            problems.add(compRef);
+                        }
+                    }
+                } else {
+                    compRef.setInterface(reference.getInterface());
+                }
+                
+                if (compRef.getTargets().isEmpty()) {
+                    compRef.getTargets().addAll(reference.getTargets());
+                    if (!ReferenceUtil.validateMultiplicityAndTargets(compRef.getMultiplicity(), 
+                                                                     compRef.getTargets())) {
+                        problems.add(compRef);
+                    }
+                }
+                
+            }
+        }
+    }
+
+    private void reconcileComponentProperties(Component component,
+                                              Map<String, Property> implProperties,
+                                              Map<String, ComponentProperty> compProperties,
+                                              List<Base> problems) {
+        for (ComponentProperty componentProperty : compProperties.values()) {
+            Property property = implProperties.get(componentProperty.getName());
+            if (property != null) {
+                componentProperty.setProperty(property);
+                if (componentProperty.getValue() == null && property.isMustSupply()) {
+                    problems.add(componentProperty);
+                }
+            } else {
+                problems.add(componentProperty);
+            }
+        }
+
+        for (Property property : implProperties.values()) {
+            if (!compProperties.containsKey(property.getName())) {
+                if (!property.isMustSupply()) {
+                    ComponentProperty componentProperty = assemblyFactory.createComponentProperty();
+                    componentProperty.setName(property.getName());
+                    componentProperty.setProperty(property);
+                    component.getProperties().add(componentProperty);
+                } else {
+                    problems.add(property);
+                }
+            }
+        }
+    }
+
+    private void init(List<Base> problems) {
+        Map<String, Service> implServices = null;
+        Map<String, Reference> implReferences = null;
+        Map<String, Property> implProperties = null;
+        Map<String, ComponentService> compServices = null;
+        Map<String, ComponentReference> compReferences = null;
+        Map<String, ComponentProperty> compProperties = null;
+
+        // Bring includes in
+        List<Composite> includes = new ArrayList<Composite>();
+        collectIncludes(composite, includes);
+        fuseIncludes(composite, includes);
 
         // Init all component services and references
         for (Component component : composite.getComponents()) {
-            Map<String, Service> services = new HashMap<String, Service>();
-            Map<String, Reference> references = new HashMap<String, Reference>();
+            implServices = new HashMap<String, Service>();
+            implReferences = new HashMap<String, Reference>();
+            implProperties = new HashMap<String, Property>();
+            compServices = new HashMap<String, ComponentService>();
+            compReferences = new HashMap<String, ComponentReference>();
+            compProperties = new HashMap<String, ComponentProperty>();
 
-            // Index services and references
-            Implementation implementation = component.getImplementation();
-            if (implementation != null) {
-                for (Service service : implementation.getServices()) {
-                    services.put(service.getName(), service);
-                }
-                for (Reference reference : implementation.getReferences()) {
-                    references.put(reference.getName(), reference);
-                }
-            }
+            initializePropsSvcRefs(component,
+                                   implServices,
+                                   implReferences,
+                                   implProperties,
+                                   compServices,
+                                   compReferences,
+                                   compProperties);
 
-            // Index component services and references
-            Map<String, ComponentService> cservices = new HashMap<String, ComponentService>();
-            Map<String, ComponentReference> creferences = new HashMap<String, ComponentReference>();
-            for (ComponentService componentService : component.getServices()) {
-                cservices.put(componentService.getName(), componentService);
-            }
-            for (ComponentReference componentReference : component.getReferences()) {
-                creferences.put(componentReference.getName(), componentReference);
-            }
-
-            // Reconcile component services/references and implementation
-            // services/references
-            for (ComponentService componentService : cservices.values()) {
-                Service service = services.get(componentService.getName());
-                if (service != null) {
-                    componentService.setService(service);
-                } else {
-                    problems.add(componentService);
-                }
-            }
-            for (ComponentReference componentReference : creferences.values()) {
-                Reference reference = references.get(componentReference.getName());
-                if (reference != null) {
-                    componentReference.setReference(reference);
-                } else {
-                    problems.add(componentReference);
-                }
-            }
-
-            // Create component services/references for the services/references
-            // declared by
-            // the implementation
-            for (Service service : services.values()) {
-                if (!cservices.containsKey(service.getName())) {
-                    ComponentService componentService = assemblyFactory.createComponentService();
-                    componentService.setName(service.getName());
-                    componentService.setService(service);
-                    component.getServices().add(componentService);
-                }
-            }
-            for (Reference reference : references.values()) {
-                if (!creferences.containsKey(reference.getName())) {
-                    ComponentReference componentReference = assemblyFactory.createComponentReference();
-                    componentReference.setName(reference.getName());
-                    componentReference.setReference(reference);
-                    component.getReferences().add(componentReference);
-                }
-            }
+            // Reconcile component services/references/properties and implementation
+            // services/references and Create component services/references/properties
+            //for the services/references declared by the implementation
+            reconcileComponentServices(component, implServices, compServices, problems);
+            reconcileComponentReferences(component, implReferences, compReferences, problems);
+            reconcileComponentProperties(component, implProperties, compProperties, problems);
         }
     }
 
@@ -160,19 +277,17 @@ public class CompositeUtil {
 
         // Index and bind all component services and references
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+        Map<String, ComponentReference> componentReferences =
+            new HashMap<String, ComponentReference>();
         for (Component component : composite.getComponents()) {
-            int i =0;
             for (ComponentService componentService : component.getServices()) {
-                
-                // Index services as component name / service name
-                String uri = component.getName() + '/' + componentService.getName();
-                componentServices.put(uri, componentService);
-                if (i ==0) {
-                    // Index the first service of a component as the component name
-                    componentServices.put(component.getName(), componentService);
+                String uri;
+                if (componentService.getName() != null) {
+                    uri = component.getName() + '/' + componentService.getName();
+                } else {
+                    uri = component.getName();
                 }
-                i++;
+                componentServices.put(uri, componentService);
 
                 // Create and configure an SCA binding for the service
                 SCABinding scaBinding = componentService.getBinding(SCABinding.class);
@@ -181,7 +296,6 @@ public class CompositeUtil {
                     componentService.getBindings().add(scaBinding);
                 }
                 scaBinding.setURI(uri);
-                scaBinding.setComponent(component);
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 String uri = component.getName() + '/' + componentReference.getName();
@@ -194,7 +308,6 @@ public class CompositeUtil {
                     componentReference.getBindings().add(scaBinding);
                 }
                 scaBinding.setURI(uri);
-                scaBinding.setComponent(component);
             }
         }
 
@@ -213,11 +326,13 @@ public class CompositeUtil {
         }
         for (Reference reference : composite.getReferences()) {
             CompositeReference compositeReference = (CompositeReference)reference;
-            List<ComponentReference> promotedReferences = compositeReference.getPromotedReferences();
+            List<ComponentReference> promotedReferences =
+                compositeReference.getPromotedReferences();
             for (int i = 0, n = promotedReferences.size(); i < n; i++) {
                 ComponentReference componentReference = promotedReferences.get(i);
                 if (componentReference.isUnresolved()) {
-                    ComponentReference resolved = componentReferences.get(componentReference.getName());
+                    ComponentReference resolved =
+                        componentReferences.get(componentReference.getName());
                     if (resolved != null) {
                         promotedReferences.set(i, resolved);
                     } else {
@@ -294,7 +409,7 @@ public class CompositeUtil {
                 resolvedReference.getTargets().add(resolvedService);
             }
         }
-        
+
         // Clear wires
         composite.getWires().clear();
     }
