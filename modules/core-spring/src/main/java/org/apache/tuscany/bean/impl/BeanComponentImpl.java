@@ -81,7 +81,7 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component 
 		public boolean add(ComponentProperty property) {
 			
 			// Add corresponding bean property value
-			getPropertyValues().addPropertyValue(property.getName(), property.getDefaultValue());
+			getPropertyValues().addPropertyValue(property.getName(), property.getValue());
 
 			return super.add(property);
 		}

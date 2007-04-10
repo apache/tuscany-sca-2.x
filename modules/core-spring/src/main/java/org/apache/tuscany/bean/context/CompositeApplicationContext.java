@@ -107,7 +107,7 @@ public class CompositeApplicationContext extends AbstractRefreshableApplicationC
 			}
 			
 			for (Property property: component.getProperties()) {
-				propertyValues.addPropertyValue(property.getName(), property.getDefaultValue());
+				propertyValues.addPropertyValue(property.getName(), property.getValue());
 			}
 			
 			beanFactory.registerBeanDefinition(component.getName(), bean);       	
