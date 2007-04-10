@@ -159,7 +159,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         wireList.addAll(attachWires);
         JavaElement element = configuration.getDefinition().getReferenceMembers().get(referenceName);
 
-        Class<?> type = ((JavaInterface)attachWires.get(0).getSourceContract().getInterface()).getJavaClass();
+        Class<?> type = ((JavaInterface)attachWires.get(0).getSourceContract().getInterfaceContract().getInterface()).getJavaClass();
         if (type == null) {
             throw new NoMultiplicityTypeException("Java interface must be specified for multiplicity", referenceName);
         }
@@ -176,7 +176,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     public void attachCallbackWire(Wire wire) {
         assert wire.getSourceUri().getFragment() != null;
         // FIXME: [rfeng] This is a hack to get it compiled
-        String callbackName = wire.getSourceContract().getCallbackInterface().toString();
+        String callbackName = wire.getSourceContract().getInterfaceContract().getCallbackInterface().toString();
         assert configuration.getDefinition().getCallbackMembers().get(callbackName) != null;
         List<Wire> wireList = callBackwires.get(callbackName);
         if (wireList == null) {

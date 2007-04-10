@@ -121,7 +121,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                 boolean hasConversationalContract = false;
                 ComponentType componentType = componentDef.getImplementation();
                 for (Service serviceDef : componentType.getServices()) {
-                    if (serviceDef.getInterface().isConversational()) {
+                    if (serviceDef.getInterfaceContract().getInterface().isConversational()) {
                         hasConversationalContract = true;
                         break;
                     }

@@ -16,26 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.interfacedef.java.impl;
 
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+package org.apache.tuscany.interfacedef.impl;
+
+import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 
 /**
- * A factory for the Java model.
+ * Represents an interface contract.
+ * InterfaceContractImpl
+ *
+ * @version $Rev$ $Date$
  */
-public class DefaultJavaFactory implements JavaFactory {
+public abstract class InterfaceContractImpl implements InterfaceContract {
+    private Interface callInterface;
+    private Interface callbackInterface;
 
-    public DefaultJavaFactory() {
+    public Interface getCallbackInterface() {
+        return callbackInterface;
     }
 
-    public JavaInterface createJavaInterface() {
-        return new JavaInterfaceImpl();
+    public Interface getInterface() {
+        return callInterface;
     }
-    
-    public JavaInterfaceContract createJavaInterfaceContract() {
-        return new JavaInterfaceContractImpl();
+
+    public void setCallbackInterface(Interface callbackInterface) {
+        this.callbackInterface = callbackInterface;
+    }
+
+    public void setInterface(Interface callInterface) {
+        this.callInterface = callInterface;
     }
 
 }

@@ -54,14 +54,14 @@ public abstract class ProxyServiceExtension implements ProxyService {
             // Shortcut for performance
             return true;
         }
-        if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
+        if (source.getInterfaceContract().getInterface().isRemotable() != target.getInterfaceContract().getInterface().isRemotable()) {
             if (!silent) {
                 throw new IncompatibleServiceContractException("Remotable settings do not match", source, target);
             } else {
                 return false;
             }
         }
-        if (source.getInterface().isConversational() != target.getInterface().isConversational()) {
+        if (source.getInterfaceContract().getInterface().isConversational() != target.getInterfaceContract().getInterface().isConversational()) {
             if (!silent) {
                 throw new IncompatibleServiceContractException("Interaction scopes do not match", source, target);
             } else {
@@ -69,8 +69,8 @@ public abstract class ProxyServiceExtension implements ProxyService {
             }
         }
 
-        for (Operation operation : source.getInterface().getOperations()) {
-            Operation targetOperation = getOperation(target.getInterface().getOperations(), operation.getName());
+        for (Operation operation : source.getInterfaceContract().getInterface().getOperations()) {
+            Operation targetOperation = getOperation(target.getInterfaceContract().getInterface().getOperations(), operation.getName());
             if (targetOperation == null) {
                 if (!silent) {
                     throw new IncompatibleServiceContractException("Operation not found on target", source, target);
@@ -92,9 +92,9 @@ public abstract class ProxyServiceExtension implements ProxyService {
             return true;
         }
 
-        if (source.getCallbackInterface() != null) {
-            for (Operation operation : source.getCallbackInterface().getOperations()) {
-                Operation targetOperation = getOperation(target.getCallbackInterface().getOperations(), operation
+        if (source.getInterfaceContract().getCallbackInterface() != null) {
+            for (Operation operation : source.getInterfaceContract().getCallbackInterface().getOperations()) {
+                Operation targetOperation = getOperation(target.getInterfaceContract().getCallbackInterface().getOperations(), operation
                     .getName());
                 if (targetOperation == null) {
                     if (!silent) {

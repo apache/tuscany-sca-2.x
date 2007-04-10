@@ -50,7 +50,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         Contract contract = factory.createComponentService();
         impl.introspect(contract, Simple.class);
 
-        JavaInterface intf = (JavaInterface)contract.getInterface();
+        JavaInterface intf = (JavaInterface)contract.getInterfaceContract().getInterface();
 
         assertEquals(Simple.class, intf.getJavaClass());
         List<Operation> operations = intf.getOperations();

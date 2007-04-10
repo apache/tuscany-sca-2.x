@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.assembly.util;
 
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 
 /**
@@ -27,9 +27,11 @@ import org.apache.tuscany.interfacedef.Operation;
  *
  */
 public class InterfaceUtil {
-    public static boolean checkInterfaceCompatibility(Interface source,
-                                                      Interface target) {
+    public static boolean checkInterfaceCompatibility(InterfaceContract sourceContract,
+                                                      InterfaceContract targetContract) {
         boolean isCompatible = true;
+        Interface source = sourceContract.getInterface();
+        Interface target = targetContract.getInterface();
         if (source != target) {
             //TODO : Fix comparisons of interaction scopes.
             /*if (source.getInteractionScope() != target.getInteractionScope()) {

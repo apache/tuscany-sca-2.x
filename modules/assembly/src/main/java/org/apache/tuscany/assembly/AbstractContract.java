@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.assembly;
 
-import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.policy.IntentAttachPoint;
 
 /**
@@ -44,39 +44,19 @@ public interface AbstractContract extends Base, IntentAttachPoint {
     void setName(String name);
 
     /**
-     * Returns the interface definition representing the interface for
-     * invocations from the requestor to the provider.
+     * Returns the interface contract defining the interface and callback
+     * interface for the contract.
      * 
-     * @return the interface definition representing the interface for
-     *         invocations from the requestor to the provider
+     * @return the interface contract
      */
-    Interface getInterface();
+    InterfaceContract getInterfaceContract();
+    
 
     /**
-     * Sets the interface definition representing the interface for invocations
-     * from the requestor to the provider.
+     * Returns the interface contract defining the interface and callback
+     * interface for the contract.
      * 
-     * @param callInterface the interface definition representing the interface
-     *            for invocations from the requestor to the provider
+     * @param interfaceContract the interface contract
      */
-    void setInterface(Interface callInterface);
-
-    /**
-     * Returns the interface definition representing the interface for
-     * invocations from the provider to the requestor.
-     * 
-     * @return the interface definition representing the interface for
-     *         invocations from the provider to the requestor.
-     */
-    Interface getCallbackInterface();
-
-    /**
-     * Sets the interface definition representing the interface for invocations
-     * from the provider to the requestor.
-     * 
-     * @param callbackInterface the interface definition representing the
-     *            interface for invocations from the provider to the requestor.
-     */
-    void setCallbackInterface(Interface callbackInterface);
-
+    void setInterfaceContract(InterfaceContract interfaceContract);
 }

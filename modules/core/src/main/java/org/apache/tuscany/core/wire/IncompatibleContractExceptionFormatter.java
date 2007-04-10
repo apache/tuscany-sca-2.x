@@ -59,7 +59,7 @@ public class IncompatibleContractExceptionFormatter implements ExceptionFormatte
         Contract source = e.getSource();
         String sourceContractName = null;
         if (source != null) {
-            sourceContractName = source.getInterface().toString();
+            sourceContractName = source.getInterfaceContract().getInterface().toString();
         }
         Operation sourceOperation = e.getSourceOperation();
         String sourceOpName = null;
@@ -74,7 +74,7 @@ public class IncompatibleContractExceptionFormatter implements ExceptionFormatte
         Contract target = e.getTarget();
         String targetContractName = null;
         if (target != null) {
-            targetContractName = target.getInterface().toString();
+            targetContractName = target.getInterfaceContract().getInterface().toString();
         }
         Operation targetOperation = e.getTargetOperation();
         String targetOpName = null;

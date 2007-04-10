@@ -31,7 +31,9 @@ import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.easymock.EasyMock;
 
@@ -47,7 +49,9 @@ public class IncompatibleServiceContractExceptionFormatterTestCase extends TestC
         ComponentService contract = factory.createComponentService();
         JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
         javaInterface.setJavaClass(type);
-        contract.setInterface(javaInterface);
+        JavaInterfaceContract javaInterfaceContract = new JavaInterfaceContractImpl();
+        contract.setInterfaceContract(javaInterfaceContract);
+        javaInterfaceContract.setInterface(javaInterface);
         return contract;
     }
 

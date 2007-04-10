@@ -76,14 +76,14 @@ public class AssemblyFactoryTestCase extends TestCase {
         CompositeService cs = factory.createCompositeService();
         cs.setName("AccountService");
         cs.setPromotedService(c1.getServices().get(0));
-        cs.setInterface(new TestInterface(factory));
+        cs.setInterfaceContract(new TestInterfaceContract(factory));
         c.getServices().add(cs);
         cs.getBindings().add(new TestBinding(factory));
 
         CompositeReference cr = factory.createCompositeReference();
         cr.setName("StockQuoteService");
         cr.getPromotedReferences().add(c2.getReferences().get(1));
-        cr.setInterface(new TestInterface(factory));
+        cr.setInterfaceContract(new TestInterfaceContract(factory));
         c.getReferences().add(cr);
         cr.getBindings().add(new TestBinding(factory));
 
@@ -114,7 +114,7 @@ public class AssemblyFactoryTestCase extends TestCase {
         ComponentReference ref1 = factory.createComponentReference();
         ref1.setName("accountDataService");
         ref1.setMultiplicity(Multiplicity.ONE_ONE);
-        ref1.setInterface(new TestInterface(factory));
+        ref1.setInterfaceContract(new TestInterfaceContract(factory));
         ref1.setReference(i.getReferences().get(0));
         c.getReferences().add(ref1);
         ref1.getBindings().add(new TestBinding(factory));
@@ -122,14 +122,14 @@ public class AssemblyFactoryTestCase extends TestCase {
         ComponentReference ref2 = factory.createComponentReference();
         ref2.setName("stockQuoteService");
         ref2.setMultiplicity(Multiplicity.ONE_ONE);
-        ref2.setInterface(new TestInterface(factory));
+        ref2.setInterfaceContract(new TestInterfaceContract(factory));
         ref2.setReference(i.getReferences().get(1));
         c.getReferences().add(ref2);
         ref2.getBindings().add(new TestBinding(factory));
 
         ComponentService s = factory.createComponentService();
         s.setName("AccountService");
-        s.setInterface(new TestInterface(factory));
+        s.setInterfaceContract(new TestInterfaceContract(factory));
         s.setService(i.getServices().get(0));
         c.getServices().add(s);
         s.getBindings().add(new TestBinding(factory));
@@ -154,21 +154,21 @@ public class AssemblyFactoryTestCase extends TestCase {
 
         Reference ref1 = factory.createReference();
         ref1.setName("accountDataService");
-        ref1.setInterface(new TestInterface(factory));
+        ref1.setInterfaceContract(new TestInterfaceContract(factory));
         ref1.setMultiplicity(Multiplicity.ONE_ONE);
         ctype.getReferences().add(ref1);
         ref1.getBindings().add(new TestBinding(factory));
 
         Reference ref2 = factory.createReference();
         ref2.setName("stockQuoteService");
-        ref2.setInterface(new TestInterface(factory));
+        ref2.setInterfaceContract(new TestInterfaceContract(factory));
         ref2.setMultiplicity(Multiplicity.ONE_ONE);
         ctype.getReferences().add(ref2);
         ref2.getBindings().add(new TestBinding(factory));
 
         Service s = factory.createService();
         s.setName("AccountService");
-        s.setInterface(new TestInterface(factory));
+        s.setInterfaceContract(new TestInterfaceContract(factory));
         ctype.getServices().add(s);
         s.getBindings().add(new TestBinding(factory));
 
@@ -192,19 +192,19 @@ public class AssemblyFactoryTestCase extends TestCase {
 
         AbstractReference ref1 = factory.createAbstractReference();
         ref1.setName("accountDataService");
-        ref1.setInterface(new TestInterface(factory));
+        ref1.setInterfaceContract(new TestInterfaceContract(factory));
         ref1.setMultiplicity(Multiplicity.ONE_ONE);
         ctype.getReferences().add(ref1);
 
         AbstractReference ref2 = factory.createAbstractReference();
         ref2.setName("stockQuoteService");
-        ref2.setInterface(new TestInterface(factory));
+        ref2.setInterfaceContract(new TestInterfaceContract(factory));
         ref2.setMultiplicity(Multiplicity.ONE_ONE);
         ctype.getReferences().add(ref2);
 
         AbstractService s = factory.createAbstractService();
         s.setName("AccountService");
-        s.setInterface(new TestInterface(factory));
+        s.setInterfaceContract(new TestInterfaceContract(factory));
         ctype.getServices().add(s);
 
         return ctype;

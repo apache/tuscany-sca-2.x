@@ -437,7 +437,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
      */
     private boolean isInServiceInterface(Method operation, List<org.apache.tuscany.assembly.Service> services) {
         for (org.apache.tuscany.assembly.Service service : services) {
-            Interface interface1 = service.getInterface();
+            Interface interface1 = service.getInterfaceContract().getInterface();
             if (interface1 instanceof JavaInterface) {
                 Class<?> clazz = ((JavaInterface)interface1).getJavaClass();
                 if (isMethodMatched(clazz, operation)) {
@@ -590,9 +590,9 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         org.apache.tuscany.assembly.Service service = factory.createService();
         service.setName(interfaze.getSimpleName());
         interfaceProcessorRegistry.introspect(service, interfaze);
-        Interface javaInterface = service.getInterface();
+        Interface javaInterface = service.getInterfaceContract().getInterface();
         javaInterface.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
-        service.setInterface(javaInterface);
+        service.getInterfaceContract().setInterface(javaInterface);
         return service;
     }
 
@@ -602,7 +602,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
             Class<?> callbackClass = callback.value();
             JavaInterface javaInterface = javaFactory.createJavaInterface();
             javaInterface.setJavaClass(callbackClass);
-            contract.setCallbackInterface(javaInterface);
+            contract.getInterfaceContract().setCallbackInterface(javaInterface);
         } else if (callback != null && Void.class.equals(callback.value())) {
             throw new InvalidServiceType("No callback interface specified on annotation", interfaze);
         }

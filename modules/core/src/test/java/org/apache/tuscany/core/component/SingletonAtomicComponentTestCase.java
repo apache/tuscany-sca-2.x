@@ -28,6 +28,7 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.component.TargetException;
 
@@ -40,7 +41,9 @@ public class SingletonAtomicComponentTestCase extends TestCase {
         ComponentService contract = factory.createComponentService();
         JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
         javaInterface.setJavaClass(type);
-        contract.setInterface(javaInterface);
+        JavaInterfaceContract javaInterfaceContract = new DefaultJavaFactory().createJavaInterfaceContract();
+        contract.setInterfaceContract(javaInterfaceContract);
+        javaInterfaceContract.setInterface(javaInterface);
         return contract;
     }
 

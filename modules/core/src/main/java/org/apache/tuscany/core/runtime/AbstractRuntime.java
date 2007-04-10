@@ -43,7 +43,6 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
@@ -56,10 +55,11 @@ import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
-import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
+import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
@@ -294,7 +294,9 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         ComponentService contract = factory.createComponentService();
         JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
         javaInterface.setJavaClass(type);
-        contract.setInterface(javaInterface);
+        JavaInterfaceContract javaInterfaceContract = new DefaultJavaFactory().createJavaInterfaceContract();
+        contract.setInterfaceContract(javaInterfaceContract);
+        javaInterfaceContract.setInterface(javaInterface);
         return contract;
     }
 

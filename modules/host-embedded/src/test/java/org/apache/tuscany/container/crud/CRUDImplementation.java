@@ -23,7 +23,8 @@ import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 
 /**
@@ -44,7 +45,9 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
         service.setName(type.getSimpleName());
         JavaInterface i = new JavaInterfaceImpl();
         i.setJavaClass(type);
-        service.setInterface(i);
+        JavaInterfaceContract ic = new JavaInterfaceContractImpl();
+        ic.setInterface(i);
+        service.setInterfaceContract(ic);
         return service;
     }
 

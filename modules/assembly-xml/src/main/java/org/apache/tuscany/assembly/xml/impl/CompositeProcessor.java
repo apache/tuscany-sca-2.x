@@ -50,7 +50,7 @@ import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -253,11 +253,11 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                             // Read an extension element
                             Object extension = extensionProcessor.read(reader);
                             if (extension != null) {
-                                if (extension instanceof Interface) {
+                                if (extension instanceof InterfaceContract) {
     
                                     // <service><interface> and
                                     // <reference><interface>
-                                    contract.setInterface((Interface)extension);
+                                    contract.setInterfaceContract((InterfaceContract)extension);
     
                                 } else if (extension instanceof Binding) {
                                     // <service><binding> and <reference><binding>
@@ -334,8 +334,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 String promote = promotedService != null ? promotedService.getName() : null;
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote));
 
-                //TODO write callback interface 
-                extensionProcessor.write(service.getInterface(), writer);
+                extensionProcessor.write(service.getInterfaceContract(), writer);
                 
                 for (Binding binding: service.getBindings()) {
                     extensionProcessor.write(binding, writer);
@@ -354,8 +353,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 for (ComponentService service : component.getServices()) {
                     writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
 
-                    //TODO write callback interface 
-                    extensionProcessor.write(service.getInterface(), writer);
+                    extensionProcessor.write(service.getInterfaceContract(), writer);
 
                     for (Binding binding: service.getBindings()) {
                         extensionProcessor.write(binding, writer);
@@ -375,8 +373,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                                new XAttr(NAME, reference.getName()),
                                new XAttr(TARGET,target));
                     
-                    //TODO write callback interface 
-                    extensionProcessor.write(reference.getInterface(), writer);
+                    extensionProcessor.write(reference.getInterfaceContract(), writer);
                     
                     for (Binding binding: reference.getBindings()) {
                         extensionProcessor.write(binding, writer);
@@ -419,8 +416,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                            new XAttr(NAME, reference.getName()),
                            new XAttr(PROMOTE, promote));
 
-                //TODO write callback interface 
-                extensionProcessor.write(reference.getInterface(), writer);
+                extensionProcessor.write(reference.getInterfaceContract(), writer);
                 
                 for (Binding binding: reference.getBindings()) {
                     extensionProcessor.write(binding, writer);

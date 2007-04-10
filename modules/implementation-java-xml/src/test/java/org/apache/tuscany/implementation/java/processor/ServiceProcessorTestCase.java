@@ -42,8 +42,8 @@ public class ServiceProcessorTestCase extends TestCase {
         processor.visitClass(FooMultiple.class, type);
         assertEquals(2, type.getServices().size());
         org.apache.tuscany.assembly.Service service = ModelHelper.getService(type, Baz.class.getSimpleName());
-        assertEquals(Baz.class, ((JavaInterface)service.getInterface()).getJavaClass());
-        assertEquals(Bar.class, ((JavaInterface)service.getCallbackInterface()).getJavaClass());
+        assertEquals(Baz.class, ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass());
+        assertEquals(Bar.class, ((JavaInterface)service.getInterfaceContract().getCallbackInterface()).getJavaClass());
         assertNotNull(ModelHelper.getService(type, Bar.class.getSimpleName()));
     }
 
@@ -70,7 +70,7 @@ public class ServiceProcessorTestCase extends TestCase {
         processor.visitClass(FooRemotableNoService.class, type);
         assertEquals(1, type.getServices().size());
         org.apache.tuscany.assembly.Service service = ModelHelper.getService(type, BazRemotable.class.getSimpleName());
-        assertEquals(BazRemotable.class, ((JavaInterface)service.getInterface()).getJavaClass());
+        assertEquals(BazRemotable.class, ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass());
     }
 
     public void testNonInterface() throws Exception {

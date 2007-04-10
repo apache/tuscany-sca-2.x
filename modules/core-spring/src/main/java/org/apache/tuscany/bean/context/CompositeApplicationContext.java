@@ -73,8 +73,10 @@ public class CompositeApplicationContext extends AbstractRefreshableApplicationC
 			CompositeService compositeService = (CompositeService)service;
 			RootBeanDefinition bean = new RootBeanDefinition(DummyCompositeServiceBean.class);
 			MutablePropertyValues propertyValues = bean.getPropertyValues();
-			propertyValues.addPropertyValue("name", compositeService.getName());		
-			propertyValues.addPropertyValue("interface", ((JavaInterface)compositeService.getInterface()).getName());
+			propertyValues.addPropertyValue("name", compositeService.getName());
+                        if (compositeService.getInterfaceContract() != null) { 
+                            propertyValues.addPropertyValue("interface", ((JavaInterface)compositeService.getInterfaceContract().getInterface()).getName());
+                        }
 			ComponentService promotedService = compositeService.getPromotedService();
 			propertyValues.addPropertyValue("promote", getBeanReference(promotedService));
 			beanFactory.registerBeanDefinition(beanNameGenerator.generateBeanName(bean, beanFactory), bean);        	
@@ -85,8 +87,10 @@ public class CompositeApplicationContext extends AbstractRefreshableApplicationC
 			CompositeReference compositeReference = (CompositeReference)reference;
 			RootBeanDefinition bean = new RootBeanDefinition(DummyCompositeReferenceBean.class);
 			MutablePropertyValues propertyValues = bean.getPropertyValues();
-			propertyValues.addPropertyValue("name", compositeReference.getName());		
-			propertyValues.addPropertyValue("interface", ((JavaInterface)compositeReference.getInterface()).getName());
+			propertyValues.addPropertyValue("name", compositeReference.getName());
+                        if (compositeReference.getInterfaceContract() != null) {
+                            propertyValues.addPropertyValue("interface", ((JavaInterface)compositeReference.getInterfaceContract().getInterface()).getName());
+                        }
 			// TODO handle multiple promoted references
 			Reference promotedReference = compositeReference.getPromotedReferences().get(0);
 			propertyValues.addPropertyValue("promote", getBeanReference(promotedReference));

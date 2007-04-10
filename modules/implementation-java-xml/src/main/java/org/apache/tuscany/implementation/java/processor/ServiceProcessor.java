@@ -99,7 +99,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         Service callbackService = null;
         Class<?> callbackClass = method.getParameterTypes()[0];
         for (Service service : type.getServices()) {
-            JavaInterface javaInterface = (JavaInterface)service.getCallbackInterface();
+            JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getCallbackInterface();
             if (callbackClass == javaInterface.getJavaClass()) {
                 callbackService = service;
             }
@@ -120,7 +120,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         Service callbackService = null;
         Class<?> callbackClass = field.getType();
         for (Service service : type.getServices()) {
-            JavaInterface javaInterface = (JavaInterface)service.getCallbackInterface();
+            JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getCallbackInterface();
             if (callbackClass == javaInterface.getJavaClass()) {
                 callbackService = service;
             }
