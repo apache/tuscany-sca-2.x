@@ -21,8 +21,8 @@ package calculator;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.api.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
  * This shows how to test the Calculator service component.
@@ -32,10 +32,10 @@ public class CalculatorTestCase extends TestCase {
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("Calculator.composite");
-
-        CompositeContext context = CurrentCompositeContext.getContext();
-        calculatorService = context.locateService(CalculatorService.class, "CalculatorServiceComponent");
+        SCARuntime.start("Calculator.composite");
+        ComponentContext context = SCARuntime.getComponentContext("CalculatorServiceComponent");
+        ServiceReference<CalculatorService> service = context.createSelfReference(CalculatorService.class);
+        calculatorService = service.getService();
     }
     
     protected void tearDown() throws Exception {

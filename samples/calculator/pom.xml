@@ -18,38 +18,36 @@
     * under the License.    
 -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany.samples.sca</groupId>
-        <artifactId>parent</artifactId>
-        <version>0.1-integration-incubating-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-samples</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
     <artifactId>tuscany-sample-calculator</artifactId>
-    <packaging>jar</packaging>
     <name>Apache Tuscany Calculator Sample</name>
-    <description>A sample Calculator made of several SCA components wired together.</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-api</artifactId>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>        
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-            <scope>test</scope>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
+
     </dependencies>
 
     <build>

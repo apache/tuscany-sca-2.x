@@ -18,12 +18,9 @@
  */
 package calculator;
 
-import org.osoa.sca.annotations.Scope;
-
 /**
  * An implementation of the Divide service.
  */
-@Scope("COMPOSITE")
 public class DivideServiceImpl implements DivideService {
 
     public double divide(double n1, double n2) {

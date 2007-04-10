@@ -18,12 +18,9 @@
  */
 package calculator;
 
-import org.osoa.sca.annotations.Scope;
-
 /**
  * An implementation of the subtract service.
  */
-@Scope("COMPOSITE")
 public class SubtractServiceImpl implements SubtractService {
 
     public double subtract(double n1, double n2) {

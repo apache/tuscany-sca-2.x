@@ -42,8 +42,8 @@
                 <module>../pom/parent</module>
                 <module>../buildtools</module>
                 <module>modules</module>
-                <!--
                 <module>samples</module>
+                <!--
                 <module>itest</module>
                 -->
             </modules>

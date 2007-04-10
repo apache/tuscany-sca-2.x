@@ -16,31 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package calculator;
 
 import org.apache.tuscany.api.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
- * This client program shows how to create an SCA runtime, start it,
- * locate the Calculator service and invoke it.
+ * @version $Rev$ $Date$
  */
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
-    	
-    	SCARuntime.start("Calculator.composite");
 
-        CompositeContext context = CurrentCompositeContext.getContext();
-        CalculatorService calculatorService =
-                context.locateService(CalculatorService.class, "CalculatorServiceComponent");
+        SCARuntime.start("Calculator.composite");
+        ComponentContext context = SCARuntime.getComponentContext("CalculatorServiceComponent");
+        ServiceReference<CalculatorService> service = context.createSelfReference(CalculatorService.class);
+        CalculatorService calculatorService = service.getService();
 
         // Calculate
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
-
+        
         SCARuntime.stop();
+
     }
+
 }
