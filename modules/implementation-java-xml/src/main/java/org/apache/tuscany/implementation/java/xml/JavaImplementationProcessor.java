@@ -31,6 +31,8 @@ import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.introspection.IntrospectionRegistry;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
@@ -38,9 +40,11 @@ import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
-public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation>, JavaImplementationConstants {
+public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation>,
+    JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
+    private IntrospectionRegistry introspectionRegistry;
 
     public JavaImplementationProcessor(JavaImplementationFactory javaFactory) {
         this.javaFactory = javaFactory;
@@ -53,12 +57,12 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException {
 
         try {
-            
+
             // Read an <interface.java>
             JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
             javaImplementation.setUnresolved(true);
             javaImplementation.setName(reader.getAttributeValue(null, CLASS));
-    
+
             // Skip to end element
             while (reader.hasNext()) {
                 if (reader.next() == END_ELEMENT && IMPLEMENTATION_JAVA_QNAME.equals(reader.getName())) {
@@ -66,12 +70,12 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
                 }
             }
             return javaImplementation;
-            
+
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
     }
-    
+
     public void write(JavaImplementation javaImplementation, XMLStreamWriter writer) throws ContributionWriteException {
         try {
             // Write an <interface.java>
@@ -80,25 +84,47 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
                 writer.writeAttribute(CLASS, javaImplementation.getName());
             }
             writer.writeEndElement();
-            
+
         } catch (XMLStreamException e) {
             throw new ContributionWriteException(e);
         }
     }
-    
+
     public void resolve(JavaImplementation model, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
+        try {
+            Class javaClass = Class.forName(model.getName(), true, Thread.currentThread().getContextClassLoader());
+            model.setJavaClass(javaClass);
+            introspectionRegistry.introspect(model.getJavaClass(), (JavaImplementationDefinition)model);
+            model.setUnresolved(false);
+            resolver.add(model);
+        } catch (Exception e) {
+            throw new ContributionResolveException(e);
+        }
     }
-    
+
     public void wire(JavaImplementation model) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
-    
+
     public QName getArtifactType() {
         return IMPLEMENTATION_JAVA_QNAME;
     }
-    
+
     public Class<JavaImplementation> getModelType() {
         return JavaImplementation.class;
+    }
+
+    /**
+     * @param introspectionRegistry the introspectionRegistry to set
+     */
+    public void setIntrospectionRegistry(IntrospectionRegistry introspectionRegistry) {
+        this.introspectionRegistry = introspectionRegistry;
+    }
+
+    /**
+     * @param javaFactory the javaFactory to set
+     */
+    public void setJavaFactory(JavaImplementationFactory javaFactory) {
+        this.javaFactory = javaFactory;
     }
 }
