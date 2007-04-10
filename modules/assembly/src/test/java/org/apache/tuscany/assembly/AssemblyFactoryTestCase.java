@@ -105,7 +105,7 @@ public class AssemblyFactoryTestCase extends TestCase {
 
         ComponentProperty p = factory.createComponentProperty();
         p.setName("currency");
-        p.setDefaultValue("USD");
+        p.setValue("USD");
         p.setMustSupply(true);
         p.setXSDType(new QName("", ""));
         p.setProperty(i.getProperties().get(0));
@@ -147,7 +147,7 @@ public class AssemblyFactoryTestCase extends TestCase {
 
         Property p = factory.createProperty();
         p.setName("currency");
-        p.setDefaultValue("USD");
+        p.setValue("USD");
         p.setMustSupply(true);
         p.setXSDType(new QName("", ""));
         ctype.getProperties().add(p);
@@ -185,7 +185,7 @@ public class AssemblyFactoryTestCase extends TestCase {
 
         AbstractProperty p = factory.createAbstractProperty();
         p.setName("currency");
-        p.setDefaultValue("USD");
+        p.setValue("USD");
         p.setMustSupply(true);
         p.setXSDType(new QName("", ""));
         ctype.getProperties().add(p);

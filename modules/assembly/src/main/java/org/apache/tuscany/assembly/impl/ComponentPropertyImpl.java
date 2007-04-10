@@ -32,6 +32,14 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
     private Property property;
     private String source;
 
+    public Object getValue() {
+        if (super.getValue() == null && property != null) {
+            return property.getValue();
+        } else {
+            return super.getValue();
+        }
+    }
+ 
     /**
      * Constructs a new component property.
      */

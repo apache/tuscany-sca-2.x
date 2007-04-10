@@ -70,5 +70,4 @@ public interface ComponentProperty extends Property {
      * @param file a URI to a file containing the property value
      */
     void setFile(String file);
-
 }

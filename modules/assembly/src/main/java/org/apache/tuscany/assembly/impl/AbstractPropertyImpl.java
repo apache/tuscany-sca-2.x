@@ -33,7 +33,7 @@ import org.apache.tuscany.policy.Intent;
  * @version $Rev$ $Date$
  */
 public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
-    private Object defaultValue;
+    private Object value;
     private String name;
     private QName xsdType;
     private QName xsdElement;
@@ -53,7 +53,7 @@ public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
      */
     public AbstractPropertyImpl(AbstractProperty other) {
         super(other);
-        defaultValue = other.getDefaultValue();
+        value = other.getValue();
         many = other.isMany();
         mustSupply = other.isMustSupply();
         name = other.getName();
@@ -62,8 +62,8 @@ public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
         requiredIntents.addAll(other.getRequiredIntents());
     }
 
-    public Object getDefaultValue() {
-        return defaultValue;
+    public Object getValue() {
+        return value;
     }
 
     public String getName() {
@@ -86,8 +86,8 @@ public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
         return mustSupply;
     }
 
-    public void setDefaultValue(Object defaultValue) {
-        this.defaultValue = defaultValue;
+    public void setValue(Object defaultValue) {
+        this.value = defaultValue;
     }
 
     public void setMany(boolean many) {
