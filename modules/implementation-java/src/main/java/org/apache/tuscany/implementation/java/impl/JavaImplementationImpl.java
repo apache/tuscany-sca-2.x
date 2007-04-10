@@ -34,8 +34,10 @@ public class JavaImplementationImpl extends ComponentTypeImpl implements JavaImp
     public String getName() {
         if (isUnresolved()) {
             return className;
-        } else {
+        } else if (javaClass != null) {
             return javaClass.getName();
+        } else {
+            return null;
         }
     }
 

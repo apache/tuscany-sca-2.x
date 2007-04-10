@@ -477,7 +477,16 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
 
             Implementation implementation = component.getImplementation();
             implementation = resolver.resolve(Implementation.class, implementation);
-            component.setImplementation(implementation);
+            if (implementation.isUnresolved()) {
+                
+                // TODO we need to find a better way to do this
+                // Lazily resolve the implementation
+                extensionProcessor.resolve(implementation, resolver);
+                implementation.setUnresolved(false);
+                resolver.add(implementation);
+            } else {
+                component.setImplementation(implementation);
+            }
             
             resolveContract(component.getServices(), resolver);
             resolveContract(component.getReferences(), resolver);
