@@ -19,13 +19,11 @@
 package calculator;
 
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
 
 
 /**
  * An implementation of the Calculator service.
  */
-@Scope("COMPOSITE")
 public class CalculatorServiceImpl implements CalculatorService {
 
     private AddService addService;

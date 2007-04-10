@@ -18,14 +18,9 @@
  */
 package calculator;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Scope;
-
 /**
  * An implementation of the Add service
  */
-@Scope("COMPOSITE")
-@EagerInit
 public class AddServiceImpl implements AddService {
 
     public double add(double n1, double n2) {

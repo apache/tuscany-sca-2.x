@@ -18,12 +18,9 @@
  */
 package calculator;
 
-import org.osoa.sca.annotations.Scope;
-
 /**
  * An implementation of the Multiply service.
  */
-@Scope("COMPOSITE")
 public class MultiplyServiceImpl implements MultiplyService {
 
     public double multiply(double n1, double n2) {
