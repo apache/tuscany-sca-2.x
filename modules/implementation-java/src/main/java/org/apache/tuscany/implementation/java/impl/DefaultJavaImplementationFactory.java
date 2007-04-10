@@ -34,7 +34,7 @@ public class DefaultJavaImplementationFactory implements JavaImplementationFacto
     }
 
     public JavaImplementation createJavaImplementation() {
-        JavaImplementation javaImplementation = new JavaImplementationImpl();
+        JavaImplementation javaImplementation = new JavaImplementationDefinition();
         return javaImplementation;
     }
 
