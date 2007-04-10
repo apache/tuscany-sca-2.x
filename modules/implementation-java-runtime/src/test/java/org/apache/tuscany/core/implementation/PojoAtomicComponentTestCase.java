@@ -24,6 +24,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.introspection.impl.IntrospectionRegistryImpl;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.Scope;
@@ -114,11 +116,13 @@ public class PojoAtomicComponentTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        
+        JavaImplementationDefinition definition = new JavaImplementationDefinition();
+        definition.setName("foo");
+        
         PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor());
 
-        config = new PojoConfiguration();
-        config.setInstanceFactory(factory);
-        config.setName(URI.create("foo"));
+        config = new PojoConfiguration(definition);
         groupId = URI.create("parent");
         config.setGroupId(groupId);
     }

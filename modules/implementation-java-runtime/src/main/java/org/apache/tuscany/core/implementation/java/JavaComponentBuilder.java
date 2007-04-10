@@ -66,85 +66,20 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         JavaImplementationDefinition componentType = (JavaImplementationDefinition)
             definition.getImplementation();
 
-        PojoConfiguration configuration = new PojoConfiguration();
-        if (componentType.getMaxAge() > 0) {
-            configuration.setMaxAge(componentType.getMaxAge());
-        } else if (componentType.getMaxIdleTime() > 0) {
-            configuration.setMaxIdleTime(componentType.getMaxIdleTime());
-        }
-        Method initMethod = componentType.getInitMethod();
-        if (initMethod != null) {
-            configuration.setInitInvoker(new MethodEventInvoker(initMethod));
-        }
-        Method destroyMethod = componentType.getDestroyMethod();
-        if (destroyMethod != null) {
-            configuration.setDestroyInvoker(new MethodEventInvoker(destroyMethod));
-        }
+        PojoConfiguration configuration = new PojoConfiguration(componentType);
 
+        configuration.setName(URI.create(definition.getName()));
         configuration.setGroupId(context.getGroupId());
         configuration.setProxyService(proxyService);
         configuration.setWorkContext(workContext);
-        configuration.setImplementationClass(((JavaImplementation) definition.getImplementation()).getJavaClass());
-
-        // setup property injection sites
-        for (JavaElement property : componentType.getPropertyMembers().values()) {
-            configuration.addPropertySite(property.getName(), (Member) property.getAnchor());
-        }
-
-        // setup reference injection sites
-        for (JavaElement reference : componentType.getReferenceMembers().values()) {
-            Member member = (Member) reference.getAnchor();
-            if (member != null) {
-                // could be null if the reference is mapped to a constructor
-                configuration.addReferenceSite(reference.getName(), member);
-            }
-        }
-
-        for (Resource resource : componentType.getResources().values()) {
-            Member member = resource.getMember();
-            if (member != null) {
-                // could be null if the resource is mapped to a constructor
-                configuration.addResourceSite(resource.getName(), member);
-            }
-        }
-
-        // setup constructor injection
-        ConstructorDefinition<?> ctorDef = componentType.getConstructorDefinition();
-        Constructor<?> constr = ctorDef.getConstructor();
-        PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
-        configuration.setInstanceFactory(instanceFactory);
-        configuration.setConstructor(ctorDef);
-
-        // FIXME: [rfeng] Hack
-        configuration.setName(URI.create(definition.getName()));
-        handleCallbackSites(componentType, configuration);
 
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
-
-        // handle properties
-        handleProperties(definition, component);
-
-        // handle resources
-        handleResources(componentType, component);
 
         if (componentType.getConversationIDMember() != null) {
             component.addConversationIDFactory(componentType.getConversationIDMember());
         }
 
         return component;
-    }
-
-    private void handleCallbackSites(
-        JavaImplementationDefinition componentType,
-        PojoConfiguration configuration) {
-        for (Service service : componentType.getServices()) {
-            // setup callback injection sites
-            JavaElement element = componentType.getCallbackMembers().get(service.getName());
-            if (element != null) {
-                // Only if there is a callback reference in the service
-                configuration.addCallbackSite(service.getName(), (Member) element.getAnchor());
-            }
-        }
     }
 
     private void handleResources(
@@ -154,7 +89,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             String name = resource.getName();
             ObjectFactory<?> objectFactory = null;
             if (objectFactory == null) {
-                Class<?> type = resource.getType();
+                Class<?> type = resource.getElement().getType();
                 if (ComponentContext.class.equals(type)) {
                     objectFactory = new PojoComponentContextFactory(component);
                 } else {
@@ -172,18 +107,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                                                                      boolean optional,
                                                                      ResourceHost host) {
         return new ResourceObjectFactory<T>(type, mappedName, optional, host);
-    }
-
-    private void handleProperties(Component definition, JavaAtomicComponent component) {
-        throw new UnsupportedOperationException("Not implemented");
-        /*
-        for (ComponentProperty property : definition.getProperties()) {
-            ObjectFactory<?> factory = property.getValueFactory();
-            if (factory != null) {
-                component.addPropertyFactory(property.getName(), factory);
-            }
-        }
-        */
     }
 
     protected Class<JavaImplementation> getImplementationType() {

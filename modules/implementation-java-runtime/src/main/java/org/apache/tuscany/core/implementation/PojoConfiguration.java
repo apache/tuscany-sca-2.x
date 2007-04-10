@@ -18,7 +18,10 @@
  */
 package org.apache.tuscany.core.implementation;
 
-import java.lang.reflect.Member;
+import java.lang.annotation.ElementType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,89 +29,57 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.component.InstanceFactory;
+import org.apache.tuscany.core.component.InstanceFactoryProvider;
+import org.apache.tuscany.core.component.ReflectiveInstanceFactory;
+import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
+import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.InvalidAccessorException;
+import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.implementation.java.impl.JavaElement;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.processor.JavaIntrospectionHelper;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * Encapsulates confuration for a Java-based atomic component
- *
+ * 
  * @version $Rev$ $Date$
  */
-public class PojoConfiguration {
-    private URI name;
-    private InstanceFactory<?> instanceFactory2;
-    private PojoObjectFactory<?> instanceFactory;
-    private ConstructorDefinition<?> constructor;
-    private int initLevel;
-    private EventInvoker<Object> initInvoker;
-    private EventInvoker<Object> destroyInvoker;
-    private List<Injector> propertyInjectors = new ArrayList<Injector>();
-    private Map<String, Member> referenceSites = new HashMap<String, Member>();
-    private Map<String, Member> propertySites = new HashMap<String, Member>();
-    private Map<String, Member> resourceSites = new HashMap<String, Member>();
-    private Map<String, Member> callbackSites = new HashMap<String, Member>();
+public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
+    private JavaImplementationDefinition definition;
     private ProxyService proxyService;
     private WorkContext workContext;
-    private long maxIdleTime = -1;
-    private long maxAge = -1;
-    private Class implementationClass;
     private URI groupId;
+    private URI name;
 
-    public URI getName() {
-        return name;
+    private final List<JavaElement> injectionSites;
+    private final EventInvoker<T> initInvoker;
+    private final EventInvoker<T> destroyInvoker;
+    private final Map<JavaElement, Object> factories = new HashMap<JavaElement, Object>();
+
+    public PojoConfiguration(JavaImplementationDefinition definition) {
+        this.definition = definition;
+        this.initInvoker = definition.getInitMethod() == null ? null : new MethodEventInvoker<T>(definition
+            .getInitMethod());
+        this.destroyInvoker = definition.getDestroyMethod() == null ? null : new MethodEventInvoker<T>(definition
+            .getDestroyMethod());
+        injectionSites = new ArrayList<JavaElement>();
     }
-
+    
     public void setName(URI name) {
         this.name = name;
     }
 
-    @Deprecated
-    public PojoObjectFactory<?> getInstanceFactory() {
-        return instanceFactory;
+    public URI getName() {
+        return name;
     }
-
-    @Deprecated
-    public void setInstanceFactory(PojoObjectFactory<?> objectFactory) {
-        this.instanceFactory = objectFactory;
-    }
-
-    public InstanceFactory<?> getInstanceFactory2() {
-        return instanceFactory2;
-    }
-
-    public void setInstanceFactory2(InstanceFactory<?> instanceFactory2) {
-        this.instanceFactory2 = instanceFactory2;
-    }
-
-    /*
-    public List<String> getConstructorParamNames() {
-        return constructorParamNames;
-    }
-
-    public void setConstructorParamNames(List<String> names) {
-        constructorParamNames = names;
-    }
-
-    public void addConstructorParamName(String name) {
-        constructorParamNames.add(name);
-    }
-
-    public List<Class<?>> getConstructorParamTypes() {
-        return constructorParamTypes;
-    }
-
-    public void setConstructorParamTypes(List<Class<?>> constructorParamTypes) {
-        this.constructorParamTypes = constructorParamTypes;
-    }
-
-    public void addConstructorParamType(Class<?> type) {
-        constructorParamTypes.add(type);
-    }
-    */
 
     public URI getGroupId() {
         return groupId;
@@ -118,84 +89,12 @@ public class PojoConfiguration {
         this.groupId = groupId;
     }
 
-    public int getInitLevel() {
-        return initLevel;
-    }
-
-    public void setInitLevel(int initLevel) {
-        this.initLevel = initLevel;
-    }
-
-    public long getMaxIdleTime() {
-        return maxIdleTime;
-    }
-
-    public void setMaxIdleTime(long maxIdleTime) {
-        this.maxIdleTime = maxIdleTime;
-    }
-
-    public long getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(long maxAge) {
-        this.maxAge = maxAge;
-    }
-
     public EventInvoker<Object> getInitInvoker() {
-        return initInvoker;
-    }
-
-    public void setInitInvoker(EventInvoker<Object> initInvoker) {
-        this.initInvoker = initInvoker;
+        return new MethodEventInvoker<Object>(definition.getInitMethod());
     }
 
     public EventInvoker<Object> getDestroyInvoker() {
-        return destroyInvoker;
-    }
-
-    public void setDestroyInvoker(EventInvoker<Object> destroyInvoker) {
-        this.destroyInvoker = destroyInvoker;
-    }
-
-    public List<Injector> getPropertyInjectors() {
-        return propertyInjectors;
-    }
-
-    public void addPropertyInjector(Injector injector) {
-        propertyInjectors.add(injector);
-    }
-
-    public Map<String, Member> getReferenceSite() {
-        return referenceSites;
-    }
-
-    public void addReferenceSite(String name, Member member) {
-        referenceSites.put(name, member);
-    }
-
-    public Map<String, Member> getResourceSites() {
-        return resourceSites;
-    }
-
-    public void addResourceSite(String name, Member member) {
-        resourceSites.put(name, member);
-    }
-
-    public Map<String, Member> getCallbackSites() {
-        return callbackSites;
-    }
-
-    public void addCallbackSite(String name, Member member) {
-        callbackSites.put(name, member);
-    }
-
-    public Map<String, Member> getPropertySites() {
-        return propertySites;
-    }
-
-    public void addPropertySite(String name, Member member) {
-        propertySites.put(name, member);
+        return new MethodEventInvoker<Object>(definition.getDestroyMethod());
     }
 
     public ProxyService getProxyService() {
@@ -214,25 +113,110 @@ public class PojoConfiguration {
         this.workContext = workContext;
     }
 
-    public Class getImplementationClass() {
-        return implementationClass;
-    }
-
-    public void setImplementationClass(Class implementationClass) {
-        this.implementationClass = implementationClass;
-    }
-
     /**
      * @return the constructor
      */
     public ConstructorDefinition<?> getConstructor() {
-        return constructor;
+        return definition.getConstructorDefinition();
     }
 
     /**
-     * @param constructor the constructor to set
+     * @return the definition
      */
-    public void setConstructor(ConstructorDefinition<?> constructor) {
-        this.constructor = constructor;
+    public JavaImplementationDefinition getDefinition() {
+        return definition;
     }
+
+    @SuppressWarnings("unchecked")
+    public InstanceFactory<T> createFactory() {
+        ObjectFactory<?>[] initArgs = getConstructorArgs();
+        Injector<T>[] injectors = getInjectors();
+        return new ReflectiveInstanceFactory<T>((Constructor<T>)definition.getConstructorDefinition().getConstructor(),
+                                                initArgs, injectors, initInvoker, destroyInvoker);
+    }
+
+    protected ObjectFactory<?>[] getConstructorArgs() {
+        ConstructorDefinition<?> constructor = definition.getConstructorDefinition();
+        ObjectFactory<?>[] initArgs = new ObjectFactory<?>[constructor.getParameters().length];
+        for (int i = 0; i < initArgs.length; i++) {
+            ObjectFactory<?> factory = (ObjectFactory<?>)factories.get(constructor.getParameters()[i]);
+            assert factory != null;
+            initArgs[i] = factory;
+        }
+        return initArgs;
+    }
+
+    protected Injector<T>[] getInjectors() {
+        // work around JDK1.5 issue with allocating generic arrays
+        @SuppressWarnings("unchecked")
+        Injector<T>[] injectors = (Injector<T>[])new Injector[injectionSites.size()];
+
+        int i = 0;
+        for (JavaElement element : injectionSites) {
+            Object obj = factories.get(element);
+            if (obj instanceof ObjectFactory) {
+                ObjectFactory<?> factory = (ObjectFactory<?>)obj;
+                if (element.getElementType() == ElementType.FIELD) {
+                    injectors[i++] = new FieldInjector<T>((Field)element.getAnchor(), factory);
+                } else if (element.getElementType() == ElementType.PARAMETER && element.getAnchor() instanceof Method) {
+                    injectors[i++] = new MethodInjector<T>((Method)element.getAnchor(), factory);
+                } else {
+                    throw new AssertionError(String.valueOf(element));
+                }
+            } else {
+                injectors[i++] = createMultiplicityInjector(element, (List<ObjectFactory<?>>)factories);
+            }
+        }
+        return injectors;
+    }
+
+    protected Injector<T> createMultiplicityInjector(JavaElement element, List<ObjectFactory<?>> factories) {
+        Class<?> interfaceType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
+
+        if (element.getAnchor() instanceof Field) {
+            Field field = (Field)element.getAnchor();
+            if (field.getType().isArray()) {
+                return new FieldInjector<T>(field, new ArrayMultiplicityObjectFactory(interfaceType, factories));
+            } else {
+                return new FieldInjector<T>(field, new ListMultiplicityObjectFactory(factories));
+            }
+        } else if (element.getAnchor() instanceof Method) {
+            Method method = (Method)element.getAnchor();
+            if (method.getParameterTypes()[0].isArray()) {
+                return new MethodInjector<T>(method, new ArrayMultiplicityObjectFactory(interfaceType, factories));
+            } else {
+                return new MethodInjector<T>(method, new ListMultiplicityObjectFactory(factories));
+            }
+        } else {
+            throw new InvalidAccessorException("Member must be a field or method", element.getName());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Class<T> getImplementationClass() {
+        return (Class<T>)definition.getJavaClass();
+    }
+
+    public void setObjectFactory(JavaElement element, ObjectFactory<?> objectFactory) {
+        factories.put(element, objectFactory);
+    }
+
+    public void setObjectFactories(JavaElement element, List<ObjectFactory<?>> objectFactory) {
+        factories.put(element, objectFactory);
+    }
+
+    /**
+     * @return the injectionSites
+     */
+    public List<JavaElement> getInjectionSites() {
+        return injectionSites;
+    }
+
+    /**
+     * @return the factories
+     */
+    public Map<JavaElement, Object> getFactories() {
+        return factories;
+    }
+
 }

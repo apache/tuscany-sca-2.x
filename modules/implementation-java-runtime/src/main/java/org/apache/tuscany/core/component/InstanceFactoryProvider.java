@@ -35,18 +35,10 @@ public interface InstanceFactoryProvider<T> {
     /**
      * Sets an object factory for an injection site
      *
-     * @param name          the injection site name
+     * @param element          the injection site name
      * @param objectFactory the object factory
      */
-    void setObjectFactory(JavaElement name, ObjectFactory<?> objectFactory);
-
-    /**
-     * Returns the type for the injection site
-     *
-     * @param injectionSite the injection site name
-     * @return the required type
-     */
-    Class<?> getMemberType(JavaElement injectionSite);
+    void setObjectFactory(JavaElement element, ObjectFactory<?> objectFactory);
 
     /**
      * Create an instance factory that can be used to create component instances.

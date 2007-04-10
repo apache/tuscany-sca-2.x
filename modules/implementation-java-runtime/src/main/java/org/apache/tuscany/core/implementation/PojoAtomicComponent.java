@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -49,7 +50,9 @@ import org.apache.tuscany.core.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.processor.JavaIntrospectionHelper;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.ObjectCreationException;
@@ -63,6 +66,7 @@ import org.apache.tuscany.spi.wire.Wire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -75,51 +79,25 @@ import org.osoa.sca.annotations.Reference;
  *          2007) $$
  */
 public abstract class PojoAtomicComponent extends AtomicComponentExtension implements ComponentContextProvider {
-    protected EventInvoker<Object> initInvoker;
-    protected EventInvoker<Object> destroyInvoker;
-    protected PojoObjectFactory<?> instanceFactory;
-    protected InstanceFactory<?> instanceFactory2;
-    protected ConstructorDefinition<?> constructor;
-    // protected List<String> constructorParamNames;
-    protected Map<String, Member> referenceSites;
-    protected Map<String, Member> resourceSites;
-    protected Map<String, Member> propertySites;
-    protected Map<String, Member> callbackSites;
-    protected List<Injector<Object>> injectors;
-    protected Class implementationClass;
     protected Map<String, List<Wire>> wires = new HashMap<String, List<Wire>>();
     protected Map<String, List<Wire>> callBackwires = new HashMap<String, List<Wire>>();
 
+    protected PojoConfiguration<?> configuration;
+
     private final ComponentContext componentContext;
-    private final Map<String, ObjectFactory<?>> propertyFactories = new ConcurrentHashMap<String, ObjectFactory<?>>();
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
         super(configuration.getName(), configuration.getProxyService(), configuration.getWorkContext(), configuration
-            .getGroupId(), configuration.getInitLevel(), configuration.getMaxIdleTime(), configuration.getMaxAge());
-        assert configuration.getInstanceFactory() != null : "Object factory was null";
-        initInvoker = configuration.getInitInvoker();
-        destroyInvoker = configuration.getDestroyInvoker();
-        instanceFactory = configuration.getInstanceFactory();
-        instanceFactory2 = configuration.getInstanceFactory2();
-        constructor = configuration.getConstructor();
-        injectors = new ArrayList<Injector<Object>>();
-        referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
-                                                                 : new HashMap<String, Member>();
-        propertySites = configuration.getPropertySites() != null ? configuration.getPropertySites()
-                                                                : new HashMap<String, Member>();
-        resourceSites = configuration.getResourceSites() != null ? configuration.getResourceSites()
-                                                                : new HashMap<String, Member>();
-        callbackSites = configuration.getCallbackSites() != null ? configuration.getCallbackSites()
-                                                                : new HashMap<String, Member>();
-        implementationClass = configuration.getImplementationClass();
-
+            .getGroupId(), 50, configuration.getDefinition().getMaxIdleTime(), configuration.getDefinition()
+            .getMaxAge());
+        this.configuration = configuration;
         componentContext = new ComponentContextImpl(this);
     }
 
     public void destroy(Object instance) throws TargetDestructionException {
-        if (destroyInvoker != null) {
+        if (configuration.getDestroyInvoker() != null) {
             try {
-                destroyInvoker.invokeEvent(instance);
+                configuration.getDestroyInvoker().invokeEvent(instance);
             } catch (ObjectCallbackException e) {
                 throw new TargetDestructionException("Error destroying component instance", getUri().toString(), e);
             }
@@ -130,7 +108,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         // stateless implementations that require a destroy callback cannot be
         // optimized since the callback is
         // performed by the JavaTargetInvoker
-        return !(getScope() == Scope.STATELESS && destroyInvoker != null);
+        return !(getScope() == Scope.STATELESS && configuration.getDestroyInvoker() != null);
     }
 
     public Object getTargetInstance() throws TargetResolutionException {
@@ -141,21 +119,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         return wrapper.getInstance();
     }
 
-    public Object createInstance() throws ObjectCreationException {
-        Object instance = instanceFactory.getInstance();
-        // inject the instance with properties and references
-        for (Injector<Object> injector : injectors) {
-            injector.inject(instance);
-        }
-        return instance;
-    }
-
     public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
-        /*
-         * FIXME make this work return instanceFactory2.newInstance();
-         */
-        Object instance = createInstance();
-        return new ReflectiveInstanceWrapper<Object>(instance, initInvoker, destroyInvoker);
+        return configuration.createFactory().newInstance();
     }
 
     public List<Wire> getWires(String name) {
@@ -171,47 +136,23 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             wires.put(referenceName, wireList);
         }
         wireList.add(wire);
-        Member member = referenceSites.get(referenceName);
-        if (member != null && !(member instanceof Constructor)) {
-            injectors.add(createInjector(member, wire));
+
+        JavaElement element = configuration.getDefinition().getReferenceMembers().get(referenceName);
+        if (element != null && !(element.getAnchor() instanceof Constructor)) {
+            configuration.getInjectionSites().add(element);
         }
 
-        configureConstructor(referenceName, Reference.class, wire);
+        configuration.setObjectFactory(element, createWireFactory(element.getType(), wire));
 
-        // TODO error if ref not set on constructor or ref site
-
-    }
-
-    private boolean configureConstructor(String name, Class<? extends Annotation> classifer, Wire wire) {
-        Parameter param = getParameter(name, classifer);
-        if (param != null) {
-            ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
-            initializerFactories[param.getIndex()] = createWireFactory(param.getType(), wire);
-            return true;
-        }
-        return false;
     }
 
     private Parameter getParameter(String name, Class<? extends Annotation> classifer) {
-        if (constructor == null) {
-            return null;
-        }
-        for (Parameter param : constructor.getParameters()) {
+        for (Parameter param : configuration.getDefinition().getConstructorDefinition().getParameters()) {
             if (param.getClassifer() == classifer && param.getName().equals(name)) {
                 return param;
             }
         }
         return null;
-    }
-
-    private boolean configureConstructor(String name, Class<? extends Annotation> classifer, ObjectFactory<?> factory) {
-        Parameter param = getParameter(name, classifer);
-        if (param != null) {
-            ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
-            initializerFactories[param.getIndex()] = factory;
-            return true;
-        }
-        return false;
     }
 
     public void attachWires(List<Wire> attachWires) {
@@ -224,21 +165,19 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             wires.put(referenceName, wireList);
         }
         wireList.addAll(attachWires);
-        Member member = referenceSites.get(referenceName);
-        if (member == null) {
-            if (getParameter(referenceName, Reference.class) != null) {
-                // injected on the constructor
-                throw new UnsupportedOperationException();
-            } else {
-                throw new NoAccessorException(referenceName);
-            }
-        }
+        JavaElement element = configuration.getDefinition().getReferenceMembers().get(referenceName);
 
-        Class<?> type = ((JavaInterface) attachWires.get(0).getSourceContract().getInterface()).getJavaClass();
+        Class<?> type = ((JavaInterface)attachWires.get(0).getSourceContract().getInterface()).getJavaClass();
         if (type == null) {
             throw new NoMultiplicityTypeException("Java interface must be specified for multiplicity", referenceName);
         }
-        injectors.add(createMultiplicityInjector(member, type, wireList));
+
+        List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
+        for (Wire wire : wireList) {
+            factories.add(createWireFactory(element.getType(), wire));
+        }
+        configuration.getInjectionSites().add(element);
+        configuration.setObjectFactories(element, factories);
 
     }
 
@@ -246,7 +185,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         assert wire.getSourceUri().getFragment() != null;
         // FIXME: [rfeng] This is a hack to get it compiled
         String callbackName = wire.getSourceContract().getCallbackInterface().toString();
-        assert callbackSites.get(callbackName) != null;
+        assert configuration.getDefinition().getCallbackMembers().get(callbackName) != null;
         List<Wire> wireList = callBackwires.get(callbackName);
         if (wireList == null) {
             wireList = new ArrayList<Wire>();
@@ -256,27 +195,18 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public void start() throws CoreRuntimeException {
-        if (!callbackSites.isEmpty()) {
-            for (Map.Entry<String, Member> entry : callbackSites.entrySet()) {
+        if (!configuration.getDefinition().getCallbackMembers().isEmpty()) {
+            for (Map.Entry<String, JavaElement> entry : configuration.getDefinition().getCallbackMembers().entrySet()) {
                 List<Wire> wires = callBackwires.get(entry.getKey());
                 if (wires == null) {
                     // this can happen when there are no client wires to a
                     // component that has a callback
                     continue;
                 }
-                Member member = entry.getValue();
-                if (member instanceof Field) {
-                    Field field = (Field)member;
-                    ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), proxyService, wires);
-                    injectors.add(new FieldInjector<Object>(field, factory));
-                } else if (member instanceof Method) {
-                    Method method = (Method)member;
-                    Class<?> type = method.getParameterTypes()[0];
-                    ObjectFactory<?> factory = new CallbackWireObjectFactory(type, proxyService, wires);
-                    injectors.add(new MethodInjector<Object>(method, factory));
-                } else {
-                    throw new InvalidAccessorException("Member must be a field or method", member.getName());
-                }
+                JavaElement element = entry.getValue();
+                ObjectFactory<?> factory = new CallbackWireObjectFactory(element.getType(), proxyService, wires);
+                configuration.getInjectionSites().add(element);
+                configuration.setObjectFactory(element, factory);
             }
         }
         super.start();
@@ -284,45 +214,45 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public void addPropertyFactory(String name, ObjectFactory<?> factory) {
-        Member member = propertySites.get(name);
-        if (member instanceof Field) {
-            injectors.add(new FieldInjector<Object>((Field)member, factory));
-        } else if (member instanceof Method) {
-            injectors.add(new MethodInjector<Object>((Method)member, factory));
+        JavaElement element = configuration.getDefinition().getPropertyMembers().get(name);
+
+        if (element != null && !(element.getAnchor() instanceof Constructor)) {
+            configuration.getInjectionSites().add(element);
         }
 
-        configureConstructor(name, Property.class, factory);
-
-        // FIXME throw an error if no injection site found
-
-        propertyFactories.put(name, factory);
+        configuration.setObjectFactory(element, factory);
     }
 
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
-        Member member = resourceSites.get(name);
-        if (member instanceof Field) {
-            injectors.add(new FieldInjector<Object>((Field)member, factory));
-        } else if (member instanceof Method) {
-            injectors.add(new MethodInjector<Object>((Method)member, factory));
+        org.apache.tuscany.implementation.java.impl.Resource<?> resource = configuration.getDefinition().getResources()
+            .get(name);
+
+        if (resource != null && !(resource.getElement().getAnchor() instanceof Constructor)) {
+            configuration.getInjectionSites().add(resource.getElement());
         }
 
-        configureConstructor(name, Resource.class, factory);
-        // FIXME throw an error if no injection site found
+        configuration.setObjectFactory(resource.getElement(), factory);
     }
 
     public void addConversationIDFactory(Member member) {
-        ObjectFactory<String> convIDObjectFactory = new ConversationIDObjectFactory(workContext);
+        ObjectFactory<String> factory = new ConversationIDObjectFactory(workContext);
+
         if (member instanceof Field) {
-            injectors.add(new FieldInjector<Object>((Field)member, convIDObjectFactory));
+            JavaElement element = new JavaElement((Field)member);
+            element.setClassifer(ConversationID.class);
+            configuration.setObjectFactory(element, factory);
         } else if (member instanceof Method) {
-            injectors.add(new MethodInjector<Object>((Method)member, convIDObjectFactory));
+            JavaElement element = new JavaElement((Method)member, 0);
+            element.setName(JavaIntrospectionHelper.toPropertyName(member.getName()));
+            element.setClassifer(ConversationID.class);
+            configuration.setObjectFactory(element, factory);
         } else {
             throw new InvalidAccessorException("Member must be a field or method", member.getName());
         }
     }
 
     public boolean implementsCallback(Class callbackClass) {
-        Class<?>[] implementedInterfaces = implementationClass.getInterfaces();
+        Class<?>[] implementedInterfaces = configuration.getDefinition().getJavaClass().getInterfaces();
         for (Class<?> implementedInterface : implementedInterfaces) {
             if (implementedInterface.isAssignableFrom(callbackClass)) {
                 return true;
@@ -379,12 +309,27 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) {
-        ObjectFactory<?> factory = propertyFactories.get(propertyName);
-        if (factory != null) {
-            return type.cast(factory.getInstance());
-        } else {
-            return null;
+        JavaElement element = configuration.getDefinition().getPropertyMembers().get(propertyName);
+        Object obj = configuration.getFactories().get(element);
+        if (obj instanceof ObjectFactory) {
+            return type.cast(((ObjectFactory<?>)obj).getInstance());
+        } else if (obj instanceof List) {
+            List<ObjectFactory<?>> factories = (List<ObjectFactory<?>>)obj;
+            if (type.isArray()) {
+                Object array = Array.newInstance(type, factories.size());
+                for (int i = 0; i < factories.size(); i++) {
+                    Array.set(array, i, factories.get(i).getInstance());
+                }
+                return type.cast(array);
+            } else {
+                List<Object> list = new ArrayList<Object>();
+                for (ObjectFactory factory : factories) {
+                    list.add(factory.getInstance());
+                }
+                return type.cast(list);
+            }
         }
+        return null;
 
     }
 
@@ -417,5 +362,12 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire);
+
+    /**
+     * @see org.apache.tuscany.spi.component.AtomicComponent#createInstance()
+     */
+    public Object createInstance() throws ObjectCreationException {
+        return createInstanceWrapper().getInstance();
+    }
 
 }
