@@ -30,11 +30,9 @@ import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.util.CompositeUtil;
-import org.apache.tuscany.assembly.util.PrintUtil;
 import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
-import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**

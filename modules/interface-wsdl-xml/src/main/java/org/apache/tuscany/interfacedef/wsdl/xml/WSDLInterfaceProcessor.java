@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
@@ -37,7 +38,7 @@ import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
-public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterface>, WSDLConstants {
+public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
 
@@ -49,29 +50,51 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         this(new DefaultWSDLFactory());
     }
 
-    public WSDLInterface read(XMLStreamReader reader) throws ContributionReadException {
+    /**
+     * Create a WSDL interface from a URI.
+     * @param uri
+     * @return
+     * @throws ContributionReadException
+     */
+    private WSDLInterface createWSDLInterface(String uri) throws ContributionReadException {
+        WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
+        wsdlInterface.setUnresolved(true);
+
+        // Read a qname in the form:
+        // namespace#wsdl.interface(name)
+        int index = uri.indexOf('#');
+        if (index == -1) {
+            throw new ContributionReadException("Invalid WSDL interface attribute: " + uri);
+        }
+        String namespace = uri.substring(0, index);
+        String name = uri.substring(index + 1);
+        name = name.substring("wsdl.interface(".length(), name.length() - 1);
+        wsdlInterface.setName(new QName(namespace, name));
+        
+        return wsdlInterface;
+    }
+
+    public WSDLInterfaceContract read(XMLStreamReader reader) throws ContributionReadException {
         try {
     
             // Read an <interface.wsdl>
-            WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
-            wsdlInterface.setUnresolved(true);
-
-            // Read a qname in the form:
-            // namespace#wsdl.interface(name)
-            String uri = reader.getAttributeValue(null, INTERFACE);
-            if (uri != null) {
-                int index = uri.indexOf('#');
-                if (index == -1) {
-                    throw new ContributionReadException("Invalid WSDL interface attribute: " + uri);
-                }
-                String namespace = uri.substring(0, index);
-                String name = uri.substring(index + 1);
-                name = name.substring("wsdl.interface(".length(), name.length() - 1);
-                wsdlInterface.setName(new QName(namespace, name));
-            }
+            WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
             
             // Read wsdlLocation
-            wsdlInterface.setLocation(reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION));
+            String location = reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION);
+            wsdlInterfaceContract.setLocation(location);
+            
+            String uri = reader.getAttributeValue(null, INTERFACE);
+            if (uri != null) {
+                WSDLInterface wsdlInterface = createWSDLInterface(uri);
+                wsdlInterfaceContract.setInterface(wsdlInterface);
+            }
+            
+            uri = reader.getAttributeValue(null, CALLBACK_INTERFACE);
+            if (uri != null) {
+                WSDLInterface wsdlCallbackInterface = createWSDLInterface(uri);
+                wsdlInterfaceContract.setCallbackInterface(wsdlCallbackInterface);
+            }
                 
             // Skip to end element
             while (reader.hasNext()) {
@@ -79,28 +102,36 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                     break;
                 }
             }
-            return wsdlInterface;
+            return wsdlInterfaceContract;
             
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
     }
     
-    public void write(WSDLInterface wsdlInterface, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(WSDLInterfaceContract wsdlInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException {
         try {
             // Write an <interface.wsdl>
             writer.writeStartElement(Constants.SCA10_NS, INTERFACE_WSDL);
 
             // Write interface name
-            if (wsdlInterface.getName() != null) {
+            WSDLInterface wsdlInterface = (WSDLInterface)wsdlInterfaceContract.getInterface();
+            if (wsdlInterface != null) {
                 QName qname = wsdlInterface.getName();
                 String uri = qname.getNamespaceURI() + "#wsdl.interface(" + qname.getLocalPart() + ")";
                 writer.writeAttribute(INTERFACE, uri);
             }
+
+            WSDLInterface wsdlCallbackInterface = (WSDLInterface)wsdlInterfaceContract.getCallbackInterface();
+            if (wsdlCallbackInterface != null) {
+                QName qname = wsdlCallbackInterface.getName();
+                String uri = qname.getNamespaceURI() + "#wsdl.interface(" + qname.getLocalPart() + ")";
+                writer.writeAttribute(CALLBACK_INTERFACE, uri);
+            }
             
             // Write location
-            if (wsdlInterface.getLocation() != null) {
-                writer.writeAttribute(WSDLI_NS, WSDL_LOCATION, wsdlInterface.getLocation());
+            if (wsdlInterfaceContract.getLocation() != null) {
+                writer.writeAttribute(WSDLI_NS, WSDL_LOCATION, wsdlInterfaceContract.getLocation());
             }
             
             writer.writeEndElement();
@@ -110,10 +141,10 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         }
     }
     
-    public void resolve(WSDLInterface wsdlInterface, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(WSDLInterfaceContract wsdlInterface, ArtifactResolver resolver) throws ContributionResolveException {
     }
     
-    public void wire(WSDLInterface model) throws ContributionWireException {
+    public void wire(WSDLInterfaceContract model) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
     
@@ -121,7 +152,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         return WSDLConstants.INTERFACE_WSDL_QNAME;
     }
     
-    public Class<WSDLInterface> getModelType() {
-        return WSDLInterface.class;
+    public Class<WSDLInterfaceContract> getModelType() {
+        return WSDLInterfaceContract.class;
     }
 }

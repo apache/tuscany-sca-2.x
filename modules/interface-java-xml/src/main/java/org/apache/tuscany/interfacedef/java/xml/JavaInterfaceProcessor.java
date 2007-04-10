@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
@@ -37,7 +38,7 @@ import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
-public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterface>, JavaConstants {
+public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
 
     private JavaFactory javaFactory;
 
@@ -49,13 +50,27 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         this(new DefaultJavaFactory());
     }
 
-    public JavaInterface read(XMLStreamReader reader) throws ContributionReadException {
+    public JavaInterfaceContract read(XMLStreamReader reader) throws ContributionReadException {
         try {
+            
     
             // Read an <interface.java>
-            JavaInterface javaInterface = javaFactory.createJavaInterface();
-            javaInterface.setUnresolved(true);
-            javaInterface.setName(reader.getAttributeValue(null, INTERFACE));
+            JavaInterfaceContract javaInterfaceContract = javaFactory.createJavaInterfaceContract();
+            String interfaceName = reader.getAttributeValue(null, INTERFACE);
+            if (interfaceName != null) {
+                JavaInterface javaInterface = javaFactory.createJavaInterface();
+                javaInterface.setUnresolved(true);
+                javaInterface.setName(interfaceName);
+                javaInterfaceContract.setInterface(javaInterface);
+            }
+
+            String callbackInterfaceName = reader.getAttributeValue(null, CALLBACK_INTERFACE);
+            if (callbackInterfaceName != null) {
+                JavaInterface javaCallbackInterface = javaFactory.createJavaInterface();
+                javaCallbackInterface.setUnresolved(true);
+                javaCallbackInterface.setName(callbackInterfaceName);
+                javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
+            }
     
             // Skip to end element
             while (reader.hasNext()) {
@@ -63,19 +78,24 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                     break;
                 }
             }
-            return javaInterface;
+            return javaInterfaceContract;
             
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
     }
     
-    public void write(JavaInterface javaInterface, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(JavaInterfaceContract javaInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException {
         try {
             // Write an <interface.java>
             writer.writeStartElement(Constants.SCA10_NS, INTERFACE_JAVA);
+            JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
             if (javaInterface.getName() != null) {
                 writer.writeAttribute(INTERFACE, javaInterface.getName());
+            }
+            JavaInterface javaCallbackInterface = (JavaInterface)javaInterfaceContract.getCallbackInterface();
+            if (javaCallbackInterface.getName() != null) {
+                writer.writeAttribute(CALLBACK_INTERFACE, javaCallbackInterface.getName());
             }
             writer.writeEndElement();
             
@@ -84,11 +104,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         }
     }
     
-    public void resolve(JavaInterface model, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(JavaInterfaceContract model, ArtifactResolver resolver) throws ContributionResolveException {
         // TODO Auto-generated method stub
     }
     
-    public void wire(JavaInterface model) throws ContributionWireException {
+    public void wire(JavaInterfaceContract model) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
     
@@ -96,7 +116,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         return INTERFACE_JAVA_QNAME;
     }
     
-    public Class<JavaInterface> getModelType() {
-        return JavaInterface.class;
+    public Class<JavaInterfaceContract> getModelType() {
+        return JavaInterfaceContract.class;
     }
 }
