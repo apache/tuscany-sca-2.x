@@ -59,7 +59,7 @@ public class TestRuntimeContext {
             // Parse the composite file
             InputStream is = getClass().getClassLoader().getResourceAsStream(compositeFile);
             Composite composite = registry.read(is, Composite.class);
-            resolver.put(composite, composite);
+            resolver.add(composite);
             
             // Resolve and configure the composite
             compositeProcessor.resolve(composite, resolver);

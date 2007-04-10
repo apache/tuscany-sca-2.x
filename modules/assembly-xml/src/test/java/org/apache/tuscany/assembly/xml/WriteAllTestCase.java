@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.assembly.xml;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
@@ -54,7 +55,8 @@ public class WriteAllTestCase extends TestCase {
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = registry.read(is, Composite.class);
-        registry.write(composite, System.out);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        registry.write(composite, bos);
     }
 
     public void testReadWireWriteComposite() throws Exception {
@@ -62,7 +64,8 @@ public class WriteAllTestCase extends TestCase {
         Composite composite = registry.read(is, Composite.class);
         registry.resolve(composite, new DefaultArtifactResolver());
         registry.wire(composite);
-        registry.write(composite, System.out);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        registry.write(composite, bos);
     }
     
     public void testReadWriteComponentType() throws Exception {
@@ -70,7 +73,8 @@ public class WriteAllTestCase extends TestCase {
         ComponentType componentType = registry.read(is, ComponentType.class);
         registry.resolve(componentType, new DefaultArtifactResolver());
         registry.wire(componentType);
-        registry.write(componentType, System.out);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        registry.write(componentType, bos);
     }
 
     public void testReadWriteConstrainingType() throws Exception {
@@ -78,7 +82,8 @@ public class WriteAllTestCase extends TestCase {
         ConstrainingType constrainingType = registry.read(is, ConstrainingType.class);
         registry.resolve(constrainingType, new DefaultArtifactResolver());
         registry.wire(constrainingType);
-        registry.write(constrainingType, System.out);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        registry.write(constrainingType, bos);
     }
 
 }

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.binding.ws.xml;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
@@ -63,14 +64,16 @@ public class WriteTestCase extends TestCase {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         ComponentType componentType = registry.read(is, ComponentType.class);
         assertNotNull(componentType);
-        registry.write(componentType, System.out);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        registry.write(componentType, bos);
     }
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         Composite composite = registry.read(is, Composite.class);
         assertNotNull(composite);
-        registry.write(composite, System.out);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        registry.write(composite, bos);
     }
 
 }

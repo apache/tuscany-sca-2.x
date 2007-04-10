@@ -62,7 +62,7 @@ public class ResolveTestCase extends TestCase {
         ConstrainingType constrainingType = constrainingTypeReader.read(reader);
         is.close();
         assertNotNull(constrainingType);
-        resolver.put(constrainingType, constrainingType);
+        resolver.add(constrainingType);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
         CompositeProcessor compositeReader = new CompositeProcessor(registry);
@@ -86,7 +86,7 @@ public class ResolveTestCase extends TestCase {
         Composite nestedComposite = compositeReader.read(reader);
         is.close();
         assertNotNull(nestedComposite);
-        resolver.put(nestedComposite, nestedComposite);
+        resolver.add(nestedComposite);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
         compositeReader = new CompositeProcessor(registry);

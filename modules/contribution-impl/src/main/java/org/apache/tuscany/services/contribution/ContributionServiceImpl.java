@@ -269,7 +269,7 @@ public class ContributionServiceImpl implements ContributionService {
             Object model = this.artifactProcessor.read(artifactURL);
             
             if (model != null) {
-                ((DefaultArtifactResolver)artifactResolver).put(model,model);
+                artifactResolver.add(model);
                 
                 URI artifactURI = contribution.getUri().resolve(a);
                 DeployedArtifact artifact = new DeployedArtifact(artifactURI);

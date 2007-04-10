@@ -20,17 +20,20 @@
 package org.apache.tuscany.services.spi.contribution;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A default implementation of an artifact resolver, based on a map.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultArtifactResolver extends HashMap<Object, Object> implements ArtifactResolver {
+public class DefaultArtifactResolver implements ArtifactResolver {
     private static final long serialVersionUID = -7826976465762296634L;
+    
+    private Map<Object, Object> map = new HashMap<Object, Object>(); 
 
     public <T> T resolve(Class<T> modelClass, T unresolved) {
-        Object resolved = get(unresolved);
+        Object resolved = map.get(unresolved);
         if (resolved != null) {
             
             // If the resolved object is an artifact resolver then delegate the
@@ -54,7 +57,11 @@ public class DefaultArtifactResolver extends HashMap<Object, Object> implements 
     }
     
     public void add(Object resolved) {
-        super.put(resolved, resolved);
+        map.put(resolved, resolved);
+    }
+    
+    public Object remove(Object resolved) {
+        return map.remove(resolved);
     }
     
 }

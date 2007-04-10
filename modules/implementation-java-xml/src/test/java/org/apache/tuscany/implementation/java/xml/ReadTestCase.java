@@ -64,7 +64,7 @@ public class ReadTestCase extends TestCase {
 
         new CompositeUtil(composite).configure(null);
 
-        new PrintUtil(System.out).print(composite);
+        //new PrintUtil(System.out).print(composite);
     }
 
 }
