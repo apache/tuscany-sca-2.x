@@ -27,12 +27,14 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.impl.ServiceImpl;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspection.IntrospectionRegistry;
+import org.apache.tuscany.implementation.java.introspection.impl.IntrospectionRegistryImpl;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
@@ -48,6 +50,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
     public JavaImplementationProcessor(JavaImplementationFactory javaFactory) {
         this.javaFactory = javaFactory;
+        this.introspectionRegistry = new IntrospectionRegistryImpl();
     }
 
     public JavaImplementationProcessor() {
@@ -94,7 +97,16 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         try {
             Class javaClass = Class.forName(javaImplementation.getName(), true, Thread.currentThread().getContextClassLoader());
             javaImplementation.setJavaClass(javaClass);
-            introspectionRegistry.introspect(javaImplementation.getJavaClass(), (JavaImplementationDefinition)javaImplementation);
+            
+            //FIXME JavaImplementationDefinition should not be mandatory 
+            if (javaImplementation instanceof JavaImplementationDefinition) {
+                introspectionRegistry.introspect(javaImplementation.getJavaClass(), (JavaImplementationDefinition)javaImplementation);
+                
+                //FIXME the introspector should always create at least one service
+                if (javaImplementation.getServices().isEmpty()) {
+                    javaImplementation.getServices().add(new ServiceImpl());
+                }
+            }
         } catch (Exception e) {
             throw new ContributionResolveException(e);
         }

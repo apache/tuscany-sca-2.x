@@ -28,9 +28,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.integration.mock.MockFactory;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
@@ -38,59 +36,65 @@ import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 
 /**
- * Verifies start, continue and end conversation invocations are processed properly. Checks that a target instance is
- * properly instantiated and persisted in the store. Additionally verifies that invocations are dispatched to a target
- * instance, and that start, continue, and end operations are performed correctly. Finally, verfies that the target
- * instance is removed from the store when the conversation ends.
+ * Verifies conversational resources are cleaned up if the maximum age is exceeded
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 526852 $ $Date: 2007-04-09 10:47:45 -0700 (Mon, 09 Apr 2007) $
  */
-public abstract class ConversationStartStopEndTestCase extends AbstractConversationTestCase {
+public abstract class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCase {
     protected AtomicComponent target;
-    private FooImpl targetInstance;
     private JDKInvocationHandler handler;
+    private FooImpl targetInstance;
     private Method operation1;
     private Method operation2;
-    private Method endOperation;
+    private final Object mutex = new Object();
 
-    public void testConversationStartContinueEnd() throws Throwable {
-        workContext.setIdentifier(Scope.CONVERSATION, "12345A");
+    public void testConversationExpire() throws Throwable {
+/*
+        workContext.setIdentifier(org.apache.tuscany.spi.model.Scope.CONVERSATION, "12345A");
         // start the conversation
         handler.invoke(operation1, null);
         // verify the instance was persisted
         assertEquals(targetInstance, ((InstanceWrapper)store.readRecord(target, "12345A")).getInstance());
-        // continue the conversation
-        handler.invoke(operation2, null);
-        // verify the instance was persisted
-        assertEquals(targetInstance, ((InstanceWrapper)store.readRecord(target, "12345A")).getInstance());
-        // end the conversation
-        handler.invoke(endOperation, null);
-        workContext.clearIdentifier(Scope.CONVERSATION);
-        EasyMock.verify(targetInstance);
-        // verify the store has removed the instance
+        synchronized (mutex) {
+            mutex.wait(100);
+        }
+        // verify the instance was expired
         assertNull(store.readRecord(target, "12345A"));
+        // continue the conversation - should throw an error
+        try {
+            handler.invoke(operation2, null);
+            fail();
+        } catch (TargetNotFoundException e) {
+            // expected
+        }
+*/
     }
 
 
     protected void setUp() throws Exception {
         super.setUp();
         createRuntime();
+        store.setReaperInterval(10);
         initializeRuntime();
+
         targetInstance = EasyMock.createMock(FooImpl.class);
         targetInstance.operation1();
         targetInstance.operation2();
         targetInstance.end();
         EasyMock.replay(targetInstance);
-        // create target component mock
-        target = createAtomicComponent();
+        target = createTarget();
+        // create source component mock
+        JavaAtomicComponent source = EasyMock.createMock(JavaAtomicComponent.class);
+        EasyMock.expect(source.getUri()).andReturn(URI.create("source")).atLeastOnce();
+        EasyMock.replay(source);
+
         Wire wire = MockFactory.createWire("foo", Foo.class);
         for (InvocationChain chain : wire.getInvocationChains().values()) {
-            chain.setTargetInvoker(target.createTargetInvoker("foo", chain.getOperation(), false));
+            chain.setTargetInvoker(target.createTargetInvoker("target", chain.getOperation(), false));
         }
         handler = new JDKInvocationHandler(Foo.class, wire, workContext);
         operation1 = Foo.class.getMethod("operation1");
         operation2 = Foo.class.getMethod("operation2");
-        endOperation = Foo.class.getMethod("end");
     }
 
     protected void tearDown() throws Exception {
@@ -99,10 +103,12 @@ public abstract class ConversationStartStopEndTestCase extends AbstractConversat
         store.destroy();
     }
 
-    private JavaAtomicComponent createAtomicComponent() throws Exception {
+    private AtomicComponent createTarget() throws Exception {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName(new URI("target"));
-        configuration.setInstanceFactory(new MockPojoFactory(FooImpl.class.getConstructor()));
+        configuration.setMaxAge(50);
+        Constructor<FooImpl> ctor = FooImpl.class.getConstructor();
+        configuration.setInstanceFactory(new MockPojoFactory(ctor));
         configuration.setImplementationClass(FooImpl.class);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(container);
