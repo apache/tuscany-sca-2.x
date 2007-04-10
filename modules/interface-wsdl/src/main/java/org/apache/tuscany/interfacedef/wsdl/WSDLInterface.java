@@ -46,18 +46,6 @@ public interface WSDLInterface extends Interface {
     void setName(QName interfaceName);
     
     /**
-     * Sets the WSDL location. 
-     * @param location the WSDL location
-     */
-    void setLocation(String location);
-
-    /**
-     * Returns the WSDL location
-     * @return the WSDL location
-     */
-    String getLocation();
-    
-    /**
      * Returns the WSDL interface portType.
      * 
      * @return the WSDL interface portType

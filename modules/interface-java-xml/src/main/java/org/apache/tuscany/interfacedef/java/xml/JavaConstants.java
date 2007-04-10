@@ -27,6 +27,6 @@ public interface JavaConstants {
     String INTERFACE_JAVA = "interface.java";
     QName INTERFACE_JAVA_QNAME = new QName(Constants.SCA10_NS, "interface.java");
     String INTERFACE = "interface";
-    String CLASS = "class";
-
+    String CALLBACK_INTERFACE = "callbackInterface";
+    
 }
