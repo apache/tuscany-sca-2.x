@@ -42,6 +42,8 @@ import org.apache.tuscany.implementation.java.processor.ResourceProcessor;
 import org.apache.tuscany.implementation.java.processor.ScopeProcessor;
 import org.apache.tuscany.implementation.java.processor.ServiceProcessor;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
+import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
@@ -59,14 +61,17 @@ public class RuntimeJavaModuleActivator implements ModuleActivator {
         Map<Class, Object> map = new HashMap<Class, Object>();
         map.put(ProxyService.class, new JDKProxyService());
         map.put(IntrospectionRegistry.class, new IntrospectionRegistryImpl());
+        map.put(JavaInterfaceProcessorRegistry.class, new JavaInterfaceProcessorRegistryImpl());
         return map;
     }
-    
 
     /**
      * @see org.apache.tuscany.spi.bootstrap.ModuleActivator#start(org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry)
      */
     public void start(ExtensionPointRegistry registry) {
+        JavaInterfaceProcessorRegistry javaInterfaceProcessorRegistry = registry
+            .getExtensionPoint(JavaInterfaceProcessorRegistry.class);
+
         IntrospectionRegistry introspectionRegistry = registry.getExtensionPoint(IntrospectionRegistry.class);
         ImplementationProcessorExtension[] extensions = new ImplementationProcessorExtension[] {new ConstructorProcessor(),
                                                                                                 new AllowsPassByReferenceProcessor(),
@@ -85,11 +90,15 @@ public class RuntimeJavaModuleActivator implements ModuleActivator {
         };
         for (ImplementationProcessorExtension e : extensions) {
             e.setRegistry(introspectionRegistry);
+            e.setInterfaceProcessorRegistry(javaInterfaceProcessorRegistry);
             introspectionRegistry.registerProcessor(e);
         }
-        
-        StAXArtifactProcessorRegistry artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorRegistry.class);
-        artifactProcessorRegistry.addArtifactProcessor(new JavaImplementationProcessor());
+
+        StAXArtifactProcessorRegistry artifactProcessorRegistry = registry
+            .getExtensionPoint(StAXArtifactProcessorRegistry.class);
+        JavaImplementationProcessor javaImplementationProcessor = new JavaImplementationProcessor();
+        javaImplementationProcessor.setIntrospectionRegistry(introspectionRegistry);
+        artifactProcessorRegistry.addArtifactProcessor(javaImplementationProcessor);
 
         BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
         JavaComponentBuilder builder = new JavaComponentBuilder();
@@ -99,7 +108,6 @@ public class RuntimeJavaModuleActivator implements ModuleActivator {
         builderRegistry.register(JavaImplementation.class, builder);
 
     }
-    
 
     public void stop(ExtensionPointRegistry registry) {
     }

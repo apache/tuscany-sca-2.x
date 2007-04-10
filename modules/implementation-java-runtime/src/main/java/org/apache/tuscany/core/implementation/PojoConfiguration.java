@@ -72,7 +72,7 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
             .getDestroyMethod());
         injectionSites = new ArrayList<JavaElement>();
     }
-    
+
     public void setName(URI name) {
         this.name = name;
     }
@@ -90,11 +90,19 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
     }
 
     public EventInvoker<Object> getInitInvoker() {
-        return new MethodEventInvoker<Object>(definition.getInitMethod());
+        if (definition.getInitMethod() != null) {
+            return new MethodEventInvoker<Object>(definition.getInitMethod());
+        } else {
+            return null;
+        }
     }
 
     public EventInvoker<Object> getDestroyInvoker() {
-        return new MethodEventInvoker<Object>(definition.getDestroyMethod());
+        if (definition.getDestroyMethod() != null) {
+            return new MethodEventInvoker<Object>(definition.getDestroyMethod());
+        } else {
+            return null;
+        }
     }
 
     public ProxyService getProxyService() {
@@ -164,7 +172,7 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
                     throw new AssertionError(String.valueOf(element));
                 }
             } else {
-                injectors[i++] = createMultiplicityInjector(element, (List<ObjectFactory<?>>)factories);
+                injectors[i++] = createMultiplicityInjector(element, (List<ObjectFactory<?>>)obj);
             }
         }
         return injectors;

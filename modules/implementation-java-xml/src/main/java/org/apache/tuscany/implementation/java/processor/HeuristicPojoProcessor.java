@@ -587,7 +587,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
     }
 
     public org.apache.tuscany.assembly.Service createService(Class<?> interfaze) throws InvalidInterfaceException {
-        org.apache.tuscany.assembly.Service service = factory.createComponentService();
+        org.apache.tuscany.assembly.Service service = factory.createService();
         service.setName(interfaze.getSimpleName());
         interfaceProcessorRegistry.introspect(service, interfaze);
         Interface javaInterface = service.getInterface();

@@ -26,12 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.implementation.java.JavaImplementation;
+
 /**
  * A component type specialization for POJO implementations
  *
  * @version $$Rev$$ $$Date$$
  */
-public class JavaImplementationDefinition extends JavaImplementationImpl {
+public class JavaImplementationDefinition extends JavaImplementationImpl implements JavaImplementation {
     private ConstructorDefinition<?> constructorDefinition;
     private Map<Constructor, ConstructorDefinition> constructors = new HashMap<Constructor, ConstructorDefinition>();
     private Method initMethod;

@@ -43,6 +43,7 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.ServiceBinding;
@@ -58,6 +59,7 @@ import org.osoa.sca.annotations.EagerInit;
 public class BuilderRegistryImpl implements BuilderRegistry {
     private ScopeRegistry scopeRegistry;
     private ComponentManager componentManager;
+    private Map<SCAObject, Object> models = new HashMap<SCAObject, Object>();
 
     private final Map<Class<? extends Implementation>, ComponentBuilder> componentBuilders = new HashMap<Class<? extends Implementation>, ComponentBuilder>();
     private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
@@ -99,6 +101,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             throw new NoRegisteredBuilderException("No builder registered for implementation", name);
         }
         Component component = componentBuilder.build(componentDef, context);
+        models.put(component, componentDef);
         assert component != null;
         Map<String, Property> properties = new HashMap<String, Property>();
         for (Property p : componentDef.getProperties()) {
@@ -195,6 +198,13 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
         }
         return reference;
+    }
+
+    /**
+     * @return the models
+     */
+    public Map<SCAObject, Object> getModels() {
+        return models;
     }
 
 }

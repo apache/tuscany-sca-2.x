@@ -28,28 +28,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.api.annotation.Resource;
+import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
-import org.apache.tuscany.core.component.InstanceFactory;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
-import org.apache.tuscany.core.component.scope.ReflectiveInstanceWrapper;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.CallbackWireObjectFactory;
 import org.apache.tuscany.core.injection.ConversationIDObjectFactory;
-import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.processor.JavaIntrospectionHelper;
@@ -67,8 +61,6 @@ import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
 /**
  * Base implementation of an
@@ -207,6 +199,24 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
                 ObjectFactory<?> factory = new CallbackWireObjectFactory(element.getType(), proxyService, wires);
                 configuration.getInjectionSites().add(element);
                 configuration.setObjectFactory(element, factory);
+            }
+        }
+        for (Reference ref : configuration.getDefinition().getReferences()) {
+            JavaElement element = configuration.getDefinition().getReferenceMembers().get(ref.getName());
+            if (element != null) {
+                configuration.getInjectionSites().add(element);
+                List<Wire> wireList = wires.get(ref.getName());
+                if (ref.getMultiplicity() == Multiplicity.ONE_N || ref.getMultiplicity() == Multiplicity.ZERO_N) {
+                    List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
+                    for (int i = 0; i < wireList.size(); i++) {
+                        ObjectFactory<?> factory = createWireFactory(element.getType(), wireList.get(i));
+                        factories.add(factory);
+                    }
+                    configuration.setObjectFactories(element, factories);
+                } else {
+                    ObjectFactory<?> factory = createWireFactory(element.getType(), wireList.get(0));
+                    configuration.setObjectFactory(element, factory);
+                }
             }
         }
         super.start();

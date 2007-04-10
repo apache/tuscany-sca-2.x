@@ -146,7 +146,7 @@ public class CompositeUtil {
                 }
             }
             for (Reference reference : references.values()) {
-                if (!cservices.containsKey(reference.getName())) {
+                if (!creferences.containsKey(reference.getName())) {
                     ComponentReference componentReference = assemblyFactory.createComponentReference();
                     componentReference.setName(reference.getName());
                     componentReference.setReference(reference);
