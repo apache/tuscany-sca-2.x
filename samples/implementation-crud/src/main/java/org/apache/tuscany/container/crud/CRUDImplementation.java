@@ -20,10 +20,11 @@ package org.apache.tuscany.container.crud;
 
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 
 /**
@@ -40,11 +41,13 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
     }
 
     private ComponentService createService(Class<?> type) {
-        org.apache.tuscany.assembly.ComponentService service = new DefaultAssemblyFactory().createComponentService();
+        org.apache.tuscany.assembly.ComponentService service = new ComponentServiceImpl();
         service.setName(type.getSimpleName());
-        JavaInterface i = new JavaInterfaceImpl();
-        i.setJavaClass(type);
-        service.setInterface(i);
+        JavaInterface interfaze = new JavaInterfaceImpl();
+        interfaze.setJavaClass(type);
+        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        interfaceContract.setInterface(interfaze);
+        service.setInterfaceContract(interfaceContract);
         return service;
     }
 
