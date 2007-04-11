@@ -19,12 +19,9 @@
 
 package org.apache.tuscany.implementation.script;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 
 import javax.script.ScriptEngine;

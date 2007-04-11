@@ -21,6 +21,10 @@ package org.apache.tuscany.implementation.script;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -28,6 +32,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.ComponentType;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
@@ -49,9 +55,8 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
 
         try {
 
-            ScriptImplementation scriptImplementation = new ScriptImplementation();
-            scriptImplementation.setUnresolved(true);
-            scriptImplementation.setName(reader.getAttributeValue(null, SCRIPT));
+            String scriptName = reader.getAttributeValue(null, SCRIPT);
+            ScriptImplementation scriptImplementation = new ScriptImplementation(scriptName);
 
             // Skip to end element
             while (reader.hasNext()) {
@@ -59,11 +64,30 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
                     break;
                 }
             }
+
+            processComponentType(scriptImplementation);
+
             return scriptImplementation;
 
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
+    }
+
+    private void processComponentType(ScriptImplementation scriptImplementation) {
+        // Form the URI of the expected .componentType file;
+
+        String ctName = scriptImplementation.getName();
+        int lastDot = ctName.lastIndexOf('.');
+        ctName = ctName.substring(0, lastDot) + ".componentType";
+        
+        String uri = ctName;
+
+        // Create a ComponentType and mark it unresolved
+        ComponentType componentType = new DefaultAssemblyFactory().createComponentType();
+        componentType.setURI(uri);
+        componentType.setUnresolved(true);
+        scriptImplementation.setComponentType(componentType);
     }
 
     public void write(ScriptImplementation scriptImplementation, XMLStreamWriter writer) throws ContributionWriteException {
@@ -81,26 +105,14 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
     }
 
     public void resolve(ScriptImplementation scriptImplementation, ArtifactResolver resolver) throws ContributionResolveException {
-        try {
 
-            // TODO: implement
-            URL scriptSrcUrl = Thread.currentThread().getContextClassLoader().getResource(scriptImplementation.getName());
-//            Class javaClass = Class.forName(scriptImplementation.getName(), true, Thread.currentThread().getContextClassLoader());
-//            scriptImplementation.setJavaClass(javaClass);
-//            
-//            //FIXME JavaImplementationDefinition should not be mandatory 
-//            if (scriptImplementation instanceof ScriptImplementationDefinition) {
-//                introspectionRegistry.introspect(scriptImplementation.getJavaClass(), (ScriptImplementationDefinition)scriptImplementation);
-//                
-//                //FIXME the introspector should always create at least one service
-//                if (scriptImplementation.getServices().isEmpty()) {
-//                    scriptImplementation.getServices().add(new ServiceImpl());
-//                }
-//            }
+        scriptImplementation.setScriptSrc(readScript(scriptImplementation.getName()));
 
-        } catch (Exception e) {
-            throw new ContributionResolveException(e);
+        ComponentType componentType = resolver.resolve(ComponentType.class, scriptImplementation.getComponentType());
+        if (componentType.isUnresolved()) {
+            throw new ContributionResolveException("missing .componentType side file");
         }
+        scriptImplementation.setComponentType(componentType);
     }
 
     public void wire(ScriptImplementation model) throws ContributionWireException {
@@ -113,6 +125,43 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
 
     public Class<ScriptImplementation> getModelType() {
         return ScriptImplementation.class;
+    }
+
+    protected String readScript(String scriptName) throws ContributionResolveException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        URL scriptSrcUrl = cl.getResource(scriptName);
+        if (scriptSrcUrl == null) {
+            throw new ContributionResolveException("No script: " + scriptName);
+        }
+
+        InputStream is;
+        try {
+            is = scriptSrcUrl.openStream();
+        } catch (IOException e) {
+            throw new ContributionResolveException(e);
+        }
+
+        try {
+
+            Reader reader = new InputStreamReader(is, "UTF-8");
+            char[] buffer = new char[1024];
+            StringBuilder source = new StringBuilder();
+            int count;
+            while ((count = reader.read(buffer)) > 0) {
+                source.append(buffer, 0, count);
+            }
+
+            return source.toString();
+
+        } catch (IOException e) {
+            throw new ContributionResolveException(e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
     }
 
 }
