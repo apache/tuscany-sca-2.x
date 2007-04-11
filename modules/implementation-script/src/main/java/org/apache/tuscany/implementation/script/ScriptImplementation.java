@@ -18,8 +18,11 @@
  */
 package org.apache.tuscany.implementation.script;
 
+import java.util.List;
+
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 
 /**
@@ -54,6 +57,10 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
 
     public void setComponentType(ComponentType componentType) {
         this.componentType = componentType;
+    }
+
+    public List<Service> getServices() {
+        return componentType.getServices();
     }
 
     @Override
