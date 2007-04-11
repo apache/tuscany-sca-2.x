@@ -38,6 +38,9 @@ import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
+import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
+import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
+import org.apache.tuscany.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
 import org.apache.tuscany.services.contribution.ContributionPackageProcessorRegistryImpl;
 import org.apache.tuscany.services.contribution.ContributionRepositoryImpl;
 import org.apache.tuscany.services.contribution.ContributionServiceImpl;
@@ -45,7 +48,6 @@ import org.apache.tuscany.services.contribution.PackageTypeDescriberImpl;
 import org.apache.tuscany.services.contribution.processor.FolderContributionProcessor;
 import org.apache.tuscany.services.contribution.processor.JarContributionProcessor;
 import org.apache.tuscany.services.contribution.util.FileHelper;
-import org.apache.tuscany.services.spi.contribution.ArtifactResolverRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.ContributionRepository;
 import org.apache.tuscany.services.spi.contribution.ContributionService;
@@ -53,6 +55,7 @@ import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.services.spi.contribution.URLArtifactProcessorRegistry;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -112,21 +115,21 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
     public Component start() throws Exception {
         ExtensionPointRegistry extensionRegistry = new ExtensionPointRegistryImpl();
         ContributionRepository repository = new ContributionRepositoryImpl("target");
-        DefaultStAXArtifactProcessorRegistry registry = new DefaultStAXArtifactProcessorRegistry();
-        registry.addArtifactProcessor(new CompositeProcessor(registry));
-        registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
-        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
 
-        extensionRegistry.addExtensionPoint(StAXArtifactProcessorRegistry.class, registry);
+        DefaultStAXArtifactProcessorRegistry staxExtensionPoint = new DefaultStAXArtifactProcessorRegistry();
+        staxExtensionPoint.addArtifactProcessor(new CompositeProcessor(staxExtensionPoint));
+        staxExtensionPoint.addArtifactProcessor(new ComponentTypeProcessor(staxExtensionPoint));
+        staxExtensionPoint.addArtifactProcessor(new ConstrainingTypeProcessor(staxExtensionPoint));
+        staxExtensionPoint.addArtifactProcessor(new JavaInterfaceProcessor());
+        staxExtensionPoint.addArtifactProcessor(new WSDLInterfaceProcessor());
+        extensionRegistry.addExtensionPoint(StAXArtifactProcessorRegistry.class, staxExtensionPoint);
 
-        DefaultURLArtifactProcessorRegistry artifactRegistry = new DefaultURLArtifactProcessorRegistry();
-        CompositeDocumentProcessor compositeProcessor = new CompositeDocumentProcessor(registry);
-        ComponentTypeDocumentProcessor componentTypeProcessor = new ComponentTypeDocumentProcessor(registry);
-        ConstrainingTypeDocumentProcessor constrainingTypeProcessor = new ConstrainingTypeDocumentProcessor(registry);
-
-        artifactRegistry.addArtifactProcessor(compositeProcessor);
-        artifactRegistry.addArtifactProcessor(componentTypeProcessor);
-        artifactRegistry.addArtifactProcessor(constrainingTypeProcessor);
+        DefaultURLArtifactProcessorRegistry documentExtensionPoint = new DefaultURLArtifactProcessorRegistry();
+        documentExtensionPoint.addArtifactProcessor(new CompositeDocumentProcessor(staxExtensionPoint));
+        documentExtensionPoint.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxExtensionPoint));
+        documentExtensionPoint.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxExtensionPoint));
+        documentExtensionPoint.addArtifactProcessor(new WSDLDocumentProcessor());
+        extensionRegistry.addExtensionPoint(URLArtifactProcessorRegistry.class, documentExtensionPoint);
 
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         ContributionPackageProcessorRegistry pkgRegistry = new ContributionPackageProcessorRegistryImpl(describer);
@@ -136,7 +139,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
 
         ContributionService contributionService = 
-            new ContributionServiceImpl(repository, pkgRegistry, artifactRegistry, artifactResolver);
+            new ContributionServiceImpl(repository, pkgRegistry, documentExtensionPoint, artifactResolver);
 
         extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
         initialize(extensionRegistry, contributionService);
