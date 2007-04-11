@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Thrown when a suitable constructor for a component implementation cannot be found
  *
  * @version $Rev$ $Date$
  */
-public class NoConstructorException extends ProcessingException {
+public class NoConstructorException extends IntrospectionException {
     private static final long serialVersionUID = 3086706387280694424L;
     
     public NoConstructorException() {

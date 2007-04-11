@@ -26,13 +26,13 @@ package org.apache.tuscany.implementation.java.introspect;
 public interface JavaClassIntrospectorExtensionPoint extends JavaClassIntrospector {
 
     /**
-     * Registers the given processor and makes it available during assembly evaluation (i.e. build)
+     * Registers the given extension.
      */
-    void addExtension(JavaClassIntrospectorExtension processor);
+    void addExtension(JavaClassIntrospectorExtension extension);
 
     /**
-     * Deregisters the given processor
+     * Deregisters the given extension.
      */
-    void removeExtension(JavaClassIntrospectorExtension processor);
+    void removeExtension(JavaClassIntrospectorExtension extension);
 
 }

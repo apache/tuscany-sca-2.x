@@ -47,7 +47,7 @@ import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
@@ -55,6 +55,7 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Property;
@@ -76,12 +77,14 @@ import org.osoa.sca.annotations.Service;
  */
 public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
     private JavaFactory javaFactory;
+    private JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
 
-    public HeuristicPojoProcessor() {
+    public HeuristicPojoProcessor(JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+        this.interfaceIntrospector = interfaceIntrospector;
         this.javaFactory = new DefaultJavaFactory();
     }
 
-    public <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    public <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
         List<org.apache.tuscany.assembly.Service> services = type.getServices();
         if (services.isEmpty()) {
             // heuristically determine the service
@@ -111,12 +114,12 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
         evaluateConstructor(type, clazz);
     }
 
-    private void addService(JavaImplementationDefinition type, Class<?> clazz) throws ProcessingException {
+    private void addService(JavaImplementationDefinition type, Class<?> clazz) throws IntrospectionException {
         try {
             org.apache.tuscany.assembly.Service service = createService(clazz);
             type.getServices().add(service);
         } catch (InvalidInterfaceException e) {
-            throw new ProcessingException(e);
+            throw new IntrospectionException(e);
         }
     }
 
@@ -135,7 +138,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
     private <T> void calcPropRefs(Set<Method> methods,
                                   List<org.apache.tuscany.assembly.Service> services,
                                   JavaImplementationDefinition type,
-                                  Class<T> clazz) throws ProcessingException {
+                                  Class<T> clazz) throws IntrospectionException {
         // heuristically determine the properties references
         // make a first pass through all public methods with one param
         Set<String> setters = new HashSet<String>();
@@ -212,7 +215,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
      *             cannot be unambiguously mapped to references and properties
      */
     @SuppressWarnings("unchecked")
-    private <T> void evaluateConstructor(JavaImplementationDefinition type, Class<T> clazz) throws ProcessingException {
+    private <T> void evaluateConstructor(JavaImplementationDefinition type, Class<T> clazz) throws IntrospectionException {
         // determine constructor if one is not annotated
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
         Constructor constructor;
@@ -308,7 +311,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     private void heuristicParamNames(JavaImplementationDefinition type, Parameter[] parameters)
-        throws ProcessingException {
+        throws IntrospectionException {
         // heuristically determine refs and props from the parameter types
         for (Parameter p : parameters) {
             String name = p.getType().getSimpleName().toLowerCase();
@@ -496,7 +499,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
      * @param methods all methods in the class to examine
      */
     private void calculateServiceInterface(Class<?> clazz, JavaImplementationDefinition type, Set<Method> methods)
-        throws ProcessingException {
+        throws IntrospectionException {
         List<Method> nonPropRefMethods = new ArrayList<Method>();
         // Map<String, Service> services = type.getServices();
         Map<String, JavaElement> references = type.getReferenceMembers();
@@ -520,7 +523,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
                 try {
                     service = createService(interfaze);
                 } catch (InvalidInterfaceException e) {
-                    throw new ProcessingException(e);
+                    throw new IntrospectionException(e);
                 }
                 type.getServices().add(service);
             }
@@ -571,7 +574,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public org.apache.tuscany.assembly.Reference createReference(String name, Class<?> paramType)
-        throws ProcessingException {
+        throws IntrospectionException {
         org.apache.tuscany.assembly.Reference reference = factory.createReference();
         reference.setName(name);
         JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
@@ -585,12 +588,12 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
             }
             reference.setMultiplicity(Multiplicity.ZERO_ONE);
         } catch (InvalidInterfaceException e1) {
-            throw new ProcessingException(e1);
+            throw new IntrospectionException(e1);
         }
         try {
             processCallback(paramType, reference);
         } catch (InvalidServiceType e) {
-            throw new ProcessingException(e);
+            throw new IntrospectionException(e);
         }
         return reference;
     }

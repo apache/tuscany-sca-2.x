@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Scope;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.impl.ScopeProcessor;
 import org.easymock.EasyMock;
 
@@ -34,7 +34,7 @@ public class ScopeProcessorTestCase extends TestCase {
 
     Component parent;
 
-    public void testCompositeScope() throws ProcessingException {
+    public void testCompositeScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
@@ -43,7 +43,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(Scope.COMPOSITE, type.getScope());
     }
 
-    public void testSessionScope() throws ProcessingException {
+    public void testSessionScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
@@ -51,7 +51,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(Scope.SESSION, type.getScope());
     }
 
-    public void testConversationalScope() throws ProcessingException {
+    public void testConversationalScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
@@ -59,7 +59,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(Scope.CONVERSATION, type.getScope());
     }
 
-    public void testRequestScope() throws ProcessingException {
+    public void testRequestScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
@@ -67,7 +67,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(Scope.REQUEST, type.getScope());
     }
 
-    public void testSystemScope() throws ProcessingException {
+    public void testSystemScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
@@ -75,7 +75,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(Scope.SYSTEM, type.getScope());
     }
 
-    public void testStatelessScope() throws ProcessingException {
+    public void testStatelessScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
@@ -83,7 +83,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(Scope.STATELESS, type.getScope());
     }
 
-    public void testNoScope() throws ProcessingException {
+    public void testNoScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();

@@ -86,8 +86,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         Constructor<Mixed> ctor1 = Mixed.class.getConstructor(String.class, String.class, String.class);
         processor.visitConstructor(ctor1, type);
 
-        ReferenceProcessor referenceProcessor = new ReferenceProcessor();
-        referenceProcessor.setInterfaceVisitorExtensionPoint(new DefaultJavaInterfaceIntrospector());
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor(new DefaultJavaInterfaceIntrospector());
         PropertyProcessor propertyProcessor = new PropertyProcessor();
         Parameter[] parameters = type.getConstructorDefinition().getParameters();
         for (int i = 0; i < parameters.length; i++) {
@@ -159,8 +158,7 @@ public class ConstructorProcessorTestCase extends TestCase {
                                                                     Set.class,
                                                                     String[].class);
         processor.visitConstructor(ctor1, type);
-        ReferenceProcessor referenceProcessor = new ReferenceProcessor();
-        referenceProcessor.setInterfaceVisitorExtensionPoint(new DefaultJavaInterfaceIntrospector());
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor(new DefaultJavaInterfaceIntrospector());
         PropertyProcessor propertyProcessor = new PropertyProcessor();
         Parameter[] parameters = type.getConstructorDefinition().getParameters();
         for (int i = 0; i < parameters.length; i++) {

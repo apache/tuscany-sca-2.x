@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.impl.IllegalCallbackReferenceException;
 import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.interfacedef.InvalidCallbackException;
@@ -42,8 +42,7 @@ public class ServiceCallbackTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        processor = new ServiceProcessor();
-        processor.setInterfaceVisitorExtensionPoint(new DefaultJavaInterfaceIntrospector());
+        processor = new ServiceProcessor(new DefaultJavaInterfaceIntrospector());
     }
 
     public void testMethodCallbackInterface() throws Exception {
@@ -107,7 +106,7 @@ public class ServiceCallbackTestCase extends TestCase {
         try {
             processor.visitClass(BadFooImpl.class, type);
             fail();
-        } catch (ProcessingException e) {
+        } catch (IntrospectionException e) {
             // expected
             assertTrue(e.getCause() instanceof InvalidCallbackException);
         }

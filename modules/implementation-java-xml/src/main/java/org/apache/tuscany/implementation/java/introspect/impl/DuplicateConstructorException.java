@@ -20,7 +20,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Thrown when more than one component implementation constructor is annotated with {@link
@@ -28,7 +28,7 @@ import org.apache.tuscany.implementation.java.introspect.ProcessingException;
  *
  * @version $Rev$ $Date$
  */
-public class DuplicateConstructorException extends ProcessingException {
+public class DuplicateConstructorException extends IntrospectionException {
     private static final long serialVersionUID = -5926763756570552986L;
 
     public DuplicateConstructorException(String message) {

@@ -37,17 +37,17 @@ import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionH
  */
 public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtensionPoint {
 
-    private List<JavaClassIntrospectorExtension> processors = new ArrayList<JavaClassIntrospectorExtension>();
+    private List<JavaClassIntrospectorExtension> extensions = new ArrayList<JavaClassIntrospectorExtension>();
 
     public DefaultJavaClassIntrospector() {
     }
 
-    public void addExtension(JavaClassIntrospectorExtension processor) {
-        processors.add(processor);
+    public void addExtension(JavaClassIntrospectorExtension extension) {
+        extensions.add(extension);
     }
 
-    public void removeExtension(JavaClassIntrospectorExtension processor) {
-        processors.remove(processor);
+    public void removeExtension(JavaClassIntrospectorExtension extension) {
+        extensions.remove(extension);
     }
 
     /**
@@ -75,20 +75,20 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
      * </ol>
      */
     public JavaImplementationDefinition introspect(Class<?> clazz, JavaImplementationDefinition type)
-        throws ProcessingException {
-        for (JavaClassIntrospectorExtension processor : processors) {
-            processor.visitClass(clazz, type);
+        throws IntrospectionException {
+        for (JavaClassIntrospectorExtension extension : extensions) {
+            extension.visitClass(clazz, type);
         }
 
         for (Constructor<?> constructor : clazz.getConstructors()) {
-            for (JavaClassIntrospectorExtension processor : processors) {
-                processor.visitConstructor(constructor, type);
+            for (JavaClassIntrospectorExtension extension : extensions) {
+                extension.visitConstructor(constructor, type);
                 // Assuming the visitClass or visitConstructor will populate the
                 // type.getConstructors
                 ConstructorDefinition<?> definition = type.getConstructors().get(constructor);
                 if (definition != null) {
                     for (Parameter p : definition.getParameters()) {
-                        processor.visitConstructorParameter(p, type);
+                        extension.visitConstructorParameter(p, type);
                     }
                 }
             }
@@ -96,15 +96,15 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
 
         Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz);
         for (Method method : methods) {
-            for (JavaClassIntrospectorExtension processor : processors) {
+            for (JavaClassIntrospectorExtension processor : extensions) {
                 processor.visitMethod(method, type);
             }
         }
 
         Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz);
         for (Field field : fields) {
-            for (JavaClassIntrospectorExtension processor : processors) {
-                processor.visitField(field, type);
+            for (JavaClassIntrospectorExtension extension : extensions) {
+                extension.visitField(field, type);
             }
         }
 
@@ -113,16 +113,16 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
             visitSuperClass(superClass, type);
         }
 
-        for (JavaClassIntrospectorExtension processor : processors) {
-            processor.visitEnd(clazz, type);
+        for (JavaClassIntrospectorExtension extension : extensions) {
+            extension.visitEnd(clazz, type);
         }
         return type;
     }
 
-    private void visitSuperClass(Class<?> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    private void visitSuperClass(Class<?> clazz, JavaImplementationDefinition type) throws IntrospectionException {
         if (!Object.class.equals(clazz)) {
-            for (JavaClassIntrospectorExtension processor : processors) {
-                processor.visitSuperClass(clazz, type);
+            for (JavaClassIntrospectorExtension extension : extensions) {
+                extension.visitSuperClass(clazz, type);
             }
             clazz = clazz.getSuperclass();
             if (clazz != null) {

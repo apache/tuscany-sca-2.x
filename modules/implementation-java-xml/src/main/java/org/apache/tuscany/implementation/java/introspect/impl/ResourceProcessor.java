@@ -27,7 +27,7 @@ import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.impl.Resource;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Processes an {@link @Resource} annotation, updating the component type with
@@ -37,10 +37,7 @@ import org.apache.tuscany.implementation.java.introspect.ProcessingException;
  */
 public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
 
-    public ResourceProcessor() {
-    }
-
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
         org.apache.tuscany.api.annotation.Resource annotation = method
             .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (annotation == null) {
@@ -66,7 +63,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
         type.add(resource);
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
 
         org.apache.tuscany.api.annotation.Resource annotation = field
             .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
@@ -99,7 +96,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type)
-        throws ProcessingException {
+        throws IntrospectionException {
         org.apache.tuscany.api.annotation.Resource resourceAnnotation = parameter
             .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (resourceAnnotation != null) {

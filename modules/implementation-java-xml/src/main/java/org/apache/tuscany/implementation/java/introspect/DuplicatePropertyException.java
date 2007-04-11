@@ -23,7 +23,7 @@ package org.apache.tuscany.implementation.java.introspect;
  *
  * @version $Rev$ $Date$
  */
-public class DuplicatePropertyException extends ProcessingException {
+public class DuplicatePropertyException extends IntrospectionException {
     private static final long serialVersionUID = 5536415875694904037L;
 
     public DuplicatePropertyException(String message) {

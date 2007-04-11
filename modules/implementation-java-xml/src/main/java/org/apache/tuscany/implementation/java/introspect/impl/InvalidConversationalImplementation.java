@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Raised when an implementation specifies improper conversational metadata
  *
  * @version $Rev$ $Date$
  */
-public class InvalidConversationalImplementation extends ProcessingException {
+public class InvalidConversationalImplementation extends IntrospectionException {
     private static final long serialVersionUID = -5487291552769408149L;
 
     public InvalidConversationalImplementation(String message) {

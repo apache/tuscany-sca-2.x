@@ -31,7 +31,7 @@ import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 
 /**
@@ -42,12 +42,13 @@ import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
  */
 public abstract class AbstractPropertyProcessor<A extends Annotation> extends BaseJavaClassIntrospectorExtension {
     private final Class<A> annotationClass;
-
+    
+    
     protected AbstractPropertyProcessor(Class<A> annotationClass) {
         this.annotationClass = annotationClass;
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
         A annotation = method.getAnnotation(annotationClass);
         if (annotation == null) {
             return;
@@ -84,7 +85,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         properties.put(name, element);
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
 
         A annotation = field.getAnnotation(annotationClass);
         if (annotation == null) {
@@ -112,7 +113,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
     }
 
     public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type)
-        throws ProcessingException {
+        throws IntrospectionException {
 
         Map<String, JavaElement> properties = type.getPropertyMembers();
         A annotation = parameter.getAnnotation(annotationClass);
@@ -145,10 +146,10 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
 
     protected abstract String getName(A annotation);
 
-    protected abstract void initProperty(Property property, A annotation) throws ProcessingException;
+    protected abstract void initProperty(Property property, A annotation) throws IntrospectionException;
 
     @SuppressWarnings("unchecked")
-    protected  Property createProperty(String name, JavaElement element) throws ProcessingException {
+    protected  Property createProperty(String name, JavaElement element) throws IntrospectionException {
 
         Property property = factory.createProperty();
         property.setName(name);

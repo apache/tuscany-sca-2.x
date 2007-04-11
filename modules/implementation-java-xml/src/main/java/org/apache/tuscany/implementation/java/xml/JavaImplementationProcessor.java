@@ -46,15 +46,19 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
-    private JavaClassIntrospectorExtensionPoint introspectionRegistry;
+    private JavaClassIntrospectorExtensionPoint introspector;
 
-    public JavaImplementationProcessor(JavaImplementationFactory javaFactory) {
+    public JavaImplementationProcessor(JavaImplementationFactory javaFactory, JavaClassIntrospectorExtensionPoint introspector) {
         this.javaFactory = javaFactory;
-        this.introspectionRegistry = new DefaultJavaClassIntrospector();
+        this.introspector = introspector;
+    }
+
+    public JavaImplementationProcessor(JavaClassIntrospectorExtensionPoint introspector) {
+        this(new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()), introspector);
     }
 
     public JavaImplementationProcessor() {
-        this(new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()));
+        this(new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()), new DefaultJavaClassIntrospector());
     }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException {
@@ -100,7 +104,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
             
             //FIXME JavaImplementationDefinition should not be mandatory 
             if (javaImplementation instanceof JavaImplementationDefinition) {
-                introspectionRegistry.introspect(javaImplementation.getJavaClass(), (JavaImplementationDefinition)javaImplementation);
+                introspector.introspect(javaImplementation.getJavaClass(), (JavaImplementationDefinition)javaImplementation);
                 
                 //FIXME the introspector should always create at least one service
                 if (javaImplementation.getServices().isEmpty()) {
@@ -122,13 +126,6 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
     public Class<JavaImplementation> getModelType() {
         return JavaImplementation.class;
-    }
-
-    /**
-     * @param introspectionRegistry the introspectionRegistry to set
-     */
-    public void setIntrospectionRegistry(JavaClassIntrospectorExtensionPoint introspectionRegistry) {
-        this.introspectionRegistry = introspectionRegistry;
     }
 
     /**

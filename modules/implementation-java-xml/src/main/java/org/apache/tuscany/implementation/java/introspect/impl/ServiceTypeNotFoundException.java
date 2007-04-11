@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Thrown when a service interface cannot be determined based on a heuristic evaluation of an implementation
  *
  * @version $Rev$ $Date$
  */
-public class ServiceTypeNotFoundException extends ProcessingException {
+public class ServiceTypeNotFoundException extends IntrospectionException {
     private static final long serialVersionUID = -5124437274726947007L;
 
     public ServiceTypeNotFoundException(String message) {

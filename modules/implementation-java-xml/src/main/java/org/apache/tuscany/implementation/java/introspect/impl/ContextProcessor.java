@@ -25,7 +25,7 @@ import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
@@ -38,8 +38,8 @@ import org.osoa.sca.annotations.Context;
  * @version $Rev$ $Date$
  */
 public class ContextProcessor extends BaseJavaClassIntrospectorExtension {
-
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws ProcessingException {
+    
+    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
         if (method.getAnnotation(Context.class) == null) {
             return;
         }
@@ -59,7 +59,7 @@ public class ContextProcessor extends BaseJavaClassIntrospectorExtension {
         }
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
         if (field.getAnnotation(Context.class) == null) {
             return;
         }

@@ -93,8 +93,7 @@ public class ServiceProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
-        processor = new ServiceProcessor();
-        processor.setInterfaceVisitorExtensionPoint(introspector);
+        processor = new ServiceProcessor(introspector);
         type = new JavaImplementationDefinition();
     }
 

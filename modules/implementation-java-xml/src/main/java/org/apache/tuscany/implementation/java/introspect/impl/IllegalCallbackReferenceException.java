@@ -20,14 +20,14 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an illegcal use of {@link org.osoa.sca.annotations.Callback} on a reference
  *
  * @version $Rev$ $Date$
  */
-public class IllegalCallbackReferenceException extends ProcessingException {
+public class IllegalCallbackReferenceException extends IntrospectionException {
     private static final long serialVersionUID = -8932525723147700591L;
 
     public IllegalCallbackReferenceException(String message) {

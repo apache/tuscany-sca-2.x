@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an invalid usage of {@link org.osoa.sca.annotations.Property}
  *
  * @version $Rev$ $Date$
  */
-public class InvalidPropertyException extends ProcessingException {
+public class InvalidPropertyException extends IntrospectionException {
     private static final long serialVersionUID = -2682862652069727948L;
 
     public InvalidPropertyException(String message) {

@@ -45,10 +45,10 @@ public interface JavaClassIntrospectorExtension {
      * @param clazz the component implementation class
      * @param type the incomplete component type associated with the
      *            implementation class
-     * @throws ProcessingException if an error is encountered while processing
+     * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException;
+    <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException;
 
     /**
      * A callback received as the component implementation class hierarchy is
@@ -58,10 +58,10 @@ public interface JavaClassIntrospectorExtension {
      *            hierarchy
      * @param type the incomplete component type associated with the
      *            implementation class
-     * @throws ProcessingException if an error is encountered while processing
+     * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    <T> void visitSuperClass(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException;
+    <T> void visitSuperClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException;
 
     /**
      * A callback received as the component implementation's public and
@@ -70,10 +70,10 @@ public interface JavaClassIntrospectorExtension {
      * @param method the current public or protected method being evaluated
      * @param type the incomplete component type associated with the
      *            implementation class
-     * @throws ProcessingException if an error is encountered while processing
+     * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    void visitMethod(Method method, JavaImplementationDefinition type) throws ProcessingException;
+    void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException;
 
     /**
      * A callback received as the component implementation's constructor used
@@ -86,17 +86,17 @@ public interface JavaClassIntrospectorExtension {
      *            implementation instances
      * @param type the incomplete component type associated with the
      *            implementation class
-     * @throws ProcessingException if an error is encountered while processing
+     * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    <T> void visitConstructor(Constructor<T> constructor, JavaImplementationDefinition type) throws ProcessingException;
+    <T> void visitConstructor(Constructor<T> constructor, JavaImplementationDefinition type) throws IntrospectionException;
 
     /**
      * @param parameter
      * @param type
-     * @throws ProcessingException
+     * @throws IntrospectionException
      */
-    void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type) throws ProcessingException;
+    void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type) throws IntrospectionException;
 
     /**
      * A callback received as the component implementation's public and
@@ -105,10 +105,10 @@ public interface JavaClassIntrospectorExtension {
      * @param field the current public or protected field being evaluated
      * @param type the incomplete component type associated with the
      *            implementation class
-     * @throws ProcessingException if an error is encountered while processing
+     * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    void visitField(Field field, JavaImplementationDefinition type) throws ProcessingException;
+    void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException;
 
     /**
      * The final callback received when all other callbacks during evaluation of
@@ -117,9 +117,9 @@ public interface JavaClassIntrospectorExtension {
      * @param clazz the component implementation class
      * @param type the incomplete component type associated with the
      *            implementation class
-     * @throws ProcessingException if an error is encountered while processing
+     * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException;
+    <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException;
 
 }

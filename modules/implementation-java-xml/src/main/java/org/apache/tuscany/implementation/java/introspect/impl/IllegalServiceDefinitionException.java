@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an illegal use of the {@link @org.osoa.sca.annotations.Service} annotation
  *
  * @version $Rev$ $Date$
  */
-public class IllegalServiceDefinitionException extends ProcessingException {
+public class IllegalServiceDefinitionException extends IntrospectionException {
     private static final long serialVersionUID = -7151534258405092548L;
 
     public IllegalServiceDefinitionException(String message) {

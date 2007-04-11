@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Property;
@@ -47,11 +47,10 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
 
     public HeuristicPojoProcessorTestCase() {
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
-        processor = new org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor();
-        processor.setInterfaceVisitorExtensionPoint(introspector);
+        processor = new HeuristicPojoProcessor(introspector);
     }
 
-    private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
         for (Constructor<T> constructor : clazz.getConstructors()) {
             visitConstructor(constructor, type);
         }
@@ -158,7 +157,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertEquals(0, type.getProperties().size());
     }
 
-    public void testParentInterface() throws ProcessingException, NoSuchMethodException {
+    public void testParentInterface() throws IntrospectionException, NoSuchMethodException {
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         Constructor<Child> ctor = Child.class.getConstructor();
         type.setConstructorDefinition(new ConstructorDefinition<Child>(ctor));
@@ -192,7 +191,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertEquals(1, type.getServices().size());
     }
 
-    public void testProtectedRemotableRefField() throws ProcessingException, NoSuchMethodException {
+    public void testProtectedRemotableRefField() throws IntrospectionException, NoSuchMethodException {
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         Constructor<ProtectedRemotableRefFieldImpl> ctor = ProtectedRemotableRefFieldImpl.class.getConstructor();
         type.setConstructorDefinition(new ConstructorDefinition<ProtectedRemotableRefFieldImpl>(ctor));
@@ -200,7 +199,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertNotNull(ModelHelper.getReference(type, "otherRef"));
     }
 
-    public void testProtectedRemotableRefMethod() throws ProcessingException, NoSuchMethodException {
+    public void testProtectedRemotableRefMethod() throws IntrospectionException, NoSuchMethodException {
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         Constructor<ProtectedRemotableRefMethodImpl> ctor = ProtectedRemotableRefMethodImpl.class.getConstructor();
         type.setConstructorDefinition(new ConstructorDefinition<ProtectedRemotableRefMethodImpl>(ctor));

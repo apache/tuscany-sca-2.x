@@ -34,9 +34,9 @@ public interface JavaClassIntrospector {
      * @param clazz the component implementation class
      * @param type the component type associated with the implementation class
      * @return the updated component type
-     * @throws ProcessingException if an error is encountered evaluating the
+     * @throws IntrospectionException if an error is encountered evaluating the
      *             implementation class
      */
-    JavaImplementationDefinition introspect(Class<?> clazz, JavaImplementationDefinition type) throws ProcessingException;
+    JavaImplementationDefinition introspect(Class<?> clazz, JavaImplementationDefinition type) throws IntrospectionException;
 
 }

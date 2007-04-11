@@ -25,27 +25,27 @@ import java.lang.reflect.Member;
  * 
  * @version $Rev$ $Date$
  */
-public class ProcessingException extends Exception {
+public class IntrospectionException extends Exception {
     private static final long serialVersionUID = -361025119035104470L;
     private Member member;
 
-    public ProcessingException() {
+    public IntrospectionException() {
     }
 
-    public ProcessingException(String message) {
+    public IntrospectionException(String message) {
         super(message);
     }
 
-    public ProcessingException(String message, Member member) {
+    public IntrospectionException(String message, Member member) {
         super(message);
         this.member = member;
     }
 
-    public ProcessingException(String message, Throwable cause) {
+    public IntrospectionException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ProcessingException(Throwable cause) {
+    public IntrospectionException(Throwable cause) {
         super(cause);
     }
 

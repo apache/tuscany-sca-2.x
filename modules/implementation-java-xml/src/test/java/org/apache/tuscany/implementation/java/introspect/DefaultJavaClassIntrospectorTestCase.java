@@ -35,28 +35,28 @@ import org.easymock.EasyMock;
 public class DefaultJavaClassIntrospectorTestCase extends TestCase {
 
     public void testRegister() throws Exception {
-        DefaultJavaClassIntrospector registry = new DefaultJavaClassIntrospector();
-        JavaClassIntrospectorExtension processor = EasyMock.createNiceMock(JavaClassIntrospectorExtension.class);
-        registry.addExtension(processor);
+        DefaultJavaClassIntrospector introspector = new DefaultJavaClassIntrospector();
+        JavaClassIntrospectorExtension extension = EasyMock.createNiceMock(JavaClassIntrospectorExtension.class);
+        introspector.addExtension(extension);
     }
 
     public void testUnegister() throws Exception {
-        DefaultJavaClassIntrospector registry = new DefaultJavaClassIntrospector();
-        JavaClassIntrospectorExtension processor = EasyMock.createNiceMock(JavaClassIntrospectorExtension.class);
-        registry.addExtension(processor);
-        registry.removeExtension(processor);
+        DefaultJavaClassIntrospector introspector = new DefaultJavaClassIntrospector();
+        JavaClassIntrospectorExtension extension = EasyMock.createNiceMock(JavaClassIntrospectorExtension.class);
+        introspector.addExtension(extension);
+        introspector.removeExtension(extension);
     }
 
     @SuppressWarnings("unchecked")
     public void testWalk() throws Exception {
-        DefaultJavaClassIntrospector registry = new DefaultJavaClassIntrospector();
-        JavaClassIntrospectorExtension processor = EasyMock.createMock(JavaClassIntrospectorExtension.class);
-        processor.visitClass(EasyMock.eq(Bar.class), EasyMock.isA(JavaImplementationDefinition.class));
-        processor.visitConstructor(EasyMock.isA(Constructor.class), EasyMock.isA(JavaImplementationDefinition.class));
-        processor.visitMethod(EasyMock.isA(Method.class), EasyMock.isA(JavaImplementationDefinition.class));
-        processor.visitField(EasyMock.isA(Field.class), EasyMock.isA(JavaImplementationDefinition.class));
-        processor.visitSuperClass(EasyMock.isA(Class.class), EasyMock.isA(JavaImplementationDefinition.class));
-        processor.visitEnd(EasyMock.isA(Class.class), EasyMock.isA(JavaImplementationDefinition.class));
+        DefaultJavaClassIntrospector introspector = new DefaultJavaClassIntrospector();
+        JavaClassIntrospectorExtension extension = EasyMock.createMock(JavaClassIntrospectorExtension.class);
+        extension.visitClass(EasyMock.eq(Bar.class), EasyMock.isA(JavaImplementationDefinition.class));
+        extension.visitConstructor(EasyMock.isA(Constructor.class), EasyMock.isA(JavaImplementationDefinition.class));
+        extension.visitMethod(EasyMock.isA(Method.class), EasyMock.isA(JavaImplementationDefinition.class));
+        extension.visitField(EasyMock.isA(Field.class), EasyMock.isA(JavaImplementationDefinition.class));
+        extension.visitSuperClass(EasyMock.isA(Class.class), EasyMock.isA(JavaImplementationDefinition.class));
+        extension.visitEnd(EasyMock.isA(Class.class), EasyMock.isA(JavaImplementationDefinition.class));
 
         // mock.expects(once()).method("visitClass");
         // mock.expects(once()).method("visitMethod");
@@ -64,10 +64,10 @@ public class DefaultJavaClassIntrospectorTestCase extends TestCase {
         // mock.expects(once()).method("visitConstructor");
         // mock.expects(once()).method("visitSuperClass");
         // mock.expects(once()).method("visitEnd");
-        EasyMock.replay(processor);
-        registry.addExtension(processor);
-        registry.introspect(Bar.class, new JavaImplementationDefinition());
-        EasyMock.verify(processor);
+        EasyMock.replay(extension);
+        introspector.addExtension(extension);
+        introspector.introspect(Bar.class, new JavaImplementationDefinition());
+        EasyMock.verify(extension);
     }
 
     protected void setUp() throws Exception {

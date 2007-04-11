@@ -20,14 +20,14 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an illegal resource definition in a component type
  *
  * @version $Rev$ $Date$
  */
-public class IllegalResourceException extends ProcessingException {
+public class IllegalResourceException extends IntrospectionException {
     private static final long serialVersionUID = -1100936539412435579L;
 
     public IllegalResourceException(String message) {

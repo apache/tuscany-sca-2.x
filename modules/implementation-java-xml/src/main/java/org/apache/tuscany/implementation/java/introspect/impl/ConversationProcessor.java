@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
@@ -37,8 +37,8 @@ public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
     private static final String HOURS = " HOURS";
     private static final String DAYS = " DAYS";
     private static final String YEARS = " YEARS";
-
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    
+    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
 
         ConversationAttributes conversation = clazz.getAnnotation(ConversationAttributes.class);
         if (conversation == null) {
@@ -81,7 +81,7 @@ public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public void visitMethod(Method method,
-                            JavaImplementationDefinition type) throws ProcessingException {
+                            JavaImplementationDefinition type) throws IntrospectionException {
         ConversationID conversationID = method.getAnnotation(ConversationID.class);
         if (conversationID == null) {
             return;
@@ -90,7 +90,7 @@ public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public void visitField(Field field,
-                           JavaImplementationDefinition type) throws ProcessingException {
+                           JavaImplementationDefinition type) throws IntrospectionException {
         ConversationID conversationID = field.getAnnotation(ConversationID.class);
         if (conversationID == null) {
             return;

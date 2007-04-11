@@ -20,14 +20,14 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an illegal signature for a method decorated with {@link org.osoa.sca.annotations.Context}
  *
  * @version $Rev$ $Date$
  */
-public class IllegalContextException extends ProcessingException {
+public class IllegalContextException extends IntrospectionException {
     private static final long serialVersionUID = -6946383136750117008L;
 
     public IllegalContextException(String message) {

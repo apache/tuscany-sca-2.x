@@ -26,11 +26,6 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
 
 /**
  * A convenience class for annotation processors which alleviates the need to
@@ -38,64 +33,31 @@ import org.osoa.sca.annotations.Reference;
  * 
  * @version $Rev$ $Date$
  */
-@EagerInit
 public abstract class BaseJavaClassIntrospectorExtension implements JavaClassIntrospectorExtension {
     protected AssemblyFactory factory;
-    protected JavaClassIntrospectorExtensionPoint registry;
-    protected JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
-
-    public BaseJavaClassIntrospectorExtension() {
-        super();
-        this.factory = new DefaultAssemblyFactory();
-    }
     
-    /**
-     * @param registry
-     */
-    public BaseJavaClassIntrospectorExtension(JavaClassIntrospectorExtensionPoint registry) {
-        super();
-        this.registry = registry;
+    public BaseJavaClassIntrospectorExtension() {
         this.factory = new DefaultAssemblyFactory();
     }
 
-    @Reference
-    public void setRegistry(JavaClassIntrospectorExtensionPoint registry) {
-        this.registry = registry;
+    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
     }
 
-    @Reference
-    public void setInterfaceVisitorExtensionPoint(JavaInterfaceIntrospectorExtensionPoint interfaceIntrospectorExtensionPoint) {
-        this.interfaceIntrospector = interfaceIntrospectorExtensionPoint;
+    public <T> void visitSuperClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
     }
 
-    @Init
-    public void init() {
-        registry.addExtension(this);
+    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
     }
 
-    @Destroy
-    public void destroy() {
-        registry.removeExtension(this);
+    public <T> void visitConstructor(Constructor<T> constructor, JavaImplementationDefinition type) throws IntrospectionException {
     }
 
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
     }
 
-    public <T> void visitSuperClass(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    public <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws ProcessingException {
-    }
-
-    public <T> void visitConstructor(Constructor<T> constructor, JavaImplementationDefinition type) throws ProcessingException {
-    }
-
-    public void visitField(Field field, JavaImplementationDefinition type) throws ProcessingException {
-    }
-
-    public <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
-    }
-
-    public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type) throws IntrospectionException {
     }
 }

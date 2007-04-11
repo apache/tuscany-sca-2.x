@@ -20,14 +20,14 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an illegal signature for a method decorated with {@link org.osoa.sca.annotations.Destroy}
  *
  * @version $Rev$ $Date$
  */
-public class IllegalDestructorException extends ProcessingException {
+public class IllegalDestructorException extends IntrospectionException {
     private static final long serialVersionUID = 365719353107446326L;
 
     public IllegalDestructorException(String message) {

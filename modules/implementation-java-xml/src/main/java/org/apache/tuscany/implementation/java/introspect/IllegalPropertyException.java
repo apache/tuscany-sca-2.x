@@ -25,7 +25,7 @@ import java.lang.reflect.Member;
  * 
  * @version $Rev$ $Date$
  */
-public class IllegalPropertyException extends ProcessingException {
+public class IllegalPropertyException extends IntrospectionException {
     private static final long serialVersionUID = -2836849110706758494L;
 
     public IllegalPropertyException(String message) {

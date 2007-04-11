@@ -21,7 +21,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Scope;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Processes the {@link Scope} annotation and updates the component type with the corresponding implmentation scope
@@ -29,10 +29,10 @@ import org.apache.tuscany.implementation.java.introspect.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class ScopeProcessor extends BaseJavaClassIntrospectorExtension {
-
+    
     public <T> void visitClass(Class<T> clazz,
                                JavaImplementationDefinition type)
-        throws ProcessingException {
+        throws IntrospectionException {
         org.osoa.sca.annotations.Scope annotation = clazz.getAnnotation(org.osoa.sca.annotations.Scope.class);
         if (annotation == null) {
             type.setScope(Scope.STATELESS);
