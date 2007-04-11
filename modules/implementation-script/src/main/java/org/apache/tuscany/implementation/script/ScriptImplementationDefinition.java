@@ -26,6 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
+import org.apache.tuscany.implementation.java.impl.JavaElement;
+import org.apache.tuscany.implementation.java.impl.Resource;
+import org.apache.tuscany.spi.Scope;
+
 /**
  * A component type specialization for POJO implementations
  *
