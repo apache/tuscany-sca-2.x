@@ -19,16 +19,16 @@
 -->
 <project>
 
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apache.tuscany.sca.script</groupId>
-        <artifactId>parent</artifactId>
-        <version>2.0-alpha2-incubating-SNAPSHOT</version>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>container-jsr223</artifactId>
-    <name>Apache Tuscany Script Container using JSR-223</name>
-    <description>Apache Tuscany Script Container using JSR-223</description>
+    <artifactId>tuscany-implementation-script</artifactId>
+    <name>Apache Tuscany Implementation for Script Language Components</name>
 
     <repositories>
        <!-- This is reqquired for Jython as 2.2 Beta1 hasn't made it to the maven repos yet -->
@@ -42,12 +42,40 @@
     </repositories>
 
     <dependencies>
-
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
-            <version>2.0-alpha2-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
