@@ -37,6 +37,7 @@
             </activation>
             <modules>
                 <module>calculator</module>
+                <module>implementation-crud</module>
             </modules>
         </profile>
 
