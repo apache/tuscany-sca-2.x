@@ -28,11 +28,15 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultXMLSchemaRegistry;
+import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
@@ -43,13 +47,15 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
+    private WSDLInterfaceIntrospector wsdlIntrospector;
 
-    public WSDLInterfaceProcessor(WSDLFactory wsdlFactory) {
+    public WSDLInterfaceProcessor(WSDLFactory wsdlFactory, WSDLInterfaceIntrospector wsdlIntrospector) {
         this.wsdlFactory = wsdlFactory;
+        this.wsdlIntrospector = wsdlIntrospector;
     }
     
     public WSDLInterfaceProcessor() {
-        this(new DefaultWSDLFactory());
+        this(new DefaultWSDLFactory(), new DefaultWSDLInterfaceIntrospector(new DefaultXMLSchemaRegistry()));
     }
 
     /**
@@ -143,7 +149,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         }
     }
     
-    private WSDLInterface resolveWSDLInterface(WSDLInterface wsdlInterface, ArtifactResolver resolver) {
+    private WSDLInterface resolveWSDLInterface(WSDLInterface wsdlInterface, ArtifactResolver resolver) throws ContributionResolveException {
         
         if (wsdlInterface != null && wsdlInterface.isUnresolved()) {
 
@@ -160,15 +166,13 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                     PortType portType = wsdlDefinition.getDefinition().getPortType(wsdlInterface.getName());
                     if (portType != null) {
                         
-                        // Add the resolved WSDL interface to the resolver
-                        // so that it's found next time
-                        wsdlInterface.setPortType(portType);
-                        
-                        // Introspect the WSDL portType and populate the interface and
-                        // operations
-                        //FIXME
-                        
-                        wsdlInterface.setUnresolved(false);
+                        // Introspect the WSDL portType and add the resulting
+                        // WSDLInterface to the resolver
+                        try {
+                            wsdlInterface = wsdlIntrospector.introspect(portType);
+                        } catch (InvalidInterfaceException e) {
+                            throw new ContributionResolveException(e);
+                        }
                         resolver.add(wsdlInterface);
                     }
                 }
