@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.contribution.Contribution;
 
 /**
  * @version $Rev$ $Date$

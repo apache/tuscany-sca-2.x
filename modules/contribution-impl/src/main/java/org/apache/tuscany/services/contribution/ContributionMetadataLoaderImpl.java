@@ -27,8 +27,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.model.ContributionImport;
+import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.services.spi.contribution.loader.ContributionMetadataLoader;
 import org.apache.tuscany.services.spi.contribution.loader.ContributionMetadataLoaderException;
 

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.services.contribution.model;
+package org.apache.tuscany.contribution;
 
 public interface ContentType {
     /**

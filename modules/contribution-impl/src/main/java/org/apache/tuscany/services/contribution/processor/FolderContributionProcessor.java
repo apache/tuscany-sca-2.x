@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.services.contribution.model.ContentType;
+import org.apache.tuscany.contribution.ContentType;
 import org.apache.tuscany.services.contribution.util.FileHelper;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;

@@ -24,7 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.tuscany.services.contribution.model.Contribution;
+import org.apache.tuscany.contribution.Contribution;
 
 
 /**
