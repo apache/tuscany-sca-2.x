@@ -24,8 +24,10 @@ import java.io.InputStream;
 import java.net.URL;
 
 import javax.wsdl.Definition;
+import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionRegistry;
+import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 
@@ -39,6 +41,10 @@ import org.apache.tuscany.services.spi.contribution.ContributionRuntimeException
 import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.resolver.URIResolver;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 /**
@@ -52,7 +58,10 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     private ExtensionRegistry wsdlExtensionRegistry;
     private WSDLFactory factory;
 
-    public class WSDLLocatorImpl implements WSDLLocator {
+    /**
+     * Implementation of a WSDL locator.
+     */
+    private class WSDLLocatorImpl implements WSDLLocator {
         private InputStream inputStream;
         private URL base;
         private String latestImportURI;
@@ -89,6 +98,23 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
 
     }
 
+    /**
+     * URI resolver implementation for xml schema
+     */
+    private class URIResolverImpl implements URIResolver {
+
+        public org.xml.sax.InputSource resolveEntity(java.lang.String targetNamespace,
+                                                     java.lang.String schemaLocation,
+                                                     java.lang.String baseUri) {
+            try {
+                URL url = new URL(new URL(baseUri), schemaLocation);
+                return new InputSource(url.openStream());
+            } catch (IOException e) {
+                return null;
+            }
+        }
+    }
+
     public WSDLDocumentProcessor(WSDLFactory factory, javax.wsdl.factory.WSDLFactory wsdlFactory) {
         this.factory = factory;
         
@@ -123,6 +149,20 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
             
             WSDLDefinition wsdlDefinition = factory.createWSDLDefinition();
             wsdlDefinition.setDefinition(definition);
+            
+            // Read inline schemas 
+            Types types = definition.getTypes();
+            if (types != null) {
+                XmlSchemaCollection collection = new XmlSchemaCollection();
+                collection.setSchemaResolver(new URIResolverImpl());
+                for (Object ext : types.getExtensibilityElements()) {
+                    if (ext instanceof Schema) {
+                        Element element = ((Schema)ext).getElement();
+                        XmlSchema s = collection.read(element, element.getBaseURI());
+                        wsdlDefinition.getInlinedSchemas().add(s);
+                    }
+                }
+            }
             
             return wsdlDefinition;
             

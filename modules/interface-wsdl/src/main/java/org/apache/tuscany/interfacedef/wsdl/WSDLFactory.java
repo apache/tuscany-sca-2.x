@@ -40,6 +40,13 @@ public interface WSDLFactory {
     WSDLDefinition createWSDLDefinition();
     
     /**
+     * Creates a new XML Schema definition.
+     * 
+     * @return a new XML Schema definition
+     */
+    XSDefinition createXSDefinition();
+    
+    /**
      * Creates a new WSDL interface contract.
      * 
      * @return
