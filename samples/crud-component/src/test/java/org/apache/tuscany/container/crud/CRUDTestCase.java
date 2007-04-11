@@ -17,35 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.api;
+package org.apache.tuscany.container.crud;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.crud.CRUD;
+import org.apache.tuscany.api.SCARuntime;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 525225 $ $Date: 2007-04-03 11:08:56 -0700 (Tue, 03 Apr 2007) $
  */
-public class SCARuntimeTestCase extends TestCase {
+public class CRUDTestCase extends TestCase {
+    private CRUD crudService;
+    
     /**
      * @throws java.lang.Exception
      */
     protected void setUp() throws Exception {
         SCARuntime.start("crud.composite");
-    }
-
-    public void testStart() throws Exception {
         ComponentContext context = SCARuntime.getComponentContext("CRUDServiceComponent");
         assertNotNull(context);
         ServiceReference<CRUD> self = context.createSelfReference(CRUD.class);
-        CRUD service = self.getService();
-        String id = service.create("ABC");
-        Object result = service.retrieve(id);
-        assertEquals("ABC", result);
-        service.update(id, "EFG");
-        service.delete(id);
+        crudService = self.getService();
+
     }
 
     /**
@@ -54,5 +49,19 @@ public class SCARuntimeTestCase extends TestCase {
     protected void tearDown() throws Exception {
         SCARuntime.stop();
     }
+
+    
+    public void testCRUD() throws Exception {
+        String id = crudService.create("ABC");
+        Object result = crudService.retrieve(id);
+        assertEquals("ABC", result);
+        crudService.update(id, "EFG");
+        result = crudService.retrieve(id);
+        assertEquals("EFG", result);
+        crudService.delete(id);
+        result = crudService.retrieve(id);
+        assertNull(result);
+    }
+
 
 }
