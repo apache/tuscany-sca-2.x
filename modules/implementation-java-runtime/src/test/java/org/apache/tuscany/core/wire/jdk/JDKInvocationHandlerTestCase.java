@@ -30,8 +30,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.core.component.SimpleWorkContext;
-import org.apache.tuscany.core.implementation.PojoWorkContextTunnel;
 import org.apache.tuscany.core.implementation.java.ModelHelper;
+import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.interfacedef.DataType;

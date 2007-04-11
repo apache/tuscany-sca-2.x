@@ -37,6 +37,7 @@ import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
