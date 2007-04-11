@@ -30,6 +30,8 @@ import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
@@ -38,8 +40,6 @@ import org.apache.tuscany.services.contribution.ContributionPackageProcessorRegi
 import org.apache.tuscany.services.contribution.ContributionRepositoryImpl;
 import org.apache.tuscany.services.contribution.ContributionServiceImpl;
 import org.apache.tuscany.services.contribution.PackageTypeDescriberImpl;
-import org.apache.tuscany.services.contribution.model.Contribution;
-import org.apache.tuscany.services.contribution.model.DeployedArtifact;
 import org.apache.tuscany.services.contribution.processor.FolderContributionProcessor;
 import org.apache.tuscany.services.contribution.processor.JarContributionProcessor;
 import org.apache.tuscany.services.contribution.util.FileHelper;

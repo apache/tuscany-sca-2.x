@@ -22,7 +22,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.services.contribution.model.ContentType;
+import org.apache.tuscany.contribution.ContentType;
 
 public class ContentTypeDescriberImplTestCase extends TestCase {
     private ArtifactTypeDescriberImpl contentTypeDescriber;

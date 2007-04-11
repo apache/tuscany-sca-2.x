@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.apache.tuscany.services.contribution.model.ContentType;
+import org.apache.tuscany.contribution.ContentType;
 import org.apache.tuscany.services.spi.contribution.ContributionException;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessor;
 import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
