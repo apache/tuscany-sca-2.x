@@ -28,39 +28,33 @@ import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.impl.WSDLInterfaceImpl;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
  */
 public class DefaultWSDLInterfaceIntrospector implements WSDLInterfaceIntrospector {
     
-    private XMLSchemaRegistry schemaRegistry;
-
-    public DefaultWSDLInterfaceIntrospector(XMLSchemaRegistry schemaRegistry) {
+    public DefaultWSDLInterfaceIntrospector() {
         super();
-        this.schemaRegistry = schemaRegistry;
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
-    protected List<Operation> introspectOperations(PortType portType) throws InvalidInterfaceException {
+    protected List<Operation> introspectOperations(PortType portType, XmlSchemaCollection inlineSchemas, ArtifactResolver resolver) throws InvalidInterfaceException {
         List<Operation> operations = new ArrayList<Operation>();
-        for (Object op : portType.getOperations()) {
-            javax.wsdl.Operation wsdlOp = (javax.wsdl.Operation)op;
-            operations.add(introspectOperation(wsdlOp));
+        for (Object o : portType.getOperations()) {
+            javax.wsdl.Operation wsdlOp = (javax.wsdl.Operation)o;
+            WSDLOperation op = new WSDLOperation(wsdlOp, inlineSchemas, null, resolver);
+            operations.add(op.getOperation());
         }
         return operations;
     }
 
-    protected Operation introspectOperation(javax.wsdl.Operation wsdlOp) throws InvalidInterfaceException {
-
-        WSDLOperation op = new WSDLOperation(wsdlOp, null, schemaRegistry);
-        return op.getOperation();
-    }
-
-    public WSDLInterface introspect(PortType portType) throws InvalidInterfaceException {
+    public WSDLInterface introspect(PortType portType, XmlSchemaCollection inlineSchemas, ArtifactResolver resolver) throws InvalidInterfaceException {
         WSDLInterface wsdlInterface = new WSDLInterfaceImpl();
         wsdlInterface.setPortType(portType);
-        wsdlInterface.getOperations().addAll(introspectOperations(portType));
+        wsdlInterface.getOperations().addAll(introspectOperations(portType, inlineSchemas, resolver));
         // FIXME: set to Non-conversational for now
         wsdlInterface.setConversational(false);
         return wsdlInterface;

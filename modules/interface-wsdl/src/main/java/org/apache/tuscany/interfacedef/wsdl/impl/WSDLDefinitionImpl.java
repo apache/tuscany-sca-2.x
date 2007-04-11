@@ -19,13 +19,10 @@
 
 package org.apache.tuscany.interfacedef.wsdl.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.wsdl.Definition;
 
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
-import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * Represents a WSDL definition.
@@ -36,7 +33,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     
     private Definition definition;
     private String namespace;
-    private List<XmlSchema> inlineSchemas = new ArrayList<XmlSchema>();
+    private XmlSchemaCollection inlineSchemas = new XmlSchemaCollection();
     private boolean unresolved;
 
     public Definition getDefinition() {
@@ -47,7 +44,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
         this.definition = definition;
     }
     
-    public List<XmlSchema> getInlinedSchemas() {
+    public XmlSchemaCollection getInlinedSchemas() {
         return inlineSchemas;
     }
 

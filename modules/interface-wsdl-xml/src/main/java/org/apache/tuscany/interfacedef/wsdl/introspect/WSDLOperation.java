@@ -41,6 +41,10 @@ import org.apache.tuscany.interfacedef.util.FaultException;
 import org.apache.tuscany.interfacedef.util.TypeInfo;
 import org.apache.tuscany.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
+import org.apache.tuscany.interfacedef.wsdl.impl.XSDefinitionImpl;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -56,7 +60,8 @@ import org.apache.ws.commons.schema.XmlSchemaType;
  * @version $Rev$ $Date$
  */
 public class WSDLOperation {
-    protected XMLSchemaRegistry schemaRegistry;
+    protected ArtifactResolver resolver;
+    protected XmlSchemaCollection inlineSchemas;
     protected javax.wsdl.Operation operation;
     protected Operation operationModel;
     protected DataType<List<DataType>> inputType;
@@ -69,11 +74,12 @@ public class WSDLOperation {
      * @param dataBinding The default databinding
      * @param schemaRegistry The XML Schema registry
      */
-    public WSDLOperation(javax.wsdl.Operation operation, String dataBinding, XMLSchemaRegistry schemaRegistry) {
+    public WSDLOperation(javax.wsdl.Operation operation, XmlSchemaCollection inlineSchemas, String dataBinding, ArtifactResolver resolver) {
         super();
         this.operation = operation;
+        this.inlineSchemas = inlineSchemas;
+        this.resolver = resolver;
         this.dataBinding = dataBinding;
-        this.schemaRegistry = schemaRegistry;
         this.wrapper = new Wrapper();
     }
 
@@ -196,7 +202,35 @@ public class WSDLOperation {
         }
         return operationModel;
     }
-
+    
+    private XmlSchemaElement getElement(QName elementName) {
+        XmlSchemaElement element = inlineSchemas.getElementByQName(elementName);
+        if (element == null) {
+            XSDefinition definition = new XSDefinitionImpl();
+            definition.setUnresolved(true);
+            definition.setNamespace(elementName.getNamespaceURI());
+            definition = resolver.resolve(XSDefinition.class, definition);
+            if (definition.getSchema() != null) {
+                element = definition.getSchema().getElementByName(elementName);
+            }
+        }
+        return element;
+    }
+    
+    private XmlSchemaType getType(QName typeName) {
+        XmlSchemaType type = inlineSchemas.getTypeByQName(typeName);
+        if (type == null) {
+            XSDefinition definition = new XSDefinitionImpl();
+            definition.setNamespace(typeName.getNamespaceURI());
+            definition.setUnresolved(true);
+            definition = resolver.resolve(XSDefinition.class, definition);
+            if (definition.getSchema() != null) {
+                type = definition.getSchema().getTypeByName(typeName);
+            }
+        }
+        return type;
+    }
+    
     /**
      * Metadata for a WSDL part
      */
@@ -211,7 +245,7 @@ public class WSDLOperation {
             this.part = part;
             QName elementName = part.getElementName();
             if (elementName != null) {
-                element = schemaRegistry.getElement(elementName);
+                element = WSDLOperation.this.getElement(elementName);
                 if (element == null) {
                     throw new InvalidWSDLException("Element cannot be resolved: " + elementName.toString());
                 }
@@ -222,7 +256,7 @@ public class WSDLOperation {
                 element.setQName(new QName(null, part.getName()));
                 QName typeName = part.getTypeName();
                 if (typeName != null) {
-                    XmlSchemaType type = schemaRegistry.getType(typeName);
+                    XmlSchemaType type = WSDLOperation.this.getType(typeName);
                     if (type == null) {
                         throw new InvalidWSDLException("Type cannot be resolved: " + typeName.toString());
                     }
@@ -368,7 +402,7 @@ public class WSDLOperation {
                 if (!operation.getName().equals(elementName.getLocalPart())) {
                     return null;
                 }
-                inputWrapperElement = schemaRegistry.getElement(elementName);
+                inputWrapperElement = getElement(elementName);
                 if (inputWrapperElement == null) {
                     throw new InvalidWSDLException("The element is not declared in a XML schema: " + elementName
                         .toString());
@@ -403,7 +437,7 @@ public class WSDLOperation {
                 if (elementName == null) {
                     throw new InvalidWSDLException("The element is not declared in the XML schema: " + part.getName());
                 }
-                outputWrapperElement = schemaRegistry.getElement(elementName);
+                outputWrapperElement = WSDLOperation.this.getElement(elementName);
                 if (outputWrapperElement == null) {
                     return null;
                 }

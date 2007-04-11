@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.interfacedef.wsdl;
 
-import java.util.List;
-
 import javax.wsdl.Definition;
 
-import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * Represents a WSDL definition.
@@ -49,7 +47,7 @@ public interface WSDLDefinition {
      * Returns a list of XML schemas inlined in this WSDL definition.
      * @return
      */
-    List<XmlSchema> getInlinedSchemas();
+    XmlSchemaCollection getInlinedSchemas();
     
     /**
      * Returns the namespace of this WSDL definition.
