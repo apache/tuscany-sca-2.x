@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.implementation.script;
 
+import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 
@@ -28,16 +29,15 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
 
     private String scriptName;
     private String scriptSrc;
+    private ComponentType componentType;
+
+    public ScriptImplementation(String scriptName) {
+        this.scriptName = scriptName;
+        setUnresolved(true);
+    }
 
     public String getName() {
         return scriptName;
-    }
-
-    public void setName(String scriptName) {
-        if (!isUnresolved()) {
-            throw new IllegalStateException();
-        }
-        this.scriptName = scriptName;
     }
 
     public String getScriptSrc() {
@@ -46,6 +46,14 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
 
     public void setScriptSrc(String scriptSrc) {
         this.scriptSrc = scriptSrc;
+    }
+
+    public ComponentType getComponentType() {
+        return componentType;
+    }
+
+    public void setComponentType(ComponentType componentType) {
+        this.componentType = componentType;
     }
 
     @Override
@@ -62,4 +70,5 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
         else
             return false;
     }
+
 }
