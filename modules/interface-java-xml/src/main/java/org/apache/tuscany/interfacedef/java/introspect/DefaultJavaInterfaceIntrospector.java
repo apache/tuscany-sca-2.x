@@ -87,7 +87,7 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
         javaInterface.getOperations().addAll(getOperations(type, remotable, conversational).values());
 
         for (JavaInterfaceIntrospectorExtension extension : extensions) {
-            extension.visitInterface(type);
+            extension.visitInterface(javaInterface);
         }
         return javaInterface;
     }

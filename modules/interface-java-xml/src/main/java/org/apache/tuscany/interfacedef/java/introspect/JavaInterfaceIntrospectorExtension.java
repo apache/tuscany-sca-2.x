@@ -19,22 +19,21 @@
 package org.apache.tuscany.interfacedef.java.introspect;
 
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 
 /**
  * Implementations introspect metadata on a Java interface, populating the
- * corresponding {@link JavaServiceContract}
+ * corresponding {@link JavaInterface}
  * 
  * @version $Rev$ $Date$
  */
 public interface JavaInterfaceIntrospectorExtension {
 
     /**
-     * @param clazz
-     * @param callbackClass
-     * @param contract
+     * Visit a java interface
+     * @param javaInterface
      * @throws InvalidInterfaceException
      */
-    void visitInterface(Class<?> clazz)
-        throws InvalidInterfaceException;
+    void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException;
 
 }
