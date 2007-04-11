@@ -28,17 +28,19 @@ import javax.script.ScriptException;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.easymock.EasyMock;
 
 public class ScriptInvokerTestCase extends TestCase {
 
     private ScriptEngine engine;
     private ScopeContainer mockScopeContainer;
+    private WorkContext mockWorkContext;
 
     public void testInvokeTarget() throws ScriptException, InvocationTargetException {
 //        engine.eval("function foo(s) {return 'hi ' + s; }");
 //        ScriptInvoker invoker = new ScriptInvoker("foo", null, mockScopeContainer, null);
-//        assertEquals("hi petra", invoker.invokeTarget(engine, new Object[] {"petra"}));
+//        assertEquals("hi petra", invoker.invokeTarget(new Object[] {"petra"},(short)1, mockWorkContext));
     }
 
     @Override
@@ -46,6 +48,7 @@ public class ScriptInvokerTestCase extends TestCase {
         ScriptEngineManager manager = new ScriptEngineManager();
         engine = manager.getEngineByExtension("js");
         mockScopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
+        mockWorkContext = EasyMock.createNiceMock(WorkContext.class);
     }
 
 }

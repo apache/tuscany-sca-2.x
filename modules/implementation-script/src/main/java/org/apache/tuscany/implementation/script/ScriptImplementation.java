@@ -18,12 +18,13 @@
  */
 package org.apache.tuscany.implementation.script;
 
+import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 
 /**
  * Represents a Script implementation.
  */
-public class ScriptImplementation extends ComponentTypeImpl {
+public class ScriptImplementation  extends ComponentTypeImpl implements Implementation {
 
     private String scriptName;
     private String scriptSrc;

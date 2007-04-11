@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
@@ -32,7 +33,6 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
  * Perform the actual script invocation
