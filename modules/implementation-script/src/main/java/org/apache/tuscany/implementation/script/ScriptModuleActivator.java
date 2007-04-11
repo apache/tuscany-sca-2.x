@@ -44,12 +44,9 @@ public class ScriptModuleActivator implements ModuleActivator {
     }
 
     public void stop(ExtensionPointRegistry arg0) {
-        // TODO Auto-generated method stub
-        
     }
 
     public Map<Class, Object> getExtensionPoints() {
-        // TODO Auto-generated method stub
         return null;
     }
 
