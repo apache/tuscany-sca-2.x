@@ -57,7 +57,7 @@ abstract class DefaultArtifactProcessorRegistry {
             if (processor != null)
                 return processor;
         }
-        return null;
+        return processorsByModelType.get(modelType);
     }
 
 }
