@@ -60,7 +60,7 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
         this.proxyService = proxyService;
         this.mappings = WireUtils.createInterfaceToWireMapping(interfaze, wire);
         if (wire.isOptimizable()) {
-            Interface iface = wire.getSourceContract().getInterfaceContract().getInterface();
+            Interface iface = wire.getSourceContract().getInterface();
             if (iface instanceof JavaInterface) {
                 Class type = ((JavaInterface)iface).getJavaClass();
                 if (interfaze.isAssignableFrom(type)) {

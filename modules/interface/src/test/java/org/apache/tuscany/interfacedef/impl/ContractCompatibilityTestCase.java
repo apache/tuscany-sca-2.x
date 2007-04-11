@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.wire;
+package org.apache.tuscany.interfacedef.impl;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,23 +26,12 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
+import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
-import org.apache.tuscany.spi.wire.ChainHolder;
-import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
-import org.apache.tuscany.spi.wire.ProxyService;
-import org.apache.tuscany.spi.wire.Wire;
-import org.osoa.sca.CallableReference;
 
 /**
  * TODO some tests commented out due to DataType.equals() needing to be strict
@@ -52,49 +40,49 @@ import org.osoa.sca.CallableReference;
  */
 public class ContractCompatibilityTestCase extends TestCase {
     private static final Operation.ConversationSequence NO_CONVERSATION = Operation.ConversationSequence.NO_CONVERSATION;
-    private ProxyService proxyService = new MockProxyService();
+    private InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
 
     public void testNoOperation() throws Exception {
-        Contract source = new MockContract("FooContract");
-        Contract target = new MockContract("FooContract");
-        proxyService.checkCompatibility(source, target, false, false);
+        InterfaceContract source = new MockContract("FooContract");
+        InterfaceContract target = new MockContract("FooContract");
+        mapper.checkCompatibility(source, target, false, false);
     }
 
     public void testBasic() throws Exception {
-        Contract source = new MockContract("FooContract");
+        InterfaceContract source = new MockContract("FooContract");
         Operation opSource1 = new OperationImpl("op1");
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
-        Contract target = new MockContract("FooContract");
+        source.getInterface().getOperations().addAll(sourceOperations.values());
+        InterfaceContract target = new MockContract("FooContract");
         Operation opSource2 = new OperationImpl("op1");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opSource2);
-        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
-        proxyService.checkCompatibility(source, target, false, false);
+        target.getInterface().getOperations().addAll(targetOperations.values());
+        mapper.checkCompatibility(source, target, false, false);
     }
 
     public void testBasicIncompatibleOperationNames() throws Exception {
-        Contract source = new MockContract("FooContract");
+        InterfaceContract source = new MockContract("FooContract");
         Operation opSource1 = new OperationImpl("op1");
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
-        Contract target = new MockContract("FooContract");
+        source.getInterface().getOperations().addAll(sourceOperations.values());
+        InterfaceContract target = new MockContract("FooContract");
         Operation opSource2 = new OperationImpl("op2");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op2", opSource2);
-        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterface().getOperations().addAll(targetOperations.values());
         try {
-            proxyService.checkCompatibility(source, target, false, false);
+            mapper.checkCompatibility(source, target, false, false);
             fail();
-        } catch (IncompatibleServiceContractException e) {
+        } catch (IncompatibleInterfaceContractException e) {
             // expected
         }
     }
 
     public void testInputTypes() throws Exception {
-        Contract source = new MockContract("FooContract");
+        InterfaceContract source = new MockContract("FooContract");
         List<DataType> sourceInputTypes = new ArrayList<DataType>();
         sourceInputTypes.add(new DataTypeImpl<Type>(Object.class, Object.class));
         DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(String.class, sourceInputTypes);
@@ -102,9 +90,9 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setInputType(inputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterface().getOperations().addAll(sourceOperations.values());
 
-        Contract target = new MockContract("FooContract");
+        InterfaceContract target = new MockContract("FooContract");
         List<DataType> targetInputTypes = new ArrayList<DataType>();
         targetInputTypes.add(new DataTypeImpl<Type>(Object.class, Object.class));
         DataType<List<DataType>> targetInputType = new DataTypeImpl<List<DataType>>(String.class, targetInputTypes);
@@ -113,12 +101,12 @@ public class ContractCompatibilityTestCase extends TestCase {
         opTarget.setInputType(targetInputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
-        proxyService.checkCompatibility(source, target, false, false);
+        target.getInterface().getOperations().addAll(targetOperations.values());
+        mapper.checkCompatibility(source, target, false, false);
     }
 
     public void testIncompatibleInputTypes() throws Exception {
-        Contract source = new MockContract("FooContract");
+        InterfaceContract source = new MockContract("FooContract");
         List<DataType> sourceInputTypes = new ArrayList<DataType>();
         sourceInputTypes.add(new DataTypeImpl<Type>(Integer.class, Integer.class));
         DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(String.class, sourceInputTypes);
@@ -126,9 +114,9 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setInputType(inputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterface().getOperations().addAll(sourceOperations.values());
 
-        Contract target = new MockContract("FooContract");
+        InterfaceContract target = new MockContract("FooContract");
         List<DataType> targetInputTypes = new ArrayList<DataType>();
         targetInputTypes.add(new DataTypeImpl<Type>(String.class, String.class));
         DataType<List<DataType>> targetInputType = new DataTypeImpl<List<DataType>>(String.class, targetInputTypes);
@@ -137,11 +125,11 @@ public class ContractCompatibilityTestCase extends TestCase {
         opTarget.setInputType(targetInputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterface().getOperations().addAll(targetOperations.values());
         try {
-            proxyService.checkCompatibility(source, target, false, false);
+            mapper.checkCompatibility(source, target, false, false);
             fail();
-        } catch (IncompatibleServiceContractException e) {
+        } catch (IncompatibleInterfaceContractException e) {
             // expected
         }
     }
@@ -150,7 +138,7 @@ public class ContractCompatibilityTestCase extends TestCase {
      * Verfies source input types can be super types of the target
      */
     public void testSourceSuperTypeInputCompatibility() throws Exception {
-        // Contract source = new MockContract("FooContract");
+        // InterfaceContract source = new MockContract("FooContract");
         // List<DataType> sourceInputTypes = new ArrayList<DataType>();
         // sourceInputTypes.add(new DataTypeImpl<Type>(Object.class,
         // Object.class));
@@ -163,7 +151,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // sourceOperations.put("op1", opSource1);
         // source.getInterface().getOperations().addAll(sourceOperations.values());
         //
-        // Contract target = new MockContract("FooContract");
+        // InterfaceContract target = new MockContract("FooContract");
         // List<DataType> targetInputTypes = new ArrayList<DataType>();
         // targetInputTypes.add(new DataTypeImpl<Type>(String.class,
         // String.class));
@@ -180,29 +168,29 @@ public class ContractCompatibilityTestCase extends TestCase {
     }
 
     public void testOutputTypes() throws Exception {
-        Contract source = new MockContract("FooContract");
+        InterfaceContract source = new MockContract("FooContract");
         DataType sourceOutputType = new DataTypeImpl<Type>(String.class, String.class);
         Operation opSource1 = new OperationImpl("op1");
         opSource1.setOutputType(sourceOutputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterface().getOperations().addAll(sourceOperations.values());
 
-        Contract target = new MockContract("FooContract");
+        InterfaceContract target = new MockContract("FooContract");
         DataType targetOutputType = new DataTypeImpl<Type>(String.class, String.class);
         Operation opTarget = new OperationImpl("op1");
         opTarget.setOutputType(targetOutputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
-        proxyService.checkCompatibility(source, target, false, false);
+        target.getInterface().getOperations().addAll(targetOperations.values());
+        mapper.checkCompatibility(source, target, false, false);
     }
 
     /**
      * Verfies a return type that is a supertype of of the target is compatible
      */
     public void testSupertypeOutputTypes() throws Exception {
-        // Contract source = new MockContract("FooContract");
+        // InterfaceContract source = new MockContract("FooContract");
         // DataType sourceOutputType = new DataTypeImpl<Type>(Object.class,
         // Object.class);
         // Operation opSource1 = new OperationImpl("op1", null,
@@ -212,7 +200,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // sourceOperations.put("op1", opSource1);
         // source.getInterface().getOperations().addAll(sourceOperations.values());
         //
-        // Contract target = new MockContract("FooContract");
+        // InterfaceContract target = new MockContract("FooContract");
         // DataType targetOutputType = new DataTypeImpl<Type>(String.class,
         // String.class);
         // Operation opTarget = new OperationImpl("op1", null, targetOutputType,
@@ -225,31 +213,31 @@ public class ContractCompatibilityTestCase extends TestCase {
     }
 
     public void testIncompatibleOutputTypes() throws Exception {
-        Contract source = new MockContract("FooContract");
+        InterfaceContract source = new MockContract("FooContract");
         DataType sourceOutputType = new DataTypeImpl<Type>(String.class, String.class);
         Operation opSource1 = new OperationImpl("op1");
         opSource1.setOutputType(sourceOutputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterface().getOperations().addAll(sourceOperations.values());
 
-        Contract target = new MockContract("FooContract");
+        InterfaceContract target = new MockContract("FooContract");
         DataType targetOutputType = new DataTypeImpl<Type>(Integer.class, Integer.class);
         Operation opTarget = new OperationImpl("op1");
         opTarget.setOutputType(targetOutputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
+        target.getInterface().getOperations().addAll(targetOperations.values());
         try {
-            proxyService.checkCompatibility(source, target, false, false);
+            mapper.checkCompatibility(source, target, false, false);
             fail();
-        } catch (IncompatibleServiceContractException e) {
+        } catch (IncompatibleInterfaceContractException e) {
             // expected
         }
     }
 
     public void testFaultTypes() throws Exception {
-        Contract source = new MockContract("FooContract");
+        InterfaceContract source = new MockContract("FooContract");
         DataType sourceFaultType = new DataTypeImpl<Type>(String.class, String.class);
         List<DataType> sourceFaultTypes = new ArrayList<DataType>();
         sourceFaultTypes.add(0, sourceFaultType);
@@ -257,9 +245,9 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setFaultTypes(sourceFaultTypes);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterface().getOperations().addAll(sourceOperations.values());
 
-        Contract target = new MockContract("FooContract");
+        InterfaceContract target = new MockContract("FooContract");
         DataType targetFaultType = new DataTypeImpl<Type>(String.class, String.class);
         List<DataType> targetFaultTypes = new ArrayList<DataType>();
         targetFaultTypes.add(0, targetFaultType);
@@ -268,12 +256,12 @@ public class ContractCompatibilityTestCase extends TestCase {
         opTarget.setFaultTypes(targetFaultTypes);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
-        proxyService.checkCompatibility(source, target, false, false);
+        target.getInterface().getOperations().addAll(targetOperations.values());
+        mapper.checkCompatibility(source, target, false, false);
     }
 
     public void testSourceFaultTargetNoFaultCompatibility() throws Exception {
-        Contract source = new MockContract("FooContract");
+        InterfaceContract source = new MockContract("FooContract");
         DataType sourceFaultType = new DataTypeImpl<Type>(String.class, String.class);
         List<DataType> sourceFaultTypes = new ArrayList<DataType>();
         sourceFaultTypes.add(0, sourceFaultType);
@@ -281,14 +269,14 @@ public class ContractCompatibilityTestCase extends TestCase {
         opSource1.setFaultTypes(sourceFaultTypes);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
-        source.getInterfaceContract().getInterface().getOperations().addAll(sourceOperations.values());
+        source.getInterface().getOperations().addAll(sourceOperations.values());
 
-        Contract target = new MockContract("FooContract");
+        InterfaceContract target = new MockContract("FooContract");
         Operation opTarget = new OperationImpl("op1");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
-        target.getInterfaceContract().getInterface().getOperations().addAll(targetOperations.values());
-        proxyService.checkCompatibility(source, target, false, false);
+        target.getInterface().getOperations().addAll(targetOperations.values());
+        mapper.checkCompatibility(source, target, false, false);
     }
 
     /**
@@ -298,7 +286,7 @@ public class ContractCompatibilityTestCase extends TestCase {
      * @throws Exception
      */
     public void testFaultSuperTypes() throws Exception {
-        // Contract source = new MockContract("FooContract");
+        // InterfaceContract source = new MockContract("FooContract");
         // DataType sourceFaultType = new DataTypeImpl<Type>(Exception.class,
         // Exception.class);
         // List<DataType> sourceFaultTypes = new ArrayList<DataType>();
@@ -310,7 +298,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // sourceOperations.put("op1", opSource1);
         // source.getInterface().getOperations().addAll(sourceOperations.values());
         //
-        // Contract target = new MockContract("FooContract");
+        // InterfaceContract target = new MockContract("FooContract");
         // DataType targetFaultType = new
         // DataTypeImpl<Type>(TuscanyException.class, TuscanyException.class);
         // List<DataType> targetFaultTypes = new ArrayList<DataType>();
@@ -330,7 +318,7 @@ public class ContractCompatibilityTestCase extends TestCase {
      * target's faults are compatibile
      */
     public void testFaultSuperTypesAndSuperset() throws Exception {
-        // Contract source = new MockContract("FooContract");
+        // InterfaceContract source = new MockContract("FooContract");
         // DataType sourceFaultType = new DataTypeImpl<Type>(Exception.class,
         // Exception.class);
         // DataType sourceFaultType2 = new
@@ -345,7 +333,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // sourceOperations.put("op1", opSource1);
         // source.getInterface().getOperations().addAll(sourceOperations.values());
         //
-        // Contract target = new MockContract("FooContract");
+        // InterfaceContract target = new MockContract("FooContract");
         // DataType targetFaultType = new
         // DataTypeImpl<Type>(TuscanyException.class, TuscanyException.class);
         // List<DataType> targetFaultTypes = new ArrayList<DataType>();
@@ -360,65 +348,18 @@ public class ContractCompatibilityTestCase extends TestCase {
         // wireService.checkCompatibility(source, target, false);
     }
 
-    private class MockContract<T> extends ComponentServiceImpl {
+    private static class MockInterface extends InterfaceImpl {
+
+    }
+
+    private class MockContract<T> extends InterfaceContractImpl {
         public MockContract() {
         }
 
-        public MockContract(Class interfaceClass) {
-            JavaInterface jInterface = new JavaInterfaceImpl();
-            jInterface.setJavaClass(interfaceClass);
-            JavaInterfaceContract javaInterfaceContract = new JavaInterfaceContractImpl();
-            setInterfaceContract(javaInterfaceContract);
-            javaInterfaceContract.setInterface(jInterface);
-        }
-
         public MockContract(String interfaceClass) {
-            JavaInterface jInterface = new JavaInterfaceImpl();
+            Interface jInterface = new MockInterface();
             jInterface.setUnresolved(true);
-            jInterface.setName(interfaceClass);
-            JavaInterfaceContract javaInterfaceContract = new JavaInterfaceContractImpl();
-            setInterfaceContract(javaInterfaceContract);
-            javaInterfaceContract.setInterface(jInterface);
-        }
-    }
-
-    private class MockProxyService extends ProxyServiceExtension {
-        public MockProxyService() {
-            super(null);
-        }
-
-        public <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> T createProxy2(Class<T> interfaze, boolean conversational, Wire wire) throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> T createProxy2(Class<T> interfaze, Wire wire) throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, ChainHolder> mapping)
-            throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> T createProxy2(Class<T> interfaze, Wire wire, Map<Method, InvocationChain> mapping)
-            throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public Object createCallbackProxy(Class<?> interfaze, List<Wire> wires) throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public Object createCallbackProxy(Class<?> interfaze) throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-            throw new UnsupportedOperationException();
+            setInterface(jInterface);
         }
     }
 

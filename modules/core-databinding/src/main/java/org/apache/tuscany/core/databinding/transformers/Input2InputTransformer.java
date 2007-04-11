@@ -94,21 +94,21 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
 
     @SuppressWarnings("unchecked")
     public Object[] transform(Object[] source, TransformationContext context) {
-        DataType<List<DataType<?>>> sourceType = context.getSourceDataType();
-        Operation sourceOp = (Operation)sourceType.getOperation();
+        DataType<List<DataType>> sourceType = context.getSourceDataType();
+        Operation sourceOp = context.getSourceOperation();
         boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
 
         WrapperHandler sourceWrapperHandler = null;
         if (sourceWrapped) {
-            sourceWrapperHandler = getWrapperHandler(sourceType.getOperation().getDataBinding(), true);
+            sourceWrapperHandler = getWrapperHandler(sourceOp.getDataBinding(), true);
         }
 
-        DataType<List<DataType<XMLType>>> targetType = context.getTargetDataType();
-        Operation targetOp = (Operation)targetType.getOperation();
+        DataType<List<DataType>> targetType = context.getTargetDataType();
+        Operation targetOp = (Operation)context.getTargetOperation();
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
         WrapperHandler targetWrapperHandler = null;
         if (targetWrapped) {
-            targetWrapperHandler = getWrapperHandler(targetType.getOperation().getDataBinding(), true);
+            targetWrapperHandler = getWrapperHandler(targetOp.getDataBinding(), true);
         }
 
         if ((!sourceWrapped) && targetWrapped) {
@@ -128,7 +128,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             if (source == null) {
                 return new Object[] {targetWrapper};
             }
-            List<DataType<XMLType>> argTypes = wrapper.getUnwrappedInputType().getLogical();
+            List<DataType> argTypes = wrapper.getUnwrappedInputType().getLogical();
 
             for (int i = 0; i < source.length; i++) {
                 ElementInfo argElement = wrapper.getInputChildElements().get(i);
@@ -146,13 +146,13 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             // List<ElementInfo> childElements = sourceOp.getWrapper().getInputChildElements();
             Object[] target = null;
 
-            targetWrapperHandler = getWrapperHandler(targetType.getOperation().getDataBinding(), false);
+            targetWrapperHandler = getWrapperHandler(targetOp.getDataBinding(), false);
             if (targetWrapperHandler != null) {
                 ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
                 // Object targetWrapper =
                 // targetWrapperHandler.create(wrapperElement, context);
                 DataType<XMLType> targetWrapperType =
-                    new DataType<XMLType>(targetType.getOperation().getDataBinding(), Object.class,
+                    new DataType<XMLType>(targetOp.getDataBinding(), Object.class,
                                         new XMLType(wrapperElement));
                 Object targetWrapper =
                     mediator.mediate(sourceWrapper,

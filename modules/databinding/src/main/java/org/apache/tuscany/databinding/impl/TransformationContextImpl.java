@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 
 public class TransformationContextImpl implements TransformationContext {
@@ -30,7 +31,7 @@ public class TransformationContextImpl implements TransformationContext {
 
     private DataType targetDataType;
 
-    private final Map<Class<?>, Object> metadata = new HashMap<Class<?>, Object>();
+    private final Map<String, Object> metadata = new HashMap<String, Object>();
 
     private WeakReference<ClassLoader> classLoaderRef;
 
@@ -42,7 +43,7 @@ public class TransformationContextImpl implements TransformationContext {
     public TransformationContextImpl(DataType sourceDataType,
                                      DataType targetDataType,
                                      ClassLoader classLoader,
-                                     Map<Class<?>, Object> metadata) {
+                                     Map<String, Object> metadata) {
         super();
         this.sourceDataType = sourceDataType;
         this.targetDataType = targetDataType;
@@ -76,8 +77,36 @@ public class TransformationContextImpl implements TransformationContext {
         return classLoaderRef.get();
     }
 
-    public Map<Class<?>, Object> getMetadata() {
+    public Map<String, Object> getMetadata() {
         return metadata;
+    }
+
+    /**
+     * @return the sourceOperation
+     */
+    public Operation getSourceOperation() {
+        return (Operation) metadata.get("source.operation");
+    }
+
+    /**
+     * @param sourceOperation the sourceOperation to set
+     */
+    public void setSourceOperation(Operation sourceOperation) {
+        this.metadata.put("source.operation", sourceOperation);
+    }
+
+    /**
+     * @return the targetOperation
+     */
+    public Operation getTargetOperation() {
+        return (Operation) metadata.get("target.operation");
+    }
+
+    /**
+     * @param targetOperation the targetOperation to set
+     */
+    public void setTargetOperation(Operation targetOperation) {
+        this.metadata.put("target.operation", targetOperation);
     }
 
 }

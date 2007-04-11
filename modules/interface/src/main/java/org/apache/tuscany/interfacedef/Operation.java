@@ -20,6 +20,8 @@ package org.apache.tuscany.interfacedef;
 
 import java.util.List;
 
+import org.apache.tuscany.interfacedef.util.WrapperInfo;
+
 /**
  * Represents an operation on a service interface.
  */
@@ -118,5 +120,26 @@ public interface Operation {
      * Set the operation to be non-blocking
      */
     void setNonBlocking(boolean nonBlocking);
+    
+    /**
+     * @return the wrapperInfo
+     */
+    WrapperInfo getWrapper();
+
+    /**
+     * @param wrapperInfo the wrapperInfo to set
+     */
+    void setWrapper(WrapperInfo wrapperInfo);
+
+    /**
+     * @return the wrapperStyle
+     */
+    boolean isWrapperStyle();
+
+    /**
+     * @param wrapperStyle the wrapperStyle to set
+     */
+    void setWrapperStyle(boolean wrapperStyle);
+    
 
 }

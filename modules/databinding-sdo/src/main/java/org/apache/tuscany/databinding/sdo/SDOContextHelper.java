@@ -23,8 +23,8 @@ import java.awt.Component;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.util.XMLType;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 
@@ -66,7 +66,7 @@ public final class SDOContextHelper {
 
     public static HelperContext getHelperContext(ModelObject model) {
         HelperContext helperContext = null;
-        if (model instanceof CompositeComponentType) {
+        if (model instanceof Composite) {
             // HACK: Retrieve the SDO HelperContext from the
             // CompositeComponentType
             // extensions

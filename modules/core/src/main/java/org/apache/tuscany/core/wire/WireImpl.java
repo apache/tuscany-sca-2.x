@@ -25,7 +25,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -41,8 +41,8 @@ public class WireImpl implements Wire {
     private URI sourceUri;
     private URI targetUri;
     private QName bindingType;
-    private Contract sourceContract;
-    private Contract targetContract;
+    private InterfaceContract sourceContract;
+    private InterfaceContract targetContract;
     private boolean optimizable;
     private Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
     private Map<Operation, InvocationChain> callbackChains = new HashMap<Operation, InvocationChain>();
@@ -84,20 +84,20 @@ public class WireImpl implements Wire {
     }
 
 
-    public Contract getSourceContract() {
+    public InterfaceContract getSourceContract() {
         return sourceContract;
     }
 
-    public void setSourceContract(Contract contract) {
+    public void setSourceContract(InterfaceContract contract) {
         this.sourceContract = contract;
     }
 
 
-    public Contract getTargetContract() {
+    public InterfaceContract getTargetContract() {
         return targetContract;
     }
 
-    public void setTargetContract(Contract contract) {
+    public void setTargetContract(InterfaceContract contract) {
         this.targetContract = contract;
     }
 

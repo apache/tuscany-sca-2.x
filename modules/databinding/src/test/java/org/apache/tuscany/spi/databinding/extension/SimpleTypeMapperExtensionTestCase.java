@@ -81,7 +81,7 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
     public void testMap() throws Exception {
         SimpleTypeMapperExtension extension = new SimpleTypeMapperExtension();
         TransformationContext context = EasyMock.createMock(TransformationContext.class);
-        Map<Class<?>, Object> metaData = new HashMap<Class<?>, Object>();
+        Map<String, Object> metaData = new HashMap<String, Object>();
         EasyMock.expect(context.getMetadata()).andReturn(metaData).anyTimes();
         EasyMock.replay(context);
 
@@ -90,7 +90,7 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
             .anyTimes();
         EasyMock.expect(namespaceContext.getPrefix(EasyMock.eq("http://foo"))).andReturn("f").anyTimes();
         EasyMock.replay(namespaceContext);
-        context.getMetadata().put(NamespaceContext.class, namespaceContext);
+        context.getMetadata().put(NamespaceContext.class.getName(), namespaceContext);
         for (TypeInfo simpleType : SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.values()) {
             String name = simpleType.getQName().getLocalPart();
             Object value = SAMPLE_VALUES.get(name);

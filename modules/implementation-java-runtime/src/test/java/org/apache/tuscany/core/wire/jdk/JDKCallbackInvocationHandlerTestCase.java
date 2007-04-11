@@ -41,7 +41,7 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
         wire.setSourceUri(uri);
         List<Wire> wires = new ArrayList<Wire>();
         wires.add(wire);
-        wire.setSourceContract(ModelHelper.createReference("foo", Foo.class));
+        wire.setSourceContract(ModelHelper.createReference("foo", Foo.class).getInterfaceContract());
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wires, new WorkContextImpl());
         Foo foo = (Foo)Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {Foo.class}, handler);
         assertNotNull(foo.toString());
@@ -49,7 +49,7 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
 
     public void testHashCode() {
         Wire wire = new WireImpl();
-        wire.setSourceContract(ModelHelper.createReference("foo", Foo.class));
+        wire.setSourceContract(ModelHelper.createReference("foo", Foo.class).getInterfaceContract());
         URI uri = URI.create("#wire");
         wire.setSourceUri(uri);
         List<Wire> wires = new ArrayList<Wire>();

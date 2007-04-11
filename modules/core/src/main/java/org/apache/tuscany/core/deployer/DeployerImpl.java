@@ -30,7 +30,6 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.SCABinding;
@@ -42,6 +41,7 @@ import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.core.wire.WireUtils;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.Builder;
@@ -64,8 +64,6 @@ import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.osoa.sca.annotations.Reference;
-
-import com.sun.jndi.toolkit.ctx.ComponentDirContext;
 
 /**
  * Default implementation of Deployer.
@@ -183,7 +181,7 @@ public class DeployerImpl implements Deployer {
                     throw new ComponentNotFoundException("Target not found", targetUri);
                 }
                 URI sourceURI = URI.create(source.getUri() + "#" + refName);
-                Wire wire = createWire(sourceURI, targetUri, refDefinition, Wire.LOCAL_BINDING);
+                Wire wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), Wire.LOCAL_BINDING);
                 try {
                     attachInvokers(refName, wire, source, target);
                 } catch (TargetInvokerCreationException e) {
@@ -220,13 +218,13 @@ public class DeployerImpl implements Deployer {
         return source;
     }
 
-    protected Wire createWire(URI sourceURI, URI targetUri, Contract contract, QName bindingType) {
+    protected Wire createWire(URI sourceURI, URI targetUri, InterfaceContract contract, QName bindingType) {
         Wire wire = new WireImpl(bindingType);
         wire.setSourceContract(contract);
         wire.setTargetContract(contract);
         wire.setSourceUri(sourceURI);
         wire.setTargetUri(targetUri);
-        for (Operation operation : contract.getInterfaceContract().getInterface().getOperations()) {
+        for (Operation operation : contract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             /*
              * if (operation.isNonBlocking()) { chain.addInterceptor(new
@@ -236,8 +234,8 @@ public class DeployerImpl implements Deployer {
             wire.addInvocationChain(operation, chain);
 
         }
-        if (contract.getInterfaceContract().getCallbackInterface() != null) {
-            for (Operation operation : contract.getInterfaceContract().getCallbackInterface().getOperations()) {
+        if (contract.getCallbackInterface() != null) {
+            for (Operation operation : contract.getCallbackInterface().getOperations()) {
                 InvocationChain chain = new InvocationChainImpl(operation);
                 /*
                  * if (operation.isNonBlocking()) { chain.addInterceptor(new

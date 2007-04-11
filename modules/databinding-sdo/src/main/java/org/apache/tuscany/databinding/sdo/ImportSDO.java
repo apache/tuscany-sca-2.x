@@ -21,6 +21,8 @@ package org.apache.tuscany.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.assembly.impl.BaseImpl;
+
 import commonj.sdo.helper.HelperContext;
 
 /**
@@ -28,18 +30,49 @@ import commonj.sdo.helper.HelperContext;
  * 
  * @version $Rev$ $Date$
  */
-public class ImportSDO extends ModelObject {
+public class ImportSDO extends BaseImpl {
     public static final QName IMPORT_SDO =
         new QName("http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0", "import.sdo");
 
     private HelperContext helperContext;
+    private String factoryClassName;
+    private String schemaLocation;
 
     public ImportSDO(HelperContext helperContext) {
         super();
         this.helperContext = helperContext;
+        setUnresolved(true);
     }
 
     public HelperContext getHelperContext() {
         return helperContext;
+    }
+
+    /**
+     * @return the factoryClassName
+     */
+    public String getFactoryClassName() {
+        return factoryClassName;
+    }
+
+    /**
+     * @param factoryClassName the factoryClassName to set
+     */
+    public void setFactoryClassName(String factoryClassName) {
+        this.factoryClassName = factoryClassName;
+    }
+
+    /**
+     * @return the schemaLocation
+     */
+    public String getSchemaLocation() {
+        return schemaLocation;
+    }
+
+    /**
+     * @param schemaLocation the schemaLocation to set
+     */
+    public void setSchemaLocation(String schemaLocation) {
+        this.schemaLocation = schemaLocation;
     }
 }

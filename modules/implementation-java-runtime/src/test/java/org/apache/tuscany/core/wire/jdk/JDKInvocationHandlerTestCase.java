@@ -54,7 +54,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     public void testToString() {
         Wire wire = new WireImpl();
         Contract contract = ModelHelper.createReference("foo", Foo.class);
-        wire.setSourceContract(contract);
+        wire.setSourceContract(contract.getInterfaceContract());
         wire.setSourceUri(URI.create("foo#bar"));
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
@@ -64,7 +64,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     public void testHashCode() {
         Wire wire = new WireImpl();
         Contract contract = ModelHelper.createReference("foo", Foo.class);
-        wire.setSourceContract(contract);
+        wire.setSourceContract(contract.getInterfaceContract());
         wire.setSourceUri(URI.create("foo#bar"));
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
@@ -94,7 +94,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
             wire.addInvocationChain(op1, chain);
             URI uri = URI.create("fooRef");
             wire.setSourceUri(uri);
-            wire.setSourceContract(contract);
+            wire.setSourceContract(contract.getInterfaceContract());
 
             String convID = UUID.randomUUID().toString();
             wc.setIdentifier(Scope.CONVERSATION, convID);

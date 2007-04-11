@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.util.WrapperInfo;
 
 /**
  * Represents an operation on a service interface.
@@ -39,6 +40,9 @@ public class OperationImpl implements Operation {
     private Interface interfaze;
     private ConversationSequence conversationSequence = ConversationSequence.NO_CONVERSATION;
     private boolean nonBlocking;
+    private boolean wrapperStyle;
+    private WrapperInfo wrapper;
+    
 
     /**
      * @param name
@@ -227,6 +231,34 @@ public class OperationImpl implements Operation {
             return false;
         }
         return true;
+    }
+
+    /**
+     * @return the wrapperInfo
+     */
+    public WrapperInfo getWrapper() {
+        return wrapper;
+    }
+
+    /**
+     * @param wrapperInfo the wrapperInfo to set
+     */
+    public void setWrapper(WrapperInfo wrapperInfo) {
+        this.wrapper = wrapperInfo;
+    }
+
+    /**
+     * @return the wrapperStyle
+     */
+    public boolean isWrapperStyle() {
+        return wrapperStyle;
+    }
+
+    /**
+     * @param wrapperStyle the wrapperStyle to set
+     */
+    public void setWrapperStyle(boolean wrapperStyle) {
+        this.wrapperStyle = wrapperStyle;
     }
 
 }

@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.core.wire.NoMethodForOperationException;
 import org.apache.tuscany.core.wire.WireUtils;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
@@ -204,10 +204,10 @@ public final class JDKInvocationHandler extends AbstractInvocationHandler
      */
     private void init(Class<?> interfaze, Wire wire, Map<Method, ChainHolder> mapping)
         throws NoMethodForOperationException {
-        Contract contract = wire.getSourceContract();
+        InterfaceContract contract = wire.getSourceContract();
         this.referenceName = wire.getSourceUri().getFragment();
-        this.conversational = contract.getInterfaceContract().getInterface().isConversational();
-        this.callback = contract.getInterfaceContract().getCallbackInterface() != null;
+        this.conversational = contract.getInterface().isConversational();
+        this.callback = contract.getCallbackInterface() != null;
         // FIXME JFM this should not be dependent on PojoAtomicComponent
         // JFM commenting out as this should not be specific to pojo types
 //        this.wireContainerIsAtomicComponent = scaObject instanceof PojoAtomicComponent;
