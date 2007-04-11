@@ -19,47 +19,36 @@
 
 package org.apache.tuscany.interfacedef.wsdl;
 
-import java.util.List;
-
-import javax.wsdl.Definition;
-
 import org.apache.ws.commons.schema.XmlSchema;
 
 /**
- * Represents a WSDL definition.
- * WSDLDefinition
+ * Represents an XML Schema definition.
  *
  * @version $Rev$ $Date$
  */
-public interface WSDLDefinition {
+public interface XSDefinition {
     
     /**
-     * Returns the WSDL definition model
-     * @return the WSDL definition model
+     * Returns the XmlSchema definition model
+     * @return the XmlSchema definition model
      */
-    Definition getDefinition();
+    XmlSchema getSchema();
     
     /**
-     * Sets the WSDL definition model
-     * @param definition the WSDL definition model
+     * Sets the XmlSchema definition model
+     * @param definition the XmlSchema definition model
      */
-    void setDefinition(Definition definition);
+    void setSchema(XmlSchema definition);
     
     /**
-     * Returns a list of XML schemas inlined in this WSDL definition.
-     * @return
-     */
-    List<XmlSchema> getInlinedSchemas();
-    
-    /**
-     * Returns the namespace of this WSDL definition.
-     * @return the namespace of this WSDL definition
+     * Returns the namespace of this XmlSchema definition.
+     * @return the namespace of this XmlSchema definition
      */
     String getNamespace();
 
     /**
-     * Sets the namespace of this WSDL definition.
-     * @param namespace the namespace of this WSDL definition
+     * Sets the namespace of this XmlSchema definition.
+     * @param namespace the namespace of this XmlSchema definition
      */
     void setNamespace(String namespace);
 

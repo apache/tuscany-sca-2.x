@@ -22,6 +22,7 @@ import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
 
 /**
  * A factory for the WSDL model.
@@ -40,6 +41,10 @@ public class DefaultWSDLFactory implements WSDLFactory {
     
     public WSDLInterfaceContract createWSDLInterfaceContract() {
         return new WSDLInterfaceContractImpl();
+    }
+    
+    public XSDefinition createXSDefinition() {
+        return new XSDefinitionImpl();
     }
 
 }
