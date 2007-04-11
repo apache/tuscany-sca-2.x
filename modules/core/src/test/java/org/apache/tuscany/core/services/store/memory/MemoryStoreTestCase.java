@@ -49,7 +49,7 @@ public class MemoryStoreTestCase extends TestCase {
         String id = UUID.randomUUID().toString();
         Object value = new Object();
         store.insertRecord(component, id, value, 1);
-        Thread.sleep(100);
+        Thread.sleep(200);
         assertNull(store.readRecord(component, id));
         store.destroy();
     }
