@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.extension.script;
+package org.apache.tuscany.implementation.script;
 
 import java.io.StringReader;
 
@@ -27,6 +27,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.implementation.script.ScriptImplementation;
+import org.apache.tuscany.implementation.script.ScriptImplementationLoader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
