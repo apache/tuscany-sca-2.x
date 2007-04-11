@@ -28,6 +28,8 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -51,7 +53,9 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
         Wire wire = new WireImpl();
 
         Contract contract = new DefaultAssemblyFactory().createComponentReference();
-        registry.introspect(contract, Target.class);
+        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        contract.setInterfaceContract(interfaceContract);
+        interfaceContract.setInterface(registry.introspect(Target.class));
         for (Operation operation : contract.getInterfaceContract().getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             wire.addInvocationChain(operation, chain);

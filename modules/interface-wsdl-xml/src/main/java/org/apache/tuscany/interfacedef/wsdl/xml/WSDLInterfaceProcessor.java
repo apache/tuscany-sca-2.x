@@ -21,12 +21,14 @@ package org.apache.tuscany.interfacedef.wsdl.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
@@ -141,7 +143,48 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         }
     }
     
-    public void resolve(WSDLInterfaceContract wsdlInterface, ArtifactResolver resolver) throws ContributionResolveException {
+    private WSDLInterface resolveWSDLInterface(WSDLInterface wsdlInterface, ArtifactResolver resolver) {
+        
+        if (wsdlInterface != null && wsdlInterface.isUnresolved()) {
+
+            // Resolve the WSDL interface
+            wsdlInterface = resolver.resolve(WSDLInterface.class, wsdlInterface);
+            if (wsdlInterface.isUnresolved()) {
+
+                // If the WSDL interface has never been resolved yet, do it now
+                // First, resolve the WSDL definition for the given namespace
+                WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
+                wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
+                wsdlDefinition = resolver.resolve(WSDLDefinition.class, wsdlDefinition);
+                if (!wsdlDefinition.isUnresolved()) {
+                    PortType portType = wsdlDefinition.getDefinition().getPortType(wsdlInterface.getName());
+                    if (portType != null) {
+                        
+                        // Add the resolved WSDL interface to the resolver
+                        // so that it's found next time
+                        wsdlInterface.setPortType(portType);
+                        
+                        // Introspect the WSDL portType and populate the interface and
+                        // operations
+                        //FIXME
+                        
+                        wsdlInterface.setUnresolved(false);
+                        resolver.add(wsdlInterface);
+                    }
+                }
+            }
+        }
+        return wsdlInterface;
+    }
+    
+    public void resolve(WSDLInterfaceContract wsdlInterfaceContract, ArtifactResolver resolver) throws ContributionResolveException {
+        
+        // Resolve the interface and callback interface
+        WSDLInterface wsdlInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getInterface(), resolver);
+        wsdlInterfaceContract.setInterface(wsdlInterface);
+        
+        WSDLInterface wsdlCallbackInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getCallbackInterface(), resolver);
+        wsdlInterfaceContract.setCallbackInterface(wsdlCallbackInterface);
     }
     
     public void wire(WSDLInterfaceContract model) throws ContributionWireException {

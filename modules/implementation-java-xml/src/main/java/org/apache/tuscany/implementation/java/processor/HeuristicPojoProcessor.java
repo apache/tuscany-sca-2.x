@@ -52,7 +52,9 @@ import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Property;
@@ -572,8 +574,15 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         throws ProcessingException {
         org.apache.tuscany.assembly.Reference reference = factory.createReference();
         reference.setName(name);
+        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        reference.setInterfaceContract(interfaceContract);
         try {
-            interfaceProcessorRegistry.introspect(reference, paramType);
+            JavaInterface callInterface = interfaceProcessorRegistry.introspect(paramType);
+            reference.getInterfaceContract().setInterface(callInterface);
+            if (callInterface.getCallbackClass() != null) {
+                JavaInterface callbackInterface = interfaceProcessorRegistry.introspect(callInterface.getCallbackClass());
+                reference.getInterfaceContract().setCallbackInterface(callbackInterface);
+            }
             reference.setMultiplicity(Multiplicity.ZERO_ONE);
         } catch (InvalidInterfaceException e1) {
             throw new ProcessingException(e1);
@@ -589,7 +598,17 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
     public org.apache.tuscany.assembly.Service createService(Class<?> interfaze) throws InvalidInterfaceException {
         org.apache.tuscany.assembly.Service service = factory.createService();
         service.setName(interfaze.getSimpleName());
-        interfaceProcessorRegistry.introspect(service, interfaze);
+
+        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        service.setInterfaceContract(interfaceContract);
+        
+        JavaInterface callInterface = interfaceProcessorRegistry.introspect(interfaze);
+        service.getInterfaceContract().setInterface(callInterface);
+        if (callInterface.getCallbackClass() != null) {
+            JavaInterface callbackInterface = interfaceProcessorRegistry.introspect(callInterface.getCallbackClass());
+            service.getInterfaceContract().setCallbackInterface(callbackInterface);
+        }
+        
         Interface javaInterface = service.getInterfaceContract().getInterface();
         javaInterface.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
         service.getInterfaceContract().setInterface(javaInterface);

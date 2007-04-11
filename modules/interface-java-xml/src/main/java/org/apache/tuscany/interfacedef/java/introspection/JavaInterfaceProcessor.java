@@ -35,7 +35,7 @@ public interface JavaInterfaceProcessor {
      * @param contract
      * @throws InvalidInterfaceException
      */
-    void visitInterface(Class<?> clazz, Class<?> callbackClass, Contract contract)
+    void visitInterface(Class<?> clazz)
         throws InvalidInterfaceException;
 
 }

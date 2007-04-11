@@ -33,6 +33,9 @@ import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.introspection.ImplementationProcessorExtension;
 import org.apache.tuscany.implementation.java.introspection.ProcessingException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -118,6 +121,9 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
 
     private org.apache.tuscany.assembly.Reference createReference(JavaElement element, String name) throws ProcessingException {
         org.apache.tuscany.assembly.Reference reference = new ReferenceImpl();
+        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        reference.setInterfaceContract(interfaceContract);
+        
         // reference.setMember((Member)element.getAnchor());
         boolean required = false;
         Reference ref = element.getAnnotation(Reference.class);
@@ -143,7 +149,12 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         Type genericType = element.getGenericType();
         Class<?> baseType = getBaseType(rawType, genericType);
         try {
-            interfaceProcessorRegistry.introspect(reference, baseType);
+            JavaInterface callInterface = interfaceProcessorRegistry.introspect(baseType);
+            reference.getInterfaceContract().setInterface(callInterface);
+            if (callInterface.getCallbackClass() != null) {
+                JavaInterface callbackInterface = interfaceProcessorRegistry.introspect(callInterface.getCallbackClass());
+                reference.getInterfaceContract().setCallbackInterface(callbackInterface);
+            }
         } catch (InvalidInterfaceException e) {
             throw new ProcessingException(e);
         }

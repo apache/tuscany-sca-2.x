@@ -27,10 +27,13 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
@@ -41,34 +44,37 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
 
     private JavaFactory javaFactory;
+    private JavaInterfaceProcessorRegistry introspectionRegistry;
 
-    public JavaInterfaceProcessor(JavaFactory javaFactory) {
+    public JavaInterfaceProcessor(JavaFactory javaFactory, JavaInterfaceProcessorRegistry introspectionRegistry) {
         this.javaFactory = javaFactory;
+        this.introspectionRegistry = introspectionRegistry;
     }
     
     public JavaInterfaceProcessor() {
-        this(new DefaultJavaFactory());
+        this(new DefaultJavaFactory(), new JavaInterfaceProcessorRegistryImpl());
+    }
+    
+    private JavaInterface createJavaInterface(String interfaceName) {
+        JavaInterface javaInterface = javaFactory.createJavaInterface();
+        javaInterface.setUnresolved(true);
+        javaInterface.setName(interfaceName);
+        return javaInterface;
     }
 
     public JavaInterfaceContract read(XMLStreamReader reader) throws ContributionReadException {
         try {
-            
-    
             // Read an <interface.java>
             JavaInterfaceContract javaInterfaceContract = javaFactory.createJavaInterfaceContract();
             String interfaceName = reader.getAttributeValue(null, INTERFACE);
             if (interfaceName != null) {
-                JavaInterface javaInterface = javaFactory.createJavaInterface();
-                javaInterface.setUnresolved(true);
-                javaInterface.setName(interfaceName);
+                JavaInterface javaInterface = createJavaInterface(interfaceName);
                 javaInterfaceContract.setInterface(javaInterface);
             }
 
             String callbackInterfaceName = reader.getAttributeValue(null, CALLBACK_INTERFACE);
             if (callbackInterfaceName != null) {
-                JavaInterface javaCallbackInterface = javaFactory.createJavaInterface();
-                javaCallbackInterface.setUnresolved(true);
-                javaCallbackInterface.setName(callbackInterfaceName);
+                JavaInterface javaCallbackInterface = createJavaInterface(callbackInterfaceName);
                 javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
             }
     
@@ -90,11 +96,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             // Write an <interface.java>
             writer.writeStartElement(Constants.SCA10_NS, INTERFACE_JAVA);
             JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
-            if (javaInterface.getName() != null) {
+            if (javaInterface != null && javaInterface.getName() != null) {
                 writer.writeAttribute(INTERFACE, javaInterface.getName());
             }
             JavaInterface javaCallbackInterface = (JavaInterface)javaInterfaceContract.getCallbackInterface();
-            if (javaCallbackInterface.getName() != null) {
+            if (javaCallbackInterface != null && javaCallbackInterface.getName() != null) {
                 writer.writeAttribute(CALLBACK_INTERFACE, javaCallbackInterface.getName());
             }
             writer.writeEndElement();
@@ -104,8 +110,43 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         }
     }
     
-    public void resolve(JavaInterfaceContract model, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
+    private JavaInterface resolveJavaInterface(JavaInterface javaInterface, ArtifactResolver resolver) throws ContributionResolveException {
+        
+        if (javaInterface != null && javaInterface.isUnresolved()) {
+
+            // Resolve the Java interface
+            javaInterface = resolver.resolve(JavaInterface.class, javaInterface);
+            if (javaInterface.isUnresolved()) {
+
+                // If the Java interface has never been resolved yet, do it now
+                Class javaClass;
+                try {
+                    javaClass = Class.forName(javaInterface.getName(), true, Thread.currentThread().getContextClassLoader());
+                        
+                    // Introspect the Java interface and populate the interface and
+                    // operations
+                    javaInterface = introspectionRegistry.introspect(javaClass);
+                
+                } catch (ClassNotFoundException e) {
+                    throw new ContributionResolveException(e);
+                } catch (InvalidInterfaceException e) {
+                    throw new ContributionResolveException(e);
+                }
+                
+                resolver.add(javaInterface);
+            }
+        }
+        return javaInterface;
+    }
+    
+    public void resolve(JavaInterfaceContract javaInterfaceContract, ArtifactResolver resolver) throws ContributionResolveException {
+        
+        // Resolve the interface and callback interface
+        JavaInterface javaInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getInterface(), resolver);
+        javaInterfaceContract.setInterface(javaInterface);
+        
+        JavaInterface javaCallbackInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getCallbackInterface(), resolver);
+        javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
     }
     
     public void wire(JavaInterfaceContract model) throws ContributionWireException {

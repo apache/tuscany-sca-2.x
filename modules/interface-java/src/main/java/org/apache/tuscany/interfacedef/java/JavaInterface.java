@@ -55,4 +55,17 @@ public interface JavaInterface extends Interface {
      */
     void setJavaClass(Class<?> javaClass);
 
+    /**
+     * Returns the callback class specified in an @Callback annotation.
+     * 
+     * @return the callback class specified in an @Callback annotation
+     */
+    Class<?> getCallbackClass();
+
+    /**
+     * Sets the callback class specified in an @Callback annotation.
+     * 
+     * @param callbackClass the callback class specified in an @Callback annotation
+     */
+    void setCallbackClass(Class<?> callbackClass);
 }

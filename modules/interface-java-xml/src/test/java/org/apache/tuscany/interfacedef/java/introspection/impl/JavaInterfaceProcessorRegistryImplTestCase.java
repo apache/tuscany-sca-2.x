@@ -21,7 +21,6 @@ package org.apache.tuscany.interfacedef.java.introspection.impl;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
@@ -30,27 +29,19 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     private JavaInterfaceProcessorRegistryImpl impl;
-    private AssemblyFactory factory = new DefaultAssemblyFactory();
 
     public void testSimpleInterface() throws InvalidInterfaceException {
-        Contract contract = factory.createComponentService();
-        impl.introspect(contract, Simple.class);
-
-        JavaInterface intf = (JavaInterface)contract.getInterfaceContract().getInterface();
+        JavaInterface intf = (JavaInterface)impl.introspect(Simple.class);
 
         assertEquals(Simple.class, intf.getJavaClass());
         List<Operation> operations = intf.getOperations();
@@ -77,14 +68,13 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
 
     public void testUnregister() throws Exception {
         org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessor processor = createMock(org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessor.class);
-        processor.visitInterface(eq(Base.class), EasyMock.same((Class)null), isA(Contract.class));
+        processor.visitInterface(eq(Base.class));
         expectLastCall().once();
         replay(processor);
-        Contract contract = factory.createComponentService();
         impl.registerProcessor(processor);
-        impl.introspect(contract, Base.class);
+        impl.introspect(Base.class);
         impl.unregisterProcessor(processor);
-        impl.introspect(contract, Base.class);
+        impl.introspect(Base.class);
         verify(processor);
     }
 

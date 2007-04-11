@@ -52,7 +52,6 @@ import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.Intent;
@@ -379,25 +378,6 @@ abstract class BaseArtifactProcessor implements Constants {
     }
     
     /**
-     * Resolve an interface.
-     * @param interfaze
-     * @param resolver
-     * @return
-     * @throws ContributionResolveException
-     */
-    protected Interface resolveInterface(Interface interfaze, ArtifactResolver resolver) throws ContributionResolveException {
-        if (interfaze != null) {
-            interfaze = resolver.resolve(Interface.class, interfaze);
-            if (interfaze.isUnresolved()) {
-                extensionProcessor.resolve(interfaze, resolver);
-                interfaze.setUnresolved(false);
-                resolver.add(interfaze);
-            }
-        }
-        return interfaze;
-    }
-
-    /**
      * Resolve an implementation.
      * @param implementation
      * @param resolver
@@ -423,25 +403,17 @@ abstract class BaseArtifactProcessor implements Constants {
      */
     protected <C extends Contract> void resolveContracts(List<C> contracts, ArtifactResolver resolver) throws ContributionResolveException {
         for (Contract contract: contracts) {
+
+            // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
-            if (interfaceContract == null)
-                continue;
-            
-            // Resolve interface
-            Interface callInterface = interfaceContract.getInterface();
-            callInterface = resolveInterface(callInterface, resolver);
-            interfaceContract.setInterface(callInterface);
-    
-            // Resolve callback interface 
-            Interface callbackInterface = interfaceContract.getCallbackInterface();
-            callbackInterface = resolveInterface(callbackInterface, resolver);
-            interfaceContract.setCallbackInterface(callbackInterface);
-    
+            if (interfaceContract != null) {
+                extensionProcessor.resolve(interfaceContract, resolver);
+            }
+
             // Resolve bindings
             for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
                 Binding binding = contract.getBindings().get(i);
-                binding = resolver.resolve(Binding.class, binding);
-                contract.getBindings().set(i, binding);
+                extensionProcessor.resolve(binding, resolver);
             }
         }
     }
@@ -451,21 +423,14 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
-    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ArtifactResolver resolver) {
+    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ArtifactResolver resolver) throws ContributionResolveException {
         for (AbstractContract contract: contracts) {
+
+            // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
-            if (interfaceContract == null)
-                continue;
-            
-            // Resolve interface
-            Interface callInterface = interfaceContract.getInterface();
-            callInterface = resolver.resolve(Interface.class, callInterface);
-            interfaceContract.setInterface(callInterface);
-    
-            // Resolve callback interface 
-            Interface callbackInterface = interfaceContract.getCallbackInterface();
-            callbackInterface = resolver.resolve(Interface.class, callbackInterface);
-            interfaceContract.setCallbackInterface(callbackInterface);
+            if (interfaceContract != null) {
+                extensionProcessor.resolve(interfaceContract, resolver);
+            }
         }
     }
 

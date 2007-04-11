@@ -32,6 +32,8 @@ import org.apache.tuscany.implementation.java.introspection.ImplementationProces
 import org.apache.tuscany.implementation.java.introspection.ProcessingException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
@@ -133,9 +135,18 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
 
     public Service createService(Class<?> interfaze) throws InvalidInterfaceException {
         Service service = factory.createService();
+        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        service.setInterfaceContract(interfaceContract);
+
         // create a relative URI
         service.setName(interfaze.getSimpleName());
-        interfaceProcessorRegistry.introspect(service, interfaze);
+
+        JavaInterface callInterface = interfaceProcessorRegistry.introspect(interfaze);
+        service.getInterfaceContract().setInterface(callInterface);
+        if (callInterface.getCallbackClass() != null) {
+            JavaInterface callbackInterface = interfaceProcessorRegistry.introspect(callInterface.getCallbackClass());
+            service.getInterfaceContract().setCallbackInterface(callbackInterface);
+        }
         return service;
     }
 
