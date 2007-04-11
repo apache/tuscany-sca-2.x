@@ -30,8 +30,8 @@ import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
-import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -42,7 +42,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class JDKInvocationHandlerProxyTestCase extends TestCase {
-    private JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+    private JavaInterfaceIntrospectorExtensionPoint registry = new DefaultJavaInterfaceIntrospector();
     private Method clientHello;
 
     /**

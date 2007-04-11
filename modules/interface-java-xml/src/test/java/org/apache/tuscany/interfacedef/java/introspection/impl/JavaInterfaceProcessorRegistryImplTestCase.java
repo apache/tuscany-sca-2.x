@@ -33,12 +33,13 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
-    private JavaInterfaceProcessorRegistryImpl impl;
+    private DefaultJavaInterfaceIntrospector impl;
 
     public void testSimpleInterface() throws InvalidInterfaceException {
         JavaInterface intf = (JavaInterface)impl.introspect(Simple.class);
@@ -67,20 +68,20 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     }
 
     public void testUnregister() throws Exception {
-        org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessor processor = createMock(org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessor.class);
+        org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension processor = createMock(org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension.class);
         processor.visitInterface(eq(Base.class));
         expectLastCall().once();
         replay(processor);
-        impl.registerProcessor(processor);
+        impl.addIntrospectorExtension(processor);
         impl.introspect(Base.class);
-        impl.unregisterProcessor(processor);
+        impl.removeIntrospectorExtension(processor);
         impl.introspect(Base.class);
         verify(processor);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        impl = new JavaInterfaceProcessorRegistryImpl();
+        impl = new DefaultJavaInterfaceIntrospector();
 
     }
 

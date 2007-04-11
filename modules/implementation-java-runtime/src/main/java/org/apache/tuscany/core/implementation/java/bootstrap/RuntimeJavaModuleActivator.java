@@ -25,25 +25,25 @@ import java.util.Map;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
 import org.apache.tuscany.core.wire.jdk.JDKProxyService;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.introspection.ImplementationProcessorExtension;
-import org.apache.tuscany.implementation.java.introspection.IntrospectionRegistry;
-import org.apache.tuscany.implementation.java.introspection.impl.IntrospectionRegistryImpl;
-import org.apache.tuscany.implementation.java.processor.AllowsPassByReferenceProcessor;
-import org.apache.tuscany.implementation.java.processor.ConstructorProcessor;
-import org.apache.tuscany.implementation.java.processor.ContextProcessor;
-import org.apache.tuscany.implementation.java.processor.ConversationProcessor;
-import org.apache.tuscany.implementation.java.processor.DestroyProcessor;
-import org.apache.tuscany.implementation.java.processor.EagerInitProcessor;
-import org.apache.tuscany.implementation.java.processor.HeuristicPojoProcessor;
-import org.apache.tuscany.implementation.java.processor.InitProcessor;
-import org.apache.tuscany.implementation.java.processor.PropertyProcessor;
-import org.apache.tuscany.implementation.java.processor.ReferenceProcessor;
-import org.apache.tuscany.implementation.java.processor.ResourceProcessor;
-import org.apache.tuscany.implementation.java.processor.ScopeProcessor;
-import org.apache.tuscany.implementation.java.processor.ServiceProcessor;
+import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
+import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.ConstructorProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.ContextProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.ConversationProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.DestroyProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.EagerInitProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.InitProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.PropertyProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.ReferenceProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.ResourceProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.ScopeProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
-import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
@@ -60,8 +60,8 @@ public class RuntimeJavaModuleActivator implements ModuleActivator {
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
         map.put(ProxyService.class, new JDKProxyService());
-        map.put(IntrospectionRegistry.class, new IntrospectionRegistryImpl());
-        map.put(JavaInterfaceProcessorRegistry.class, new JavaInterfaceProcessorRegistryImpl());
+        map.put(JavaClassIntrospectorExtensionPoint.class, new DefaultJavaClassIntrospector());
+        map.put(JavaInterfaceIntrospectorExtensionPoint.class, new DefaultJavaInterfaceIntrospector());
         return map;
     }
 
@@ -69,11 +69,11 @@ public class RuntimeJavaModuleActivator implements ModuleActivator {
      * @see org.apache.tuscany.spi.bootstrap.ModuleActivator#start(org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry)
      */
     public void start(ExtensionPointRegistry registry) {
-        JavaInterfaceProcessorRegistry javaInterfaceProcessorRegistry = registry
-            .getExtensionPoint(JavaInterfaceProcessorRegistry.class);
+        JavaInterfaceIntrospectorExtensionPoint javaInterfaceProcessorRegistry = registry
+            .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
 
-        IntrospectionRegistry introspectionRegistry = registry.getExtensionPoint(IntrospectionRegistry.class);
-        ImplementationProcessorExtension[] extensions = new ImplementationProcessorExtension[] {new ConstructorProcessor(),
+        JavaClassIntrospectorExtensionPoint introspectionRegistry = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
+        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {new ConstructorProcessor(),
                                                                                                 new AllowsPassByReferenceProcessor(),
                                                                                                 new ContextProcessor(),
                                                                                                 new ConversationProcessor(),
@@ -88,10 +88,10 @@ public class RuntimeJavaModuleActivator implements ModuleActivator {
                                                                                                 new HeuristicPojoProcessor()
 
         };
-        for (ImplementationProcessorExtension e : extensions) {
+        for (BaseJavaClassIntrospectorExtension e : extensions) {
             e.setRegistry(introspectionRegistry);
-            e.setInterfaceProcessorRegistry(javaInterfaceProcessorRegistry);
-            introspectionRegistry.registerProcessor(e);
+            e.setInterfaceVisitorExtensionPoint(javaInterfaceProcessorRegistry);
+            introspectionRegistry.addExtension(e);
         }
 
         StAXArtifactProcessorRegistry artifactProcessorRegistry = registry
