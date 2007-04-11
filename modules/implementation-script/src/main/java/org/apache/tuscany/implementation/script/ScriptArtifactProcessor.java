@@ -108,7 +108,13 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
 
         scriptImplementation.setScriptSrc(readScript(scriptImplementation.getName()));
 
-        ComponentType componentType = resolver.resolve(ComponentType.class, scriptImplementation.getComponentType());
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        String scriptURI = cl.getResource(scriptImplementation.getName()).toString();
+        int lastDot = scriptURI.lastIndexOf('.');
+        String ctURI = scriptURI.substring(0, lastDot) + ".componentType";
+        ComponentType ct = scriptImplementation.getComponentType();
+        ct.setURI(ctURI);
+        ComponentType componentType = resolver.resolve(ComponentType.class, ct);
         if (componentType.isUnresolved()) {
             throw new ContributionResolveException("missing .componentType side file");
         }
