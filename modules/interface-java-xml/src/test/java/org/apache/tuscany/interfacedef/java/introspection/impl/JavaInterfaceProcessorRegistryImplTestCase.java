@@ -34,6 +34,8 @@ import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -68,8 +70,8 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     }
 
     public void testUnregister() throws Exception {
-        org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension extension = createMock(org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension.class);
-        extension.visitInterface(eq(Base.class));
+        JavaInterfaceIntrospectorExtension extension = createMock(JavaInterfaceIntrospectorExtension.class);
+        extension.visitInterface(EasyMock.isA(JavaInterface.class));
         expectLastCall().once();
         replay(extension);
         impl.addExtension(extension);
