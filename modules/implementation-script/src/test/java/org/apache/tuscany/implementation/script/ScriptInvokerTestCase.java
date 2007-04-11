@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.extension.script;
+package org.apache.tuscany.implementation.script;
 
 import java.lang.reflect.InvocationTargetException;
 
