@@ -47,6 +47,7 @@ public class BeanJavaImplementationImpl extends RootBeanDefinition implements Ja
 	private List<Object> extensions = new ArrayList<Object>();
 	private boolean unresolved;
 	private BeanDefinitionRegistry beanRegistry;
+        private String uri;
 	
 	public BeanJavaImplementationImpl(BeanDefinitionRegistry beanRegistry) {
 		this.beanRegistry = beanRegistry;
@@ -72,6 +73,14 @@ public class BeanJavaImplementationImpl extends RootBeanDefinition implements Ja
 	public void setName(String className) {
 		super.setBeanClassName(className);
 	}
+        
+        public String getURI() {
+            return uri;
+        }
+        
+        public void setURI(String uri) {
+            this.uri = uri;
+        }
 
 	public ConstrainingType getConstrainingType() {
 		return constrainingType;

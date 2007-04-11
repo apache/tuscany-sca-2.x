@@ -29,6 +29,18 @@ import org.apache.tuscany.policy.PolicySetAttachPoint;
  * @version $Rev$ $Date$
  */
 public interface ComponentType extends Base, IntentAttachPoint, PolicySetAttachPoint {
+    
+    /**
+     * Returns the URI of this component type.
+     * @return the URI of the component type
+     */
+    String getURI();
+    
+    /**
+     * Sets the URI of this component type.
+     * @param uri the URI of the component type
+     */
+    void setURI(String uri);
 
     /**
      * Returns a list of services that are offered.

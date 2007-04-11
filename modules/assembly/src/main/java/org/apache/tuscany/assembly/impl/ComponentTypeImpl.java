@@ -36,6 +36,7 @@ import org.apache.tuscany.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class ComponentTypeImpl extends BaseImpl implements ComponentType {
+    private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
     private List<Reference> references = new ArrayList<Reference>();
@@ -55,6 +56,7 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType {
      */
     public ComponentTypeImpl(ComponentType other) {
         super(other);
+        uri = other.getURI();
         constrainingType = other.getConstrainingType();
         getServices().clear();
         for (Service service: other.getServices()) {
@@ -69,6 +71,14 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType {
         }
         requiredIntents.addAll(other.getRequiredIntents());
         policySets.addAll(other.getPolicySets());
+    }
+    
+    public String getURI() {
+        return uri;
+    }
+    
+    public void setURI(String uri) {
+        this.uri = uri;
     }
 
     public ConstrainingType getConstrainingType() {
@@ -119,5 +129,27 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType {
             }
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return String.valueOf(getURI()).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else {
+            if (obj instanceof ComponentType) {
+                if (getURI() != null) {
+                    return getURI().equals(((ComponentType)obj).getURI());
+                } else {
+                    return ((ComponentType)obj).getURI() == null;
+                }
+            } else {
+                return false;
+            }
+        }
     }
 }
