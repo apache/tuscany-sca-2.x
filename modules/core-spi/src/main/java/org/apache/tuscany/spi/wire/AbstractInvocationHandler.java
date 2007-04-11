@@ -72,7 +72,7 @@ public abstract class AbstractInvocationHandler {
             msg.setCallbackUris(workContext.getCallbackUris());
             Operation operation = chain.getOperation();
             Interface contract = operation.getInterface();
-            if (contract.isConversational()) {
+            if (contract != null && contract.isConversational()) {
                 Operation.ConversationSequence sequence = chain.getOperation().getConversationSequence();
                 if (sequence == Operation.ConversationSequence.CONVERSATION_END) {
                     msg.setConversationSequence(TargetInvoker.END);

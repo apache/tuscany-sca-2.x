@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.core.util;
 
 import org.apache.tuscany.spi.component.WorkContext;
 
