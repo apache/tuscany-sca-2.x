@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -77,7 +77,7 @@ public interface Wire {
      * @return the service contract associated with the wire
      * @Deprecated
      */
-    Contract getSourceContract();
+    InterfaceContract getSourceContract();
 
     /**
      * Sets the contract associated with the source side of the wire
@@ -85,7 +85,7 @@ public interface Wire {
      * @param contract the contract associated with the wire
      * @Deprecated
      */
-    void setSourceContract(Contract contract);
+    void setSourceContract(InterfaceContract contract);
 
     /**
      * Returns the service contract associated with the the target side of the wire
@@ -93,7 +93,7 @@ public interface Wire {
      * @return the service contract associated with the wire
      * @Deprecated
      */
-    Contract getTargetContract();
+    InterfaceContract getTargetContract();
 
     /**
      * Sets the contract associated with the the target side of the wire
@@ -101,7 +101,7 @@ public interface Wire {
      * @param contract the contract associated with the wire
      * @Deprecated
      */
-    void setTargetContract(Contract contract);
+    void setTargetContract(InterfaceContract contract);
 
     /**
      * Returns true if the wire is optimizable and its invocation chains may be bypassed

@@ -27,9 +27,10 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 
 /**
- * Contains methods for mapping between an operation in a {@link org.apache.tuscany.spi.model.ServiceContract} and a
- * method defined by a Java interface
- *
+ * Contains methods for mapping between an operation in a
+ * {@link org.apache.tuscany.spi.model.ServiceContract} and a method defined by
+ * a Java interface
+ * 
  * @version $Rev$ $Date$
  */
 public final class JavaInterfaceUtil {
@@ -39,7 +40,7 @@ public final class JavaInterfaceUtil {
 
     /**
      * Return the method on the implementation class that matches the operation.
-     *
+     * 
      * @param implClass the implementation class or interface
      * @param operation the operation to match
      * @return the method described by the operation
@@ -57,6 +58,9 @@ public final class JavaInterfaceUtil {
      */
     private static  Class<?>[] getPhysicalTypes(Operation operation) {
         DataType<List<DataType>> inputType = operation.getInputType();
+        if(inputType==null) {
+            return new Class<?>[] {};
+        }
         List<DataType> types = inputType.getLogical();
         Class<?>[] javaTypes = new Class<?>[types.size()];
         for (int i = 0; i < javaTypes.length; i++) {
@@ -72,8 +76,8 @@ public final class JavaInterfaceUtil {
 
     /**
      * Searches a collection of operations for a match against the given method
-     *
-     * @param method     the method to match
+     * 
+     * @param method the method to match
      * @param operations the operations to match against
      * @return a matching operation or null
      * @Deprecated
@@ -89,7 +93,7 @@ public final class JavaInterfaceUtil {
 
     /**
      * Determines if the given operation matches the given method
-     *
+     * 
      * @return true if the operation matches, false if does not
      */
     private static  boolean match(Operation operation, Method method) {

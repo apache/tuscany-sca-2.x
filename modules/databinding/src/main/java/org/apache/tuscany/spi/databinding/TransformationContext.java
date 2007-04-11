@@ -21,12 +21,19 @@ package org.apache.tuscany.spi.databinding;
 import java.util.Map;
 
 import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
 
 /**
  * Context for data transformation
  * 
  */
 public interface TransformationContext {
+    
+    Operation getSourceOperation();
+    void setSourceOperation(Operation sourceOperation);
+    Operation getTargetOperation();
+    void setTargetOperation(Operation targetOperation);
+    
     /**
      * Get the source data type
      * 
@@ -67,6 +74,6 @@ public interface TransformationContext {
      * 
      * @return
      */
-    Map<Class<?>, Object> getMetadata();
+    Map<String, Object> getMetadata();
 
 }

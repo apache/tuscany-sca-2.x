@@ -39,7 +39,7 @@ public class JDKProxyTestCaseFIXME extends TestCase {
         Wire wire = new WireImpl();
         wire.setSourceUri(uri);
         Contract contract = new DefaultAssemblyFactory().createComponentReference();
-        wire.setSourceContract(contract);
+        wire.setSourceContract(contract.getInterfaceContract());
         TestInterface proxy = proxyService.createProxy(TestInterface.class, wire);
         assertTrue(Proxy.isProxyClass(proxy.getClass()));
     }

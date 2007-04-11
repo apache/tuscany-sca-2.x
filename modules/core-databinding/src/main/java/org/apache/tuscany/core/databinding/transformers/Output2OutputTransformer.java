@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.util.ElementInfo;
 import org.apache.tuscany.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.interfacedef.util.XMLType;
@@ -116,7 +117,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     public Object transform(Object response, TransformationContext context) {
         try {
             DataType<DataType> sourceType = context.getSourceDataType();
-            Operation sourceOp = (Operation)sourceType.getOperation();
+            Operation sourceOp = context.getSourceOperation();
             boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
             WrapperHandler sourceWrapperHandler = null;
             if (sourceWrapped) {
@@ -124,7 +125,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             }
 
             DataType<DataType> targetType = context.getTargetDataType();
-            Operation targetOp = (Operation)targetType.getOperation();
+            Operation targetOp = context.getTargetOperation();
             boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
             WrapperHandler targetWrapperHandler = null;
             if (targetWrapped) {
@@ -162,7 +163,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
                     // Object targetWrapper =
                     // targetWrapperHandler.create(wrapperElement, context);
                     DataType<XMLType> targetWrapperType =
-                        new DataType<XMLType>(targetType.getLogical().getDataBinding(), Object.class,
+                        new DataTypeImpl<XMLType>(targetType.getLogical().getDataBinding(), Object.class,
                                             new XMLType(wrapperElement));
                     Object targetWrapper =
                         mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context

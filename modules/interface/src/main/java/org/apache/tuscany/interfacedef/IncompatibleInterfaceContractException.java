@@ -17,49 +17,45 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.wire;
-
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.TuscanyException;
+package org.apache.tuscany.interfacedef;
 
 /**
  * Denotes imcompatible service contracts for a wire
- *
+ * 
  * @version $Rev$ $Date$
  */
-public class IncompatibleServiceContractException extends TuscanyException {
+public class IncompatibleInterfaceContractException extends Exception {
     private static final long serialVersionUID = 5127478601823295587L;
-    private final Contract source;
-    private final Contract target;
+    private final InterfaceContract source;
+    private final InterfaceContract target;
     private final Operation sourceOperation;
     private final Operation targetOperation;
 
-    public IncompatibleServiceContractException(String message, Contract source, Contract target) {
-        super(message, (String) null);
+    public IncompatibleInterfaceContractException(String message, InterfaceContract source, InterfaceContract target) {
+        super(message);
         this.source = source;
         this.target = target;
         this.sourceOperation = null;
         this.targetOperation = null;
     }
 
-
-    public IncompatibleServiceContractException(String message,
-                                                Contract source,
-                                                Contract target,
-                                                Operation sourceOperation, Operation targetOperation) {
-        super(message, (String) null);
+    public IncompatibleInterfaceContractException(String message,
+                                                  InterfaceContract source,
+                                                  InterfaceContract target,
+                                                  Operation sourceOperation,
+                                                  Operation targetOperation) {
+        super(message);
         this.source = source;
         this.target = target;
         this.sourceOperation = sourceOperation;
         this.targetOperation = targetOperation;
     }
 
-    public Contract getTarget() {
+    public InterfaceContract getTarget() {
         return target;
     }
 
-    public Contract getSource() {
+    public InterfaceContract getSource() {
         return source;
     }
 

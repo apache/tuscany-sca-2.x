@@ -38,7 +38,7 @@ public interface Mediator {
      * @param context 
      * @return
      */
-    Object mediate(Object source, DataType sourceDataType, DataType targetDataType, Map<Class<?>, Object> context);
+    Object mediate(Object source, DataType sourceDataType, DataType targetDataType, Map<String, Object> context);
     /**
      * Mediate the source data into the target which is a sink to receive the data
      * @param source The data to be mediated
@@ -51,7 +51,7 @@ public interface Mediator {
             Object target,
             DataType sourceDataType,
             DataType targetDataType,
-            Map<Class<?>, Object> context);
+            Map<String, Object> context);
     
     /**
      * Get the DataBinding registry

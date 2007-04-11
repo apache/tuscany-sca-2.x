@@ -22,8 +22,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.core.util.JavaIDLUtils;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -57,7 +57,7 @@ public final class WireUtils {
         for (Map.Entry<Operation, InvocationChain> entry : invocationChains.entrySet()) {
             Operation operation = entry.getKey();
             try {
-                Method method = JavaIDLUtils.findMethod(interfaze, operation);
+                Method method = JavaInterfaceUtil.findMethod(interfaze, operation);
                 chains.put(method, new ChainHolder(entry.getValue()));
             } catch (NoSuchMethodException e) {
                 throw new NoMethodForOperationException(operation.getName());

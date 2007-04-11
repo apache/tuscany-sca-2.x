@@ -32,6 +32,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
+import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
@@ -42,11 +45,12 @@ import commonj.sdo.impl.HelperProvider;
  * 
  * @version $Rev$ $Date$
  */
-public class ImportSDOLoader extends LoaderExtension {
+public class ImportSDOLoader implements StAXArtifactProcessor<ImportSDO> {
+    private StAXArtifactProcessorRegistry processorRegistry;
     private HelperContextRegistry helperContextRegistry;
-    
-    public ImportSDOLoader(LoaderRegistry registry, HelperContextRegistry helperContextRegistry) {
-        super(registry);
+
+    public ImportSDOLoader(HelperContextRegistry helperContextRegistry) {
+        super();
         this.helperContextRegistry = helperContextRegistry;
     }
 
@@ -54,9 +58,7 @@ public class ImportSDOLoader extends LoaderExtension {
         return IMPORT_SDO;
     }
 
-    public ModelObject load(ModelObject object,
-                            XMLStreamReader reader,
-                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ImportSDO read(XMLStreamReader reader) throws ContributionReadException {
         assert IMPORT_SDO.equals(reader.getName());
 
         HelperContext helperContext = null;
@@ -94,7 +96,7 @@ public class ImportSDOLoader extends LoaderExtension {
             }
         }
     }
-    
+
     private static void register(Class factoryClass, HelperContext helperContext) throws Exception {
         Field field = factoryClass.getField("INSTANCE");
         Object factory = field.get(null);
@@ -107,12 +109,12 @@ public class ImportSDOLoader extends LoaderExtension {
         method.invoke(factory, new Object[] {defaultContext});
     }
 
-    private void importWSDL(XMLStreamReader reader, DeploymentContext deploymentContext, HelperContext helperContext)
+    private void importWSDL(XMLStreamReader reader, HelperContext helperContext)
         throws LoaderException {
         String location = reader.getAttributeValue(null, "location");
         if (location == null) {
             location = reader.getAttributeValue(null, "wsdlLocation");
-        }    
+        }
         if (location != null) {
             try {
                 URL wsdlURL = null;
@@ -133,7 +135,8 @@ public class ImportSDOLoader extends LoaderExtension {
                 } finally {
                     xsdInputStream.close();
                 }
-                // FIXME: How do we associate the application HelperContext with the one
+                // FIXME: How do we associate the application HelperContext with
+                // the one
                 // imported by the composite
                 HelperContext defaultContext = HelperProvider.getDefaultContext();
                 xsdInputStream = wsdlURL.openStream();
@@ -150,7 +153,7 @@ public class ImportSDOLoader extends LoaderExtension {
                     }
                 } finally {
                     xsdInputStream.close();
-                }                
+                }
             } catch (IOException e) {
                 LoaderException sfe = new LoaderException(e.getMessage());
                 sfe.setResourceURI(location);

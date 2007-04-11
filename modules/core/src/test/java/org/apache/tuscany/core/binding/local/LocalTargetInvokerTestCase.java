@@ -26,11 +26,13 @@ import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
@@ -42,7 +44,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class LocalTargetInvokerTestCase extends TestCase {
-    private Contract serviceContract;
+    private InterfaceContract serviceContract;
     private Operation operation;
 
     public void testInvoke() {
@@ -109,7 +111,7 @@ public class LocalTargetInvokerTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        serviceContract = new ComponentServiceImpl();
+        serviceContract = new JavaInterfaceContractImpl();
         operation = new OperationImpl();
         operation.setName("foo");
     }

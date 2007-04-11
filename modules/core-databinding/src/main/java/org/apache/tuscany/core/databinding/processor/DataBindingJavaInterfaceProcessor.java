@@ -21,13 +21,13 @@ package org.apache.tuscany.core.databinding.processor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +36,11 @@ import java.util.Set;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.databinding.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessor;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.osoa.sca.annotations.Reference;
 
@@ -49,53 +49,36 @@ import org.osoa.sca.annotations.Reference;
  * 
  * @version $Rev$ $Date$
  */
-public class DataBindingJavaInterfaceProcessor implements JavaInterfaceProcessor {
-    private static final Class[] SIMPLE_JAVA_TYPES = {Byte.class,
-                                                      Character.class,
-                                                      Short.class,
-                                                      Integer.class,
-                                                      Long.class,
-                                                      Float.class,
-                                                      Double.class,
-                                                      Date.class,
-                                                      Calendar.class,
-                                                      GregorianCalendar.class,
-                                                      Duration.class,
-                                                      XMLGregorianCalendar.class,
-                                                      BigInteger.class,
-                                                      BigDecimal.class};
-
-    private static final Set<Class> SIMPLE_TYPE_SET = new HashSet<Class>(Arrays.asList(SIMPLE_JAVA_TYPES));
-
+public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospectorExtension {
     private DataBindingRegistry dataBindingRegistry;
 
-    public DataBindingJavaInterfaceProcessor(@Reference
-    DataBindingRegistry dataBindingRegistry) {
+    public DataBindingJavaInterfaceProcessor(@Reference DataBindingRegistry dataBindingRegistry) {
         super();
         this.dataBindingRegistry = dataBindingRegistry;
     }
 
-    public void visitInterface(Class<?> clazz, Class<?> callbackClass, Contract contract)
+    public void visitInterface(JavaInterface javaInterface)
         throws InvalidInterfaceException {
-        if (!contract.getInterface().isRemotable()) {
+        if (!javaInterface.isRemotable()) {
             return;
         }
-        List<Operation> operations = contract.getInterface().getOperations();
-        processInterface(clazz, contract, operations);
-        if (callbackClass != null) {
-            List<Operation> callbackOperations = contract.getCallbackInterface().getOperations();
-            processInterface(callbackClass, contract, callbackOperations);
-        }
+        List<Operation> operations = javaInterface.getOperations();
+        processInterface(javaInterface, operations);
     }
-
-    private void processInterface(Class<?> clazz, Contract contract, List<Operation> operations) {
+    
+    private void processInterface(JavaInterface javaInterface, List<Operation> operations) {
+        Class<?> clazz = javaInterface.getJavaClass();
         // IDLMapping interfaceMapping = clazz.getAnnotation(IDLMapping.class);
         DataType interfaceDataType = clazz.getAnnotation(DataType.class);
         if (interfaceDataType != null) {
-            contract.setDataBinding(interfaceDataType.name());
+            javaInterface.setDataBinding(interfaceDataType.name());
+        }
+        Map<String, Operation> opMap = new HashMap<String, Operation>();
+        for(Operation op: javaInterface.getOperations()) {
+            opMap.put(op.getName(), op);
         }
         for (Method method : clazz.getMethods()) {
-            Operation operation = operations.get(method.getName());
+            Operation operation = opMap.get(method.getName());
             DataType operationDataType = method.getAnnotation(DataType.class);
             if (operationDataType == null) {
                 operationDataType = interfaceDataType;
@@ -105,17 +88,6 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceProcessor
                 operation.setDataBinding(operationDataType.name());
                 // FIXME: [rfeng] Keep data context as metadata?
             }
-            // IDLMapping operationMapping =
-            // clazz.getAnnotation(IDLMapping.class);
-            // if (operationMapping == null) {
-            // operationMapping = interfaceMapping;
-            // }
-            //            
-            // if (operationMapping != null) {
-            // operation.setDataBinding(operationMapping.dataBinding());
-            // operation.setWrapperStyle(operationMapping.wrapperStyle());
-            // }
-            // String dataBinding = operation.getDataBinding();
 
             Annotation[] annotations = null;
             if (operationDataType != null) {

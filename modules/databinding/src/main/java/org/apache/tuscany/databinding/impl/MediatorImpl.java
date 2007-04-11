@@ -62,7 +62,7 @@ public class MediatorImpl implements Mediator {
     public Object mediate(Object source,
                           DataType sourceDataType,
                           DataType targetDataType,
-                          Map<Class<?>, Object> metadata) {
+                          Map<String, Object> metadata) {
         if (sourceDataType == null) {
             sourceDataType = dataBindingRegistry.introspectType(source);
         }
@@ -101,7 +101,7 @@ public class MediatorImpl implements Mediator {
                                                               int size,
                                                               int index,
                                                               Transformer transformer,
-                                                              Map<Class<?>, Object> metadata) {
+                                                              Map<String, Object> metadata) {
         DataType sourceType =
             (index == 0) ? sourceDataType : new DataTypeImpl<Object>(transformer.getSourceDataBinding(),
                                                                  Object.class, null);
@@ -119,7 +119,7 @@ public class MediatorImpl implements Mediator {
                         Object target,
                         DataType sourceDataType,
                         DataType targetDataType,
-                        Map<Class<?>, Object> metadata) {
+                        Map<String, Object> metadata) {
         if (source == null) {
             // Shortcut for null value
             return;

@@ -24,15 +24,16 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.util.FaultException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.ExceptionHandler;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.idl.ServiceFaultException;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
@@ -48,16 +49,16 @@ public class DataBindingInteceptor implements Interceptor {
 
     private Component composite;
 
-    private Operation<?> sourceOperation;
+    private Operation sourceOperation;
 
-    private Operation<?> targetOperation;
+    private Operation targetOperation;
 
     private Mediator mediator;
 
     public DataBindingInteceptor(ComponentManager componentManager,
                                  Wire wire,
-                                 Operation<?> sourceOperation,
-                                 Operation<?> targetOperation) {
+                                 Operation sourceOperation,
+                                 Operation targetOperation) {
         super();
         this.sourceOperation = sourceOperation;
         this.targetOperation = targetOperation;
@@ -95,12 +96,10 @@ public class DataBindingInteceptor implements Interceptor {
         // FIXME: Should we fix the Operation model so that getOutputType
         // returns DataType<DataType<T>>?
         DataType<DataType> targetType =
-            new DataType<DataType>(DataBinding.IDL_OUTPUT, Object.class, targetOperation.getOutputType());
+            new DataTypeImpl<DataType>(DataBinding.IDL_OUTPUT, Object.class, targetOperation.getOutputType());
 
-        targetType.setOperation(targetOperation.getOutputType().getOperation());
         DataType<DataType> sourceType =
-            new DataType<DataType>(DataBinding.IDL_OUTPUT, Object.class, sourceOperation.getOutputType());
-        sourceType.setOperation(sourceOperation.getOutputType().getOperation());
+            new DataTypeImpl<DataType>(DataBinding.IDL_OUTPUT, Object.class, sourceOperation.getOutputType());
 
         if (resultMsg.isFault()) {
 
@@ -121,8 +120,8 @@ public class DataBindingInteceptor implements Interceptor {
                 DataType targetDataType = null;
                 for (DataType exType : targetOperation.getFaultTypes()) {
                     if (((Class)exType.getPhysical()).isInstance(result)) {
-                        if (result instanceof ServiceFaultException) {
-                            if (((ServiceFaultException)result).isMatchingType(exType.getLogical())) {
+                        if (result instanceof FaultException) {
+                            if (((FaultException)result).isMatchingType(exType.getLogical())) {
                                 targetDataType = exType;
                                 break;
                             }
@@ -184,8 +183,10 @@ public class DataBindingInteceptor implements Interceptor {
         if (sourceType == targetType || (sourceType != null && sourceType.equals(targetType))) {
             return source;
         }
-        Map<Class<?>, Object> metadata = new HashMap<Class<?>, Object>();
-        metadata.put(Component.class, composite);
+        Map<String, Object> metadata = new HashMap<String, Object>();
+        metadata.put(Component.class.getName(), composite);
+        metadata.put("source.operation", sourceOperation);
+        metadata.put("target.operation", targetOperation);
         return mediator.mediate(source, sourceType, targetType, metadata);
     }
 
@@ -219,13 +220,13 @@ public class DataBindingInteceptor implements Interceptor {
         if (sourceType == targetType || (sourceType != null && sourceType.equals(targetType))) {
             return source;
         }
-        Map<Class<?>, Object> metadata = new HashMap<Class<?>, Object>();
-        metadata.put(Component.class, composite);
+        Map<String, Object> metadata = new HashMap<String, Object>();
+        metadata.put(Component.class.getName(), composite);
 
-        DataType<DataType<?>> eSourceDataType =
-            new DataType<DataType<?>>("idl:fault", sourceExType.getPhysical(), sourceType);
-        DataType<DataType<?>> eTargetDataType =
-            new DataType<DataType<?>>("idl:fault", targetExType.getPhysical(), targetType);
+        DataType<DataType> eSourceDataType =
+            new DataTypeImpl<DataType>("idl:fault", sourceExType.getPhysical(), sourceType);
+        DataType<DataType> eTargetDataType =
+            new DataTypeImpl<DataType>("idl:fault", targetExType.getPhysical(), targetType);
 
         return mediator.mediate(source, eSourceDataType, eTargetDataType, metadata);
     }

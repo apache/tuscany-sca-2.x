@@ -318,11 +318,11 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
             return parseBase64Binary(value);
         } else if (type.equals(XSD_QNAME)) {
             NamespaceContext namespaceContext =
-                (NamespaceContext)((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
+                (NamespaceContext)((context != null) ? context.getMetadata().get(NamespaceContext.class.getName()) : null);
             return parseQName(value, namespaceContext);
         } else if (type.equals(XSD_NOTATION)) {
             NamespaceContext namespaceContext =
-                (NamespaceContext)((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
+                (NamespaceContext)((context != null) ? context.getMetadata().get(NamespaceContext.class.getName()) : null);
             return parseQName(value, namespaceContext);
         } else if (type.equals(XSD_YEAR)) {
             return factory.newXMLGregorianCalendar(value);
@@ -375,7 +375,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
             }
         } else if (obj instanceof QName) {
             NamespaceContext namespaceContext =
-                (NamespaceContext)((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
+                (NamespaceContext)((context != null) ? context.getMetadata().get(NamespaceContext.class.getName()) : null);
             return printQName((QName)obj, namespaceContext);
         }
         return obj.toString();

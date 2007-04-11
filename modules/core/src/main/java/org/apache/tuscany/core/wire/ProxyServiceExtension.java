@@ -20,10 +20,11 @@ package org.apache.tuscany.core.wire;
 
 import java.util.List;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
@@ -33,6 +34,7 @@ import org.apache.tuscany.spi.wire.ProxyService;
  */
 public abstract class ProxyServiceExtension implements ProxyService {
     protected WorkContext context;
+    protected InterfaceContractMapper contractMapper;
 
     protected ProxyServiceExtension(WorkContext context) {
         this.context = context;
@@ -48,73 +50,9 @@ public abstract class ProxyServiceExtension implements ProxyService {
         return null;
     }
 
-    public boolean checkCompatibility(Contract source, Contract target, boolean ignoreCallback, boolean silent)
-        throws IncompatibleServiceContractException {
-        if (source == target) {
-            // Shortcut for performance
-            return true;
-        }
-        if (source.getInterfaceContract().getInterface().isRemotable() != target.getInterfaceContract().getInterface().isRemotable()) {
-            if (!silent) {
-                throw new IncompatibleServiceContractException("Remotable settings do not match", source, target);
-            } else {
-                return false;
-            }
-        }
-        if (source.getInterfaceContract().getInterface().isConversational() != target.getInterfaceContract().getInterface().isConversational()) {
-            if (!silent) {
-                throw new IncompatibleServiceContractException("Interaction scopes do not match", source, target);
-            } else {
-                return false;
-            }
-        }
-
-        for (Operation operation : source.getInterfaceContract().getInterface().getOperations()) {
-            Operation targetOperation = getOperation(target.getInterfaceContract().getInterface().getOperations(), operation.getName());
-            if (targetOperation == null) {
-                if (!silent) {
-                    throw new IncompatibleServiceContractException("Operation not found on target", source, target);
-                } else {
-                    return false;
-                }
-            }
-            if (!operation.equals(targetOperation)) {
-                if (!silent) {
-                    throw new IncompatibleServiceContractException("Target operations are not compatible", source,
-                                                                   target);
-                } else {
-                    return false;
-                }
-            }
-        }
-
-        if (ignoreCallback) {
-            return true;
-        }
-
-        if (source.getInterfaceContract().getCallbackInterface() != null) {
-            for (Operation operation : source.getInterfaceContract().getCallbackInterface().getOperations()) {
-                Operation targetOperation = getOperation(target.getInterfaceContract().getCallbackInterface().getOperations(), operation
-                    .getName());
-                if (targetOperation == null) {
-                    if (!silent) {
-                        throw new IncompatibleServiceContractException("Callback operation not found on target",
-                                                                       source, target, null, targetOperation);
-                    } else {
-                        return false;
-                    }
-                }
-                if (!operation.equals(targetOperation)) {
-                    if (!silent) {
-                        throw new IncompatibleServiceContractException("Target callback operation is not compatible",
-                                                                       source, target, operation, targetOperation);
-                    } else {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+    public boolean checkCompatibility(InterfaceContract source, InterfaceContract target, boolean ignoreCallback, boolean silent)
+        throws IncompatibleInterfaceContractException {
+        return contractMapper.checkCompatibility(source, target, ignoreCallback, silent);
     }
 
 }

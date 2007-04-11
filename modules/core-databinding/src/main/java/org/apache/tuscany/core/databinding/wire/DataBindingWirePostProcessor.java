@@ -21,10 +21,10 @@ package org.apache.tuscany.core.databinding.wire;
 
 import java.util.Map;
 
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
@@ -50,19 +50,19 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
     }
 
     public void process(Wire wire) {
-        ServiceContract<?> sourceContract = wire.getSourceContract();
-        ServiceContract<?> targetContract = wire.getTargetContract();
+        InterfaceContract sourceContract = wire.getSourceContract();
+        InterfaceContract targetContract = wire.getTargetContract();
         if (targetContract == null) {
             targetContract = sourceContract;
         }
         if (sourceContract == targetContract) {
             return;
         }
-        Map<Operation<?>, InvocationChain> chains = wire.getInvocationChains();
-        for (Map.Entry<Operation<?>, InvocationChain> entry : chains.entrySet()) {
+        Map<Operation, InvocationChain> chains = wire.getInvocationChains();
+        for (Map.Entry<Operation, InvocationChain> entry : chains.entrySet()) {
             String opName = entry.getKey().getName();
-            Operation<?> sourceOperation = sourceContract.getOperation(opName);
-            Operation<?> targetOperation = targetContract.getOperation(opName);
+            Operation sourceOperation = sourceContract.getOperation(opName);
+            Operation targetOperation = targetContract.getOperation(opName);
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null && targetDataBinding == null) {
@@ -81,16 +81,16 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         }
 
         // Object targetAddress = UriHelper.getBaseName(source.getUri());
-        Map<Operation<?>, InvocationChain> callbackChains = wire.getCallbackInvocationChains();
+        Map<Operation, InvocationChain> callbackChains = wire.getCallbackInvocationChains();
         if (callbackChains == null) {
             // callback chains could be null
             return;
         }
 
-        for (Map.Entry<Operation<?>, InvocationChain> entry : callbackChains.entrySet()) {
+        for (Map.Entry<Operation, InvocationChain> entry : callbackChains.entrySet()) {
             String opName = entry.getKey().getName();
-            Operation<?> sourceOperation = sourceContract.getCallbackOperations().get(opName);
-            Operation<?> targetOperation = targetContract.getCallbackOperations().get(opName);
+            Operation sourceOperation = sourceContract.getCallbackOperations().get(opName);
+            Operation targetOperation = targetContract.getCallbackOperations().get(opName);
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null && targetDataBinding == null) {

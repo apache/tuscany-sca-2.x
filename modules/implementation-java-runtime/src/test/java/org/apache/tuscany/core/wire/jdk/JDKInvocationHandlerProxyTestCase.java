@@ -60,7 +60,7 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
             InvocationChain chain = new InvocationChainImpl(operation);
             wire.addInvocationChain(operation, chain);
         }
-        wire.setSourceContract(contract);
+        wire.setSourceContract(contract.getInterfaceContract());
         wire.setSourceUri(URI.create("foo#bar"));
         TargetInvoker targetInvoker = EasyMock.createMock(TargetInvoker.class);
         MessageImpl response = new MessageImpl();
