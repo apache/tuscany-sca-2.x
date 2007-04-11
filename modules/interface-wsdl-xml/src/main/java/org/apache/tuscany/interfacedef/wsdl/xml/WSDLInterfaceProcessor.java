@@ -35,7 +35,6 @@ import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
-import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultXMLSchemaRegistry;
 import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
@@ -55,7 +54,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     }
     
     public WSDLInterfaceProcessor() {
-        this(new DefaultWSDLFactory(), new DefaultWSDLInterfaceIntrospector(new DefaultXMLSchemaRegistry()));
+        this(new DefaultWSDLFactory(), new DefaultWSDLInterfaceIntrospector());
     }
 
     /**
@@ -169,7 +168,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                         // Introspect the WSDL portType and add the resulting
                         // WSDLInterface to the resolver
                         try {
-                            wsdlInterface = wsdlIntrospector.introspect(portType);
+                            wsdlInterface = wsdlIntrospector.introspect(portType, wsdlDefinition.getInlinedSchemas(), resolver);
                         } catch (InvalidInterfaceException e) {
                             throw new ContributionResolveException(e);
                         }

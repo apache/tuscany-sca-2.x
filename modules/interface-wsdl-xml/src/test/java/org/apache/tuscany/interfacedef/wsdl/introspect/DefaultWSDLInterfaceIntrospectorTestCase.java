@@ -21,9 +21,7 @@ package org.apache.tuscany.interfacedef.wsdl.introspect;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
-import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
@@ -34,8 +32,11 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
+import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 
 /**
  * Test case for InterfaceWSDLIntrospectorImpl
@@ -44,8 +45,9 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
     private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
     private WSDLDocumentProcessor registry;
-    private XMLSchemaRegistry schemaRegistry;
     private PortType portType;
+    private ArtifactResolver resolver;
+    private WSDLDefinition definition;
 
     /**
      * @see junit.framework.TestCase#setUp()
@@ -53,16 +55,15 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = new WSDLDocumentProcessor();
-        schemaRegistry = new DefaultXMLSchemaRegistry();
+        resolver = new DefaultArtifactResolver();
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        Definition definition = registry.read(url).getDefinition();
-        schemaRegistry.loadSchemas(definition);
-        portType = definition.getPortType(PORTTYPE_NAME);
+        definition = registry.read(url);
+        portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
     }
 
     public final void testIntrospectPortType() throws InvalidInterfaceException {
-        DefaultWSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(schemaRegistry);
-        WSDLInterface contract = introspector.introspect(portType);
+        DefaultWSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector();
+        WSDLInterface contract = introspector.introspect(portType, definition.getInlinedSchemas(), resolver);
         Assert.assertEquals(contract.getName().getLocalPart(), "StockQuotePortType");
         List<Operation> operations = contract.getOperations();
         Assert.assertEquals(1, operations.size());

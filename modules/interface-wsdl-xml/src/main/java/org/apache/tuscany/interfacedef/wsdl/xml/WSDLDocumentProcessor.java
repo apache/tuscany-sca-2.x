@@ -41,8 +41,6 @@ import org.apache.tuscany.services.spi.contribution.ContributionRuntimeException
 import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.URLArtifactProcessor;
-import org.apache.ws.commons.schema.XmlSchema;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -153,13 +151,11 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
             // Read inline schemas 
             Types types = definition.getTypes();
             if (types != null) {
-                XmlSchemaCollection collection = new XmlSchemaCollection();
-                collection.setSchemaResolver(new URIResolverImpl());
+                wsdlDefinition.getInlinedSchemas().setSchemaResolver(new URIResolverImpl());
                 for (Object ext : types.getExtensibilityElements()) {
                     if (ext instanceof Schema) {
                         Element element = ((Schema)ext).getElement();
-                        XmlSchema s = collection.read(element, element.getBaseURI());
-                        wsdlDefinition.getInlinedSchemas().add(s);
+                        wsdlDefinition.getInlinedSchemas().read(element, element.getBaseURI());
                     }
                 }
             }
