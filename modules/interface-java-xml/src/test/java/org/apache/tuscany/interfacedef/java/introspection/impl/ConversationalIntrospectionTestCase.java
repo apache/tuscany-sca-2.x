@@ -21,12 +21,10 @@ package org.apache.tuscany.interfacedef.java.introspection.impl;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidOperationException;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 
@@ -47,9 +45,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     }
 
     public void testServiceContractConversationalInformationIntrospection() throws Exception {
-        Contract contract = factory.createComponentService();
-        registry.introspect(contract, Foo.class);
-        Interface i = contract.getInterfaceContract().getInterface();
+        Interface i = registry.introspect(Foo.class);
         assertNotNull(i);
         assertTrue(i.isConversational());
         Operation.ConversationSequence seq = getOperation(i, "operation").getConversationSequence();
@@ -60,8 +56,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
 
     public void testBadServiceContract() throws Exception {
         try {
-            Contract contract = factory.createComponentService();
-            registry.introspect(contract, BadFoo.class);
+            registry.introspect(BadFoo.class);
             fail();
         } catch (InvalidOperationException e) {
             // expected
@@ -69,10 +64,9 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     }
 
     public void testNonConversationalInformationIntrospection() throws Exception {
-        Contract contract = factory.createComponentService();
-        registry.introspect(contract, NonConversationalFoo.class);
-        assertFalse(contract.getInterfaceContract().getInterface().isConversational());
-        Operation.ConversationSequence seq = getOperation(contract.getInterfaceContract().getInterface(), "operation")
+        Interface i = registry.introspect(NonConversationalFoo.class);
+        assertFalse(i.isConversational());
+        Operation.ConversationSequence seq = getOperation(i, "operation")
             .getConversationSequence();
         assertEquals(Operation.ConversationSequence.NO_CONVERSATION, seq);
     }

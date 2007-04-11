@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
@@ -35,7 +34,6 @@ import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessor;
 import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
@@ -69,7 +67,16 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         processors.remove(processor);
     }
 
-    public void introspect(Contract contract, Class<?> type) throws InvalidInterfaceException {
+    public JavaInterface introspect(Class<?> type) throws InvalidInterfaceException {
+        JavaInterface javaInterface = javaFactory.createJavaInterface();
+        javaInterface.setJavaClass(type);
+
+        boolean remotable = type.isAnnotationPresent(Remotable.class);
+        javaInterface.setRemotable(remotable);
+        
+        boolean conversational = type.isAnnotationPresent(Conversational.class);
+        javaInterface.setConversational(conversational);
+        
         Class<?> callbackClass = null;
         org.osoa.sca.annotations.Callback callback = type.getAnnotation(org.osoa.sca.annotations.Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
@@ -77,32 +84,14 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         } else if (callback != null && Void.class.equals(callback.value())) {
             throw new InvalidCallbackException("No callback interface specified on annotation");
         }
-        introspect(contract, type, callbackClass);
-    }
-
-    public void introspect(Contract contract, Class<?> type, Class<?> callback) throws InvalidInterfaceException {
-        JavaInterface javaInterface = javaFactory.createJavaInterface();
-        javaInterface.setJavaClass(type);
-        boolean remotable = type.isAnnotationPresent(Remotable.class);
-        javaInterface.setRemotable(remotable);
-        // Scope interactionScope = type.getAnnotation(Scope.class);
-        boolean conversational = type.isAnnotationPresent(Conversational.class);
-        javaInterface.setConversational(conversational);
-        JavaInterfaceContract javaInterfaceContract = javaFactory.createJavaInterfaceContract();
-        contract.setInterfaceContract(javaInterfaceContract);
-        javaInterfaceContract.setInterface(javaInterface);
+        javaInterface.setCallbackClass(callbackClass);
+        
         javaInterface.getOperations().addAll(getOperations(type, remotable, conversational).values());
 
-        if (callback != null) {
-            JavaInterface callbackInterface = javaFactory.createJavaInterface();
-            callbackInterface.setJavaClass(callback);
-            javaInterfaceContract.setCallbackInterface(callbackInterface);
-            callbackInterface.getOperations().addAll(getOperations(callback, remotable, conversational).values());
-        }
-
         for (JavaInterfaceProcessor processor : processors) {
-            processor.visitInterface(type, callback, contract);
+            processor.visitInterface(type);
         }
+        return javaInterface;
     }
 
     private <T> Map<String, Operation> getOperations(Class<T> type, boolean remotable, boolean conversational)

@@ -35,6 +35,7 @@ public class BeanJavaInterfaceImpl implements JavaInterface {
 
 	private String className;
 	private Class<?> javaClass;
+        private Class<?> callbackClass;
 	private boolean conversational;
 	private boolean remotable;
 	List<Intent> requiredIntents = new ArrayList<Intent>();
@@ -62,6 +63,14 @@ public class BeanJavaInterfaceImpl implements JavaInterface {
 	public void setJavaClass(Class<?> javaClass) {
 		this.javaClass = javaClass;
 	}
+        
+        public Class<?> getCallbackClass() {
+            return callbackClass;
+        }
+        
+        public void setCallbackClass(Class<?> callbackClass) {
+            this.callbackClass = callbackClass;
+        }
 
 	public boolean isConversational() {
 		return conversational;

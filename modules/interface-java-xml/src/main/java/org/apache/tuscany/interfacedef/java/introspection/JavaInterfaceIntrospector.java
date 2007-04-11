@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.interfacedef.java.introspection;
 
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 
 /**
  * Processor for creating JavaServiceContract definitions from Java Classes.
@@ -34,13 +34,6 @@ public interface JavaInterfaceIntrospector {
      * @param type the interface to inspect
      * @return a JavaServiceContract corresponding to the Java interface
      */
-    void introspect(Contract contract, Class<?> type) throws InvalidInterfaceException;
-    /**
-     * @param contract
-     * @param type
-     * @param callback
-     * @throws InvalidInterfaceException
-     */
-    void introspect(Contract contract, Class<?> type, Class<?> callback) throws InvalidInterfaceException;
-
+    JavaInterface introspect(Class<?> type) throws InvalidInterfaceException;
+    
 }
