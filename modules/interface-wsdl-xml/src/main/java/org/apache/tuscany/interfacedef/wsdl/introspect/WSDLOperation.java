@@ -60,8 +60,8 @@ public class WSDLOperation {
     protected javax.wsdl.Operation operation;
     protected Operation operationModel;
     protected DataType<List<DataType>> inputType;
-    protected DataType<XMLType> outputType;
-    protected List<DataType<XMLType>> faultTypes;
+    protected DataType outputType;
+    protected List<DataType> faultTypes;
     private String dataBinding;
 
     /**
@@ -145,10 +145,10 @@ public class WSDLOperation {
      * @return
      * @throws NotSupportedWSDLException
      */
-    public List<DataType<XMLType>> getFaultTypes() throws InvalidWSDLException {
+    public List<DataType> getFaultTypes() throws InvalidWSDLException {
         if (faultTypes == null) {
             Collection faults = operation.getFaults().values();
-            faultTypes = new ArrayList<DataType<XMLType>>();
+            faultTypes = new ArrayList<DataType>();
             for (Object f : faults) {
                 Fault fault = (Fault)f;
                 Message faultMsg = fault.getMessage();
@@ -186,21 +186,13 @@ public class WSDLOperation {
             boolean oneway = (operation.getOutput() == null);
             operationModel = new OperationImpl();
             operationModel.setName(operation.getName());
-            operationModel.getFaultTypes().addAll(getFaultTypes());
+            operationModel.setFaultTypes(getFaultTypes());
             operationModel.setNonBlocking(oneway);
             operationModel.setConversationSequence(Operation.ConversationSequence.NO_CONVERSATION);
-            if (isWrapperStyle()) {
-                WrapperInfo wrapperInfo = getWrapper().getWrapperInfo();
-                operationModel.setInputType(wrapperInfo.getUnwrappedInputType());
-                operationModel.setOutputType(wrapperInfo.getUnwrappedOutputType());
-            } else {
-                List<DataType> inputTypes = new ArrayList<DataType>();
-                inputTypes.add(getInputType());
-                DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>("idl:unwrapped.input", Object[].class,
-                                                                               inputTypes);
-                operationModel.setInputType(inputType);
-                operationModel.setOutputType(getOutputType());
-            }
+            operationModel.setInputType(getInputType());
+            operationModel.setOutputType(getOutputType());
+            
+            // FIXME: Need to set the wrapper style flag on the operation 
         }
         return operationModel;
     }
