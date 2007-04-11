@@ -34,6 +34,12 @@
             <artifactId>tuscany-interface</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.ws.commons.schema</groupId>
+            <artifactId>XmlSchema</artifactId>
+            <version>1.2</version>
+        </dependency>
 
          <dependency>
              <groupId>wsdl4j</groupId>
