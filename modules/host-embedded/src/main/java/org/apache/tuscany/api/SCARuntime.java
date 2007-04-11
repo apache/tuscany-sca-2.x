@@ -74,7 +74,7 @@ public abstract class SCARuntime {
      * of the implementation class. Otherwise, if the resource
      * "META-INF/services/org.apache.tuscany.api.SCARuntime" can be loaded from
      * the supplied classloader. Otherwise, it will use
-     * "org.apache.tuscany.runtime.embedded.DefaultSCARuntime" as the default.
+     * "org.apache.tuscany.host.embedded.DefaultSCARuntime" as the default.
      * The named class is loaded from the supplied classloader and instantiated
      * using its default (no-arg) constructor.
      * 
@@ -94,7 +94,7 @@ public abstract class SCARuntime {
                 className = getServiceName(classLoader, name);
             }
             if (className == null) {
-                className = "org.apache.tuscany.runtime.embedded.DefaultSCARuntime";
+                className = "org.apache.tuscany.host.embedded.DefaultSCARuntime";
             }
             Class cls = Class.forName(className, true, classLoader);
             return (SCARuntime)cls.newInstance(); // NOPMD lresende

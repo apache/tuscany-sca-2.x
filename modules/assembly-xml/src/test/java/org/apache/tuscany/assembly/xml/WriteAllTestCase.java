@@ -27,9 +27,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
-import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
-import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
 import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 

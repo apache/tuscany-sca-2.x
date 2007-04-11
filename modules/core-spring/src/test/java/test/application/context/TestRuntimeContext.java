@@ -21,10 +21,10 @@ package test.application.context;
 import java.io.InputStream;
 
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.xml.impl.ComponentTypeProcessor;
-import org.apache.tuscany.assembly.xml.impl.CompositeProcessor;
-import org.apache.tuscany.assembly.xml.impl.ConstrainingTypeProcessor;
-import org.apache.tuscany.bean.context.CompositeApplicationContext;
+import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
+import org.apache.tuscany.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.core.bean.context.CompositeApplicationContext;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.services.spi.contribution.ContributionException;

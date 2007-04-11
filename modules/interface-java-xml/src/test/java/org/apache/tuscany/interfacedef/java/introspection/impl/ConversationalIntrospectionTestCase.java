@@ -25,6 +25,7 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidOperationException;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 
@@ -33,7 +34,7 @@ import org.osoa.sca.annotations.EndsConversation;
  */
 public class ConversationalIntrospectionTestCase extends TestCase {
     private AssemblyFactory factory = new DefaultAssemblyFactory();
-    private JavaInterfaceProcessorRegistryImpl registry = new JavaInterfaceProcessorRegistryImpl();
+    private DefaultJavaInterfaceIntrospector registry = new DefaultJavaInterfaceIntrospector();
 
     private Operation getOperation(Interface i, String name) {
         for (Operation op : i.getOperations()) {

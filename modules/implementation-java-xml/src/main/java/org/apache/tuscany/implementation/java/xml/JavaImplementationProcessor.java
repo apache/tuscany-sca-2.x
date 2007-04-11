@@ -33,8 +33,8 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspection.IntrospectionRegistry;
-import org.apache.tuscany.implementation.java.introspection.impl.IntrospectionRegistryImpl;
+import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
@@ -46,11 +46,11 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
-    private IntrospectionRegistry introspectionRegistry;
+    private JavaClassIntrospectorExtensionPoint introspectionRegistry;
 
     public JavaImplementationProcessor(JavaImplementationFactory javaFactory) {
         this.javaFactory = javaFactory;
-        this.introspectionRegistry = new IntrospectionRegistryImpl();
+        this.introspectionRegistry = new DefaultJavaClassIntrospector();
     }
 
     public JavaImplementationProcessor() {
@@ -127,7 +127,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     /**
      * @param introspectionRegistry the introspectionRegistry to set
      */
-    public void setIntrospectionRegistry(IntrospectionRegistry introspectionRegistry) {
+    public void setIntrospectionRegistry(JavaClassIntrospectorExtensionPoint introspectionRegistry) {
         this.introspectionRegistry = introspectionRegistry;
     }
 

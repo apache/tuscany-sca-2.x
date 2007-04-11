@@ -46,7 +46,7 @@ import org.apache.tuscany.core.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.Parameter;
-import org.apache.tuscany.implementation.java.processor.JavaIntrospectionHelper;
+import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.ObjectCreationException;

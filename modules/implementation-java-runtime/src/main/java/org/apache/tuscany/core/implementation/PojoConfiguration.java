@@ -42,7 +42,7 @@ import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.processor.JavaIntrospectionHelper;
+import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.ProxyService;

@@ -32,8 +32,8 @@ import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
-import org.apache.tuscany.interfacedef.java.introspection.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.interfacedef.java.introspection.impl.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
 import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
@@ -44,15 +44,15 @@ import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
 
     private JavaFactory javaFactory;
-    private JavaInterfaceProcessorRegistry introspectionRegistry;
+    private JavaInterfaceIntrospector introspector;
 
-    public JavaInterfaceProcessor(JavaFactory javaFactory, JavaInterfaceProcessorRegistry introspectionRegistry) {
+    public JavaInterfaceProcessor(JavaFactory javaFactory, JavaInterfaceIntrospector introspector) {
         this.javaFactory = javaFactory;
-        this.introspectionRegistry = introspectionRegistry;
+        this.introspector = introspector;
     }
     
     public JavaInterfaceProcessor() {
-        this(new DefaultJavaFactory(), new JavaInterfaceProcessorRegistryImpl());
+        this(new DefaultJavaFactory(), new DefaultJavaInterfaceIntrospector());
     }
     
     private JavaInterface createJavaInterface(String interfaceName) {
@@ -125,7 +125,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                         
                     // Introspect the Java interface and populate the interface and
                     // operations
-                    javaInterface = introspectionRegistry.introspect(javaClass);
+                    javaInterface = introspector.introspect(javaClass);
                 
                 } catch (ClassNotFoundException e) {
                     throw new ContributionResolveException(e);
