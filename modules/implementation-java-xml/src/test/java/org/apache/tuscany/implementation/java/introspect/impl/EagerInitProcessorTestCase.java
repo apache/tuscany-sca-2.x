@@ -21,7 +21,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.impl.EagerInitProcessor;
 import org.osoa.sca.annotations.EagerInit;
 
@@ -30,14 +30,14 @@ import org.osoa.sca.annotations.EagerInit;
  */
 public class EagerInitProcessorTestCase extends TestCase {
 
-    public void testNoLevel() throws ProcessingException {
+    public void testNoLevel() throws IntrospectionException {
         EagerInitProcessor processor = new EagerInitProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         processor.visitClass(Level.class, type);
     }
 
-    public void testSubclass() throws ProcessingException {
+    public void testSubclass() throws IntrospectionException {
         EagerInitProcessor processor = new EagerInitProcessor();
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();

@@ -55,9 +55,7 @@ public class HeuristicAndPropertyTestCase extends TestCase {
         super.setUp();
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
         propertyProcessor = new PropertyProcessor();
-        propertyProcessor.setInterfaceVisitorExtensionPoint(introspector);
-        heuristicProcessor = new HeuristicPojoProcessor();
-        heuristicProcessor.setInterfaceVisitorExtensionPoint(introspector);
+        heuristicProcessor = new HeuristicPojoProcessor(introspector);
     }
 
     public static class Foo {

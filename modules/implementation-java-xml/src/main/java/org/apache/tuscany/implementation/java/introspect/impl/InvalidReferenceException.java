@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an invalid usage of {@link org.osoa.sca.annotations.Reference}
  *
  * @version $Rev$ $Date$
  */
-public class InvalidReferenceException extends ProcessingException {
+public class InvalidReferenceException extends IntrospectionException {
     private static final long serialVersionUID = -3285246635989254165L;
 
     public InvalidReferenceException(String message) {

@@ -20,14 +20,14 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Thrown when constructor parameters cannot be unambiguously resolved to a property or reference
  *
  * @version $Rev$ $Date$
  */
-public class AmbiguousConstructorException extends ProcessingException {
+public class AmbiguousConstructorException extends IntrospectionException {
     private static final long serialVersionUID = 3662860753837091880L;
 
     public AmbiguousConstructorException(String message) {

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an invalid constructor definition, e.g. when the number of injection names specified in {@link
@@ -26,7 +26,7 @@ import org.apache.tuscany.implementation.java.introspect.ProcessingException;
  *
  * @version $Rev$ $Date$
  */
-public class InvalidConstructorException extends ProcessingException {
+public class InvalidConstructorException extends IntrospectionException {
     private static final long serialVersionUID = 1411492435210741512L;
 
     public InvalidConstructorException(String message) {

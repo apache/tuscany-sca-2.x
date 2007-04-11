@@ -43,12 +43,12 @@ import org.apache.tuscany.implementation.java.introspect.impl.AbstractPropertyPr
  */
 public class AbstractPropertyProcessorTestCase extends TestCase {
 
-    private JavaClassIntrospectorExtension processor;
+    private JavaClassIntrospectorExtension extension;
 
     public void testVisitMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", String.class);
         JavaImplementationDefinition type = new JavaImplementationDefinition();
-        processor.visitMethod(method, type);
+        extension.visitMethod(method, type);
         Property prop = getProperty(type, "test");
         assertNotNull(prop);
     }
@@ -57,7 +57,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         Method method = Foo.class.getMethod("setNoParamsBar");
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         try {
-            processor.visitMethod(method, type);
+            extension.visitMethod(method, type);
             fail();
         } catch (IllegalPropertyException e) {
             // expected
@@ -68,7 +68,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         Method method = Foo.class.getMethod("setBadBar", String.class);
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         try {
-            processor.visitMethod(method, type);
+            extension.visitMethod(method, type);
             fail();
         } catch (IllegalPropertyException e) {
             // expected
@@ -78,9 +78,9 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
     public void testDuplicateMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", String.class);
         JavaImplementationDefinition type = new JavaImplementationDefinition();
-        processor.visitMethod(method, type);
+        extension.visitMethod(method, type);
         try {
-            processor.visitMethod(method, type);
+            extension.visitMethod(method, type);
             fail();
         } catch (DuplicatePropertyException e) {
             // expected
@@ -90,7 +90,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
     public void testVisitField() throws Exception {
         Field field = Foo.class.getDeclaredField("d");
         JavaImplementationDefinition type = new JavaImplementationDefinition();
-        processor.visitField(field, type);
+        extension.visitField(field, type);
         Property prop = getProperty(type, "test");
         assertNotNull(prop);
     }
@@ -100,7 +100,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         ConstructorDefinition<Foo> def = new ConstructorDefinition<Foo>(ctor);
         Parameter parameter = def.getParameters()[0];
-        processor.visitConstructorParameter(parameter, type);
+        extension.visitConstructorParameter(parameter, type);
         assertEquals("test", def.getParameters()[0].getName());
         assertNotNull(getProperty(type, "test"));
     }
@@ -108,7 +108,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        processor = new TestProcessor();
+        extension = new TestProcessor();
     }
 
     @Retention(RUNTIME)

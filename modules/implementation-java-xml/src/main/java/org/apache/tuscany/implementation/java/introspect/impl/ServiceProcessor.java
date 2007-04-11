@@ -29,11 +29,12 @@ import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
@@ -45,8 +46,13 @@ import org.osoa.sca.annotations.Remotable;
  * @version $Rev$ $Date$
  */
 public class ServiceProcessor extends BaseJavaClassIntrospectorExtension {
+    private JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
+    
+    public ServiceProcessor(JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+        this.interfaceIntrospector = interfaceIntrospector;
+    }
 
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
         if (annotation == null) {
             // scan intefaces for remotable
@@ -57,7 +63,7 @@ public class ServiceProcessor extends BaseJavaClassIntrospectorExtension {
                     try {
                         service = createService(interfaze);
                     } catch (InvalidInterfaceException e) {
-                        throw new ProcessingException(e);
+                        throw new IntrospectionException(e);
                     }
                     type.getServices().add(service);
                 }
@@ -82,13 +88,13 @@ public class ServiceProcessor extends BaseJavaClassIntrospectorExtension {
             try {
                 service = createService(interfaze);
             } catch (InvalidInterfaceException e) {
-                throw new ProcessingException(e);
+                throw new IntrospectionException(e);
             }
             type.getServices().add(service);
         }
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
 
         Callback annotation = method.getAnnotation(Callback.class);
         if (annotation == null) {
@@ -112,7 +118,7 @@ public class ServiceProcessor extends BaseJavaClassIntrospectorExtension {
         type.getCallbackMembers().put(name, new JavaElement(method, 0));
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
 
         Callback annotation = field.getAnnotation(Callback.class);
         if (annotation == null) {

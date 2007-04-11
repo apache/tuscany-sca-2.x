@@ -42,7 +42,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class JDKInvocationHandlerProxyTestCase extends TestCase {
-    private JavaInterfaceIntrospectorExtensionPoint registry = new DefaultJavaInterfaceIntrospector();
+    private JavaInterfaceIntrospectorExtensionPoint introspector = new DefaultJavaInterfaceIntrospector();
     private Method clientHello;
 
     /**
@@ -55,7 +55,7 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
         Contract contract = new DefaultAssemblyFactory().createComponentReference();
         JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
         contract.setInterfaceContract(interfaceContract);
-        interfaceContract.setInterface(registry.introspect(Target.class));
+        interfaceContract.setInterface(introspector.introspect(Target.class));
         for (Operation operation : contract.getInterfaceContract().getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             wire.addInvocationChain(operation, chain);

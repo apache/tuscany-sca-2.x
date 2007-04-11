@@ -112,8 +112,7 @@ public class ReferenceProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         type = new JavaImplementationDefinition();
-        processor = new ReferenceProcessor();
-        processor.setInterfaceVisitorExtensionPoint(new DefaultJavaInterfaceIntrospector());
+        processor = new ReferenceProcessor(new DefaultJavaInterfaceIntrospector());
     }
 
     private interface Ref {

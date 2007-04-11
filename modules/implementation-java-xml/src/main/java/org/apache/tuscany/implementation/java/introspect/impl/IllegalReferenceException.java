@@ -20,14 +20,14 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an illegal reference definition in a component type
  *
  * @version $Rev$ $Date$
  */
-public class IllegalReferenceException extends ProcessingException {
+public class IllegalReferenceException extends IntrospectionException {
     private static final long serialVersionUID = 4612984122225271395L;
 
     public IllegalReferenceException(String message) {

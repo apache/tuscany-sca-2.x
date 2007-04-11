@@ -29,6 +29,7 @@ import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.bean.impl.BeanJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.policy.PolicyFactory;
@@ -65,7 +66,7 @@ public class VariantRuntimeContext {
         registry.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, registry));
         registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
         registry.addArtifactProcessor(new JavaInterfaceProcessor());
-        registry.addArtifactProcessor(new JavaImplementationProcessor(javaImplementationFactory));
+        registry.addArtifactProcessor(new JavaImplementationProcessor(javaImplementationFactory, new DefaultJavaClassIntrospector()));
         
         // Create a resolver
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();

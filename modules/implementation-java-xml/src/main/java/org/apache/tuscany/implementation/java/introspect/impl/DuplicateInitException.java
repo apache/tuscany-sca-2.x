@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Thrown when an implementation is annotated multiple times with {@link @org.osoa.sca.annotations.Init}
  *
  * @version $Rev$ $Date$
  */
-public class DuplicateInitException extends ProcessingException {
+public class DuplicateInitException extends IntrospectionException {
     private static final long serialVersionUID = -6282935288115512057L;
 
     public DuplicateInitException(String message) {

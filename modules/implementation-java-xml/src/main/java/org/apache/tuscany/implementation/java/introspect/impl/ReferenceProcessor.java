@@ -31,11 +31,12 @@ import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -46,8 +47,13 @@ import org.osoa.sca.annotations.Reference;
  * @version $Rev$ $Date$
  */
 public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
+    private JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
+    
+    public ReferenceProcessor(JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+        this.interfaceIntrospector = interfaceIntrospector;
+    }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
         Reference annotation = method.getAnnotation(Reference.class);
         if (annotation == null) {
             return; // Not a reference annotation.
@@ -69,7 +75,7 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
         type.getReferenceMembers().put(name, element);
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws ProcessingException {
+    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
         Reference annotation = field.getAnnotation(Reference.class);
         if (annotation == null) {
             return;
@@ -88,7 +94,7 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type)
-        throws ProcessingException {
+        throws IntrospectionException {
         Reference refAnnotation = parameter.getAnnotation(Reference.class);
         if (refAnnotation == null) {
             return;
@@ -119,7 +125,7 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
         }
     }
 
-    private org.apache.tuscany.assembly.Reference createReference(JavaElement element, String name) throws ProcessingException {
+    private org.apache.tuscany.assembly.Reference createReference(JavaElement element, String name) throws IntrospectionException {
         org.apache.tuscany.assembly.Reference reference = new ReferenceImpl();
         JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
         reference.setInterfaceContract(interfaceContract);
@@ -156,7 +162,7 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
             }
         } catch (InvalidInterfaceException e) {
-            throw new ProcessingException(e);
+            throw new IntrospectionException(e);
         }
         return reference;
     }

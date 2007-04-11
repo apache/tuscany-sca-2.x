@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Thrown when a service type specified by an {@link org.osoa.sca.annotations.Service} annotation is invalid, e.g. it is
@@ -26,7 +26,7 @@ import org.apache.tuscany.implementation.java.introspect.ProcessingException;
  *
  * @version $Rev$ $Date$
  */
-public class InvalidServiceType extends ProcessingException {
+public class InvalidServiceType extends IntrospectionException {
     private static final long serialVersionUID = -1076466639416644386L;
     private Class<?> serviceType;
 

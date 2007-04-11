@@ -27,12 +27,13 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.impl.ConstructorProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.PropertyProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ReferenceProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ResourceProcessor;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 
 /**
@@ -43,7 +44,7 @@ import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntro
 public class AbstractProcessorTest extends TestCase {
     protected AssemblyFactory factory = new DefaultAssemblyFactory();
     protected ConstructorProcessor constructorProcessor;
-    private ReferenceProcessor referenceProcessor = new ReferenceProcessor();
+    private ReferenceProcessor referenceProcessor = new ReferenceProcessor(new DefaultJavaInterfaceIntrospector());
     private PropertyProcessor propertyProcessor = new PropertyProcessor();
     private ResourceProcessor resourceProcessor = new ResourceProcessor();
     // private MonitorProcessor monitorProcessor = new MonitorProcessor(new NullMonitorFactory());
@@ -51,13 +52,12 @@ public class AbstractProcessorTest extends TestCase {
 
     protected AbstractProcessorTest() {
         constructorProcessor = new ConstructorProcessor();
-        referenceProcessor = new ReferenceProcessor();
-        referenceProcessor.setInterfaceVisitorExtensionPoint(new DefaultJavaInterfaceIntrospector());
+        referenceProcessor = new ReferenceProcessor(new DefaultJavaInterfaceIntrospector());
         propertyProcessor = new PropertyProcessor();
     }
 
     protected <T> void visitConstructor(Constructor<T> constructor,
-                                        JavaImplementationDefinition type) throws ProcessingException {
+                                        JavaImplementationDefinition type) throws IntrospectionException {
         constructorProcessor.visitConstructor(constructor, type);
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
         if (definition == null) {

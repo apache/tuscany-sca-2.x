@@ -27,13 +27,13 @@ package org.apache.tuscany.interfacedef.java.introspect;
 public interface JavaInterfaceIntrospectorExtensionPoint extends JavaInterfaceIntrospector {
 
     /**
-     * Registers the given visitor
+     * Registers the given extension.
      */
-    void addIntrospectorExtension(JavaInterfaceIntrospectorExtension visitor);
+    void addExtension(JavaInterfaceIntrospectorExtension visitor);
 
     /**
-     * Deregisters the given visitor
+     * Deregisters the given extension.
      */
-    void removeIntrospectorExtension(JavaInterfaceIntrospectorExtension visitor);
+    void removeExtension(JavaInterfaceIntrospectorExtension visitor);
 
 }

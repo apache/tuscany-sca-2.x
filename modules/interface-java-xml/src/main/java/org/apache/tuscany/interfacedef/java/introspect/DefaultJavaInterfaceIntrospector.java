@@ -51,18 +51,18 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
     private static final String UNKNOWN_DATABINDING = null;
 
     private JavaFactory javaFactory;
-    private List<JavaInterfaceIntrospectorExtension> processors = new ArrayList<JavaInterfaceIntrospectorExtension>();
+    private List<JavaInterfaceIntrospectorExtension> extensions = new ArrayList<JavaInterfaceIntrospectorExtension>();
 
     public DefaultJavaInterfaceIntrospector() {
         this.javaFactory = new DefaultJavaFactory();
     }
 
-    public void addIntrospectorExtension(JavaInterfaceIntrospectorExtension processor) {
-        processors.add(processor);
+    public void addExtension(JavaInterfaceIntrospectorExtension extension) {
+        extensions.add(extension);
     }
 
-    public void removeIntrospectorExtension(JavaInterfaceIntrospectorExtension processor) {
-        processors.remove(processor);
+    public void removeExtension(JavaInterfaceIntrospectorExtension extension) {
+        extensions.remove(extension);
     }
 
     public JavaInterface introspect(Class<?> type) throws InvalidInterfaceException {
@@ -86,8 +86,8 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
         
         javaInterface.getOperations().addAll(getOperations(type, remotable, conversational).values());
 
-        for (JavaInterfaceIntrospectorExtension processor : processors) {
-            processor.visitInterface(type);
+        for (JavaInterfaceIntrospectorExtension extension : extensions) {
+            extension.visitInterface(type);
         }
         return javaInterface;
     }

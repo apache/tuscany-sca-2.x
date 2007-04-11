@@ -24,7 +24,7 @@ import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Handles processing of a constructor decorated with
@@ -35,10 +35,7 @@ import org.apache.tuscany.implementation.java.introspect.ProcessingException;
 @SuppressWarnings("unchecked")
 public class ConstructorProcessor extends BaseJavaClassIntrospectorExtension {
 
-    public ConstructorProcessor() {
-    }
-
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
         Constructor[] ctors = clazz.getConstructors();
         boolean found = false;
         for (Constructor constructor : ctors) {
@@ -55,7 +52,7 @@ public class ConstructorProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public <T> void visitConstructor(Constructor<T> constructor, JavaImplementationDefinition type)
-        throws ProcessingException {
+        throws IntrospectionException {
         org.osoa.sca.annotations.Constructor annotation = constructor
             .getAnnotation(org.osoa.sca.annotations.Constructor.class);
         if (annotation == null) {

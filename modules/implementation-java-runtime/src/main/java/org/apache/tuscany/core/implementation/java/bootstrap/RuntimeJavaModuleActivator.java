@@ -27,6 +27,7 @@ import org.apache.tuscany.core.wire.jdk.JDKProxyService;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ConstructorProcessor;
@@ -68,43 +69,41 @@ public class RuntimeJavaModuleActivator implements ModuleActivator {
     /**
      * @see org.apache.tuscany.spi.bootstrap.ModuleActivator#start(org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry)
      */
-    public void start(ExtensionPointRegistry registry) {
-        JavaInterfaceIntrospectorExtensionPoint javaInterfaceProcessorRegistry = registry
+    public void start(ExtensionPointRegistry extensionPointRegistry) {
+        JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = extensionPointRegistry
             .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
 
-        JavaClassIntrospectorExtensionPoint introspectionRegistry = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
-        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {new ConstructorProcessor(),
-                                                                                                new AllowsPassByReferenceProcessor(),
-                                                                                                new ContextProcessor(),
-                                                                                                new ConversationProcessor(),
-                                                                                                new DestroyProcessor(),
-                                                                                                new EagerInitProcessor(),
-                                                                                                new InitProcessor(),
-                                                                                                new PropertyProcessor(),
-                                                                                                new ReferenceProcessor(),
-                                                                                                new ResourceProcessor(),
-                                                                                                new ScopeProcessor(),
-                                                                                                new ServiceProcessor(),
-                                                                                                new HeuristicPojoProcessor()
+        JavaClassIntrospectorExtensionPoint classIntrospector = extensionPointRegistry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
+        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {
+            new ConstructorProcessor(),
+            new AllowsPassByReferenceProcessor(),
+            new ContextProcessor(),
+            new ConversationProcessor(),
+            new DestroyProcessor(),
+            new EagerInitProcessor(),
+            new InitProcessor(),
+            new PropertyProcessor(),
+            new ReferenceProcessor(interfaceIntrospector),
+            new ResourceProcessor(),
+            new ScopeProcessor(),
+            new ServiceProcessor(interfaceIntrospector),
+            new HeuristicPojoProcessor(interfaceIntrospector)
 
         };
-        for (BaseJavaClassIntrospectorExtension e : extensions) {
-            e.setRegistry(introspectionRegistry);
-            e.setInterfaceVisitorExtensionPoint(javaInterfaceProcessorRegistry);
-            introspectionRegistry.addExtension(e);
+        for (JavaClassIntrospectorExtension e : extensions) {
+            classIntrospector.addExtension(e);
         }
 
-        StAXArtifactProcessorRegistry artifactProcessorRegistry = registry
+        StAXArtifactProcessorRegistry artifactProcessorRegistry = extensionPointRegistry
             .getExtensionPoint(StAXArtifactProcessorRegistry.class);
-        JavaImplementationProcessor javaImplementationProcessor = new JavaImplementationProcessor();
-        javaImplementationProcessor.setIntrospectionRegistry(introspectionRegistry);
+        JavaImplementationProcessor javaImplementationProcessor = new JavaImplementationProcessor(classIntrospector);
         artifactProcessorRegistry.addArtifactProcessor(javaImplementationProcessor);
 
-        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
+        BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setScopeRegistry(registry.getExtensionPoint(ScopeRegistry.class));
-        builder.setProxyService(registry.getExtensionPoint(ProxyService.class));
-        builder.setWorkContext(registry.getExtensionPoint(WorkContext.class));
+        builder.setScopeRegistry(extensionPointRegistry.getExtensionPoint(ScopeRegistry.class));
+        builder.setProxyService(extensionPointRegistry.getExtensionPoint(ProxyService.class));
+        builder.setWorkContext(extensionPointRegistry.getExtensionPoint(WorkContext.class));
         builderRegistry.register(JavaImplementation.class, builder);
 
     }

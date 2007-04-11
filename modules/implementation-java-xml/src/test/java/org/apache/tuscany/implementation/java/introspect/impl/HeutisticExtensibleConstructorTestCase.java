@@ -24,7 +24,7 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 
 /**
@@ -40,11 +40,10 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
 
     public HeutisticExtensibleConstructorTestCase() {
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
-        processor = new org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor();
-        processor.setInterfaceVisitorExtensionPoint(introspector);
+        processor = new HeuristicPojoProcessor(introspector);
     }
 
-    private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws ProcessingException {
+    private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
         for (Constructor<T> constructor : clazz.getConstructors()) {
             visitConstructor(constructor, type);
         }

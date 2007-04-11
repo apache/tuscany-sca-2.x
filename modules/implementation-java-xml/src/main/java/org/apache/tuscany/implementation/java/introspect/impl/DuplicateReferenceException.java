@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Thrown when an implementation has more than one reference injection site with the same name
  *
  * @version $Rev$ $Date$
  */
-public class DuplicateReferenceException extends ProcessingException {
+public class DuplicateReferenceException extends IntrospectionException {
     private static final long serialVersionUID = 907910648213477158L;
 
     public DuplicateReferenceException(String message) {

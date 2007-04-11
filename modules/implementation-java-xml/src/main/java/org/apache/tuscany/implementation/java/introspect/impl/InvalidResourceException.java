@@ -20,14 +20,14 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.implementation.java.introspect.ProcessingException;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an invalid usage of {@link @org.apache.tuscany.api.annotation.Resource}
  *
  * @version $Rev$ $Date$
  */
-public class InvalidResourceException extends ProcessingException {
+public class InvalidResourceException extends IntrospectionException {
     private static final long serialVersionUID = 511728001735534934L;
 
     public InvalidResourceException(String message) {

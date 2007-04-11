@@ -68,15 +68,15 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     }
 
     public void testUnregister() throws Exception {
-        org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension processor = createMock(org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension.class);
-        processor.visitInterface(eq(Base.class));
+        org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension extension = createMock(org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension.class);
+        extension.visitInterface(eq(Base.class));
         expectLastCall().once();
-        replay(processor);
-        impl.addIntrospectorExtension(processor);
+        replay(extension);
+        impl.addExtension(extension);
         impl.introspect(Base.class);
-        impl.removeIntrospectorExtension(processor);
+        impl.removeExtension(extension);
         impl.introspect(Base.class);
-        verify(processor);
+        verify(extension);
     }
 
     protected void setUp() throws Exception {
