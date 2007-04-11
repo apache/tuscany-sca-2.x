@@ -26,9 +26,11 @@ import java.net.URL;
 import java.util.Collection;
 
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
@@ -119,8 +121,12 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         DefaultURLArtifactProcessorRegistry artifactRegistry = new DefaultURLArtifactProcessorRegistry();
         CompositeDocumentProcessor compositeProcessor = new CompositeDocumentProcessor(registry);
+        ComponentTypeDocumentProcessor componentTypeProcessor = new ComponentTypeDocumentProcessor(registry);
+        ConstrainingTypeDocumentProcessor constrainingTypeProcessor = new ConstrainingTypeDocumentProcessor(registry);
 
         artifactRegistry.addArtifactProcessor(compositeProcessor);
+        artifactRegistry.addArtifactProcessor(componentTypeProcessor);
+        artifactRegistry.addArtifactProcessor(constrainingTypeProcessor);
 
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         ContributionPackageProcessorRegistry pkgRegistry = new ContributionPackageProcessorRegistryImpl(describer);
