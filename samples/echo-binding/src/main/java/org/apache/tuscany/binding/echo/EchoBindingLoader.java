@@ -30,38 +30,43 @@ import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
-public class EchoBindingLoader implements StAXArtifactProcessor {
+public class EchoBindingLoader implements StAXArtifactProcessor<EchoBinding> {
     private final EchoBindingFactory factory;
 
-    public EchoBindingLoader(){
+    public EchoBindingLoader() {
         this.factory = new DefaultEchoBindingFactory();
     }
-    
-    public EchoBindingLoader(EchoBindingFactory factory){
+
+    public EchoBindingLoader(EchoBindingFactory factory) {
         this.factory = factory;
     }
-    
+
     public QName getArtifactType() {
         return EchoConstants.BINDING_ECHO;
     }
 
-    public Class getModelType() {
+    public Class<EchoBinding> getModelType() {
         return EchoBinding.class;
     }
 
-    public Object read(XMLStreamReader arg0) throws ContributionReadException {
-        return factory.createEchoBinding();
+    public EchoBinding read(XMLStreamReader reader) throws ContributionReadException {
+        String uri = reader.getAttributeValue(null, "uri");
+        EchoBinding echoBinding = factory.createEchoBinding();
+        if (uri != null) {
+            echoBinding.setURI(uri.trim());
+        }
+        return echoBinding;
     }
 
-    public void write(Object arg0, XMLStreamWriter arg1) throws ContributionWriteException {
+    public void write(EchoBinding echoBinding, XMLStreamWriter writer) throws ContributionWriteException {
         // TODO Auto-generated method stub
     }
 
-    public void resolve(Object arg0, ArtifactResolver arg1) throws ContributionResolveException {
+    public void resolve(EchoBinding echoBinding, ArtifactResolver resolver) throws ContributionResolveException {
         // TODO Auto-generated method stub
     }
 
-    public void wire(Object arg0) throws ContributionWireException {
+    public void wire(EchoBinding echoBinding) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
 
