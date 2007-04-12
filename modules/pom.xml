@@ -74,8 +74,8 @@
                 <module>implementation-java</module>
                 <module>implementation-java-xml</module>
                 <module>implementation-java-runtime</module>
-                <!--
                 <module>implementation-script</module>
+                <!--
                 <module>implementation-spring</module>
                 -->
                 <module>java2wsdl</module>
