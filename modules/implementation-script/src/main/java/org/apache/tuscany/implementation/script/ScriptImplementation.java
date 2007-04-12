@@ -63,19 +63,4 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
         return componentType.getServices();
     }
 
-    @Override
-    public int hashCode() {
-        return String.valueOf(getName()).hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        else if (obj instanceof ScriptImplementation && getName().equals(((ScriptImplementation)obj).getName()))
-             return true;
-        else
-            return false;
-    }
-
 }
