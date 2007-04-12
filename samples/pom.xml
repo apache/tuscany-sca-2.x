@@ -37,8 +37,20 @@
             </activation>
             <modules>
                 <module>calculator</module>
+                <!--
+                <module>composite-impl</module>
+                <module>echo-binding</module>
+                <module>echo-databinding</module>
+                -->
                 <module>implementation-crud</module>
+                <!--
+                <module>loanapplication</module>
+                -->
                 <module>simple-bigbank</module>
+                <!--
+                <module>simple-callback</module>
+                <module>supplychain</module>
+                -->
             </modules>
         </profile>
 
