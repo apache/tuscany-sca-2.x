@@ -28,8 +28,8 @@
    
     <component name="MyTotalServiceComponentNo">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService">MyServiceRefNo</reference>
-		<reference name="myListService">MyListServiceRefNo</reference>
+		<reference name="myService" target="MyServiceRefNo"/>
+		<reference name="myListService" target="MyListServiceRefNo"/>
     </component>
     
     <reference name="MyServiceRefNo" promote="MyTotalServiceComponentNo/myService">

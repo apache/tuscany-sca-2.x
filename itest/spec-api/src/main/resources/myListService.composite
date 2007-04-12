@@ -24,8 +24,8 @@
    
     <component name="MyNewListService">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyListServiceImpl"/>
-	<reference name="myListServiceList">MyNCService/MyListService</reference>
-	<reference name="myListServiceArray">MyListServiceFor2006/MyListService</reference>
+	<reference name="myListServiceList" target="MyNCService/MyListService"/>
+	<reference name="myListServiceArray" target="MyListServiceFor2006/MyListService"/>
 	<property name="serviceYear">2007</property>
     </component>
     

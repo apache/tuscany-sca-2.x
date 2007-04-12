@@ -65,8 +65,8 @@
 
     <component name="ABCDComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.ABCDComponentImpl"/>
-        <reference name="ab">ABComponent</reference>
-        <reference name="cd">CDComponent</reference>
+        <reference name="ab" target="ABComponent">
+        <reference name="cd" target="CDComponent">
     </component>
 
     <component name="ABComponent">

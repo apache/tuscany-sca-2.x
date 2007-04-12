@@ -22,8 +22,8 @@
 	   targetNamespace="http://foo"
            name="MySimpleServiceInRecursive2">
    
-    <service name="MySimpleServiceDefault">
-        <interface.java interface="org.apache.tuscany.sca.test.spec.MyService" promote="MySimpleServiceInRecursiveComponent/MySimpleService"/>
+    <service name="MySimpleServiceDefault"  promote="MySimpleServiceInRecursiveComponent/MySimpleService">
+        <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
     </service>
 
     <service name="MySimpleServiceNo" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceNo">
