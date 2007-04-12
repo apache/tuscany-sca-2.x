@@ -98,6 +98,16 @@ public class SimpleCompositeContextImpl implements CompositeContext {
                     break;
                 }
             }
+            for (Component component: composite.getComponents()) {
+                if (serviceName.equals(component.getName())) {
+                    ComponentContext context = runtime.getComponentContext(URI.create(component.getName()));
+                    if (context == null) {
+                        throw new ServiceRuntimeException("Service not found: " + serviceName);
+                    }
+                    ServiceReference<T> serviceReference = context.createSelfReference(serviceType);
+                    return serviceReference.getService();
+                }
+            }
             throw new ServiceRuntimeException("Service not found: " + serviceName);
             
         } else {
