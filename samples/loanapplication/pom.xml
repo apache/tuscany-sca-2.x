@@ -18,38 +18,28 @@
  * under the License.    
 -->
 <project>
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apache.tuscany.samples.sca</groupId>
-        <artifactId>parent</artifactId>
-        <version>0.1-integration-incubating-SNAPSHOT</version>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-samples</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-sample-loanapplication</artifactId>
-    <packaging>jar</packaging>
     <name>Apache Tuscany Loan Application Conversation Sample</name>
-    <description>A sample implementation of a loan application conversation.</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-api</artifactId>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>0.1-integration-incubating-SNAPSHOT</version>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
