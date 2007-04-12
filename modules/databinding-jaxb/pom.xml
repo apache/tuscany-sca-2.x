@@ -34,7 +34,11 @@
             <artifactId>tuscany-databinding</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>            
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -116,7 +120,7 @@
                 <executions>
                     <execution>
                         <id>generate-jaxb</id>
-                        <phase>generate-test-sources</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
