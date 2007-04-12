@@ -39,6 +39,7 @@
                 <module>calculator</module>
                 <!--
                 <module>composite-impl</module>
+                <module>das-service</module>
                 <module>echo-binding</module>
                 <module>echo-databinding</module>
                 -->
