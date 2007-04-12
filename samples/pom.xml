@@ -38,6 +38,7 @@
             <modules>
                 <module>calculator</module>
                 <module>implementation-crud</module>
+                <module>simple-bigbank</module>
             </modules>
         </profile>
 
