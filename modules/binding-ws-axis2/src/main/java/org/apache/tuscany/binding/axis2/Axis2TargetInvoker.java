@@ -35,8 +35,9 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -44,7 +45,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * Axis2TargetInvoker uses an Axis2 OperationClient to invoke a remote web service
  */
-public class Axis2TargetInvoker implements TargetInvoker {
+public class Axis2TargetInvoker extends TargetInvokerExtension {
 
     private QName wsdlOperationName;
 
@@ -161,6 +162,11 @@ public class Axis2TargetInvoker implements TargetInvoker {
 
     public boolean isOptimizable() {
         return false;
+    }
+
+    public Object invokeTarget(Object payload, short sequence, WorkContext workContext) throws InvocationTargetException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
