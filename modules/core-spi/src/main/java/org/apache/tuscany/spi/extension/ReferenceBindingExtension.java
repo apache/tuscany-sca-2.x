@@ -36,7 +36,7 @@ public abstract class ReferenceBindingExtension extends AbstractSCAObject implem
     protected Contract bindingServiceContract;
     protected URI targetUri;
 
-    protected ReferenceBindingExtension(URI name, URI targetUri) {
+    public ReferenceBindingExtension(URI name, URI targetUri) {
         super(name);
         this.targetUri = targetUri;
     }
