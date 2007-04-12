@@ -35,23 +35,20 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.osoa</groupId>
-			<artifactId>sca-api-r${scaSpecVersion}</artifactId>
+            <artifactId>sca-api</artifactId>
+	        <version>1.0-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
-			<artifactId>contribution-framework</artifactId>
-			<version>${project.version}</version>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tuscany.sca.runtime.services.contribution</groupId>
-			<artifactId>contribution-contribution</artifactId>
-			<version>${project.version}</version>
+            <groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-contribution-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
 
