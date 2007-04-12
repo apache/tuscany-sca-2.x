@@ -35,7 +35,7 @@ public class HelloWorldTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        SCARuntime.start("HelloWorldJS.composite");
+        SCARuntime.start("org/apache/tuscany/implementation/script/itests/javascript/HelloWorldJS.composite");
         ComponentContext context = SCARuntime.getComponentContext("HelloWorldComponent");
         ServiceReference<HelloWorld> service = context.createSelfReference(HelloWorld.class);
         helloWorld = service.getService();
