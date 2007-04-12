@@ -16,12 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
 
-/**
- * @version $Rev$ $Date$
- */
-public interface Client {
+package org.apache.tuscany.binding.echo;
 
-    void call(String msg);
+import static org.osoa.sca.Constants.SCA_NS;
+
+import javax.xml.namespace.QName;
+
+public interface EchoConstants {
+    QName BINDING_ECHO = new QName(SCA_NS, "binding.echo");
 }

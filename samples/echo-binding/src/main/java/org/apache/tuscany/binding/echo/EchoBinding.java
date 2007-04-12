@@ -16,32 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
 
-import junit.framework.TestCase;
+package org.apache.tuscany.binding.echo;
 
-import org.apache.tuscany.api.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.assembly.Binding;
 
-/**
- * @version $Rev$ $Date$
- */
-public class EchoBindingTestCase extends TestCase {
+public interface EchoBinding extends Binding {
 
-    private Client client;
-
-    public void testEchoBinding() {
-        client.call("foo");
-    }
-
-    protected void setUp() throws Exception {
-    	SCARuntime.start("EchoBinding.composite");
-        CompositeContext context = CurrentCompositeContext.getContext();
-        client = context.locateService(Client.class, "Client");
-    }
-    
-    protected void tearDown() throws Exception {
-    	SCARuntime.stop();
-    }
 }
