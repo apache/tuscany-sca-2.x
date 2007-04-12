@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.util.ElementInfo;
 import org.apache.tuscany.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.interfacedef.util.XMLType;
@@ -99,16 +100,19 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
         boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
 
         WrapperHandler sourceWrapperHandler = null;
+        String sourceDataBinding = getDataBinding(sourceOp);
         if (sourceWrapped) {
-            sourceWrapperHandler = getWrapperHandler(sourceOp.getDataBinding(), true);
+            sourceWrapperHandler = getWrapperHandler(sourceDataBinding, true);
         }
 
         DataType<List<DataType>> targetType = context.getTargetDataType();
         Operation targetOp = (Operation)context.getTargetOperation();
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
         WrapperHandler targetWrapperHandler = null;
+        String targetDataBinding = null;
         if (targetWrapped) {
-            targetWrapperHandler = getWrapperHandler(targetOp.getDataBinding(), true);
+            targetDataBinding = getDataBinding(targetOp);
+            targetWrapperHandler = getWrapperHandler(targetDataBinding, true);
         }
 
         if ((!sourceWrapped) && targetWrapped) {
@@ -134,41 +138,36 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
                 ElementInfo argElement = wrapper.getInputChildElements().get(i);
                 DataType<XMLType> argType = argTypes.get(i);
                 Object child = source[i];
-                child =
-                    mediator.mediate(source[i], sourceType.getLogical().get(i), argType, context
-                        .getMetadata());
+                child = mediator.mediate(source[i], sourceType.getLogical().get(i), argType, context.getMetadata());
                 targetWrapperHandler.setChild(targetWrapper, i, argElement, child);
             }
             return new Object[] {targetWrapper};
         } else if (sourceWrapped && (!targetWrapped)) {
             // Wrapped to Unwrapped
             Object sourceWrapper = source[0];
-            // List<ElementInfo> childElements = sourceOp.getWrapper().getInputChildElements();
+            // List<ElementInfo> childElements =
+            // sourceOp.getWrapper().getInputChildElements();
             Object[] target = null;
 
-            targetWrapperHandler = getWrapperHandler(targetOp.getDataBinding(), false);
+            targetWrapperHandler = getWrapperHandler(targetDataBinding, false);
             if (targetWrapperHandler != null) {
                 ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
                 // Object targetWrapper =
                 // targetWrapperHandler.create(wrapperElement, context);
-                DataType<XMLType> targetWrapperType =
-                    new DataType<XMLType>(targetOp.getDataBinding(), Object.class,
-                                        new XMLType(wrapperElement));
-                Object targetWrapper =
-                    mediator.mediate(sourceWrapper,
-                                     sourceType.getLogical().get(0),
-                                     targetWrapperType,
-                                     context.getMetadata());
+                DataType<XMLType> targetWrapperType = new DataTypeImpl<XMLType>(targetDataBinding, Object.class,
+                                                                                new XMLType(wrapperElement));
+                Object targetWrapper = mediator.mediate(sourceWrapper,
+                                                        sourceType.getLogical().get(0),
+                                                        targetWrapperType,
+                                                        context.getMetadata());
                 target = targetWrapperHandler.getChildren(targetWrapper).toArray();
             } else {
                 Object[] sourceChildren = sourceWrapperHandler.getChildren(sourceWrapper).toArray();
                 target = new Object[sourceChildren.length];
                 for (int i = 0; i < sourceChildren.length; i++) {
-                    DataType<XMLType> childType =
-                        sourceOp.getWrapper().getUnwrappedInputType().getLogical().get(i);
-                    target[i] =
-                        mediator.mediate(sourceChildren[i], childType, targetType.getLogical().get(i), context
-                            .getMetadata());
+                    DataType<XMLType> childType = sourceOp.getWrapper().getUnwrappedInputType().getLogical().get(i);
+                    target[i] = mediator.mediate(sourceChildren[i], childType, targetType.getLogical().get(i), context
+                        .getMetadata());
                 }
             }
             return target;
@@ -177,9 +176,8 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             // well
             Object[] newArgs = new Object[source.length];
             for (int i = 0; i < source.length; i++) {
-                Object child =
-                    mediator.mediate(source[i], sourceType.getLogical().get(i), targetType.getLogical()
-                        .get(i), context.getMetadata());
+                Object child = mediator.mediate(source[i], sourceType.getLogical().get(i), targetType.getLogical()
+                    .get(i), context.getMetadata());
                 newArgs[i] = child;
             }
             return newArgs;
@@ -187,13 +185,29 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     }
 
     private WrapperHandler getWrapperHandler(String dataBindingId, boolean required) {
-        DataBinding dataBinding = mediator.getDataBindingRegistry().getDataBinding(dataBindingId);
-        WrapperHandler wrapperHandler = dataBinding == null ? null : dataBinding.getWrapperHandler();
+        WrapperHandler wrapperHandler = null;
+        if (dataBindingId != null) {
+            DataBinding dataBinding = mediator.getDataBindingRegistry().getDataBinding(dataBindingId);
+            wrapperHandler = dataBinding == null ? null : dataBinding.getWrapperHandler();
+        }
         if (wrapperHandler == null && required) {
-            throw new TransformationException(
-                                              "No wrapper handler is provided for databinding: " + dataBindingId);
+            throw new TransformationException("No wrapper handler is provided for databinding: " + dataBindingId);
         }
         return wrapperHandler;
+    }
+
+    private String getDataBinding(Operation operation) {
+        String dataBindingId = null;
+        if (operation.getOutputType() != null) {
+            // For wrapper style, the output type is not null
+            dataBindingId = operation.getOutputType().getDataBinding();
+        } else {
+            List<DataType> argTypes = operation.getInputType().getLogical();
+            if (!argTypes.isEmpty()) {
+                dataBindingId = argTypes.get(0).getDataBinding();
+            }
+        }
+        return dataBindingId;
     }
 
 }

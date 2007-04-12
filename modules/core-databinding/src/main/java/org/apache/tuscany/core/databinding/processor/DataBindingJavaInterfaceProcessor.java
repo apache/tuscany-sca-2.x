@@ -36,7 +36,7 @@ import java.util.Set;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.tuscany.databinding.DataType;
+import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
@@ -52,57 +52,59 @@ import org.osoa.sca.annotations.Reference;
 public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospectorExtension {
     private DataBindingRegistry dataBindingRegistry;
 
-    public DataBindingJavaInterfaceProcessor(@Reference DataBindingRegistry dataBindingRegistry) {
+    public DataBindingJavaInterfaceProcessor(@Reference
+    DataBindingRegistry dataBindingRegistry) {
         super();
         this.dataBindingRegistry = dataBindingRegistry;
     }
 
-    public void visitInterface(JavaInterface javaInterface)
-        throws InvalidInterfaceException {
+    public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {
         if (!javaInterface.isRemotable()) {
             return;
         }
         List<Operation> operations = javaInterface.getOperations();
         processInterface(javaInterface, operations);
     }
-    
+
+    private void introspectWrapperStyle(Operation operation) {
+        if (operation.isWrapperStyle()) {
+            return;
+        }
+        DataType outputType = operation.getOutputType();
+        DataType<List<DataType>> inputType = operation.getInputType();
+        if (outputType != null || inputType == null) {
+            return;
+        }
+        if (inputType.getLogical().size() != 1) {
+            return;
+        }
+        DataType wrapperType = inputType.getLogical().get(0);
+        if (outputType.getDataBinding().equals(wrapperType.getDataBinding())) {
+            operation.setWrapperStyle(true);
+        }
+    }
+
     private void processInterface(JavaInterface javaInterface, List<Operation> operations) {
         Class<?> clazz = javaInterface.getJavaClass();
-        // IDLMapping interfaceMapping = clazz.getAnnotation(IDLMapping.class);
-        DataType interfaceDataType = clazz.getAnnotation(DataType.class);
-        if (interfaceDataType != null) {
-            javaInterface.setDataBinding(interfaceDataType.name());
-        }
         Map<String, Operation> opMap = new HashMap<String, Operation>();
-        for(Operation op: javaInterface.getOperations()) {
+        for (Operation op : javaInterface.getOperations()) {
             opMap.put(op.getName(), op);
         }
         for (Method method : clazz.getMethods()) {
             Operation operation = opMap.get(method.getName());
-            DataType operationDataType = method.getAnnotation(DataType.class);
-            if (operationDataType == null) {
-                operationDataType = interfaceDataType;
-            }
 
-            if (operationDataType != null) {
-                operation.setDataBinding(operationDataType.name());
-                // FIXME: [rfeng] Keep data context as metadata?
-            }
-
-            Annotation[] annotations = null;
-            if (operationDataType != null) {
-                annotations = new Annotation[] {operationDataType};
-            }
             // FIXME: We need a better way to identify simple java types
             for (org.apache.tuscany.interfacedef.DataType<?> d : operation.getInputType().getLogical()) {
-                dataBindingRegistry.introspectType(d, annotations);
+                dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
             if (operation.getOutputType() != null) {
-                dataBindingRegistry.introspectType(operation.getOutputType(), annotations);
+                dataBindingRegistry.introspectType(operation.getOutputType(), method.getAnnotations());
             }
             for (org.apache.tuscany.interfacedef.DataType<?> d : operation.getFaultTypes()) {
-                dataBindingRegistry.introspectType(d, annotations);
+                dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
+            
+            introspectWrapperStyle(operation);
         }
     }
 }

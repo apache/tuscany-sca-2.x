@@ -181,7 +181,8 @@ public class DeployerImpl implements Deployer {
                     throw new ComponentNotFoundException("Target not found", targetUri);
                 }
                 URI sourceURI = URI.create(source.getUri() + "#" + refName);
-                Wire wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), Wire.LOCAL_BINDING);
+                Wire wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), service
+                    .getInterfaceContract(), Wire.LOCAL_BINDING);
                 try {
                     attachInvokers(refName, wire, source, target);
                 } catch (TargetInvokerCreationException e) {
@@ -218,31 +219,35 @@ public class DeployerImpl implements Deployer {
         return source;
     }
 
-    protected Wire createWire(URI sourceURI, URI targetUri, InterfaceContract contract, QName bindingType) {
+    protected Wire createWire(URI sourceURI,
+                              URI targetUri,
+                              InterfaceContract sourceContract,
+                              InterfaceContract targetContract,
+                              QName bindingType) {
         Wire wire = new WireImpl(bindingType);
-        wire.setSourceContract(contract);
-        wire.setTargetContract(contract);
+        wire.setSourceContract(sourceContract);
+        wire.setTargetContract(targetContract);
         wire.setSourceUri(sourceURI);
         wire.setTargetUri(targetUri);
-        for (Operation operation : contract.getInterface().getOperations()) {
+        for (Operation operation : sourceContract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             /*
              * if (operation.isNonBlocking()) { chain.addInterceptor(new
              * NonBlockingInterceptor(scheduler, workContext)); }
              */
             chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(operation, chain);
+            wire.addInvocationChain(chain);
 
         }
-        if (contract.getCallbackInterface() != null) {
-            for (Operation operation : contract.getCallbackInterface().getOperations()) {
+        if (sourceContract.getCallbackInterface() != null) {
+            for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
                 InvocationChain chain = new InvocationChainImpl(operation);
                 /*
                  * if (operation.isNonBlocking()) { chain.addInterceptor(new
                  * NonBlockingInterceptor(scheduler, workContext)); }
                  */
                 chain.addInterceptor(new InvokerInterceptor());
-                wire.addCallbackInvocationChain(operation, chain);
+                wire.addCallbackInvocationChain(chain);
             }
         }
         return wire;
@@ -252,11 +257,11 @@ public class DeployerImpl implements Deployer {
         throws TargetInvokerCreationException {
         // TODO section will deleted be replaced when we cut-over to the
         // physical marshallers
-        for (InvocationChain chain : wire.getInvocationChains().values()) {
-            chain.setTargetInvoker(target.createTargetInvoker(name, chain.getOperation(), false));
+        for (InvocationChain chain : wire.getInvocationChains()) {
+            chain.setTargetInvoker(target.createTargetInvoker(name, chain.getTargetOperation(), false));
         }
-        for (InvocationChain chain : wire.getCallbackInvocationChains().values()) {
-            chain.setTargetInvoker(source.createTargetInvoker(null, chain.getOperation(), true));
+        for (InvocationChain chain : wire.getCallbackInvocationChains()) {
+            chain.setTargetInvoker(source.createTargetInvoker(null, chain.getTargetOperation(), true));
         }
     }
 

@@ -19,8 +19,10 @@
 
 package org.apache.tuscany.core.databinding.wire;
 
+import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.ComponentManager;
@@ -41,12 +43,61 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
     private Mediator mediator;
     private ComponentManager componentManager;
 
-    @Constructor({"componentManager", "mediator"})
-    public DataBindingWirePostProcessor(@Reference ComponentManager componentManager, 
-                                        @Reference Mediator mediator) {
+    @Constructor( {"componentManager", "mediator"})
+    public DataBindingWirePostProcessor(@Reference
+    ComponentManager componentManager, @Reference
+    Mediator mediator) {
         super();
         this.componentManager = componentManager;
         this.mediator = mediator;
+    }
+
+    public boolean isTransformationRequired(DataType source, DataType target) {
+        if (source == target) {
+            return false;
+        }
+        return !source.getDataBinding().equals(target.getDataBinding());
+    }
+
+    public boolean isTransformationRequired(Operation source, Operation target) {
+        if (source == target) {
+            return false;
+        }
+
+        // Check output type
+        DataType sourceOutputType = source.getOutputType();
+        DataType targetOutputType = target.getOutputType();
+
+        // Note the target output type is now the source for checking
+        // compatibility
+        if (isTransformationRequired(targetOutputType, sourceOutputType)) {
+            return true;
+        }
+
+        List<DataType> sourceInputType = source.getInputType().getLogical();
+        List<DataType> targetInputType = target.getInputType().getLogical();
+
+        int size = sourceInputType.size();
+        for (int i = 0; i < size; i++) {
+            if (isTransformationRequired(sourceInputType.get(i), targetInputType.get(i))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isTransformationRequired(InterfaceContract sourceContract,
+                                             Operation sourceOperation,
+                                             InterfaceContract targetContract,
+                                             Operation targetOperation) {
+        if (targetContract == null) {
+            targetContract = sourceContract;
+        }
+        if (sourceContract == targetContract) {
+            return false;
+        }
+        return true;
     }
 
     public void process(Wire wire) {
@@ -63,18 +114,13 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
             String opName = entry.getKey().getName();
             Operation sourceOperation = sourceContract.getInterface().getOperation(opName);
             Operation targetOperation = targetContract.getInterface().getOperation(opName);
-            String sourceDataBinding = sourceOperation.getDataBinding();
-            String targetDataBinding = targetOperation.getDataBinding();
-            if (sourceDataBinding == null && targetDataBinding == null) {
-                continue;
-            }
-            if (sourceDataBinding == null || targetDataBinding == null 
-                || !sourceDataBinding.equals(targetDataBinding)) {
+
+            if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
                 // Add the interceptor to the source side because multiple
                 // references can be wired
                 // to the same service
-                DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(componentManager, wire, sourceOperation, targetOperation);
+                DataBindingInteceptor interceptor = new DataBindingInteceptor(componentManager, wire, sourceOperation,
+                                                                              targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }
@@ -89,19 +135,15 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
 
         for (Map.Entry<Operation, InvocationChain> entry : callbackChains.entrySet()) {
             String opName = entry.getKey().getName();
-            Operation sourceOperation = sourceContract.getCallbackInterface().getCallbackOperations().get(opName);
-            Operation targetOperation = targetContract.getCallbackOperations().get(opName);
-            String sourceDataBinding = sourceOperation.getDataBinding();
-            String targetDataBinding = targetOperation.getDataBinding();
-            if (sourceDataBinding == null && targetDataBinding == null) {
-                continue;
-            }
-            if (sourceDataBinding == null || targetDataBinding == null || !sourceDataBinding.equals(targetDataBinding)) {
+            Operation sourceOperation = sourceContract.getCallbackInterface().getOperations().get(opName);
+            Operation targetOperation = targetContract.getCallbackInterface().getOperations().get(opName);
+            if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
+
                 // Add the interceptor to the source side because multiple
                 // references can be wired
                 // to the same service
-                DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(componentManager, wire, sourceOperation, targetOperation);
+                DataBindingInteceptor interceptor = new DataBindingInteceptor(componentManager, wire, sourceOperation,
+                                                                              targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }

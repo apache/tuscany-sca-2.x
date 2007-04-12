@@ -56,7 +56,7 @@ public abstract class AbstractInvocationHandler {
                 // short-circuit the dispatch and invoke the target directly
                 TargetInvoker targetInvoker = chain.getTargetInvoker();
                 if (targetInvoker == null) {
-                    String name = chain.getOperation().getName();
+                    String name = chain.getTargetOperation().getName();
                     throw new AssertionError("No target invoker [" + name + "]");
                 }
                 return targetInvoker.invokeTarget(args, TargetInvoker.NONE, workContext);
@@ -70,10 +70,10 @@ public abstract class AbstractInvocationHandler {
             msg.setTargetInvoker(invoker);
             msg.setCorrelationId(workContext.getCorrelationId());
             msg.setCallbackUris(workContext.getCallbackUris());
-            Operation operation = chain.getOperation();
+            Operation operation = chain.getTargetOperation();
             Interface contract = operation.getInterface();
             if (contract != null && contract.isConversational()) {
-                Operation.ConversationSequence sequence = chain.getOperation().getConversationSequence();
+                Operation.ConversationSequence sequence = chain.getTargetOperation().getConversationSequence();
                 if (sequence == Operation.ConversationSequence.CONVERSATION_END) {
                     msg.setConversationSequence(TargetInvoker.END);
                     conversationStarted = false;
@@ -111,7 +111,7 @@ public abstract class AbstractInvocationHandler {
         if (callbackWires != null) {
             msg.setCallbackWires(callbackWires);
         }
-        Operation operation = chain.getOperation();
+        Operation operation = chain.getTargetOperation();
         if (conversational) {
             Operation.ConversationSequence sequence = operation.getConversationSequence();
             if (sequence == Operation.ConversationSequence.CONVERSATION_END) {

@@ -54,7 +54,7 @@ public class LocalTargetInvokerTestCase extends TestCase {
         InvocationChain chain = new InvocationChainImpl(operation);
         chain.setTargetInvoker(targetInvoker);
         Wire wire = new WireImpl();
-        wire.addInvocationChain(operation, chain);
+        wire.addInvocationChain(chain);
         wire.setSourceContract(serviceContract);
         TargetInvoker invoker = new LocalTargetInvoker(operation, wire);
         Message msg = invoker.invoke(new MessageImpl());
@@ -77,12 +77,12 @@ public class LocalTargetInvokerTestCase extends TestCase {
         chain.setTargetInvoker(targetInvoker);
         InvocationChain callbackChain = new InvocationChainImpl(operation);
         Wire wire = new WireImpl();
-        wire.addInvocationChain(operation, chain);
-        wire.addCallbackInvocationChain(operation, callbackChain);
+        wire.addInvocationChain(chain);
+        wire.addCallbackInvocationChain(callbackChain);
         wire.setSourceContract(serviceContract);
         URI uri = URI.create("foo");
         wire.setSourceUri(uri);
-        wire.addInvocationChain(operation, chain);
+        wire.addInvocationChain(chain);
         TargetInvoker invoker = new LocalTargetInvoker(operation, wire);
         Message msg = EasyMock.createMock(Message.class);
         msg.pushCallbackUri(EasyMock.eq(uri));
@@ -101,7 +101,7 @@ public class LocalTargetInvokerTestCase extends TestCase {
         chain.setTargetInvoker(targetInvoker);
         Wire wire = new WireImpl();
         wire.setSourceContract(serviceContract);
-        wire.addInvocationChain(operation, chain);
+        wire.addInvocationChain(chain);
         TargetInvoker invoker = new LocalTargetInvoker(operation, wire);
         Message msg = invoker.invoke(new MessageImpl());
         assertTrue(msg.isFault());

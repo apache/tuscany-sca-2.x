@@ -43,7 +43,14 @@ public interface InvocationChain {
      *
      * @return the target operation for this invocation chain
      */
-    Operation getOperation();
+    Operation getTargetOperation();
+    
+    /**
+     * Returns the source operation for this invocation chain.
+     *
+     * @return the source operation for this invocation chain
+     */    
+    Operation getSourceOperation();
 
     /**
      * Sets the target invoker to pass down the chain

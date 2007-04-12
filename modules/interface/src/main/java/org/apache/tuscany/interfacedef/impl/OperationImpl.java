@@ -59,6 +59,20 @@ public class OperationImpl implements Operation {
         this.name = name;
     }
 
+    /**
+     * @param name
+     * @param inputType
+     * @param outputType
+     * @param faultTypes
+     */
+    public OperationImpl(String name, DataType<List<DataType>> inputType, DataType outputType, List<DataType> faultTypes) {
+        super();
+        this.name = name;
+        this.inputType = inputType;
+        this.outputType = outputType;
+        this.faultTypes = faultTypes;
+    }
+    
     public String getName() {
         return name;
     }

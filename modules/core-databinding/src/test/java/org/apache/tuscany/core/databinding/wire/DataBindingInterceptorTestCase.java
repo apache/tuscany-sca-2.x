@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.core.databinding.wire;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -33,13 +32,14 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.wire.DataBindingInteceptor;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.Wire;
@@ -52,26 +52,23 @@ public class DataBindingInterceptorTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public final void testInvoke() {
-        DataType<Class> type1 = new DataType<Class>("xml:string", String.class, String.class);
-        List<DataType<Class>> types1 = new ArrayList<DataType<Class>>();
+        DataType<Class> type1 = new DataTypeImpl<Class>("xml:string", String.class, String.class);
+        List<DataType> types1 = new ArrayList<DataType>();
         types1.add(type1);
-        DataType<List<DataType<Class>>> inputType1 =
-            new DataType<List<DataType<Class>>>("xml:string", Object[].class, types1);
+        DataType<List<DataType>> inputType1 = new DataTypeImpl<List<DataType>>("xml:string", Object[].class, types1);
 
-        DataType<Class> type2 = new DataType<Class>("foo", Foo.class, Foo.class);
-        List<DataType<Class>> types2 = new ArrayList<DataType<Class>>();
+        DataType<Class> type2 = new DataTypeImpl<Class>("foo", Foo.class, Foo.class);
+        List<DataType> types2 = new ArrayList<DataType>();
         types2.add(type2);
-        DataType<List<DataType<Class>>> inputType2 = new DataType<List<DataType<Class>>>("foo", Object[].class, types2);
+        DataType<List<DataType>> inputType2 = new DataTypeImpl<List<DataType>>("foo", Object[].class, types2);
 
-        Operation<Class> operation1 =
-            new Operation<Class>("call", inputType1, type1, null, false, "xml:string", NO_CONVERSATION);
-        Operation<Class> operation2 =
-            new Operation<Class>("call", inputType2, type2, null, false, "org.w3c.dom.Node", NO_CONVERSATION);
+        Operation operation1 = new OperationImpl("call", inputType1, type1, null);
+        Operation operation2 = new OperationImpl("call", inputType2, type2, null);
 
-        DataType<DataType> outputType1 =
-            new DataType<DataType>(DataBinding.IDL_OUTPUT, Object.class, operation1.getOutputType());
-        DataType<DataType> outputType2 =
-            new DataType<DataType>(DataBinding.IDL_OUTPUT, Object.class, operation2.getOutputType());
+        DataType<DataType> outputType1 = new DataTypeImpl<DataType>(DataBinding.IDL_OUTPUT, Object.class, operation1
+            .getOutputType());
+        DataType<DataType> outputType2 = new DataTypeImpl<DataType>(DataBinding.IDL_OUTPUT, Object.class, operation2
+            .getOutputType());
 
         Component component = EasyMock.createMock(Component.class);
         ComponentManager componentManager = createMock(ComponentManager.class);

@@ -33,17 +33,18 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceIntrospector;
-import org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor;
 import org.apache.tuscany.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.databinding.xml.StAXDataBinding;
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -138,20 +139,25 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         processor.process(wire);
     }
 
-    private Wire createWire(URI sourceUri, URI targetUri, QName bindingType) throws InvalidServiceContractException {
-        ServiceContract<?> contract1 = new DataBindingJavaInterfaceIntrospector().introspect(TestInterface1.class);
+    private Wire createWire(URI sourceUri, URI targetUri, QName bindingType) throws InvalidInterfaceException {
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
+        JavaInterface interface1 = introspector.introspect(TestInterface1.class);
+        InterfaceContract contract1 = new JavaInterfaceContractImpl();
+        contract1.setInterface(interface1);
         contract1.setDataBinding(DOMDataBinding.NAME);
-        ServiceContract<?> contract2 = new DataBindingJavaInterfaceIntrospector().introspect(TestInterface2.class);
+        JavaInterface interface2 = introspector.introspect(TestInterface2.class);
+        InterfaceContract contract2 = new JavaInterfaceContractImpl();
+        contract2.setInterface(interface2);
         contract2.setDataBinding(StAXDataBinding.NAME);
-        Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
-        for (Operation<?> op : contract1.getOperations().values()) {
+        Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
+        for (Operation op : interface1.getOperations()) {
             InvocationChain chain = createMock(InvocationChain.class);
             chain.addInterceptor(EasyMock.anyInt(), EasyMock.isA(Interceptor.class));
             replay(chain);
             chains.put(op, chain);
         }        
-        Map<Operation<?>, InvocationChain> callbackChains = new HashMap<Operation<?>, InvocationChain>();
-        for (Operation<?> op : contract1.getCallbackOperations().values()) {
+        Map<Operation, InvocationChain> callbackChains = new HashMap<Operation, InvocationChain>();
+        for (Operation op : interface1.getOperations()) {
             InvocationChain chain = createMock(InvocationChain.class);
             chain.addInterceptor(EasyMock.anyInt(), EasyMock.isA(Interceptor.class));
             replay(chain);

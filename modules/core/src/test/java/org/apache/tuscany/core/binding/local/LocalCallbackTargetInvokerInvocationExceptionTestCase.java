@@ -46,7 +46,7 @@ public class LocalCallbackTargetInvokerInvocationExceptionTestCase extends TestC
         InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(head);
         Wire wire = new WireImpl();
-        wire.addCallbackInvocationChain(operation, chain);
+        wire.addCallbackInvocationChain(chain);
         LocalCallbackTargetInvoker invoker = new LocalCallbackTargetInvoker(operation, wire);
         Message msg = new MessageImpl();
         msg.setBody("foo");

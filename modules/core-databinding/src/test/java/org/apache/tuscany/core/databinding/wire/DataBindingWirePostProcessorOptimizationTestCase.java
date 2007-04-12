@@ -22,30 +22,30 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor;
 import org.apache.tuscany.databinding.impl.MediatorImpl;
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
 
 /**
- * Verifies that data binding interceptor is not added to invocation chains when the data binding types are not set on
- * service contracts
- *
+ * Verifies that data binding interceptor is not added to invocation chains when
+ * the data binding types are not set on service contracts
+ * 
  * @version $Rev$ $Date$
  */
 public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
@@ -61,7 +61,7 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         URI sourceUri = URI.create("/componentA/#ref1");
         URI targetUri = URI.create("/componentB/#svc1");
 
@@ -71,21 +71,20 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         Component component = createMock(Component.class);
         expect(componentManager.getComponent(UriHelper.getDefragmentedName(sourceUri))).andReturn(component);
         expect(componentManager.getComponent(UriHelper.getDefragmentedName(targetUri))).andReturn(component);
-        
+
         replay(component, componentManager);
         processor = new DataBindingWirePostProcessor(componentManager, mediator);
 
-        ServiceContract<Type> contract = new JavaServiceContract(null);
-        Operation<Type> operation = new Operation<Type>("test", null, null, null);
-        operation.setServiceContract(contract);
-        Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
-        operations.put("test", operation);
-        contract.setOperations(operations);
-        contract.setCallbackOperations(operations);
+        InterfaceContract contract = new JavaInterfaceContractImpl();
+        contract.setInterface(new JavaInterfaceImpl());
+        contract.setCallbackInterface(new JavaInterfaceImpl());
+        Operation operation = new OperationImpl("test", null, null, null);
+        contract.getInterface().getOperations().add(operation);
+        contract.getCallbackInterface().getOperations().add(operation);
 
         chain = createMock(InvocationChain.class);
         replay(chain);
-        Map<Operation<?>, InvocationChain> chains = new HashMap<Operation<?>, InvocationChain>();
+        Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
         chains.put(operation, chain);
 
         wire = EasyMock.createMock(Wire.class);

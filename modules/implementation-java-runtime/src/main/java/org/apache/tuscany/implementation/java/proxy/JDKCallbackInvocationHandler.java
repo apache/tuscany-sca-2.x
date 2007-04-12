@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -44,16 +45,15 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 import org.osoa.sca.NoRegisteredCallbackException;
 
-
 /**
- * Responsible for dispatching to a callback through a wire.
- * <p/>
- * TODO cache target invoker
+ * Responsible for dispatching to a callback through a wire. <p/> TODO cache
+ * target invoker
+ * 
  * @Deprecated
  * @version $Rev$ $Date$
  */
-public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
-    implements InvocationHandler, Externalizable, SCAExternalizable {
+public class JDKCallbackInvocationHandler extends AbstractInvocationHandler implements InvocationHandler,
+    Externalizable, SCAExternalizable {
     /**
      * 
      */
@@ -82,16 +82,14 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
         }
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings( {"unchecked"})
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
             return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
-        } else if (method.getDeclaringClass().equals(Object.class)
-            && "equals".equals(method.getName())) {
+        } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName())) {
             // TODO implement
             throw new UnsupportedOperationException();
-        } else if (Object.class.equals(method.getDeclaringClass())
-            && "hashCode".equals(method.getName())) {
+        } else if (Object.class.equals(method.getDeclaringClass()) && "hashCode".equals(method.getName())) {
             return hashCode();
             // TODO beter hash algorithm
         }
@@ -101,9 +99,13 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
         assert targetAddress != null;
         Wire wire = wires.get(targetAddress);
         assert wire != null;
-        Map<Operation, InvocationChain> chains = wire.getCallbackInvocationChains();
-        Operation operation = JavaInterfaceUtil.findOperation(method, chains.keySet());
-        InvocationChain chain = chains.get(operation);
+        List<InvocationChain> chains = wire.getCallbackInvocationChains();
+        IdentityHashMap<Operation, InvocationChain> map = new IdentityHashMap<Operation, InvocationChain>();
+        for (InvocationChain chain : chains) {
+            map.put(chain.getTargetOperation(), chain);
+        }
+        Operation operation = JavaInterfaceUtil.findOperation(method, map.keySet());
+        InvocationChain chain = map.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
         Object correlationId = context.getCorrelationId();
         context.setCorrelationId(null);
@@ -129,7 +131,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         int num = in.readInt();
         for (int i = 0; i <= num; i++) {
-            sourceWireNames.add((String) in.readObject());
+            sourceWireNames.add((String)in.readObject());
         }
     }
 

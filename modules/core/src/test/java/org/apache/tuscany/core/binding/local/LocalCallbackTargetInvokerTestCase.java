@@ -19,7 +19,9 @@
 package org.apache.tuscany.core.binding.local;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -70,9 +72,10 @@ public class LocalCallbackTargetInvokerTestCase extends TestCase {
         chain = EasyMock.createMock(InvocationChain.class);
         EasyMock.expect(chain.getTargetInvoker()).andReturn(null);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(head);
+        EasyMock.expect(chain.getTargetOperation()).andReturn(operation);
         EasyMock.replay(chain);
-        Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
-        chains.put(operation, chain);
+        List<InvocationChain> chains = new ArrayList<InvocationChain>();
+        chains.add(chain);
         wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.getCallbackInvocationChains()).andReturn(chains);
         EasyMock.replay(wire);

@@ -38,6 +38,9 @@ import org.apache.tuscany.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.databinding.xml.Node2String;
 import org.apache.tuscany.databinding.xml.String2Node;
 import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.util.ElementInfo;
 import org.apache.tuscany.interfacedef.util.TypeInfo;
 import org.apache.tuscany.interfacedef.util.WrapperInfo;
@@ -50,35 +53,34 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class IDLTransformerTestCase extends TestCase {
-    private static final String IPO_XML =
-        "<?xml version=\"1.0\"?>" + "<order1"
-            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-            + "  xmlns:ipo=\"http://www.example.com/IPO\""
-            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\""
-            + "  orderDate=\"1999-12-01\">"
-            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">"
-            + "    <name>Helen Zoe</name>"
-            + "    <street>47 Eden Street</street>"
-            + "    <city>Cambridge</city>"
-            + "    <postcode>CB1 1JR</postcode>"
-            + "  </shipTo>"
-            + "  <billTo xsi:type=\"ipo:USAddress\">"
-            + "    <name>Robert Smith</name>"
-            + "    <street>8 Oak Avenue</street>"
-            + "    <city>Old Town</city>"
-            + "    <state>PA</state>"
-            + "    <zip>95819</zip>"
-            + "  </billTo>"
-            + "  <items>"
-            + "    <item partNum=\"833-AA\">"
-            + "      <productName>Lapis necklace</productName>"
-            + "      <quantity>1</quantity>"
-            + "      <USPrice>99.95</USPrice>"
-            + "      <ipo:comment>Want this for the holidays</ipo:comment>"
-            + "      <shipDate>1999-12-05</shipDate>"
-            + "    </item>"
-            + "  </items>"
-            + "</order1>";
+    private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<order1"
+                                          + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                                          + "  xmlns:ipo=\"http://www.example.com/IPO\""
+                                          + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\""
+                                          + "  orderDate=\"1999-12-01\">"
+                                          + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">"
+                                          + "    <name>Helen Zoe</name>"
+                                          + "    <street>47 Eden Street</street>"
+                                          + "    <city>Cambridge</city>"
+                                          + "    <postcode>CB1 1JR</postcode>"
+                                          + "  </shipTo>"
+                                          + "  <billTo xsi:type=\"ipo:USAddress\">"
+                                          + "    <name>Robert Smith</name>"
+                                          + "    <street>8 Oak Avenue</street>"
+                                          + "    <city>Old Town</city>"
+                                          + "    <state>PA</state>"
+                                          + "    <zip>95819</zip>"
+                                          + "  </billTo>"
+                                          + "  <items>"
+                                          + "    <item partNum=\"833-AA\">"
+                                          + "      <productName>Lapis necklace</productName>"
+                                          + "      <quantity>1</quantity>"
+                                          + "      <USPrice>99.95</USPrice>"
+                                          + "      <ipo:comment>Want this for the holidays</ipo:comment>"
+                                          + "      <shipDate>1999-12-05</shipDate>"
+                                          + "    </item>"
+                                          + "  </items>"
+                                          + "</order1>";
 
     private static final String URI_ORDER_XSD = "http://example.com/order.xsd";
 
@@ -90,46 +92,52 @@ public class IDLTransformerTestCase extends TestCase {
     }
 
     public void testTransform() throws Exception {
-        List<DataType<XMLType>> types0 = new ArrayList<DataType<XMLType>>();
-        DataType<XMLType> wrapperType =
-            new DataType<XMLType>(null, Object.class, new XMLType(new QName(URI_ORDER_XSD, "checkOrderStatus"), null));
+        List<DataType> types0 = new ArrayList<DataType>();
+        DataType<XMLType> wrapperType = new DataTypeImpl<XMLType>(null, Object.class,
+                                                                  new XMLType(new QName(URI_ORDER_XSD,
+                                                                                        "checkOrderStatus"), null));
         types0.add(wrapperType);
-        DataType<List<DataType<XMLType>>> inputType0 =
-            new DataType<List<DataType<XMLType>>>(IDL_INPUT, Object[].class, types0);
+        DataType<List<DataType>> inputType0 = new DataTypeImpl<List<DataType>>(IDL_INPUT,
+                                                                                                 Object[].class, types0);
 
-        List<DataType<XMLType>> types1 = new ArrayList<DataType<XMLType>>();
-        DataType<XMLType> customerIdType =
-            new DataType<XMLType>(null, Object.class, new XMLType(new QName(URI_ORDER_XSD, "customerId"), null));
-        DataType<XMLType> orderType =
-            new DataType<XMLType>(null, Object.class, new XMLType(new QName(URI_ORDER_XSD, "order"), null));
-        DataType<XMLType> flagType =
-            new DataType<XMLType>(null, Object.class, new XMLType(new QName(URI_ORDER_XSD, "flag"), null));
+        List<DataType> types1 = new ArrayList<DataType>();
+        DataType<XMLType> customerIdType = new DataTypeImpl<XMLType>(
+                                                                     null,
+                                                                     Object.class,
+                                                                     new XMLType(
+                                                                                 new QName(URI_ORDER_XSD, "customerId"),
+                                                                                 null));
+        DataType<XMLType> orderType = new DataTypeImpl<XMLType>(null, Object.class,
+                                                                new XMLType(new QName(URI_ORDER_XSD, "order"), null));
+        DataType<XMLType> flagType = new DataTypeImpl<XMLType>(null, Object.class, new XMLType(new QName(URI_ORDER_XSD,
+                                                                                                         "flag"), null));
         types1.add(customerIdType);
         types1.add(orderType);
         types1.add(flagType);
 
-        DataType<XMLType> statusType =
-            new DataType<XMLType>(null, Object.class, new XMLType(new QName(URI_ORDER_XSD, "status"), null));
-        DataType<XMLType> responseType =
-            new DataType<XMLType>(null, Object.class, new XMLType(new QName(URI_ORDER_XSD, "checkOrderStatusResponse"),
-                                                                  null));
+        DataType<XMLType> statusType = new DataTypeImpl<XMLType>(null, Object.class,
+                                                                 new XMLType(new QName(URI_ORDER_XSD, "status"), null));
+        DataType<XMLType> responseType = new DataTypeImpl<XMLType>(null, Object.class,
+                                                                   new XMLType(new QName(URI_ORDER_XSD,
+                                                                                         "checkOrderStatusResponse"),
+                                                                               null));
 
-        org.apache.tuscany.spi.model.Operation<XMLType> op =
-            new org.apache.tuscany.spi.model.Operation<XMLType>("checkOrderStatus", inputType0, responseType, null);
+        Operation op = new OperationImpl("checkOrderStatus");
+        op.setInputType(inputType0);
+        op.setOutputType(responseType);
         op.setDataBinding(DOMDataBinding.NAME);
 
         inputType0.setOperation(op);
         op.setWrapperStyle(true);
-        ElementInfo inputElement =
-            new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatus"), new TypeInfo(null, false, null));
+        ElementInfo inputElement = new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatus"), new TypeInfo(null,
+                                                                                                              false,
+                                                                                                              null));
         wrapperType.setMetadata(ElementInfo.class.getName(), inputElement);
 
-        ElementInfo customerId =
-            new ElementInfo(new QName("", "customerId"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("string"));
-        ElementInfo order =
-            new ElementInfo(new QName("", "order"), new TypeInfo(new QName(URI_ORDER_XSD), false, null));
-        ElementInfo flag =
-            new ElementInfo(new QName("", "flag"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("int"));
+        ElementInfo customerId = new ElementInfo(new QName("", "customerId"),
+                                                 SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("string"));
+        ElementInfo order = new ElementInfo(new QName("", "order"), new TypeInfo(new QName(URI_ORDER_XSD), false, null));
+        ElementInfo flag = new ElementInfo(new QName("", "flag"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("int"));
 
         customerIdType.setMetadata(ElementInfo.class.getName(), customerId);
         orderType.setMetadata(ElementInfo.class.getName(), order);
@@ -144,8 +152,8 @@ public class IDLTransformerTestCase extends TestCase {
         inputElements.add(order);
         inputElements.add(flag);
 
-        ElementInfo statusElement =
-            new ElementInfo(new QName("", "status"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("string"));
+        ElementInfo statusElement = new ElementInfo(new QName("", "status"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES
+            .get("string"));
 
         statusType.setMetadata(ElementInfo.class.getName(), statusElement);
         statusType.setOperation(op);
@@ -153,14 +161,14 @@ public class IDLTransformerTestCase extends TestCase {
         List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
         outputElements.add(statusElement);
 
-        ElementInfo outputElement =
-            new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatusResponse"), new TypeInfo(null, false, null));
+        ElementInfo outputElement = new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatusResponse"),
+                                                    new TypeInfo(null, false, null));
 
         responseType.setMetadata(ElementInfo.class.getName(), inputElement);
         responseType.setOperation(op);
 
-        WrapperInfo wrapperInfo =
-            new WrapperInfo(DOMDataBinding.NAME, inputElement, outputElement, inputElements, outputElements);
+        WrapperInfo wrapperInfo = new WrapperInfo(DOMDataBinding.NAME, inputElement, outputElement, inputElements,
+                                                  outputElements);
         op.setWrapper(wrapperInfo);
         op.setDataBinding(DOMDataBinding.NAME);
 
@@ -180,12 +188,13 @@ public class IDLTransformerTestCase extends TestCase {
         t.setMediator(m);
 
         TransformationContext context = new TransformationContextImpl();
+        context.setSourceOperation(op);
         List<DataType<Class>> types = new ArrayList<DataType<Class>>();
-        types.add(new DataType<Class>(Object.class.getName(), String.class, String.class));
-        types.add(new DataType<Class>("java.lang.String", String.class, String.class));
-        types.add(new DataType<Class>(Object.class.getName(), int.class, int.class));
-        DataType<List<DataType<Class>>> inputType1 =
-            new DataType<List<DataType<Class>>>(IDL_INPUT, Object[].class, types);
+        types.add(new DataTypeImpl<Class>(Object.class.getName(), String.class, String.class));
+        types.add(new DataTypeImpl<Class>("java.lang.String", String.class, String.class));
+        types.add(new DataTypeImpl<Class>(Object.class.getName(), int.class, int.class));
+        DataType<List<DataType<Class>>> inputType1 = new DataTypeImpl<List<DataType<Class>>>(IDL_INPUT, Object[].class,
+                                                                                             types);
         context.setSourceDataType(inputType1);
         context.setTargetDataType(op.getInputType());
         Object[] results = t.transform(source, context);
@@ -196,18 +205,17 @@ public class IDLTransformerTestCase extends TestCase {
         assertEquals("checkOrderStatus", element.getLocalName());
 
         TransformationContext context1 = new TransformationContextImpl();
-        DataType<DataType> sourceType = new DataType<DataType>(IDL_OUTPUT, Object.class, op.getOutputType());
-        sourceType.setOperation(op.getOutputType().getOperation());
+        DataType<DataType> sourceType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, op.getOutputType());
 
         context1.setSourceDataType(sourceType);
-        DataType<DataType> targetType =
-            new DataType<DataType>(IDL_OUTPUT, Object.class, new DataType<Class>("java.lang.Object", String.class,
-                                                                                 String.class));
+        DataType<DataType> targetType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class,
+                                                                   new DataTypeImpl<Class>("java.lang.Object",
+                                                                                           String.class, String.class));
         context1.setTargetDataType(targetType);
 
         Document factory = DOMHelper.newDocument();
-        Element responseElement =
-            factory.createElementNS("http://example.com/order.wsdl", "p:checkOrderStatusResponse");
+        Element responseElement = factory
+            .createElementNS("http://example.com/order.wsdl", "p:checkOrderStatusResponse");
         Element status = factory.createElement("status");
         responseElement.appendChild(status);
         status.appendChild(factory.createTextNode("shipped"));

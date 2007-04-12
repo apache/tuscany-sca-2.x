@@ -30,8 +30,9 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
- * Dispatches an invocation through a composite service or reference using the local binding
- *
+ * Dispatches an invocation through a composite service or reference using the
+ * local binding
+ * 
  * @version $Rev$ $Date$
  */
 public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
@@ -41,7 +42,7 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
 
     public LocalTargetInvoker(Operation operation, Wire wire) {
         assert operation != null;
-        chain = wire.getInvocationChains().get(operation);
+        chain = getInvocationChain(wire.getInvocationChains(), operation);
         assert chain != null;
         if (wire.getSourceUri() != null) {
             fromAddress = URI.create(UriHelper.getBaseName(wire.getSourceUri()));
@@ -51,16 +52,17 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
 
     @Override
     public LocalTargetInvoker clone() throws CloneNotSupportedException {
-        return (LocalTargetInvoker) super.clone();
+        return (LocalTargetInvoker)super.clone();
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             TargetInvoker invoker = chain.getTargetInvoker();
             assert invoker != null;
-            // Pushing the from address only needs to happen in the outbound (forward) direction for callbacks
+            // Pushing the from address only needs to happen in the outbound
+            // (forward) direction for callbacks
             if (contractHasCallback) {
-                //JFM do we need this?
+                // JFM do we need this?
                 msg.pushCallbackUri(fromAddress);
             }
 
@@ -71,7 +73,6 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
             return faultMsg;
         }
     }
-
 
     public boolean isOptimizable() {
         return true;

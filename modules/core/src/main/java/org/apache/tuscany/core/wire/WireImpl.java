@@ -19,8 +19,10 @@
 package org.apache.tuscany.core.wire;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -44,8 +46,8 @@ public class WireImpl implements Wire {
     private InterfaceContract sourceContract;
     private InterfaceContract targetContract;
     private boolean optimizable;
-    private Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
-    private Map<Operation, InvocationChain> callbackChains = new HashMap<Operation, InvocationChain>();
+    private List<InvocationChain> chains = new ArrayList<InvocationChain>();
+    private List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
     private AtomicComponent target;
 
     /**
@@ -120,20 +122,20 @@ public class WireImpl implements Wire {
         this.target = target;
     }
 
-    public Map<Operation, InvocationChain> getInvocationChains() {
-        return Collections.unmodifiableMap(chains);
+    public List<InvocationChain> getInvocationChains() {
+        return Collections.unmodifiableList(chains);
     }
 
-    public void addInvocationChain(Operation operation, InvocationChain chain) {
-        chains.put(operation, chain);
+    public void addInvocationChain(InvocationChain chain) {
+        chains.add(chain);
     }
 
-    public Map<Operation, InvocationChain> getCallbackInvocationChains() {
-        return Collections.unmodifiableMap(callbackChains);
+    public List<InvocationChain> getCallbackInvocationChains() {
+        return Collections.unmodifiableList(callbackChains);
     }
 
-    public void addCallbackInvocationChain(Operation operation, InvocationChain chain) {
-        callbackChains.put(operation, chain);
+    public void addCallbackInvocationChain(InvocationChain chain) {
+        callbackChains.add(chain);
     }
 
 }
