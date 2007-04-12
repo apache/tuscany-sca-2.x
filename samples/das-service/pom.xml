@@ -18,17 +18,17 @@
     * under the License.
 -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany.sampleapps</groupId>
-        <artifactId>tuscany-sampleapps</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sampleapps.das.pojo.service</groupId>
-    <artifactId>das-pojo-service</artifactId>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-samples</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-samples-das-service</artifactId>
+    <name>Apache Tuscany DAS Pojo Service Sample</name>
     <packaging>pom</packaging>
-    <name>Tuscany DAS Pojo Service Sample</name>
-
+    
     <modules>
         <module>service</module>
         <module>webclient</module>
