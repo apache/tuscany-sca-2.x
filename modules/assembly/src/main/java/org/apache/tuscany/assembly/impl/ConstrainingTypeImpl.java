@@ -95,11 +95,16 @@ public class ConstrainingTypeImpl extends BaseImpl implements ConstrainingType {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        else if (obj instanceof ConstrainingType && getName().equals(((ConstrainingType)obj).getName()))
-             return true;
-        else
+        } else if (obj instanceof ConstrainingType) {
+            if (getName() != null) {
+                return getName().equals(((ConstrainingType)obj).getName());
+            } else {
+                return ((ConstrainingType)obj).getName() == null;
+            }
+        } else {
             return false;
+        }
     }
 }

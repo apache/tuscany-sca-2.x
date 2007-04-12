@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.interfacedef.wsdl.impl;
 
-import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 
@@ -75,11 +74,16 @@ public class XSDefinitionImpl implements XSDefinition {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        else if (obj instanceof WSDLDefinition && getNamespace().equals(((WSDLDefinition)obj).getNamespace()))
-             return true;
-        else
+        } else if (obj instanceof XSDefinition) {
+            if (getNamespace() != null) {
+                return getNamespace().equals(((XSDefinition)obj).getNamespace());
+            } else {
+                return ((XSDefinition)obj).getNamespace() == null;
+            }
+        } else {
             return false;
+        }
     }
 }

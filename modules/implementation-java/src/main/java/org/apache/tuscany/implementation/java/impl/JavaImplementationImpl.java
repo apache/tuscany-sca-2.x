@@ -66,11 +66,16 @@ public class JavaImplementationImpl extends ComponentTypeImpl implements JavaImp
     
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        else if (obj instanceof JavaImplementation && getName().equals(((JavaImplementation)obj).getName()))
-             return true;
-        else
+        } else if (obj instanceof JavaImplementation) {
+            if (getName() != null) {
+                return getName().equals(((JavaImplementation)obj).getName());
+            } else {
+                return ((JavaImplementation)obj).getName() == null;
+            }
+        } else {
             return false;
+        }
     }
 }
