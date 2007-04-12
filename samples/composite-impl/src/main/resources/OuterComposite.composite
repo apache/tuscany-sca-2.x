@@ -24,8 +24,8 @@
 
     <component name="SourceComponent">
         <implementation.composite name="sample:InnerComposite"/>
-        <reference name="targetComponentRef" target="TargetComponent"/>
-        <reference name="targetComponentRef2" target="TargetComponent2/InnerTargetService"/>
+        <reference name="TargetComponentRef" target="TargetComponent"/>
+        <reference name="TargetComponentRef2" target="TargetComponent2/InnerTargetService"/>
     </component>
 
     <component name="TargetComponent">
