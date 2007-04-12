@@ -32,11 +32,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.implementation.java.context.ModelHelper;
-import org.apache.tuscany.implementation.java.context.PojoWorkContextTunnel;
-import org.apache.tuscany.implementation.java.proxy.JDKInvocationHandler;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;

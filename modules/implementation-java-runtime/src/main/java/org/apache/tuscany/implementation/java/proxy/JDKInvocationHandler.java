@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.core.wire.NoMethodForOperationException;
 import org.apache.tuscany.core.wire.WireUtils;
-import org.apache.tuscany.implementation.java.context.PojoWorkContextTunnel;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
