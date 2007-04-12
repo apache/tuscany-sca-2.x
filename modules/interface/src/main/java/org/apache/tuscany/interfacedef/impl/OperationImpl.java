@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.interfacedef.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.interfacedef.DataType;
@@ -42,21 +43,19 @@ public class OperationImpl implements Operation {
     private boolean nonBlocking;
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
-    
 
     /**
      * @param name
      */
     public OperationImpl() {
-        super();
+        this(null);
     }
 
     /**
      * @param name
      */
     public OperationImpl(String name) {
-        super();
-        this.name = name;
+        this(name, null, null, null);
     }
 
     /**
@@ -68,11 +67,12 @@ public class OperationImpl implements Operation {
     public OperationImpl(String name, DataType<List<DataType>> inputType, DataType outputType, List<DataType> faultTypes) {
         super();
         this.name = name;
-        this.inputType = inputType;
+        this.inputType = inputType != null ? inputType : new DataTypeImpl<List<DataType>>("idl:input", Object[].class,
+                                                                                          new ArrayList<DataType>());
         this.outputType = outputType;
-        this.faultTypes = faultTypes;
+        this.faultTypes = faultTypes != null ? faultTypes : new ArrayList<DataType>();
     }
-    
+
     public String getName() {
         return name;
     }
@@ -183,7 +183,8 @@ public class OperationImpl implements Operation {
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + ((conversationSequence == null) ? 0 : conversationSequence.hashCode());
-        // result = PRIME * result + ((faultTypes == null) ? 0 : faultTypes.hashCode());
+        // result = PRIME * result + ((faultTypes == null) ? 0 :
+        // faultTypes.hashCode());
         result = PRIME * result + ((inputType == null) ? 0 : inputType.hashCode());
         result = PRIME * result + ((name == null) ? 0 : name.hashCode());
         result = PRIME * result + (nonBlocking ? 1231 : 1237);
@@ -211,15 +212,11 @@ public class OperationImpl implements Operation {
             return false;
         }
         /*
-        if (faultTypes == null) {
-            if (other.faultTypes != null) {
-                return false;
-            }
-        } else if (!faultTypes.equals(other.faultTypes)) {
-            return false;
-        }
-        */
-        
+         * if (faultTypes == null) { if (other.faultTypes != null) { return
+         * false; } } else if (!faultTypes.equals(other.faultTypes)) { return
+         * false; }
+         */
+
         if (inputType == null) {
             if (other.inputType != null) {
                 return false;

@@ -20,7 +20,6 @@
 package org.apache.tuscany.core.databinding.wire;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -109,11 +108,10 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         if (sourceContract == targetContract) {
             return;
         }
-        Map<Operation, InvocationChain> chains = wire.getInvocationChains();
-        for (Map.Entry<Operation, InvocationChain> entry : chains.entrySet()) {
-            String opName = entry.getKey().getName();
-            Operation sourceOperation = sourceContract.getInterface().getOperation(opName);
-            Operation targetOperation = targetContract.getInterface().getOperation(opName);
+        List<InvocationChain> chains = wire.getInvocationChains();
+        for (InvocationChain chain : chains) {
+            Operation sourceOperation = chain.getSourceOperation();
+            Operation targetOperation = chain.getTargetOperation();
 
             if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
                 // Add the interceptor to the source side because multiple
@@ -122,21 +120,20 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 DataBindingInteceptor interceptor = new DataBindingInteceptor(componentManager, wire, sourceOperation,
                                                                               targetOperation);
                 interceptor.setMediator(mediator);
-                entry.getValue().addInterceptor(0, interceptor);
+                chain.addInterceptor(0, interceptor);
             }
         }
 
         // Object targetAddress = UriHelper.getBaseName(source.getUri());
-        Map<Operation, InvocationChain> callbackChains = wire.getCallbackInvocationChains();
+        List<InvocationChain> callbackChains = wire.getCallbackInvocationChains();
         if (callbackChains == null) {
             // callback chains could be null
             return;
         }
 
-        for (Map.Entry<Operation, InvocationChain> entry : callbackChains.entrySet()) {
-            String opName = entry.getKey().getName();
-            Operation sourceOperation = sourceContract.getCallbackInterface().getOperations().get(opName);
-            Operation targetOperation = targetContract.getCallbackInterface().getOperations().get(opName);
+        for (InvocationChain chain : callbackChains) {
+            Operation sourceOperation = chain.getSourceOperation();
+            Operation targetOperation = chain.getTargetOperation();
             if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
 
                 // Add the interceptor to the source side because multiple
@@ -145,7 +142,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 DataBindingInteceptor interceptor = new DataBindingInteceptor(componentManager, wire, sourceOperation,
                                                                               targetOperation);
                 interceptor.setMediator(mediator);
-                entry.getValue().addInterceptor(0, interceptor);
+                chain.addInterceptor(0, interceptor);
             }
         }
     }
