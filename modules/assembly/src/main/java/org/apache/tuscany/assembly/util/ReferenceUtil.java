@@ -43,8 +43,19 @@ public class ReferenceUtil {
     }
     
     public static boolean validateMultiplicityAndTargets(Multiplicity multiplicity,
-                                                         List<?> targets) {
+                                                         List<?> targets, boolean promoted) {
+        
+        // Count targets
         int count = targets.size();
+        if (promoted) {
+            if (count == 0) {
+                // A promoted reference counts as one target
+                count = 1;
+            } else {
+                // A reference cannot be promoted and wired at the same time
+                return false;
+            }
+        }
         switch (multiplicity) {
             case ZERO_N:
                 break;
