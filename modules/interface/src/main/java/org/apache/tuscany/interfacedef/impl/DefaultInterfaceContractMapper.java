@@ -55,6 +55,8 @@ public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
         if (!source.getName().equals(target.getName())) {
             return false;
         }
+        
+        // FIXME: We need to deal with wrapped<-->unwrapped conversion
 
         // Check output type
         DataType sourceOutputType = source.getOutputType();

@@ -19,6 +19,7 @@
 package org.apache.tuscany.interfacedef.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.tuscany.interfacedef.Interface;
@@ -33,7 +34,7 @@ public class InterfaceImpl implements Interface {
 
     private boolean remotable;
     private boolean conversational;
-    private List<Operation> operations = new ArrayList<Operation>();
+    private OperationList operations = new OperationList();
     private boolean unresolved;
 
     public boolean isRemotable() {
@@ -68,6 +69,45 @@ public class InterfaceImpl implements Interface {
      */
     public void setConversational(boolean conversational) {
         this.conversational = conversational;
+    }
+
+    private class OperationList extends ArrayList<Operation> {
+        private static final long serialVersionUID = -903469106307606099L;
+
+        @Override
+        public Operation set(int index, Operation element) {
+            element.setInterface(InterfaceImpl.this);
+            return super.set(index, element);
+        }
+
+        @Override
+        public void add(int index, Operation element) {
+            element.setInterface(InterfaceImpl.this);
+            super.add(index, element);
+        }
+
+        @Override
+        public boolean add(Operation o) {
+            o.setInterface(InterfaceImpl.this);
+            return super.add(o);
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends Operation> c) {
+            for (Operation op : c) {
+                op.setInterface(InterfaceImpl.this);
+            }
+            return super.addAll(c);
+        }
+
+        @Override
+        public boolean addAll(int index, Collection<? extends Operation> c) {
+            for (Operation op : c) {
+                op.setInterface(InterfaceImpl.this);
+            }
+            return super.addAll(index, c);
+        }
+
     }
 
 }

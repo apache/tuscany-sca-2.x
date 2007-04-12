@@ -55,7 +55,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
         }
 
         String mappedName = annotation.mappedName();
-        Resource<?> resource = createResource(name, new JavaElement(method, 0));
+        Resource resource = createResource(name, new JavaElement(method, 0));
         resource.setOptional(annotation.optional());
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
@@ -80,7 +80,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
 
         String mappedName = annotation.mappedName();
 
-        Resource<?> resource = createResource(name, new JavaElement(field));
+        Resource resource = createResource(name, new JavaElement(field));
         resource.setOptional(annotation.optional());
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
@@ -89,10 +89,10 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Resource<T> createResource(String name, JavaElement element) {
+    public Resource createResource(String name, JavaElement element) {
         element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
         element.setName(name);
-        return new Resource<T>(element);
+        return new Resource(element);
     }
 
     public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type)
@@ -118,7 +118,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
 
             String mappedName = resourceAnnotation.mappedName();
 
-            Resource<?> resource = createResource(name, parameter);
+            Resource resource = createResource(name, parameter);
             resource.setOptional(resourceAnnotation.optional());
             if (mappedName.length() > 0) {
                 resource.setMappedName(mappedName);

@@ -71,6 +71,7 @@ import org.osoa.sca.annotations.ConversationID;
  *          2007) $$
  */
 public abstract class PojoAtomicComponent extends AtomicComponentExtension implements ComponentContextProvider {
+
     protected Map<String, List<Wire>> wires = new HashMap<String, List<Wire>>();
     protected Map<String, List<Wire>> callBackwires = new HashMap<String, List<Wire>>();
 
@@ -234,7 +235,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
-        org.apache.tuscany.implementation.java.impl.Resource<?> resource = configuration.getDefinition().getResources()
+        org.apache.tuscany.implementation.java.impl.Resource resource = configuration.getDefinition().getResources()
             .get(name);
 
         if (resource != null && !(resource.getElement().getAnchor() instanceof Constructor)) {
@@ -371,6 +372,15 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         return (R)proxyService.cast(target);
     }
 
+    public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, String serviceName) {
+        return null;
+    }
+
+    public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
+        return null;
+    }
+
+    
     protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire);
 
     /**

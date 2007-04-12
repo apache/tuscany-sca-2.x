@@ -73,7 +73,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     private void handleResources(
         JavaImplementationDefinition componentType,
         JavaAtomicComponent component) {
-        for (Resource<?> resource : componentType.getResources().values()) {
+        for (Resource resource : componentType.getResources().values()) {
             String name = resource.getName();
             ObjectFactory<?> objectFactory = null;
             if (objectFactory == null) {

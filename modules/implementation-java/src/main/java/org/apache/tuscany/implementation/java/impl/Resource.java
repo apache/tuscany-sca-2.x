@@ -18,15 +18,13 @@
  */
 package org.apache.tuscany.implementation.java.impl;
 
-import java.lang.reflect.Member;
 
 /**
  * A resource dependency declared by a Java component implementation
  * 
  * @version $Rev$ $Date$
- * @param <T> the Java type of the resource
  */
-public class Resource<T> {
+public class Resource {
     private JavaElement element;
     private String mappedName;
     private boolean optional;

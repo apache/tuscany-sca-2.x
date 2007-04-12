@@ -95,7 +95,16 @@ public interface Operation {
      */
     void setFaultTypes(List<DataType> faultTypes);
     
+    /**
+     * Get the owning interface
+     * @return
+     */
     Interface getInterface();
+    
+    /**
+     * Set the owning interface
+     * @param interfaze
+     */
     void setInterface(Interface interfaze);
     
     /**
@@ -140,6 +149,4 @@ public interface Operation {
      * @param wrapperStyle the wrapperStyle to set
      */
     void setWrapperStyle(boolean wrapperStyle);
-    
-
 }
