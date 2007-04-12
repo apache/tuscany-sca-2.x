@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +15,12 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="echo">
+ */
+package org.apache.tuscany.binding.echo;
 
-    <service name="ClientService">
-        <interface.java class="echo.Client"/>
-        <binding.echo/>
-        <reference>Client</reference>
-    </service>
-
-    <component name="Client">
-        <implementation.java class="org.apache.tuscany.binding.echo.ClientImpl"/>
-    </component>
-    
-    <reference name="EchoReference" promote="Client">
-        <interface.java interface="org.apache.tuscany.binding.echo.Echo"/>
-        <binding.echo/>
-    </reference>
-    
-</composite>
+/**
+ * @version $Rev$ $Date$
+ */
+public interface Client {
+    void call(String msg);
+}

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +15,36 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="echo">
+ */
+package org.apache.tuscany.binding.echo;
 
-    <service name="ClientService">
-        <interface.java class="echo.Client"/>
-        <binding.echo/>
-        <reference>Client</reference>
-    </service>
+import junit.framework.TestCase;
 
-    <component name="Client">
-        <implementation.java class="org.apache.tuscany.binding.echo.ClientImpl"/>
-    </component>
+import org.apache.tuscany.api.SCARuntime;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
+
+/**
+ * @version $Rev$ $Date$
+ */
+public class EchoBindingTestCase extends TestCase {
+
+    private Client client;
+
+    protected void setUp() throws Exception {
+        SCARuntime.start("EchoBinding.composite");
+        ComponentContext context = SCARuntime.getComponentContext("ClientComponent");
+        ServiceReference<Client> service = context.createSelfReference(Client.class);
+        client = service.getService();
+    }
     
-    <reference name="EchoReference" promote="Client">
-        <interface.java interface="org.apache.tuscany.binding.echo.Echo"/>
-        <binding.echo/>
-    </reference>
-    
-</composite>
+    protected void tearDown() throws Exception {
+    	SCARuntime.stop();
+    }
+
+    public void testEchoBinding() {
+        client.call("foo");
+    }
+
+
+}
