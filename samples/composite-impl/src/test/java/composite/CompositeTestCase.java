@@ -21,18 +21,19 @@ package composite;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.api.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 public class CompositeTestCase extends TestCase {
 
     private Source source;
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("OuterComposite.composite");
-
-        CompositeContext context = CurrentCompositeContext.getContext();
-        source = context.locateService(Source.class, "SourceComponent/InnerSourceService");
+        SCARuntime.start("OuterComposite.composite");
+        ComponentContext context = SCARuntime.getComponentContext("SourceComponent/InnerSourceService");
+        ServiceReference<Source> service = context.createSelfReference(Source.class);
+        source = service.getService();   
+      	
     }
     
     protected void tearDown() throws Exception {
