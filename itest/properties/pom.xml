@@ -18,17 +18,28 @@
     * under the License.    
 -->
 <project>
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apache.tuscany.testing</groupId>
-        <artifactId>sca-itest</artifactId>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-itest</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+    <artifactId>tuscany-itest-properties</artifactId>
+    <name>Apache Tuscany Properties Integration Tests</name>
 
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>iTest-propertyTest</artifactId>
-    <version>${testing.version}</version>
-    <packaging>jar</packaging>
-    <name>Test Suite for SCA properties</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
 </project>

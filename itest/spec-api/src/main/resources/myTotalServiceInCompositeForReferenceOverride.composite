@@ -19,11 +19,11 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
-           name="MyTotalServiceTest">
+	   targetNamespace="http://foo"
+           name="myTotalServiceInCompositeForReferenceOverride">
    
- 	<service name="MyTotalServiceNo">
+ 	<service name="MyTotalServiceNo" promote="MyTotalServiceComponentNo">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceComponentNo</reference>	   
     </service>
    
     <component name="MyTotalServiceComponentNo">
@@ -32,49 +32,43 @@
 		<reference name="myListService">MyListServiceRefNo</reference>
     </component>
     
-    <reference name="MyServiceRefNo" override="no">
+    <reference name="MyServiceRefNo" promote="MyTotalServiceComponentNo/myService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
     </reference>
 
-    <reference name="MyListServiceRefNo" override="no">
+    <reference name="MyListServiceRefNo" promote="MyTotalServiceComponentNo/myListService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
     </reference>
 
- 	<service name="MyTotalServiceMay">
+ 	<service name="MyTotalServiceMay" promote="MyTotalServiceComponentMay">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceComponentMay</reference>	   
     </service>
    
     <component name="MyTotalServiceComponentMay">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService">MyServiceRefMay</reference>
-		<reference name="myListService">MyListServiceRefMay</reference>
     </component>
     
-    <reference name="MyServiceRefMay" override="may">
+    <reference name="MyServiceRefMay" promote="MyTotalServiceComponentMay/myService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
     </reference>
 
-    <reference name="MyListServiceRefMay" override="may">
+    <reference name="MyListServiceRefMay" promote="MyTotalServiceComponentMay/myListService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
     </reference>
 
- 	<service name="MyTotalServiceMust">
+ 	<service name="MyTotalServiceMust" promote="MyTotalServiceComponentMust">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceComponentMust</reference>	   
     </service>
    
     <component name="MyTotalServiceComponentMust">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService">MyServiceRefMust</reference>
-		<reference name="myListService">MyListServiceRefMust</reference>
     </component>
     
-    <reference name="MyServiceRefMust" override="must">
+    <reference name="MyServiceRefMust" promote="MyTotalServiceComponentMust/myService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
     </reference>
 
-    <reference name="MyListServiceRefMust" override="must">
+    <reference name="MyListServiceRefMust" promote="MyTotalServiceComponentMust/myListService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
     </reference>
 

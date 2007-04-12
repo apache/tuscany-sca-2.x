@@ -19,11 +19,11 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
-           name="MySimpleServiceTest">
+	   targetNamespace="http://foo"
+           name="mySimpleService">
    
-    <service name="MyService">
+    <service name="MyService" promote="MyServiceComponent/MyService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MyServiceComponent/MyService</reference>	   
     </service>
 
     <component name="MyServiceComponent">

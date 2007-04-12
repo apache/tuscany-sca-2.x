@@ -19,29 +19,26 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
-           name="MyServiceInCompositeTest">
+	   targetNamespace="http://foo"
+           name="myServiceInComposite">
    
-    <service name="MyService">
+    <service name="MyService" promote="MyServiceComponent/MyService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MyServiceComponent/MyService</reference>	   
     </service>
 
 
- 	<service name="MyListService">
+ 	<service name="MyListService" promote="MyServiceComponent/MyListService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
-        <reference>MyServiceComponent/MyListService</reference>	   
     </service>
 
 
- 	<service name="MyListServiceByYear">
+ 	<service name="MyListServiceByYear" promote="MyServiceComponent/MyListServiceByYear">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListServiceByYear"/>
-        <reference>MyServiceComponent/MyListServiceByYear</reference>	   
     </service>
 
 
- 	<service name="MyServiceByDate">
+ 	<service name="MyServiceByDate" promote="MyServiceComponent/MyServiceByDate">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyServiceByDate"/>
-        <reference>MyServiceComponent/MyServiceByDate</reference>	   
     </service>
 
     <component name="MyServiceComponent">

@@ -19,25 +19,23 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
+	   targetNamespace="http://foo"
            name="MyTotalServiceInRecursiveTest">
    
-	<service name="MyTotalServiceNo">
+	<service name="MyTotalServiceNo" promote="MyTotalServiceForReferenceComponent/MyTotalServiceNo">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceForReferenceComponent/MyTotalServiceNo</reference>	   
     </service>
 
-	<service name="MyTotalServiceMay">
+	<service name="MyTotalServiceMay" promote="MyTotalServiceForReferenceComponent/MyTotalServiceMay">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceForReferenceComponent/MyTotalServiceMay</reference>	   
     </service>
 
-	<service name="MyTotalServiceMust">
+	<service name="MyTotalServiceMust" promote="MyTotalServiceForReferenceComponent/MyTotalServiceMust">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceForReferenceComponent/MyTotalServiceMust</reference>	   
     </service>
       
     <component name="MyTotalServiceForReferenceComponent">
-        <implementation.composite scdlLocation="myTotalServiceInCompositeForReferenceOverride.composite"/>
+        <implementation.composite name="foo:myTotalServiceInCompositeForReferenceOverride"/>
 		<reference name="MyServiceRefNo">MyServiceInComposite/MyService</reference>
 		<reference name="MyListServiceRefNo">MyServiceInComposite/MyListService</reference>
 		<reference name="MyServiceRefMay">MyServiceInComposite/MyService</reference>

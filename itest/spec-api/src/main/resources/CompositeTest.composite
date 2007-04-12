@@ -18,16 +18,16 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	   xmlns:foo="http://foo" 
-           name="CompositeTest">
+    targetNamespace = "http://foo"
+    xmlns:foo="http://foo" 
+    name="CompositeTest">
    
-    <include name="myTotalService" scdlLocation="myTotalService.composite"/>
-    <include name="myListService" scdlLocation="myListService.composite"/>
-    <include name="mySimpleServiceInRecursive" scdlLocation="mySimpleServiceInRecursive.composite"/>
-    <include name="myServiceInRecursive" scdlLocation="myServiceInRecursive.composite"/>
-    <include name="mySimpleServiceInRecursive2" scdlLocation="mySimpleServiceInRecursive2.composite"/>
-    <include name="MyTotalServiceInRecursive" scdlLocation="myTotalServiceInRecursive.composite"/>
-    <include name="MyTotalServiceInRecursiveForReferenceOverride" scdlLocation="myTotalServiceInRecursiveForReferenceOverride.composite"/>
-    
+    <include>foo:myTotalService"</include>
+    <include>foo:myListService"</include>
+    <include>"foo:mySimpleServiceInRecursive"</include>
+    <include>foo:myServiceInRecursive</include>
+    <include>foo:mySimpleServiceInRecursive2</include>
+    <include>foo:myTotalServiceInRecursive</include>
+    <include>foo:myTotalServiceInRecursiveForReferenceOverride</include>
     
 </composite>

@@ -19,8 +19,9 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
+	   targetNamespace = "http://foo"
            name="ExceptionTest">
    
-    <include name="intracomposite" scdlLocation="intracomposite.composite"/>
+    <include>foo:intracomposite</include>
      
 </composite>

@@ -19,11 +19,12 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
+	   targetNamespace="http://foo"
            name="intracomposite">
    
     <component name="main">
         <implementation.java class="org.apache.tuscany.sca.test.exceptions.impl.ExceptionHandlerImpl"/>
-        <reference name="exceptionThrower">exceptionThrower</reference>
+        <reference name="exceptionThrower" target="exceptionThrower"/>
     </component>
     
     <component name="exceptionThrower">

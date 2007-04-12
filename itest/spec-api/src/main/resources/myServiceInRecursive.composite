@@ -19,34 +19,31 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
-           name="MyServiceInRecursiveTest">
+	   targetNamespace="http://foo"
+           name="myServiceInRecursive">
 
-  <service name="MyServiceInRecursiveMyService">
+  <service name="MyServiceInRecursiveMyService" promote="MyServiceInRecursive/MyService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MyServiceInRecursive/MyService</reference>	   
     </service>
 
 
- 	<service name="MyServiceInRecursiveMyListService">
+ 	<service name="MyServiceInRecursiveMyListService" promote="MyServiceInRecursive/MyListService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
-        <reference>MyServiceInRecursive/MyListService</reference>	   
     </service>
 
 
- 	<service name="MyServiceInRecursiveMyListServiceByYear">
+ 	<service name="MyServiceInRecursiveMyListServiceByYear" promote="MyServiceInRecursive/MyListServiceByYear">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListServiceByYear"/>
-        <reference>MyServiceInRecursive/MyListServiceByYear</reference>	   
     </service>
 
 
- 	<service name="MyServiceInRecursiveMyServiceByDate">
+ 	<service name="MyServiceInRecursiveMyServiceByDate" promote="MyServiceInRecursive/MyServiceByDate">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyServiceByDate"/>
-        <reference>MyServiceInRecursive/MyServiceByDate</reference>	   
     </service>
 
    
     <component name="MyServiceInRecursive">
-        <implementation.composite scdlLocation="myServiceInComposite.composite"/>
+        <implementation.composite name="foo:myServiceInComposite"/>
     </component>
     
     
