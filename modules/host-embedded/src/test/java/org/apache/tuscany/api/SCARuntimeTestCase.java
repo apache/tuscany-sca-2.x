@@ -45,7 +45,11 @@ public class SCARuntimeTestCase extends TestCase {
         Object result = service.retrieve(id);
         assertEquals("ABC", result);
         service.update(id, "EFG");
+        result = service.retrieve(id);
+        assertEquals("EFG", result);
         service.delete(id);
+        result = service.retrieve(id);
+        assertNull(result);
     }
 
     /**
