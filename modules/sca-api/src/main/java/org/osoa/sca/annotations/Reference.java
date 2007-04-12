@@ -45,6 +45,6 @@ public @interface Reference {
      *
      * @return true if a reference must be specified
      */
-    public boolean required() default false;
+    public boolean required() default true;
 }
 
