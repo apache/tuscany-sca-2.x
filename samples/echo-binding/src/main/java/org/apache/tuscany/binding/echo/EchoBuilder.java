@@ -43,7 +43,8 @@ public class EchoBuilder extends BindingBuilderExtension<EchoBinding> {
     public ReferenceBinding build(CompositeReference referenceDefinition,
                                   EchoBinding bindingDefinition,
                                   DeploymentContext context) throws BuilderException {
-        return new EchoReference(URI.create("#" + referenceDefinition.getName()), URI.create(bindingDefinition.getURI()));
+        URI targetURI = bindingDefinition.getURI() != null? URI.create(bindingDefinition.getURI()) : null;
+        return new EchoReference(URI.create("#" + referenceDefinition.getName()), targetURI);
     }
 
     @Override
