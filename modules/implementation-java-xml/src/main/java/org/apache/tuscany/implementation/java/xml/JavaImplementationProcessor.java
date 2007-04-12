@@ -101,6 +101,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         try {
             Class javaClass = Class.forName(javaImplementation.getName(), true, Thread.currentThread().getContextClassLoader());
             javaImplementation.setJavaClass(javaClass);
+            javaImplementation.setUnresolved(false);
             
             //FIXME JavaImplementationDefinition should not be mandatory 
             if (javaImplementation instanceof JavaImplementationDefinition) {

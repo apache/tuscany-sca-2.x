@@ -385,11 +385,16 @@ abstract class BaseArtifactProcessor implements Constants {
      */
     protected Implementation resolveImplementation(Implementation implementation, ArtifactResolver resolver) throws ContributionResolveException {
         if (implementation != null) {
-            implementation = resolver.resolve(Implementation.class, implementation);
             if (implementation.isUnresolved()) {
-                extensionProcessor.resolve(implementation, resolver);
-                implementation.setUnresolved(false);
-                resolver.add(implementation);
+                implementation = resolver.resolve(Implementation.class, implementation);
+
+                // Lazily resolve implementations
+                if (implementation.isUnresolved()) {
+                    extensionProcessor.resolve(implementation, resolver);
+                    if (!implementation.isUnresolved()) {
+                        resolver.add(implementation);
+                    }
+                }
             }
         }
         return implementation;

@@ -266,6 +266,14 @@ public class CompositeUtil {
             compServices = new HashMap<String, ComponentService>();
             compReferences = new HashMap<String, ComponentReference>();
             compProperties = new HashMap<String, ComponentProperty>();
+            
+            // Check that the component has a resolved implementation
+            Implementation implementation = component.getImplementation();
+            if (implementation == null) {
+                problems.add(component);
+            } else if (implementation.isUnresolved()) {
+                problems.add(implementation);
+            }
 
             initializePropsSvcRefs(component,
                                    implServices,
