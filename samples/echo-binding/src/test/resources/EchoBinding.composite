@@ -17,19 +17,21 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="echo">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://echo"
+	xmlns:echo="http://echo"
+	name="EchoBinding">
 
-    <service name="ClientService">
-        <interface.java class="echo.Client"/>
+    <service name="ClientService" promote="Client">
+        <interface.java interface="org.apache.tuscany.binding.echo.Client"/>
         <binding.echo/>
-        <reference>Client</reference>
     </service>
 
     <component name="Client">
         <implementation.java class="org.apache.tuscany.binding.echo.ClientImpl"/>
     </component>
     
-    <reference name="EchoReference" promote="Client">
+    <reference name="EchoReference" promote="Client/echoReference">
         <interface.java interface="org.apache.tuscany.binding.echo.Echo"/>
         <binding.echo/>
     </reference>
