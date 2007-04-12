@@ -22,15 +22,14 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-
            name="echobinding-extension">
 
     <component name="BindingLoader">
-        <system:implementation.system class="echo.EchoBindingLoader"/>
+        <system:implementation.system class="org.apache.tuscany.binding.echo.EchoBindingLoader"/>
     </component>
 
     <component name="BindingBuilder">
-        <system:implementation.system class="echo.EchoBuilder"/>
+        <system:implementation.system class="org.apache.tuscany.binding.echo.EchoBuilder"/>
     </component>
 
 </composite>
