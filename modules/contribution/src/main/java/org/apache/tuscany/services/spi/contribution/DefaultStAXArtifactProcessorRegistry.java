@@ -172,6 +172,11 @@ public class DefaultStAXArtifactProcessorRegistry
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
+    public void removeArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
+        processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
+        processorsByModelType.remove(artifactProcessor.getModelType());        
+    }
+
     public QName getArtifactType() {
         return null;
     }

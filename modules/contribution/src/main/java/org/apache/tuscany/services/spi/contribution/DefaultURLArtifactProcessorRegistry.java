@@ -106,6 +106,11 @@ public class DefaultURLArtifactProcessorRegistry
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
+    public void removeArtifactProcessor(URLArtifactProcessor<Object> artifactProcessor) {
+        processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
+        processorsByModelType.remove(artifactProcessor.getModelType());        
+    }
+
     public String getArtifactType() {
         return null;
     }
