@@ -81,7 +81,7 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
 
     protected InvocationChain getInvocationChain(List<InvocationChain> chains, Operation targetOperation) {
         for (InvocationChain chain : chains) {
-            if (chain.getTargetOperation() == targetOperation) {
+            if (chain.getTargetOperation().equals(targetOperation)) {
                 return chain;
             }
         }
