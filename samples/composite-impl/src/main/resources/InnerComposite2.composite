@@ -18,12 +18,12 @@
  * under the License.    
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="InnerComposite2">
+    targetNamespace="http://sample"
+    xmlns:sample="http://sample"
+    name="InnerComposite2">
 
-    <service name="InnerTargetService" target="InnerTargetComponent">
-        <interface.java interface="composite.Target"
-                        callbackInterface="composite.SourceCallback"/>
-        <reference name="innerSource">InnerTargetComponent</reference>
+    <service name="InnerTargetService" promote="InnerTargetComponent"> 
+        <interface.java interface="composite.Target" callbackInterface="composite.SourceCallback"/>
     </service>
        
     <component name="InnerTargetComponent">

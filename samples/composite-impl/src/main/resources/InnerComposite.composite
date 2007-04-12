@@ -18,27 +18,24 @@
  * under the License.    
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="InnerComposite">
+    targetNamespace="http://sample"
+    xmlns:sample="http://sample"
+    name="InnerComposite">
 
-    <service name="InnerSourceService" target="InnerSourceComponent">
+    <service name="InnerSourceService" promote="InnerSourceComponent">
         <interface.java interface="composite.Source"/>
-        <reference name="innerSource">InnerSourceComponent</reference>
     </service>
        
     <component name="InnerSourceComponent">
 		<implementation.java class="composite.SourceImpl"/>
-        <!--reference name="targetReference">TargetComponentRef</reference>
-        <reference name="targetReference2">TargetComponentRef2</reference-->
     </component>
 	    
     <reference name="TargetComponentRef" promote="InnerSourceComponent/targetReference">
-        <interface.java interface="composite.Target"
-                        callbackInterface="composite.SourceCallback"/>
+        <interface.java interface="composite.Target" callbackInterface="composite.SourceCallback"/>
     </reference>
     
     <reference name="TargetComponentRef2" promote="InnerSourceComponent/targetReference2">
-        <interface.java interface="composite.Target"
-                        callbackInterface="composite.SourceCallback"/>
+        <interface.java interface="composite.Target" callbackInterface="composite.SourceCallback"/>
     </reference>
     
 </composite>

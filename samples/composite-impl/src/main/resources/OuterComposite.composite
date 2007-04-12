@@ -18,12 +18,14 @@
  * under the License.    
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="OuterComposite">
+    targetNamespace="http://sample"
+    xmlns:sample="http://sample"
+    name="OuterComposite">
 
     <component name="SourceComponent">
-        <implementation.composite name="InnerComposite" scdlLocation="InnerComposite.composite"/>
-        <reference name="TargetComponentRef" target="TargetComponent"></reference>
-        <reference name="TargetComponentRef2" target="TargetComponent2/InnerTargetService"></reference>
+        <implementation.composite name="sample:InnerComposite"/>
+        <reference name="targetComponentRef" target="TargetComponent"/>
+        <reference name="targetComponentRef2" target="TargetComponent2/InnerTargetService"/>
     </component>
 
     <component name="TargetComponent">
@@ -31,7 +33,7 @@
     </component>
     
     <component name="TargetComponent2">
-        <implementation.composite name="InnerComposite2" scdlLocation="InnerComposite2.composite"/>
+        <implementation.composite name="sample:InnerComposite2"/>
     </component>
 
 </composite>
