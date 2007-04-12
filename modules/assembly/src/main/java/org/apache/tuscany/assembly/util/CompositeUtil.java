@@ -61,7 +61,17 @@ public class CompositeUtil {
 
     public void configure(List<Base> problems) {
         if (problems == null) {
-            problems = new ArrayList<Base>();
+            problems = new ArrayList<Base>() {
+                
+                //FIXME Print problems to help with debugging, will need to
+                // hook this with monitoring later
+                
+                @Override
+                public boolean add(Base o) {
+                    System.err.println("Composite configuration problem: " + o);
+                    return super.add(o);
+                }
+            };
         }
         init(problems);
         wire(problems);
