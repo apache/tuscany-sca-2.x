@@ -168,13 +168,13 @@ public class ConstructorProcessorTestCase extends TestCase {
 
         org.apache.tuscany.assembly.Reference ref0 = getReference(type, "_ref0");
         assertNotNull(ref0);
-        assertEquals(Multiplicity.ZERO_N, ref0.getMultiplicity());
+        assertEquals(Multiplicity.ONE_N, ref0.getMultiplicity());
         org.apache.tuscany.assembly.Reference ref1 = getReference(type, "bar");
         assertNotNull(ref1);
         assertEquals(Multiplicity.ONE_N, ref1.getMultiplicity());
         org.apache.tuscany.assembly.Reference ref2 = getReference(type, "xyz");
         assertNotNull(ref2);
-        assertEquals(Multiplicity.ZERO_N, ref2.getMultiplicity());
+        assertEquals(Multiplicity.ONE_N, ref2.getMultiplicity());
         org.apache.tuscany.assembly.Property prop1 = getProperty(type, "foo");
         assertNotNull(prop1);
         assertTrue(prop1.isMany());
