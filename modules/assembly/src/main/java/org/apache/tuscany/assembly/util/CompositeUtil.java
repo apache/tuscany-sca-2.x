@@ -68,7 +68,8 @@ public class CompositeUtil {
                 
                 @Override
                 public boolean add(Base o) {
-                    System.err.println("Composite configuration problem: " + o);
+                    System.err.println("Composite configuration problem:");
+                    new PrintUtil(System.err).print(o);
                     return super.add(o);
                 }
             };
