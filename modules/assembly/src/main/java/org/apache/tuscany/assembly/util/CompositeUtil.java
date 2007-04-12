@@ -20,8 +20,10 @@ package org.apache.tuscany.assembly.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Base;
@@ -62,10 +64,8 @@ public class CompositeUtil {
     public void configure(List<Base> problems) {
         if (problems == null) {
             problems = new ArrayList<Base>() {
-                
-                //FIXME Print problems to help with debugging, will need to
-                // hook this with monitoring later
-                
+                private static final long serialVersionUID = 4819831446590718923L;
+
                 @Override
                 public boolean add(Base o) {
                     System.err.println("Composite configuration problem:");
@@ -74,7 +74,7 @@ public class CompositeUtil {
                 }
             };
         }
-        init(problems);
+        initialize(problems);
         wire(problems);
     }
 
@@ -85,7 +85,7 @@ public class CompositeUtil {
         }
     }
 
-    private void initializePropsSvcRefs(Component component,
+    private void initializePropertiesServicesAndReferences(Component component,
                                         Map<String, Service> implServices,
                                         Map<String, Reference> implReferences,
                                         Map<String, Property> implProperties,
@@ -177,10 +177,6 @@ public class CompositeUtil {
                 componentReference.getTargets().addAll(reference.getTargets());
                 componentReference.setInterfaceContract(reference.getInterfaceContract());
                 component.getReferences().add(componentReference);
-                if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), 
-                                                                  componentReference.getTargets())) {
-                     problems.add(componentReference);
-                 }
             } else {
                 ComponentReference compRef = compReferences.get(reference.getName());
                 if (compRef.getMultiplicity() != null) {
@@ -205,12 +201,7 @@ public class CompositeUtil {
                 
                 if (compRef.getTargets().isEmpty()) {
                     compRef.getTargets().addAll(reference.getTargets());
-                    if (!ReferenceUtil.validateMultiplicityAndTargets(compRef.getMultiplicity(), 
-                                                                     compRef.getTargets())) {
-                        problems.add(compRef);
-                    }
                 }
-                
             }
         }
     }
@@ -245,7 +236,7 @@ public class CompositeUtil {
         }
     }
 
-    private void init(List<Base> problems) {
+    private void initialize(List<Base> problems) {
         Map<String, Service> implServices = null;
         Map<String, Reference> implReferences = null;
         Map<String, Property> implProperties = null;
@@ -275,7 +266,7 @@ public class CompositeUtil {
                 problems.add(implementation);
             }
 
-            initializePropsSvcRefs(component,
+            initializePropertiesServicesAndReferences(component,
                                    implServices,
                                    implReferences,
                                    implProperties,
@@ -297,6 +288,7 @@ public class CompositeUtil {
         // Index and bind all component services and references
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
         Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+        Set<ComponentReference> promotedComponentReferences = new HashSet<ComponentReference>();
         
         for (Component component : composite.getComponents()) {
             int i =0;
@@ -356,6 +348,7 @@ public class CompositeUtil {
                         componentReferences.get(componentReference.getName());
                     if (resolved != null) {
                         promotedReferences.set(i, resolved);
+                        promotedComponentReferences.add(resolved);
                     } else {
                         problems.add(compositeReference);
                     }
@@ -431,6 +424,19 @@ public class CompositeUtil {
             }
         }
 
+
+        // Validate that references are wired or promoted, according
+        // to their multiplicity
+        for (ComponentReference componentReference : componentReferences.values()) {
+            boolean promoted = promotedComponentReferences.contains(componentReference);
+            if (!ReferenceUtil.validateMultiplicityAndTargets(
+                                                              componentReference.getMultiplicity(), 
+                                                              componentReference.getTargets(),
+                                                              promoted)) {
+                problems.add(componentReference);
+            }
+         }
+        
         // Clear wires
         composite.getWires().clear();
     }
