@@ -19,11 +19,11 @@
 
 package org.apache.tuscany.databinding.sdo;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.impl.DataTypeImpl;
-import org.apache.tuscany.idl.util.XMLType;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.util.XMLType;
 
 import com.example.stock.sdo.InvalidSymbolFault;
 import com.example.stock.sdo.StockFactory;

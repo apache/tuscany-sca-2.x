@@ -23,7 +23,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.idl.DataType;
+import org.apache.tuscany.databinding.impl.TransformationContextImpl;
+import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 
 import com.example.ipo.sdo.PurchaseOrderType;
@@ -53,11 +54,11 @@ public abstract class SDOTransformerTestCaseBase extends TestCase {
         helperContext = HelperProvider.getDefaultContext();
         SdoFactory.INSTANCE.register(helperContext);
         
-        context = new MockTransformationContext();
+        context = new TransformationContextImpl();
         context.setSourceDataType(getSourceDataType());
         context.setTargetDataType(getTargetDataType());
 
-        reversedContext = new MockTransformationContext();
+        reversedContext = new TransformationContextImpl();
         reversedContext.setSourceDataType(getTargetDataType());
         reversedContext.setTargetDataType(getSourceDataType());
         

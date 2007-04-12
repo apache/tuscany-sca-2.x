@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.databinding.sdo;
 
-import java.net.URI;
-
 import commonj.sdo.helper.HelperContext;
 
 /**
@@ -35,14 +33,14 @@ public interface HelperContextRegistry {
      * @param id
      * @param context
      */
-    void register(URI id, HelperContext context) throws DuplicateHelperContextException;
+    void register(Object id, HelperContext context) throws DuplicateHelperContextException;
 
     /**
      * Unregister the HelperContext
      * 
      * @param id
      */
-    void unregister(URI id);
+    void unregister(Object id);
 
     /**
      * Get the HelperContext associated with the id
@@ -50,5 +48,5 @@ public interface HelperContextRegistry {
      * @param id The URI of the HelperContext
      * @return
      */
-    HelperContext getHelperContext(URI id);
+    HelperContext getHelperContext(Object id);
 }

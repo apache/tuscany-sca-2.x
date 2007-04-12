@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.databinding.sdo;
 
-import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,20 +30,20 @@ import commonj.sdo.helper.HelperContext;
  * @version $Rev$ $Date$
  */
 public class HelperContextRegistryImpl implements HelperContextRegistry {
-    private final Map<URI, HelperContext> registry = new ConcurrentHashMap<URI, HelperContext>();
+    private final Map<Object, HelperContext> registry = new ConcurrentHashMap<Object, HelperContext>();
 
-    public synchronized void register(URI id, HelperContext context) {
+    public synchronized void register(Object id, HelperContext context) {
         if (registry.containsKey(id)) {
-            throw new DuplicateHelperContextException("Duplicate HelperContext", id.toString());
+            throw new DuplicateHelperContextException("Duplicate HelperContext: " + id);
         }
         registry.put(id, context);
     }
 
-    public void unregister(URI id) {
+    public void unregister(Object id) {
         registry.remove(id);
     }
 
-    public HelperContext getHelperContext(URI id) {
+    public HelperContext getHelperContext(Object id) {
         return registry.get(id);
     }
 }

@@ -21,9 +21,9 @@ package org.apache.tuscany.databinding.sdo;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.impl.DataTypeImpl;
-import org.apache.tuscany.idl.util.XMLType;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.util.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import commonj.sdo.DataObject;

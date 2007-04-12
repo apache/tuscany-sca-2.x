@@ -31,10 +31,19 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>    
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
-            
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>            
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
@@ -70,7 +79,7 @@
                 <executions>
                     <execution>
                         <id>generate-po-sdo</id>
-                        <phase>generate-test-sources</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <schemaFile>${basedir}/src/test/resources/ipo.xsd</schemaFile>
                             <javaPackage>com.example.ipo.sdo</javaPackage>
@@ -84,7 +93,7 @@
                     </execution>
                     <execution>
                         <id>generate-stock-sdo</id>
-                        <phase>generate-test-sources</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <schemaFile>${basedir}/src/test/resources/stock.xsd</schemaFile>
                             <javaPackage>com.example.stock.sdo</javaPackage>

@@ -22,16 +22,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import org.apache.tuscany.implementation.java.impl.JavaElement;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.impl.Resource;
+import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.implementation.java.Resource;
 import org.osoa.sca.annotations.Reference;
 
 import commonj.sdo.helper.HelperContext;
@@ -43,7 +40,7 @@ import commonj.sdo.helper.HelperContext;
  * 
  * @version $Rev$ $Date$
  */
-public class HelperContextProcessor extends ImplementationProcessorExtension {
+public class HelperContextProcessor extends BaseJavaClassIntrospectorExtension {
     private HelperContextRegistry registry;
     
     /**
@@ -67,8 +64,7 @@ public class HelperContextProcessor extends ImplementationProcessorExtension {
     }
 
     public void visitMethod(Method method,
-                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context) throws ProcessingException {
+                            JavaImplementationDefinition type) throws IntrospectionException {
         if (!method.isAnnotationPresent(org.apache.tuscany.databinding.sdo.api.HelperContext.class)) {
             return;
         }
@@ -78,23 +74,22 @@ public class HelperContextProcessor extends ImplementationProcessorExtension {
         Class<?> paramType = method.getParameterTypes()[0];
         if (HelperContext.class == paramType) {
             String name = toPropertyName(method.getName());
-            Resource<HelperContext> resource = new Resource<HelperContext>(name, HelperContext.class, method);
-            resource.setObjectFactory(new HelperContextFactory(context.getComponentId()));
+            Resource resource = new Resource(new JavaElement(method, 0));
+//            resource.setObjectFactory(new HelperContextFactory(context.getComponentId()));
             type.getResources().put(name, resource);
         }
     }
 
     public void visitField(Field field,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context) throws ProcessingException {
+                           JavaImplementationDefinition type) throws IntrospectionException {
         if (!field.isAnnotationPresent(org.apache.tuscany.databinding.sdo.api.HelperContext.class)) {
             return;
         }
         Class<?> paramType = field.getType();
         if (HelperContext.class == paramType) {
             String name = field.getName();
-            Resource<HelperContext> resource = new Resource<HelperContext>(name, HelperContext.class, field);
-            resource.setObjectFactory(new HelperContextFactory(context.getComponentId()));
+            Resource resource = new Resource(new JavaElement(field));
+//            resource.setObjectFactory(new HelperContextFactory(context.getComponentId()));
             type.getResources().put(name, resource);
         }
     }
