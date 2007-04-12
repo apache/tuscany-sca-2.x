@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-databinding-sdo-axiom</artifactId>
-    <name>Apache Tuscany Data Binding for SDO</name>
+    <name>Apache Tuscany Data Binding for SDO/AXIOM</name>
 
     <dependencies>
         <dependency>

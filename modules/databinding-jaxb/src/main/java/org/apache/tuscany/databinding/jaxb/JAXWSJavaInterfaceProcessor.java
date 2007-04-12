@@ -20,7 +20,7 @@
 package org.apache.tuscany.databinding.jaxb;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.jws.WebMethod;
@@ -29,42 +29,35 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
-import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.idl.util.ElementInfo;
-import org.apache.tuscany.idl.util.WrapperInfo;
+import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension;
+import org.apache.tuscany.interfacedef.util.ElementInfo;
+import org.apache.tuscany.interfacedef.util.WrapperInfo;
 
 /**
  * The databinding annotation processor for java interfaces
  * 
  * @version $Rev$ $Date$
  */
-public class JAXWSJavaInterfaceProcessor extends JavaInterfaceProcessorExtension {
+public class JAXWSJavaInterfaceProcessor implements JavaInterfaceIntrospectorExtension {
 
     public JAXWSJavaInterfaceProcessor() {
         super();
     }
 
-    public void visitInterface(Class<?> clazz, Class<?> callbackClass, Contract contract)
-        throws InvalidServiceContractException {
+    public void visitInterface(JavaInterface contract) throws InvalidInterfaceException {
         if (!contract.isRemotable()) {
             return;
         }
-        Map<String, Operation> operations = contract.getOperations();
-        processInterface(clazz, contract, operations);
-        if (callbackClass != null) {
-            Map<String, Operation> callbackOperations = contract.getCallbackOperations();
-            processInterface(callbackClass, contract, callbackOperations);
+        Class<?> clazz = contract.getJavaClass();
+        Map<String, Operation> operations = new HashMap<String, Operation>();
+        for (Operation op : contract.getOperations()) {
+            operations.put(op.getName(), op);
         }
-    }
-
-    private static String getValue(String value, String defaultValue) {
-        return "".equals(value) ? defaultValue : value;
-    }
-
-    private void processInterface(Class<?> clazz, Contract contract, Map<String, Operation> operations) {
-
         for (Method method : clazz.getMethods()) {
-            Operation<?> operation = operations.get(method.getName());
+            Operation operation = operations.get(method.getName());
 
             WebMethod webMethod = method.getAnnotation(WebMethod.class);
             if (webMethod == null) {
@@ -94,11 +87,15 @@ public class JAXWSJavaInterfaceProcessor extends JavaInterfaceProcessorExtension
 
             QName outputWrapper = new QName(ns, name);
 
-            WrapperInfo wrapperInfo =
-                new WrapperInfo(JAXBDataBinding.NAME, new ElementInfo(inputWrapper, null),
-                                new ElementInfo(outputWrapper, null), null, null);
+            WrapperInfo wrapperInfo = new WrapperInfo(JAXBDataBinding.NAME, new ElementInfo(inputWrapper, null),
+                                                      new ElementInfo(outputWrapper, null), null, null);
             operation.setWrapperStyle(true);
             operation.setWrapper(wrapperInfo);
         }
     }
+
+    private static String getValue(String value, String defaultValue) {
+        return "".equals(value) ? defaultValue : value;
+    }
+
 }

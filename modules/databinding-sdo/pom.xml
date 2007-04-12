@@ -39,6 +39,7 @@
             <artifactId>tuscany-databinding</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+        <!-- FIXME: We might want to create a separate module to host the processor -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-xml</artifactId>

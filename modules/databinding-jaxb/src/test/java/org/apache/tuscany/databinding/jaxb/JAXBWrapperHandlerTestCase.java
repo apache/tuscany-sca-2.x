@@ -22,7 +22,6 @@ package org.apache.tuscany.databinding.jaxb;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
@@ -33,7 +32,7 @@ import com.example.ipo.jaxb.PurchaseOrderType;
  * Test case for JAXBExceptionHandler
  */
 public class JAXBWrapperHandlerTestCase extends TestCase {
-    private static final QName ELEMENT = new QName("http://www.example.com/IPO", "purchaseOrder");
+    // private static final QName ELEMENT = new QName("http://www.example.com/IPO", "purchaseOrder");
     private JAXBWrapperHandler handler;
 
     /**

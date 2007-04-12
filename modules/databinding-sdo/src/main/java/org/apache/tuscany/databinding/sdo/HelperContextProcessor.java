@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -60,7 +61,7 @@ public class HelperContextProcessor extends BaseJavaClassIntrospectorExtension {
         if (!name.startsWith("set")) {
             return name;
         }
-        return Character.toLowerCase(name.charAt(3)) + name.substring(4);
+        return Introspector.decapitalize(name.substring(3));
     }
 
     public void visitMethod(Method method,

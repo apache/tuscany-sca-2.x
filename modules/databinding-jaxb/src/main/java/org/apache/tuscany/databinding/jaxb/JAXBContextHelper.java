@@ -31,9 +31,8 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.Operation;
-import org.apache.tuscany.idl.util.XMLType;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
 
@@ -50,31 +49,16 @@ public class JAXBContextHelper {
         if (tContext == null)
             throw new TransformationException("JAXB context is not set for the transformation.");
 
+        DataType<?> bindingContext = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
         // FIXME: We should check the context path or classes
         // FIXME: What should we do if JAXB is an intermediate node?
-        DataType<?> bindingContext = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
-        String contextPath = (String)bindingContext.getMetadata(JAXB_CONTEXT_PATH);
-        if (contextPath == null) {
-            Operation op = (Operation)bindingContext.getOperation();
-            contextPath = op != null ? (String)op.getMetaData().get(JAXB_CONTEXT_PATH) : null;
-        }
+
+        String contextPath = null;
         JAXBContext context = null;
-        if (contextPath != null) {
+        Class cls = bindingContext.getPhysical();
+        if (cls.getPackage() != null) {
+            contextPath = cls.getPackage().getName();
             context = JAXBContext.newInstance(contextPath);
-        } else {
-            Class[] classes = (Class[])bindingContext.getMetadata(JAXB_CLASSES);
-            if (classes != null) {
-                context = JAXBContext.newInstance(classes);
-            } else {
-                Type type = bindingContext.getPhysical();
-                if (type instanceof Class) {
-                    Class cls = (Class)type;
-                    if (cls.getPackage() != null) {
-                        contextPath = cls.getPackage().getName();
-                        context = JAXBContext.newInstance(contextPath);
-                    }
-                }
-            }
         }
         if (context == null) {
             throw new TransformationException("JAXB context is not set for the transformation.");
@@ -156,7 +140,7 @@ public class JAXBContextHelper {
         if (type != null) {
             String typeNamespace = type.namespace();
             String typeName = type.name();
-    
+
             if (typeNamespace.equals("##default") && typeName.equals("")) {
                 XmlRootElement rootElement = javaType.getAnnotation(XmlRootElement.class);
                 if (rootElement != null) {
@@ -171,7 +155,7 @@ public class JAXBContextHelper {
             } else {
                 namespace = typeNamespace;
             }
-    
+
             if (typeName.equals("##default")) {
                 name = Introspector.decapitalize(javaType.getSimpleName());
             } else {
