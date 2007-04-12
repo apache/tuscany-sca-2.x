@@ -172,6 +172,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             ServiceBinding binding = bindingBuilder.build(serviceDefinition, definition, context);
             service.addServiceBinding(binding);
         }
+        models.put(service, serviceDefinition);
         return service;
     }
 
@@ -197,6 +198,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             reference.addReferenceBinding(binding);
 
         }
+        models.put(reference, referenceDefinition);
         return reference;
     }
 
