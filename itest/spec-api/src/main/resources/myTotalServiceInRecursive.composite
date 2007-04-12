@@ -19,10 +19,11 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
+	   targetNamespace="http://foo"
            name="MyTotalServiceInRecursiveTest">
    
     <component name="MyServiceInComposite">
-        <implementation.composite scdlLocation="myServiceInComposite.composite"/>
+        <implementation.composite name="foo:myServiceInComposite"/>
     </component>
     
     <component name="MyTotalServiceFromRecursive">
@@ -31,24 +32,22 @@
 		<reference name="myListService">MyServiceInComposite/MyListService</reference>
     </component>
     
- 	<service name="MyTotalServiceInCompositeWithRecursiveUseService">
+ 	<service name="MyTotalServiceInCompositeWithRecursiveUseService" promote="MyTotalServiceInCompositeWithRecursive">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceInCompositeWithRecursive</reference>	   
     </service>
    
- 	<service name="MyTotalServiceInCompositeWithComponentServiceUseService">
+ 	<service name="MyTotalServiceInCompositeWithComponentServiceUseService" promote="MyTotalServiceInCompositeWithComponentService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
-        <reference>MyTotalServiceInCompositeWithComponentService</reference>	   
     </service>
     
     <component name="MyTotalServiceInCompositeWithRecursive">
-        <implementation.composite scdlLocation="myTotalServiceInComposite.composite"/>
+        <implementation.composite name="foo:myTotalServiceInComposite"/>
 		<reference name="MyServiceRef">MyServiceInComposite/MyService</reference>
 		<reference name="MyListServiceRef">MyServiceInComposite/MyListService</reference>
     </component>
 
     <component name="MyTotalServiceInCompositeWithComponentService">
-        <implementation.composite scdlLocation="myTotalServiceInComposite.composite"/>
+        <implementation.composite name="foo:myTotalServiceInComposite"/>
 		<reference name="MyServiceRef">MyServiceInComponent/MyService</reference>
 		<reference name="MyListServiceRef">MyServiceInComponent/MyListService</reference>
     </component>

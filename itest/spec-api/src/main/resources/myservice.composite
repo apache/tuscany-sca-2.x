@@ -19,7 +19,8 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
-           name="MyServiceComposite">
+	   targetNamespace="http://foo"
+           name="myservice">
    
     <component name="MyService">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyServiceImpl"/>

@@ -19,29 +19,26 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
-           name="MySimpleServiceInRecursiveTest">
+	   targetNamespace="http://foo"
+           name="MySimpleServiceInRecursive2">
    
     <service name="MySimpleServiceDefault">
-        <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MySimpleServiceInRecursiveComponent/MySimpleService</reference>	   
+        <interface.java interface="org.apache.tuscany.sca.test.spec.MyService" promote="MySimpleServiceInRecursiveComponent/MySimpleService"/>
     </service>
 
-    <service name="MySimpleServiceNo" override="no">
+    <service name="MySimpleServiceNo" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceNo">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MySimpleServiceInRecursiveComponent/MySimpleServiceNo</reference>	   
     </service>
 
-    <service name="MySimpleServiceMay" override="may">
+    <service name="MySimpleServiceMay" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceMay">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MySimpleServiceInRecursiveComponent/MySimpleServiceMay</reference>	   
     </service>
 
-    <service name="MySimpleServiceMust" override="must">
+    <service name="MySimpleServiceMust" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceMust">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
-        <reference>MySimpleServiceInRecursiveComponent/MySimpleServiceMust</reference>	   
     </service>
    
     <component name="MySimpleServiceInRecursiveComponent">
-        <implementation.composite scdlLocation="mySimpleServiceInRecursive.composite"/>
+        <implementation.composite name="foo:mySimpleServiceInRecursive"/>
     </component>
 </composite>
