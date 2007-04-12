@@ -128,6 +128,9 @@ public class DeployerImpl implements Deployer {
                 Object model = models.get(toRegister);
                 if (model instanceof org.apache.tuscany.assembly.Component) {
                     connect(models, (org.apache.tuscany.assembly.Component)model);
+                }else if(model instanceof org.apache.tuscany.assembly.CompositeReference){
+                    //FIXME lresende: not sure why there is no "compositeReferences" here
+                    connect(models, (org.apache.tuscany.assembly.CompositeReference)model);
                 }
                 componentManager.register(toRegister);
             } catch (RegistrationException e) {
@@ -219,10 +222,30 @@ public class DeployerImpl implements Deployer {
         }
     }
 
+    //FIXME lresende : make it work with references
+    public void connect(Map<SCAObject, Object> models, org.apache.tuscany.assembly.CompositeReference reference) throws WiringException {
+        Component source =  getComponent(models, reference);
+        if (source == null) {
+            throw new ComponentNotFoundException("Source not found", URI.create(reference.getName()));
+        }
+        
+    }
+    
     private Component getComponent(Map<SCAObject, Object> models, org.apache.tuscany.assembly.Component definition) {
         Component source = null;
         for (Map.Entry<SCAObject, Object> e : models.entrySet()) {
             if (e.getValue() == definition) {
+                source = (Component)e.getKey();
+            }
+        }
+        return source;
+    }
+
+    //FIXME: lresende make working with references
+    private Component getComponent(Map<SCAObject, Object> models, org.apache.tuscany.assembly.Reference reference) {
+        Component source = null;
+        for (Map.Entry<SCAObject, Object> e : models.entrySet()) {
+            if (e.getValue() == reference) {
                 source = (Component)e.getKey();
             }
         }
