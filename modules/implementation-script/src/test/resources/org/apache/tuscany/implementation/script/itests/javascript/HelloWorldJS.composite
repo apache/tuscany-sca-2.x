@@ -26,7 +26,7 @@
     </component>
 
     <component name="HelloWorldJSComponent">
-        <implementation.script script="helloworld.js"/>
+        <implementation.script script="org/apache/tuscany/implementation/script/itests/javascript/helloworld.js"/>
     </component>
 
 </composite>
