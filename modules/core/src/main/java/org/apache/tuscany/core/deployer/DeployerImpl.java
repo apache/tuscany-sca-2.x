@@ -36,13 +36,17 @@ import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ComponentNotFoundException;
+import org.apache.tuscany.core.builder.IncompatibleInterfacesException;
 import org.apache.tuscany.core.builder.WireCreationException;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.core.wire.WireUtils;
+import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -75,6 +79,7 @@ public class DeployerImpl implements Deployer {
     private Builder builder;
     private ComponentManager componentManager;
     private ScopeRegistry scopeRegistry;
+    private InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
 
     public DeployerImpl(XMLInputFactory xmlFactory, Builder builder, ComponentManager componentManager) {
         this.xmlFactory = xmlFactory;
@@ -181,8 +186,13 @@ public class DeployerImpl implements Deployer {
                     throw new ComponentNotFoundException("Target not found", targetUri);
                 }
                 URI sourceURI = URI.create(source.getUri() + "#" + refName);
-                Wire wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), service
-                    .getInterfaceContract(), Wire.LOCAL_BINDING);
+                Wire wire;
+                try {
+                    wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), service.getService()
+                        .getInterfaceContract(), Wire.LOCAL_BINDING);
+                } catch (IncompatibleInterfaceContractException e1) {
+                    throw new IncompatibleInterfacesException(sourceURI, targetUri, e1);
+                }
                 try {
                     attachInvokers(refName, wire, source, target);
                 } catch (TargetInvokerCreationException e) {
@@ -223,14 +233,17 @@ public class DeployerImpl implements Deployer {
                               URI targetUri,
                               InterfaceContract sourceContract,
                               InterfaceContract targetContract,
-                              QName bindingType) {
+                              QName bindingType) throws IncompatibleInterfaceContractException {
         Wire wire = new WireImpl(bindingType);
         wire.setSourceContract(sourceContract);
         wire.setTargetContract(targetContract);
         wire.setSourceUri(sourceURI);
         wire.setTargetUri(targetUri);
+
+        mapper.checkCompatibility(sourceContract, targetContract, false, false);
         for (Operation operation : sourceContract.getInterface().getOperations()) {
-            InvocationChain chain = new InvocationChainImpl(operation);
+            Operation targetOperation = mapper.map(targetContract.getInterface(), operation);
+            InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
             /*
              * if (operation.isNonBlocking()) { chain.addInterceptor(new
              * NonBlockingInterceptor(scheduler, workContext)); }
@@ -241,7 +254,8 @@ public class DeployerImpl implements Deployer {
         }
         if (sourceContract.getCallbackInterface() != null) {
             for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
-                InvocationChain chain = new InvocationChainImpl(operation);
+                Operation targetOperation = mapper.map(targetContract.getCallbackInterface(), operation);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                 /*
                  * if (operation.isNonBlocking()) { chain.addInterceptor(new
                  * NonBlockingInterceptor(scheduler, workContext)); }
