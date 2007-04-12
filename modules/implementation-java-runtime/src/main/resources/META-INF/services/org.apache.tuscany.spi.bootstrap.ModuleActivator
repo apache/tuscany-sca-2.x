@@ -1,2 +1,2 @@
 # Implementation class for the ModuleActivator
-org.apache.tuscany.implementation.java.module.RuntimeJavaModuleActivator
+org.apache.tuscany.implementation.java.module.JavaRuntimeModuleActivator
