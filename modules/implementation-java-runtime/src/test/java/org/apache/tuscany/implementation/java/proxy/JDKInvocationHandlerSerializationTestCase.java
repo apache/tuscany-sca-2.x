@@ -86,11 +86,11 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
         EasyMock.expect(container.getUri()).andReturn(URI.create("bar")).atLeastOnce();
 
         wire = EasyMock.createMock(Wire.class);
-        Map<Operation, InvocationChain> map = new HashMap<Operation, InvocationChain>();
+        List<InvocationChain> map = new ArrayList<InvocationChain>();
         Operation operation = new OperationImpl("invoke");
         Contract opContract = ModelHelper.createReference("foo", Foo.class);
         operation.setInterface(opContract.getInterfaceContract().getInterface());
-        map.put(operation, createChain(operation));
+        map.add(createChain(operation));
         EasyMock.expect(wire.getSourceContract()).andReturn(contract.getInterfaceContract()).atLeastOnce();
         URI uri = URI.create("#foo");
         EasyMock.expect(wire.getSourceUri()).andReturn(uri).atLeastOnce();

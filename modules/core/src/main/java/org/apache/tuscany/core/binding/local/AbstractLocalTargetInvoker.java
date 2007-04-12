@@ -26,13 +26,14 @@ import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
  * Base class for dispatching to a composite reference using the local binding
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractLocalTargetInvoker implements TargetInvoker {
+public abstract class AbstractLocalTargetInvoker extends TargetInvokerExtension implements TargetInvoker {
     protected boolean cacheable;
 
     public boolean isCacheable() {
@@ -57,7 +58,7 @@ public abstract class AbstractLocalTargetInvoker implements TargetInvoker {
             try {
                 // short-circuit the dispatch and invoke the target directly
                 if (invoker == null) {
-                    String name = chain.getOperation().getName();
+                    String name = chain.getTargetOperation().getName();
                     throw new AssertionError("No target invoker [" + name + "]");
                 }
                 return invoker.invoke(msg);

@@ -58,7 +58,7 @@ public class LocalCallbackTargetInvokerThrowableTestCase extends TestCase {
         InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(new InsidiuousInterceptor());
         Wire wire = new WireImpl();
-        wire.addCallbackInvocationChain(operation, chain);
+        wire.addCallbackInvocationChain(chain);
         invoker = new LocalCallbackTargetInvoker(operation, wire);
     }
 

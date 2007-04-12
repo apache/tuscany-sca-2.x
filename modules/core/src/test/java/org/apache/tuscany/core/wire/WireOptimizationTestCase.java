@@ -48,7 +48,7 @@ public class WireOptimizationTestCase extends TestCase {
         Wire wire = new WireImpl();
         InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
-        wire.addInvocationChain(operation, chain);
+        wire.addInvocationChain(chain);
         assertTrue(WireUtils.isOptimizable(wire));
     }
 
@@ -58,7 +58,7 @@ public class WireOptimizationTestCase extends TestCase {
         Wire wire = new WireImpl();
         InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
-        wire.addInvocationChain(operation, chain);
+        wire.addInvocationChain(chain);
         assertFalse(WireUtils.isOptimizable(wire));
     }
 

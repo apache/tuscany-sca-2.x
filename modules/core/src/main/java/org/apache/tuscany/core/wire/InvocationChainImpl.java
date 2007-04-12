@@ -25,22 +25,31 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Default implementation of an invocation chain
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class InvocationChainImpl implements InvocationChain {
-    protected Operation operation;
+    protected Operation sourceOperation;
+    protected Operation targetOperation;
     protected TargetInvoker targetInvoker;
     protected Interceptor interceptorChainHead;
     protected Interceptor interceptorChainTail;
 
     public InvocationChainImpl(Operation operation) {
         assert operation != null;
-        this.operation = operation;
+        this.targetOperation = operation;
+        this.sourceOperation = operation;
     }
 
-    public Operation getOperation() {
-        return operation;
+    public InvocationChainImpl(Operation sourceOperation, Operation targetOperation) {
+        assert sourceOperation != null;
+        assert targetOperation != null;
+        this.targetOperation = targetOperation;
+        this.sourceOperation = sourceOperation;
+    }
+
+    public Operation getTargetOperation() {
+        return targetOperation;
     }
 
     public void setTargetInvoker(TargetInvoker invoker) {
@@ -90,6 +99,20 @@ public class InvocationChainImpl implements InvocationChain {
 
     public Interceptor getTailInterceptor() {
         return interceptorChainTail;
+    }
+
+    /**
+     * @return the sourceOperation
+     */
+    public Operation getSourceOperation() {
+        return sourceOperation;
+    }
+
+    /**
+     * @param sourceOperation the sourceOperation to set
+     */
+    public void setSourceOperation(Operation sourceOperation) {
+        this.sourceOperation = sourceOperation;
     }
 
 }

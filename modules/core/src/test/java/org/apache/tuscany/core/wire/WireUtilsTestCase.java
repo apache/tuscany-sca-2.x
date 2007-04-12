@@ -40,7 +40,7 @@ public class WireUtilsTestCase extends TestCase {
         Operation op = new OperationImpl();
         op.setName("hello");
         InvocationChain chain = new InvocationChainImpl(op);
-        wire.addInvocationChain(op, chain);
+        wire.addInvocationChain(chain);
         Map<Method, ChainHolder> chains = WireUtils.createInterfaceToWireMapping(Foo.class, wire);
         assertEquals(1, chains.size());
         assertNotNull(chains.get(m));
@@ -51,7 +51,7 @@ public class WireUtilsTestCase extends TestCase {
         Operation op = new OperationImpl();
         op.setName("goodbye");
         InvocationChain chain = new InvocationChainImpl(op);
-        wire.addInvocationChain(op, chain);
+        wire.addInvocationChain(chain);
         try {
             WireUtils.createInterfaceToWireMapping(Foo.class, wire);
             fail();

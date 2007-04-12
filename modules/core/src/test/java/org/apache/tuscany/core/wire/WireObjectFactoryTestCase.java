@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.core.wire;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -39,14 +40,15 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class WireObjectFactoryTestCase extends TestCase {
+    private List<InvocationChain> emptyChains = Collections.emptyList();
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings( {"unchecked"})
     public void testCreateInstance() throws Exception {
         Operation op = new OperationImpl("hello");
         InvocationChain chain = new InvocationChainImpl(op);
         Wire wire = EasyMock.createMock(Wire.class);
-        Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
-        chains.put(op, chain);
+        List<InvocationChain> chains = new ArrayList<InvocationChain>();
+        chains.add(chain);
         EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
         EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
@@ -68,11 +70,11 @@ public class WireObjectFactoryTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testOptimizedCreateInstance() throws Exception {
         InterfaceContract service = createContract(Foo.class);
-        
+
         Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.isOptimizable()).andReturn(true);
         EasyMock.expect(wire.getSourceContract()).andReturn(service).atLeastOnce();
-        EasyMock.expect(wire.getInvocationChains()).andReturn((Map) Collections.emptyMap());
+        EasyMock.expect(wire.getInvocationChains()).andReturn(emptyChains);
         EasyMock.expect(wire.getTargetInstance()).andReturn(new Foo() {
             public void hello() {
             }
@@ -93,7 +95,8 @@ public class WireObjectFactoryTestCase extends TestCase {
     }
 
     /**
-     * Verifies that a proxy is created when the required client contract is different than the wire contract
+     * Verifies that a proxy is created when the required client contract is
+     * different than the wire contract
      */
     @SuppressWarnings("unchecked")
     public void testCannotOptimizeDifferentContractsCreateInstance() throws Exception {
@@ -101,7 +104,7 @@ public class WireObjectFactoryTestCase extends TestCase {
         Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.isOptimizable()).andReturn(true);
         EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();
-        EasyMock.expect(wire.getInvocationChains()).andReturn((Map) Collections.emptyMap());
+        EasyMock.expect(wire.getInvocationChains()).andReturn(emptyChains);
         EasyMock.replay(wire);
         ProxyService service = EasyMock.createMock(ProxyService.class);
         service.createProxy(EasyMock.eq(Foo.class), EasyMock.eq(wire), EasyMock.isA(Map.class));
@@ -124,7 +127,7 @@ public class WireObjectFactoryTestCase extends TestCase {
         Wire wire = EasyMock.createMock(Wire.class);
         EasyMock.expect(wire.isOptimizable()).andReturn(true);
         EasyMock.expect(wire.getSourceContract()).andReturn(contract).atLeastOnce();
-        EasyMock.expect(wire.getInvocationChains()).andReturn((Map) Collections.emptyMap());
+        EasyMock.expect(wire.getInvocationChains()).andReturn(emptyChains);
         EasyMock.replay(wire);
         ProxyService service = EasyMock.createMock(ProxyService.class);
         service.createProxy(EasyMock.eq(Foo.class), EasyMock.eq(wire), EasyMock.isA(Map.class));
@@ -144,6 +147,5 @@ public class WireObjectFactoryTestCase extends TestCase {
     private interface Foo {
         void hello();
     }
-
 
 }

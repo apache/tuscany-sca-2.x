@@ -21,15 +21,18 @@ package org.apache.tuscany.spi.extension;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * The default implementation of a TargetInvoker
- *
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class TargetInvokerExtension implements TargetInvoker {
@@ -70,9 +73,19 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            // TargetInvoker extends Cloneable so this should not have been thrown
+            // TargetInvoker extends Cloneable so this should not have been
+            // thrown
             throw new AssertionError(e);
         }
+    }
+
+    protected InvocationChain getInvocationChain(List<InvocationChain> chains, Operation targetOperation) {
+        for (InvocationChain chain : chains) {
+            if (chain.getTargetOperation() == targetOperation) {
+                return chain;
+            }
+        }
+        return null;
     }
 
 }

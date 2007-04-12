@@ -238,7 +238,7 @@ public final class JDKInvocationHandler extends AbstractInvocationHandler
         if (holder.getCachedInvoker() == null) {
             assert chain != null;
             if (chain.getTargetInvoker() == null) {
-                String name = chain.getOperation().getName();
+                String name = chain.getTargetOperation().getName();
                 throw new TargetInvocationException("No target invoker configured for operation", name);
             }
             if (chain.getTargetInvoker().isCacheable()) {

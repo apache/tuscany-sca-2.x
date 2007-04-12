@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.interfacedef.Operation;
@@ -51,14 +52,14 @@ public final class WireUtils {
      */
     public static Map<Method, ChainHolder> createInterfaceToWireMapping(Class<?> interfaze, Wire wire)
         throws NoMethodForOperationException {
-        Map<Operation, InvocationChain> invocationChains = wire.getInvocationChains();
+        List<InvocationChain> invocationChains = wire.getInvocationChains();
 
         Map<Method, ChainHolder> chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        for (Map.Entry<Operation, InvocationChain> entry : invocationChains.entrySet()) {
-            Operation operation = entry.getKey();
+        for (InvocationChain chain : invocationChains) {
+            Operation operation = chain.getTargetOperation();
             try {
                 Method method = JavaInterfaceUtil.findMethod(interfaze, operation);
-                chains.put(method, new ChainHolder(entry.getValue()));
+                chains.put(method, new ChainHolder(chain));
             } catch (NoSuchMethodException e) {
                 throw new NoMethodForOperationException(operation.getName());
             }
@@ -74,7 +75,7 @@ public final class WireUtils {
      * @return true if the wire is optimizable
      */
     public static boolean isOptimizable(Wire wire) {
-        for (InvocationChain chain : wire.getInvocationChains().values()) {
+        for (InvocationChain chain : wire.getInvocationChains()) {
             if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();
                 if (current == null) {

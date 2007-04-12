@@ -57,7 +57,7 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
         interfaceContract.setInterface(introspector.introspect(Target.class));
         for (Operation operation : interfaceContract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
-            wire.addInvocationChain(operation, chain);
+            wire.addInvocationChain(chain);
         }
         wire.setSourceContract(interfaceContract);
         wire.setSourceUri(URI.create("foo#bar"));
@@ -66,7 +66,7 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
         EasyMock.expect(targetInvoker.invokeTarget(null, TargetInvoker.NONE, null)).andReturn(response);
         EasyMock.expect(targetInvoker.isCacheable()).andReturn(false);
         EasyMock.replay(targetInvoker);
-        wire.getInvocationChains().values().iterator().next().setTargetInvoker(targetInvoker);
+        wire.getInvocationChains().iterator().next().setTargetInvoker(targetInvoker);
 
         JDKInvocationHandler handler = new JDKInvocationHandler(Client.class, wire, null);
         assertSame(response, handler.invoke(null, clientHello, null));

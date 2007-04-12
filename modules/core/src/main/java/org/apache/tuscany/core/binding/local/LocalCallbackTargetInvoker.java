@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.binding.local;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Dispatches a callback invocation to the callback instance
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class LocalCallbackTargetInvoker extends AbstractLocalTargetInvoker {
@@ -54,16 +54,16 @@ public class LocalCallbackTargetInvoker extends AbstractLocalTargetInvoker {
     }
 
     private Message invoke(Operation operation, Message msg) throws Throwable {
-        //TODO optimize as this is slow in local invocations
-        Map<Operation, InvocationChain> chains = wire.getCallbackInvocationChains();
-        InvocationChain chain = chains.get(operation);
+        // TODO optimize as this is slow in local invocations
+        List<InvocationChain> chains = wire.getCallbackInvocationChains();
+        InvocationChain chain = getInvocationChain(chains, operation);
         TargetInvoker invoker = chain.getTargetInvoker();
         return invoke(chain, invoker, msg);
     }
 
     @Override
     public LocalCallbackTargetInvoker clone() throws CloneNotSupportedException {
-        return (LocalCallbackTargetInvoker) super.clone();
+        return (LocalCallbackTargetInvoker)super.clone();
     }
 
 }
