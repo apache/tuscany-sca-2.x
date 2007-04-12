@@ -131,7 +131,7 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
         reference.setInterfaceContract(interfaceContract);
         
         // reference.setMember((Member)element.getAnchor());
-        boolean required = false;
+        boolean required = true;
         Reference ref = element.getAnnotation(Reference.class);
         if (ref != null) {
             required = ref.required();
