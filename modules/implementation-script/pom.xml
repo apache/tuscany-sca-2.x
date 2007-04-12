@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-implementation-script</artifactId>
-    <name>Apache Tuscany Implementation for Script Language Components</name>
+    <name>Apache Tuscany Implementation Script</name>
 
     <repositories>
        <!-- This is reqquired for Jython as 2.2 Beta1 hasn't made it to the maven repos yet -->
