@@ -53,15 +53,13 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
     public void testDifferentInterface() throws Throwable {
         Wire wire = new WireImpl();
 
-        Contract contract = new DefaultAssemblyFactory().createComponentReference();
         JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
-        contract.setInterfaceContract(interfaceContract);
         interfaceContract.setInterface(introspector.introspect(Target.class));
-        for (Operation operation : contract.getInterfaceContract().getInterface().getOperations()) {
+        for (Operation operation : interfaceContract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
             wire.addInvocationChain(operation, chain);
         }
-        wire.setSourceContract(contract);
+        wire.setSourceContract(interfaceContract);
         wire.setSourceUri(URI.create("foo#bar"));
         TargetInvoker targetInvoker = EasyMock.createMock(TargetInvoker.class);
         MessageImpl response = new MessageImpl();

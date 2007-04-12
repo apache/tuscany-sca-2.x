@@ -61,8 +61,8 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         Map<Operation, InvocationChain> chains = wire.getInvocationChains();
         for (Map.Entry<Operation, InvocationChain> entry : chains.entrySet()) {
             String opName = entry.getKey().getName();
-            Operation sourceOperation = sourceContract.getOperation(opName);
-            Operation targetOperation = targetContract.getOperation(opName);
+            Operation sourceOperation = sourceContract.getInterface().getOperation(opName);
+            Operation targetOperation = targetContract.getInterface().getOperation(opName);
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null && targetDataBinding == null) {
@@ -89,7 +89,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
 
         for (Map.Entry<Operation, InvocationChain> entry : callbackChains.entrySet()) {
             String opName = entry.getKey().getName();
-            Operation sourceOperation = sourceContract.getCallbackOperations().get(opName);
+            Operation sourceOperation = sourceContract.getCallbackInterface().getCallbackOperations().get(opName);
             Operation targetOperation = targetContract.getCallbackOperations().get(opName);
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
