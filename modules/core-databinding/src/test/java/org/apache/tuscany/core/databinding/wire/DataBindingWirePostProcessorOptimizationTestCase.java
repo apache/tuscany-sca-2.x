@@ -23,8 +23,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -83,9 +83,12 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         contract.getCallbackInterface().getOperations().add(operation);
 
         chain = createMock(InvocationChain.class);
+//        EasyMock.expect(chain.getSourceOperation()).andReturn(operation);
+//        EasyMock.expect(chain.getTargetOperation()).andReturn(operation);
         replay(chain);
-        Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
-        chains.put(operation, chain);
+        List<InvocationChain> chains = new ArrayList<InvocationChain>();
+        
+        chains.add(chain);
 
         wire = EasyMock.createMock(Wire.class);
         expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING).anyTimes();

@@ -25,7 +25,9 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -144,24 +146,28 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         JavaInterface interface1 = introspector.introspect(TestInterface1.class);
         InterfaceContract contract1 = new JavaInterfaceContractImpl();
         contract1.setInterface(interface1);
-        contract1.setDataBinding(DOMDataBinding.NAME);
+//        contract1.setDataBinding(DOMDataBinding.NAME);
         JavaInterface interface2 = introspector.introspect(TestInterface2.class);
         InterfaceContract contract2 = new JavaInterfaceContractImpl();
         contract2.setInterface(interface2);
-        contract2.setDataBinding(StAXDataBinding.NAME);
-        Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
+//        contract2.setDataBinding(StAXDataBinding.NAME);
+        List<InvocationChain> chains = new ArrayList<InvocationChain>();
         for (Operation op : interface1.getOperations()) {
             InvocationChain chain = createMock(InvocationChain.class);
             chain.addInterceptor(EasyMock.anyInt(), EasyMock.isA(Interceptor.class));
+            EasyMock.expect(chain.getSourceOperation()).andReturn(op).anyTimes();
+            EasyMock.expect(chain.getTargetOperation()).andReturn(op).anyTimes();
             replay(chain);
-            chains.put(op, chain);
-        }        
-        Map<Operation, InvocationChain> callbackChains = new HashMap<Operation, InvocationChain>();
+            chains.add(chain);
+        }   
+        List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
         for (Operation op : interface1.getOperations()) {
             InvocationChain chain = createMock(InvocationChain.class);
             chain.addInterceptor(EasyMock.anyInt(), EasyMock.isA(Interceptor.class));
+            EasyMock.expect(chain.getSourceOperation()).andReturn(op).anyTimes();
+            EasyMock.expect(chain.getTargetOperation()).andReturn(op).anyTimes();
             replay(chain);
-            callbackChains.put(op, chain);
+            callbackChains.add(chain);
         }                
         Wire wire = EasyMock.createMock(Wire.class);
         expect(wire.getBindingType()).andReturn(bindingType).anyTimes();
