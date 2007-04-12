@@ -32,5 +32,12 @@ public interface ArtifactProcessorRegistry<P> {
      * @param artifactProcessor the artifact processor to add
      */
     void addArtifactProcessor(P artifactProcessor);
+    
+    /**
+     * Remove an artifact processor.
+     * @param artifactProcessor the artifact processor to remove
+     */
+    
+   void removeArtifactProcessor(P artifactProcessor);
 
 }
