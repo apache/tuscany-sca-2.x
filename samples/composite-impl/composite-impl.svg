@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\composite-impl"
+   sodipodi:docname="composite-impl.svg"
+   version="1.0"
+   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\composite-impl\composite-impl.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="TriangleOutL"
+       style="overflow:visible">
+      <path
+         id="path3199"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleInL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="TriangleInL"
+       style="overflow:visible">
+      <path
+         id="path3208"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(-0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lstart"
+       style="overflow:visible">
+      <path
+         id="path3279"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path3276"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="422.9821"
+     inkscape:cy="391.26876"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1163"
+     inkscape:window-height="727"
+     inkscape:window-x="49"
+     inkscape:window-y="142" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:2.00000072;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2067"
+       width="437.12573"
+       height="235.3502"
+       x="322.71631"
+       y="54.621651"
+       ry="9.9571238"
+       rx="13.497943" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2954"
+       transform="translate(52.97608,-147.3808)"><flowRegion
+         id="flowRegion2956"><rect
+           id="rect2958"
+           width="195.71428"
+           height="21.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2960">OuterComposite </flowPara></flowRoot>    <rect
+       style="fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:2.00000024;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3038"
+       width="387.65787"
+       height="235.3502"
+       x="90.543831"
+       y="383.98276"
+       ry="9.9571238"
+       rx="11.970432" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3040"
+       transform="translate(-176.3391,188.4089)"><flowRegion
+         id="flowRegion3042"><rect
+           id="rect3044"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3046">InnerComposite</flowPara></flowRoot>    <rect
+       style="fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:2.00000048;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3048"
+       width="324.99875"
+       height="235.3502"
+       x="555.21411"
+       y="379.94214"
+       ry="9.9571238"
+       rx="10.03559" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#060000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6,1;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3050"
+       width="501.42856"
+       height="300"
+       x="281.42856"
+       y="25.523054"
+       rx="2.4997854"
+       ry="0" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3052"
+       transform="translate(14.49567,-180.4534)"><flowRegion
+         id="flowRegion3054"><rect
+           id="rect3056"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3058">OuterComposite.composite</flowPara></flowRoot>    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#060000;stroke-width:1.00000024;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6.00000127, 1.0000002;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3060"
+       width="469.99997"
+       height="277.14301"
+       x="34.999977"
+       y="355.52322"
+       rx="2.3431036"
+       ry="0" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3062"
+       transform="translate(-231.9329,149.5466)"><flowRegion
+         id="flowRegion3064"><rect
+           id="rect3066"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3068">InnerComposite.composite</flowPara></flowRoot>    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#060000;stroke-width:1.00000024;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6.00000217, 1.00000036;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3070"
+       width="370.06677"
+       height="277.14301"
+       x="526.42865"
+       y="355.52322"
+       rx="1.8449039"
+       ry="0" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3072"
+       transform="translate(259.4957,149.5466)"><flowRegion
+         id="flowRegion3074"><rect
+           id="rect3076"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3078">InnerComposite2.composite</flowPara></flowRoot>    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:1.99999988;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3080"
+       width="115.66247"
+       height="107.29153"
+       x="339.39774"
+       y="120.88454"
+       rx="6.9961648"
+       ry="8.9006968" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3082"
+       transform="translate(61.09274,-82.91111)"><flowRegion
+         id="flowRegion3084"><rect
+           id="rect3086"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3088">SourceComponent</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 419.07104,149.4647 L 471.74673,149.4647 L 481.32412,162.59667 L 470.1505,174.71851 L 419.07104,174.71851 L 431.04279,162.59667 L 419.07104,149.4647 z "
+       id="path3094" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 417.44485,192.18187 L 470.12055,192.18187 L 479.69794,205.31384 L 468.52432,217.43568 L 417.44485,217.43568 L 429.41661,205.31384 L 417.44485,192.18187 z "
+       id="path3096" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3098"
+       transform="matrix(0.588577,0,0,0.522806,267.0549,40.55827)"><flowRegion
+         id="flowRegion3100"><rect
+           id="rect3102"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3104">Target</flowPara><flowPara
+         id="flowPara3106">Component</flowPara><flowPara
+         id="flowPara3108">Ref</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3110"
+       transform="matrix(0.588577,0,0,0.522806,266.7932,82.35649)"><flowRegion
+         id="flowRegion3112"><rect
+           id="rect3114"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3116">Target</flowPara><flowPara
+         id="flowPara3118">Component</flowPara><flowPara
+         id="flowPara3120">Ref2</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 386.42857,191.23734 L 272.85714,354.80877"
+       id="path3304" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:1.99999964;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3306"
+       width="122.73349"
+       height="85.862968"
+       x="521.41876"
+       y="82.620422"
+       rx="7.4238753"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3308"
+       transform="translate(243.9718,-121.6444)"><flowRegion
+         id="flowRegion3310"><rect
+           id="rect3312"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3314">TargetComponent</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 508.55406,120.18171 L 546.16282,120.18171 L 553.00077,133.31368 L 545.02316,145.43552 L 508.55406,145.43552 L 517.10151,133.31368 L 508.55406,120.18171 z "
+       id="path3318" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.00000048;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3322"
+       width="124.75388"
+       height="85.862968"
+       x="625.0321"
+       y="185.9852"
+       rx="7.5460844"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3324"
+       transform="translate(347.5847,-18.27962)"><flowRegion
+         id="flowRegion3326"><rect
+           id="rect3328"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3330">TargetComponent2</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 675.79205,235.98775 L 764.68548,355.18575"
+       id="path3336" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 481.33769,161.74154 L 496.99505,161.74154 L 496.99505,134.46742 L 515.1778,134.46742"
+       id="path3362" />
+    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999988px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 67.175117,493.80686 L 112.47656,493.80686 L 120.71318,512.19162 L 111.1038,529.1622 L 67.175117,529.1622 L 77.470908,512.19162 L 67.175117,493.80686 z "
+       id="path3364" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3366"
+       transform="matrix(0.764739,0,0,0.753419,-137.1237,335.169)"><flowRegion
+         id="flowRegion3368"><rect
+           id="rect3370"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3372">Inner</flowPara><flowPara
+         id="flowPara3374">Source</flowPara><flowPara
+         id="flowPara3376">Service</flowPara></flowRoot>    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:1.99999988;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3378"
+       width="115.66247"
+       height="123.2386"
+       x="222.2549"
+       y="461.59875"
+       rx="6.9961648"
+       ry="10.223635" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3380"
+       transform="translate(-41.0501,252.8032)"><flowRegion
+         id="flowRegion3382"><rect
+           id="rect3384"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3386">InnerSource</flowPara><flowPara
+         id="flowPara3398">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999988px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 207.36974,499.16011 L 246.68799,499.16011 L 253.83675,512.29208 L 245.49653,524.41392 L 207.36974,524.41392 L 216.30571,512.29208 L 207.36974,499.16011 z "
+       id="path3390" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 458.45503,498.7504 L 491.79007,498.7504 L 497.85098,511.88237 L 490.77992,524.00421 L 458.45503,524.00421 L 466.03118,511.88237 L 458.45503,498.7504 z "
+       id="path3394" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 457.8633,539.5488 L 491.19834,539.5488 L 497.25925,552.68077 L 490.18819,564.80261 L 457.8633,564.80261 L 465.43945,552.68077 L 457.8633,539.5488 z "
+       id="path3396" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 121.21831,512.76955 L 214.15234,512.76955"
+       id="path3402" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 313.13842,496.9668 L 365.81411,496.9668 L 375.3915,510.09877 L 364.21788,522.22061 L 313.13842,522.22061 L 325.11017,510.09877 L 313.13842,496.9668 z "
+       id="path3428" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 311.51223,539.68397 L 364.18793,539.68397 L 373.76532,552.81594 L 362.5917,564.93778 L 311.51223,564.93778 L 323.48399,552.81594 L 311.51223,539.68397 z "
+       id="path3430" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3432"
+       transform="matrix(0.588577,0,0,0.522806,161.1223,388.0604)"><flowRegion
+         id="flowRegion3434"><rect
+           id="rect3436"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3438">Target</flowPara><flowPara
+         id="flowPara3440">Component</flowPara><flowPara
+         id="flowPara3442">Ref</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3444"
+       transform="matrix(0.588577,0,0,0.522806,160.8606,429.8586)"><flowRegion
+         id="flowRegion3446"><rect
+           id="rect3448"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3450">Target</flowPara><flowPara
+         id="flowPara3452">Component</flowPara><flowPara
+         id="flowPara3454">Ref2</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 375,509.80877 L 465,510.52305"
+       id="path3456" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 374.28571,553.3802 L 465,553.3802"
+       id="path3458" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3460"
+       transform="matrix(0.768159,0,0,0.869201,176.2162,311.7866)"><flowRegion
+         id="flowRegion3462"><rect
+           id="rect3464"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3466">promote</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3468"
+       transform="matrix(0.768159,0,0,0.869201,176.8981,355.7265)"><flowRegion
+         id="flowRegion3470"><rect
+           id="rect3472"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3474">promote</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999988px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 538.20382,492.4365 L 583.50526,492.4365 L 591.74188,510.82126 L 582.1325,527.79184 L 538.20382,527.79184 L 548.49961,510.82126 L 538.20382,492.4365 z "
+       id="path3476" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3478"
+       transform="matrix(0.764739,0,0,0.753419,333.905,333.7986)"><flowRegion
+         id="flowRegion3480"><rect
+           id="rect3482"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3484">Inner</flowPara><flowPara
+         id="flowPara3486">Target</flowPara><flowPara
+         id="flowPara3488">Service</flowPara></flowRoot>    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.00000048;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3490"
+       width="124.75388"
+       height="85.862968"
+       x="698.64941"
+       y="459.73654"
+       rx="7.5460844"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3492"
+       transform="translate(445.4456,256.4819)"><flowRegion
+         id="flowRegion3494"><rect
+           id="rect3496"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3498">InnerTarget</flowPara><flowPara
+         id="flowPara3502">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 677.53028,495.80598 L 714.4917,495.80598 L 721.21196,510.79509 L 713.37166,524.63121 L 677.53028,524.63121 L 685.93061,510.79509 L 677.53028,495.80598 z "
+       id="path3500" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 916.90199,189.64981 L 1002.9382,189.64981 C 1002.9382,189.64981 1002.9382,235.81944 1002.9382,235.81944 C 989.62313,237.57221 976.30803,237.62595 962.99289,245.41312 C 953.65801,255.66964 935.10151,255.12922 917.92625,256.20602 L 916.90199,189.64981 z "
+       id="path3504"
+       sodipodi:nodetypes="cccccc" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3506"
+       transform="translate(646.5141,-15.23667)"><flowRegion
+         id="flowRegion3508"><rect
+           id="rect3510"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3514">TargetImpl</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3522"
+       transform="matrix(0.764739,0,0,0.753419,471.6381,345.0856)"><flowRegion
+         id="flowRegion3524"><rect
+           id="rect3526"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3532">Target</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 590.71429,511.23734 L 685,511.23734"
+       id="path3538" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 918.41044,67.959238 L 1004.4467,67.959238 C 1004.4467,67.959238 1004.4467,114.12887 1004.4467,114.12887 C 991.13163,115.88164 977.81652,115.93538 964.50132,123.72255 C 955.16646,133.97907 936.60996,133.43865 919.4347,134.51545 L 918.41044,67.959238 z "
+       id="path3576"
+       sodipodi:nodetypes="cccccc" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3578"
+       transform="translate(648.0226,-136.9272)"><flowRegion
+         id="flowRegion3580"><rect
+           id="rect3582"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3584">Target</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:url(#TriangleInL);stroke-opacity:1"
+       d="M 961.42857,126.95163 L 961.42857,162.66591 L 961.42857,191.23734"
+       id="path3594" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 76.22763,193.09023 L 162.2639,193.09023 C 162.2639,193.09023 162.2639,239.25986 162.2639,239.25986 C 148.9488,241.01263 135.6337,241.06637 122.3185,248.85354 C 112.98365,259.11006 94.42715,258.56964 77.25189,259.64644 L 76.22763,193.09023 z "
+       id="path3600"
+       sodipodi:nodetypes="cccccc" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3602"
+       transform="translate(-194.1602,-11.79626)"><flowRegion
+         id="flowRegion3604"><rect
+           id="rect3606"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3608">SourceImpl</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 14.878937,64.256802 L 100.91526,64.256802 C 100.91526,64.256802 100.91526,110.42643 100.91526,110.42643 C 87.600157,112.1792 74.285057,112.23294 60.969857,120.02011 C 51.634957,130.27663 33.078457,129.73621 15.903197,130.81301 L 14.878937,64.256802 z "
+       id="path3610"
+       sodipodi:nodetypes="cccccc" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3612"
+       transform="translate(-255.5088,-140.6297)"><flowRegion
+         id="flowRegion3614"><rect
+           id="rect3616"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3618">Source</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1.00000024px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 140.55329,63.673523 L 239.44669,63.673523 C 239.44669,63.673523 239.44669,109.84315 239.44669,109.84315 C 224.14179,111.59592 208.83699,111.64966 193.53189,119.43683 C 182.80209,129.69335 161.47249,129.15293 141.73059,130.22973 L 140.55329,63.673523 z "
+       id="path3622"
+       sodipodi:nodetypes="cccccc" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3624"
+       transform="translate(-135.5491,-141.213)"><flowRegion
+         id="flowRegion3626"><rect
+           id="rect3628"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3630">SourceCallback</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:url(#TriangleOutL)"
+       d="M 108.08632,192.55119 L 77.781746,156.1857 L 51.51778,123.86082"
+       id="path3634" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:url(#TriangleOutL)"
+       d="M 130.30968,192.55119 L 161.62441,159.21616 L 201.02036,117.7999"
+       id="path3636" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:6,1;stroke-dashoffset:0;marker-end:url(#Arrow2Lend)"
+       d="M 800,511.23734 L 917.14286,238.3802"
+       id="path3640" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:3,1;stroke-dashoffset:0;marker-end:url(#Arrow2Lend)"
+       d="M 610,125.52305 L 915.71429,216.95163"
+       id="path3646" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:6,1;stroke-dashoffset:0;marker-end:url(#Arrow2Lend)"
+       d="M 280,512.66591 L 132.85714,241.23734"
+       id="path3648" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3650"
+       transform="matrix(0.764739,0,0,0.753419,301.1926,-32.06018)"><flowRegion
+         id="flowRegion3652"><rect
+           id="rect3654"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3656">Target</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3658"
+       transform="matrix(0.764739,0,0,0.753419,1.177328,346.747)"><flowRegion
+         id="flowRegion3660"><rect
+           id="rect3662"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3664">Source</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 480.83261,205.68318 L 517.1981,205.68318 L 518.20826,511.7594 L 546.49253,511.7594"
+       id="path3670" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3672"
+       transform="translate(281.8571,183.8295)"><flowRegion
+         id="flowRegion3674"><rect
+           id="rect3676"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3678">InnerComposite2</flowPara></flowRoot>  </g>
+</svg>
