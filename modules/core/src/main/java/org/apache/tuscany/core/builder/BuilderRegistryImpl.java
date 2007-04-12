@@ -64,7 +64,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends Implementation>, ComponentBuilder> componentBuilders = new HashMap<Class<? extends Implementation>, ComponentBuilder>();
     private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
 
-    public BuilderRegistryImpl(@org.osoa.sca.annotations.Reference ScopeRegistry scopeRegistry) {
+    public BuilderRegistryImpl(@org.osoa.sca.annotations.Reference
+    ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
     }
 
@@ -79,15 +80,24 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder) {
         bindingBuilders.put(implClass, builder);
     }
-    
+
     // FIXME: Hack to get the registry working
     private <T extends Implementation> Class<T> getImplementationType(Class<?> implClass) {
-        for(Class<?> interfaze: JavaIntrospectionHelper.getAllInterfaces(implClass)) {
-            if(interfaze!=Implementation.class && Implementation.class.isAssignableFrom(interfaze)) {
-                return (Class<T>) interfaze;
+        for (Class<?> interfaze : JavaIntrospectionHelper.getAllInterfaces(implClass)) {
+            if (interfaze != Implementation.class && Implementation.class.isAssignableFrom(interfaze)) {
+                return (Class<T>)interfaze;
             }
         }
-        return (Class<T>) implClass;
+        return (Class<T>)implClass;
+    }
+
+    private <T extends Binding> Class<T> getBindingType(Class<?> bindingClass) {
+        for (Class<?> interfaze : JavaIntrospectionHelper.getAllInterfaces(bindingClass)) {
+            if (interfaze != Binding.class && Binding.class.isAssignableFrom(interfaze)) {
+                return (Class<T>)interfaze;
+            }
+        }
+        return (Class<T>)bindingClass;
     }
 
     @SuppressWarnings("unchecked")
@@ -108,7 +118,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             properties.put(p.getName(), p);
         }
         component.setDefaultPropertyValues(properties);
-        
+
         // FIXME: How to deal scopes?
         // Scope scope = componentDef.getImplementation().getScope();
         Scope scope = Scope.STATELESS;
@@ -165,7 +175,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         for (Binding definition : serviceDefinition.getBindings()) {
             Class<?> bindingClass = definition.getClass();
             // noinspection SuspiciousMethodCalls
-            BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
+            BindingBuilder bindingBuilder = bindingBuilders.get(getBindingType(bindingClass));
             if (bindingBuilder == null) {
                 throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
             }
@@ -193,7 +203,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         for (Binding bindingDefinition : referenceDefinition.getBindings()) {
             Class<?> bindingClass = bindingDefinition.getClass();
             // noinspection SuspiciousMethodCalls
-            BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
+            BindingBuilder bindingBuilder = bindingBuilders.get(getBindingType(bindingClass));
             ReferenceBinding binding = bindingBuilder.build(referenceDefinition, bindingDefinition, context);
             reference.addReferenceBinding(binding);
 
