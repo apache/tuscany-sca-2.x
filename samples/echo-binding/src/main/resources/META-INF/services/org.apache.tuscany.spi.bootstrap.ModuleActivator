@@ -1,2 +1,2 @@
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.container.crud.CRUDModuleActivator
+org.apache.tuscany.binding.echo.EchoModuleActivator
