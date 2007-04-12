@@ -18,38 +18,50 @@
  * under the License. 
 -->
 <project>
-	<parent>
-		<groupId>org.apache.tuscany.sampleapps.das.pojo.service</groupId>
-		<artifactId>das-pojo-service</artifactId>
-		<version>1.0-incubator-SNAPSHOT</version>
-	</parent>
-
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.tuscany.das.samples</groupId>
-	<artifactId>sample-das-service</artifactId>
-	<name>Tuscany DAS Pojo Service Sample - Service</name>
-	<description>Tuscany DAS Pojo Service Sample - Exposing DAS as an SCA service</description>
-	<packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-samples</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <artifactId>tuscany-samples-das-service-service</artifactId>
+    <name>Apache Tuscany DAS Pojo Service Sample - Service</name>
+    <packaging>jar</packaging>
 
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
-			<artifactId>webapp-api</artifactId>
-			<version>${pom.version}</version>
+		    <groupId>org.osoa</groupId>
+		    <artifactId>sca-api</artifactId>
+		    <version>1.0-incubating-SNAPSHOT</version>
+		</dependency>        
+
+		<dependency>
+		    <groupId>org.apache.tuscany.sca</groupId>
+		    <artifactId>tuscany-host-embedded</artifactId>
+		    <version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.apache.tuscany.sca</groupId>
+		    <artifactId>tuscany-implementation-java-runtime</artifactId>
+		    <version>1.0-incubating-SNAPSHOT</version>
+		    <scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tuscany.sdo</groupId>
 			<artifactId>tuscany-sdo-impl</artifactId>
-			<version>${pom.version}</version>
+			<version>1.0-incubator-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tuscany.das</groupId>
 			<artifactId>tuscany-das-rdb</artifactId>
-			<version>${pom.version}</version>
+			<version>1.0-incubator-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 
