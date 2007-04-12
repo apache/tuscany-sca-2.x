@@ -37,43 +37,41 @@ import com.example.ipo.sdo.SdoFactory;
 /**
  * @version $Rev$ $Date$
  */
-public class ImportSDOLoaderTestCase extends TestCase {
+public class ImportSDOProcessorTestCase extends TestCase {
     private static boolean inited;
 
-    private ImportSDOLoader loader;
+    private ImportSDOProcessor loader;
     private XMLInputFactory xmlFactory;
-    private DeploymentContext deploymentContext;
 
-    public void testMinimal() throws XMLStreamException, LoaderException {
+    public void testMinimal() throws Exception {
         String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0'/>";
         XMLStreamReader reader = getReader(xml);
-        assertTrue(loader.load(null, reader, deploymentContext) instanceof ImportSDO);
+        assertTrue(loader.read(reader) instanceof ImportSDO);
     }
 
-    public void testLocation() throws XMLStreamException, LoaderException {
+    public void testLocation() throws Exception {
         String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' location='ipo.xsd'/>";
         XMLStreamReader reader = getReader(xml);
-        assertTrue(loader.load(null, reader, deploymentContext) instanceof ImportSDO);
+        assertTrue(loader.read(reader) instanceof ImportSDO);
     }
 
-    public void testFactory() throws XMLStreamException, LoaderException {
-        String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' " + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
+    public void testFactory() throws Exception {
+        String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' " + "factory='"
+                     + MockFactory.class.getName()
+                     + "'/>";
         XMLStreamReader reader = getReader(xml);
         assertFalse(inited);
-        assertTrue(loader.load(null, reader, deploymentContext) instanceof ImportSDO);
+        ImportSDO importSDO = loader.read(reader);
+        assertNotNull(importSDO);
+        loader.resolve(importSDO, null);
         assertTrue(inited);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         URI id = URI.create("/composite1/");
-        loader = new ImportSDOLoader(null, new HelperContextRegistryImpl());
+        loader = new ImportSDOProcessor(new HelperContextRegistryImpl());
         xmlFactory = XMLInputFactory.newInstance();
-        deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        expect(deploymentContext.getXmlFactory()).andReturn(xmlFactory).anyTimes();
-        expect(deploymentContext.getComponentId()).andReturn(id).anyTimes();
-        expect(deploymentContext.getClassLoader()).andReturn(getClass().getClassLoader()).anyTimes();
-        replay(deploymentContext);
     }
 
     protected XMLStreamReader getReader(String xml) throws XMLStreamException {
@@ -86,7 +84,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
         public static final Object INSTANCE = SdoFactory.INSTANCE;
 
         static {
-            ImportSDOLoaderTestCase.inited = true;
+            ImportSDOProcessorTestCase.inited = true;
         }
     }
 }

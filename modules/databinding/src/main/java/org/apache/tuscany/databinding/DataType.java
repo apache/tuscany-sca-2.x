@@ -40,22 +40,4 @@ public @interface DataType {
      */
     String name();
 
-    /**
-     * Returns the logical data type
-     * @return the logical data type
-     */
-    Class logicalType() default Object.class;
-
-    /**
-     * Returns the physical data type
-     * @return the physical data type
-     */
-    Class physicalType() default Object.class;
-
-    /**
-     * Returns an array of extensibility elements
-     * @return an array of extensibility elements
-     */
-    DataContext[] context() default {};
-
 }

@@ -23,9 +23,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.impl.DataTypeImpl;
-import org.apache.tuscany.idl.util.XMLType;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.util.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 

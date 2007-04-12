@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static org.apache.tuscany.databinding.sdo.ImportSDO.IMPORT_SDO;
 
 import java.io.IOException;
@@ -30,11 +31,15 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.tuscany.services.spi.contribution.ContributionReadException;
+import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
+import org.apache.tuscany.services.spi.contribution.ContributionWireException;
+import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
@@ -45,11 +50,10 @@ import commonj.sdo.impl.HelperProvider;
  * 
  * @version $Rev$ $Date$
  */
-public class ImportSDOLoader implements StAXArtifactProcessor<ImportSDO> {
-    private StAXArtifactProcessorRegistry processorRegistry;
+public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     private HelperContextRegistry helperContextRegistry;
 
-    public ImportSDOLoader(HelperContextRegistry helperContextRegistry) {
+    public ImportSDOProcessor(HelperContextRegistry helperContextRegistry) {
         super();
         this.helperContextRegistry = helperContextRegistry;
     }
@@ -62,37 +66,51 @@ public class ImportSDOLoader implements StAXArtifactProcessor<ImportSDO> {
         assert IMPORT_SDO.equals(reader.getName());
 
         HelperContext helperContext = null;
+        
+        // FIXME: [rfeng] How to get the enclosing composite?
+        int id = System.identityHashCode(reader);
         // FIXME: [rfeng] How to associate the TypeHelper with deployment
         // context?
         synchronized (helperContextRegistry) {
-            helperContext = helperContextRegistry.getHelperContext(deploymentContext.getComponentId());
+            helperContext = helperContextRegistry.getHelperContext(id);
             if (helperContext == null) {
                 helperContext = SDOUtil.createHelperContext();
-                helperContextRegistry.register(deploymentContext.getComponentId(), helperContext);
+                helperContextRegistry.register(id, helperContext);
             }
         }
 
-        importFactory(reader, deploymentContext, helperContext);
-        importWSDL(reader, deploymentContext, helperContext);
-        LoaderUtil.skipToEndElement(reader);
-        return new ImportSDO(helperContext);
-    }
-
-    private void importFactory(XMLStreamReader reader, DeploymentContext deploymentContext, HelperContext helperContext)
-        throws LoaderException {
+        ImportSDO importSDO = new ImportSDO(helperContext);
         String factoryName = reader.getAttributeValue(null, "factory");
         if (factoryName != null) {
-            ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+            importSDO.setFactoryClassName(factoryName);
+        }
+        String location = reader.getAttributeValue(null, "location");
+        if (location == null) {
+            importSDO.setSchemaLocation(location);
+        }
+
+        // Skip to end element
+        try {
+            while (reader.hasNext()) {
+                if (reader.next() == END_ELEMENT && ImportSDO.IMPORT_SDO.equals(reader.getName())) {
+                    break;
+                }
+            }
+        } catch (XMLStreamException e) {
+            throw new ContributionReadException(e);
+        }
+        return importSDO;
+    }
+
+    private void importFactory(ImportSDO importSDO) throws ContributionResolveException {
+        String factoryName = importSDO.getFactoryClassName();
+        if (factoryName != null) {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
             try {
-                // set TCCL as SDO needs it
-                ClassLoader cl = deploymentContext.getClassLoader();
-                Thread.currentThread().setContextClassLoader(cl);
                 Class<?> factoryClass = cl.loadClass(factoryName);
-                register(factoryClass, helperContext);
+                register(factoryClass, importSDO.getHelperContext());
             } catch (Exception e) {
-                throw new LoaderException(e.getMessage(), e);
-            } finally {
-                Thread.currentThread().setContextClassLoader(oldCL);
+                throw new ContributionResolveException(e);
             }
         }
     }
@@ -109,12 +127,8 @@ public class ImportSDOLoader implements StAXArtifactProcessor<ImportSDO> {
         method.invoke(factory, new Object[] {defaultContext});
     }
 
-    private void importWSDL(XMLStreamReader reader, HelperContext helperContext)
-        throws LoaderException {
-        String location = reader.getAttributeValue(null, "location");
-        if (location == null) {
-            location = reader.getAttributeValue(null, "wsdlLocation");
-        }
+    private void importWSDL(ImportSDO importSDO) throws ContributionResolveException {
+        String location = importSDO.getSchemaLocation();
         if (location != null) {
             try {
                 URL wsdlURL = null;
@@ -122,15 +136,15 @@ public class ImportSDOLoader implements StAXArtifactProcessor<ImportSDO> {
                 if (uri.isAbsolute()) {
                     wsdlURL = uri.toURL();
                 }
-                wsdlURL = deploymentContext.getClassLoader().getResource(location);
+                wsdlURL = Thread.currentThread().getContextClassLoader().getResource(location);
                 if (null == wsdlURL) {
-                    LoaderException loaderException = new LoaderException("WSDL location error");
-                    loaderException.setResourceURI(location);
+                    ContributionResolveException loaderException = new ContributionResolveException(
+                                                                                                    "WSDL location error");
                     throw loaderException;
                 }
                 InputStream xsdInputStream = wsdlURL.openStream();
                 try {
-                    XSDHelper xsdHelper = helperContext.getXSDHelper();
+                    XSDHelper xsdHelper = importSDO.getHelperContext().getXSDHelper();
                     xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
                 } finally {
                     xsdInputStream.close();
@@ -142,23 +156,35 @@ public class ImportSDOLoader implements StAXArtifactProcessor<ImportSDO> {
                 xsdInputStream = wsdlURL.openStream();
                 try {
                     XSDHelper xsdHelper = defaultContext.getXSDHelper();
-                    ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
-                    try {
-                        // set TCCL as SDO needs it
-                        ClassLoader cl = deploymentContext.getClassLoader();
-                        Thread.currentThread().setContextClassLoader(cl);
-                        xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
-                    } finally {
-                        Thread.currentThread().setContextClassLoader(oldCL);
-                    }
+                    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                    xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
                 } finally {
                     xsdInputStream.close();
                 }
             } catch (IOException e) {
-                LoaderException sfe = new LoaderException(e.getMessage());
-                sfe.setResourceURI(location);
-                throw sfe;
+                throw new ContributionResolveException(e);
             }
         }
+    }
+
+    public QName getArtifactType() {
+        return ImportSDO.IMPORT_SDO;
+    }
+
+    public void write(ImportSDO model, XMLStreamWriter outputSource) throws ContributionWriteException {
+        // TODO Auto-generated method stub
+
+    }
+
+    public Class<ImportSDO> getModelType() {
+        return ImportSDO.class;
+    }
+
+    public void resolve(ImportSDO importSDO, ArtifactResolver resolver) throws ContributionResolveException {
+        importFactory(importSDO);
+        importWSDL(importSDO);
+    }
+
+    public void wire(ImportSDO model) throws ContributionWireException {
     }
 }

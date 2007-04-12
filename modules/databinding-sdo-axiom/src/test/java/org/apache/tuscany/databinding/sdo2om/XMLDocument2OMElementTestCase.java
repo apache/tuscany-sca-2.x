@@ -7,9 +7,9 @@ import javax.xml.stream.XMLStreamException;
 import junit.framework.Assert;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.idl.DataType;
-import org.apache.tuscany.idl.impl.DataTypeImpl;
-import org.apache.tuscany.idl.util.XMLType;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.interfacedef.util.XMLType;
 
 import commonj.sdo.helper.XMLDocument;
 

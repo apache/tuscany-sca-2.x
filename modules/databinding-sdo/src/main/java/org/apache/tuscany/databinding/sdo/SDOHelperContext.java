@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.databinding.sdo;
 
-import java.awt.Component;
-
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
-
-import sun.reflect.generics.scope.Scope;
+import org.apache.tuscany.spi.component.Component;
 
 import commonj.sdo.helper.HelperContext;
 

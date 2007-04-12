@@ -31,7 +31,7 @@ public class DuplicateHelperContextException extends RuntimeException {
      * @param message exception message
      * @param identifier the id of the HelperContext that is already present
      */
-    public DuplicateHelperContextException(String message, String identifier) {
-        super(message, identifier);
+    public DuplicateHelperContextException(String message) {
+        super(message);
     }
 }
