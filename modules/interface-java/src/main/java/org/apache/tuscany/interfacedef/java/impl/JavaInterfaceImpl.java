@@ -76,11 +76,16 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        else if (obj instanceof JavaInterface && getName().equals(((JavaInterface)obj).getName()))
-             return true;
-        else
+        } else if (obj instanceof JavaInterface) {
+            if (getName() != null) {
+                return getName().equals(((JavaInterface)obj).getName());
+            } else {
+                return ((JavaInterface)obj).getName() == null;
+            }
+        } else {
             return false;
+        }
     }
 }

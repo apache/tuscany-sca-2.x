@@ -68,11 +68,16 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        else if (obj instanceof WSDLInterface && getName().equals(((WSDLInterface)obj).getName()))
-             return true;
-        else
+        } else if (obj instanceof WSDLInterface) {
+            if (getName() != null) {
+                return getName().equals(((WSDLInterface)obj).getName());
+            } else {
+                return ((WSDLInterface)obj).getName() == null;
+            }
+        } else {
             return false;
+        }
     }
 }

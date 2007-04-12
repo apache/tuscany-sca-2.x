@@ -81,11 +81,16 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        else if (obj instanceof WSDLDefinition && getNamespace().equals(((WSDLDefinition)obj).getNamespace()))
-             return true;
-        else
+        } else if (obj instanceof WSDLDefinition) {
+            if (getNamespace() != null) {
+                return getNamespace().equals(((WSDLDefinition)obj).getNamespace());
+            } else {
+                return ((WSDLDefinition)obj).getNamespace() == null;
+            }
+        } else {
             return false;
+        }
     }
 }

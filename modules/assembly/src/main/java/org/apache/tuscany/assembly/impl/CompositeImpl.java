@@ -25,9 +25,11 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
@@ -138,11 +140,16 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        else if (obj instanceof Composite && getName().equals(((Composite)obj).getName()))
-             return true;
-        else
+        } else if (obj instanceof Composite) {
+            if (getName() != null) {
+                return getName().equals(((Composite)obj).getName());
+            } else {
+                return ((Composite)obj).getName() == null;
+            }
+        } else {
             return false;
+        }
     }
 }

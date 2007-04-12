@@ -66,6 +66,8 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.osoa.sca.CompositeContext;
+import org.osoa.sca.CurrentCompositeContext;
 
 /**
  * @version $Rev$ $Date$
@@ -167,6 +169,12 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
         PojoWorkContextTunnel.setThreadWorkContext(workContext);
         tuscanySystem = getComponentManager().getComponent(URI.create("/" + composite.getName().getLocalPart()));
+        
+        // Temporary here to help the bring up of samples and integration tests that still
+        // use the 0.95 API
+        CompositeContext context = new SimpleCompositeContextImpl(this, composite);
+        CurrentCompositeContext.setContext(context);
+        
         return tuscanySystem;
     }
 
