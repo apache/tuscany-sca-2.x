@@ -43,9 +43,7 @@
                 <module>../buildtools</module>
                 <module>modules</module>
                 <module>samples</module>
-                <!--
                 <module>itest</module>
-                -->
             </modules>
         </profile>
     </profiles>
