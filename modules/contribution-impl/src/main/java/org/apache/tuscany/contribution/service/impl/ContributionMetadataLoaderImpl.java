@@ -29,8 +29,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionImport;
-import org.apache.tuscany.contribution.service.loader.ContributionMetadataLoader;
-import org.apache.tuscany.contribution.service.loader.ContributionMetadataLoaderException;
+import org.apache.tuscany.contribution.service.ContributionMetadataLoader;
+import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
 
 /**
  * Loader that handles contribution metadata files
