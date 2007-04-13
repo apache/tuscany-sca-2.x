@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.component;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +30,7 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.RegistrationException;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
@@ -40,6 +42,10 @@ import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 public class ComponentManagerImpl implements ComponentManager {
     private TuscanyManagementService managementService;
     private Map<URI, Component> components;
+    
+    private List<SCAObject> scaObjects = new ArrayList<SCAObject>();
+    private List<Object> modelObjects = new ArrayList<Object>();
+    
 
     public ComponentManagerImpl() {
         components = new ConcurrentHashMap<URI, Component>();
@@ -87,5 +93,36 @@ public class ComponentManagerImpl implements ComponentManager {
 
     public void onEvent(Event event) {
         throw new UnsupportedOperationException();
+    }
+
+    public void add(SCAObject object, Object model) {
+        scaObjects.add(object);
+        modelObjects.add(model);
+    }
+
+    public <T> T getModelObject(Class<T> modelType, SCAObject object) {
+        for(int i=0; i<scaObjects.size(); i++) {
+            if(scaObjects.get(i) == object) {
+                return modelType.cast(modelObjects.get(i));
+            }
+        }
+        return null;
+    }
+
+    public List<Object> getModelObjects() {
+        return modelObjects;
+    }
+
+    public <T extends SCAObject> T getSCAObject(Class<T> objectType, Object model) {
+        for(int i=0; i<modelObjects.size(); i++) {
+            if(modelObjects.get(i) == model) {
+                return objectType.cast(scaObjects.get(i));
+            }
+        }
+        return null;
+    }
+
+    public List<SCAObject> getSCAObjects() {
+        return scaObjects;
     }
 }

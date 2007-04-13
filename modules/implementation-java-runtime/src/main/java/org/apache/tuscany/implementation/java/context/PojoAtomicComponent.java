@@ -219,8 +219,13 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
                     }
                     configuration.setObjectFactories(element, factories);
                 } else {
-                    ObjectFactory<?> factory = createWireFactory(element.getType(), wireList.get(0));
-                    configuration.setObjectFactory(element, factory);
+                    if (wireList == null && ref.getMultiplicity() == Multiplicity.ONE_ONE) {
+                        throw new IllegalStateException("Required reference is missing: " + ref.getName());
+                    }
+                    if (wireList != null && !wireList.isEmpty()) {
+                        ObjectFactory<?> factory = createWireFactory(element.getType(), wireList.get(0));
+                        configuration.setObjectFactory(element, factory);
+                    }
                 }
             }
         }

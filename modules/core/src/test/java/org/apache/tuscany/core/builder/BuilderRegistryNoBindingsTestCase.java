@@ -18,19 +18,27 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.SCABinding;
+import org.apache.tuscany.assembly.impl.ComponentImpl;
+import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.assembly.impl.CompositeReferenceImpl;
 import org.apache.tuscany.assembly.impl.CompositeServiceImpl;
+import org.apache.tuscany.assembly.impl.SCABindingImpl;
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
 import org.apache.tuscany.core.binding.local.LocalServiceBinding;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
@@ -56,6 +64,9 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
         ComponentService componentService = new ComponentServiceImpl();
         componentService.setName("foo");
         definition.setPromotedService(componentService);
+        SCABinding binding2 = new SCABindingImpl();
+        binding2.setComponent(new ComponentImpl());
+        componentService.getBindings().add(binding2);
         EasyMock.replay(deploymentContext);
         EasyMock.replay(parent);
 
@@ -71,6 +82,12 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
         CompositeReference definition = new CompositeReferenceImpl();
+        ComponentReference componentReference = new ComponentReferenceImpl();
+        componentReference.setName("foo");
+        definition.getPromotedReferences().add(componentReference);
+        SCABinding binding2 = new SCABindingImpl();
+        binding2.setComponent(new ComponentImpl());
+        componentReference.getBindings().add(binding2);
         definition.setName("foo");
         definition.setMultiplicity(Multiplicity.ONE_ONE);
         EasyMock.replay(deploymentContext);
@@ -87,8 +104,9 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(deploymentContext.getComponentId()).andReturn(URI.create("/default/")).anyTimes();
         parent = EasyMock.createNiceMock(Component.class);
-        registry = new BuilderRegistryImpl(null);
+        registry = new BuilderRegistryImpl(new ComponentManagerImpl(), null);
         registry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
     }
 

@@ -23,11 +23,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
@@ -59,14 +61,13 @@ import org.osoa.sca.annotations.EagerInit;
 public class BuilderRegistryImpl implements BuilderRegistry {
     private ScopeRegistry scopeRegistry;
     private ComponentManager componentManager;
-    private Map<SCAObject, Object> models = new HashMap<SCAObject, Object>();
 
     private final Map<Class<? extends Implementation>, ComponentBuilder> componentBuilders = new HashMap<Class<? extends Implementation>, ComponentBuilder>();
     private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
 
-    public BuilderRegistryImpl(@org.osoa.sca.annotations.Reference
-    ScopeRegistry scopeRegistry) {
+    public BuilderRegistryImpl(ComponentManager componentManager, ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
+        this.componentManager = componentManager;
     }
 
     public <I extends Implementation> void register(Class<I> implClass, ComponentBuilder builder) {
@@ -111,7 +112,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             throw new NoRegisteredBuilderException("No builder registered for implementation", name);
         }
         Component component = componentBuilder.build(componentDef, context);
-        models.put(component, componentDef);
+        componentManager.add(component, componentDef);
         assert component != null;
         Map<String, Property> properties = new HashMap<String, Property>();
         for (Property p : componentDef.getProperties()) {
@@ -159,14 +160,20 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     @SuppressWarnings( {"unchecked"})
     public org.apache.tuscany.spi.component.Service build(CompositeService serviceDefinition, DeploymentContext context)
         throws BuilderException {
-        URI uri = URI.create("#" + serviceDefinition.getName());
+        if (serviceDefinition.getPromotedService() == null) {
+            return null;
+        }
+        URI uri = URI.create(context.getComponentId() + "#" + serviceDefinition.getName());
         if (serviceDefinition.getBindings().isEmpty()) {
             // if no bindings are configured, default to the local binding.
             // this should be changed to allow runtime selection
             if (serviceDefinition.getBindings().isEmpty()) {
                 // TODO JFM implement capability for the runtime to choose a
                 // binding
-                serviceDefinition.getBindings().add(new LocalBindingDefinition());
+                org.apache.tuscany.assembly.Component component = serviceDefinition.getPromotedService()
+                    .getBinding(SCABinding.class).getComponent();
+                URI targetURI = URI.create(context.getComponentId() + component.getName());
+                serviceDefinition.getBindings().add(new LocalBindingDefinition(targetURI));
             }
         }
         // FIXME:
@@ -182,20 +189,27 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             ServiceBinding binding = bindingBuilder.build(serviceDefinition, definition, context);
             service.addServiceBinding(binding);
         }
-        models.put(service, serviceDefinition);
+        componentManager.add(service, serviceDefinition);
         return service;
     }
 
     @SuppressWarnings("unchecked")
     public Reference build(CompositeReference referenceDefinition, DeploymentContext context) throws BuilderException {
-        URI uri = URI.create("#" + referenceDefinition.getName());
+        if (referenceDefinition.getPromotedReferences().isEmpty()) {
+            return null;
+        }
+        URI uri = URI.create(context.getComponentId() + "#" + referenceDefinition.getName());
         if (referenceDefinition.getBindings().isEmpty()) {
             // if no bindings are configured, default to the local binding.
             // this should be changed to allow runtime selection
             if (referenceDefinition.getBindings().isEmpty()) {
                 // TODO JFM implement capability for the runtime to choose a
                 // binding
-                referenceDefinition.getBindings().add(new LocalBindingDefinition());
+                ComponentReference componentReference = referenceDefinition.getPromotedReferences().get(0);
+                org.apache.tuscany.assembly.Component component = componentReference.getBinding(SCABinding.class)
+                    .getComponent();
+                URI targetURI = URI.create(context.getComponentId() + component.getName());
+                referenceDefinition.getBindings().add(new LocalBindingDefinition(targetURI));
             }
         }
 
@@ -208,15 +222,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             reference.addReferenceBinding(binding);
 
         }
-        models.put(reference, referenceDefinition);
+        componentManager.add(reference, referenceDefinition);
         return reference;
-    }
-
-    /**
-     * @return the models
-     */
-    public Map<SCAObject, Object> getModels() {
-        return models;
     }
 
 }

@@ -144,7 +144,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @return a new Builder
      */
     private BuilderRegistry createBuilder(ScopeRegistry scopeRegistry) {
-        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(scopeRegistry);
+        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(componentManager, scopeRegistry);
         CompositeBuilder compositeBuilder = new CompositeBuilder();
         compositeBuilder.setBuilderRegistry(builderRegistry);
         compositeBuilder.setScopeRegistry(scopeRegistry);
