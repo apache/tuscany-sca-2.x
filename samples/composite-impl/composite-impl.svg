@@ -86,7 +86,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
      inkscape:cx="422.9821"
-     inkscape:cy="391.26876"
+     inkscape:cy="472.08096"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:window-width="1163"
@@ -264,7 +264,7 @@
          id="flowPara3116">Target</flowPara><flowPara
          id="flowPara3118">Component</flowPara><flowPara
          id="flowPara3120">Ref2</flowPara></flowRoot>    <path
-       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:6,1;stroke-dashoffset:0"
        d="M 386.42857,191.23734 L 272.85714,354.80877"
        id="path3304" />
     <rect
@@ -310,7 +310,7 @@
            x="281.42856"
            y="212.66591" /></flowRegion><flowPara
          id="flowPara3330">TargetComponent2</flowPara></flowRoot>    <path
-       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:6,1;stroke-dashoffset:0"
        d="M 675.79205,235.98775 L 764.68548,355.18575"
        id="path3336" />
     <path
@@ -616,5 +616,25 @@
            height="61.42857"
            x="281.42856"
            y="212.66591" /></flowRegion><flowPara
-         id="flowPara3678">InnerComposite2</flowPara></flowRoot>  </g>
+         id="flowPara3678">InnerComposite2</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2048"
+       transform="matrix(0.768159,0,0,0.869201,-73.32453,313.1674)"><flowRegion
+         id="flowRegion2050"><rect
+           id="rect2052"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2054">promote</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2056"
+       transform="matrix(0.768159,0,0,0.869201,397.4066,306.0963)"><flowRegion
+         id="flowRegion2058"><rect
+           id="rect2060"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2062">promote</flowPara></flowRoot>  </g>
 </svg>
