@@ -19,17 +19,10 @@
 
 package org.apache.tuscany.core.databinding.processor;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.DataType;
+import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
@@ -77,12 +70,12 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
         // contract.getOperations().get("call1").getDataBinding());
     }
 
-    @DataType(name = "org.w3c.dom.Node")
+    @DataBinding("org.w3c.dom.Node")
     @Remotable
     public static interface MockInterface {
         Node call(Node msg);
 
-        @DataType(name = "xml:string")
+        @DataBinding("xml:string")
         String call1(String msg);
     }
 

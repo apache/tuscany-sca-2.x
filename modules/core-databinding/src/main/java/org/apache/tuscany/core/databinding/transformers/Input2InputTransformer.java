@@ -197,17 +197,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     }
 
     private String getDataBinding(Operation operation) {
-        String dataBindingId = null;
-        if (operation.getOutputType() != null) {
-            // For wrapper style, the output type is not null
-            dataBindingId = operation.getOutputType().getDataBinding();
-        } else {
-            List<DataType> argTypes = operation.getInputType().getLogical();
-            if (!argTypes.isEmpty()) {
-                dataBindingId = argTypes.get(0).getDataBinding();
-            }
-        }
-        return dataBindingId;
+        return operation.getDataBinding();
     }
 
 }

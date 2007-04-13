@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
@@ -69,17 +70,39 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospec
         DataType wrapperType = inputType.getLogical().get(0);
         if (outputType.getDataBinding().equals(wrapperType.getDataBinding())) {
             operation.setWrapperStyle(true);
+            operation.setDataBinding(outputType.getDataBinding());
         }
     }
 
     private void processInterface(JavaInterface javaInterface, List<Operation> operations) {
         Class<?> clazz = javaInterface.getJavaClass();
+        DataBinding dataBinding = clazz.getAnnotation(DataBinding.class);
+        String dataBindingId = null;
+        boolean wrapperStyle = false;
+        if (dataBinding != null) {
+            dataBindingId = dataBinding.value();
+            wrapperStyle = dataBinding.wrapperStyle();
+        }
+
         Map<String, Operation> opMap = new HashMap<String, Operation>();
         for (Operation op : javaInterface.getOperations()) {
             opMap.put(op.getName(), op);
+            if (dataBindingId != null) {
+                op.setDataBinding(dataBindingId);
+                op.setWrapperStyle(wrapperStyle);
+            }
         }
         for (Method method : clazz.getMethods()) {
             Operation operation = opMap.get(method.getName());
+            dataBinding = clazz.getAnnotation(DataBinding.class);
+            dataBindingId = null;
+            wrapperStyle = false;
+            if (dataBinding != null) {
+                dataBindingId = dataBinding.value();
+                wrapperStyle = dataBinding.wrapperStyle();
+                operation.setDataBinding(dataBindingId);
+                operation.setWrapperStyle(wrapperStyle);
+            }            
 
             // FIXME: We need a better way to identify simple java types
             for (org.apache.tuscany.interfacedef.DataType<?> d : operation.getInputType().getLogical()) {
@@ -91,7 +114,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospec
             for (org.apache.tuscany.interfacedef.DataType<?> d : operation.getFaultTypes()) {
                 dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
-            
+
             introspectWrapperStyle(operation);
         }
     }

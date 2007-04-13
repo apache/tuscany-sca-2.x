@@ -92,13 +92,22 @@ public class IDLTransformerTestCase extends TestCase {
     }
 
     public void testTransform() throws Exception {
-        List<DataType> types0 = new ArrayList<DataType>();
+        List<DataType> sourceParamTypes = new ArrayList<DataType>();
         DataType<XMLType> wrapperType = new DataTypeImpl<XMLType>(null, Object.class,
                                                                   new XMLType(new QName(URI_ORDER_XSD,
                                                                                         "checkOrderStatus"), null));
-        types0.add(wrapperType);
-        DataType<List<DataType>> inputType0 = new DataTypeImpl<List<DataType>>(IDL_INPUT,
-                                                                                                 Object[].class, types0);
+        sourceParamTypes.add(wrapperType);
+        DataType<List<DataType>> inputType0 = new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class, sourceParamTypes);
+
+        DataType<XMLType> responseType = new DataTypeImpl<XMLType>(null, Object.class,
+                                                                   new XMLType(new QName(URI_ORDER_XSD,
+                                                                                         "checkOrderStatusResponse"),
+                                                                               null));
+
+        Operation op1 = new OperationImpl("checkOrderStatus");
+        op1.setInputType(inputType0);
+        op1.setOutputType(responseType);
+        op1.setDataBinding(DOMDataBinding.NAME);
 
         List<DataType> types1 = new ArrayList<DataType>();
         DataType<XMLType> customerIdType = new DataTypeImpl<XMLType>(
@@ -117,35 +126,23 @@ public class IDLTransformerTestCase extends TestCase {
 
         DataType<XMLType> statusType = new DataTypeImpl<XMLType>(null, Object.class,
                                                                  new XMLType(new QName(URI_ORDER_XSD, "status"), null));
-        DataType<XMLType> responseType = new DataTypeImpl<XMLType>(null, Object.class,
-                                                                   new XMLType(new QName(URI_ORDER_XSD,
-                                                                                         "checkOrderStatusResponse"),
-                                                                               null));
 
-        Operation op = new OperationImpl("checkOrderStatus");
-        op.setInputType(inputType0);
-        op.setOutputType(responseType);
-//        op.setDataBinding(DOMDataBinding.NAME);
-//
-//        inputType0.setOperation(op);
-        op.setWrapperStyle(true);
+        Operation op2 = new OperationImpl("checkOrderStatus");
+        op2.setInputType(inputType0);
+        op2.setOutputType(responseType);
+        op2.setDataBinding(DOMDataBinding.NAME);
+        //
+        // inputType0.setOperation(op);
+        op2.setWrapperStyle(true);
         ElementInfo inputElement = new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatus"), new TypeInfo(null,
                                                                                                               false,
                                                                                                               null));
-//        wrapperType.setMetadata(ElementInfo.class.getName(), inputElement);
+        // wrapperType.setMetadata(ElementInfo.class.getName(), inputElement);
 
         ElementInfo customerId = new ElementInfo(new QName("", "customerId"),
                                                  SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("string"));
         ElementInfo order = new ElementInfo(new QName("", "order"), new TypeInfo(new QName(URI_ORDER_XSD), false, null));
         ElementInfo flag = new ElementInfo(new QName("", "flag"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("int"));
-
-//        customerIdType.setMetadata(ElementInfo.class.getName(), customerId);
-//        orderType.setMetadata(ElementInfo.class.getName(), order);
-//        flagType.setMetadata(ElementInfo.class.getName(), flag);
-//
-//        customerIdType.setOperation(op);
-//        orderType.setOperation(op);
-//        flagType.setOperation(op);
 
         List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
         inputElements.add(customerId);
@@ -155,22 +152,16 @@ public class IDLTransformerTestCase extends TestCase {
         ElementInfo statusElement = new ElementInfo(new QName("", "status"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES
             .get("string"));
 
-//        statusType.setMetadata(ElementInfo.class.getName(), statusElement);
-//        statusType.setOperation(op);
-
         List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
         outputElements.add(statusElement);
 
         ElementInfo outputElement = new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatusResponse"),
                                                     new TypeInfo(null, false, null));
 
-//        responseType.setMetadata(ElementInfo.class.getName(), inputElement);
-//        responseType.setOperation(op);
-
         WrapperInfo wrapperInfo = new WrapperInfo(DOMDataBinding.NAME, inputElement, outputElement, inputElements,
                                                   outputElements);
-        op.setWrapper(wrapperInfo);
-//        op.setDataBinding(DOMDataBinding.NAME);
+        op2.setWrapper(wrapperInfo);
+        op2.setDataBinding(DOMDataBinding.NAME);
 
         MediatorImpl m = new MediatorImpl();
         TransformerRegistryImpl tr = new TransformerRegistryImpl();
@@ -188,15 +179,14 @@ public class IDLTransformerTestCase extends TestCase {
         t.setMediator(m);
 
         TransformationContext context = new TransformationContextImpl();
-        context.setSourceOperation(op);
-        List<DataType<Class>> types = new ArrayList<DataType<Class>>();
+        context.setTargetOperation(op2);
+        List<DataType> types = new ArrayList<DataType>();
         types.add(new DataTypeImpl<Class>(Object.class.getName(), String.class, String.class));
         types.add(new DataTypeImpl<Class>("java.lang.String", String.class, String.class));
         types.add(new DataTypeImpl<Class>(Object.class.getName(), int.class, int.class));
-        DataType<List<DataType<Class>>> inputType1 = new DataTypeImpl<List<DataType<Class>>>(IDL_INPUT, Object[].class,
-                                                                                             types);
+        DataType<List<DataType>> inputType1 = new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class, types);
         context.setSourceDataType(inputType1);
-        context.setTargetDataType(op.getInputType());
+        context.setTargetDataType(op2.getInputType());
         Object[] results = t.transform(source, context);
         assertEquals(1, results.length);
         assertTrue(results[0] instanceof Element);
@@ -205,7 +195,7 @@ public class IDLTransformerTestCase extends TestCase {
         assertEquals("checkOrderStatus", element.getLocalName());
 
         TransformationContext context1 = new TransformationContextImpl();
-        DataType<DataType> sourceType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, op.getOutputType());
+        DataType<DataType> sourceType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class, op2.getOutputType());
 
         context1.setSourceDataType(sourceType);
         DataType<DataType> targetType = new DataTypeImpl<DataType>(IDL_OUTPUT, Object.class,

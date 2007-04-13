@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.databinding;
+package org.apache.tuscany.databinding.annotation;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -32,12 +32,13 @@ import java.lang.annotation.Target;
  */
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)
-public @interface DataType {
+public @interface DataBinding {
 
     /**
      * Returns the unique name of the data binding
      * @return the unique name of the data binding
      */
-    String name();
+    String value();
+    boolean wrapperStyle() default false;
 
 }

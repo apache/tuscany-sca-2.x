@@ -106,15 +106,6 @@ public abstract class DataBindingExtension implements DataBinding {
         return false;
     }
     
-    protected static org.apache.tuscany.databinding.DataType getDataTypeAnnotation(Annotation[] annotations) {
-        for (Annotation a : annotations) {
-            if (a.annotationType() == org.apache.tuscany.databinding.DataType.class) {
-                return (org.apache.tuscany.databinding.DataType) a;
-            }
-        }
-        return null;
-    }
-
     public DataType introspect(Object value) {
         if (value == null) {
             return null;
