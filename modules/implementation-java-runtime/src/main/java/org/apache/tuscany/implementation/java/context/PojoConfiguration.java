@@ -21,6 +21,7 @@ package org.apache.tuscany.implementation.java.context;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
@@ -161,10 +162,13 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
             Object obj = factories.get(element);
             if (obj instanceof ObjectFactory) {
                 ObjectFactory<?> factory = (ObjectFactory<?>)obj;
+                Member member = (Member)element.getAnchor();
                 if (element.getElementType() == ElementType.FIELD) {
-                    injectors[i++] = new FieldInjector<T>((Field)element.getAnchor(), factory);
-                } else if (element.getElementType() == ElementType.PARAMETER && element.getAnchor() instanceof Method) {
-                    injectors[i++] = new MethodInjector<T>((Method)element.getAnchor(), factory);
+                    injectors[i++] = new FieldInjector<T>((Field)member, factory);
+                } else if (element.getElementType() == ElementType.PARAMETER && member instanceof Method) {
+                    injectors[i++] = new MethodInjector<T>((Method)member, factory);
+                } else if (member instanceof Constructor) {
+                    // Ignore
                 } else {
                     throw new AssertionError(String.valueOf(element));
                 }

@@ -149,4 +149,16 @@ public interface Operation {
      * @param wrapperStyle the wrapperStyle to set
      */
     void setWrapperStyle(boolean wrapperStyle);
+    
+    /**
+     * Get the databinding for the operation
+     * @return
+     */
+    String getDataBinding();
+    
+    /**
+     * Set the databinding for the operation
+     * @param dataBinding
+     */
+    void setDataBinding(String dataBinding);
 }

@@ -33,7 +33,7 @@ public class EchoBindingTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         SCARuntime.start("EchoBinding.composite");
-        ComponentContext context = SCARuntime.getComponentContext("ClientComponent");
+        ComponentContext context = SCARuntime.getComponentContext("Client");
         ServiceReference<Client> service = context.createSelfReference(Client.class);
         client = service.getService();
     }

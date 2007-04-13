@@ -24,7 +24,7 @@
 
     <service name="ClientService" promote="Client">
         <interface.java interface="org.apache.tuscany.binding.echo.Client"/>
-        <binding.echo/>
+        <binding.echo uri="echo://tmp" />
     </service>
 
     <component name="Client">
@@ -33,7 +33,7 @@
     
     <reference name="EchoReference" promote="Client/echoReference">
         <interface.java interface="org.apache.tuscany.binding.echo.Echo"/>
-        <binding.echo/>
+        <binding.echo uri="echo://tmp" />
     </reference>
     
 </composite>

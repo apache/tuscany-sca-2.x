@@ -191,44 +191,74 @@ public class DeployerImpl implements Deployer {
         for (ComponentReference ref : definition.getReferences()) {
             List<Wire> wires = new ArrayList<Wire>();
             String refName = ref.getName();
-            org.apache.tuscany.assembly.Reference refDefinition = getReference(definition.getImplementation(), refName);
+            org.apache.tuscany.assembly.Reference refDefinition = ref.getReference();
             assert refDefinition != null;
-            List<ComponentService> services = ref.getTargets();
-            for (ComponentService service : services) {
-                org.apache.tuscany.assembly.Component targetCompoent = service.getBinding(SCABinding.class)
-                    .getComponent();
-                Component target = (Component)getSCAObject(models, targetCompoent);
-                URI targetUri = URI.create(target.getUri() + "#" + service.getName());
-                if (target == null && (refDefinition.getMultiplicity() == Multiplicity.ZERO_ONE || refDefinition
-                        .getMultiplicity() == Multiplicity.ZERO_N)) {
-                    // a non-required reference, just skip
-                    continue;
+            List<CompositeReference> promoted = ref.promotedAs();
+            if (!promoted.isEmpty()) {
+                // TODO: Assume a component reference can only be promoted by at
+                // most one composite reference
+                CompositeReference compositeReference = promoted.get(0);
+                Reference target = (Reference)getSCAObject(models, compositeReference);
+                // FIXME: Assume we only have one binding
+                ReferenceBinding binding = target.getReferenceBindings().get(0);
+                URI targetUri = binding.getTargetUri();
+                InterfaceContract contract = binding.getBindingInterfaceContract();
+                if (contract == null) {
+                    contract = refDefinition.getInterfaceContract();
                 }
-                if (target == null) {
-                    throw new ComponentNotFoundException("Target not found", targetUri);
-                }
-                URI sourceURI = URI.create(source.getUri() + "#" + refName);
+                QName type = binding.getBindingType();
+                URI sourceUri = URI.create(source.getUri() + "#" + refName);
                 Wire wire;
                 try {
-                    wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), service.getService()
-                        .getInterfaceContract(), Wire.LOCAL_BINDING);
+                    wire = createWire(sourceUri, targetUri, refDefinition.getInterfaceContract(), contract, type);
                 } catch (IncompatibleInterfaceContractException e1) {
-                    throw new IncompatibleInterfacesException(sourceURI, targetUri, e1);
+                    throw new IllegalStateException(e1);
                 }
+                binding.setWire(wire);
                 try {
-                    attachInvokers(refName, wire, source, target);
+                    attachInvokers(targetUri.getFragment(), wire, binding, binding);
                 } catch (TargetInvokerCreationException e) {
-                    throw new WireCreationException("Error creating invoker", sourceURI, targetUri, e);
+                    throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
                 }
-
-                if (postProcessorRegistry != null) {
-                    postProcessorRegistry.process(wire);
-                }
-
-                optimize(source, target, wire);
                 wires.add(wire);
-                if (!wire.getCallbackInvocationChains().isEmpty()) {
-                    target.attachCallbackWire(wire);
+            } else {
+                List<ComponentService> services = ref.getTargets();
+                for (ComponentService service : services) {
+                    org.apache.tuscany.assembly.Component targetCompoent = service.getBinding(SCABinding.class)
+                        .getComponent();
+                    Component target = (Component)getSCAObject(models, targetCompoent);
+                    URI targetUri = URI.create(target.getUri() + "#" + service.getName());
+                    if (target == null && (refDefinition.getMultiplicity() == Multiplicity.ZERO_ONE || refDefinition
+                            .getMultiplicity() == Multiplicity.ZERO_N)) {
+                        // a non-required reference, just skip
+                        continue;
+                    }
+                    if (target == null) {
+                        throw new ComponentNotFoundException("Target not found", targetUri);
+                    }
+                    URI sourceURI = URI.create(source.getUri() + "#" + refName);
+                    Wire wire;
+                    try {
+                        wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), service
+                            .getService().getInterfaceContract(), Wire.LOCAL_BINDING);
+                    } catch (IncompatibleInterfaceContractException e1) {
+                        throw new IncompatibleInterfacesException(sourceURI, targetUri, e1);
+                    }
+                    try {
+                        attachInvokers(refName, wire, source, target);
+                    } catch (TargetInvokerCreationException e) {
+                        throw new WireCreationException("Error creating invoker", sourceURI, targetUri, e);
+                    }
+
+                    if (postProcessorRegistry != null) {
+                        postProcessorRegistry.process(wire);
+                    }
+
+                    optimize(source, target, wire);
+                    wires.add(wire);
+                    if (!wire.getCallbackInvocationChains().isEmpty()) {
+                        target.attachCallbackWire(wire);
+                    }
                 }
             }
             if (wires.size() > 1) {

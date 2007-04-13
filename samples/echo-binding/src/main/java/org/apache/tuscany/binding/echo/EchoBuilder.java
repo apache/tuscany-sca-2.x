@@ -36,15 +36,15 @@ public class EchoBuilder extends BindingBuilderExtension<EchoBinding> {
     public ServiceBinding build(CompositeService serviceDefinition,
                                 EchoBinding bindingDefinition,
                                 DeploymentContext context) throws BuilderException {
-        return new EchoService(URI.create("#" + serviceDefinition.getName()));
+        return new EchoService(URI.create(context.getComponentId() + "#" + serviceDefinition.getName()));
     }
 
     @Override
     public ReferenceBinding build(CompositeReference referenceDefinition,
                                   EchoBinding bindingDefinition,
                                   DeploymentContext context) throws BuilderException {
-        URI targetURI = bindingDefinition.getURI() != null? URI.create(bindingDefinition.getURI()) : null;
-        return new EchoReference(URI.create("#" + referenceDefinition.getName()), targetURI);
+        URI targetURI = bindingDefinition.getURI() != null ? URI.create(bindingDefinition.getURI()) : null;
+        return new EchoReference(URI.create(context.getComponentId() + "#" + referenceDefinition.getName()), targetURI);
     }
 
     @Override

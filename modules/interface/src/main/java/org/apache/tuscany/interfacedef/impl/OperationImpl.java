@@ -43,6 +43,7 @@ public class OperationImpl implements Operation {
     private boolean nonBlocking;
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
+    private String dataBinding;
 
     /**
      * @param name
@@ -270,6 +271,14 @@ public class OperationImpl implements Operation {
      */
     public void setWrapperStyle(boolean wrapperStyle) {
         this.wrapperStyle = wrapperStyle;
+    }
+
+    public String getDataBinding() {
+        return dataBinding;
+    }
+
+    public void setDataBinding(String dataBinding) {
+        this.dataBinding = dataBinding;
     }
 
 }
