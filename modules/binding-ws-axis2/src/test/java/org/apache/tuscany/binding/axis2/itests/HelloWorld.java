@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.binding.axis2.itests;
 
+import org.osoa.sca.annotations.Remotable;
+
+@Remotable
 public interface HelloWorld {
     
     public String getGreetings(String s);
