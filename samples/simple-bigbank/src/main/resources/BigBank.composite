@@ -20,21 +20,13 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            name="BigBank">
 
-    <service name="AccountService">
+    <service name="AccountService" promote="AccountServiceComponent">
         <interface.java interface="bigbank.account.AccountService"/>
-        <reference>AccountServiceComponent</reference>
     </service>
-
-    <!--
-    <reference name="StockQuoteService">
-        <interface.java interface="bigbank.stock.StockQuoteService"/>
-    </reference>
-    -->
-
 
     <component name="AccountServiceComponent">
         <implementation.java class="bigbank.account.AccountServiceImpl"/>
-        <reference name="accountDataService" target="AccountDataServiceComponent"></reference>
+        <reference name="accountDataService" target="AccountDataServiceComponent"/>
     </component>
 
     <component name="AccountDataServiceComponent">
