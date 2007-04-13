@@ -23,42 +23,49 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.api.SCARuntime;
-import org.apache.tuscany.core.bootstrap.DefaultSCARuntime;
-import org.apache.tuscany.core.util.FileHelper;
-import org.apache.tuscany.host.deployment.ContributionService;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.model.Contribution;
-import org.apache.tuscany.test.SCATestCase;
+import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.host.embedded.DefaultSCARuntime;
+import org.apache.tuscany.services.contribution.util.FileHelper;
+import org.apache.tuscany.services.spi.contribution.ContributionService;
 
 /**
  * This is more intended to be a integration test then a unit test. *
  */
-public class ContributionServiceTestCase extends SCATestCase {
+public class ContributionServiceTestCase extends TestCase {
+    private static final String CONTRIBUTION_001_ID = "contribution001/";
+    private static final String CONTRIBUTION_002_ID = "contribution002/";
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
     private static final String FOLDER_CONTRIBUTION = "/repository/calculator/";
 
     private ContributionService contributionService;
-
+    
     protected void setUp() throws Exception {
         super.setUp();
+        SCARuntime.start("application.composite");
         
-        this.contributionService = (ContributionService) ((DefaultSCARuntime)SCARuntime.getInstance()).getSystemService(ComponentNames.TUSCANY_CONTRIBUTION_SERVICE);
+        this.contributionService = (ContributionService) ((DefaultSCARuntime)SCARuntime.getInstance()).getSystemService("ContributionService");
     }
 
     public void testContributeJAR() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionId = contributionService.contribute(contributionLocation, false);
+        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        contributionService.contribute(contributionId, contributionLocation, false);
         assertNotNull(contributionId);
     }
 
     public void testStoreContributionInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionId = contributionService.contribute(contributionLocation, true);
+        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        contributionService.contribute(contributionId, contributionLocation, true);
+        
+        assertTrue(FileHelper.toFile(contributionService.getContribution(contributionId).getLocation()).exists());
 
         assertNotNull(contributionId);
 
-        Contribution contributionModel = (Contribution) contributionService.getContribution(contributionId);
+        Contribution contributionModel = contributionService.getContribution(contributionId);
         
         File contributionFile = FileHelper.toFile(contributionModel.getLocation());
         assertTrue(contributionFile.exists());
@@ -66,10 +73,12 @@ public class ContributionServiceTestCase extends SCATestCase {
     
     public void testStoreDuplicatedContributionInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionId1 = contributionService.contribute(contributionLocation, true);
-        assertNotNull(contributionId1);
-        URI contributionId2 = contributionService.contribute(contributionLocation, true);
-        assertNotNull(contributionId2);
+        URI contributionId1 = URI.create(CONTRIBUTION_001_ID);
+        contributionService.contribute(contributionId1, contributionLocation, true);
+        assertNotNull(contributionService.getContribution(contributionId1));
+        URI contributionId2 = URI.create(CONTRIBUTION_002_ID);
+        contributionService.contribute(contributionId2, contributionLocation, true);
+        assertNotNull(contributionService.getContribution(contributionId2));
     }
     
     
