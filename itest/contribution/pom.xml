@@ -31,8 +31,15 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-impl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+        
     </dependencies>
 </project>
