@@ -39,12 +39,14 @@
                 <module>assembly</module>
                 <module>assembly-xml</module>
                 <!--
-                <module>binding-axis2</module>
                 <module>binding-jms</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-rmi</module>
                 -->
                 <module>binding-ws</module>
+                <!--
+                <module>binding-ws-axis2</module>
+                -->
                 <module>binding-ws-xml</module>
                 <module>contribution</module>
                 <module>contribution-impl</module>
@@ -54,11 +56,11 @@
                 <module>core-spring</module>
                 <module>databinding</module>
                 <module>databinding-axiom</module>
-                <!--
                 <module>core-databinding</module>
                 <module>databinding-jaxb</module>
                 <module>databinding-sdo</module>
                 <module>databinding-sdo-axiom</module>
+                <!--
                 <module>discovery-jms</module>
                 -->
                 <module>host-embedded</module>
