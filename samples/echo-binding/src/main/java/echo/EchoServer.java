@@ -19,6 +19,7 @@
 
 package echo;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class EchoServer {
      * @param input
      * @return
      */
-    public String sendReceive(String composite, String service, String input) {
+    public String sendReceive(String composite, String service, String input) throws InvocationTargetException {
         URI uri = URI.create("/" + composite + "/#" + service);
         return services.get(uri).sendReceive(input);
     }

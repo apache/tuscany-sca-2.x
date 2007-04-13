@@ -35,7 +35,7 @@ public class EchoServiceTestCase extends TestCase {
     	SCARuntime.stop();
     }
 
-    public void testEchoBinding() {
+    public void testEchoBinding() throws Exception {
         String result = EchoServer.getServer().sendReceive("EchoBinding", "EchoService", "foo");
         assertEquals(result, "foo");
     }
