@@ -97,16 +97,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     }
 
     private String getDataBinding(Operation operation) {
-        String dataBindingId = null;
-        if (operation.getOutputType() != null) {
-            dataBindingId = operation.getOutputType().getDataBinding();
-        } else {
-            List<DataType> argTypes = operation.getInputType().getLogical();
-            if (!argTypes.isEmpty()) {
-                dataBindingId = argTypes.get(0).getDataBinding();
-            }
-        }
-        return dataBindingId;
+        return operation.getDataBinding();
     }
 
     private WrapperHandler getWrapperHandler(String dataBindingId, boolean required) {

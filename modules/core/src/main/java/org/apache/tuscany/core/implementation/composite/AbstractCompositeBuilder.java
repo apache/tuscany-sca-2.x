@@ -46,7 +46,9 @@ public abstract class AbstractCompositeBuilder<T extends Implementation> extends
         for (org.apache.tuscany.assembly.Service definition : componentType.getServices()) {
             try {
                 Service service = builderRegistry.build((CompositeService)definition, deploymentContext);
-                component.register(service);
+                if (service != null) {
+                    component.register(service);
+                }
             } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering service", e);
             }
@@ -54,7 +56,9 @@ public abstract class AbstractCompositeBuilder<T extends Implementation> extends
         for (org.apache.tuscany.assembly.Reference definition : componentType.getReferences()) {
             try {
                 Reference reference = builderRegistry.build((CompositeReference)definition, deploymentContext);
-                component.register(reference);
+                if (reference != null) {
+                    component.register(reference);
+                }
             } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering reference", e);
             }

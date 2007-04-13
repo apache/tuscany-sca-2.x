@@ -20,6 +20,8 @@ package org.apache.tuscany.databinding.impl;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.databinding.annotation.DataBinding;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -27,17 +29,17 @@ public class DataBindingTestCase extends TestCase {
     @SuppressWarnings("unused")
     public void testDataType() throws Exception {
         Class<Test> testClass = Test.class;
-        org.apache.tuscany.databinding.DataType d = testClass.getAnnotation(org.apache.tuscany.databinding.DataType.class);
-        Assert.assertEquals(d.name(), "sdo");
+        DataBinding d = testClass.getAnnotation(DataBinding.class);
+        Assert.assertEquals(d.value(), "sdo");
 
         Method method = testClass.getMethod("test", new Class[] {Object.class});
-        org.apache.tuscany.databinding.DataType d2 = method.getAnnotation(org.apache.tuscany.databinding.DataType.class);
-        Assert.assertEquals(d2.name(), "jaxb");
+        DataBinding d2 = method.getAnnotation(DataBinding.class);
+        Assert.assertEquals(d2.value(), "jaxb");
     }
 
-    @org.apache.tuscany.databinding.DataType(name = "sdo")
+    @DataBinding("sdo")
     private static interface Test {
-        @org.apache.tuscany.databinding.DataType(name = "jaxb")
+        @DataBinding("jaxb")
         Object test(Object object);
     }
 }

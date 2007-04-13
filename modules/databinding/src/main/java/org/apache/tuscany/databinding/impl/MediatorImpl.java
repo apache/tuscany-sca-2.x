@@ -53,11 +53,6 @@ public class MediatorImpl implements Mediator {
         this.dataBindingRegistry = dataBindingRegistry;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.databinding.Mediator#mediate(java.lang.Object,
-     *      org.apache.tuscany.spi.model.DataType,
-     *      org.apache.tuscany.spi.model.DataType, Map)
-     */
     @SuppressWarnings("unchecked")
     public Object mediate(Object source,
                           DataType sourceDataType,

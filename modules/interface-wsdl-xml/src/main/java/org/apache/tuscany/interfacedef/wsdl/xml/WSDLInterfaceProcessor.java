@@ -159,6 +159,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 // If the WSDL interface has never been resolved yet, do it now
                 // First, resolve the WSDL definition for the given namespace
                 WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
+                wsdlDefinition.setUnresolved(true);
                 wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
                 wsdlDefinition = resolver.resolve(WSDLDefinition.class, wsdlDefinition);
                 if (!wsdlDefinition.isUnresolved()) {

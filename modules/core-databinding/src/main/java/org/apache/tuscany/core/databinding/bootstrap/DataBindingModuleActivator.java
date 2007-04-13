@@ -112,10 +112,18 @@ public class DataBindingModuleActivator implements ModuleActivator {
         wirePostProcessorRegistry.register(new DataBindingWirePostProcessor(componentManager, mediator));
         
         DataBindingRegistry dataBindingRegistry = registry.getExtensionPoint(DataBindingRegistry.class);
-        dataBindingRegistry.register(new DOMDataBinding());
-        dataBindingRegistry.register(new XMLStringDataBinding());
-        dataBindingRegistry.register(new XMLGroupDataBinding());
-        dataBindingRegistry.register(new JavaBeansDataBinding());
+        DOMDataBinding domDataBinding = new DOMDataBinding();
+        domDataBinding.setDataBindingRegistry(dataBindingRegistry);
+        dataBindingRegistry.register(domDataBinding);
+        XMLStringDataBinding xmlStringDataBinding = new XMLStringDataBinding();
+        xmlStringDataBinding.setDataBindingRegistry(dataBindingRegistry);
+        dataBindingRegistry.register(xmlStringDataBinding);
+        XMLGroupDataBinding xmlGroupDataBinding = new XMLGroupDataBinding();
+        xmlGroupDataBinding.setDataBindingRegistry(dataBindingRegistry);
+        dataBindingRegistry.register(xmlGroupDataBinding);
+        JavaBeansDataBinding javaBeansDataBinding = new JavaBeansDataBinding();
+        javaBeansDataBinding.setDataBindingRegistry(dataBindingRegistry);
+        dataBindingRegistry.register(javaBeansDataBinding);
 
         Group2GroupTransformer group2GroupTransformer= new Group2GroupTransformer();
         group2GroupTransformer.setMediator(mediator);
