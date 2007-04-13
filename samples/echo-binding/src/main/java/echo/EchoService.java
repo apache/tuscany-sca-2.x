@@ -16,40 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.echo;
+package echo;
 
 import java.net.URI;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $Rev$ $Date$
  */
-public class EchoReference extends ReferenceBindingExtension {
-
-    protected EchoReference(URI name, URI targetUri) {
-        super(name, targetUri);
+public class EchoService extends ServiceBindingExtension {
+    
+    public EchoService(URI name) throws CoreRuntimeException {
+        super(name);
+        
+        // Register with the hosting server
+        EchoServer.getServer().register(this, name);
     }
 
     public QName getBindingType() {
         return EchoConstants.BINDING_ECHO;
     }
 
-    
-    public TargetInvoker createTargetInvoker(String name, Operation operation, boolean isCallback)
-       throws TargetInvokerCreationException {
-    if (isCallback) {
-        throw new UnsupportedOperationException();
-    } else {
-        return new EchoInvoker();
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback) throws TargetInvokerCreationException {
+        // TODO Auto-generated method stub
+        return null;
     }
-}
 
+    String sendReceive(String input) {
+        return input;
+    }
     
-
 }

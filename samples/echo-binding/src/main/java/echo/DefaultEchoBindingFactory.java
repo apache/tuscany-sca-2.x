@@ -16,11 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.echo;
 
-/**
- * @version $Rev$ $Date$
- */
-public interface Echo {
-    String invoke(String msg);
+package echo;
+
+public class DefaultEchoBindingFactory implements EchoBindingFactory {
+
+    public EchoBinding createEchoBinding() {
+        return new EchoBindingImpl();
+    }
+
 }

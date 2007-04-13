@@ -17,10 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.echo;
+package echo;
 
-import org.apache.tuscany.assembly.Binding;
-
-public interface EchoBinding extends Binding {
-
+public interface EchoBindingFactory {
+    /**
+     * Creates a new Echo binding.
+     * 
+     * @return a new Echi binding
+     */
+    EchoBinding createEchoBinding();
 }

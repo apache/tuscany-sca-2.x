@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.echo;
+package echo;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -30,14 +30,14 @@ import org.apache.tuscany.services.spi.contribution.ContributionWireException;
 import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
 import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
-public class EchoBindingLoader implements StAXArtifactProcessor<EchoBinding> {
+public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> {
     private final EchoBindingFactory factory;
 
-    public EchoBindingLoader() {
+    public EchoBindingProcessor() {
         this.factory = new DefaultEchoBindingFactory();
     }
 
-    public EchoBindingLoader(EchoBindingFactory factory) {
+    public EchoBindingProcessor(EchoBindingFactory factory) {
         this.factory = factory;
     }
 

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.echo;
+package echo;
 
 import java.net.URI;
 
@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 /**
  * @version $Rev$ $Date$
  */
-public class EchoBuilder extends BindingBuilderExtension<EchoBinding> {
+public class EchoBindingBuilder extends BindingBuilderExtension<EchoBinding> {
     @Override
     public ServiceBinding build(CompositeService serviceDefinition,
                                 EchoBinding bindingDefinition,

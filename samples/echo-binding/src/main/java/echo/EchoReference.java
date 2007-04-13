@@ -16,35 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.echo;
+package echo;
 
-import junit.framework.TestCase;
+import java.net.URI;
 
-import org.apache.tuscany.api.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $Rev$ $Date$
  */
-public class EchoBindingTestCase extends TestCase {
+public class EchoReference extends ReferenceBindingExtension {
 
-    private Client client;
-
-    protected void setUp() throws Exception {
-        SCARuntime.start("EchoBinding.composite");
-        ComponentContext context = SCARuntime.getComponentContext("Client");
-        ServiceReference<Client> service = context.createSelfReference(Client.class);
-        client = service.getService();
+    protected EchoReference(URI name, URI targetUri) {
+        super(name, targetUri);
     }
+
+    public QName getBindingType() {
+        return EchoConstants.BINDING_ECHO;
+    }
+
     
-    protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    public TargetInvoker createTargetInvoker(String name, Operation operation, boolean isCallback)
+       throws TargetInvokerCreationException {
+    if (isCallback) {
+        throw new UnsupportedOperationException();
+    } else {
+        return new EchoInvoker();
     }
+}
 
-    public void testEchoBinding() {
-        client.call("foo");
-    }
-
+    
 
 }
