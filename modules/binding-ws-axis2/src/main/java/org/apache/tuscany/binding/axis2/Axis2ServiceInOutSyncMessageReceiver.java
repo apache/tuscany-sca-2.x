@@ -26,16 +26,16 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
 
-    protected Operation<?> operation;
+    protected Operation operation;
 
     private Axis2ServiceBinding axis2Service;
 
-    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBinding service, Operation<?> operation) {
+    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBinding service, Operation operation) {
         this.axis2Service = service;
         this.operation = operation;
     }
@@ -52,7 +52,7 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             
             String conversationID = axis2Service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
 
-            OMElement responseOM = (OMElement)axis2Service.invokeTarget(operation, args, null, conversationID);
+            OMElement responseOM = null; //(OMElement)axis2Service.invokeTarget(operation, args, null, conversationID);
 
             
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
@@ -62,13 +62,13 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             outMC.setEnvelope(soapEnvelope);
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            Throwable t = e.getCause();
-            if (t instanceof Exception) {
-                throw AxisFault.makeFault((Exception)t);
-            }
-            throw new InvocationRuntimeException(e);
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//            Throwable t = e.getCause();
+//            if (t instanceof Exception) {
+//                throw AxisFault.makeFault((Exception)t);
+//            }
+//            throw new InvocationRuntimeException(e);
         } catch (Exception e) {
             e.printStackTrace();
             throw AxisFault.makeFault(e);

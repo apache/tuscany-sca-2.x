@@ -26,13 +26,13 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
 import org.apache.tuscany.binding.axis2.Axis2ServiceBinding.InvocationContext;
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.MessageId;
 
 public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiver {
 
-    private Operation<?> operation;
+    private Operation operation;
 
     private Axis2ServiceBinding service;
 
@@ -55,9 +55,9 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
             // Now use message id as index to context to be used by callback
             // target invoker
             CountDownLatch doneSignal = new CountDownLatch(1);
-            InvocationContext invCtx =
-                service.new InvocationContext(messageCtx, operation, getSOAPFactory(messageCtx), doneSignal);
-            service.addMapping(messageId, invCtx);
+//            InvocationContext invCtx =
+//                service.new InvocationContext(messageCtx, operation, getSOAPFactory(messageCtx), doneSignal);
+//            service.addMapping(messageId, invCtx);
 
             invokeBusinessLogic(messageCtx, messageId);
             
@@ -76,13 +76,13 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
             String conversationID = service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
-            service.invokeTarget(operation, args, messageId, conversationID);
-        } catch (InvocationTargetException e) {
-            Throwable t = e.getCause();
-            if (t instanceof Exception) {
-                throw AxisFault.makeFault((Exception)t);
-            }
-            throw new InvocationRuntimeException(e);
+//            service.invokeTarget(operation, args, messageId, conversationID);
+//        } catch (InvocationTargetException e) {
+//            Throwable t = e.getCause();
+//            if (t instanceof Exception) {
+//                throw AxisFault.makeFault((Exception)t);
+//            }
+//            throw new InvocationRuntimeException(e);
         } catch (Exception e) {
             throw AxisFault.makeFault(e);
         }
