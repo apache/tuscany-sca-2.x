@@ -23,6 +23,7 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
+import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.scope.AbstractScopeContainer;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
@@ -39,6 +40,7 @@ import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
 /**
  * A default implementation of a Bootstrapper. Please see the documentation on
@@ -98,6 +100,9 @@ public class DefaultBootstrapper implements Bootstrapper {
         BuilderRegistry builder = createBuilder(scopeRegistry);
         DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager);
         deployer.setScopeRegistry(getScopeRegistry());
+        WirePostProcessorRegistry wirePostProcessorRegistry = new WirePostProcessorRegistryImpl();
+        deployer.setWirePostProcessorRegistry(wirePostProcessorRegistry);
+        extensionRegistry.addExtensionPoint(WirePostProcessorRegistry.class, wirePostProcessorRegistry);
         extensionRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
         extensionRegistry.addExtensionPoint(BuilderRegistry.class, builder);
         // extensionRegistry.addExtension(LoaderRegistry.class, loader);
