@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.extension;
 
 import java.net.URI;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.wire.Wire;
@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.wire.Wire;
  */
 public abstract class ReferenceBindingExtension extends AbstractSCAObject implements ReferenceBinding {
     protected Wire wire;
-    protected Contract bindingServiceContract;
+    protected InterfaceContract bindingServiceContract;
     protected URI targetUri;
 
     public ReferenceBindingExtension(URI name, URI targetUri) {
@@ -41,7 +41,7 @@ public abstract class ReferenceBindingExtension extends AbstractSCAObject implem
         this.targetUri = targetUri;
     }
 
-    public Contract getBindingServiceContract() {
+    public InterfaceContract getBindingInterfaceContract() {
         return bindingServiceContract;
     }
 

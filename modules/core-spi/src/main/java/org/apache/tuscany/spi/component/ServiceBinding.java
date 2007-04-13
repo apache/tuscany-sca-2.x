@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.component;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
@@ -43,7 +43,7 @@ public interface ServiceBinding extends Invocable {
      *
      * @return the ServiceContract for the binding
      */
-    Contract getBindingServiceContract();
+    InterfaceContract getBindingInterfaceContract();
 
     Wire getWire();
 

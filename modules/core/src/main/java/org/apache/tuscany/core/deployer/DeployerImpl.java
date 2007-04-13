@@ -30,6 +30,8 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.SCABinding;
@@ -57,17 +59,22 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.Invocable;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.resolver.ResolutionException;
+import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
-import org.osoa.sca.annotations.Reference;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
 /**
  * Default implementation of Deployer.
@@ -80,6 +87,7 @@ public class DeployerImpl implements Deployer {
     private ComponentManager componentManager;
     private ScopeRegistry scopeRegistry;
     private InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+    private WirePostProcessorRegistry postProcessorRegistry;
 
     public DeployerImpl(XMLInputFactory xmlFactory, Builder builder, ComponentManager componentManager) {
         this.xmlFactory = xmlFactory;
@@ -91,17 +99,14 @@ public class DeployerImpl implements Deployer {
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
     }
 
-    @Reference
     public void setBuilder(BuilderRegistry builder) {
         this.builder = builder;
     }
 
-    @Reference
     public void setComponentManager(ComponentManager componentManager) {
         this.componentManager = componentManager;
     }
 
-    @Reference
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
     }
@@ -121,17 +126,33 @@ public class DeployerImpl implements Deployer {
         // build runtime artifacts
         build(componentDef, deploymentContext);
 
+        Map<SCAObject, Object> models = ((BuilderRegistryImpl)builder).getModels();
+        for (Map.Entry<SCAObject, Object> entry : models.entrySet()) {
+            Object model = entry.getValue();
+            if (model instanceof org.apache.tuscany.assembly.Component) {
+                connect(models, (Component)entry.getKey(), (org.apache.tuscany.assembly.Component)model);
+            } else if (model instanceof CompositeReference) {
+                // FIXME lresende: not sure why there is no
+                // "compositeReferences" here
+                try {
+                    connect(models, (Reference)entry.getKey(), (CompositeReference)model);
+                } catch (IncompatibleInterfaceContractException e) {
+                    throw new IllegalStateException(e);
+                }
+            } else if (model instanceof CompositeService) {
+                // FIXME lresende: not sure why there is no
+                // "compositeReferences" here
+                try {
+                    connect(models, (Service)entry.getKey(), (CompositeService)model);
+                } catch (IncompatibleInterfaceContractException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+
         Collection<Component> components = deploymentContext.getComponents().values();
         for (Component toRegister : components) {
             try {
-                Map<SCAObject, Object> models = ((BuilderRegistryImpl)builder).getModels();
-                Object model = models.get(toRegister);
-                if (model instanceof org.apache.tuscany.assembly.Component) {
-                    connect(models, (org.apache.tuscany.assembly.Component)model);
-                }else if(model instanceof org.apache.tuscany.assembly.CompositeReference){
-                    //FIXME lresende: not sure why there is no "compositeReferences" here
-                    connect(models, (org.apache.tuscany.assembly.CompositeReference)model);
-                }
                 componentManager.register(toRegister);
             } catch (RegistrationException e) {
                 throw new BuilderInstantiationException("Error registering component", e);
@@ -162,11 +183,13 @@ public class DeployerImpl implements Deployer {
         return null;
     }
 
-    public void connect(Map<SCAObject, Object> models, org.apache.tuscany.assembly.Component definition)
-        throws WiringException {
-        Component source = getComponent(models, definition);
-        if (source == null) {
-            throw new ComponentNotFoundException("Source not found", URI.create(definition.getName()));
+    public void connect(Map<SCAObject, Object> models,
+                        Component source,
+                        org.apache.tuscany.assembly.Component definition) throws WiringException {
+
+        if (definition.getImplementation() instanceof Composite) {
+            // FIXME: Should we connect recusively?
+            return;
         }
 
         for (ComponentReference ref : definition.getReferences()) {
@@ -178,7 +201,7 @@ public class DeployerImpl implements Deployer {
             for (ComponentService service : services) {
                 org.apache.tuscany.assembly.Component targetCompoent = service.getBinding(SCABinding.class)
                     .getComponent();
-                Component target = getComponent(models, targetCompoent);
+                Component target = (Component)getSCAObject(models, targetCompoent);
                 URI targetUri = URI.create(target.getUri() + "#" + service.getName());
                 if (target == null && (refDefinition.getMultiplicity() == Multiplicity.ZERO_ONE || refDefinition
                         .getMultiplicity() == Multiplicity.ZERO_N)) {
@@ -201,10 +224,11 @@ public class DeployerImpl implements Deployer {
                 } catch (TargetInvokerCreationException e) {
                     throw new WireCreationException("Error creating invoker", sourceURI, targetUri, e);
                 }
-                /*
-                 * if (postProcessorRegistry != null) {
-                 * postProcessorRegistry.process(wire); }
-                 */
+
+                if (postProcessorRegistry != null) {
+                    postProcessorRegistry.process(wire);
+                }
+
                 optimize(source, target, wire);
                 wires.add(wire);
                 if (!wire.getCallbackInvocationChains().isEmpty()) {
@@ -222,31 +246,82 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    //FIXME lresende : make it work with references
-    public void connect(Map<SCAObject, Object> models, org.apache.tuscany.assembly.CompositeReference reference) throws WiringException {
-        Component source =  getComponent(models, reference);
-        if (source == null) {
-            throw new ComponentNotFoundException("Source not found", URI.create(reference.getName()));
-        }
-        
-    }
-    
-    private Component getComponent(Map<SCAObject, Object> models, org.apache.tuscany.assembly.Component definition) {
-        Component source = null;
-        for (Map.Entry<SCAObject, Object> e : models.entrySet()) {
-            if (e.getValue() == definition) {
-                source = (Component)e.getKey();
+    protected void connect(Map<SCAObject, Object> models, Service service, CompositeService definition)
+        throws WiringException, IncompatibleInterfaceContractException {
+        SCABinding scaBinding = definition.getPromotedService().getBinding(SCABinding.class);
+        org.apache.tuscany.assembly.Component targetComponent = scaBinding.getComponent();
+
+        Component target = null;
+        for (Map.Entry<SCAObject, Object> entry : models.entrySet()) {
+            if (entry.getValue() == targetComponent) {
+                target = (Component)entry.getKey();
+                break;
             }
         }
-        return source;
+        if (target == null) {
+            throw new ComponentNotFoundException("Target not found", URI.create(targetComponent.getName()));
+        }
+        URI sourceURI = service.getUri();
+        URI targetURI = URI.create(target.getUri() + "#" + definition.getPromotedService().getName());
+        // TODO if no binding, do local
+        for (ServiceBinding binding : service.getServiceBindings()) {
+            Wire wire = createWire(sourceURI, targetURI, definition.getInterfaceContract(), definition
+                .getPromotedService().getService().getInterfaceContract(), binding.getBindingType());
+            binding.setWire(wire);
+            if (postProcessorRegistry != null) {
+                postProcessorRegistry.process(wire);
+            }
+            try {
+                attachInvokers(definition.getPromotedService().getName(), wire, binding, target);
+            } catch (TargetInvokerCreationException e) {
+                throw new WireCreationException("Error creating invoker", sourceURI, targetURI, e);
+            }
+        }
     }
 
-    //FIXME: lresende make working with references
-    private Component getComponent(Map<SCAObject, Object> models, org.apache.tuscany.assembly.Reference reference) {
-        Component source = null;
+    protected void connect(Map<SCAObject, Object> models,
+                           org.apache.tuscany.spi.component.Reference reference,
+                           CompositeReference definition) throws WiringException,
+        IncompatibleInterfaceContractException {
+        URI sourceUri = reference.getUri();
+        for (ReferenceBinding binding : reference.getReferenceBindings()) {
+            // create wire
+            if (Wire.LOCAL_BINDING.equals(binding.getBindingType())) {
+                URI targetUri = binding.getTargetUri();
+                InterfaceContract contract = binding.getBindingInterfaceContract();
+                QName type = binding.getBindingType();
+                Wire wire = createWire(sourceUri, targetUri, definition.getInterfaceContract(), contract, type);
+                binding.setWire(wire);
+                // wire local bindings to their targets
+                Component target = componentManager.getComponent(UriHelper.getDefragmentedName(targetUri));
+                if (target == null) {
+                    throw new ComponentNotFoundException("Target not found", sourceUri);
+                }
+                try {
+                    attachInvokers(targetUri.getFragment(), wire, binding, target);
+                } catch (TargetInvokerCreationException e) {
+                    throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
+                }
+            } else {
+                InterfaceContract bindingContract = binding.getBindingInterfaceContract();
+                if (bindingContract == null) {
+                    bindingContract = definition.getInterfaceContract();
+                }
+                Wire wire = createWire(sourceUri, null, definition.getInterfaceContract(), bindingContract, binding
+                    .getBindingType());
+                if (postProcessorRegistry != null) {
+                    postProcessorRegistry.process(wire);
+                }
+                binding.setWire(wire);
+            }
+        }
+    }
+
+    private SCAObject getSCAObject(Map<SCAObject, Object> models, Object model) {
+        SCAObject source = null;
         for (Map.Entry<SCAObject, Object> e : models.entrySet()) {
-            if (e.getValue() == reference) {
-                source = (Component)e.getKey();
+            if (e.getValue() == model) {
+                source = e.getKey();
             }
         }
         return source;

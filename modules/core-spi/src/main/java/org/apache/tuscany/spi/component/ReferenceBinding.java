@@ -22,7 +22,7 @@ import java.net.URI;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
@@ -55,7 +55,7 @@ public interface ReferenceBinding extends Invocable {
      *
      * @return the service contract for the binding
      */
-    Contract getBindingServiceContract();
+    InterfaceContract getBindingInterfaceContract();
 
     /**
      * Returns the target URI for the binding
