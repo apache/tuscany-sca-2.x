@@ -132,16 +132,12 @@ public class DeployerImpl implements Deployer {
             if (model instanceof org.apache.tuscany.assembly.Component) {
                 connect(models, (Component)entry.getKey(), (org.apache.tuscany.assembly.Component)model);
             } else if (model instanceof CompositeReference) {
-                // FIXME lresende: not sure why there is no
-                // "compositeReferences" here
                 try {
                     connect(models, (Reference)entry.getKey(), (CompositeReference)model);
                 } catch (IncompatibleInterfaceContractException e) {
                     throw new IllegalStateException(e);
                 }
             } else if (model instanceof CompositeService) {
-                // FIXME lresende: not sure why there is no
-                // "compositeReferences" here
                 try {
                     connect(models, (Service)entry.getKey(), (CompositeService)model);
                 } catch (IncompatibleInterfaceContractException e) {
@@ -417,5 +413,9 @@ public class DeployerImpl implements Deployer {
         } else {
             return pReferrer == Scope.COMPOSITE && pReferee == Scope.SYSTEM;
         }
+    }
+
+    public void setWirePostProcessorRegistry(WirePostProcessorRegistry postProcessorRegistry) {
+        this.postProcessorRegistry = postProcessorRegistry;
     }
 }
