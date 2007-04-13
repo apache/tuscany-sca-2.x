@@ -21,6 +21,7 @@ package org.apache.tuscany.spi.extension;
 import java.net.URI;
 
 import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
@@ -36,7 +37,7 @@ import org.apache.tuscany.spi.wire.Wire;
  * @Deprecated
  */
 public abstract class ServiceBindingExtension extends AbstractSCAObject implements ServiceBinding {
-    protected Contract bindingServiceContract;
+    protected InterfaceContract bindingServiceContract;
     protected Wire wire;
 
     public ServiceBindingExtension(URI name) throws CoreRuntimeException {
@@ -48,7 +49,7 @@ public abstract class ServiceBindingExtension extends AbstractSCAObject implemen
         throw new UnsupportedOperationException();
     }
 
-    public Contract getBindingServiceContract() {
+    public InterfaceContract getBindingInterfaceContract() {
         return bindingServiceContract;
     }
 
