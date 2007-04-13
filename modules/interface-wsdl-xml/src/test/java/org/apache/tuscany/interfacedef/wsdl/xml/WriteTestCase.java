@@ -32,7 +32,7 @@ import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
-import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
 
 /**
  * Test reading/write WSDL interfaces.

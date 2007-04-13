@@ -20,6 +20,7 @@ package org.apache.tuscany.core.bootstrap;
 
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
@@ -33,7 +34,6 @@ import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeBuilder;
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.services.spi.contribution.ContributionService;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.ComponentManager;

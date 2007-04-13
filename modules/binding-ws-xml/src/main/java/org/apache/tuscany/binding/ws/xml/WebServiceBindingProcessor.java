@@ -30,12 +30,12 @@ import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.impl.DefaultWebServiceBindingFactory;
-import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionReadException;
-import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
-import org.apache.tuscany.services.spi.contribution.ContributionWireException;
-import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.service.ContributionReadException;
+import org.apache.tuscany.contribution.service.ContributionResolveException;
+import org.apache.tuscany.contribution.service.ContributionWireException;
+import org.apache.tuscany.contribution.service.ContributionWriteException;
+import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 
 public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 

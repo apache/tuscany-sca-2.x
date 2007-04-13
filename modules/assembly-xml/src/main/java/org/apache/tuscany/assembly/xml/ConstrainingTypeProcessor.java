@@ -34,16 +34,16 @@ import org.apache.tuscany.assembly.AbstractService;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.contribution.service.ContributionReadException;
+import org.apache.tuscany.contribution.service.ContributionResolveException;
+import org.apache.tuscany.contribution.service.ContributionWireException;
+import org.apache.tuscany.contribution.service.ContributionWriteException;
+import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
-import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionReadException;
-import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
-import org.apache.tuscany.services.spi.contribution.ContributionWireException;
-import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
 /**
  * A contrainingType content handler.

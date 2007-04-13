@@ -25,10 +25,10 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
-import org.apache.tuscany.services.contribution.ContributionRepositoryImpl;
-import org.apache.tuscany.services.contribution.ContributionServiceImpl;
-import org.apache.tuscany.services.spi.contribution.ContributionRepository;
-import org.apache.tuscany.services.spi.contribution.ContributionService;
+import org.apache.tuscany.contribution.service.ContributionRepository;
+import org.apache.tuscany.contribution.service.ContributionService;
+import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
+import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
 
 /**
  * Main class for Contribution Services installer. <code>

@@ -33,13 +33,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.contribution.service.ContributionReadException;
+import org.apache.tuscany.contribution.service.ContributionResolveException;
+import org.apache.tuscany.contribution.service.ContributionWireException;
+import org.apache.tuscany.contribution.service.ContributionWriteException;
+import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionReadException;
-import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
-import org.apache.tuscany.services.spi.contribution.ContributionWireException;
-import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;

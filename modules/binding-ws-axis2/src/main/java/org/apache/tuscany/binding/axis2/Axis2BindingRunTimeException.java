@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-import org.apache.tuscany.api.TuscanyRuntimeException;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 /**
  * Denotes an error creating a new object instance

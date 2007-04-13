@@ -27,6 +27,8 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.service.impl.ContributionMetadataLoaderImpl;
+import org.apache.tuscany.contribution.service.impl.InvalidValueException;
 
 /**
  * @version $Rev$ $Date$

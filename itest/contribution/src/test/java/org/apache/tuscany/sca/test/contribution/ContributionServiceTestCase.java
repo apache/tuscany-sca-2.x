@@ -27,9 +27,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.api.SCARuntime;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.service.ContributionService;
+import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.host.embedded.DefaultSCARuntime;
-import org.apache.tuscany.services.contribution.util.FileHelper;
-import org.apache.tuscany.services.spi.contribution.ContributionService;
 
 /**
  * This is more intended to be a integration test then a unit test. *

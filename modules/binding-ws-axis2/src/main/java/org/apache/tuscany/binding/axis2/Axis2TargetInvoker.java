@@ -40,7 +40,6 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Axis2TargetInvoker uses an Axis2 OperationClient to invoke a remote web service
