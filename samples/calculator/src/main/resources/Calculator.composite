@@ -20,9 +20,8 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            name="Calculator">
 
-    <service name="CalculatorService">
+    <service name="CalculatorService" promote="CalculatorServiceComponent">
         <interface.java interface="calculator.CalculatorService"/>
-        <reference>CalculatorServiceComponent</reference>
     </service>
 
     <component name="CalculatorServiceComponent">
