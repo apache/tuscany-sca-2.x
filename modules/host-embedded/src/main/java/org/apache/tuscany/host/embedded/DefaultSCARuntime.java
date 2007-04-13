@@ -64,9 +64,9 @@ public class DefaultSCARuntime extends SCARuntime {
     }
 
     @Override
-    public Object getSystemService(String serviceName) {
+    public <T> T getExtensionPoint(Class<T> extensionPointType) {
         try {
-            return runtime.getSystemService(Object.class, serviceName);
+            return runtime.getExtensionPoint(extensionPointType);
         } catch (TargetResolutionException e) {
             throw new ServiceUnavailableException(e);
         }
