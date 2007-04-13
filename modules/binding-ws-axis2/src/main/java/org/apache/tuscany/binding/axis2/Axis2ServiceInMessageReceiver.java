@@ -24,16 +24,16 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInMessageReceiver;
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 
 public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
 
-    protected Operation<?> operation;
+    protected Operation operation;
 
     private Axis2ServiceBinding axis2Service;
 
-    public Axis2ServiceInMessageReceiver(Axis2ServiceBinding service, Operation<?> operation) {
+    public Axis2ServiceInMessageReceiver(Axis2ServiceBinding service, Operation operation) {
         this.axis2Service = service;
         this.operation = operation;
     }
@@ -49,19 +49,19 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
             Object[] args = new Object[] {requestOM};
             String conversationID = axis2Service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
 
-            axis2Service.invokeTarget(operation, args, null, conversationID);
+//            axis2Service.invokeTarget(operation, args, null, conversationID);
 
-        } catch (InvocationTargetException e) {
-            Throwable t = e.getCause();
-            if (t instanceof Exception) {
-                throw AxisFault.makeFault((Exception)t);
-            }
-            throw new InvocationRuntimeException(e);
+//        } catch (InvocationTargetException e) {
+//            Throwable t = e.getCause();
+//            if (t instanceof Exception) {
+//                throw AxisFault.makeFault((Exception)t);
+//            }
+//            throw new InvocationRuntimeException(e);
         } catch (Throwable t) {
             if (t instanceof Exception) {
                 throw AxisFault.makeFault((Exception)t);
             }
-            throw new Axis2BindingRunTimeException(t);
+            throw new RuntimeException(t);
         }
 
     }

@@ -16,12 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.binding.axis2;
 
-import static org.osoa.sca.Constants.SCA_NS;
-
 import java.net.URI;
-import java.util.Collection;
 
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
@@ -38,93 +36,32 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
-import org.apache.tuscany.binding.ws.WebServiceBinding;
+import org.apache.tuscany.binding.ws.xml.WebServiceConstants;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
-/**
- * Axis2Reference uses Axis2 to invoke a remote web service
- */
-public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
-    private static final QName BINDING_WS = new QName(SCA_NS, "binding.ws");
+public class Axis2WSReference extends ReferenceBindingExtension {
 
-    private WebServicePortMetaData wsPortMetaData;
-    private ServiceClient serviceClient;
     private WorkContext workContext;
 
-    @SuppressWarnings("unchecked")
-    public Axis2ReferenceBinding(URI uri,
-                                 WebServiceBinding wsBinding,
-//                                 ServiceContract contract,
-//                                 ServiceContract<?> bindingServiceContract,
-                                 WorkContext workContext) {
-        super(uri, uri); // TODO: what should these be
-        this.bindingServiceContract = bindingServiceContract;
-        this.workContext = workContext;
-        try {
-            Definition wsdlDefinition = wsBinding.getWSDLDefinition();
-            wsPortMetaData =
-                new WebServicePortMetaData(wsdlDefinition, wsBinding.getWSDLPort(), wsBinding.getURI(), false);
-            serviceClient = createServiceClient(wsdlDefinition, wsPortMetaData);
-        } catch (AxisFault e) {
-            throw new Axis2BindingRunTimeException(e);
-        }
+    public Axis2WSReference(URI name, URI targetUri) {
+        super(name, targetUri);
     }
 
     public QName getBindingType() {
-        return BINDING_WS;
+        return WebServiceConstants.BINDING_WS_QNAME;
     }
 
-    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        Axis2TargetInvoker invoker;
-        try {
-            boolean operationHasCallback = contract.getCallbackName() != null;
-            if (operationHasCallback) {
-                // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader
-                // as parameters.
-                Axis2AsyncTargetInvoker asyncInvoker =
-                    (Axis2AsyncTargetInvoker) createOperationInvoker(serviceClient,
-                        operation,
-                        wsPortMetaData,
-                        true,
-                        false);
-                // FIXME: This makes the (BIG) assumption that there is only one
-                // callback method
-                // Relaxing this assumption, however, does not seem to be trivial,
-                // it may depend on knowledge
-                // of what actual callback method was invoked by the service at the
-                // other end
-                Operation callbackOperation = findCallbackOperation();
-                Axis2CallbackInvocationHandler invocationHandler =
-                    new Axis2CallbackInvocationHandler(wire);
-                Axis2ReferenceCallbackTargetInvoker callbackInvoker =
-                    new Axis2ReferenceCallbackTargetInvoker(callbackOperation, wire, invocationHandler);
-                asyncInvoker.setCallbackTargetInvoker(callbackInvoker);
-
-                invoker = asyncInvoker;
-            } else {
-                boolean isOneWay = operation.isNonBlocking();
-                invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false, isOneWay);
-            }
-        } catch (AxisFault e) {
-            throw new Axis2BindingRunTimeException(e);
-        }
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback) throws TargetInvokerCreationException {
+        Options options = null;
+        SOAPFactory soapFactory = null;
+        QName wsdlOperationQName = null;
+        ServiceClient serviceClient = null;
+        Axis2TargetInvoker invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         return invoker;
-    }
-
-    private Operation findCallbackOperation() {
-        ServiceContract contract = wire.getTargetContract(); // TODO: which end?
-        Operation callbackOperation = null;
-        Collection callbackOperations = contract.getCallbackOperations().values();
-        if (callbackOperations.size() != 1) {
-            throw new Axis2BindingRunTimeException("Can only handle one callback operation");
-        } else {
-            callbackOperation = (Operation) callbackOperations.iterator().next();
-        }
-        return callbackOperation;
     }
 
     /**
@@ -185,15 +122,4 @@ public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
 
         return invoker;
     }
-
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) throws TargetInvokerCreationException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation) throws TargetInvokerCreationException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

@@ -74,13 +74,11 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
             <dependency>
                 <groupId>org.apache.axis2</groupId>
