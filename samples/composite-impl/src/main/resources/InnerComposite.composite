@@ -30,11 +30,11 @@
 		<implementation.java class="composite.SourceImpl"/>
     </component>
 	    
-    <reference name="TargetComponentRef" promote="InnerSourceComponent/targetReference">
+    <reference name="targetComponentRef" promote="InnerSourceComponent/targetReference">
         <interface.java interface="composite.Target" callbackInterface="composite.SourceCallback"/>
     </reference>
     
-    <reference name="TargetComponentRef2" promote="InnerSourceComponent/targetReference2">
+    <reference name="targetComponentRef2" promote="InnerSourceComponent/targetReference2">
         <interface.java interface="composite.Target" callbackInterface="composite.SourceCallback"/>
     </reference>
     
