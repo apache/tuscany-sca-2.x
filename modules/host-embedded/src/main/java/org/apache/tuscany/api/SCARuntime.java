@@ -199,12 +199,12 @@ public abstract class SCARuntime {
     }
 
     /**
-     * Get access to a system service
+     * Get access to an extension point
      * 
-     * @param serviceName
-     * @return
+     * @param extensionPointType The interface for the extension point
+     * @return The instance of the extension point
      */
-    protected abstract Object getSystemService(String serviceName);
+    protected abstract <T> T getExtensionPoint(Class<T> extensionPointType);
 
     /**
      * Stop the SCA Runtime
