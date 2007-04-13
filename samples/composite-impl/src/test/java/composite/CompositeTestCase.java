@@ -30,7 +30,7 @@ public class CompositeTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         SCARuntime.start("OuterComposite.composite");
-        ComponentContext context = SCARuntime.getComponentContext("SourceComponent/InnerSourceService");
+        ComponentContext context = SCARuntime.getComponentContext("SourceComponent/InnerSourceComponent");
         ServiceReference<Source> service = context.createSelfReference(Source.class);
         source = service.getService();   
       	
