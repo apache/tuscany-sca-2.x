@@ -49,6 +49,14 @@ public final class JavaInterfaceUtil {
      */
     public static  Method findMethod(Class<?> implClass, Operation operation) throws NoSuchMethodException {
         String name = operation.getName();
+        if(operation.getInterface().isRemotable()) {
+            for(Method m: implClass.getMethods()) {
+                if(m.getName().equals(name)) {
+                    return m;
+                }
+            }
+            throw new NoSuchMethodException(name);
+        }
         Class<?>[] paramTypes = getPhysicalTypes(operation);
         return implClass.getMethod(name, paramTypes);
     }
