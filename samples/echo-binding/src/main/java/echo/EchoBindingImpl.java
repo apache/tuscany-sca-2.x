@@ -16,26 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.echo;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
+package echo;
 
+import org.apache.tuscany.assembly.impl.BindingImpl;
 
-/**
- * @version $Rev$ $Date$
- */
-public class ClientImpl implements Client {
-
-    private Echo echoReference;
-
-    @Constructor
-    public ClientImpl(@Reference(name = "echoReference", required = true) Echo echoReference) {
-        this.echoReference = echoReference;
-    }
-
-    public void call(String msg) {
-        String ret = echoReference.invoke(msg);
-        System.out.println("Returned message: "+ ret);
+public class EchoBindingImpl extends BindingImpl implements EchoBinding {
+    public Object clone() {
+        return this;
     }
 }

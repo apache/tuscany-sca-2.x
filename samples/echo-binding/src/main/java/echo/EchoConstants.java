@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +15,14 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://echo"
-	xmlns:echo="http://echo"
-	name="EchoBinding">
+ */
 
-    <service name="EchoService" promote="EchoComponent">
-        <interface.java interface="echo.Echo"/>
-        <binding.echo uri="http://tempuri.org" />
-    </service>
+package echo;
 
-    <component name="EchoComponent">
-        <implementation.java class="echo.EchoComponentImpl"/>
-    </component>
-    
-    <reference name="EchoReference" promote="EchoComponent/echoReference">
-        <interface.java interface="echo.Echo"/>
-        <binding.echo uri="http://tempuri.org" />
-    </reference>
-    
-</composite>
+import static org.osoa.sca.Constants.SCA_NS;
+
+import javax.xml.namespace.QName;
+
+public interface EchoConstants {
+    QName BINDING_ECHO = new QName(SCA_NS, "binding.echo");
+}

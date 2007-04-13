@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.echo;
+package echo;
 
 import java.util.Map;
 
@@ -28,8 +28,8 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 
 public class EchoModuleActivator implements ModuleActivator {
-    private final EchoBindingLoader echoBindingProcessor = new EchoBindingLoader();
-    private final EchoBuilder echoBindingBuilder = new EchoBuilder();
+    private final EchoBindingProcessor echoBindingProcessor = new EchoBindingProcessor();
+    private final EchoBindingBuilder echoBindingBuilder = new EchoBindingBuilder();
 
     public Map<Class, Object> getExtensionPoints() {
         // No extensionPoints being contributed here
@@ -37,21 +37,27 @@ public class EchoModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
+
         // Add the EchoProcessor to the proper registry
         StAXArtifactProcessorRegistry artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorRegistry.class);
         artifactProcessorRegistry.addArtifactProcessor(echoBindingProcessor);
         
+        // Add the EchoBuilder to the proper registry
         BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
         echoBindingBuilder.setBuilderRegistry(builderRegistry);
         echoBindingBuilder.init();
-        
         builderRegistry.register(EchoBinding.class, echoBindingBuilder);
+        
+        // Start the Echo server
+        EchoServer.start();
     }
 
     public void stop(ExtensionPointRegistry registry) {
         // Remove the EchoProcessor from the proper registry
         StAXArtifactProcessorRegistry artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorRegistry.class);
         artifactProcessorRegistry.removeArtifactProcessor(echoBindingProcessor);
+
+        EchoServer.stop();
     }
 
 }

@@ -16,13 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package echo;
 
-package org.apache.tuscany.binding.echo;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
 
-public class DefaultEchoBindingFactory implements EchoBindingFactory {
 
-    public EchoBinding createEchoBinding() {
-        return new EchoBindingImpl();
+/**
+ * @version $Rev$ $Date$
+ */
+public class EchoComponentImpl implements Echo {
+
+    private Echo echoReference;
+
+    @Constructor
+    public EchoComponentImpl(@Reference(name = "echoReference", required = true) Echo echoReference) {
+        this.echoReference = echoReference;
     }
 
+    public String invoke(String msg) {
+        String result = echoReference.invoke(msg);
+        System.out.println("Returned message: "+ result);
+        return result;
+    }
 }

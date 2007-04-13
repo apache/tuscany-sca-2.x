@@ -17,12 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.echo;
+package echo;
 
-import org.apache.tuscany.assembly.impl.BindingImpl;
+import org.apache.tuscany.assembly.Binding;
 
-public class EchoBindingImpl extends BindingImpl implements EchoBinding {
-    public Object clone() {
-        return this;
-    }
+public interface EchoBinding extends Binding {
+
 }

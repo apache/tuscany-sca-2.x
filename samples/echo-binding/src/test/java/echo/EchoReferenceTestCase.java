@@ -16,11 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.echo;
+package echo;
+
+import junit.framework.TestCase;
+
+import org.apache.tuscany.api.SCARuntime;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
  */
-public interface Client {
-    void call(String msg);
+public class EchoReferenceTestCase extends TestCase {
+
+    private Echo service;
+
+    protected void setUp() throws Exception {
+        SCARuntime.start("EchoBinding.composite");
+        ComponentContext context = SCARuntime.getComponentContext("EchoComponent");
+        ServiceReference<Echo> serviceReference = context.createSelfReference(Echo.class);
+        service = serviceReference.getService();
+    }
+    
+    protected void tearDown() throws Exception {
+    	SCARuntime.stop();
+    }
+
+    public void testEchoBinding() {
+        String result = service.invoke("foo");
+        assertEquals(result, "foo");
+    }
+
+
 }

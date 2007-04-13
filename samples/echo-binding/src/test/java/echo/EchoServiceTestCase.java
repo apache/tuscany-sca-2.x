@@ -16,14 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package echo;
 
-package org.apache.tuscany.binding.echo;
+import junit.framework.TestCase;
 
-public interface EchoBindingFactory {
-    /**
-     * Creates a new Echo binding.
-     * 
-     * @return a new Echi binding
-     */
-    EchoBinding createEchoBinding();
+import org.apache.tuscany.api.SCARuntime;
+
+/**
+ * @version $Rev$ $Date$
+ */
+public class EchoServiceTestCase extends TestCase {
+
+    protected void setUp() throws Exception {
+        SCARuntime.start("EchoBinding.composite");
+    }
+    
+    protected void tearDown() throws Exception {
+    	SCARuntime.stop();
+    }
+
+    public void testEchoBinding() {
+        String result = EchoServer.getServer().sendReceive("EchoBinding", "EchoService", "foo");
+        assertEquals(result, "foo");
+    }
+
+
 }
