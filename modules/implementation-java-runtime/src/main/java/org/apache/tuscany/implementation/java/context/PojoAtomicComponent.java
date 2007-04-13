@@ -198,14 +198,18 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
                 }
                 JavaElement element = entry.getValue();
                 ObjectFactory<?> factory = new CallbackWireObjectFactory(element.getType(), proxyService, wires);
-                configuration.getInjectionSites().add(element);
+                if (!(element.getAnchor() instanceof Constructor)) {
+                    configuration.getInjectionSites().add(element);
+                }
                 configuration.setObjectFactory(element, factory);
             }
         }
         for (Reference ref : configuration.getDefinition().getReferences()) {
             JavaElement element = configuration.getDefinition().getReferenceMembers().get(ref.getName());
             if (element != null) {
-                configuration.getInjectionSites().add(element);
+                if (!(element.getAnchor() instanceof Constructor)) {
+                    configuration.getInjectionSites().add(element);
+                }
                 List<Wire> wireList = wires.get(ref.getName());
                 if (ref.getMultiplicity() == Multiplicity.ONE_N || ref.getMultiplicity() == Multiplicity.ZERO_N) {
                     List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
@@ -380,7 +384,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         return null;
     }
 
-    
     protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire);
 
     /**
