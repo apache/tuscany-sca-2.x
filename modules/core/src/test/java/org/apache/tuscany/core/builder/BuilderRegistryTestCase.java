@@ -24,6 +24,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
@@ -31,13 +32,17 @@ import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.BindingImpl;
 import org.apache.tuscany.assembly.impl.ComponentImpl;
+import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.assembly.impl.CompositeImpl;
 import org.apache.tuscany.assembly.impl.CompositeReferenceImpl;
 import org.apache.tuscany.assembly.impl.CompositeServiceImpl;
+import org.apache.tuscany.assembly.impl.SCABindingImpl;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.spi.Scope;
@@ -99,7 +104,7 @@ public class BuilderRegistryTestCase extends TestCase {
 
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
         scopeRegistry.register(scopeContainer);
-        BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry);
+        BuilderRegistry registry = new BuilderRegistryImpl(new ComponentManagerImpl(), scopeRegistry);
         registry.register(Composite.class, builder);
 
         assertSame(component, registry.build(componentDefinition, deploymentContext));
@@ -108,7 +113,7 @@ public class BuilderRegistryTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testServiceBindingBuilderDispatch() throws Exception {
-        BuilderRegistry registry = new BuilderRegistryImpl(null);
+        BuilderRegistry registry = new BuilderRegistryImpl(new ComponentManagerImpl(), null);
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
@@ -124,6 +129,9 @@ public class BuilderRegistryTestCase extends TestCase {
         definition.getBindings().add(new MockBindingDefinition());
         ComponentService target = new ComponentServiceImpl();
         target.setName("foo");
+        SCABinding binding2 = new SCABindingImpl();
+        binding2.setComponent(new ComponentImpl());
+        target.getBindings().add(binding2);
         definition.setPromotedService(target);
         Service service = registry.build(definition, deploymentContext);
         assertEquals(2, service.getServiceBindings().size());
@@ -131,7 +139,7 @@ public class BuilderRegistryTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testReferenceBindingBuilderDispatch() throws Exception {
-        BuilderRegistry registry = new BuilderRegistryImpl(null);
+        BuilderRegistry registry = new BuilderRegistryImpl(new ComponentManagerImpl(), null);
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
@@ -146,6 +154,14 @@ public class BuilderRegistryTestCase extends TestCase {
         definition.setMultiplicity(Multiplicity.ONE_ONE);
         definition.getBindings().add(new MockBindingDefinition());
         definition.getBindings().add(new MockBindingDefinition());
+        
+        ComponentReference componentReference = new ComponentReferenceImpl();
+        componentReference.setName("foo");
+        definition.getPromotedReferences().add(componentReference);
+        SCABinding binding2 = new SCABindingImpl();
+        binding2.setComponent(new ComponentImpl());
+        componentReference.getBindings().add(binding2);
+        
         Reference reference = registry.build(definition, deploymentContext);
         assertEquals(2, reference.getReferenceBindings().size());
     }

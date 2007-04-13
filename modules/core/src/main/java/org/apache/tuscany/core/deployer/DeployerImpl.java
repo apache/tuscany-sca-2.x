@@ -125,27 +125,7 @@ public class DeployerImpl implements Deployer {
 
         // build runtime artifacts
         build(componentDef, deploymentContext);
-
-        Map<SCAObject, Object> models = ((BuilderRegistryImpl)builder).getModels();
-        for (Map.Entry<SCAObject, Object> entry : models.entrySet()) {
-            Object model = entry.getValue();
-            if (model instanceof org.apache.tuscany.assembly.Component) {
-                connect(models, (Component)entry.getKey(), (org.apache.tuscany.assembly.Component)model);
-            } else if (model instanceof CompositeReference) {
-                try {
-                    connect(models, (Reference)entry.getKey(), (CompositeReference)model);
-                } catch (IncompatibleInterfaceContractException e) {
-                    throw new IllegalStateException(e);
-                }
-            } else if (model instanceof CompositeService) {
-                try {
-                    connect(models, (Service)entry.getKey(), (CompositeService)model);
-                } catch (IncompatibleInterfaceContractException e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-        }
-
+        
         Collection<Component> components = deploymentContext.getComponents().values();
         for (Component toRegister : components) {
             try {
@@ -154,6 +134,30 @@ public class DeployerImpl implements Deployer {
                 throw new BuilderInstantiationException("Error registering component", e);
             }
         }
+        
+        List<SCAObject> scaObjects = componentManager.getSCAObjects();
+        List<Object> modelObjects = componentManager.getModelObjects();
+        for (int i = 0; i < scaObjects.size(); i++) {
+            Object model = modelObjects.get(i);
+            SCAObject scaObject = scaObjects.get(i);
+            if (model instanceof org.apache.tuscany.assembly.Component) {
+                connect((Component)scaObject, (org.apache.tuscany.assembly.Component)model);
+            } else if (model instanceof CompositeReference) {
+                try {
+                    connect((Reference)scaObject, (CompositeReference)model);
+                } catch (IncompatibleInterfaceContractException e) {
+                    throw new IllegalStateException(e);
+                }
+            } else if (model instanceof CompositeService) {
+                try {
+                    connect((Service)scaObject, (CompositeService)model);
+                } catch (IncompatibleInterfaceContractException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+
+
         return components;
     }
 
@@ -179,9 +183,7 @@ public class DeployerImpl implements Deployer {
         return null;
     }
 
-    public void connect(Map<SCAObject, Object> models,
-                        Component source,
-                        org.apache.tuscany.assembly.Component definition) throws WiringException {
+    public void connect(Component source, org.apache.tuscany.assembly.Component definition) throws WiringException {
 
         if (definition.getImplementation() instanceof Composite) {
             // FIXME: Should we connect recusively?
@@ -198,7 +200,7 @@ public class DeployerImpl implements Deployer {
                 // TODO: Assume a component reference can only be promoted by at
                 // most one composite reference
                 CompositeReference compositeReference = promoted.get(0);
-                Reference target = (Reference)getSCAObject(models, compositeReference);
+                Reference target = componentManager.getSCAObject(Reference.class, compositeReference);
                 // FIXME: Assume we only have one binding
                 ReferenceBinding binding = target.getReferenceBindings().get(0);
                 URI targetUri = binding.getTargetUri();
@@ -216,7 +218,7 @@ public class DeployerImpl implements Deployer {
                 }
                 binding.setWire(wire);
                 try {
-                    attachInvokers(targetUri.getFragment(), wire, binding, binding);
+                    attachInvokers(targetUri.getFragment(), wire, source, binding);
                 } catch (TargetInvokerCreationException e) {
                     throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
                 }
@@ -226,7 +228,7 @@ public class DeployerImpl implements Deployer {
                 for (ComponentService service : services) {
                     org.apache.tuscany.assembly.Component targetCompoent = service.getBinding(SCABinding.class)
                         .getComponent();
-                    Component target = (Component)getSCAObject(models, targetCompoent);
+                    Component target = componentManager.getSCAObject(Component.class, targetCompoent);
                     URI targetUri = URI.create(target.getUri() + "#" + service.getName());
                     if (target == null && (refDefinition.getMultiplicity() == Multiplicity.ZERO_ONE || refDefinition
                             .getMultiplicity() == Multiplicity.ZERO_N)) {
@@ -272,18 +274,12 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    protected void connect(Map<SCAObject, Object> models, Service service, CompositeService definition)
-        throws WiringException, IncompatibleInterfaceContractException {
+    protected void connect(Service service, CompositeService definition) throws WiringException,
+        IncompatibleInterfaceContractException {
         SCABinding scaBinding = definition.getPromotedService().getBinding(SCABinding.class);
         org.apache.tuscany.assembly.Component targetComponent = scaBinding.getComponent();
 
-        Component target = null;
-        for (Map.Entry<SCAObject, Object> entry : models.entrySet()) {
-            if (entry.getValue() == targetComponent) {
-                target = (Component)entry.getKey();
-                break;
-            }
-        }
+        Component target = componentManager.getSCAObject(Component.class, targetComponent);
         if (target == null) {
             throw new ComponentNotFoundException("Target not found", URI.create(targetComponent.getName()));
         }
@@ -305,16 +301,17 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    protected void connect(Map<SCAObject, Object> models,
-                           org.apache.tuscany.spi.component.Reference reference,
-                           CompositeReference definition) throws WiringException,
-        IncompatibleInterfaceContractException {
+    protected void connect(org.apache.tuscany.spi.component.Reference reference, CompositeReference definition)
+        throws WiringException, IncompatibleInterfaceContractException {
         URI sourceUri = reference.getUri();
         for (ReferenceBinding binding : reference.getReferenceBindings()) {
             // create wire
             if (Wire.LOCAL_BINDING.equals(binding.getBindingType())) {
                 URI targetUri = binding.getTargetUri();
                 InterfaceContract contract = binding.getBindingInterfaceContract();
+                if (contract == null) {
+                    contract = definition.getInterfaceContract();
+                }
                 QName type = binding.getBindingType();
                 Wire wire = createWire(sourceUri, targetUri, definition.getInterfaceContract(), contract, type);
                 binding.setWire(wire);

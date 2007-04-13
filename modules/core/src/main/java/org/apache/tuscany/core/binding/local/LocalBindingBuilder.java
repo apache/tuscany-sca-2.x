@@ -44,14 +44,14 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
     public ServiceBinding build(CompositeService serviceDefinition,
                                 LocalBindingDefinition bindingDefinition,
                                 DeploymentContext context) throws BuilderException {
-        return new LocalServiceBinding(URI.create("#" + serviceDefinition.getName()));
+        return new LocalServiceBinding(URI.create(context.getComponentId() + "#" + serviceDefinition.getName()));
     }
 
     @Override
     public ReferenceBinding build(CompositeReference referenceDefinition,
                                   LocalBindingDefinition bindingDefinition,
                                   DeploymentContext context) throws BuilderException {
-        return new LocalReferenceBinding(URI.create("#" + referenceDefinition.getName()), URI.create(bindingDefinition
-            .getURI()));
+        return new LocalReferenceBinding(URI.create(context.getComponentId() + "#" + referenceDefinition.getName()),
+                                         URI.create(bindingDefinition.getURI()));
     }
 }

@@ -18,11 +18,15 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.impl.CompositeServiceImpl;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * @version $Rev$ $Date$
@@ -33,7 +37,9 @@ public class LocalBindingBuilderTestCase extends TestCase {
         LocalBindingBuilder builder = new LocalBindingBuilder();
         CompositeService def = new CompositeServiceImpl();
         def.setName("foo");
-        ServiceBinding binding = builder.build(def, null, null);
+        DeploymentContext context = new RootDeploymentContext(null, URI.create("default"), URI.create("/default/"),
+                                                              null, null);
+        ServiceBinding binding = builder.build(def, null, context);
         assertEquals(LocalServiceBinding.class, binding.getClass());
     }
 }
