@@ -328,8 +328,17 @@ public class CompositeUtil {
             if (componentService != null && componentService.isUnresolved()) {
                 ComponentService resolved = componentServices.get(componentService.getName());
                 if (resolved != null) {
+                    
+                    // Point to the resolved component service
                     compositeService.setPromotedService(resolved);
                     resolved.promotedAs().add(compositeService);
+                    
+                    // Use the interface contract from the component service if none
+                    // is specified on the composite service
+                    if (compositeService.getInterfaceContract() == null) {
+                        compositeService.setInterfaceContract(resolved.getInterfaceContract());
+                    }
+                    
                 } else {
                     problems.add(compositeService);
                 }
@@ -345,8 +354,17 @@ public class CompositeUtil {
                     ComponentReference resolved =
                         componentReferences.get(componentReference.getName());
                     if (resolved != null) {
+
+                        // Point to the resolved component reference
                         promotedReferences.set(i, resolved);
                         resolved.promotedAs().add(compositeReference);
+
+                        // Use the interface contract from the component reference if none
+                        // is specified on the composite reference
+                        if (compositeReference.getInterfaceContract() == null) {
+                            compositeReference.setInterfaceContract(resolved.getInterfaceContract());
+                        }
+                        
                     } else {
                         problems.add(compositeReference);
                     }

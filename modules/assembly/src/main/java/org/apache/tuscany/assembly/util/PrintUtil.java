@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Node;
+
 /**
  * A simple print utility class to help print assembly model instances.
  * 
@@ -117,6 +119,11 @@ public class PrintUtil {
                                             indent--;
                                         }
                                     }
+                                } else if (value instanceof Node) {
+                                    indent++;
+                                    indent();
+                                    out.println(propertyDescriptor.getName() + "=" + value.toString());
+                                    indent--;
                                 } else {
 
                                     // Print an object, recursively
