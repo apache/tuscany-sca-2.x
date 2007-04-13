@@ -36,7 +36,6 @@ import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ComponentNotFoundException;
 import org.apache.tuscany.core.builder.IncompatibleInterfacesException;
 import org.apache.tuscany.core.builder.WireCreationException;
@@ -125,7 +124,7 @@ public class DeployerImpl implements Deployer {
 
         // build runtime artifacts
         build(componentDef, deploymentContext);
-        
+
         Collection<Component> components = deploymentContext.getComponents().values();
         for (Component toRegister : components) {
             try {
@@ -134,7 +133,7 @@ public class DeployerImpl implements Deployer {
                 throw new BuilderInstantiationException("Error registering component", e);
             }
         }
-        
+
         List<SCAObject> scaObjects = componentManager.getSCAObjects();
         List<Object> modelObjects = componentManager.getModelObjects();
         for (int i = 0; i < scaObjects.size(); i++) {
@@ -156,7 +155,6 @@ public class DeployerImpl implements Deployer {
                 }
             }
         }
-
 
         return components;
     }
@@ -285,10 +283,15 @@ public class DeployerImpl implements Deployer {
         }
         URI sourceURI = service.getUri();
         URI targetURI = URI.create(target.getUri() + "#" + definition.getPromotedService().getName());
+        InterfaceContract sourceContract = definition.getInterfaceContract();
+        InterfaceContract targetContract = definition.getPromotedService().getService().getInterfaceContract();
+        if (sourceContract == null) {
+            sourceContract = targetContract;
+        }
+
         // TODO if no binding, do local
         for (ServiceBinding binding : service.getServiceBindings()) {
-            Wire wire = createWire(sourceURI, targetURI, definition.getInterfaceContract(), definition
-                .getPromotedService().getService().getInterfaceContract(), binding.getBindingType());
+            Wire wire = createWire(sourceURI, targetURI, sourceContract, targetContract, binding.getBindingType());
             binding.setWire(wire);
             if (postProcessorRegistry != null) {
                 postProcessorRegistry.process(wire);

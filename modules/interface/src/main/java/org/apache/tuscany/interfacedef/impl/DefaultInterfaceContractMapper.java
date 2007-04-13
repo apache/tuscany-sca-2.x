@@ -55,7 +55,7 @@ public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
         if (!source.getName().equals(target.getName())) {
             return false;
         }
-        
+
         // FIXME: We need to deal with wrapped<-->unwrapped conversion
 
         // Check output type
@@ -144,12 +144,15 @@ public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
                     return false;
                 }
             }
-            if (!operation.equals(targetOperation)) {
-                if (!silent) {
-                    throw new IncompatibleInterfaceContractException("Target operations are not compatible", source,
-                                                                     target);
-                } else {
-                    return false;
+            if (!source.getInterface().isRemotable()) {
+                // FIXME: for remotable operation, only compare name for now
+                if (!operation.equals(targetOperation)) {
+                    if (!silent) {
+                        throw new IncompatibleInterfaceContractException("Target operations are not compatible",
+                                                                         source, target);
+                    } else {
+                        return false;
+                    }
                 }
             }
         }

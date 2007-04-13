@@ -255,6 +255,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected Bootstrapper createBootstrapper() {
         TuscanyManagementService tms = (TuscanyManagementService)getManagementService();
         componentManager = new ComponentManagerImpl(tms);
+        extensionRegistry.addExtensionPoint(ComponentManager.class, componentManager);
         return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager);
     }
 
