@@ -23,13 +23,12 @@
            name="HelloWorld">
 
     <component name="HelloWorldComponent">
-		<implementation.java class="org.apache.tuscany.binidng.axis2.itests.HelloWorldComponent"/>
-        <reference name="ref" target="HelloWorldWS"></reference>
+		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldComponent"/>
+        <reference name="helloWorldWS" />
     </component>
 
-    <reference name="HelloWorldWS">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld org/apache/tuscany/binding/axis2/itests/helloworld.wsdl" />
+    <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
         <binding.ws/>
     </reference>
 

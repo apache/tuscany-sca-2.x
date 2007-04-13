@@ -24,10 +24,10 @@ import org.osoa.sca.annotations.Reference;
 public class HelloWorldComponent implements HelloWorld {
 
     @Reference
-    public HelloWorld ref;
+    public HelloWorld helloWorldWS;
     
     public String getGreetings(String s) {
-        return ref.getGreetings(s);
+        return helloWorldWS.getGreetings(s);
     }
 
 }
