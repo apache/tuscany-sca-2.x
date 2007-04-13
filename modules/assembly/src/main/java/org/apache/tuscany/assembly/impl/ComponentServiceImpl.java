@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.assembly.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Service;
 
 /**
@@ -29,6 +33,7 @@ import org.apache.tuscany.assembly.Service;
  */
 public class ComponentServiceImpl extends ServiceImpl implements ComponentService {
     private Service service;
+    private List<CompositeService> promotedAs = new ArrayList<CompositeService>();
     
     /**
      * Constructs a new component service.
@@ -53,4 +58,7 @@ public class ComponentServiceImpl extends ServiceImpl implements ComponentServic
         this.service = service;
     }
 
+    public List<CompositeService> promotedAs() {
+        return promotedAs;
+    }
 }

@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.assembly.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.Reference;
 
 /**
@@ -30,6 +34,7 @@ import org.apache.tuscany.assembly.Reference;
 public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference {
     private Reference reference;
     private boolean autowire;
+    private List<CompositeReference> promotedAs = new ArrayList<CompositeReference>();
 
     /**
      * Constructs a new component reference.
@@ -62,4 +67,9 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     public void setAutowire(boolean autowire) {
         this.autowire = autowire;
     }
+
+    public List<CompositeReference> promotedAs() {
+        return promotedAs;
+    }
+    
 }

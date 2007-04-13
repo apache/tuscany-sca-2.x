@@ -25,11 +25,9 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
-import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;

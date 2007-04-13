@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.assembly;
 
+import java.util.List;
+
 /**
  * An addressable instance of a service associated with a particular component.
  * 
@@ -39,4 +41,12 @@ public interface ComponentService extends Service {
      */
     void setService(Service service);
 
+    /**
+     * Derived relationship. Returns the list of composite services that
+     * promote this service.
+     *  
+     * @return
+     */
+    List<CompositeService> promotedAs();
+    
 }

@@ -20,10 +20,8 @@ package org.apache.tuscany.assembly.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Base;
@@ -288,7 +286,6 @@ public class CompositeUtil {
         // Index and bind all component services and references
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
         Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-        Set<ComponentReference> promotedComponentReferences = new HashSet<ComponentReference>();
         
         for (Component component : composite.getComponents()) {
             int i =0;
@@ -332,6 +329,7 @@ public class CompositeUtil {
                 ComponentService resolved = componentServices.get(componentService.getName());
                 if (resolved != null) {
                     compositeService.setPromotedService(resolved);
+                    resolved.promotedAs().add(compositeService);
                 } else {
                     problems.add(compositeService);
                 }
@@ -348,7 +346,7 @@ public class CompositeUtil {
                         componentReferences.get(componentReference.getName());
                     if (resolved != null) {
                         promotedReferences.set(i, resolved);
-                        promotedComponentReferences.add(resolved);
+                        resolved.promotedAs().add(compositeReference);
                     } else {
                         problems.add(compositeReference);
                     }
@@ -428,11 +426,10 @@ public class CompositeUtil {
         // Validate that references are wired or promoted, according
         // to their multiplicity
         for (ComponentReference componentReference : componentReferences.values()) {
-            boolean promoted = promotedComponentReferences.contains(componentReference);
             if (!ReferenceUtil.validateMultiplicityAndTargets(
                                                               componentReference.getMultiplicity(), 
                                                               componentReference.getTargets(),
-                                                              promoted)) {
+                                                              componentReference.promotedAs())) {
                 problems.add(componentReference);
             }
          }
