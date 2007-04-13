@@ -22,7 +22,7 @@ package org.apache.tuscany.binding.axis2;
 import java.util.Map;
 
 import org.apache.tuscany.binding.ws.xml.WebServiceBindingProcessor;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.builder.BuilderRegistry;

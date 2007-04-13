@@ -24,11 +24,13 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.services.contribution.processor.FolderContributionProcessor;
-import org.apache.tuscany.services.contribution.processor.JarContributionProcessor;
-import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.ContributionService;
-import org.apache.tuscany.services.spi.contribution.TypeDescriber;
+import org.apache.tuscany.contribution.service.ContributionService;
+import org.apache.tuscany.contribution.service.TypeDescriber;
+import org.apache.tuscany.contribution.service.impl.ArtifactTypeDescriberImpl;
+import org.apache.tuscany.contribution.service.impl.ContributionPackageProcessorRegistryImpl;
+import org.apache.tuscany.contribution.service.processor.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.impl.FolderContributionProcessor;
+import org.apache.tuscany.contribution.service.processor.impl.JarContributionProcessor;
 
 /**
  * This is more intended to be a integration test then a unit test. *

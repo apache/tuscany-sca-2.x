@@ -34,8 +34,6 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
-
 /**
  * Metadata for a WSDL port
  *

@@ -25,10 +25,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.services.contribution.ContributionPackageProcessorRegistryImpl;
-import org.apache.tuscany.services.contribution.PackageTypeDescriberImpl;
-import org.apache.tuscany.services.contribution.util.IOHelper;
-import org.apache.tuscany.services.spi.contribution.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.service.impl.ContributionPackageProcessorRegistryImpl;
+import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
+import org.apache.tuscany.contribution.service.processor.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.impl.JarContributionProcessor;
+import org.apache.tuscany.contribution.service.util.IOHelper;
 
 public class JarContributionPackageProcessorTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";

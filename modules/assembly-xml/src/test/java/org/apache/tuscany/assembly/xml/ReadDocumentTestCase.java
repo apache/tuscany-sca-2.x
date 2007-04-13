@@ -25,9 +25,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
-import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.DefaultURLArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.service.resolver.DefaultArtifactResolver;
 
 /**
  * Test reading SCA XML assembly documents.

@@ -27,6 +27,9 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.contribution.service.ContributionException;
+import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.service.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.bean.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
@@ -34,9 +37,6 @@ import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
-import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 /**

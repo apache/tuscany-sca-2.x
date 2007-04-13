@@ -25,8 +25,8 @@ import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.contribution.service.processor.DefaultURLArtifactProcessorRegistry;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.services.spi.contribution.DefaultURLArtifactProcessorRegistry;
 
 /**
  * Test reading WSDL interfaces.

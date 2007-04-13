@@ -31,6 +31,7 @@ import javax.wsdl.Output;
 import javax.wsdl.Part;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
@@ -43,7 +44,6 @@ import org.apache.tuscany.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
 import org.apache.tuscany.interfacedef.wsdl.impl.XSDefinitionImpl;
-import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;

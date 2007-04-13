@@ -22,6 +22,7 @@ package org.apache.tuscany.implementation.java.module;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
@@ -45,7 +46,6 @@ import org.apache.tuscany.implementation.java.proxy.JDKProxyService;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.builder.BuilderRegistry;

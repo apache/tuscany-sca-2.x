@@ -24,12 +24,12 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.contribution.service.ContributionException;
+import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.service.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.core.bean.context.CompositeApplicationContext;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
-import org.apache.tuscany.services.spi.contribution.ContributionException;
-import org.apache.tuscany.services.spi.contribution.DefaultArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.DefaultStAXArtifactProcessorRegistry;
 
 /**
  * A mini test runtime that uses a custom Spring ApplicationContext to turn an

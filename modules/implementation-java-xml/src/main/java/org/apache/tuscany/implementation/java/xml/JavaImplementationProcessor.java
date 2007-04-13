@@ -29,18 +29,18 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.impl.ServiceImpl;
 import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.contribution.service.ContributionReadException;
+import org.apache.tuscany.contribution.service.ContributionResolveException;
+import org.apache.tuscany.contribution.service.ContributionWireException;
+import org.apache.tuscany.contribution.service.ContributionWriteException;
+import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.services.spi.contribution.ArtifactResolver;
-import org.apache.tuscany.services.spi.contribution.ContributionReadException;
-import org.apache.tuscany.services.spi.contribution.ContributionResolveException;
-import org.apache.tuscany.services.spi.contribution.ContributionWireException;
-import org.apache.tuscany.services.spi.contribution.ContributionWriteException;
-import org.apache.tuscany.services.spi.contribution.StAXArtifactProcessor;
 
 public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation>,
     JavaImplementationConstants {

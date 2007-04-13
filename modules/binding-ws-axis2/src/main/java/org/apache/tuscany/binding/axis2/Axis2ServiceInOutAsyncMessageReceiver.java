@@ -18,16 +18,13 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
-import org.apache.tuscany.binding.axis2.Axis2ServiceBinding.InvocationContext;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.MessageId;
 
 public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiver {
