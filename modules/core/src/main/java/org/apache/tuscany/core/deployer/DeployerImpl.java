@@ -313,7 +313,7 @@ public class DeployerImpl implements Deployer {
                     contract = definition.getInterfaceContract();
                 }
                 QName type = binding.getBindingType();
-                Wire wire = createWire(sourceUri, targetUri, definition.getInterfaceContract(), contract, type);
+                Wire wire = createWire(targetUri, sourceUri, contract, definition.getInterfaceContract(), type);
                 binding.setWire(wire);
                 // wire local bindings to their targets
                 Component target = componentManager.getComponent(UriHelper.getDefragmentedName(targetUri));
@@ -321,7 +321,7 @@ public class DeployerImpl implements Deployer {
                     throw new ComponentNotFoundException("Target not found", sourceUri);
                 }
                 try {
-                    attachInvokers(targetUri.getFragment(), wire, binding, target);
+                    attachInvokers(sourceUri.getFragment(), wire, target, binding);
                 } catch (TargetInvokerCreationException e) {
                     throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
                 }
@@ -330,7 +330,7 @@ public class DeployerImpl implements Deployer {
                 if (bindingContract == null) {
                     bindingContract = definition.getInterfaceContract();
                 }
-                Wire wire = createWire(sourceUri, null, definition.getInterfaceContract(), bindingContract, binding
+                Wire wire = createWire(null, sourceUri, bindingContract, definition.getInterfaceContract(), binding
                     .getBindingType());
                 if (postProcessorRegistry != null) {
                     postProcessorRegistry.process(wire);
