@@ -40,7 +40,7 @@ public class ContributionServiceTestCase extends TestCase {
     private static final String CONTRIBUTION_001_ID = "contribution001/";
     private static final String CONTRIBUTION_002_ID = "contribution002/";
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
-    private static final String FOLDER_CONTRIBUTION = "/repository/calculator/";
+    private static final String FOLDER_CONTRIBUTION = "target/classes/calculator/";
 
     private ContributionService contributionService;
     
@@ -105,11 +105,12 @@ public class ContributionServiceTestCase extends TestCase {
     }
     
     
-//    public void testContributeFolder() throws Exception {
-//        File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
-//        
-//        URI contributionURI = contributionService.contribute(rootContributionFolder.toURL(), false);
-//        assertNotNull(contributionURI);
-//    }
+    public void testContributeFolder() throws Exception {
+        /*
+        File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
+        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        contributionService.contribute(contributionId, rootContributionFolder.toURL(), false);
+        */
+    }
 
 }
