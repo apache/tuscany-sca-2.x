@@ -22,7 +22,7 @@
            name="HelloWorldOM">
 
     <component name="HelloWorldComponent">
-		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldComponent"/>
+		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldOMComponent"/>
         <reference name="helloWorldWS" />
     </component>
 

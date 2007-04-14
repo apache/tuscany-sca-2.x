@@ -19,15 +19,16 @@
 
 package org.apache.tuscany.binding.axis2.itests;
 
+import org.apache.axiom.om.OMElement;
 import org.osoa.sca.annotations.Reference;
 
-public class HelloWorldOMComponent implements HelloWorld {
+public class HelloWorldOMComponent implements HelloWorldOM {
 
     @Reference
-    public HelloWorld helloWorldWS;
+    public HelloWorldOM helloWorldWS;
     
-    public String getGreetings(String s) {
-        return helloWorldWS.getGreetings(s);
+    public OMElement getGreetings(OMElement om) {
+        return helloWorldWS.getGreetings(om);
     }
 
 }
