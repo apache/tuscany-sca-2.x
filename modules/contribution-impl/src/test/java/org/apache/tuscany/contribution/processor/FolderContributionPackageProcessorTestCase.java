@@ -24,8 +24,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessorRegistry;
-import org.apache.tuscany.contribution.processor.impl.ContributionPackageProcessorRegistryImpl;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 
@@ -40,8 +40,8 @@ public class FolderContributionPackageProcessorTestCase extends TestCase {
     }
     
     public final void testProcessPackageArtifacts() throws Exception {
-        ContributionPackageProcessorRegistry packageProcessorRegistry = new ContributionPackageProcessorRegistryImpl(new PackageTypeDescriberImpl()); 
-        FolderContributionProcessor folderProcessor = new FolderContributionProcessor(packageProcessorRegistry);
+        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint(new PackageTypeDescriberImpl()); 
+        FolderContributionProcessor folderProcessor = new FolderContributionProcessor(packageProcessors);
 
         List<URI> artifacts = folderProcessor.getArtifacts(contributionRoot.toURL(), null);
         assertNotNull(artifacts);

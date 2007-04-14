@@ -24,8 +24,8 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessorRegistry;
-import org.apache.tuscany.contribution.processor.impl.ContributionPackageProcessorRegistryImpl;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.contribution.service.ContributionService;
@@ -40,9 +40,7 @@ public class ContributionServiceImplTestCase extends TestCase {
     private static final String CONTRIBUTION = "/repository/sample-calculator.jar";
     
     private TypeDescriber contentTypeDescriber;
-    private ContributionPackageProcessorRegistry packageProcessorRegistry;
-    //private DefaultStAXArtifactProcessorRegistry staxArtifactProcessorRegistry;
-    //private DefaultURLArtifactProcessorRegistry documentArtifactProcessorRegistry;
+    private PackageProcessorExtensionPoint packageProcessors;
     private ContributionService contributionService;
     
     protected void setUp() throws Exception {
@@ -51,9 +49,9 @@ public class ContributionServiceImplTestCase extends TestCase {
         //boostrap contribution service
         this.contentTypeDescriber = new ArtifactTypeDescriberImpl();
  
-        this.packageProcessorRegistry = new ContributionPackageProcessorRegistryImpl(contentTypeDescriber);
-        new JarContributionProcessor(this.packageProcessorRegistry);
-        new FolderContributionProcessor(this.packageProcessorRegistry);
+        this.packageProcessors = new DefaultPackageProcessorExtensionPoint(contentTypeDescriber);
+        new JarContributionProcessor(this.packageProcessors);
+        new FolderContributionProcessor(this.packageProcessors);
 
         /*
         staxArtifactProcessorRegistry = new DefaultStAXArtifactProcessorRegistry();

@@ -25,8 +25,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessorRegistry;
-import org.apache.tuscany.contribution.processor.impl.ContributionPackageProcessorRegistryImpl;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.util.IOHelper;
@@ -39,8 +39,8 @@ public class JarContributionPackageProcessorTestCase extends TestCase {
     }
     
     public final void testProcessPackageArtifacts() throws Exception {
-        ContributionPackageProcessorRegistry packageProcessorRegistry = new ContributionPackageProcessorRegistryImpl(new PackageTypeDescriberImpl()); 
-        JarContributionProcessor jarProcessor = new JarContributionProcessor(packageProcessorRegistry);
+        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint(new PackageTypeDescriberImpl()); 
+        JarContributionProcessor jarProcessor = new JarContributionProcessor(packageProcessors);
 
         URL jarURL = getClass().getResource(JAR_CONTRIBUTION);
         InputStream jarStream = jarURL.openStream();

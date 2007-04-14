@@ -34,7 +34,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessor;
+import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
@@ -56,7 +56,7 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * Registry of available package processors.
      */
-    protected ContributionPackageProcessor packageProcessor;
+    protected PackageProcessor packageProcessor;
 
     /**
      * Registry of available artifact processors
@@ -82,7 +82,7 @@ public class ContributionServiceImpl implements ContributionService {
     protected ArtifactResolver artifactResolver;
 
     public ContributionServiceImpl(ContributionRepository repository,
-                                   ContributionPackageProcessor packageProcessor,
+                                   PackageProcessor packageProcessor,
                                    URLArtifactProcessor artifactProcessor,
                                    ArtifactResolver artifactResolver) {
         super();

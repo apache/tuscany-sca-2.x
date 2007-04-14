@@ -30,19 +30,19 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.apache.tuscany.contribution.ContentType;
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessor;
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.processor.PackageProcessor;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.service.ContributionException;
 
 public class JarContributionProcessor extends AbstractContributionPackageProcessor implements
-    ContributionPackageProcessor {
+    PackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
     public static final String PACKAGE_TYPE = ContentType.JAR;
 
-    public JarContributionProcessor(ContributionPackageProcessorRegistry registry) {
-        super(registry);
+    public JarContributionProcessor(PackageProcessorExtensionPoint packageProcessors) {
+        super(packageProcessors);
     }
 
     public String getPackageType() {

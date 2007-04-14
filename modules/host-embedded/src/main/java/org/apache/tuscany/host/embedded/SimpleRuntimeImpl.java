@@ -34,12 +34,12 @@ import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.processor.impl.ContributionPackageProcessorRegistryImpl;
+import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
@@ -135,9 +135,9 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
 
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
-        ContributionPackageProcessorRegistry pkgRegistry = new ContributionPackageProcessorRegistryImpl(describer);
-        new JarContributionProcessor(pkgRegistry);
-        new FolderContributionProcessor(pkgRegistry);
+        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint(describer);
+        new JarContributionProcessor(packageProcessors);
+        new FolderContributionProcessor(packageProcessors);
 
         WorkContext workContext = new SimpleWorkContext();
         workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
@@ -145,7 +145,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
 
-        ContributionService contributionService = new ContributionServiceImpl(repository, pkgRegistry,
+        ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
                                                                               documentProcessors, artifactResolver);
 
         extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);

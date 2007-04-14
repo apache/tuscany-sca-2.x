@@ -30,9 +30,9 @@ import org.apache.tuscany.contribution.service.ContributionException;
 /**
  * Interface for services that can process contributions.
  * 
- * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
+ * @version $Rev$ $Date$
  */
-public interface ContributionPackageProcessor {
+public interface PackageProcessor {
     // /**
     // * Returns the type of package handled by this package processor.
     // * @return the type of package handled by this package processor
