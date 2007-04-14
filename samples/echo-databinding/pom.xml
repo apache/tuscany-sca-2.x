@@ -29,8 +29,7 @@
     <groupId>org.apache.tuscany.samples.sca</groupId>
     <artifactId>tuscany-sample-echo-databinding</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
-    <name>Echo DataBinding</name>
-    <description>A Sample for DataBinding</description>
+    <name>Apache Tuscany Echo Data Binding Sample</name>    
 
     <dependencies>
     
