@@ -109,10 +109,6 @@ public class ComponentManagerImpl implements ComponentManager {
         return null;
     }
 
-    public List<Object> getModelObjects() {
-        return modelObjects;
-    }
-
     public <T extends SCAObject> T getSCAObject(Class<T> objectType, Object model) {
         for(int i=0; i<modelObjects.size(); i++) {
             if(modelObjects.get(i) == model) {
