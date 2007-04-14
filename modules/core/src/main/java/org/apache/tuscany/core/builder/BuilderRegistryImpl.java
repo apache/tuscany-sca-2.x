@@ -31,7 +31,6 @@ import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -164,18 +163,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             return null;
         }
         URI uri = URI.create(context.getComponentId() + "#" + serviceDefinition.getName());
-        if (serviceDefinition.getBindings().isEmpty()) {
-            // if no bindings are configured, default to the local binding.
-            // this should be changed to allow runtime selection
-            if (serviceDefinition.getBindings().isEmpty()) {
-                // TODO JFM implement capability for the runtime to choose a
-                // binding
-                org.apache.tuscany.assembly.Component component = serviceDefinition.getPromotedService()
-                    .getBinding(SCABinding.class).getComponent();
-                URI targetURI = URI.create(context.getComponentId() + component.getName());
-                serviceDefinition.getBindings().add(new LocalBindingDefinition(targetURI));
-            }
-        }
         // FIXME:
         URI targetUri = URI.create("#" + serviceDefinition.getPromotedService().getName());
         org.apache.tuscany.spi.component.Service service = new ServiceImpl(uri, serviceDefinition, targetUri);
@@ -199,19 +186,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             return null;
         }
         URI uri = URI.create(context.getComponentId() + "#" + referenceDefinition.getName());
-        if (referenceDefinition.getBindings().isEmpty()) {
-            // if no bindings are configured, default to the local binding.
-            // this should be changed to allow runtime selection
-            if (referenceDefinition.getBindings().isEmpty()) {
-                // TODO JFM implement capability for the runtime to choose a
-                // binding
-                ComponentReference componentReference = referenceDefinition.getPromotedReferences().get(0);
-                org.apache.tuscany.assembly.Component component = componentReference.getBinding(SCABinding.class)
-                    .getComponent();
-                URI targetURI = URI.create(context.getComponentId() + component.getName());
-                referenceDefinition.getBindings().add(new LocalBindingDefinition(targetURI));
-            }
-        }
 
         Reference reference = new ReferenceImpl(uri, referenceDefinition);
         for (Binding bindingDefinition : referenceDefinition.getBindings()) {
