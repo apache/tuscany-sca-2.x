@@ -38,10 +38,13 @@ public interface ContributionRepository {
      * 
      * @param contribution A URl pointing to the contribution being copied to
      *            the repository
+     * @param sourceURL url of the source. this would be used to calculate the right
+     *            filename to be stored on the repository when a inputStream is being
+     *            provided
      * @param contributionStream InputStream with the content of the
      *            distribution
      */
-    URL store(URI contribution, InputStream contributionStream) throws IOException;
+    URL store(URI contribution, URL sourceURL, InputStream contributionStream) throws IOException;
     /**
      * Copy a contribution from the source URL to the repository
      * @param contribution

@@ -53,13 +53,16 @@ public interface ContributionService {
      * Contribute an artifact to the SCA Domain.
      * 
      * @param contributionURI The URI that is used as the contribution unique ID.
+     * @param sourceURL the location of the resource containing the artifact. 
+     *            This is used to identify what name should be used when storing
+     *            the contribution on the repository 
      * @param contributionContent a stream containing the resource being
      *            contributed; the stream will not be closed but the read
      *            position after the call is undefined
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the stream
      */
-    void contribute(URI contributionURI, InputStream contributionContent)
+    void contribute(URI contributionURI, URL sourceURL, InputStream contributionContent)
         throws ContributionException, IOException;
 
     /**
