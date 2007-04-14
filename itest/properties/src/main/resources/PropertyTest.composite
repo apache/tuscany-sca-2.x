@@ -20,6 +20,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
        xmlns:foo="http://foo"
            name="PropertyTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+           
     <property name="number" type="xsd:int">1</property>
     <property name="complex" type="foo:MyComplexType" >
         <foo:MyComplexValue xsi:type="foo:MyComplexType" >
@@ -65,8 +66,8 @@
 
     <component name="ABCDComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.ABCDComponentImpl"/>
-        <reference name="ab" target="ABComponent">
-        <reference name="cd" target="CDComponent">
+        <reference name="ab" target="ABComponent"/>
+        <reference name="cd" target="CDComponent"/>
     </component>
 
     <component name="ABComponent">
