@@ -37,6 +37,7 @@
             </activation>
             <modules>
                 <module>assembly</module>
+                <module>assembly-java-dsl</module>
                 <module>assembly-xml</module>
                 <!--
                 <module>binding-jms</module>
