@@ -17,11 +17,14 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="loanapplication">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://loanapplication"
+	xmlns:la="http://loanapplication"
+	name="loanapplication">
 
     <component name="LoanClientComponent">
         <implementation.java class="loanapplication.LoanClientImpl"/>
-        <reference name="loanService" target="LoanServiceComponent"></reference>
+        <reference name="loanService" target="LoanServiceComponent"/>
     </component>
     
     <component name="LoanServiceComponent">
