@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.core.component.SimpleWorkContext;
-import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.implementation.java.context.ModelHelper;
@@ -39,6 +38,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
@@ -85,7 +85,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         op1.setInterface(contract.getInterfaceContract().getInterface());
 
         WorkContext wc = new SimpleWorkContext();
-        PojoWorkContextTunnel.setThreadWorkContext(wc);
+        WorkContextTunnel.setThreadWorkContext(wc);
         try {
             MockInvoker invoker = new MockInvoker();
 
@@ -110,7 +110,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
             currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
             assertSame(convID, currentConvID);
         } finally {
-            PojoWorkContextTunnel.setThreadWorkContext(null);
+            WorkContextTunnel.setThreadWorkContext(null);
         }
     }
 
