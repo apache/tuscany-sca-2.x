@@ -23,6 +23,7 @@ import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 
 
 /**
@@ -147,4 +148,16 @@ public interface WebServiceBinding extends Binding {
      * @param binding the WSDL binding
      */
     void setBinding(javax.wsdl.Binding binding);
+
+    /**
+     * Returns the WSDL binding.
+     * @return the WSDL binding
+     */
+    WSDLDefinition getWSDLDefinition();
+    
+    /**
+     * Sets the WSDL binding
+     * @param binding the WSDL binding
+     */
+    void setDefinition(WSDLDefinition wsdlDefinition);
 }

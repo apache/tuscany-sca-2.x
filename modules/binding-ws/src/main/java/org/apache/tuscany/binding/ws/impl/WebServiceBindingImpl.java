@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.impl.BindingImpl;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 
 /**
  * Represents a WebService binding.
@@ -43,6 +44,7 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     private String portName;
     private QName serviceName;
     private String endpointName;
+    private WSDLDefinition wsdlDefinition;
     
     public String getLocation() {
         return location;
@@ -151,6 +153,14 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
             throw new IllegalStateException();
         }
         this.serviceName = serviceName;
+    }
+
+    public WSDLDefinition getWSDLDefinition() {
+        return wsdlDefinition;
+    }
+
+    public void setDefinition(WSDLDefinition wsdlDefinition) {
+        this.wsdlDefinition = wsdlDefinition;
     }
 
 }
