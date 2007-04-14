@@ -115,7 +115,7 @@ public class ServiceProcessor extends BaseJavaClassIntrospectorExtension {
         if (callbackService == null) {
             throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface");
         }
-        type.getCallbackMembers().put(name, new JavaElement(method, 0));
+        type.getCallbackMembers().put(callbackClass.getName(), new JavaElement(method, 0));
     }
 
     public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
@@ -136,7 +136,7 @@ public class ServiceProcessor extends BaseJavaClassIntrospectorExtension {
         if (callbackService == null) {
             throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface");
         }
-        type.getCallbackMembers().put(name, new JavaElement(field));
+        type.getCallbackMembers().put(callbackClass.getName(), new JavaElement(field));
     }
 
     public Service createService(Class<?> interfaze) throws InvalidInterfaceException {
