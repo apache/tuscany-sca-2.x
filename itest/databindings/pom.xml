@@ -19,17 +19,17 @@
 -->
 <project>
   <parent>
-	  <groupId>org.apache.tuscany.testing</groupId>
-	  <artifactId>sca-itest</artifactId>
-	  <version>1.0-incubator-SNAPSHOT</version>
+	  <groupId>org.apache.tuscany.sca</groupId>
+	  <artifactId>tuscany-itest</artifactId>
+	  <version>1.0-incubating-SNAPSHOT</version>
           <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   
-  <groupId>org.apache.tuscany.testing</groupId>
-  <artifactId>databindings</artifactId>
+  <groupId>org.apache.tuscany.sca</groupId>
+  <artifactId>tuscany-itest-databindings</artifactId>
   <name>SCA Databindings Integration Tests</name>
-  <version>1.0-incubator-SNAPSHOT</version>
+  <version>1.0-incubating-SNAPSHOT</version>
   
   
   <packaging>pom</packaging>

@@ -19,15 +19,15 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.testing</groupId>
-        <artifactId>databindings</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-itest-databindings</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>iTest-jaxbDatabinding</artifactId>
-    <version>${testing.version}</version>
+    <artifactId>tuscany-itest-databindings-jaxb</artifactId>
+    <version>1.0-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>JAXB Databinding Integration Test</name>
 
@@ -57,26 +57,26 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-            <artifactId>databinding-jaxb</artifactId>
-            <version>2.0-alpha2-incubating-SNAPSHOT</version>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-jaxb</artifactId>
+            <version>${pom.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-            <artifactId>databinding-sdo</artifactId>
-            <version>2.0-alpha2-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
-            <artifactId>databinding-axiom</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-sdo</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.testing</groupId>
-            <artifactId>itest-commonDatabinding</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-axiom</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-itest-databindings-common</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency> 
@@ -113,8 +113,8 @@
                       <configuration>
                           <artifactItems>
                               <artifactItem>
-                                  <groupId>org.apache.tuscany.testing</groupId>
-                                  <artifactId>itest-commonDatabinding</artifactId>
+                                  <groupId>org.apache.tuscany.sca</groupId>
+                                  <artifactId>tuscany-itest-databindings-common</artifactId>
                                   <version>${project.version}</version>
                                   <overWrite>true</overWrite>
                                   <outputDirectory>${project.build.directory}/classes</outputDirectory>

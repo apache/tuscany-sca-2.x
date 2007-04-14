@@ -21,10 +21,10 @@ package $template.getJavaPackage();
 
 import junit.framework.TestCase;
 
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-
 import org.apache.tuscany.api.SCARuntime;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
+
 import ${template.getJavaPackage()}.GreeterService;
 
 // Data types
@@ -73,8 +73,9 @@ public class DatabindingTestCase extends TestCase  {
      * @param ext the protcol required
      */
     private void setUpClient(String ext) throws Exception {
-        CompositeContext ctx = CurrentCompositeContext.getContext();
-        greeterClient = ctx.locateService(GreeterService.class, ext + "GreeterServiceClient");
+        ComponentContext context = SCARuntime.getComponentContext(ext + "GreeterServiceClient");
+        ServiceReference<GreeterService> service = context.createSelfReference(GreeterService.class);
+        greeterClient = service.getService();  
     }
 
     /**

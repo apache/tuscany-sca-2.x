@@ -29,18 +29,16 @@
     #end    
     
     <!-- Services Exposed via different bindings -->
-    <service name="SDOGreeterServiceDefaultBinding">
+    <service name="SDOGreeterServiceDefaultBinding" promote="SDOGreeterServiceComponent">
         <interface.java class="org.apache.tuscany.sca.itest.sdodatabinding.GreeterService" />
-        <reference>SDOGreeterServiceComponent</reference>
     </service>
 
-    <service name="GreeterServiceWebServiceBinding">
+    <service name="GreeterServiceWebServiceBinding" promote="SDOGreeterServiceComponent">
         <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"
             wsdli:wsdlLocation="http://apache.org/tuscany/sca/itest/databinding/services wsdl/Greeter.wsdl" />
         <binding.ws
             endpoint="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.endpoint(GreeterService/GreeterPort)"
             location="wsdl/Greeter.wsdl" />
-        <reference>SDOGreeterServiceComponent</reference>
     </service>
 
     <!-- Components used to implement the services -->
@@ -53,7 +51,7 @@
     <component name="DefaultGreeterServiceClient">
         <implementation.java class="org.apache.tuscany.sca.itest.sdodatabinding.GreeterServiceClientImpl" />
         <!--reference name="greeterService">SDOGreeterServiceDefaultRef</reference-->
-        <reference name="greeterService">SDOGreeterServiceComponent</reference>
+        <reference name="greeterService" target="SDOGreeterServiceComponent"/>
     </component>
 
     <reference name="SDOGreeterServiceDefaultRef">
@@ -62,7 +60,7 @@
 
     <component name="WSGreeterServiceClient">
         <implementation.java class="org.apache.tuscany.sca.itest.sdodatabinding.GreeterServiceClientImpl" />
-        <reference name="greeterService">SDOGreeterServiceWSRef</reference>
+        <reference name="greeterService" target="SDOGreeterServiceWSRef"/>
     </component>
 
     <reference name="SDOGreeterServiceWSRef">
