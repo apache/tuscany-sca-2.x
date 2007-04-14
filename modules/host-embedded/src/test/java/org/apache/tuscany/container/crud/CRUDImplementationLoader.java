@@ -26,13 +26,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 
 public class CRUDImplementationLoader implements StAXArtifactProcessor<CRUDImplementation> {
     public static final QName IMPLEMENTATION_CRUD = new QName(SCA_NS, "implementation.crud");

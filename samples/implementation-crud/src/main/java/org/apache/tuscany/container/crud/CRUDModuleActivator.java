@@ -21,7 +21,7 @@ package org.apache.tuscany.container.crud;
 
 import java.util.Map;
 
-import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.builder.BuilderRegistry;

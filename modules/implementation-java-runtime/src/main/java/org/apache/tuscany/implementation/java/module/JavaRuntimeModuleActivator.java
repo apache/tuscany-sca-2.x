@@ -22,7 +22,7 @@ package org.apache.tuscany.implementation.java.module;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;

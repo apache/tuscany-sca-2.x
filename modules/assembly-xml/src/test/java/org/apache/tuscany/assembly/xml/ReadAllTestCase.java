@@ -35,8 +35,8 @@ import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.util.PrintUtil;
-import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
-import org.apache.tuscany.contribution.service.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -24,12 +24,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.contribution.service.processor.URLArtifactProcessor;
-import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
 import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;

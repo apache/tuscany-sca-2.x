@@ -23,12 +23,12 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 
 public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> {
     private final EchoBindingFactory factory;

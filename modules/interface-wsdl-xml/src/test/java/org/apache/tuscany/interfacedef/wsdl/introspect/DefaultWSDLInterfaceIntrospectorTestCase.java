@@ -28,8 +28,8 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
-import org.apache.tuscany.contribution.service.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;

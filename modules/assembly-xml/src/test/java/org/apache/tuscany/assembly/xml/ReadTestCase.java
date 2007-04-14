@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
 
 /**
  * Test reading SCA XML assemblies.
