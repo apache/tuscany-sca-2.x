@@ -45,6 +45,7 @@ public class WireObjectFactoryTestCase extends TestCase {
     @SuppressWarnings( {"unchecked"})
     public void testCreateInstance() throws Exception {
         Operation op = new OperationImpl("hello");
+        op.setInterface(new JavaInterfaceImpl());
         InvocationChain chain = new InvocationChainImpl(op);
         Wire wire = EasyMock.createMock(Wire.class);
         List<InvocationChain> chains = new ArrayList<InvocationChain>();
