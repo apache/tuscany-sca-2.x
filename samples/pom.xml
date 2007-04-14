@@ -38,8 +38,8 @@
             <modules>
                 <module>calculator</module>
                 <module>echo-binding</module>
-                <!--
                 <module>composite-impl</module>
+                <!--
                 <module>das-service</module>
                 <module>echo-databinding</module>
                 -->
