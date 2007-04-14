@@ -146,12 +146,6 @@ public class DeployerImpl implements Deployer {
             Object model = componentManager.getModelObject(Object.class, scaObject);
             if (model instanceof org.apache.tuscany.assembly.Component) {
                 connect((Component)scaObject, (org.apache.tuscany.assembly.Component)model);
-            } else if (model instanceof CompositeReference) {
-                try {
-                    connect((Reference)scaObject, (CompositeReference)model);
-                } catch (IncompatibleInterfaceContractException e) {
-                    throw new IllegalStateException(e);
-                }
             } else if (model instanceof CompositeService) {
                 try {
                     connect((Service)scaObject, (CompositeService)model);
@@ -200,180 +194,6 @@ public class DeployerImpl implements Deployer {
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-
-    public static org.apache.tuscany.assembly.Reference getReference(Implementation type, String name) {
-        for (org.apache.tuscany.assembly.Reference ref : type.getReferences()) {
-            if (ref.getName().equals(name)) {
-                return ref;
-            }
-        }
-        return null;
-    }
-
-    public void connect(org.apache.tuscany.assembly.Component definition) throws WiringException {
-        Component source = componentManager.getSCAObject(Component.class, definition);
-        if (source == null) {
-            throw new ComponentNotFoundException("Source not found", URI.create(definition.getName()));
-        }
-
-        for (ComponentReference ref : definition.getReferences()) {
-            List<Wire> wires = new ArrayList<Wire>();
-            String refName = ref.getName();
-            org.apache.tuscany.assembly.Reference refDefinition = getReference(definition.getImplementation(), refName);
-            assert refDefinition != null;
-            List<ComponentService> services = ref.getTargets();
-            for (ComponentService service : services) {
-                org.apache.tuscany.assembly.Component targetCompoent = service.getBinding(SCABinding.class)
-                    .getComponent();
-                Component target = componentManager.getSCAObject(Component.class, targetCompoent);
-                URI targetUri = URI.create(target.getUri() + "#" + service.getName());
-                if (target == null && (refDefinition.getMultiplicity() == Multiplicity.ZERO_ONE || refDefinition
-                        .getMultiplicity() == Multiplicity.ZERO_N)) {
-                    // a non-required reference, just skip
-                    continue;
-                }
-                if (target == null) {
-                    throw new ComponentNotFoundException("Target not found", targetUri);
-                }
-                URI sourceURI = URI.create(source.getUri() + "#" + refName);
-                Wire wire;
-                try {
-                    wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), service.getService()
-                        .getInterfaceContract(), Wire.LOCAL_BINDING);
-                } catch (IncompatibleInterfaceContractException e1) {
-                    throw new IncompatibleInterfacesException(sourceURI, targetUri, e1);
-                }
-
-                // If this component is implemented by a composite then
-                // we need to attach the wires to the component in the
-                // implementing composite that defines the references that
-                // have been promoted to here. The composite component is not
-                // itself wired as it plays no part in the runtime invocation
-                // chain
-                // We grab the nested component here, whose refefrences have
-                // been promoted
-                // and use it later on
-                Component nestedComponentSource = null;
-
-                if (definition.getImplementation() instanceof Composite) {
-                    // Need to get the component from the composite. This is
-                    // slightly tricky
-                    // as we need to:
-                    // Cast the reference to a composite reference
-                    // Get the promoted references
-                    List<ComponentReference> promotedReference = ((CompositeReference)refDefinition)
-                        .getPromotedReferences();
-                    // For each promoted reference get the SCA binding
-                    for (ComponentReference componentReference : promotedReference) {
-                        SCABinding scaBinding = componentReference.getBinding(SCABinding.class);
-                        // from the binding get the component
-                        org.apache.tuscany.assembly.Component nestedComponent = scaBinding.getComponent();
-                        // map the model component to the runtime component
-                        nestedComponentSource = componentManager.getSCAObject(Component.class, nestedComponent);
-                    }
-                }
-
-                // The same is true of the target for when callbacks are wired
-                // or when the
-                // target invoker is created. If the target is a composite
-                // component go get
-                // the component from the implementing composite whose service
-                // we are targetting
-                Component nestedComponentTarget = null;
-
-                if (targetCompoent.getImplementation() instanceof Composite) {
-                    // Need to get the component from the composite. Here we go:
-                    // Get the implementation from the target component (this
-                    // should be a composite)
-                    List<org.apache.tuscany.assembly.Service> nestedServices = targetCompoent.getImplementation()
-                        .getServices();
-                    // Get the service from the implementation that matches the
-                    // service we are processing
-                    for (org.apache.tuscany.assembly.Service nestedService : nestedServices) {
-                        if (nestedService.getName().equals(service.getName())) {
-                            // Get the real service that this is promoted from
-                            ComponentService promotedService = ((CompositeService)nestedService).getPromotedService();
-                            // Get the SCA binding from the promoted service
-                            SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
-                            // Get the component from the binding
-                            org.apache.tuscany.assembly.Component nestedComponent = scaBinding.getComponent();
-                            // Map this model component to the runtime component
-                            nestedComponentTarget = componentManager.getSCAObject(Component.class, nestedComponent);
-                        }
-                    }
-                }
-
-                // add the required invokers to the wire created prviously. of
-                // particluar imporantance is the target invoker that provides
-                // the
-                // bridge to the target service. We have to check
-                try {
-                    if (nestedComponentTarget == null) {
-                        attachInvokers(refName, wire, source, target);
-                    } else {
-                        attachInvokers(refName, wire, source, nestedComponentTarget);
-                    }
-
-                } catch (TargetInvokerCreationException e) {
-                    throw new WireCreationException("Error creating invoker", sourceURI, targetUri, e);
-                }
-
-                if (postProcessorRegistry != null) {
-                    postProcessorRegistry.process(wire);
-                }
-
-                // TODO: Which components do we need to use for the optimize
-                optimize(source, target, wire);
-
-                // In the case of a composite component add the wire to the
-                // component inside
-                // the reference loop because there may be many references
-                // promoted to the composite component from different components
-                if (definition.getImplementation() instanceof Composite) {
-                    nestedComponentSource.attachWire(wire);
-                } else {
-                    // add the wire to the collcetion that will be added
-                    // en-masse to the
-                    // source component later on
-                    wires.add(wire);
-                }
-
-                // if there is a callback associated with the invocation chain
-                // then this needs to be connected to the target. It has to be
-                // done
-                // inside the service/target loop because there may be multiple
-                // targets for the reference
-                if (!wire.getCallbackInvocationChains().isEmpty()) {
-                    // as previously the target may be implemented by a
-                    // composite
-                    // so we need to find the target component within the
-                    // composite
-                    // to set the callback on if this is the case
-                    if (targetCompoent.getImplementation() instanceof Composite) {
-                        nestedComponentTarget.attachCallbackWire(wire);
-                    } else {
-                        target.attachCallbackWire(wire);
-                    }
-                }
-            }
-
-            // If this component is implemented by a composite then
-            // the wires will already have been added to the appropriate
-            // components in the code above
-            if (definition.getImplementation() instanceof Composite) {
-                // not sure we need to do anything else here
-            } else {
-                if (wires.size() > 1) {
-                    // attach as a multiplicity
-                    source.attachWires(wires);
-                } else if (wires.size() == 1) {
-                    // attach as a single wire
-                    Wire wire = wires.get(0);
-                    source.attachWire(wire);
                 }
             }
         }
@@ -465,7 +285,7 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    protected void connect(Service service, CompositeService definition) throws WiringException,
+    private void connect(Service service, CompositeService definition) throws WiringException,
         IncompatibleInterfaceContractException {
         SCABinding scaBinding = definition.getPromotedService().getBinding(SCABinding.class);
         org.apache.tuscany.assembly.Component targetComponent = scaBinding.getComponent();
@@ -497,45 +317,6 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    protected void connect(org.apache.tuscany.spi.component.Reference reference, CompositeReference definition)
-        throws WiringException, IncompatibleInterfaceContractException {
-        URI sourceUri = reference.getUri();
-        for (ReferenceBinding binding : reference.getReferenceBindings()) {
-            // create wire
-            if (Wire.LOCAL_BINDING.equals(binding.getBindingType())) {
-                URI targetUri = binding.getTargetUri();
-                InterfaceContract contract = binding.getBindingInterfaceContract();
-                if (contract == null) {
-                    contract = definition.getInterfaceContract();
-                }
-                QName type = binding.getBindingType();
-                Wire wire = createWire(targetUri, sourceUri, contract, definition.getInterfaceContract(), type);
-                binding.setWire(wire);
-                // wire local bindings to their targets
-                Component target = componentManager.getComponent(UriHelper.getDefragmentedName(targetUri));
-                if (target == null) {
-                    throw new ComponentNotFoundException("Target not found", sourceUri);
-                }
-                try {
-                    attachInvokers(sourceUri.getFragment(), wire, target, binding);
-                } catch (TargetInvokerCreationException e) {
-                    throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
-                }
-            } else {
-                InterfaceContract bindingContract = binding.getBindingInterfaceContract();
-                if (bindingContract == null) {
-                    bindingContract = definition.getInterfaceContract();
-                }
-                Wire wire = createWire(null, sourceUri, bindingContract, definition.getInterfaceContract(), binding
-                    .getBindingType());
-                if (postProcessorRegistry != null) {
-                    postProcessorRegistry.process(wire);
-                }
-                binding.setWire(wire);
-            }
-        }
-    }
-
     /**
      * Create a new wire connecting a source to a target.
      * 
@@ -547,7 +328,7 @@ public class DeployerImpl implements Deployer {
      * @return
      * @throws IncompatibleInterfaceContractException
      */
-    protected Wire createWire(URI sourceURI,
+    private Wire createWire(URI sourceURI,
                               URI targetUri,
                               InterfaceContract sourceContract,
                               InterfaceContract targetContract,
@@ -595,7 +376,7 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    protected void optimize(Component source, Component target, Wire wire) {
+    private void optimize(Component source, Component target, Wire wire) {
         boolean optimizableScopes = isOptimizable(source.getScope(), target.getScope());
         if (optimizableScopes && target.isOptimizable() && WireUtils.isOptimizable(wire)) {
             wire.setOptimizable(true);
@@ -605,7 +386,7 @@ public class DeployerImpl implements Deployer {
         }
     }
 
-    protected boolean isOptimizable(Scope pReferrer, Scope pReferee) {
+    private boolean isOptimizable(Scope pReferrer, Scope pReferee) {
         if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED
             || pReferrer == Scope.CONVERSATION
             || pReferee == Scope.CONVERSATION) {
