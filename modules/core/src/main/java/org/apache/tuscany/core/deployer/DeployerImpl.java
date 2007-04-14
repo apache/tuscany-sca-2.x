@@ -111,7 +111,6 @@ public class DeployerImpl implements Deployer {
 
     public Collection<Component> deploy(Composite composite) throws BuilderException, ResolutionException {
         @SuppressWarnings("unchecked")
-        
         // Create a deployment context
         ScopeContainer<URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
         URI groupId = URI.create(composite.getName().getLocalPart());
@@ -123,7 +122,7 @@ public class DeployerImpl implements Deployer {
         org.apache.tuscany.assembly.Component componentDef = new DefaultAssemblyFactory().createComponent();
         componentDef.setName(composite.getName().getLocalPart());
         componentDef.setImplementation(composite);
-        
+
         // Adjust the composite graph and wire the references with SCA bindings
         processSCABinding(composite);
 
@@ -139,7 +138,7 @@ public class DeployerImpl implements Deployer {
                 throw new BuilderInstantiationException("Error registering component", e);
             }
         }
-        
+
         // Connect components, services and references
         List<SCAObject> scaObjects = componentManager.getSCAObjects();
         for (int i = 0; i < scaObjects.size(); i++) {
@@ -164,27 +163,28 @@ public class DeployerImpl implements Deployer {
 
         return components;
     }
-    
-    
+
     private void processSCABinding(Composite composite) {
-        
+
         // Resolve all wires
-        for (org.apache.tuscany.assembly.Component component: composite.getComponents()) {
-            
+        for (org.apache.tuscany.assembly.Component component : composite.getComponents()) {
+
             // Process composite components
             if (component.getImplementation() instanceof Composite) {
-                for (ComponentReference componentReference: component.getReferences()) {
-                    
+                for (ComponentReference componentReference : component.getReferences()) {
+
                     // Process component references with a default binding
                     if (componentReference.getBinding(SCABinding.class) != null) {
-                        
-                        // Wire the promoted references inside the nested composite
+
+                        // Wire the promoted references inside the nested
+                        // composite
                         CompositeReference compositeReference = (CompositeReference)componentReference.getReference();
                         if (compositeReference != null) {
-                            for (ComponentReference promotedReference: compositeReference.getPromotedReferences()) {
-                                
-                                // Add all the actual (promoted) targets to the promoted reference 
-                                for (ComponentService componentService: componentReference.getTargets()) {
+                            for (ComponentReference promotedReference : compositeReference.getPromotedReferences()) {
+
+                                // Add all the actual (promoted) targets to the
+                                // promoted reference
+                                for (ComponentService componentService : componentReference.getTargets()) {
                                     org.apache.tuscany.assembly.Service service = componentService.getService();
                                     if (service instanceof CompositeService) {
                                         CompositeService compositeService = (CompositeService)service;
@@ -227,12 +227,12 @@ public class DeployerImpl implements Deployer {
             assert refDefinition != null;
             List<ComponentService> services = ref.getTargets();
             for (ComponentService service : services) {
-                org.apache.tuscany.assembly.Component targetCompoent =
-                    service.getBinding(SCABinding.class).getComponent();
+                org.apache.tuscany.assembly.Component targetCompoent = service.getBinding(SCABinding.class)
+                    .getComponent();
                 Component target = componentManager.getSCAObject(Component.class, targetCompoent);
                 URI targetUri = URI.create(target.getUri() + "#" + service.getName());
                 if (target == null && (refDefinition.getMultiplicity() == Multiplicity.ZERO_ONE || refDefinition
-                    .getMultiplicity() == Multiplicity.ZERO_N)) {
+                        .getMultiplicity() == Multiplicity.ZERO_N)) {
                     // a non-required reference, just skip
                     continue;
                 }
@@ -242,9 +242,8 @@ public class DeployerImpl implements Deployer {
                 URI sourceURI = URI.create(source.getUri() + "#" + refName);
                 Wire wire;
                 try {
-                    wire =
-                        createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), service.getService()
-                            .getInterfaceContract(), Wire.LOCAL_BINDING);
+                    wire = createWire(sourceURI, targetUri, refDefinition.getInterfaceContract(), service.getService()
+                        .getInterfaceContract(), Wire.LOCAL_BINDING);
                 } catch (IncompatibleInterfaceContractException e1) {
                     throw new IncompatibleInterfacesException(sourceURI, targetUri, e1);
                 }
@@ -266,8 +265,8 @@ public class DeployerImpl implements Deployer {
                     // as we need to:
                     // Cast the reference to a composite reference
                     // Get the promoted references
-                    List<ComponentReference> promotedReference =
-                        ((CompositeReference)refDefinition).getPromotedReferences();
+                    List<ComponentReference> promotedReference = ((CompositeReference)refDefinition)
+                        .getPromotedReferences();
                     // For each promoted reference get the SCA binding
                     for (ComponentReference componentReference : promotedReference) {
                         SCABinding scaBinding = componentReference.getBinding(SCABinding.class);
@@ -290,7 +289,8 @@ public class DeployerImpl implements Deployer {
                     // Need to get the component from the composite. Here we go:
                     // Get the implementation from the target component (this
                     // should be a composite)
-                    List<org.apache.tuscany.assembly.Service> nestedServices = targetCompoent.getImplementation().getServices();
+                    List<org.apache.tuscany.assembly.Service> nestedServices = targetCompoent.getImplementation()
+                        .getServices();
                     // Get the service from the implementation that matches the
                     // service we are processing
                     for (org.apache.tuscany.assembly.Service nestedService : nestedServices) {
@@ -397,7 +397,7 @@ public class DeployerImpl implements Deployer {
                 Reference target = componentManager.getSCAObject(Reference.class, compositeReference);
                 // FIXME: Assume we only have one binding
                 ReferenceBinding binding = target.getReferenceBindings().get(0);
-                URI targetUri = binding.getTargetUri();
+                URI targetUri = binding.getUri();
                 InterfaceContract contract = compositeReference.getInterfaceContract();
                 QName type = binding.getBindingType();
                 URI sourceUri = URI.create(source.getUri() + "#" + refName);
@@ -538,6 +538,7 @@ public class DeployerImpl implements Deployer {
 
     /**
      * Create a new wire connecting a source to a target.
+     * 
      * @param sourceURI
      * @param targetUri
      * @param sourceContract

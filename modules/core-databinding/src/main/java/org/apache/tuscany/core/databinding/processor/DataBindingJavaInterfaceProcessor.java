@@ -94,7 +94,10 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospec
         }
         for (Method method : clazz.getMethods()) {
             Operation operation = opMap.get(method.getName());
-            dataBinding = clazz.getAnnotation(DataBinding.class);
+            DataBinding methodDataBinding = clazz.getAnnotation(DataBinding.class);
+            if (methodDataBinding == null) {
+                methodDataBinding = dataBinding;
+            }
             dataBindingId = null;
             wrapperStyle = false;
             if (dataBinding != null) {
@@ -102,16 +105,26 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospec
                 wrapperStyle = dataBinding.wrapperStyle();
                 operation.setDataBinding(dataBindingId);
                 operation.setWrapperStyle(wrapperStyle);
-            }            
+            }
 
             // FIXME: We need a better way to identify simple java types
             for (org.apache.tuscany.interfacedef.DataType<?> d : operation.getInputType().getLogical()) {
+                if (d.getDataBinding() == null) {
+                    d.setDataBinding(dataBindingId);
+                }
                 dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
             if (operation.getOutputType() != null) {
-                dataBindingRegistry.introspectType(operation.getOutputType(), method.getAnnotations());
+                DataType<?> d = operation.getOutputType();
+                if (d.getDataBinding() == null) {
+                    d.setDataBinding(dataBindingId);
+                }
+                dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
             for (org.apache.tuscany.interfacedef.DataType<?> d : operation.getFaultTypes()) {
+                if (d.getDataBinding() == null) {
+                    d.setDataBinding(dataBindingId);
+                }
                 dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
 
