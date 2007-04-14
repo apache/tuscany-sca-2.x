@@ -36,7 +36,6 @@ import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
-import org.apache.tuscany.contribution.service.impl.ContributionPackageProcessorRegistryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
@@ -45,6 +44,7 @@ import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProc
 import org.apache.tuscany.contribution.service.processor.DefaultURLArtifactProcessorRegistry;
 import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.contribution.service.processor.URLArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.impl.ContributionPackageProcessorRegistryImpl;
 import org.apache.tuscany.contribution.service.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.service.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.contribution.service.resolver.DefaultArtifactResolver;
