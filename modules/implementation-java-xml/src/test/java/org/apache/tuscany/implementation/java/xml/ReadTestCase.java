@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 
@@ -41,26 +41,26 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 public class ReadTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
-    DefaultStAXArtifactProcessorRegistry registry;
+    DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
-        registry = new DefaultStAXArtifactProcessorRegistry();
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         
-        CompositeProcessor compositeProcessor = new CompositeProcessor(registry);
-        registry.addArtifactProcessor(compositeProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(staxProcessors);
+        staxProcessors.addExtension(compositeProcessor);
 
         JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor();
-        registry.addArtifactProcessor(javaProcessor);
+        staxProcessors.addExtension(javaProcessor);
     }
 
     public void tearDown() throws Exception {
         inputFactory = null;
-        registry = null;
+        staxProcessors = null;
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(registry);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(staxProcessors);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
@@ -72,14 +72,14 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadAndResolveComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(registry);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(staxProcessors);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
         
         ArtifactResolver resolver = new DefaultArtifactResolver();
-        registry.resolve(composite, resolver);
+        staxProcessors.resolve(composite, resolver);
 
         new CompositeUtil(composite).configure(null);
 

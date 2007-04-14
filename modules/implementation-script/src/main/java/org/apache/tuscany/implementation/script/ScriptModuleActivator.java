@@ -21,7 +21,7 @@ package org.apache.tuscany.implementation.script;
 
 import java.util.Map;
 
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -32,11 +32,11 @@ public class ScriptModuleActivator implements ModuleActivator {
     private ScriptComponentBuilder builder;
     
     public void start(ExtensionPointRegistry registry) {
-        StAXArtifactProcessorRegistry processors = registry.getExtensionPoint(StAXArtifactProcessorRegistry.class);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
 
         scriptArtifactProcessor = new ScriptArtifactProcessor();
-        processors.addArtifactProcessor(scriptArtifactProcessor);
+        processors.addExtension(scriptArtifactProcessor);
 
         builder = new ScriptComponentBuilder();
         builder.setBuilderRegistry(builderRegistry);

@@ -21,11 +21,23 @@ package org.apache.tuscany.contribution.processor;
 
 
 /**
- * A registry for Stream artifact processors.
+ * An extension point for artifact processors.
  * 
- * @version $Rev: 525638 $ $Date: 2007-04-04 16:36:03 -0700 (Wed, 04 Apr 2007) $
+ * @version $Rev$ $Date$
  */
-public interface URLArtifactProcessorRegistry extends
-    ArtifactProcessorRegistry<URLArtifactProcessor<Object>> {
+public interface ArtifactProcessorExtensionPoint<P> {
     
+    /**
+     * Add an artifact processor.
+     * @param artifactProcessor the artifact processor to add
+     */
+    void addExtension(P artifactProcessor);
+    
+    /**
+     * Remove an artifact processor.
+     * @param artifactProcessor the artifact processor to remove
+     */
+    
+   void removeExtension(P artifactProcessor);
+
 }

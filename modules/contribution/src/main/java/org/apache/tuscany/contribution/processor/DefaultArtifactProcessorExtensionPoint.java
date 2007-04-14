@@ -25,16 +25,16 @@ import java.util.Map;
 /**
  * The default implementation of an artifact processor registry.
  * 
- * @version $Rev: 527510 $ $Date: 2007-04-11 07:50:25 -0700 (Wed, 11 Apr 2007) $
+ * @version $Rev$ $Date$
  */
-abstract class DefaultArtifactProcessorRegistry {
+abstract class DefaultArtifactProcessorExtensionPoint {
     protected final Map<Object, ArtifactProcessor> processorsByArtifactType = new HashMap<Object, ArtifactProcessor>();
     protected final Map<Class<?>, ArtifactProcessor> processorsByModelType = new HashMap<Class<?>, ArtifactProcessor>();
 
     /**
      * Constructs a new loader registry.
      */
-    public DefaultArtifactProcessorRegistry() {
+    public DefaultArtifactProcessorExtensionPoint() {
     }
 
     /**

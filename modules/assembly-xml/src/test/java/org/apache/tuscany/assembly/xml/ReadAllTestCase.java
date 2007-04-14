@@ -34,8 +34,7 @@ import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.util.PrintUtil;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,22 +45,22 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class ReadAllTestCase extends TestCase {
-    private DefaultStAXArtifactProcessorRegistry registry;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
 
     public void setUp() throws Exception {
-        registry = new DefaultStAXArtifactProcessorRegistry();
-        registry.addArtifactProcessor(new CompositeProcessor(registry));
-        registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
-        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
     }
 
     public void tearDown() throws Exception {
-        registry = null;
+        staxProcessors = null;
     }
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = registry.read(is, Composite.class);
+        Composite composite = staxProcessors.read(is, Composite.class);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
@@ -148,15 +147,15 @@ public class ReadAllTestCase extends TestCase {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
 
         InputStream is = getClass().getResourceAsStream("TestAllDivide.composite");
-        Composite included = registry.read(is, Composite.class);
+        Composite included = staxProcessors.read(is, Composite.class);
         assertNotNull(included);
         resolver.add(included);
         
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = registry.read(is, Composite.class);
+        Composite composite = staxProcessors.read(is, Composite.class);
         assertNotNull(composite);
-        registry.resolve(composite, resolver);
-        registry.wire(composite);
+        staxProcessors.resolve(composite, resolver);
+        staxProcessors.wire(composite);
 
         Component calcComponent = composite.getComponents().get(0);
         CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);

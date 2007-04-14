@@ -30,7 +30,7 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 
 /**
  * Test writing Java implementations.
@@ -40,31 +40,31 @@ import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorReg
 public class WriteTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
-    DefaultStAXArtifactProcessorRegistry registry;
+    DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
-        registry = new DefaultStAXArtifactProcessorRegistry();
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
 
-        registry.addArtifactProcessor(new CompositeProcessor(registry));
-        registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
-        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
+        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
 
         JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor();
-        registry.addArtifactProcessor(javaProcessor);
+        staxProcessors.addExtension(javaProcessor);
     }
 
     public void tearDown() throws Exception {
         inputFactory = null;
-        registry = null;
+        staxProcessors = null;
     }
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        Composite composite = registry.read(is, Composite.class);
+        Composite composite = staxProcessors.read(is, Composite.class);
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        registry.write(composite, bos);
+        staxProcessors.write(composite, bos);
     }
 
 }

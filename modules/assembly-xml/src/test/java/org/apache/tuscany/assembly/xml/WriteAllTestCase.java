@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 
 /**
@@ -36,51 +36,51 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
  * @version $Rev$ $Date$
  */
 public class WriteAllTestCase extends TestCase {
-    private DefaultStAXArtifactProcessorRegistry registry;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
 
     public void setUp() throws Exception {
-        registry = new DefaultStAXArtifactProcessorRegistry();
-        registry.addArtifactProcessor(new CompositeProcessor(registry));
-        registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
-        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
     }
 
     public void tearDown() throws Exception {
-        registry = null;
+        staxProcessors = null;
     }
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = registry.read(is, Composite.class);
+        Composite composite = staxProcessors.read(is, Composite.class);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        registry.write(composite, bos);
+        staxProcessors.write(composite, bos);
     }
 
     public void testReadWireWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = registry.read(is, Composite.class);
-        registry.resolve(composite, new DefaultArtifactResolver());
-        registry.wire(composite);
+        Composite composite = staxProcessors.read(is, Composite.class);
+        staxProcessors.resolve(composite, new DefaultArtifactResolver());
+        staxProcessors.wire(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        registry.write(composite, bos);
+        staxProcessors.write(composite, bos);
     }
     
     public void testReadWriteComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
-        ComponentType componentType = registry.read(is, ComponentType.class);
-        registry.resolve(componentType, new DefaultArtifactResolver());
-        registry.wire(componentType);
+        ComponentType componentType = staxProcessors.read(is, ComponentType.class);
+        staxProcessors.resolve(componentType, new DefaultArtifactResolver());
+        staxProcessors.wire(componentType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        registry.write(componentType, bos);
+        staxProcessors.write(componentType, bos);
     }
 
     public void testReadWriteConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = registry.read(is, ConstrainingType.class);
-        registry.resolve(constrainingType, new DefaultArtifactResolver());
-        registry.wire(constrainingType);
+        ConstrainingType constrainingType = staxProcessors.read(is, ConstrainingType.class);
+        staxProcessors.resolve(constrainingType, new DefaultArtifactResolver());
+        staxProcessors.wire(constrainingType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        registry.write(constrainingType, bos);
+        staxProcessors.write(constrainingType, bos);
     }
 
 }
