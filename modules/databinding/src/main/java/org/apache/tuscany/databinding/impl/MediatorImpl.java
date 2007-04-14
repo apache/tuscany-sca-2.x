@@ -54,11 +54,8 @@ public class MediatorImpl implements Mediator {
     }
 
     @SuppressWarnings("unchecked")
-    public Object mediate(Object source,
-                          DataType sourceDataType,
-                          DataType targetDataType,
-                          Map<String, Object> metadata) {
-        if (sourceDataType == null) {
+    public Object mediate(Object source, DataType sourceDataType, DataType targetDataType, Map<String, Object> metadata) {
+        if (sourceDataType == null || sourceDataType.getDataBinding() == null) {
             sourceDataType = dataBindingRegistry.introspectType(source);
         }
         if (sourceDataType == null) {
@@ -74,8 +71,12 @@ public class MediatorImpl implements Mediator {
         int i = 0;
         while (i < size) {
             Transformer transformer = path.get(i);
-            TransformationContext context =
-                createTransformationContext(sourceDataType, targetDataType, size, i, transformer, metadata);
+            TransformationContext context = createTransformationContext(sourceDataType,
+                                                                        targetDataType,
+                                                                        size,
+                                                                        i,
+                                                                        transformer,
+                                                                        metadata);
             // the source and target type
             if (transformer instanceof PullTransformer) {
                 // For intermediate node, set data type to null
@@ -97,15 +98,12 @@ public class MediatorImpl implements Mediator {
                                                               int index,
                                                               Transformer transformer,
                                                               Map<String, Object> metadata) {
-        DataType sourceType =
-            (index == 0) ? sourceDataType : new DataTypeImpl<Object>(transformer.getSourceDataBinding(),
-                                                                 Object.class, null);
-        DataType targetType =
-            (index == size - 1) ? targetDataType : new DataTypeImpl<Object>(transformer.getTargetDataBinding(),
-                                                                        Object.class, null);
+        DataType sourceType = (index == 0) ? sourceDataType : new DataTypeImpl<Object>(transformer
+            .getSourceDataBinding(), Object.class, null);
+        DataType targetType = (index == size - 1) ? targetDataType : new DataTypeImpl<Object>(transformer
+            .getTargetDataBinding(), Object.class, null);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        TransformationContext context =
-            new TransformationContextImpl(sourceType, targetType, classLoader, metadata);
+        TransformationContext context = new TransformationContextImpl(sourceType, targetType, classLoader, metadata);
         return context;
     }
 
@@ -119,7 +117,7 @@ public class MediatorImpl implements Mediator {
             // Shortcut for null value
             return;
         }
-        if (sourceDataType == null) {
+        if (sourceDataType == null || sourceDataType.getDataBinding() == null) {
             sourceDataType = dataBindingRegistry.introspectType(source);
         }
         if (sourceDataType == null) {
@@ -133,8 +131,12 @@ public class MediatorImpl implements Mediator {
         int size = path.size();
         for (int i = 0; i < size; i++) {
             Transformer transformer = path.get(i);
-            TransformationContext context =
-                createTransformationContext(sourceDataType, targetDataType, size, i, transformer, metadata);
+            TransformationContext context = createTransformationContext(sourceDataType,
+                                                                        targetDataType,
+                                                                        size,
+                                                                        i,
+                                                                        transformer,
+                                                                        metadata);
 
             if (transformer instanceof PullTransformer) {
                 result = ((PullTransformer)transformer).transform(result, context);

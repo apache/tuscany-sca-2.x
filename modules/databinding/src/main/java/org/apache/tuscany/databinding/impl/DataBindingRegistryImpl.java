@@ -90,11 +90,9 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
         }
         // FIXME: Should we honor the databinding from operation/interface
         // level?
-        Object physical = dataType.getPhysical();
-        if (physical instanceof Class) {
-            if (physical == Object.class || Throwable.class.isAssignableFrom((Class)physical)) {
-                return false;
-            }
+        Class physical = dataType.getPhysical();
+        if (physical == Object.class || Throwable.class.isAssignableFrom((Class)physical)) {
+            return false;
         }
         dataType.setDataBinding(JavaBeansDataBinding.NAME);
         return false;
