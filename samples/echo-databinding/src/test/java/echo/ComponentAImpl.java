@@ -44,22 +44,22 @@ public class ComponentAImpl implements Interface1 {
         this.componentBReference = componentBReference;
     }
 
-    public Object call(Object msg) {
+    public String call(String msg) {
         String request = msg + " [" + msg.getClass().getName() + "]";
         System.out.println("ComponentA --> Received message: " + request);
         Object ret = componentBReference.call(msg);
         String response = ret + " [" + ret.getClass().getName() + "]";
         System.out.println("ComponentA --> Returned message: " + response);
-        return ret;
+        return (String) ret;
     }
 
-    public Object call1(Object msg) {
+    public String call1(String msg) {
         String request = msg + " [" + msg.getClass().getName() + "]";
         System.out.println("ComponentA --> Received message: " + request);
         Object ret = componentBReference.call1(msg);
         String response = ret + " [" + ret.getClass().getName() + "]";
         System.out.println("ComponentA --> Returned message: " + response);
-        return ret;
+        return (String) ret;
     }
 
     @Property(name="prefix")

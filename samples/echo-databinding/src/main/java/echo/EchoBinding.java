@@ -16,17 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package echo;
 
-import org.apache.tuscany.spi.model.BindingDefinition;
+import org.apache.tuscany.assembly.Binding;
 
-/**
- * @version $Rev$ $Date$
- */
-public class EchoBinding extends BindingDefinition {
-
-    public Object clone() {
-        return this;
-    }
+public interface EchoBinding extends Binding {
 
 }

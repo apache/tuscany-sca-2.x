@@ -20,6 +20,7 @@ package echo;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -45,9 +46,7 @@ public class EchoInvoker implements TargetInvoker {
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         // echo back the result, a real binding would invoke some API for flowing the request
-        Object result = ((Object[]) payload)[0];
-        System.out.println("Echo: " + result);
-        return result;
+        return ((Object[])payload)[0];
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
@@ -60,8 +59,18 @@ public class EchoInvoker implements TargetInvoker {
             msg.setBodyWithFault(e);
         }
         return msg;
+    }  
+    
+
+    /* (non-Javadoc)
+     * @see org.apache.tuscany.spi.wire.TargetInvoker#invokeTarget(java.lang.Object, short, org.apache.tuscany.spi.component.WorkContext)
+     */
+    public Object invokeTarget(Object payload, short sequence, WorkContext workContext) throws InvocationTargetException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }

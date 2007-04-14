@@ -16,21 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package echo;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.databinding.annotation.DataBinding;
-import org.osoa.sca.annotations.Remotable;
-import org.w3c.dom.Node;
-
-/**
- * @version $Rev$ $Date$
- */
-@DataBinding("org.w3c.dom.Node")
-@Remotable
-public interface Interface2 {
-    Node call(Node msg);
-    @DataBinding("javax.xml.stream.XMLStreamReader")
-    XMLStreamReader call1(XMLStreamReader msg);
+public interface EchoBindingFactory {
+    /**
+     * Creates a new Echo binding.
+     * 
+     * @return a new Echi binding
+     */
+    EchoBinding createEchoBinding();
 }
