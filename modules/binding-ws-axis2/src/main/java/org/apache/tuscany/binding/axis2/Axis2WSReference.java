@@ -36,6 +36,7 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
+import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.xml.WebServiceConstants;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
@@ -46,9 +47,14 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class Axis2WSReference extends ReferenceBindingExtension {
 
     private WorkContext workContext;
+    private WebServicePortMetaData wsPortMetaData;
+    private WebServiceBinding wsBinding;
+    private ServiceClient serviceClient;
 
-    public Axis2WSReference(URI name, URI targetUri) {
+    public Axis2WSReference(URI name, URI targetUri, WebServiceBinding wsBinding) {
         super(name, targetUri);
+        this.wsPortMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition().getDefinition(), wsBinding.getPort(), wsBinding.getURI(), false);
+        this.serviceClient = createServiceClient(wsBinding.getWSDLDefinition().getDefinition(), wsPortMetaData);
     }
 
     public QName getBindingType() {
@@ -56,43 +62,45 @@ public class Axis2WSReference extends ReferenceBindingExtension {
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback) throws TargetInvokerCreationException {
-        Options options = null;
-        SOAPFactory soapFactory = null;
-        QName wsdlOperationQName = null;
-        ServiceClient serviceClient = null;
-        Axis2TargetInvoker invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
-        return invoker;
+            boolean isOneWay = operation.isNonBlocking();
+            Axis2TargetInvoker invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false, isOneWay);
+            return invoker;
     }
 
     /**
      * Create an Axis2 ServiceClient
      */
-    private ServiceClient createServiceClient(Definition wsdlDefinition, WebServicePortMetaData wsPortMetaData)
-        throws AxisFault {
+    protected ServiceClient createServiceClient(Definition wsdlDefinition, WebServicePortMetaData wsPortMetaData) {
+        try {
 
-        TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
-        ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
-        QName serviceQName = wsPortMetaData.getServiceName();
-        String portName = wsPortMetaData.getPortName().getLocalPart();
-        AxisService axisService =
-            AxisService.createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
-        return new ServiceClient(configurationContext, axisService);
+            TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
+            ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
+            QName serviceQName = wsPortMetaData.getServiceName();
+            String portName = wsPortMetaData.getPortName().getLocalPart();
+            AxisService axisService = AxisService.createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
+
+            return new ServiceClient(configurationContext, axisService);
+
+        } catch (AxisFault e) {
+            throw new RuntimeException(e); // TODO: better exception
+        }
     }
 
     /**
      * Create and configure an Axis2TargetInvoker for each operations
      */
-    private Axis2TargetInvoker createOperationInvoker(ServiceClient serviceClient,
-                                                      Operation m,
+    protected Axis2TargetInvoker createOperationInvoker(ServiceClient serviceClient,
+                                                      Operation operation,
                                                       WebServicePortMetaData wsPortMetaData,
                                                       boolean hasCallback,
-                                                      boolean isOneWay) throws AxisFault {
+                                                      boolean isOneWay) {
+
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
         String portTypeNS = wsPortMetaData.getPortTypeName().getNamespaceURI();
 
-        String methodName = m.getName();
+        String operationName = operation.getName();
 
-        WebServiceOperationMetaData operationMetaData = wsPortMetaData.getOperationMetaData(methodName);
+        WebServiceOperationMetaData operationMetaData = wsPortMetaData.getOperationMetaData(operationName);
 
         Options options = new Options();
         options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));
@@ -111,11 +119,9 @@ public class Axis2WSReference extends ReferenceBindingExtension {
 
         Axis2TargetInvoker invoker;
         if (hasCallback) {
-            invoker =
-                new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
+            invoker = new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         } else if (isOneWay) {
-            invoker =
-                new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
+            invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         } else {
             invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         }

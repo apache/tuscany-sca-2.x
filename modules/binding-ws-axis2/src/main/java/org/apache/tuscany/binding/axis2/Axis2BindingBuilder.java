@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.net.URI;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
@@ -65,7 +67,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     public ReferenceBinding build(CompositeReference boundReferenceDefinition,
                                   WebServiceBinding bindingDefinition,
                                   DeploymentContext context) throws BuilderException {
-      return new Axis2WSReference(null, null);
+        URI targetURI = bindingDefinition.getURI() != null ? URI.create(bindingDefinition.getURI()) : URI.create("foo");
+        return new Axis2WSReference(URI.create(context.getComponentId() + "#" + bindingDefinition.getName()), targetURI, bindingDefinition);
     }
     
 //    @SuppressWarnings("unchecked")
