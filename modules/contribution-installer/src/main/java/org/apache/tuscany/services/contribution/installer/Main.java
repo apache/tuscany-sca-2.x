@@ -29,6 +29,7 @@ import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
+import org.apache.tuscany.contribution.service.util.IOHelper;
 
 /**
  * Main class for Contribution Services installer. <code>
@@ -68,9 +69,13 @@ public class Main {
         ContributionService contributionService = new ContributionServiceImpl(contributionRepository, null, null, null);
 
         URL contributionURL = contributionSource.toURL();
-        InputStream contributionStream = contributionURL.openStream();
-        
-        contributionService.contribute(contributionURI, contributionStream);
+        InputStream contributionStream = null;
+        try {
+            contributionStream = contributionURL.openStream();
+            contributionService.contribute(contributionURI, contributionURL, contributionStream);
+        } finally {
+            IOHelper.closeQuietly(contributionStream);
+        }
         
         System.exit(0);
     }
