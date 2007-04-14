@@ -16,19 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.util;
+package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Class for tunneling a WorkContext through the invocation of a user class.
  *
  * @version $Rev$ $Date$
  */
-public final class PojoWorkContextTunnel {
+public final class WorkContextTunnel {
     private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>();
 
-    private PojoWorkContextTunnel() {
+    private WorkContextTunnel() {
     }
 
     /**

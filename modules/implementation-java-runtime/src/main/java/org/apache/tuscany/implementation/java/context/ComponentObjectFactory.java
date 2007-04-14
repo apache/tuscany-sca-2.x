@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.implementation.java.context;
 
-import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -40,7 +40,7 @@ public class ComponentObjectFactory<T, CONTEXT> implements ObjectFactory<T> {
 
     public T getInstance() throws ObjectCreationException {
         try {
-            WorkContext workContext = PojoWorkContextTunnel.getThreadWorkContext();
+            WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
             @SuppressWarnings("unchecked")
             CONTEXT contextId = (CONTEXT) workContext.getIdentifier(scopeContainer.getScope());
             return scopeContainer.getWrapper(component, contextId).getInstance();

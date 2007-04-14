@@ -31,12 +31,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.core.wire.NoMethodForOperationException;
 import org.apache.tuscany.core.wire.WireUtils;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.TargetInvocationException;
@@ -121,7 +121,7 @@ public final class JDKInvocationHandler extends AbstractInvocationHandler
         }
         TargetInvoker invoker = getInvoker(holder);
         InvocationChain chain = holder.getChain();
-        WorkContext workContext = PojoWorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
 
 // JFM commonting out temporarily
 //        if (wireContainerIsAtomicComponent && contractHasCallback && !callbackIsImplemented) {

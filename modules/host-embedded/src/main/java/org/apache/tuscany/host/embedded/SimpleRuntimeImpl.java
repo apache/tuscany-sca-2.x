@@ -52,7 +52,6 @@ import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
@@ -61,6 +60,7 @@ import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -141,7 +141,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         WorkContext workContext = new SimpleWorkContext();
         workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
-        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+        WorkContextTunnel.setThreadWorkContext(workContext);
 
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
 

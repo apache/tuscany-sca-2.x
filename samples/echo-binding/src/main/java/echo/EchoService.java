@@ -23,9 +23,9 @@ import java.net.URI;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
@@ -61,7 +61,7 @@ public class EchoService extends ServiceBindingExtension {
         // Get the invocation chain for the first operation in the service interface
         InvocationChain chain = wire.getInvocationChains().get(0);
         Interceptor headInterceptor = chain.getHeadInterceptor();
-        WorkContext workContext = PojoWorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         if (headInterceptor == null) {
             // short-circuit the dispatch and invoke the target directly
             TargetInvoker targetInvoker = chain.getTargetInvoker();
