@@ -35,6 +35,7 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
@@ -56,6 +57,8 @@ public class Axis2TargetInvoker extends TargetInvokerExtension {
 
     private WorkContext workContext;
 
+    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA10_NS,"conversationID");
+    
     public Axis2TargetInvoker(ServiceClient serviceClient, QName wsdlOperationName, Options options,
                               SOAPFactory soapFactory, WorkContext workContext) {
         this.wsdlOperationName = wsdlOperationName;
@@ -113,7 +116,7 @@ public class Axis2TargetInvoker extends TargetInvokerExtension {
             String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
             if(conversationId != null && conversationId.length()!=0){
                 EndpointReference fromEPR= new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
-                fromEPR.addReferenceParameter(WebServiceBindingDefinition.CONVERSATION_ID_REFPARM_QN, conversationId);
+                fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId);
                 options.setFrom(fromEPR);
                 requestMC.setFrom(fromEPR); //who knows why two ways ?
             

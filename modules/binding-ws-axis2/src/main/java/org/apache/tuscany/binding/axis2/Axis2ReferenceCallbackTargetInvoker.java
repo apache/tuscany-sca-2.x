@@ -23,7 +23,8 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -48,7 +49,7 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
         this.invocationHandler = invocationHandler;
     }
 
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
         Object[] args;
         if (payload != null && !payload.getClass().isArray()) {
             args = new Object[]{payload};
@@ -60,7 +61,8 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
         // FIXME synchronize with forward thread to return value
         signal.countDown();
         try {
-            return invocationHandler.invoke(operation, args, callbackRoutingChain);
+//            return invocationHandler.invoke(operation, args, callbackRoutingChain);
+            return null; // TODO ???
         } catch (Throwable t) {
             t.printStackTrace();
             throw new InvocationTargetException(t);
@@ -69,7 +71,7 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody(), NONE);
+            Object resp = invokeTarget(msg.getBody(), NONE, null);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());
@@ -112,4 +114,5 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
     public Object getReturnPayload() {
         return returnPayload;
     }
+
 }
