@@ -20,10 +20,8 @@ package org.apache.tuscany.spi.component;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**
@@ -84,7 +82,6 @@ public interface ComponentManager extends RuntimeEventListener {
     Component getComponent(URI uri);
     
     List<SCAObject> getSCAObjects();
-    List<Object> getModelObjects();
     void add(SCAObject object, Object model);
     <T extends SCAObject> T getSCAObject(Class<T> objectType, Object model);
     <T> T getModelObject(Class<T> modelType, SCAObject object);
