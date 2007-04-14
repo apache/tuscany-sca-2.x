@@ -36,6 +36,7 @@ public class TargetImpl implements Target {
 
     public void someMethod(String arg) {
         System.out.println("Target: " + arg);
-        sourceCallback.receiveResult(arg + " -> Target.someMethod");
+        //FIXME callback is not injected properly
+        //sourceCallback.receiveResult(arg + " -> Target.someMethod");
     }
 }
