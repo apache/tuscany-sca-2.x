@@ -18,13 +18,17 @@
  */
 package bigbank.account;
 
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Reference;
-
+import java.util.ArrayList;
 import java.util.List;
+
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import bigbank.accountdata.AccountDataService;
 import bigbank.accountdata.CheckingAccount;
+import bigbank.accountdata.SavingsAccount;
+import bigbank.accountdata.StockAccount;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -35,13 +39,24 @@ public class AccountServiceImpl implements AccountService {
 
     @Reference
     public AccountDataService accountDataService;
+    
+    @Property
+    public String currency;
 
     public AccountReport getAccountReport(String s) {
-        AccountReport report = new AccountReport();
+        List<String> summaries = new ArrayList<String>();
 
         CheckingAccount ca = accountDataService.getCheckingAccount(s);
-        report.addAccount(ca);
+        summaries.add(ca.getSummary());
 
+        SavingsAccount sa = accountDataService.getSavingsAccount(s);
+        summaries.add(sa.getSummary());
+
+        StockAccount sk = accountDataService.getStockAccount(s);
+        summaries.add(sk.getSummary());
+
+        AccountReport report = new AccountReport(currency, summaries);
+        
         return report;
     }
 }

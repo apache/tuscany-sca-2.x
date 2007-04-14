@@ -27,6 +27,7 @@
     <component name="AccountServiceComponent">
         <implementation.java class="bigbank.account.AccountServiceImpl"/>
         <reference name="accountDataService" target="AccountDataServiceComponent"/>
+        <property name="currency">USD</property>
     </component>
 
     <component name="AccountDataServiceComponent">
