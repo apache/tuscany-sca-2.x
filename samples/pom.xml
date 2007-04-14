@@ -40,8 +40,8 @@
                 <module>echo-binding</module>
                 <!--
                 <module>das-service</module>
-                <module>echo-databinding</module>
                 -->
+                <module>echo-databinding</module>
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
                 <!--
