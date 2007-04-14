@@ -139,6 +139,10 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         new JarContributionProcessor(pkgRegistry);
         new FolderContributionProcessor(pkgRegistry);
 
+        WorkContext workContext = new SimpleWorkContext();
+        workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
+        PojoWorkContextTunnel.setThreadWorkContext(workContext);
+
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
 
         ContributionService contributionService = new ContributionServiceImpl(repository, pkgRegistry,
@@ -165,9 +169,6 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         }
         container.startContext(DEFAULT_COMPOSITE, DEFAULT_COMPOSITE);
         getWorkContext().setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
-        WorkContext workContext = new SimpleWorkContext();
-        workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
-        PojoWorkContextTunnel.setThreadWorkContext(workContext);
         tuscanySystem = getComponentManager().getComponent(URI.create("/" + composite.getName().getLocalPart()));
 
         // Temporary here to help the bring up of samples and integration tests

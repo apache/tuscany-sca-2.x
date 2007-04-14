@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.core.util.PojoWorkContextTunnel;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
@@ -60,7 +61,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(ProxyService.class, new JDKProxyService());
+        map.put(ProxyService.class, new JDKProxyService(PojoWorkContextTunnel.getThreadWorkContext()));
         map.put(JavaClassIntrospectorExtensionPoint.class, new DefaultJavaClassIntrospector());
         map.put(JavaInterfaceIntrospectorExtensionPoint.class, new DefaultJavaInterfaceIntrospector());
         return map;
