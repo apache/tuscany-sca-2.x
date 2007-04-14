@@ -27,8 +27,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.TypeDescriber;
 import org.apache.tuscany.contribution.service.impl.ArtifactTypeDescriberImpl;
-import org.apache.tuscany.contribution.service.impl.ContributionPackageProcessorRegistryImpl;
 import org.apache.tuscany.contribution.service.processor.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.impl.ContributionPackageProcessorRegistryImpl;
 import org.apache.tuscany.contribution.service.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.service.processor.impl.JarContributionProcessor;
 

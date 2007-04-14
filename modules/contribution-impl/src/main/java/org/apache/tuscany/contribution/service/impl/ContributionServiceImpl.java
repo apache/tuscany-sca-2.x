@@ -103,12 +103,11 @@ public class ContributionServiceImpl implements ContributionService {
         if (sourceURL == null) {
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
-
         addContribution(contributionURI, sourceURL, null, storeInRepository);
     }
 
-    public void contribute(URI contributionURI, InputStream input) throws ContributionException, IOException {
-        addContribution(contributionURI, null, input, true);
+    public void contribute(URI contributionURI, URL sourceURL, InputStream input) throws ContributionException, IOException {
+        addContribution(contributionURI, sourceURL, input, true);
     }
 
     private Contribution initializeContributionMetadata(URL sourceURL) throws ContributionException {
@@ -226,10 +225,10 @@ public class ContributionServiceImpl implements ContributionService {
         // store the contribution in the contribution repository
         URL locationURL = sourceURL;
         if (contributionRepository != null && storeInRepository) {
-            if (sourceURL != null) {
+            if (contributionStream == null) {
                 locationURL = contributionRepository.store(contributionURI, sourceURL);
             } else {
-                locationURL = contributionRepository.store(contributionURI, contributionStream);
+                locationURL = contributionRepository.store(contributionURI, sourceURL, contributionStream);
             }
         }
 
@@ -239,7 +238,9 @@ public class ContributionServiceImpl implements ContributionService {
 
         List<URI> contributionArtifacts = null;
 
-        if (contributionStream == null) {
+        //NOTE: if a contribution is stored on the repository
+        //the stream would be consumed at this point
+        if (storeInRepository || contributionStream == null) {
             contributionStream = sourceURL.openStream();
             try {
                 // process the contribution
