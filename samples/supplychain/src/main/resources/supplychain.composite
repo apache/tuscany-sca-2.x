@@ -17,26 +17,29 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="supplychain">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://supplychain"
+	xmlns:sp="http://supplychain"
+	name="supplychain">
 
     <component name="CustomerComponent">
         <implementation.java class="supplychain.CustomerComponentImpl" />
-        <reference name="retailer" target="RetailerComponent"></reference>
+        <reference name="retailer" target="RetailerComponent"/>
     </component>
 
     <component name="RetailerComponent">
         <implementation.java class="supplychain.RetailerComponentImpl" />
-        <reference name="warehouse" target="WarehouseComponent"></reference>
+        <reference name="warehouse" target="WarehouseComponent"/>
     </component>
 
     <component name="WarehouseComponent">
         <implementation.java class="supplychain.WarehouseComponentImpl" />
-        <reference name="shipper" target="ShipperComponent"></reference>
+        <reference name="shipper" target="ShipperComponent"/>
     </component>
 
     <component name="ShipperComponent">
         <implementation.java class="supplychain.ShipperComponentImpl" />
-        <reference name="customer" target="CustomerComponent"></reference>
+        <reference name="customer" target="CustomerComponent"/>
     </component>
 
 </composite>

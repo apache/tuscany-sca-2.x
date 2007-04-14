@@ -41,15 +41,15 @@
                 <module>composite-impl</module>
                 <!--
                 <module>das-service</module>
-                <module>echo-databinding</module>
                 -->
+                <module>echo-databinding</module>
                 <module>implementation-crud</module>
                 <!--
                 <module>loanapplication</module>
                 -->
                 <module>simple-bigbank</module>
-                <!--
                 <module>simple-callback</module>
+                <!--
                 <module>supplychain</module>
                 -->
             </modules>
