@@ -16,34 +16,42 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.contribution.services.processor;
+package org.apache.tuscany.contribution.processor;
 
-import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.processor.ContributionPackageProcessorRegistry;
 import org.apache.tuscany.contribution.processor.impl.ContributionPackageProcessorRegistryImpl;
-import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
+import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
+import org.apache.tuscany.contribution.service.util.IOHelper;
 
-public class FolderContributionPackageProcessorTestCase extends TestCase {
-    private static final String FOLDER_CONTRIBUTION = ".";
+public class JarContributionPackageProcessorTestCase extends TestCase {
+    private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
     
-    private File contributionRoot;
-
     protected void setUp() throws Exception {
         super.setUp();
-        this.contributionRoot = new File(FOLDER_CONTRIBUTION);
     }
     
     public final void testProcessPackageArtifacts() throws Exception {
         ContributionPackageProcessorRegistry packageProcessorRegistry = new ContributionPackageProcessorRegistryImpl(new PackageTypeDescriberImpl()); 
-        FolderContributionProcessor folderProcessor = new FolderContributionProcessor(packageProcessorRegistry);
+        JarContributionProcessor jarProcessor = new JarContributionProcessor(packageProcessorRegistry);
 
-        List<URI> artifacts = folderProcessor.getArtifacts(contributionRoot.toURL(), null);
+        URL jarURL = getClass().getResource(JAR_CONTRIBUTION);
+        InputStream jarStream = jarURL.openStream();
+        List<URI> artifacts = null;
+        try{
+            artifacts = jarProcessor.getArtifacts(jarURL, jarStream);
+        }finally{
+            IOHelper.closeQuietly(jarStream);
+        }
+        
         assertNotNull(artifacts);
     }
-}
+    
+    }
