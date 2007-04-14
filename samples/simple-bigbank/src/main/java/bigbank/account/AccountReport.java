@@ -18,19 +18,27 @@
  */
 package bigbank.account;
 
-import bigbank.accountdata.Account;
-
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 
 public class AccountReport {
-    private List<String> summaries = new ArrayList<String>();
+    private List<String> summaries;
+    private String currency;
+    
+    public AccountReport(String currency, List<String> summaries) {
+        this.currency = currency;
+        this.summaries = summaries;
+    }
 
     public List getAccountSummaries() { return summaries; }
-
-    protected void addAccount(Account a) { summaries.add(a.getSummary()); }
+    
+    public String getCurrency() { return currency; }
+    
+    public String toString() {
+        return "currency: "+ currency + ", " + summaries;
+    }
+    
 }
