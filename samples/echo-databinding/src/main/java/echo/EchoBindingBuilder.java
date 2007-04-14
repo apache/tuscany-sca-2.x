@@ -18,34 +18,36 @@
  */
 package echo;
 
+import java.net.URI;
+
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
-import org.apache.tuscany.spi.model.AbstractReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
-public class EchoBuilder extends BindingBuilderExtension<EchoBinding> {
-
-    public ServiceBinding build(CompositeComponent parent,
-                                ServiceDefinition boundServiceDefinition,
+public class EchoBindingBuilder extends BindingBuilderExtension<EchoBinding> {
+    @Override
+    public ServiceBinding build(CompositeService serviceDefinition,
                                 EchoBinding bindingDefinition,
-                                DeploymentContext deploymentContext) throws BuilderException {
-        return new EchoService(boundServiceDefinition.getName(), parent);
+                                DeploymentContext context) throws BuilderException {
+        return new EchoService(URI.create(context.getComponentId() + "#" + serviceDefinition.getName()));
     }
 
-    public ReferenceBinding build(CompositeComponent parent,
-                                  AbstractReferenceDefinition boundReferenceDefinition,
+    @Override
+    public ReferenceBinding build(CompositeReference referenceDefinition,
                                   EchoBinding bindingDefinition,
-                                  DeploymentContext deploymentContext) throws BuilderException {
-        return new EchoReference(boundReferenceDefinition.getName(), parent);
+                                  DeploymentContext context) throws BuilderException {
+        URI targetURI = bindingDefinition.getURI() != null ? URI.create(bindingDefinition.getURI()) : null;
+        return new EchoReference(URI.create(context.getComponentId() + "#" + referenceDefinition.getName()), targetURI);
     }
 
+    @Override
     protected Class<EchoBinding> getBindingType() {
         return EchoBinding.class;
     }

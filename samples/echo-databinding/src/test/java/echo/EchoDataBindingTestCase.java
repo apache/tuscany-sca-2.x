@@ -21,29 +21,31 @@ package echo;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.api.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class EchoDataBindingTestCase extends TestCase {
 
-    private Interface1 componentA;
+    @Override
+    protected void setUp() throws Exception {
+        SCARuntime.start();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        SCARuntime.stop();
+    }
+
+    protected Interface1 componentA;
 
     public void testTransform() {
+        ComponentContext context = SCARuntime.getComponentContext("ComponentA");
+        ServiceReference<Interface1> ref = context.createSelfReference(Interface1.class);
+        componentA = ref.getService();
         componentA.call("<message><foo>123</foo></message>");
         componentA.call1("<message><foo>123</foo></message>");
-    }
-
-    protected void setUp() throws Exception {
-    	SCARuntime.start("EchoDataBinding.composite");
-    	
-        CompositeContext context = CurrentCompositeContext.getContext();
-        componentA = context.locateService(Interface1.class, "ComponentA");
-    }
-    
-    protected void tearDown() throws Exception {
-    	SCARuntime.stop();
     }
 }

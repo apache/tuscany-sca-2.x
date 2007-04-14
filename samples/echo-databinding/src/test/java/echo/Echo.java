@@ -18,14 +18,14 @@
  */
 package echo;
 
-import org.apache.tuscany.api.annotation.DataType;
+import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.osoa.sca.annotations.Remotable;
 
 /**
  * @version $Rev$ $Date$
  */
 // @DataType(name="org.apache.axiom.om.OMElement")
-@DataType(name="org.w3c.dom.Node")
+@DataBinding("org.w3c.dom.Node")
 @Remotable
 public interface Echo {
     Object echo(Object msg);

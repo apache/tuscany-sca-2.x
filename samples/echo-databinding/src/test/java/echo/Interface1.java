@@ -18,15 +18,15 @@
  */
 package echo;
 
-import org.apache.tuscany.api.annotation.DataType;
+import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.osoa.sca.annotations.Remotable;
 
 /**
  * @version $Rev$ $Date$
  */
-@DataType(name="java.lang.String")
+@DataBinding("java.lang.String")
 @Remotable
 public interface Interface1 {
-    Object call(Object msg);
-    Object call1(Object msg);
+    String call(String msg);
+    String call1(String msg);
 }

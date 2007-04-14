@@ -18,15 +18,13 @@
  */
 package echo;
 
-import static org.osoa.sca.Constants.SCA_NS;
+import java.net.URI;
 
 import javax.xml.namespace.QName;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -34,22 +32,24 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class EchoReference extends ReferenceBindingExtension {
 
-    private static final String OM_DATA_BINDING = OMElement.class.getName();
-
-    private static final QName BINDING_ECHO = new QName(SCA_NS, "binding.echo");
-
-    public EchoReference(String name, CompositeComponent parent) {
-        super(name, parent);
+    protected EchoReference(URI name, URI targetUri) {
+        super(name, targetUri);
     }
 
     public QName getBindingType() {
-        return BINDING_ECHO;
+        return EchoConstants.BINDING_ECHO;
     }
 
-    @SuppressWarnings("unchecked")
-    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        // HACK to set the databinding
-        operation.setDataBinding(OM_DATA_BINDING);
+    
+    public TargetInvoker createTargetInvoker(String name, Operation operation, boolean isCallback)
+       throws TargetInvokerCreationException {
+    if (isCallback) {
+        throw new UnsupportedOperationException();
+    } else {
         return new EchoInvoker();
     }
+}
+
+    
+
 }
