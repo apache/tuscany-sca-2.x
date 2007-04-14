@@ -19,7 +19,7 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 
-           name="HelloWorld">
+           name="HelloWorldOM">
 
     <component name="HelloWorldComponent">
 		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldComponent"/>
@@ -27,8 +27,8 @@
     </component>
 
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+        <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld-om#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </reference>
 
 </composite>
