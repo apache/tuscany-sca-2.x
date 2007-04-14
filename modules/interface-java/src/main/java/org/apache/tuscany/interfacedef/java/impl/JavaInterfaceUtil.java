@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
 
 /**
@@ -49,7 +50,8 @@ public final class JavaInterfaceUtil {
      */
     public static  Method findMethod(Class<?> implClass, Operation operation) throws NoSuchMethodException {
         String name = operation.getName();
-        if(operation.getInterface().isRemotable()) {
+        Interface interface1 = operation.getInterface();
+        if(interface1!=null && interface1.isRemotable()) {
             for(Method m: implClass.getMethods()) {
                 if(m.getName().equals(name)) {
                     return m;
