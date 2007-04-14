@@ -25,17 +25,11 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-sample-composite-impl</artifactId>
+    <artifactId>tuscany-sample-implementation-composite</artifactId>
     <name>Apache Tuscany Composite Implementation Sample</name>
     <description>A sample showing local wiring of a component implemented by a nested composite</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>        
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>

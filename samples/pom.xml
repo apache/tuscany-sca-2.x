@@ -38,11 +38,11 @@
             <modules>
                 <module>calculator</module>
                 <module>echo-binding</module>
-                <module>composite-impl</module>
                 <!--
                 <module>das-service</module>
-                -->
                 <module>echo-databinding</module>
+                -->
+                <module>implementation-composite</module>
                 <module>implementation-crud</module>
                 <!--
                 <module>loanapplication</module>
