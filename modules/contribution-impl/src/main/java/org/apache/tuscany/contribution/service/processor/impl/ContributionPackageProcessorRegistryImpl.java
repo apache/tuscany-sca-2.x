@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.service.impl;
+package org.apache.tuscany.contribution.service.processor.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +31,7 @@ import java.util.Map;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.TypeDescriber;
 import org.apache.tuscany.contribution.service.UnsupportedContentTypeException;
+import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.processor.ContributionPackageProcessor;
 import org.apache.tuscany.contribution.service.processor.ContributionPackageProcessorRegistry;
 

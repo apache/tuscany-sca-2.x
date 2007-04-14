@@ -55,6 +55,7 @@ import org.apache.tuscany.contribution.service.util.IOHelper;
  */
 public class ContributionRepositoryImpl implements ContributionRepository {
     private static final String NS = "http://tuscany.apache.org/xmlns/1.0-SNAPSHOT";
+    private static final String domainIndexFilename = "sca-domain.xml";
     private final File rootFile;
     private Map<URI, String> contributionMap = new HashMap<URI, String>();
 
@@ -98,9 +99,9 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      * @param contribution
      * @return
      */
-    private File mapToFile(URI contribution) {
-        // FIXME: Map the contribution URI to a file?
-        return new File(rootFile, "contributions" + File.separator + contribution.getPath());
+    private File mapToFile(URL sourceURL) {
+        String fileName = FileHelper.toFile(sourceURL).getName();
+        return new File(rootFile, "contributions" + File.separator + fileName);
     }
 
     /**
@@ -124,9 +125,9 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         }
     }
 
-    public URL store(URI contribution, InputStream contributionStream) throws IOException {
+    public URL store(URI contribution, URL sourceURL, InputStream contributionStream) throws IOException {
         // where the file should be stored in the repository
-        File location = mapToFile(contribution);
+        File location = mapToFile(sourceURL);
         FileHelper.forceMkdir(location.getParentFile());
 
         copy(contributionStream, location);
@@ -142,12 +143,12 @@ public class ContributionRepositoryImpl implements ContributionRepository {
 
     public URL store(URI contribution, URL sourceURL) throws IOException {
         // where the file should be stored in the repository
-        File location = mapToFile(contribution);
+        File location = mapToFile(sourceURL);
         File source = FileHelper.toFile(sourceURL);
         if (source == null || source.isFile()) {
             InputStream is = sourceURL.openStream();
             try {
-                return store(contribution, is);
+                return store(contribution, sourceURL, is);
             } finally {
                 IOHelper.closeQuietly(is);
             }
@@ -240,7 +241,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
     }
 
     private void saveMap() {
-        File domainFile = new File(rootFile, "sca-domain.xml");
+        File domainFile = new File(rootFile, domainIndexFilename);
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(domainFile);

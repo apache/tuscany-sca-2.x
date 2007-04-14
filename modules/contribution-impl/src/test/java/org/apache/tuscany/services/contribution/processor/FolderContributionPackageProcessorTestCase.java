@@ -24,9 +24,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.service.impl.ContributionPackageProcessorRegistryImpl;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.processor.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.service.processor.impl.ContributionPackageProcessorRegistryImpl;
 import org.apache.tuscany.contribution.service.processor.impl.FolderContributionProcessor;
 
 public class FolderContributionPackageProcessorTestCase extends TestCase {
