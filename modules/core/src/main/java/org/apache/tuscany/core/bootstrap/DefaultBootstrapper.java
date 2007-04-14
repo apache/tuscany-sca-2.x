@@ -20,9 +20,6 @@ package org.apache.tuscany.core.bootstrap;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.contribution.service.ContributionService;
-import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
@@ -151,7 +148,6 @@ public class DefaultBootstrapper implements Bootstrapper {
         compositeBuilder.init();
         // builderRegistry.register(CompositeImplementation.class,
         // compositeBuilder);
-        builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
         return builderRegistry;
     }
 

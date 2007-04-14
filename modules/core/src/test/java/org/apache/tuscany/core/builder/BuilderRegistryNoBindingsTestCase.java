@@ -34,10 +34,6 @@ import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.assembly.impl.CompositeReferenceImpl;
 import org.apache.tuscany.assembly.impl.CompositeServiceImpl;
 import org.apache.tuscany.assembly.impl.SCABindingImpl;
-import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
-import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
-import org.apache.tuscany.core.binding.local.LocalServiceBinding;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
@@ -72,8 +68,6 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
 
         Service service = registry.build(definition, deploymentContext);
 
-        assertEquals(1, service.getServiceBindings().size());
-        assertTrue(service.getServiceBindings().get(0) instanceof LocalServiceBinding);
         EasyMock.verify(deploymentContext);
         EasyMock.verify(parent);
     }
@@ -95,8 +89,6 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
 
         Reference reference = registry.build(definition, deploymentContext);
 
-        assertEquals(1, reference.getReferenceBindings().size());
-        assertTrue(reference.getReferenceBindings().get(0) instanceof LocalReferenceBinding);
         EasyMock.verify(deploymentContext);
         EasyMock.verify(parent);
     }
@@ -107,7 +99,6 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
         EasyMock.expect(deploymentContext.getComponentId()).andReturn(URI.create("/default/")).anyTimes();
         parent = EasyMock.createNiceMock(Component.class);
         registry = new BuilderRegistryImpl(new ComponentManagerImpl(), null);
-        registry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
     }
 
 
