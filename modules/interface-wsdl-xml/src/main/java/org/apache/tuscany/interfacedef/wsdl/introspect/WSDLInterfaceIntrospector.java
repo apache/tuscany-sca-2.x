@@ -20,7 +20,7 @@ package org.apache.tuscany.interfacedef.wsdl.introspect;
 
 import javax.wsdl.PortType;
 
-import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.ws.commons.schema.XmlSchemaCollection;

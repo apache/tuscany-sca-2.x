@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 

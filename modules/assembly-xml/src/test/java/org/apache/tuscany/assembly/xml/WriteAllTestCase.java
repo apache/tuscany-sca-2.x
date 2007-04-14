@@ -27,8 +27,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
-import org.apache.tuscany.contribution.service.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 
 /**
  * Test writing SCA XML assemblies.

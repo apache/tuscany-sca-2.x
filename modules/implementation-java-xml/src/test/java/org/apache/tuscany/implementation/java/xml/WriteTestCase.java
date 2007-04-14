@@ -30,7 +30,7 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
-import org.apache.tuscany.contribution.service.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
 
 /**
  * Test writing Java implementations.

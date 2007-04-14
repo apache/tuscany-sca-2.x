@@ -27,12 +27,12 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;

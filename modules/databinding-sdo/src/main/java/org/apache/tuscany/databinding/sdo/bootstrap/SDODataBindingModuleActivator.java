@@ -22,7 +22,7 @@ package org.apache.tuscany.databinding.sdo.bootstrap;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorRegistry;
 import org.apache.tuscany.databinding.sdo.DataObject2String;
 import org.apache.tuscany.databinding.sdo.DataObject2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.HelperContextProcessor;
