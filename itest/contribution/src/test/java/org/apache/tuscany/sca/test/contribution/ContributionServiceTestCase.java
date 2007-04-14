@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.contribution;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
@@ -29,6 +30,7 @@ import org.apache.tuscany.api.SCARuntime;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.util.FileHelper;
+import org.apache.tuscany.contribution.service.util.IOHelper;
 import org.apache.tuscany.host.embedded.DefaultSCARuntime;
 
 /**
@@ -46,7 +48,7 @@ public class ContributionServiceTestCase extends TestCase {
         super.setUp();
         SCARuntime.start("application.composite");
         
-        this.contributionService = (ContributionService) ((DefaultSCARuntime)SCARuntime.getInstance()).getSystemService("ContributionService");
+        this.contributionService = ((DefaultSCARuntime)SCARuntime.getInstance()).getExtensionPoint(ContributionService.class);
     }
 
     public void testContributeJAR() throws Exception {
@@ -56,7 +58,7 @@ public class ContributionServiceTestCase extends TestCase {
         assertNotNull(contributionId);
     }
 
-    public void testStoreContributionInRepository() throws Exception {
+    public void testStoreContributionPackageInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         URI contributionId = URI.create(CONTRIBUTION_001_ID);
         contributionService.contribute(contributionId, contributionLocation, true);
@@ -70,6 +72,27 @@ public class ContributionServiceTestCase extends TestCase {
         File contributionFile = FileHelper.toFile(contributionModel.getLocation());
         assertTrue(contributionFile.exists());
     }
+    
+    public void testStoreContributionStreamInRepository() throws Exception {
+        URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
+        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        
+        InputStream contributionStream = contributionLocation.openStream();
+        try {
+            contributionService.contribute(contributionId, contributionLocation, contributionStream);
+        } finally {
+            IOHelper.closeQuietly(contributionStream);
+        }
+        
+        assertTrue(FileHelper.toFile(contributionService.getContribution(contributionId).getLocation()).exists());
+
+        assertNotNull(contributionId);
+
+        Contribution contributionModel = contributionService.getContribution(contributionId);
+        
+        File contributionFile = FileHelper.toFile(contributionModel.getLocation());
+        assertTrue(contributionFile.exists());
+    }    
     
     public void testStoreDuplicatedContributionInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);

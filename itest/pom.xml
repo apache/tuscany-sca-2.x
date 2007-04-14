@@ -36,9 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <!--
                 <module>contribution</module>
-                -->
                 <module>exceptions</module>
                 <!--
                 <module>properties</module>
