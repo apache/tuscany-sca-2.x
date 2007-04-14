@@ -23,28 +23,28 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessor;
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.processor.PackageProcessor;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 
 /**
  * The base class for ContributionPackageProcessor implementations
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractContributionPackageProcessor implements ContributionPackageProcessor {
+public abstract class AbstractContributionPackageProcessor implements PackageProcessor {
     /**
      * The ContributionProcessorRegistry that this processor should register
      * with; usually set by injection. This registry may also be used to process
      * other sub-artifacts.
      */
-    protected final ContributionPackageProcessorRegistry registry;
+    protected final PackageProcessorExtensionPoint packageProcessors;
 
     /**
-     * @param registry the registry to set
+     * @param packageProcessors the registry to set
      */
-    public AbstractContributionPackageProcessor(ContributionPackageProcessorRegistry registry) {
-        this.registry = registry;
-        this.registry.register(this.getPackageType(), this);
+    public AbstractContributionPackageProcessor(PackageProcessorExtensionPoint packageProcessors) {
+        this.packageProcessors = packageProcessors;
+        this.packageProcessors.register(this.getPackageType(), this);
     }
 
     public URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException {

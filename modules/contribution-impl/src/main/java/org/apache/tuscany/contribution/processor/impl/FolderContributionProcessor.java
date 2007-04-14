@@ -30,20 +30,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.contribution.ContentType;
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessor;
-import org.apache.tuscany.contribution.processor.ContributionPackageProcessorRegistry;
+import org.apache.tuscany.contribution.processor.PackageProcessor;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 
 public class FolderContributionProcessor extends AbstractContributionPackageProcessor implements
-    ContributionPackageProcessor {
+    PackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
     public static final String PACKAGE_TYPE = ContentType.FOLDER;
 
-    public FolderContributionProcessor(ContributionPackageProcessorRegistry registry) {
-        super(registry);
+    public FolderContributionProcessor(PackageProcessorExtensionPoint packageProcessors) {
+        super(packageProcessors);
     }
 
     public String getPackageType() {
