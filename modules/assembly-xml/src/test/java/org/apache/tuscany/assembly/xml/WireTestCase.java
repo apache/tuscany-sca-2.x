@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 
 /**
@@ -39,23 +39,23 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 public class WireTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
-    private DefaultStAXArtifactProcessorRegistry registry;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
 
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
-        registry = new DefaultStAXArtifactProcessorRegistry();
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
     }
 
     public void tearDown() throws Exception {
         inputFactory = null;
-        registry = null;
+        staxProcessors = null;
     }
 
     public void testResolveConstrainingType() throws Exception {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(registry);
+        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(staxProcessors);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ConstrainingType constrainingType = constrainingTypeReader.read(reader);
         is.close();
@@ -63,7 +63,7 @@ public class WireTestCase extends TestCase {
         resolver.add(constrainingType);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(registry);
+        CompositeProcessor compositeReader = new CompositeProcessor(staxProcessors);
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);
         is.close();
@@ -80,7 +80,7 @@ public class WireTestCase extends TestCase {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(registry);
+        CompositeProcessor compositeReader = new CompositeProcessor(staxProcessors);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite nestedComposite = compositeReader.read(reader);
         is.close();
@@ -88,7 +88,7 @@ public class WireTestCase extends TestCase {
         resolver.add(nestedComposite);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        compositeReader = new CompositeProcessor(registry);
+        compositeReader = new CompositeProcessor(staxProcessors);
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);
         is.close();

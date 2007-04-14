@@ -25,8 +25,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
-import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 
 /**
@@ -36,40 +36,40 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
  */
 public class ReadDocumentTestCase extends TestCase {
 
-    private DefaultURLArtifactProcessorRegistry registry;
+    private DefaultURLArtifactProcessorExtensionPoint documentProcessors;
 
     public void setUp() throws Exception {
-        registry = new DefaultURLArtifactProcessorRegistry();
+        documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         
         // Create Stax processors
-        DefaultStAXArtifactProcessorRegistry staxRegistry = new DefaultStAXArtifactProcessorRegistry();
-        staxRegistry.addArtifactProcessor(new CompositeProcessor(staxRegistry));
-        staxRegistry.addArtifactProcessor(new ComponentTypeProcessor(staxRegistry));
-        staxRegistry.addArtifactProcessor(new ConstrainingTypeProcessor(staxRegistry));
+        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
         
         // Create document processors
-        registry.addArtifactProcessor(new CompositeDocumentProcessor(staxRegistry));
-        registry.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxRegistry));
-        registry.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxRegistry));
+        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors));
+        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors));
+        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors));
     }
 
     public void tearDown() throws Exception {
-        registry = null;
+        documentProcessors = null;
     }
 
     public void testResolveConstrainingType() throws Exception {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)registry.read(url);
+        ConstrainingType constrainingType = (ConstrainingType)documentProcessors.read(url);
         assertNotNull(constrainingType);
         resolver.add(constrainingType);
 
         url = getClass().getResource("TestAllCalculator.composite");
-        Composite composite = (Composite)registry.read(url);
+        Composite composite = (Composite)documentProcessors.read(url);
         assertNotNull(composite);
         
-        registry.resolve(composite, resolver);
+        documentProcessors.resolve(composite, resolver);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
@@ -79,14 +79,14 @@ public class ReadDocumentTestCase extends TestCase {
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
         URL url = getClass().getResource("Calculator.composite");
-        Composite nestedComposite = (Composite)registry.read(url);
+        Composite nestedComposite = (Composite)documentProcessors.read(url);
         assertNotNull(nestedComposite);
         resolver.add(nestedComposite);
 
         url = getClass().getResource("TestAllCalculator.composite");
-        Composite composite = (Composite)registry.read(url);
+        Composite composite = (Composite)documentProcessors.read(url);
         
-        registry.resolve(composite, resolver);
+        documentProcessors.resolve(composite, resolver);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }

@@ -24,7 +24,7 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.core.bean.context.CompositeApplicationContext;
@@ -44,13 +44,13 @@ public class TestRuntimeContext {
     public TestRuntimeContext(String compositeFile) {
         
         // Populate ArtifactProcessor registry
-        DefaultStAXArtifactProcessorRegistry registry = new DefaultStAXArtifactProcessorRegistry();
-        CompositeProcessor compositeProcessor = new CompositeProcessor(registry);
-        registry.addArtifactProcessor(compositeProcessor);
-        registry.addArtifactProcessor(new ComponentTypeProcessor(registry));
-        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
-        registry.addArtifactProcessor(new JavaInterfaceProcessor());
-        registry.addArtifactProcessor(new JavaImplementationProcessor());
+        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        CompositeProcessor compositeProcessor = new CompositeProcessor(staxProcessors);
+        staxProcessors.addExtension(compositeProcessor);
+        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new JavaInterfaceProcessor());
+        staxProcessors.addExtension(new JavaImplementationProcessor());
         
         // Create a resolver
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
@@ -58,7 +58,7 @@ public class TestRuntimeContext {
         try {
             // Parse the composite file
             InputStream is = getClass().getClassLoader().getResourceAsStream(compositeFile);
-            Composite composite = registry.read(is, Composite.class);
+            Composite composite = staxProcessors.read(is, Composite.class);
             resolver.add(composite);
             
             // Resolve and configure the composite

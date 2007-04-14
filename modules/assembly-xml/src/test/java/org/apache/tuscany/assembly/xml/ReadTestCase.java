@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 
 /**
  * Test reading SCA XML assemblies.
@@ -36,20 +36,20 @@ import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorReg
 public class ReadTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
-    private DefaultStAXArtifactProcessorRegistry registry;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
 
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
-        registry = new DefaultStAXArtifactProcessorRegistry();
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
     }
 
     public void tearDown() throws Exception {
         inputFactory = null;
-        registry = null;
+        staxProcessors = null;
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeProcessor componentTypeReader = new ComponentTypeProcessor(registry);
+        ComponentTypeProcessor componentTypeReader = new ComponentTypeProcessor(staxProcessors);
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(componentTypeReader.read(reader));
@@ -58,7 +58,7 @@ public class ReadTestCase extends TestCase {
 
     public void testReadConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(registry);
+        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(staxProcessors);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(constrainingTypeReader.read(reader));
         is.close();
@@ -67,7 +67,7 @@ public class ReadTestCase extends TestCase {
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(registry);
+        CompositeProcessor compositeReader = new CompositeProcessor(staxProcessors);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(compositeReader.read(reader));
         is.close();
@@ -76,7 +76,7 @@ public class ReadTestCase extends TestCase {
 
     public void testReadCompositeAndWireIt() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(registry);
+        CompositeProcessor compositeReader = new CompositeProcessor(staxProcessors);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(compositeReader.read(reader));
         is.close();

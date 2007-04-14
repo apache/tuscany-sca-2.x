@@ -40,11 +40,11 @@ import org.apache.tuscany.contribution.service.UnrecognizedElementException;
 /**
  * The default implementation of a StAX artifact processor registry.
  * 
- * @version $Rev: 527804 $ $Date: 2007-04-12 00:17:42 -0700 (Thu, 12 Apr 2007) $
+ * @version $Rev$ $Date$
  */
-public class DefaultStAXArtifactProcessorRegistry
-    extends DefaultArtifactProcessorRegistry
-    implements StAXArtifactProcessorRegistry, StAXArtifactProcessor<Object> {
+public class DefaultStAXArtifactProcessorExtensionPoint
+    extends DefaultArtifactProcessorExtensionPoint
+    implements StAXArtifactProcessorExtensionPoint, StAXArtifactProcessor<Object> {
 
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
@@ -55,14 +55,14 @@ public class DefaultStAXArtifactProcessorRegistry
      * @param policyFactory
      * @param inputFactory
      */
-    public DefaultStAXArtifactProcessorRegistry(XMLInputFactory inputFactory, XMLOutputFactory outputFactory) {
+    public DefaultStAXArtifactProcessorExtensionPoint(XMLInputFactory inputFactory, XMLOutputFactory outputFactory) {
         super();
         this.inputFactory = inputFactory;
         this.outputFactory = outputFactory;
         this.outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces",Boolean.TRUE);
     }
 
-    public DefaultStAXArtifactProcessorRegistry() {
+    public DefaultStAXArtifactProcessorExtensionPoint() {
         this(XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
     }
 
@@ -174,12 +174,12 @@ public class DefaultStAXArtifactProcessorRegistry
         }
     }
 
-    public void addArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
+    public void addExtension(StAXArtifactProcessor artifactProcessor) {
         processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
-    public void removeArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
+    public void removeExtension(StAXArtifactProcessor artifactProcessor) {
         processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
         processorsByModelType.remove(artifactProcessor.getModelType());        
     }

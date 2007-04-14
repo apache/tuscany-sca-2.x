@@ -16,31 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.contribution.resolver;
+package org.apache.tuscany.contribution.processor;
 
 
 
 /**
- * Registry for artifact resolvers
+ * A registry for Stream artifact processors.
  * 
- * @version $Rev: 523009 $ $Date: 2007-03-27 10:38:24 -0700 (Tue, 27 Mar 2007) $
+ * @version $Rev$ $Date$
  */
-public interface ArtifactResolverRegistry extends ArtifactResolver {
-    /**
-     * Register a resolver by the type of artifacts. For example, you can 
-     * register a resolver to resolve WSDL model objects and other resolver
-     * for java classes
-     * 
-     * @param modelClass The java type of the model object
-     * @param resolver The resolver 
-     */
-    void registerResolver(Class<?> modelClass, ArtifactResolver resolver);
-
-    /**
-     * Unregister all resolvers for the given model class
-     * 
-     * @param modelClass
-     */
-    void unregisterResolver(Class<?> modelClass);
+public interface URLArtifactProcessorExtensionPoint extends
+    ArtifactProcessorExtensionPoint<URLArtifactProcessor<Object>> {
+    
 }

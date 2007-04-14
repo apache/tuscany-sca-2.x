@@ -22,7 +22,7 @@ package org.apache.tuscany.databinding.sdo.bootstrap;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.databinding.sdo.DataObject2String;
 import org.apache.tuscany.databinding.sdo.DataObject2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.HelperContextProcessor;
@@ -56,10 +56,10 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         DataBindingRegistry dataBindingRegistry = registry.getExtensionPoint(DataBindingRegistry.class);
         dataBindingRegistry.register(new SDODataBinding());
 
-        StAXArtifactProcessorRegistry processorRegistry = registry
-            .getExtensionPoint(StAXArtifactProcessorRegistry.class);
+        StAXArtifactProcessorExtensionPoint processorRegistry = registry
+            .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         HelperContextRegistry contextRegistry = registry.getExtensionPoint(HelperContextRegistry.class);
-        processorRegistry.addArtifactProcessor(new ImportSDOProcessor(contextRegistry));
+        processorRegistry.addExtension(new ImportSDOProcessor(contextRegistry));
 
         TransformerRegistry transformerRegistry = registry.getExtensionPoint(TransformerRegistry.class);
         transformerRegistry.registerTransformer(new DataObject2String());

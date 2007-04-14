@@ -25,7 +25,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 
 /**
@@ -36,24 +36,24 @@ import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 public class WSDLTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
-    DefaultURLArtifactProcessorRegistry registry;
+    DefaultURLArtifactProcessorExtensionPoint documentProcessors;
 
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
-        registry = new DefaultURLArtifactProcessorRegistry();
+        documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
 
         WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor();
-        registry.addArtifactProcessor(wsdlProcessor);
+        documentProcessors.addExtension(wsdlProcessor);
     }
 
     public void tearDown() throws Exception {
         inputFactory = null;
-        registry = null;
+        documentProcessors = null;
     }
 
     public void testReadWSDLDocument() throws Exception {
         URL url = getClass().getResource("example.wsdl");
-        WSDLDefinition definition = registry.read(url, WSDLDefinition.class);
+        WSDLDefinition definition = documentProcessors.read(url, WSDLDefinition.class);
         assertNotNull(definition);
         assertNotNull(definition.getDefinition());
         assertEquals(definition.getNamespace(), "http://www.example.org");

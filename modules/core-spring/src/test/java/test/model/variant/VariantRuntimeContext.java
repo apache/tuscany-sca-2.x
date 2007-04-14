@@ -27,7 +27,7 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -60,13 +60,13 @@ public class VariantRuntimeContext {
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
 
         // Populate ArtifactProcessor registry
-        DefaultStAXArtifactProcessorRegistry registry = new DefaultStAXArtifactProcessorRegistry();
-        CompositeProcessor compositeProcessor = new CompositeProcessor(assemblyFactory, policyFactory, registry);
-        registry.addArtifactProcessor(compositeProcessor);
-        registry.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, registry));
-        registry.addArtifactProcessor(new ConstrainingTypeProcessor(registry));
-        registry.addArtifactProcessor(new JavaInterfaceProcessor());
-        registry.addArtifactProcessor(new JavaImplementationProcessor(javaImplementationFactory, new DefaultJavaClassIntrospector()));
+        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        CompositeProcessor compositeProcessor = new CompositeProcessor(assemblyFactory, policyFactory, staxProcessors);
+        staxProcessors.addExtension(compositeProcessor);
+        staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new JavaInterfaceProcessor());
+        staxProcessors.addExtension(new JavaImplementationProcessor(javaImplementationFactory, new DefaultJavaClassIntrospector()));
         
         // Create a resolver
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();
@@ -74,7 +74,7 @@ public class VariantRuntimeContext {
         try {
             // Parse the composite file
             InputStream is = getClass().getClassLoader().getResourceAsStream(compositeFile);
-            Composite composite = registry.read(is, Composite.class);
+            Composite composite = staxProcessors.read(is, Composite.class);
             resolver.add(composite);
             
             // Resolve and configure the composite

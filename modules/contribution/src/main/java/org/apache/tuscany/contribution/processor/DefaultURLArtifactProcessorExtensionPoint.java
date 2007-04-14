@@ -30,11 +30,11 @@ import org.apache.tuscany.contribution.service.UnrecognizedElementException;
 /**
  * The default implementation of a StAX artifact processor registry.
  * 
- * @version $Rev: 527804 $ $Date: 2007-04-12 00:17:42 -0700 (Thu, 12 Apr 2007) $
+ * @version $Rev$ $Date$
  */
-public class DefaultURLArtifactProcessorRegistry
-    extends DefaultArtifactProcessorRegistry
-    implements URLArtifactProcessorRegistry, URLArtifactProcessor<Object> {
+public class DefaultURLArtifactProcessorExtensionPoint
+    extends DefaultArtifactProcessorExtensionPoint
+    implements URLArtifactProcessorExtensionPoint, URLArtifactProcessor<Object> {
 
     /**
      * Constructs a new loader registry.
@@ -42,7 +42,7 @@ public class DefaultURLArtifactProcessorRegistry
      * @param policyFactory
      * @param factory
      */
-    public DefaultURLArtifactProcessorRegistry() {
+    public DefaultURLArtifactProcessorExtensionPoint() {
     }
 
     public Object read(URL source) throws ContributionReadException {
@@ -108,12 +108,12 @@ public class DefaultURLArtifactProcessorRegistry
         }
     }
     
-    public void addArtifactProcessor(URLArtifactProcessor artifactProcessor) {
+    public void addExtension(URLArtifactProcessor artifactProcessor) {
         processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
-    public void removeArtifactProcessor(URLArtifactProcessor<Object> artifactProcessor) {
+    public void removeExtension(URLArtifactProcessor artifactProcessor) {
         processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
         processorsByModelType.remove(artifactProcessor.getModelType());        
     }

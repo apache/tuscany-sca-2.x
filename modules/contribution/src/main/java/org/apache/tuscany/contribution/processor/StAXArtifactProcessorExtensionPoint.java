@@ -16,23 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.contribution.processor;
 
+
+
 /**
- * The registry to host all the contribution post processors
+ * A registry for DOM artifact processors.
  * 
- * @version $Rev: 528640 $ $Date: 2007-04-13 13:12:12 -0700 (Fri, 13 Apr 2007) $
+ * @version $Rev$ $Date$
  */
-public interface ContributionPostProcessorRegistry {
-    /**
-     * Add a ContributionPostProcessor
-     * @param processor
-     */
-    void register(ContributionPostProcessor processor);
-    /**
-     * Remove a ContributionPostProcessor
-     * @param processor
-     */
-    void unregister(ContributionPostProcessor processor);
+public interface StAXArtifactProcessorExtensionPoint extends ArtifactProcessorExtensionPoint<StAXArtifactProcessor> {
+    
 }

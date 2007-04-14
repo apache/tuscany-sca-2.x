@@ -22,7 +22,7 @@ package org.apache.tuscany.implementation.java.module;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorRegistry;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
@@ -95,10 +95,10 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             classIntrospector.addExtension(e);
         }
 
-        StAXArtifactProcessorRegistry artifactProcessorRegistry = extensionPointRegistry
-            .getExtensionPoint(StAXArtifactProcessorRegistry.class);
+        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = extensionPointRegistry
+            .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         JavaImplementationProcessor javaImplementationProcessor = new JavaImplementationProcessor(classIntrospector);
-        artifactProcessorRegistry.addArtifactProcessor(javaImplementationProcessor);
+        artifactProcessorRegistry.addExtension(javaImplementationProcessor);
 
         BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);
         JavaComponentBuilder builder = new JavaComponentBuilder();
