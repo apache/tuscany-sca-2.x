@@ -21,6 +21,8 @@ package org.apache.tuscany.binding.ws.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import javax.wsdl.Definition;
+import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -36,6 +38,8 @@ import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.contribution.service.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.service.resolver.ArtifactResolver;
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 
 public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
@@ -179,7 +183,24 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
     }
     
     public void resolve(WebServiceBinding model, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
+        WSDLDefinition wsdlDefinition = new DefaultWSDLFactory().createWSDLDefinition();
+        wsdlDefinition.setUnresolved(true);
+        wsdlDefinition.setNamespace(model.getServiceName().getNamespaceURI());
+        wsdlDefinition = resolver.resolve(WSDLDefinition.class, wsdlDefinition);
+        if (!wsdlDefinition.isUnresolved()) {
+            model.setDefinition(wsdlDefinition);
+            Definition definition = wsdlDefinition.getDefinition();
+            if (model.getBindingName() != null) {
+                model.setBinding(definition.getBinding(model.getBindingName()));
+            }
+            if (model.getServiceName() != null) {
+                Service service = definition.getService(model.getServiceName());
+                model.setService(service);
+                if (service != null && model.getPortName() != null) {
+                    model.setPort(service.getPort(model.getPortName()));
+                }
+            }
+        }
     }
     
     public void wire(WebServiceBinding model) throws ContributionWireException {
