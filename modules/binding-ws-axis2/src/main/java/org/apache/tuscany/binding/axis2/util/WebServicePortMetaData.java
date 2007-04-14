@@ -50,7 +50,6 @@ public class WebServicePortMetaData {
     private String endpoint;
     private boolean managed;
     private List<WebServiceOperationMetaData> allOperationMetaData;
-    private WSDLServiceContract interfaceType;
 
     /**
      * Constructor
@@ -341,15 +340,6 @@ public class WebServicePortMetaData {
             }
         }
         return null;
-    }
-
-    /**
-     * Returns the WSDL service contract
-     *
-     * @return WSDLServiceContract
-     */
-    public WSDLServiceContract getInterfaceType() {
-        return interfaceType;
     }
 
     /**
