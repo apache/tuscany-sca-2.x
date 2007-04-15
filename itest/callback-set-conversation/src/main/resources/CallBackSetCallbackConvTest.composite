@@ -18,13 +18,12 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-       name="CallBackSetCallbackConvTest">
+	targetNamespace="http://callback"
+	name="CallBackSetCallbackConvTest">
  	      
     <component name="CallBackSetCallbackConvClient">
 		<implementation.java class="org.apache.tuscany.sca.test.CallBackSetCallbackConvClientImpl"/>
-		<reference name="aCallBackService"> 
-		   CallBackSetCallbackConvService		    
-		</reference>			
+		<reference name="aCallBackService" target="CallBackSetCallbackConvService"/>
     </component>    
    
     

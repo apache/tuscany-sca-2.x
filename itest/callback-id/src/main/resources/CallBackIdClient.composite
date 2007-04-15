@@ -18,13 +18,12 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-       name="CallBackIdTest">
+	targetNamespace="http://callback"
+	name="CallBackIdTest">
  	      
     <component name="CallBackIdClient">
 		<implementation.java class="org.apache.tuscany.sca.test.CallBackIdClientImpl"/>
-		<reference name="aCallBackService"> 
-		   CallBackIdService 
-		</reference>
+		<reference name="aCallBackService" target="CallBackIdService"/>
     </component> 
     
     <component name="CallBackIdService">

@@ -18,18 +18,20 @@
  */
 package org.apache.tuscany.sca.test;
 
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Context;
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.Service;
 
 @Service(CallBackApiService.class)
 public class CallBackApiServiceImpl implements CallBackApiService {
 
     @Context
-    protected CompositeContext compositeContext;
-    protected CallBackApiCallBack callback;
+    protected ComponentContext componentContext;
+    
+    private CallBackApiCallBack callback;
 
     public void knockKnock(String aString) {
 
@@ -66,7 +68,7 @@ public class CallBackApiServiceImpl implements CallBackApiService {
 
     private CallBackApiCallBack getCallBackInterface() {
         System.out.println("CallBackApiServiceImpl getting request context");
-        RequestContext rc = compositeContext.getRequestContext();
+        RequestContext rc = componentContext.getRequestContext();
         System.out.println("CallBackApiServiceImpl getting callback from request context");
         callback = (CallBackApiCallBack) ((ServiceReference) rc.getServiceReference()).getCallback();
         System.out.println("CallBackApiServiceImpl returning callback");

@@ -18,15 +18,17 @@
  */
 package org.apache.tuscany.sca.test;
 
+import junit.framework.Assert;
+
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
-import junit.framework.Assert;
 
 @Service(CallBackApiClient.class)
 public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCallBack {
 
     @Reference
     protected CallBackApiService aCallBackService;
+    
     private static String returnMessage = null;
     private static int callBackCount = 0;
     private static Object monitor = new Object();

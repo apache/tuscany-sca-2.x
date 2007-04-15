@@ -18,19 +18,20 @@
  */
 package org.apache.tuscany.sca.test;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.CompositeContext;
+import junit.framework.Assert;
+
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
-import junit.framework.Assert;
+import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 @Service(CallBackIdClient.class)
 public class CallBackIdClientImpl implements CallBackIdClient, CallBackIdCallBack {
 
     @Context
-    private CompositeContext compositeContext;
+    protected ComponentContext componentContext;
     @Reference
     protected CallBackIdService aCallBackService;
 
@@ -124,7 +125,7 @@ public class CallBackIdClientImpl implements CallBackIdClient, CallBackIdCallBac
     public void callBackMessage(String aString) {
 
         System.out.println("Entering callback callBackMessage: " + aString);
-        RequestContext rc = compositeContext.getRequestContext();
+        RequestContext rc = componentContext.getRequestContext();
         Object callBackId = rc.getServiceReference().getCallbackID();
 
         synchronized (monitor) {

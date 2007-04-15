@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?>
 <componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" >
+
   <service name="CallBackCTypeService">
      <interface.java interface="org.apache.tuscany.sca.test.CallBackCTypeService" 
          callbackInterface="org.apache.tuscany.sca.test.CallBackCTypeCallBack"/> 
   </service>
+
 </componentType>              
        

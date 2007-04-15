@@ -21,12 +21,14 @@ package org.apache.tuscany.sca.test.opoverload.impl;
 import java.io.File;
 import java.net.URL;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.api.SCARuntime;
 import org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget;
-import org.apache.tuscany.test.SCATestCase;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 
-public class OverloadATestCase extends SCATestCase {
+public class OverloadATestCase extends TestCase {
     private OverloadASourceTarget overloadA;
 
     private CompositeContext context;
@@ -65,10 +67,7 @@ public class OverloadATestCase extends SCATestCase {
     
     @Override
     protected void setUp() throws Exception {
-        File cdf = new File (".");
-        String currentdir= cdf.getCanonicalPath();
-        addExtension("org.apache.tuscany.sca.test.opoverload.interceptor", new URL("file:///" + currentdir + "/src/main/resources/org/apache/tuscany/sca/test/opoverload/interceptor/MessageInterceptor.scdl"));
-        super.setUp();
+        SCARuntime.start("OperationOverload.composite");
         context = CurrentCompositeContext.getContext();
         assertNotNull(context);
         overloadA = context.locateService(OverloadASourceTarget.class, "OverloadASourceComponent");
