@@ -84,7 +84,7 @@ public class DataBindingInteceptor implements Interceptor {
      * @see org.apache.tuscany.spi.wire.Interceptor#invoke(org.apache.tuscany.spi.wire.Message)
      */
     public Message invoke(Message msg) {
-        Object input = transform(msg.getBody(), sourceOperation.getInputType(), targetOperation.getInputType());
+        Object input = transform(msg.getBody(), sourceOperation.getInputType(), targetOperation.getInputType(), false);
         msg.setBody(input);
         Message resultMsg = next.invoke(msg);
         Object result = resultMsg.getBody();
@@ -170,7 +170,7 @@ public class DataBindingInteceptor implements Interceptor {
         } else {
             assert !(result instanceof Throwable) : "Expected messages that are not throwable " + result;
 
-            Object newResult = transform(result, targetType, sourceType);
+            Object newResult = transform(result, targetType, sourceType, true);
             if (newResult != result) {
                 resultMsg.setBody(newResult);
             }
@@ -179,14 +179,14 @@ public class DataBindingInteceptor implements Interceptor {
         return resultMsg;
     }
 
-    private Object transform(Object source, DataType sourceType, DataType targetType) {
+    private Object transform(Object source, DataType sourceType, DataType targetType, boolean isResponse) {
         if (sourceType == targetType || (sourceType != null && sourceType.equals(targetType))) {
             return source;
         }
         Map<String, Object> metadata = new HashMap<String, Object>();
         metadata.put(Component.class.getName(), composite);
-        metadata.put("source.operation", sourceOperation);
-        metadata.put("target.operation", targetOperation);
+        metadata.put("source.operation", isResponse? targetOperation: sourceOperation);
+        metadata.put("target.operation", isResponse? sourceOperation: targetOperation);
         return mediator.mediate(source, sourceType, targetType, metadata);
     }
 
@@ -222,6 +222,8 @@ public class DataBindingInteceptor implements Interceptor {
         }
         Map<String, Object> metadata = new HashMap<String, Object>();
         metadata.put(Component.class.getName(), composite);
+        metadata.put("source.operation", targetOperation);
+        metadata.put("target.operation", sourceOperation);
 
         DataType<DataType> eSourceDataType =
             new DataTypeImpl<DataType>("idl:fault", sourceExType.getPhysical(), sourceType);
