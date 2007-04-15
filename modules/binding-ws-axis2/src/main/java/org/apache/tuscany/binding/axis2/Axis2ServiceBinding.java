@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import javax.wsdl.Definition;
-import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
@@ -50,14 +49,16 @@ import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
+import org.apache.tuscany.binding.ws.WebServiceBinding;
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.Operation.ConversationSequence;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.host.ServletHost;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.physical.PhysicalOperationDefinition;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
@@ -74,13 +75,13 @@ import org.osoa.sca.annotations.Destroy;
 public class Axis2ServiceBinding extends ServiceBindingExtension {
     private static final QName BINDING_WS = new QName(SCA_NS, "binding.ws");
 
-    private ServiceContract<?> serviceContract;
+    private InterfaceContract serviceContract;
 
     private ServletHost servletHost;
 
     private ConfigurationContext configContext;
 
-    private WebServiceBindingDefinition binding;
+    private WebServiceBinding binding;
 
     private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
 
@@ -91,9 +92,9 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
 
     public Axis2ServiceBinding(URI uri,
-                               ServiceContract<?> serviceContract,
-                               ServiceContract<?> serviceBindingContract,
-                               WebServiceBindingDefinition binding,
+                               InterfaceContract serviceContract,
+                               InterfaceContract serviceBindingContract,
+                               WebServiceBinding binding,
                                ServletHost servletHost,
                                ConfigurationContext configContext,
                                WorkContext workContext) {
@@ -135,10 +136,10 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         super.stop();
     }
 
-    private AxisService createAxisService(WebServiceBindingDefinition wsBinding) throws AxisFault {
-        Definition definition = wsBinding.getWSDLDefinition();
+    private AxisService createAxisService(WebServiceBinding wsBinding) throws AxisFault {
+        Definition definition = wsBinding.getWSDLDefinition().getDefinition();
         WebServicePortMetaData wsdlPortInfo =
-            new WebServicePortMetaData(definition, wsBinding.getWSDLPort(), null, false);
+            new WebServicePortMetaData(definition, wsBinding.getPort(), null, false);
 
         // TODO investigate if this is 20 wsdl what todo?
         WSDLToAxisServiceBuilder builder =
@@ -159,38 +160,54 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
         PortType wsdlPortType = wsdlPortInfo.getPortType();
         for (Object o : wsdlPortType.getOperations()) {
-            Operation wsdlOperation = (Operation) o;
+            javax.wsdl.Operation wsdlOperation = (javax.wsdl.Operation) o;
             String operationName = wsdlOperation.getName();
-            QName operationQN = new QName(definition.getTargetNamespace(), operationName);
 
-            org.apache.tuscany.spi.model.Operation<?> op = serviceContract.getOperations().get(operationName);
+            Operation op = getOperation(operationName);
+            if (op != null) {
+                AxisOperation axisOp = axisService.getOperation(new QName(definition.getTargetNamespace(), operationName));
 
-            MessageReceiver msgrec = null;
-            boolean opIsNonBlocking = op.isNonBlocking();
-            if (serviceContract.getCallbackName() != null) {
-                msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op);
-            } else if (opIsNonBlocking) {
-                msgrec = new Axis2ServiceInMessageReceiver(this, op);
-            } else {
-                msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op);
+                if (op.isNonBlocking()) {
+                    axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_ONLY);
+                } else {
+                    axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
+                }
+
+                MessageReceiver msgrec = null;
+                if (serviceContract.getCallbackInterface() != null) {
+                    msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op);
+                } else if (op.isNonBlocking()) {
+                    msgrec = new Axis2ServiceInMessageReceiver(this, op);
+                } else {
+                    msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op);
+                }
+                axisOp.setMessageReceiver(msgrec);
             }
-
-            AxisOperation axisOp = axisService.getOperation(operationQN);
-            if (opIsNonBlocking) {
-                axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_ONLY);
-            } else {
-                axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
-            }
-            axisOp.setMessageReceiver(msgrec);
         }
 
         return axisService;
     }
 
-    public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args, Object messageId,
-                               String conversationID)
-        throws InvocationTargetException {
-        InvocationChain chain = wire.getInvocationChains().get(op);
+    protected Operation getOperation(String operationName) {
+        for (Operation op : serviceContract.getInterface().getOperations()) {
+           if (op.getName().equalsIgnoreCase(operationName)) {
+               return op;
+           }
+        }
+        return null;
+    }
+
+    public Object invokeTarget(Operation op, Object[] args, Object messageId, String conversationID) throws InvocationTargetException {
+        InvocationChain chain = null;
+        for (InvocationChain ic : wire.getInvocationChains()) {
+            if (ic.getSourceOperation().equals(op)) {
+                chain = ic;
+            }
+        }
+        if (chain == null) {
+            throw new IllegalStateException("no InvocationChain on wire for operation " + op);
+        }
+        
         Interceptor headInterceptor = chain.getHeadInterceptor();
         String oldConversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (isConversational() && conversationID != null) {
@@ -203,9 +220,9 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
                 // short-circuit the dispatch and invoke the target directly
                 TargetInvoker targetInvoker = chain.getTargetInvoker();
                 if (targetInvoker == null) {
-                    throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
+                    throw new AssertionError("No target invoker [" + chain.getTargetOperation().getName() + "]");
                 }
-                return targetInvoker.invokeTarget(args, TargetInvoker.NONE);
+                return targetInvoker.invokeTarget(args, TargetInvoker.NONE, null);
             } else {
 
                 Message msg = new MessageImpl();
@@ -220,8 +237,8 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
                 if (isConversational()) {
 
 
-                    int opSeq = op.getConversationSequence();
-                    if (opSeq == org.apache.tuscany.spi.model.Operation.CONVERSATION_END) {
+                    ConversationSequence opSeq = op.getConversationSequence();
+                    if (opSeq == ConversationSequence.CONVERSATION_END) {
                         assert seenConversations
                             .contains(conversationID) : "End of conversation called when no conversation existed";
                         msg.setConversationSequence(TargetInvoker.END);
@@ -287,13 +304,18 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         return BINDING_WS;
     }
 
-    public TargetInvoker createTargetInvoker(ServiceContract contract, org.apache.tuscany.spi.model.Operation operation)
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback) throws TargetInvokerCreationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public TargetInvoker createTargetInvoker(InterfaceContract contract, Operation operation)
         throws TargetInvokerCreationException {
-        if (!operation.isCallback()) {
-            throw new UnsupportedOperationException();
-        } else {
+//        if (!operation.isCallback()) { TODO: no isCallback methjod yet?
+//            throw new UnsupportedOperationException();
+//        } else {
             return new Axis2ServiceCallbackTargetInvoker(this);
-        }
+//        }
     }
 
     public void addMapping(Object msgId, InvocationContext invCtx) {
@@ -325,7 +347,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
                      rpI.hasNext();) {
                     OMElement rpE = (OMElement) rpI.next();
                     for (
-                        Iterator cidI = rpE.getChildrenWithName(WebServiceBindingDefinition.CONVERSATION_ID_REFPARM_QN);
+                        Iterator cidI = rpE.getChildrenWithName(Axis2TargetInvoker.CONVERSATION_ID_REFPARM_QN);
                         cidI.hasNext();) {
                         OMElement cidE = (OMElement) cidI.next();
                         conversationID = cidE.getText();
@@ -341,14 +363,14 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     protected class InvocationContext {
         public MessageContext inMessageContext;
 
-        public org.apache.tuscany.spi.model.Operation<?> operation;
+        public Operation operation;
 
         public SOAPFactory soapFactory;
 
         public CountDownLatch doneSignal;
 
         public InvocationContext(MessageContext messageCtx,
-                                 org.apache.tuscany.spi.model.Operation<?> operation,
+                                 Operation operation,
                                  SOAPFactory soapFactory,
                                  CountDownLatch doneSignal) {
             this.inMessageContext = messageCtx;
@@ -358,21 +380,8 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         }
     }
 
-    WorkContext getWorkContext() {
-        return workContext;
-    }
-
     boolean isConversational() {
-        return serviceContract.isConversational();
+        return serviceContract.getInterface().isConversational();
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, org.apache.tuscany.spi.model.Operation operation) throws TargetInvokerCreationException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public TargetInvoker createTargetInvoker(String targetName, PhysicalOperationDefinition operation) throws TargetInvokerCreationException {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

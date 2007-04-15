@@ -25,6 +25,7 @@ import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -62,9 +63,7 @@ public class Axis2WSReference extends ReferenceBindingExtension {
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback) throws TargetInvokerCreationException {
-            boolean isOneWay = operation.isNonBlocking();
-            Axis2TargetInvoker invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false, isOneWay);
-            return invoker;
+        return createOperationInvoker(serviceClient, operation, wsPortMetaData, false, operation.isNonBlocking());
     }
 
     /**
@@ -94,6 +93,8 @@ public class Axis2WSReference extends ReferenceBindingExtension {
                                                       WebServicePortMetaData wsPortMetaData,
                                                       boolean hasCallback,
                                                       boolean isOneWay) {
+
+        operation.setDataBinding(OMElement.class.getName());
 
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
         String portTypeNS = wsPortMetaData.getPortTypeName().getNamespaceURI();

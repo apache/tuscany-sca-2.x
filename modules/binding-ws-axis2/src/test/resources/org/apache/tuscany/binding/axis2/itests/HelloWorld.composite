@@ -28,6 +28,7 @@
 
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <!-- interface.java interface="org.apache.tuscany.binding.axis2.itests.HelloWorld" / -->
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </reference>
 
