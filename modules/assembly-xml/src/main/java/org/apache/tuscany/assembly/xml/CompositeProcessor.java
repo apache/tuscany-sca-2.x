@@ -22,6 +22,8 @@ package org.apache.tuscany.assembly.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
@@ -31,6 +33,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.Callback;
 import org.apache.tuscany.assembly.Component;
@@ -477,7 +480,12 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         
         // Process the composite configuration
         CompositeUtil compositeUtil = new CompositeUtil(factory, composite);
-        compositeUtil.configure(null);
+        List<Base> problems = new ArrayList<Base>();
+        compositeUtil.configure(problems);
+       
+        /*if (!problems.isEmpty()) {
+            throw new ContributionWireException("Problems in the composite...");
+        }*/
     }
 
     public QName getArtifactType() {
