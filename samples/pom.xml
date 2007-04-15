@@ -49,9 +49,7 @@
                 -->
                 <module>simple-bigbank</module>
                 <module>simple-callback</module>
-                <!--
                 <module>supplychain</module>
-                -->
             </modules>
         </profile>
 
