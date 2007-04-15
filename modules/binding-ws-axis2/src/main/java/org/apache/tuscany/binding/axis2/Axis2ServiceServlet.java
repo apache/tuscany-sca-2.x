@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-import static org.apache.tuscany.host.embedded.SimpleRuntimeInfo.DEFAULT_COMPOSITE;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -41,6 +39,7 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
@@ -210,7 +209,7 @@ public class Axis2ServiceServlet extends AxisServlet {
 
         // Create a work context TODO: where should this get done?
         WorkContext workContext = new SimpleWorkContext();
-        workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
+        workContext.setIdentifier(Scope.COMPOSITE, ComponentNames.TUSCANY_APPLICATION_ROOT.resolve("default"));
         WorkContextTunnel.setThreadWorkContext(workContext);
         
         super.service(request, response);
