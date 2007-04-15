@@ -31,7 +31,6 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
-import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
@@ -40,6 +39,7 @@ import org.apache.tuscany.core.builder.IncompatibleInterfacesException;
 import org.apache.tuscany.core.builder.WireCreationException;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.NonBlockingInterceptor;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.core.wire.WireUtils;
 import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
@@ -66,10 +66,11 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.resolver.ResolutionException;
-import org.apache.tuscany.spi.util.UriHelper;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
@@ -86,11 +87,15 @@ public class DeployerImpl implements Deployer {
     private ScopeRegistry scopeRegistry;
     private InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
     private WirePostProcessorRegistry postProcessorRegistry;
+    private WorkScheduler workScheduler;
+    private WorkContext workContext;
 
-    public DeployerImpl(XMLInputFactory xmlFactory, Builder builder, ComponentManager componentManager) {
+    public DeployerImpl(XMLInputFactory xmlFactory, Builder builder, ComponentManager componentManager, WorkScheduler workScheduler, WorkContext workContext) {
         this.xmlFactory = xmlFactory;
         this.builder = builder;
         this.componentManager = componentManager;
+        this.workScheduler = workScheduler;
+        this.workContext = workContext;
     }
 
     public DeployerImpl() {
@@ -343,10 +348,10 @@ public class DeployerImpl implements Deployer {
         for (Operation operation : sourceContract.getInterface().getOperations()) {
             Operation targetOperation = mapper.map(targetContract.getInterface(), operation);
             InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-            /*
-             * if (operation.isNonBlocking()) { chain.addInterceptor(new
-             * NonBlockingInterceptor(scheduler, workContext)); }
-             */
+               /* lresende */
+               if (operation.isNonBlocking()) { 
+                   chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext)); }
+               /* lresende */
             chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(chain);
 
@@ -355,10 +360,10 @@ public class DeployerImpl implements Deployer {
             for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
                 Operation targetOperation = mapper.map(targetContract.getCallbackInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                /*
-                 * if (operation.isNonBlocking()) { chain.addInterceptor(new
-                 * NonBlockingInterceptor(scheduler, workContext)); }
-                 */
+                   /* lresende */
+                   if (operation.isNonBlocking()) { 
+                       chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext)); }
+                   /* lresende */
                 chain.addInterceptor(new InvokerInterceptor());
                 wire.addCallbackInvocationChain(chain);
             }

@@ -23,6 +23,7 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.AbstractScopeContainer;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
@@ -30,14 +31,20 @@ import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeBuilder;
+import org.apache.tuscany.core.work.Jsr237WorkScheduler;
+import org.apache.tuscany.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
+
+import commonj.work.WorkManager;
 
 /**
  * A default implementation of a Bootstrapper. Please see the documentation on
@@ -95,7 +102,10 @@ public class DefaultBootstrapper implements Bootstrapper {
     public Deployer createDeployer(ExtensionPointRegistry extensionRegistry) {
         ScopeRegistry scopeRegistry = getScopeRegistry();
         BuilderRegistry builder = createBuilder(scopeRegistry);
-        DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager);
+        WorkContext workContext = new WorkContextImpl();
+        WorkManager workManager = new ThreadPoolWorkManager(10);
+        WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager, workScheduler, workContext);
         deployer.setScopeRegistry(getScopeRegistry());
         WirePostProcessorRegistry wirePostProcessorRegistry = new WirePostProcessorRegistryImpl();
         deployer.setWirePostProcessorRegistry(wirePostProcessorRegistry);

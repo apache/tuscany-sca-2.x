@@ -45,10 +45,12 @@ import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
-import org.apache.tuscany.core.component.SimpleWorkContext;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.services.classloading.ClassLoaderRegistryImpl;
 import org.apache.tuscany.core.util.IOHelper;
+import org.apache.tuscany.core.work.Jsr237WorkScheduler;
+import org.apache.tuscany.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
@@ -70,7 +72,10 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.osoa.sca.ComponentContext;
+
+import commonj.work.WorkManager;
 
 /**
  * @version $Rev$ $Date$
@@ -83,6 +88,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     private static final URI SCOPE_REGISTRY_URI = TUSCANY_SYSTEM_ROOT.resolve("ScopeRegistry");
 
     private static final URI WORK_CONTEXT_URI = TUSCANY_SYSTEM.resolve("WorkContext");
+    
+    private static final URI WORK_SCHEDULER_URI = TUSCANY_SYSTEM.resolve("WorkScheduler");
 
     private static final URI RUNTIME_INFO_URI = TUSCANY_SYSTEM_ROOT.resolve("RuntimeInfo");
 
@@ -211,7 +218,9 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
 
         registerSystemComponent(TUSCANY_DEPLOYER, Deployer.class, deployer);
-        registerSystemComponent(WORK_CONTEXT_URI, WorkContext.class, new SimpleWorkContext());
+        registerSystemComponent(WORK_CONTEXT_URI, WorkContext.class, new WorkContextImpl());
+        WorkManager workManager = new ThreadPoolWorkManager(10);
+        registerSystemComponent(WORK_SCHEDULER_URI, WorkScheduler.class, new Jsr237WorkScheduler(workManager)); //lresende
 
         this.scopeRegistry = bootstrapper.getScopeRegistry();
 
