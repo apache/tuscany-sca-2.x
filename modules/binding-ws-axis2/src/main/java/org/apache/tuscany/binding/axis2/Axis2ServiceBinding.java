@@ -50,6 +50,7 @@ import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
+import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.Operation.ConversationSequence;
@@ -57,8 +58,8 @@ import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
-import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
@@ -66,36 +67,27 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.osoa.sca.annotations.Destroy;
 
-// org.apache.tuscany.spi.model
 /**
  * An implementation of a {@link ServiceBindingExtension} configured with the Axis2 binding
- *
- * @version $Rev$ $Date$
  */
 public class Axis2ServiceBinding extends ServiceBindingExtension {
-    private static final QName BINDING_WS = new QName(SCA_NS, "binding.ws");
 
     private InterfaceContract serviceContract;
-
-    private ServletHost servletHost;
-
     private ConfigurationContext configContext;
-
-    private WebServiceBinding binding;
-
+    private WebServiceBinding wsBinding;
     private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
-
     private String serviceName;
-
-    private WorkContext workContext;
-
+//    private WorkContext workContext;
     private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
+    private ServletHostExtensionPoint servletHost;
+
+    private static final QName BINDING_WS = new QName(SCA_NS, "binding.ws");
 
     public Axis2ServiceBinding(URI uri,
                                InterfaceContract serviceContract,
                                InterfaceContract serviceBindingContract,
-                               WebServiceBinding binding,
-                               ServletHost servletHost,
+                               WebServiceBinding wsBinding,
+                               ServletHostExtensionPoint servletHost,
                                ConfigurationContext configContext,
                                WorkContext workContext) {
 
@@ -103,18 +95,20 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
         this.serviceContract = serviceContract;
         this.bindingServiceContract = serviceBindingContract;
-        this.binding = binding;
+        this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.configContext = configContext;
         this.serviceName = uri.toString(); // TODO: whats this for, better name
-        this.workContext = workContext;
+//        this.workContext = workContext;
+
+        start(); // TODO: hack while start isn't getting called by runtime 
     }
 
     public void start() {
         super.start();
 
         try {
-            configContext.getAxisConfiguration().addService(createAxisService(binding));
+            configContext.getAxisConfiguration().addService(createAxisService(wsBinding));
         } catch (AxisFault e) {
             throw new Axis2BindingRunTimeException(e);
         }
@@ -122,12 +116,12 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         Axis2ServiceServlet servlet = new Axis2ServiceServlet();
         servlet.init(configContext);
         configContext.setContextRoot(getUri().toString());
-        servletHost.registerMapping("/services/" + getUri().toString(), servlet);
+        servletHost.addServletMapping(8080, getUri().getPath(), servlet);
     }
 
     @Destroy
     public void stop() {
-        servletHost.unregisterMapping("/services/" + getUri().toString());
+        servletHost.removeServletMapping(8080, getUri().getPath());
         try {
             configContext.getAxisConfiguration().removeService(getUri().toString());
         } catch (AxisFault e) {
@@ -148,7 +142,11 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
-        axisService.setName(getUri().toString());
+        String path = getUri().getPath();
+        if (path != null && path.length() > 1 && path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        axisService.setName(path);
         axisService.setServiceDescription("Tuscany configured AxisService for service: " + getUri().toString());
 
         // Use the existing WSDL
@@ -209,6 +207,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         }
         
         Interceptor headInterceptor = chain.getHeadInterceptor();
+        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         String oldConversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (isConversational() && conversationID != null) {
             workContext.setIdentifier(Scope.CONVERSATION, conversationID);
@@ -232,6 +231,8 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
                     msg.setMessageId(messageId);
                 }
                 msg.setBody(args);
+                msg.setWorkContext(workContext);
+
                 Message resp;
 
                 if (isConversational()) {

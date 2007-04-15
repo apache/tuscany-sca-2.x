@@ -23,20 +23,26 @@ import java.util.Map;
 
 import org.apache.tuscany.binding.ws.xml.WebServiceBindingProcessor;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 public class Axis2ModuleActivator implements ModuleActivator {
 
-    public void start(ExtensionPointRegistry registry) {
-        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+    public void start(ExtensionPointRegistry extensionPointRegistry) {
+
+        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         artifactProcessorRegistry.addExtension(new WebServiceBindingProcessor());
 
-        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
+        ServletHostExtensionPoint servletHost = extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
+        
+        BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);
         Axis2BindingBuilder builder = new Axis2BindingBuilder();
         builder.setBuilderRegistry(builderRegistry);
+        builder.setServletHost(servletHost);
         builder.init();
+
     }
 
     public void stop(ExtensionPointRegistry registry) {

@@ -49,9 +49,8 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             
             String conversationID = axis2Service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
 
-            OMElement responseOM = null; //(OMElement)axis2Service.invokeTarget(operation, args, null, conversationID);
+            OMElement responseOM = (OMElement) axis2Service.invokeTarget(operation, args, null, conversationID);
 
-            
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             if(null != responseOM ){
                 soapEnvelope.getBody().addChild(responseOM);

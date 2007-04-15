@@ -57,7 +57,7 @@ public class TuscanyDispatcher extends RequestURIBasedDispatcher {
 
             String path = URI.create(toEPR.getAddress()).getPath();
             
-            // remove the leading slash
+            // remove the leading slash as Axis2 doesn't work if the service name starts with one
             if (path != null && path.length() > 1 && path.startsWith("/")) {
                 path = path.substring(1);
             }
