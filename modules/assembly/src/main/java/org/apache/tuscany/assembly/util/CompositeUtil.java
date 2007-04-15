@@ -215,6 +215,18 @@ public class CompositeUtil {
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
                     problems.add(componentProperty);
                 }
+                
+                if (!property.isMany() && componentProperty.isMany()) {
+                    problems.add(componentProperty);
+                }
+                
+                if (componentProperty.getXSDType() == null) {
+                    componentProperty.setXSDType(property.getXSDType());
+                }
+                
+                if (componentProperty.getXSDElement() == null) {
+                    componentProperty.setXSDElement(property.getXSDElement());
+                }
             } else {
                 problems.add(componentProperty);
             }
@@ -225,6 +237,9 @@ public class CompositeUtil {
                 if (!property.isMustSupply()) {
                     ComponentProperty componentProperty = assemblyFactory.createComponentProperty();
                     componentProperty.setName(property.getName());
+                    componentProperty.setMany(property.isMany());
+                    componentProperty.setXSDElement(property.getXSDElement());
+                    componentProperty.setXSDType(property.getXSDType());
                     componentProperty.setProperty(property);
                     component.getProperties().add(componentProperty);
                 } else {
@@ -278,6 +293,11 @@ public class CompositeUtil {
             reconcileComponentServices(component, implServices, compServices, problems);
             reconcileComponentReferences(component, implReferences, compReferences, problems);
             reconcileComponentProperties(component, implProperties, compProperties, problems);
+            try {
+                PropertyUtil.processProperties(composite, component);
+            } catch ( Exception e) {
+                problems.add(component);
+            }
         }
     }
 
