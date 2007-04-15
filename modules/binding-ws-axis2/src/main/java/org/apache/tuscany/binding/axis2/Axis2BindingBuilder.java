@@ -69,7 +69,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         compositeReference.getInterfaceContract().getInterface().setDefaultDataBinding(OMElement.class.getName());
         
         URI targetURI = wsBinding.getURI() != null ? URI.create(wsBinding.getURI()) : URI.create("foo");
-        return new Axis2WSReference(URI.create(context.getComponentId() + "#" + wsBinding.getName()), targetURI, wsBinding);
+        return new Axis2ReferenceBinding(URI.create(context.getComponentId() + "#" + wsBinding.getName()), targetURI, wsBinding);
     }
     
 //    @SuppressWarnings("unchecked")
