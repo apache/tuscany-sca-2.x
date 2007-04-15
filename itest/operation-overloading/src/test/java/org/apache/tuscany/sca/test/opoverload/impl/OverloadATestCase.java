@@ -74,4 +74,9 @@ public class OverloadATestCase extends TestCase {
 
         assertNotNull(context);
     }
+    
+    @Override
+    protected void tearDown() throws Exception {
+        SCARuntime.stop();
+    }
 }
