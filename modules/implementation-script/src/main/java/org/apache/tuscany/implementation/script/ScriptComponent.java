@@ -54,6 +54,10 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
         componentContext = new ComponentContextImpl(this);
     }
 
+    public void configureProperty(String propertyName) {
+       
+    }
+
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean callback)
         throws TargetInvokerCreationException {
         return new ScriptInvoker(operation.getName(), this, scopeContainer, workContext);
