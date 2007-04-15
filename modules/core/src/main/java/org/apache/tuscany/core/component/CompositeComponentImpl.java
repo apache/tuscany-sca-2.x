@@ -67,6 +67,11 @@ public class CompositeComponentImpl extends CompositeComponentExtension {
     public void attachCallbackWire(Wire wire) {
         throw new UnsupportedOperationException();
     }
+    
+    public void configureProperty(String propertyName) {
+        throw new UnsupportedOperationException();
+        
+    }
 
     public void start() {
         synchronized (lock) {

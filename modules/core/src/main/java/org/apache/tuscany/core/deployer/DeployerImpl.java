@@ -26,6 +26,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
@@ -151,6 +152,7 @@ public class DeployerImpl implements Deployer {
             Object model = componentManager.getModelObject(Object.class, scaObject);
             if (model instanceof org.apache.tuscany.assembly.Component) {
                 connect((Component)scaObject, (org.apache.tuscany.assembly.Component)model);
+                configureProperties((Component)scaObject, (org.apache.tuscany.assembly.Component)model);
             } else if (model instanceof CompositeService) {
                 try {
                     connect((Service)scaObject, (CompositeService)model);
@@ -203,6 +205,21 @@ public class DeployerImpl implements Deployer {
             }
         }
     }
+    
+    public void configureProperties(Component source,
+                                    org.apache.tuscany.assembly.Component definition) throws BuilderException {
+        if (source == null) {
+            throw new ComponentNotFoundException("Source not found", URI.create(definition
+                .getName()));
+        }
+
+        for (ComponentProperty property : definition.getProperties()) {
+            if (property.getValue() != null) {
+                source.configureProperty(property.getName());
+            }
+        }
+    }
+
 
     public void connect(Component source, org.apache.tuscany.assembly.Component definition) throws WiringException {
 

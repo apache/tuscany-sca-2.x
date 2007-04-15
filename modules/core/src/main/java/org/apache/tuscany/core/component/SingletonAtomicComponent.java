@@ -120,6 +120,10 @@ public class SingletonAtomicComponent<T> extends AbstractComponentExtension impl
     public void attachCallbackWire(Wire wire) {
         throw new UnsupportedOperationException();
     }
+    
+    public void configureProperty(String propertyName) {
+        throw new UnsupportedOperationException();
+    }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback) {
         return null;
