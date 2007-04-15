@@ -64,11 +64,12 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         return WebServiceBinding.class;
     }
 
-    public ReferenceBinding build(CompositeReference boundReferenceDefinition,
-                                  WebServiceBinding bindingDefinition,
+    public ReferenceBinding build(CompositeReference compositeReference,
+                                  WebServiceBinding wsBinding,
                                   DeploymentContext context) throws BuilderException {
-        URI targetURI = bindingDefinition.getURI() != null ? URI.create(bindingDefinition.getURI()) : URI.create("foo");
-        return new Axis2WSReference(URI.create(context.getComponentId() + "#" + bindingDefinition.getName()), targetURI, bindingDefinition);
+        
+        URI targetURI = wsBinding.getURI() != null ? URI.create(wsBinding.getURI()) : URI.create("foo");
+        return new Axis2WSReference(URI.create(context.getComponentId() + "#" + wsBinding.getName()), targetURI, wsBinding);
     }
     
 //    @SuppressWarnings("unchecked")
