@@ -5,9 +5,8 @@ import java.text.DateFormat;
 
 import junit.framework.Assert;
 
-import org.osoa.sca.CompositeContext;
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ConversationEndedException;
-import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.ConversationAttributes;
@@ -33,7 +32,7 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 	@Reference
 	protected ConversationsLifeCycleService aLifeCycleService;
 	@Context
-	protected CompositeContext myContext;  // This is broken Tuscany-965 defect has been opened.
+	protected ComponentContext myContext;
 	@ConversationID
 	protected String conversationID;
 	
@@ -176,22 +175,23 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 	  //  Verify init() is called prior to any business methods. This is performed in the Service when any 
 	  //  business methos is called. 
 		
-	  myContext = CurrentCompositeContext.getContext();
       Assert.assertNotNull("current composite context",myContext);     
 
       // This tests creating a conversational session. And that @Init is run prior to business method.    
-      ServiceReference aServRef;
-      aServRef = myContext.newSession("ConversationsLifeCycleService");
+      ServiceReference aServRef = null;
+      //FIXME Port to the 1.0 spec API
+      //aServRef = myContext.newSession("ConversationsLifeCycleService");
       Assert.assertNotNull("Conversations - Test2 Service Reference 1 not returned", aServRef);
       
-	  //FIXME Port to the 1.0 spec API
+      //FIXME Port to the 1.0 spec API
       //Get the session  ID.
       //Object aConversationID = aServRef.getSessionID(); 
       ConversationsLifeCycleService aConversationsLifeCycleService = (ConversationsLifeCycleService) aServRef;
 	  aConversationsLifeCycleService.knockKnock("Hello");
 	  
 	  //Create a new session this time specifying a session ID. Verify the seesion id is what was specified.
-	  aServRef = myContext.newSession("ConversationsLifeCycleService","Test2-12345");
+	  //FIXME Port to the 1.0 spec API
+	  //aServRef = myContext.newSession("ConversationsLifeCycleService","Test2-12345");
 	  Assert.assertNotNull("Conversations - Test2 Service Reference 2 not returned", aServRef);
 	  //FIXME Port to the 1.0 spec API
       //Get the session  ID.  
@@ -226,7 +226,6 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 		
 	 ConversationsLifeCycleService aConversationsLifeCycleService;
 	 Object aConversationID;
-	 myContext = CurrentCompositeContext.getContext();
      Assert.assertNotNull("current composite context",myContext); 
      ServiceReference aServRef;
      this.removeMarkerFile();  
@@ -235,7 +234,9 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 	  // test3 variation #1 -  Cannot be done annotation not implimented yet. 12/15/2006		
 	  //	
      
-     aServRef = myContext.newSession("ConversationsLifeCycleService");
+     //FIXME Port to the 1.0 spec API
+     //aServRef = myContext.newSession("ConversationsLifeCycleService");
+     aServRef = null;
      Assert.assertNotNull("Conversations - Test3-1 Service Reference not returned", aServRef);      
   
      aConversationsLifeCycleService = (ConversationsLifeCycleService) aServRef;
@@ -260,7 +261,8 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 	  // test3 variation #2 -  Cannot be done annotation not implimented yet. 12/15/2006		
 	  //
 	 
-	 aServRef = myContext.newSession("ConversationsLifeCycleService");
+	 //FIXME Port to the 1.0 spec API
+	 //aServRef = myContext.newSession("ConversationsLifeCycleService");
      Assert.assertNotNull("Conversations - Test3-2 Service Reference not returned", aServRef);      
   
      aConversationsLifeCycleService = (ConversationsLifeCycleService) aServRef;
@@ -285,7 +287,9 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 	  // test3 variation #4 - Client calls endSession()  
 	  //	  	
 	      
-      aServRef = myContext.newSession("ConversationsLifeCycleService");
+	 //FIXME Port to the 1.0 spec API
+      //aServRef = myContext.newSession("ConversationsLifeCycleService");
+         aServRef = null;
       Assert.assertNotNull("Conversations - Test3-4 Service Reference not returned", aServRef);      
    
       aConversationsLifeCycleService = (ConversationsLifeCycleService) aServRef;
@@ -345,7 +349,6 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 		// service matches the client services internal state. 
 		//
 		
-		myContext = CurrentCompositeContext.getContext();
         Assert.assertNotNull("current composite context",myContext);     
              
         boolean result = aService.createServiceReferenceForSelf();	
@@ -354,7 +357,9 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 		
 		count = 6;
 		int returnCount = 0;
-		ServiceReference myServiceReference = myContext.createServiceReferenceForSession(this,"ConversationsClient2");
+		//FIXME Port to the 1.0 spec API
+		//ServiceReference myServiceReference = myContext.createServiceReferenceForSession(this,"ConversationsClient2");
+                ServiceReference myServiceReference = null;
         Assert.assertNotNull("test5 - createServiceReferenceForSession - myContext.createServiceReferenceForSession(this,ConversationsClient);", myServiceReference);
 		returnCount = aService.getCount(myServiceReference);
 		
@@ -374,12 +379,13 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 		// a SessionEndedException.  
 		//
 					
-		  myContext = CurrentCompositeContext.getContext();
 	      Assert.assertNotNull("current composite context",myContext);     
 
 	      // This tests creating a conversational session.  This service has a maxAge="5 seconds". 
 	      ServiceReference aServRef;
-	      aServRef = myContext.newSession("ConversationsLifeCycleService");
+              //FIXME Port to the 1.0 spec API
+	      //aServRef = myContext.newSession("ConversationsLifeCycleService");
+              aServRef = null;
 	      Assert.assertNotNull("Conversations - Test6 Service Reference not returned", aServRef);	
 	      
 	      // Run a business method. 

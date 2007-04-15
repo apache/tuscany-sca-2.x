@@ -18,19 +18,14 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-       name="ConversationsTest">
+	targetNamespace="http://conversations"
+	name="ConversationsTest">
  	      
     <component name="ConversationsClient">
 		<implementation.java class="org.apache.tuscany.sca.test.ConversationsClientImpl"/>
-		<reference name="aService"> 
-		   ConversationsService		    
-		</reference>
-		<reference name="anotherService"> 
-		   AnotherService		    
-		</reference>
-		<reference name="aLifeCycleService"> 
-		   ConversationLifeCycleService		    
-		</reference>		
+		<reference name="aService" target="ConversationsService"/>
+		<reference name="anotherService" target="AnotherService"/>
+		<reference name="aLifeCycleService" target="ConversationLifeCycleService"/>
     </component>   
         
     <component name="ConversationsService">

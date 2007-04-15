@@ -36,11 +36,23 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>callback-api</module>
+                <module>callback-basic</module>
+                <module>callback-complex-type</module>
+                <module>callback-id</module>
+                <module>callback-set-callback</module>
+                <module>callback-set-conversation</module>
                 <module>contribution</module>
+                <module>conversations</module>
+                <!--
+                <module>databindings</module>
+                -->
                 <module>exceptions</module>
+                <module>operation-overloading</module>
                 <!--
                 <module>properties</module>
                 <module>spec-api</module>
+                <module>wsdl</module>
                 -->
             </modules>
         </profile>
@@ -52,7 +64,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

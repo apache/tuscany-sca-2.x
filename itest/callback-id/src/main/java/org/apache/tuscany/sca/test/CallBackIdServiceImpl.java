@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.test;
 
-import org.osoa.sca.CompositeContext;
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Context;
@@ -30,7 +30,7 @@ public class CallBackIdServiceImpl implements CallBackIdService {
     @Callback
     protected CallBackIdCallBack callback;
     @Context
-    protected CompositeContext compositeContext;
+    protected ComponentContext compositeContext;
 
     public void knockKnock(String aString) {
 

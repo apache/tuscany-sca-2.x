@@ -18,13 +18,12 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-       name="CallBackApiTest">
+	targetNamespace="http://callback"
+	name="CallBackApiTest">
  	      
     <component name="CallBackApiClient">
 		<implementation.java class="org.apache.tuscany.sca.test.CallBackApiClientImpl"/>
-		<reference name="aCallBackService"> 
-		   CallBackApiService 
-		</reference>
+		<reference name="aCallBackService" target="CallBackApiService"/>
     </component> 
     
     <component name="CallBackApiService">

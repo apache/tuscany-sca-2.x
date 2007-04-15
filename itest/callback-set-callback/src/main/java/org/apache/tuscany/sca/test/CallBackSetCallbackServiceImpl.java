@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.test;
 
 import java.io.File;
 
-import org.osoa.sca.CompositeContext;
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Callback;
@@ -33,7 +33,7 @@ public class CallBackSetCallbackServiceImpl implements CallBackSetCalbackService
     @Callback
     private CallBackSetCallbackCallback callback;
     @Context
-    private CompositeContext context;
+    private ComponentContext context;
 
     public void knockKnock(String aString) {
 

@@ -32,8 +32,6 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
 
     @Reference
     protected CallBackSetCallbackConvService aCallBackService;
-    @Reference
-    protected CallBackSetCallbackConvCallback callBack;
     private CallBackSetCallbackConvObjectCallback aCallbackObject = null;
     private Object monitor = new Object();
 
