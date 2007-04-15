@@ -32,11 +32,13 @@
         <property name="prefix">ABC</property>
         <property name="prefix1" source="$messagePrefix"></property>
         <property name="bar" source="$complexProperty/*[local-name()='foo']/*[local-name()='bar']"></property>
+        <!--  
         <property name="omProperty">
             <a>
                 <b>XYZ</b>
             </a>
         </property>
+        -->
     </component>
 
     <component name="ComponentB">

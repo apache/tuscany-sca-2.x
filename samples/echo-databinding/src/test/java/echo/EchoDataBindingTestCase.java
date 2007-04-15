@@ -42,11 +42,11 @@ public class EchoDataBindingTestCase extends TestCase {
     protected Interface1 componentA;
 
     public void testTransform() {
-// TODO: fails due to trying to instantiate an OMElement
-//        ComponentContext context = SCARuntime.getComponentContext("ComponentA");
-//        ServiceReference<Interface1> ref = context.createSelfReference(Interface1.class);
-//        componentA = ref.getService();
-//        componentA.call("<message><foo>123</foo></message>");
-//        componentA.call1("<message><foo>123</foo></message>");
+ // TODO: fails due to trying to instantiate an OMElement
+        ComponentContext context = SCARuntime.getComponentContext("ComponentA");
+        ServiceReference<Interface1> ref = context.createSelfReference(Interface1.class);
+        componentA = ref.getService();
+        componentA.call("<message><foo>123</foo></message>");
+        componentA.call1("<message><foo>123</foo></message>");
     }
 }

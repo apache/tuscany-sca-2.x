@@ -75,5 +75,12 @@ public interface Interface {
      * @param unresolved whether the model element is unresolved
      */
     void setUnresolved(boolean unresolved);
+    
+    // TODO: [rfeng] We might need to have a better way
+    /**
+     * Set the databinding for the interface
+     * @param dataBinding
+     */
+    void setDefaultDataBinding(String dataBinding);
 
 }
