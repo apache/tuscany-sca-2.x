@@ -18,15 +18,14 @@
     * under the License.    
 -->
 <project>
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-samples</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.samples.sca</groupId>
+
     <artifactId>tuscany-sample-echo-databinding</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
     <name>Apache Tuscany Echo Data Binding Sample</name>    
