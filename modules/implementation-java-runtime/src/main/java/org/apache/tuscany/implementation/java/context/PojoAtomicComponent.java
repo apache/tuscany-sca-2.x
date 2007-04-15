@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.component.ComponentContextImpl;
@@ -119,6 +120,21 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     public List<Wire> getWires(String name) {
         return wires.get(name);
     }
+    
+    public void configureProperty(String propertyName) {
+        JavaElement element = configuration.getDefinition().getPropertyMembers().get(propertyName);
+
+        if (element != null && !(element.getAnchor() instanceof Constructor)) {
+            configuration.getInjectionSites().add(element);
+        }
+        
+        ComponentProperty configuredProperty = (ComponentProperty)getDefaultPropertyValues().get(propertyName);
+        Class propertyJavaType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
+        ObjectFactory<?> propertyObjectFactory =
+            createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), propertyJavaType);
+        configuration.setObjectFactory(element, propertyObjectFactory);
+    }
+
 
     public void attachWire(Wire wire) {
         assert wire.getSourceUri().getFragment() != null;
@@ -390,6 +406,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire);
+    protected abstract ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, Class javaType);
 
     /**
      * @see org.apache.tuscany.spi.component.AtomicComponent#createInstance()
