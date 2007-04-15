@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.util.WrapperInfo;
 
 /**
  * Represents a service interface.
@@ -132,6 +133,23 @@ public class InterfaceImpl implements Interface {
                     for (DataType d : faultTypes) {
                         if (d.getDataBinding() == null) {
                             d.setDataBinding(dataBinding);
+                        }
+                    }
+                }
+                if (op.isWrapperStyle()) {
+                    WrapperInfo wrapper = op.getWrapper();
+                    if (wrapper != null) {
+                        DataType<List<DataType>> unwrappedInputType = wrapper.getUnwrappedInputType();
+                        if (unwrappedInputType != null) {
+                            for (DataType d : unwrappedInputType.getLogical()) {
+                                if (d.getDataBinding() == null) {
+                                    d.setDataBinding(dataBinding);
+                                }
+                            }
+                        }
+                        DataType unwrappedOutputType = wrapper.getUnwrappedOutputType();
+                        if (unwrappedOutputType != null && unwrappedOutputType.getDataBinding() == null) {
+                            unwrappedOutputType.setDataBinding(dataBinding);
                         }
                     }
                 }
