@@ -21,6 +21,16 @@
 
            name="HelloWorldOM">
 
+    <service name="helloWorld" promote="HelloWorldService">
+        <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
+        <!-- interface.java interface="org.apache.tuscany.binding.axis2.itests.HelloWorld" / -->
+        <binding.ws wsdlElement="http://helloworld-om#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+    </service>
+
+    <component name="HelloWorldService">
+		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldOMService"/>
+    </component>
+
     <component name="HelloWorldComponent">
 		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldOMComponent"/>
         <reference name="helloWorldWS" />
