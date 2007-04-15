@@ -26,9 +26,15 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-http</artifactId>
-    <name>Apache Tuscany HTTP Servlet Host</name>
+    <name>Apache Tuscany HTTP Servlet Host Extension Point</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>

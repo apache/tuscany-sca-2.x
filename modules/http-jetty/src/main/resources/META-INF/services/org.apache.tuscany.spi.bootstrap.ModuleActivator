@@ -1,0 +1,2 @@
+# Implementation class for the ModuleActivator
+org.apache.tuscany.http.jetty.module.JettyRuntimeModuleActivator
