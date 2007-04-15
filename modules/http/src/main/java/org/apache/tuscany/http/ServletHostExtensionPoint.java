@@ -19,26 +19,24 @@
 package org.apache.tuscany.http;
 
 /**
- * Indicates an exception while registering a servlet mapping.
+ * An extension point for servlet hosts.
  * 
  * @version $Rev$ $Date$
  */
-public class ServletMappingException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+public interface ServletHostExtensionPoint extends ServletHost {
 
-    public ServletMappingException() {
-        super();
-    }
+    /**
+     * Adds a servlet host extension.
+     * 
+     * @param servletHost
+     */
+    void addExtension(ServletHost servletHost);
 
-    public ServletMappingException(String message) {
-        super(message);
-    }
+    /**
+     * Removes a servlet host extension.
+     * 
+     * @param servletHost
+     */
+    void removeExtension(ServletHost servletHost);
 
-    public ServletMappingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ServletMappingException(Throwable cause) {
-        super(cause);
-    }
 }

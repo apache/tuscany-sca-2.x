@@ -40,13 +40,11 @@ import junit.framework.TestCase;
 public class JettyServerTestCase extends TestCase {
 
     private static final String REQUEST1_HEADER =
-        "GET / HTTP/1.0\n"
-            + "Host: localhost\n"
+        "GET / HTTP/1.0\n" + "Host: localhost\n"
             + "Content-Type: text/xml\n"
             + "Connection: close\n"
             + "Content-Length: ";
-    private static final String REQUEST1_CONTENT =
-        "";
+    private static final String REQUEST1_CONTENT = "";
     private static final String REQUEST1 =
         REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
 
@@ -57,10 +55,9 @@ public class JettyServerTestCase extends TestCase {
      */
     public void testRegisterServletMapping() throws Exception {
         JettyServer service = new JettyServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping("/", servlet);
+        service.addServletMapping(HTTP_PORT, "/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -72,11 +69,10 @@ public class JettyServerTestCase extends TestCase {
 
     public void testUnregisterMapping() throws Exception {
         JettyServer service = new JettyServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping("/foo", servlet);
-        service.removeServletMapping("/foo");
+        service.addServletMapping(HTTP_PORT, "/foo", servlet);
+        service.removeServletMapping(HTTP_PORT, "/foo");
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -89,10 +85,9 @@ public class JettyServerTestCase extends TestCase {
     public void testRequestSession() throws Exception {
         JettyServer service = new JettyServer();
         service.setDebug(true);
-        service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping("/", servlet);
+        service.addServletMapping(HTTP_PORT, "/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -105,7 +100,6 @@ public class JettyServerTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         JettyServer service = new JettyServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         service.destroy();
         service.init();
@@ -114,13 +108,12 @@ public class JettyServerTestCase extends TestCase {
 
     public void testNoMappings() throws Exception {
         JettyServer service = new JettyServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         Exception ex = null;
         try {
             new Socket("127.0.0.1", HTTP_PORT);
         } catch (ConnectException e) {
-        	ex = e;
+            ex = e;
         }
         assertNotNull(ex);
         service.destroy();
@@ -158,7 +151,6 @@ public class JettyServerTestCase extends TestCase {
                 writer.close();
             }
         }
-
 
     }
 }

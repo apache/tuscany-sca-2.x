@@ -21,29 +21,33 @@ package org.apache.tuscany.http;
 import javax.servlet.Servlet;
 
 /**
- * Interface implemented by host environments that allow Servlets to be registered.
- * <p/>
- * This interface allows a system service to register a servlet to handle inbound requests.
- *
+ * Interface implemented by host environments that allow Servlets to be
+ * registered. <p/> This interface allows a system service to register a servlet
+ * to handle inbound requests.
+ * 
  * @version $Rev$ $Date$
  */
 public interface ServletHost {
     /**
-     * Add a mapping for an instance of a Servlet. This requests that the servlet container direct all requests to
-     * the designated mapping to the supplied Servlet instance.
-     *
+     * Add a mapping for an instance of a Servlet. This requests that the
+     * servlet container direct all requests to the designated mapping to the
+     * supplied Servlet instance.
+     * 
+     * @param port the port for the Servlet
      * @param mapping the uri-mapping for the Servlet
      * @param servlet the Servlet that should be invoked
      */
-    void addServletMapping(String mapping, Servlet servlet) throws ServletMappingException;
+    void addServletMapping(int host, String mapping, Servlet servlet) throws ServletMappingException;
 
     /**
-     * Remove a servlet mapping. This directs the servlet contain not to direct any more requests to a previously
-     * registered Servlet.
-     *
+     * Remove a servlet mapping. This directs the servlet contain not to direct
+     * any more requests to a previously registered Servlet.
+     * 
+     * @param port the port for the Servlet
      * @param mapping the uri-mapping for the Servlet
-     * @return the servlet that was registered to the mapping, null if nothing was registered to the mapping
+     * @return the servlet that was registered to the mapping, null if nothing
+     *         was registered to the mapping
      */
-    Servlet removeServletMapping(String mapping) throws ServletMappingException;
-    
+    Servlet removeServletMapping(int host, String mapping) throws ServletMappingException;
+
 }

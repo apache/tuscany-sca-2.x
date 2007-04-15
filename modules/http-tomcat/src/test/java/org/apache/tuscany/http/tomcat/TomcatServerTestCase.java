@@ -37,13 +37,11 @@ import junit.framework.TestCase;
 public class TomcatServerTestCase extends TestCase {
 
     private static final String REQUEST1_HEADER =
-        "GET /foo HTTP/1.0\n"
-            + "Host: localhost\n"
+        "GET /foo HTTP/1.0\n" + "Host: localhost\n"
             + "Content-Type: text/xml\n"
             + "Connection: close\n"
             + "Content-Length: ";
-    private static final String REQUEST1_CONTENT =
-        "";
+    private static final String REQUEST1_CONTENT = "";
     private static final String REQUEST1 =
         REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
 
@@ -54,10 +52,9 @@ public class TomcatServerTestCase extends TestCase {
      */
     public void testRegisterServletMapping() throws Exception {
         TomcatServer service = new TomcatServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping("/foo", servlet);
+        service.addServletMapping(HTTP_PORT, "/foo", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -69,11 +66,10 @@ public class TomcatServerTestCase extends TestCase {
 
     public void testUnregisterMapping() throws Exception {
         TomcatServer service = new TomcatServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping("/foo", servlet);
-        service.removeServletMapping("/foo");
+        service.addServletMapping(HTTP_PORT, "/foo", servlet);
+        service.removeServletMapping(HTTP_PORT, "/foo");
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -85,10 +81,9 @@ public class TomcatServerTestCase extends TestCase {
 
     public void testRequestSession() throws Exception {
         TomcatServer service = new TomcatServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping("/foo", servlet);
+        service.addServletMapping(HTTP_PORT, "/foo", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -101,18 +96,16 @@ public class TomcatServerTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         TomcatServer service = new TomcatServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         service.destroy();
         service.init();
         service.destroy();
     }
 
-    //FIXME this test randomly breaks on Linux, probably something
+    // FIXME this test randomly breaks on Linux, probably something
     // to do with cleaning up TCP/IP connections?
-    public void FIXMEtestNoMappings() throws Exception {
+    public void testNoMappings() throws Exception {
         TomcatServer service = new TomcatServer();
-        service.setHttpPort(HTTP_PORT);
         service.init();
         Exception ex = null;
         try {
@@ -121,7 +114,7 @@ public class TomcatServerTestCase extends TestCase {
             os.write(REQUEST1.getBytes());
             os.flush();
         } catch (Exception e) {
-        	ex = e;
+            ex = e;
         }
         assertNotNull(ex);
         service.destroy();
@@ -159,7 +152,6 @@ public class TomcatServerTestCase extends TestCase {
                 writer.close();
             }
         }
-
 
     }
 }

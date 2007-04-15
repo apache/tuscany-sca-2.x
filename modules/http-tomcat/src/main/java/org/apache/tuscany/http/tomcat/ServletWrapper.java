@@ -24,8 +24,8 @@ import org.apache.catalina.core.StandardWrapper;
 
 /**
  * A servlet wrapper.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class ServletWrapper extends StandardWrapper {
     private static final long serialVersionUID = 1L;
@@ -43,5 +43,5 @@ public class ServletWrapper extends StandardWrapper {
     public Servlet getServlet() {
         return servlet;
     }
-    
+
 }

@@ -58,13 +58,12 @@ public class JettyServer implements ServletHost {
 
     private final Object joinLock = new Object();
     private int state = UNINITIALIZED;
-    private int httpPort = 8080;
-    private int httpsPort = 8484;
     private String keystore;
     private String certPassword;
     private String keyPassword;
     private boolean sendServerVersion;
     private boolean https;
+    private int httpsPort = 8484;
     private boolean debug;
     private Server server;
     private Connector connector;
@@ -86,18 +85,6 @@ public class JettyServer implements ServletHost {
                 jettyLogger.setDebugEnabled(true);
             }
         }
-    }
-
-    public void setHttpPort(int httpPort) {
-        this.httpPort = httpPort;
-    }
-
-    public int getHttpPort() {
-        return httpPort;
-    }
-
-    public void setHttpsPort(int httpsPort) {
-        this.httpsPort = httpsPort;
     }
 
     public void setSendServerVersion(boolean sendServerVersion) {
@@ -124,22 +111,26 @@ public class JettyServer implements ServletHost {
         debug = val;
     }
 
-    public void init() throws Exception {
+    public void init() {
         state = STARTING;
     }
 
-    public void destroy() throws Exception {
+    public void destroy() {
         if (state == STARTED) {
             state = STOPPING;
             synchronized (joinLock) {
                 joinLock.notifyAll();
             }
-            server.stop();
+            try {
+                server.stop();
+            } catch (Exception e) {
+                throw new ServletMappingException(e);
+            }
             state = STOPPED;
         }
     }
 
-    public void addServletMapping(String path, Servlet servlet) throws ServletMappingException {
+    public void addServletMapping(int port, String path, Servlet servlet) throws ServletMappingException {
         if (state == STARTING) {
 
             try {
@@ -150,7 +141,7 @@ public class JettyServer implements ServletHost {
                 if (connector == null) {
                     if (https) {
                         Connector httpConnector = new SelectChannelConnector();
-                        httpConnector.setPort(httpPort);
+                        httpConnector.setPort(port);
                         SslSocketConnector sslConnector = new SslSocketConnector();
                         sslConnector.setPort(httpsPort);
                         sslConnector.setKeystore(keystore);
@@ -159,11 +150,11 @@ public class JettyServer implements ServletHost {
                         server.setConnectors(new Connector[] {httpConnector, sslConnector});
                     } else {
                         SelectChannelConnector selectConnector = new SelectChannelConnector();
-                        selectConnector.setPort(httpPort);
+                        selectConnector.setPort(port);
                         server.setConnectors(new Connector[] {selectConnector});
                     }
                 } else {
-                    connector.setPort(httpPort);
+                    connector.setPort(port);
                     server.setConnectors(new Connector[] {connector});
                 }
 
@@ -196,9 +187,10 @@ public class JettyServer implements ServletHost {
         servletHandler.addServletMapping(mapping);
     }
 
-    public Servlet removeServletMapping(String path) {
+    public Servlet removeServletMapping(int port, String path) {
         Servlet removedServlet = null;
-        List<ServletMapping> mappings = new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
+        List<ServletMapping> mappings =
+            new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
         for (ServletMapping mapping : mappings) {
             if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
                 try {

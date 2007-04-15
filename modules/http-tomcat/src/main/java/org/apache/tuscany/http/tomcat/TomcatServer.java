@@ -32,75 +32,84 @@ import org.apache.catalina.startup.Embedded;
 import org.apache.tomcat.util.buf.MessageBytes;
 import org.apache.tomcat.util.http.mapper.MappingData;
 import org.apache.tuscany.http.ServletHost;
+import org.apache.tuscany.http.ServletMappingException;
 
 /**
- * A Tomcat based implementation of ServletHost. 
- *
- *  @version $Rev$ $Date$
+ * A Tomcat based implementation of ServletHost.
+ * 
+ * @version $Rev$ $Date$
  */
 public class TomcatServer implements ServletHost {
-	
-	private int httpPort = 8080;
-	private Embedded tomcat;
-	private Host host;
-	private boolean started;
 
-    public void init() throws LifecycleException {
-    	tomcat = new Embedded();
-    	
-    	// Create an engine
-    	Engine engine = tomcat.createEngine();
-    	engine.setDefaultHost("localhost");
-    	
-    	// Create a host
-    	host = tomcat.createHost("localhost", "");
-    	engine.addChild(host);
+    private Embedded tomcat;
+    private Host host;
+    Connector connector;
+    private boolean started;
 
-	    // Create the ROOT context
-	    Context context = tomcat.createContext("", "");
-	    host.addChild(context);
+    public void init() throws ServletMappingException {
+        tomcat = new Embedded();
 
-	    // Install the engine
-	    tomcat.addEngine(engine);
+        // Create an engine
+        Engine engine = tomcat.createEngine();
+        engine.setDefaultHost("localhost");
 
-	    // Install a default HTTP connector
-	    Connector connector = tomcat.createConnector((InetAddress)null, httpPort, false);
-	    tomcat.addConnector(connector);
+        // Create a host
+        host = tomcat.createHost("localhost", "");
+        engine.addChild(host);
+
+        // Create the ROOT context
+        Context context = tomcat.createContext("", "");
+        host.addChild(context);
+
+        // Install the engine
+        tomcat.addEngine(engine);
+
     }
 
-    public void destroy() throws LifecycleException {
-    	
-    	// Stop the server
-    	if (started) {
-    		tomcat.stop();
-    		started = false;
-    	}
+    public void destroy() throws ServletMappingException {
+
+        // Stop the server
+        if (started) {
+            try {
+                tomcat.stop();
+            } catch (LifecycleException e) {
+                throw new ServletMappingException(e);
+            }
+            started = false;
+        }
     }
-    
-	public void addServletMapping(String mapping, Servlet servlet) {
-		
+
+    public void addServletMapping(int port, String mapping, Servlet servlet) {
+
+        // Install a default HTTP connector
+        if (connector == null) {
+            //TODO support multiple connectors on different ports
+            connector = tomcat.createConnector((InetAddress)null, port, false);
+            tomcat.addConnector(connector);
+        }
+        
         // Register the servlet mapping
-		Context context = host.map(mapping);
+        Context context = host.map(mapping);
         Wrapper wrapper = new ServletWrapper(servlet);
         wrapper.setName(mapping);
         wrapper.addMapping(mapping);
         context.addChild(wrapper);
         context.addServletMapping(mapping, mapping);
 
-	    // Start Tomcat
-		try {
-			if (!started) {
-				tomcat.start();
-				started = true;
-			}
-			
-		} catch (LifecycleException e) {
-			//TODO use a better runtime exception
-			throw new RuntimeException(e);
-		}
-	}
+        // Start Tomcat
+        try {
+            if (!started) {
+                tomcat.start();
+                started = true;
+            }
 
-	public Servlet removeServletMapping(String mapping) {
+        } catch (LifecycleException e) {
+            // TODO use a better runtime exception
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Servlet removeServletMapping(int port, String mapping) {
         Context context = host.map(mapping);
         MappingData md = new MappingData();
         MessageBytes mb = MessageBytes.newInstance();
@@ -111,21 +120,13 @@ public class TomcatServer implements ServletHost {
             return null;
         }
         if (md.wrapper instanceof ServletWrapper) {
-        	ServletWrapper servletWrapper = (ServletWrapper)md.wrapper;
-        	context.removeServletMapping(mapping);
-        	context.removeChild(servletWrapper);
-        	return servletWrapper.getServlet();
+            ServletWrapper servletWrapper = (ServletWrapper)md.wrapper;
+            context.removeServletMapping(mapping);
+            context.removeChild(servletWrapper);
+            return servletWrapper.getServlet();
         } else {
-        	return null;
+            return null;
         }
-	}
-	
-	public void setHttpPort(int httpPort) {
-		this.httpPort = httpPort;
-	}
-	
-	public int getHttpPort() {
-		return httpPort;
-	}
+    }
 
 }

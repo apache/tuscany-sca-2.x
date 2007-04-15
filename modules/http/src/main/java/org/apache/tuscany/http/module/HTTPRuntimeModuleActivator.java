@@ -16,29 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http;
+
+package org.apache.tuscany.http.module;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.tuscany.http.DefaultServletHostExtensionPoint;
+import org.apache.tuscany.http.ServletHostExtensionPoint;
+import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
+import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 
 /**
- * Indicates an exception while registering a servlet mapping.
- * 
  * @version $Rev$ $Date$
  */
-public class ServletMappingException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+public class HTTPRuntimeModuleActivator implements ModuleActivator {
 
-    public ServletMappingException() {
-        super();
+    public Map<Class, Object> getExtensionPoints() {
+
+        // Declare Servlet host extension point
+        Map<Class, Object> map = new HashMap<Class, Object>();
+        map.put(ServletHostExtensionPoint.class, new DefaultServletHostExtensionPoint());
+        return map;
     }
 
-    public ServletMappingException(String message) {
-        super(message);
+    public void start(ExtensionPointRegistry extensionPointRegistry) {
     }
 
-    public ServletMappingException(String message, Throwable cause) {
-        super(message, cause);
+    public void stop(ExtensionPointRegistry registry) {
     }
 
-    public ServletMappingException(Throwable cause) {
-        super(cause);
-    }
 }

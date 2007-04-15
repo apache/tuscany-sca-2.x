@@ -22,7 +22,7 @@ import org.mortbay.log.Logger;
 
 /**
  * Replaces Jetty's logging mechanism
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class JettyLogger implements Logger {
@@ -58,7 +58,7 @@ public class JettyLogger implements Logger {
 
     public void warn(String msg, Object arg0, Object arg1) {
         if (debugEnabled) {
-        	System.err.println(":WARN: " + format(msg, arg0, arg1));
+            System.err.println(":WARN: " + format(msg, arg0, arg1));
         }
     }
 

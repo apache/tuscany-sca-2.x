@@ -1,0 +1,62 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+package org.apache.tuscany.http;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.Servlet;
+
+/**
+ * Default implementation of a servlet host extension point.
+ * 
+ * @version $Rev$ $Date$
+ */
+public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoint {
+
+    private List<ServletHost> servletHosts = new ArrayList<ServletHost>();
+
+    public void addExtension(ServletHost servletHost) {
+        servletHosts.add(servletHost);
+    }
+
+    public void removeExtension(ServletHost servletHost) {
+        servletHosts.remove(servletHost);
+    }
+
+    public void addServletMapping(int port, String mapping, Servlet servlet) throws ServletMappingException {
+        if (servletHosts.isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
+        // TODO implement selection of the correct servlet host based on the
+        // mapping
+        // For now just select the first one
+        servletHosts.get(0).addServletMapping(port, mapping, servlet);
+    }
+
+    public Servlet removeServletMapping(int port, String mapping) throws ServletMappingException {
+        // TODO implement selection of the correct servlet host based on the
+        // mapping
+        // For now just select the first one
+        return servletHosts.get(0).removeServletMapping(port, mapping);
+    }
+
+}
