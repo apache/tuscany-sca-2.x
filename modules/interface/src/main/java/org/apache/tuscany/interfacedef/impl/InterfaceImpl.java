@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
 
@@ -108,6 +109,34 @@ public class InterfaceImpl implements Interface {
             return super.addAll(index, c);
         }
 
+    }
+
+    public void setDefaultDataBinding(String dataBinding) {
+        for (Operation op : getOperations()) {
+            if (op.getDataBinding() == null) {
+                op.setDataBinding(dataBinding);
+                DataType<List<DataType>> inputType = op.getInputType();
+                if (inputType != null) {
+                    for (DataType d : inputType.getLogical()) {
+                        if (d.getDataBinding() == null) {
+                            d.setDataBinding(dataBinding);
+                        }
+                    }
+                }
+                DataType outputType = op.getOutputType();
+                if (outputType != null && outputType.getDataBinding() == null) {
+                    outputType.setDataBinding(dataBinding);
+                }
+                List<DataType> faultTypes = op.getFaultTypes();
+                if (faultTypes != null) {
+                    for (DataType d : faultTypes) {
+                        if (d.getDataBinding() == null) {
+                            d.setDataBinding(dataBinding);
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

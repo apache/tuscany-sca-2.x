@@ -28,84 +28,88 @@ import org.apache.tuscany.policy.Intent;
 /**
  * An alternate implementation of the SCA Java assembly model JavaInterface
  * interface.
- *
- *  @version $Rev$ $Date$
+ * 
+ * @version $Rev$ $Date$
  */
 public class BeanJavaInterfaceImpl implements JavaInterface {
 
-	private String className;
-	private Class<?> javaClass;
-        private Class<?> callbackClass;
-	private boolean conversational;
-	private boolean remotable;
-	List<Intent> requiredIntents = new ArrayList<Intent>();
-	private List<Object> extensions = new ArrayList<Object>();
-        private List<Operation> operations = new ArrayList<Operation>();
-	private boolean unresolved = false;
+    private String className;
+    private Class<?> javaClass;
+    private Class<?> callbackClass;
+    private boolean conversational;
+    private boolean remotable;
+    List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<Object> extensions = new ArrayList<Object>();
+    private List<Operation> operations = new ArrayList<Operation>();
+    private boolean unresolved = false;
 
-	public String getName() {
-		if (isUnresolved())
-			return className;
-		else
-			return javaClass.getName();
-	}
+    public String getName() {
+        if (isUnresolved()) {
+            return className;
+        }    
+        else {
+            return javaClass.getName();
+        }    
+    }
 
-	public void setName(String className) {
-		if (!isUnresolved())
-			throw new IllegalStateException();
-		this.className = className;
-	}
-	
-	public Class<?> getJavaClass() {
-		return javaClass;
-	}
-	
-	public void setJavaClass(Class<?> javaClass) {
-		this.javaClass = javaClass;
-	}
-        
-        public Class<?> getCallbackClass() {
-            return callbackClass;
-        }
-        
-        public void setCallbackClass(Class<?> callbackClass) {
-            this.callbackClass = callbackClass;
-        }
+    public void setName(String className) {
+        if (!isUnresolved())
+            throw new IllegalStateException();
+        this.className = className;
+    }
 
-	public boolean isConversational() {
-		return conversational;
-	}
+    public Class<?> getJavaClass() {
+        return javaClass;
+    }
 
-	public boolean isRemotable() {
-		return remotable;
-	}
+    public void setJavaClass(Class<?> javaClass) {
+        this.javaClass = javaClass;
+    }
 
-	public void setConversational(boolean conversational) {
-		this.conversational = conversational;
-	}
+    public Class<?> getCallbackClass() {
+        return callbackClass;
+    }
 
-	public void setRemotable(boolean local) {
-		this.remotable = local;
-	}
+    public void setCallbackClass(Class<?> callbackClass) {
+        this.callbackClass = callbackClass;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
+    public boolean isConversational() {
+        return conversational;
+    }
 
-	public List<Object> getExtensions() {
-		return extensions;
-	}
-        
-        public List<Operation> getOperations() {
-            return operations;
-        }
+    public boolean isRemotable() {
+        return remotable;
+    }
 
-	public boolean isUnresolved() {
-		return unresolved;
-	}
+    public void setConversational(boolean conversational) {
+        this.conversational = conversational;
+    }
 
-	public void setUnresolved(boolean undefined) {
-		this.unresolved = undefined;
-	}
+    public void setRemotable(boolean local) {
+        this.remotable = local;
+    }
 
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public List<Object> getExtensions() {
+        return extensions;
+    }
+
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean undefined) {
+        this.unresolved = undefined;
+    }
+
+    public void setDefaultDataBinding(String dataBinding) {
+    }
 }

@@ -20,6 +20,7 @@ package echo;
 
 import java.net.URI;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -43,6 +44,7 @@ public class EchoBindingBuilder extends BindingBuilderExtension<EchoBinding> {
     public ReferenceBinding build(CompositeReference referenceDefinition,
                                   EchoBinding bindingDefinition,
                                   DeploymentContext context) throws BuilderException {
+        referenceDefinition.getInterfaceContract().getInterface().setDefaultDataBinding(OMElement.class.getName());
         URI targetURI = bindingDefinition.getURI() != null ? URI.create(bindingDefinition.getURI()) : null;
         return new EchoReference(URI.create(context.getComponentId() + "#" + referenceDefinition.getName()), targetURI);
     }
