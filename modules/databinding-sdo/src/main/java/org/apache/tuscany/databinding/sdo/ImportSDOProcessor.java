@@ -66,7 +66,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
         assert IMPORT_SDO.equals(reader.getName());
 
         HelperContext helperContext = null;
-        
+
         // FIXME: [rfeng] How to get the enclosing composite?
         int id = System.identityHashCode(reader);
         // FIXME: [rfeng] How to associate the TypeHelper with deployment
@@ -85,7 +85,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
             importSDO.setFactoryClassName(factoryName);
         }
         String location = reader.getAttributeValue(null, "location");
-        if (location == null) {
+        if (location != null) {
             importSDO.setSchemaLocation(location);
         }
 
@@ -112,6 +112,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
             } catch (Exception e) {
                 throw new ContributionResolveException(e);
             }
+            importSDO.setUnresolved(false);
         }
     }
 
@@ -164,6 +165,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
             } catch (IOException e) {
                 throw new ContributionResolveException(e);
             }
+            importSDO.setUnresolved(false);
         }
     }
 
@@ -183,6 +185,9 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     public void resolve(ImportSDO importSDO, ArtifactResolver resolver) throws ContributionResolveException {
         importFactory(importSDO);
         importWSDL(importSDO);
+        if (!importSDO.isUnresolved()) {
+            resolver.add(importSDO);
+        }
     }
 
     public void wire(ImportSDO model) throws ContributionWireException {

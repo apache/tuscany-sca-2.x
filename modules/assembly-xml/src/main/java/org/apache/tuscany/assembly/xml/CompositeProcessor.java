@@ -269,6 +269,10 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
                                     // <component><implementation>
                                     component.setImplementation((Implementation)extension);
+                                } else {
+                                    
+                                    // FIXME: We need to decide where to host the extensions
+                                    composite.getExtensions().add(extension);
                                 }
                             }
                         }
@@ -474,6 +478,12 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         // Resolve composite services and references
         resolveContracts(composite.getServices(), resolver);
         resolveContracts(composite.getReferences(), resolver);
+
+        for (int i = 0, n = composite.getExtensions().size(); i < n; i++) {
+            Object model = composite.getExtensions().get(i);
+            extensionProcessor.resolve(model, resolver);
+        }
+
     }
 
     public void wire(Composite composite) throws ContributionWireException {
