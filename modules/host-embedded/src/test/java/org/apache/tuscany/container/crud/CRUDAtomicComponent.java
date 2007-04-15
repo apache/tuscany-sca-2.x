@@ -107,4 +107,8 @@ public class CRUDAtomicComponent extends AtomicComponentExtension implements Com
         return new ServiceReferenceImpl<B>(businessInterface, new SingletonObjectFactory<B>((B)createInstance()));
     }
 
+    public void configureProperty(String propertyName) {
+        
+    }
+
 }
