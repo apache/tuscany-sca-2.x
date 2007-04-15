@@ -203,4 +203,7 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
         throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }
+
+    public void configureProperty(String propertyName) {
+    }
 }

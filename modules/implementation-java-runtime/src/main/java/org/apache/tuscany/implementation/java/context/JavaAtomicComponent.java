@@ -20,6 +20,7 @@ package org.apache.tuscany.implementation.java.context;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.core.wire.WireObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
@@ -35,9 +36,11 @@ import org.apache.tuscany.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class JavaAtomicComponent extends PojoAtomicComponent {
+    private JavaPropertyValueObjectFactory propertyValueFactory;
 
     public JavaAtomicComponent(PojoConfiguration configuration) {
         super(configuration);
+        propertyValueFactory = new JavaPropertyValueObjectFactory();
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback)
@@ -61,4 +64,11 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
         return new WireObjectFactory<B>(interfaze, wire, proxyService);
     }
+    
+
+    protected ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, Class javaType) {
+        return propertyValueFactory.createValueFactory(property, propertyValue, javaType);
+    }
+    
+    
 }

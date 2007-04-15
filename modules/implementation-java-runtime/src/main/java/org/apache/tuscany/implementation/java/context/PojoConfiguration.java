@@ -160,20 +160,22 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
         int i = 0;
         for (JavaElement element : injectionSites) {
             Object obj = factories.get(element);
-            if (obj instanceof ObjectFactory) {
-                ObjectFactory<?> factory = (ObjectFactory<?>)obj;
-                Member member = (Member)element.getAnchor();
-                if (element.getElementType() == ElementType.FIELD) {
-                    injectors[i++] = new FieldInjector<T>((Field)member, factory);
-                } else if (element.getElementType() == ElementType.PARAMETER && member instanceof Method) {
-                    injectors[i++] = new MethodInjector<T>((Method)member, factory);
-                } else if (member instanceof Constructor) {
-                    // Ignore
+            if (obj != null) {
+                if (obj instanceof ObjectFactory) {
+                    ObjectFactory<?> factory = (ObjectFactory<?>)obj;
+                    Member member = (Member)element.getAnchor();
+                    if (element.getElementType() == ElementType.FIELD) {
+                        injectors[i++] = new FieldInjector<T>((Field)member, factory);
+                    } else if (element.getElementType() == ElementType.PARAMETER && member instanceof Method) {
+                        injectors[i++] = new MethodInjector<T>((Method)member, factory);
+                    } else if (member instanceof Constructor) {
+                        // Ignore
+                    } else {
+                        throw new AssertionError(String.valueOf(element));
+                    }
                 } else {
-                    throw new AssertionError(String.valueOf(element));
+                    injectors[i++] = createMultiplicityInjector(element, (List<ObjectFactory<?>>)obj);
                 }
-            } else {
-                injectors[i++] = createMultiplicityInjector(element, (List<ObjectFactory<?>>)obj);
             }
         }
         return injectors;
