@@ -66,7 +66,7 @@
     <!--parameters help to tweak the message handling of two main servlets. -->
 
     <!-- If the enableRESTInAxis2MainServlet is true, then Axis2MainServlet will handle both SOAP and REST messages -->
-    <parameter name="enableRESTInAxis2MainServlet" locked="true">false</parameter>
+    <parameter name="enableRESTInAxis2MainServlet" locked="true">true</parameter>
 
     <!-- Following parameter will completely disable REST handling in both the servlets-->
     <parameter name="disableREST" locked="true">false</parameter>
@@ -223,6 +223,10 @@
     <phaseOrder type="InFlow">
         <!--  System pre defined phases       -->
         <phase name="Transport">
+            <handler name="TuscanyDispatcher"
+                     class="org.apache.tuscany.binding.axis2.TuscanyDispatcher">
+                <order phase="Transport"/>
+            </handler>
             <handler name="RequestURIBasedDispatcher"
                      class="org.apache.axis2.engine.RequestURIBasedDispatcher">
                 <order phase="Transport"/>
