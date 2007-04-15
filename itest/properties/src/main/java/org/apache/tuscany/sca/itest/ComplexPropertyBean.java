@@ -52,10 +52,10 @@ public class ComplexPropertyBean {
         return Double.toString(integerNumber) + " - " + 
                 Double.toString(floatNumber) + " - " + 
                 Double.toString(doubleNumber) + " \n" + 
-                ((intArray == null ) ? "no int array" : intArray[0] + " - " + intArray[1] + " \n " ) +
-                ((doubleArray == null ) ? "no double array" : doubleArray[0] + " - " + doubleArray[1] + " \n " ) +
-                ((stringArray == null ) ? "no string array" : stringArray[0] + " - " + stringArray[1] + " \n " ) +
-                ((numberSetArray == null ) ? "no numberset array" : numberSetArray[0] + " - " + numberSetArray[1] + " \n " ) +
+                ((intArray == null ) ? "" : intArray[0] + " - " + intArray[1] + " \n " ) +
+                ((doubleArray == null ) ? "" : doubleArray[0] + " - " + doubleArray[1] + " \n " ) +
+                ((stringArray == null ) ? "" : stringArray[0] + " - " + stringArray[1] + " \n " ) +
+                ((numberSetArray == null ) ? "" : numberSetArray[0] + " - " + numberSetArray[1] + " \n " ) +
                 ((numberSet == null ) ? "" : numberSet.toString());
     }
 
