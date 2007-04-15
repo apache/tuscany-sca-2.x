@@ -46,24 +46,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class JavaPropertyValueObjectFactory {
-    protected DataBindingRegistry dbRegistry = new DataBindingRegistryImpl();
+    // protected DataBindingRegistry dbRegistry = new DataBindingRegistryImpl();
     protected Mediator mediator = null;
     protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperExtension();
     boolean isSimpleType;
     
     
-    public JavaPropertyValueObjectFactory() {
-        dbRegistry.register(new JavaBeansDataBinding());
-        dbRegistry.register(new DOMDataBinding());
-        TransformerRegistry transRegistry = new TransformerRegistryImpl();
-        transRegistry.registerTransformer(DOMDataBinding.NAME, 
-                                          JavaBeansDataBinding.NAME, 
-                                          50, 
-                                          new DOMNode2JavaBeanTransformer());
-        MediatorImpl mediatorImpl = new MediatorImpl();
-        mediatorImpl.setDataBindingRegistry(dbRegistry);
-        mediatorImpl.setTransformerRegistry(transRegistry);
-        this.mediator = mediatorImpl;
+    public JavaPropertyValueObjectFactory(Mediator mediator) {
+        this.mediator = mediator;
     }
     
     public ObjectFactory createValueFactory(Property property, Object propertyValue, Class javaType) {
@@ -188,7 +178,7 @@ public class JavaPropertyValueObjectFactory {
                 targetDataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
             } else {
                 targetDataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
-                dbRegistry.introspectType(targetDataType, null);  
+                mediator.getDataBindingRegistry().introspectType(targetDataType, null);  
             }
         }
     }

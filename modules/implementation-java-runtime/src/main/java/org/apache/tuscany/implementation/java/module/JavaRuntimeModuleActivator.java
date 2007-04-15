@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
+import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
@@ -52,6 +53,8 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.databinding.DataBindingRegistry;
+import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
@@ -106,6 +109,10 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         builder.setProxyService(extensionPointRegistry.getExtensionPoint(ProxyService.class));
         builder.setWorkContext(extensionPointRegistry.getExtensionPoint(WorkContext.class));
         builderRegistry.register(JavaImplementation.class, builder);
+        
+        Mediator mediator = extensionPointRegistry.getExtensionPoint(Mediator.class);
+        JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
+        builder.setPropertyValueObjectFactory(factory);
 
     }
 

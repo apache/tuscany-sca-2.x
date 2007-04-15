@@ -40,7 +40,6 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
 
     public JavaAtomicComponent(PojoConfiguration configuration) {
         super(configuration);
-        propertyValueFactory = new JavaPropertyValueObjectFactory();
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback)
@@ -68,6 +67,10 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
 
     protected ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, Class javaType) {
         return propertyValueFactory.createValueFactory(property, propertyValue, javaType);
+    }
+
+    public void setPropertyValueFactory(JavaPropertyValueObjectFactory propertyValueFactory) {
+        this.propertyValueFactory = propertyValueFactory;
     }
     
     

@@ -40,7 +40,7 @@ import org.osoa.sca.annotations.Reference;
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
-
+    private JavaPropertyValueObjectFactory propertyValueObjectFactory;
     private ResourceHost host;
 
     @Reference
@@ -62,6 +62,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setWorkContext(workContext);
 
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+        component.setPropertyValueFactory(propertyValueObjectFactory);
 
         if (componentType.getConversationIDMember() != null) {
             component.addConversationIDFactory(componentType.getConversationIDMember());
@@ -101,6 +102,10 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
     protected Class<JavaImplementation> getImplementationType() {
         return JavaImplementation.class;
+    }
+
+    public void setPropertyValueObjectFactory(JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+        this.propertyValueObjectFactory = propertyValueObjectFactory;
     }
 
 }

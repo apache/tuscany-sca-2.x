@@ -86,12 +86,9 @@ public class ComponentAImpl implements Interface1 {
     /**
      * @param omProperty the omProperty to set
      */
-    // FIXME: We need to support other type of complex properties
-    /*
     @Property(name="omProperty")
     public void setOmProperty(OMElement omProperty) {
         this.omProperty = omProperty;
     }
-    */
 
 }
