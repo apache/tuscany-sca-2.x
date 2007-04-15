@@ -232,6 +232,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
                     extensionRegistry.addExtensionPoint(e.getKey(), e.getValue());
                 }
             }
+        }
+        for (ModuleActivator activator : activators) {
             activator.start(extensionRegistry);
         }
 
