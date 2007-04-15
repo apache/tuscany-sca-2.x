@@ -88,6 +88,10 @@ public class AtomicComponentExtensionTestCase extends TestCase {
         public void attachCallbackWire(Wire wire) {
             throw new AssertionFailedError();
         }
+        
+        public void configureProperty(String propertyName) {
+            throw new AssertionFailedError();
+        }
 
         public Object createInstance() throws ObjectCreationException {
             throw new AssertionFailedError();

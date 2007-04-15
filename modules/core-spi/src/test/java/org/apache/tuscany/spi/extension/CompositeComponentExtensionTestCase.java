@@ -77,6 +77,10 @@ public class CompositeComponentExtensionTestCase extends TestCase {
                 throw new UnsupportedOperationException();
             }
 
+            public void configureProperty(String propertyName) {
+                throw new UnsupportedOperationException();
+            }
+
         };
     }
 }

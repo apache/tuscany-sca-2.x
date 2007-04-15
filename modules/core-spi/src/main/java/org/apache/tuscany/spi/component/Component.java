@@ -70,6 +70,9 @@ public interface Component extends Invocable {
      */
     ScopeContainer getScopeContainer();
 
+    
+    void configureProperty(String propertyName);
+    
     /**
      * Returns the component scope
      *

@@ -100,6 +100,10 @@ public class AbstractComponentExtensionTestCase extends TestCase {
                 return null;
             }
 
+            public void configureProperty(String propertyName) {
+                throw new UnsupportedOperationException();
+            }
+
         };
     }
 }
