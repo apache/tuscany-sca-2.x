@@ -66,6 +66,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         if (componentType.getConversationIDMember() != null) {
             component.addConversationIDFactory(componentType.getConversationIDMember());
         }
+        
+        handleResources(componentType, component);
 
         return component;
     }
