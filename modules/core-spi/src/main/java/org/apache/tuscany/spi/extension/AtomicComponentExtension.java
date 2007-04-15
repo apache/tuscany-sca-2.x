@@ -124,4 +124,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         };
         // throw new UnsupportedOperationException();
     }
+
+    public void configureProperty(String propertyName) {
+    }
 }
