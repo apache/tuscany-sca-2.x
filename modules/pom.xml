@@ -49,15 +49,15 @@
                 <module>binding-ws-axis2</module>
                 -->
                 <module>binding-ws-xml</module>
+                <module>commonj-api</module>
                 <module>contribution</module>
                 <module>contribution-impl</module>
-                <module>host-embedded</module>
                 <module>core</module>
+                <module>core-databinding</module>
                 <module>core-spi</module>
                 <module>core-spring</module>
                 <module>databinding</module>
                 <module>databinding-axiom</module>
-                <module>core-databinding</module>
                 <module>databinding-jaxb</module>
                 <module>databinding-sdo</module>
                 <module>databinding-sdo-axiom</module>
