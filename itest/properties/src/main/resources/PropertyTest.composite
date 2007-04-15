@@ -5,7 +5,6 @@
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
@@ -37,15 +36,6 @@
 
     <property name="moreComplex" type="foo:MyMoreComplexType">
         <foo:MyMoreComplexValue xsi:type="foo:MyMoreComplexType">
-            <foo:stringArray>TestString_1</foo:stringArray>
-            <foo:stringArray>TestString_2</foo:stringArray>
-            <foo:intArray>10</foo:intArray>
-            <foo:integerNumber>27</foo:integerNumber>
-            <foo:floatNumber>79.34</foo:floatNumber>
-            <foo:doubleArray>25.52</foo:doubleArray>
-            <foo:doubleNumber>184.52</foo:doubleNumber>
-            <foo:doubleArray>50.05</foo:doubleArray>
-            <foo:intArray>20</foo:intArray>
             <foo:numberSetArray>
                 <foo:integerNumber>1</foo:integerNumber>
                 <foo:floatNumber>11</foo:floatNumber>
@@ -56,6 +46,15 @@
                 <foo:floatNumber>22</foo:floatNumber>
                 <foo:doubleNumber>222</foo:doubleNumber>
             </foo:numberSetArray>
+            <foo:stringArray>TestString_1</foo:stringArray>
+            <foo:intArray>10</foo:intArray>
+            <foo:stringArray>TestString_2</foo:stringArray>
+            <foo:intArray>20</foo:intArray>
+            <foo:integerNumber>27</foo:integerNumber>
+            <foo:floatNumber>79.34</foo:floatNumber>
+            <foo:doubleNumber>184.52</foo:doubleNumber>
+            <foo:doubleArray>50.05</foo:doubleArray>
+            <foo:doubleArray>25.52</foo:doubleArray>
             <foo:numberSet>
                 <foo:integerNumber>54</foo:integerNumber>
                 <foo:floatNumber>158.68</foo:floatNumber>
@@ -77,16 +76,8 @@
         <property name="f" source="$complex/foo:MyComplexValue/foo:a">f</property>
         <property name="xpath" source="$complex/foo:MyComplexValue/foo:x/*[local-name()='z']"/>
         <property name="one" source="$number"/>
-        <property name="foobar">
-        	<value>Apache</value>
-        	<value>Tuscany</value>
-        	<value>Java SCA</value>
-        </property>
-        <property name="fooInts">
-        	<value>123</value>
-        	<value>456</value>
-        	<value>789</value>
-        </property>
+        <property name="foobar" many="true">"Apache" "Tuscany" "Java SCA"</property>
+        <property name="fooInts" many="true">123 456 789</property>
     </component>
     
 
@@ -96,9 +87,9 @@
         <property name="d" source="$complex/foo:MyComplexValue/foo:d"/>
         <property name="nosource">aValue</property>
         <property name="fileProperty" file="fileProperty.txt"/>
-        <property name="manyValuesFileProperty" file="manyValuesFileProperty.txt"/>
-        <property name="nonFileProperty" file="fileProperty.txt" source="$complex/foo:MyComplexValue/foo:c"/>
-        <property name="two" source="$number">2</property>
+        <property name="manyValuesFileProperty" many="true" file="manyValuesFileProperty.txt"/>
+        <property name="nonFileProperty"  file="fileProperty.txt" source="$complex/foo:MyComplexValue/foo:c"/>
+        <property name="two" source="$number">25</property>
     </component>
 
     <component name="PropertyComponent">
@@ -160,7 +151,7 @@
                 </foo:numberSet>
             </foo:PropertyThreeElement>
         </property>
-        <property name="complexPropertyFour" element="foo:PropertyFourElement" >
+        <property name="complexPropertyFour" element="foo:PropertyFourElement" many="true">
             <foo:PropertyFourElement>
                 <foo:integerNumber>1</foo:integerNumber>
                 <foo:floatNumber>11.11</foo:floatNumber>
