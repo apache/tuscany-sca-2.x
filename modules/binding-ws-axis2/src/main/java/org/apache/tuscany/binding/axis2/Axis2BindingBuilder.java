@@ -36,7 +36,6 @@ import org.apache.tuscany.spi.extension.BindingBuilderExtension;
  * with the Axis2 binding
  */
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
-    private static final String OM_DATA_BINDING = OMElement.class.getName();
 
     // TODO: what to do about the base URI?
     private static final String BASE_URI = "http://localhost:8080/";
@@ -67,6 +66,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     public ReferenceBinding build(CompositeReference compositeReference,
                                   WebServiceBinding wsBinding,
                                   DeploymentContext context) throws BuilderException {
+        compositeReference.getInterfaceContract().getInterface().setDefaultDataBinding(OMElement.class.getName());
         
         URI targetURI = wsBinding.getURI() != null ? URI.create(wsBinding.getURI()) : URI.create("foo");
         return new Axis2WSReference(URI.create(context.getComponentId() + "#" + wsBinding.getName()), targetURI, wsBinding);
