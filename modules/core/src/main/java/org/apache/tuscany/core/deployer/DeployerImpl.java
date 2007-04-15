@@ -255,6 +255,11 @@ public class DeployerImpl implements Deployer {
                 } catch (TargetInvokerCreationException e) {
                     throw new WireCreationException("Error creating invoker", sourceUri, targetUri, e);
                 }
+
+                if (postProcessorRegistry != null) {
+                    postProcessorRegistry.process(wire);
+                }
+
                 wires.add(wire);
             } else {
                 List<ComponentService> services = componentReference.getTargets();
