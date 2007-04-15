@@ -197,8 +197,12 @@ public class WSDLOperation {
             operationModel.setConversationSequence(Operation.ConversationSequence.NO_CONVERSATION);
             operationModel.setInputType(getInputType());
             operationModel.setOutputType(getOutputType());
-            
-            // FIXME: Need to set the wrapper style flag on the operation 
+
+            operationModel.setWrapperStyle(isWrapperStyle());
+            if (isWrapperStyle()) {
+                WrapperInfo wrapperInfo = getWrapper().getWrapperInfo();
+                operationModel.setWrapper(wrapperInfo);
+            }
         }
         return operationModel;
     }
@@ -320,9 +324,9 @@ public class WSDLOperation {
 
         private List<XmlSchemaElement> outputElements;
 
-        private DataType<List<DataType<XMLType>>> unwrappedInputType;
-
-        private DataType<XMLType> unwrappedOutputType;
+//        private DataType<List<DataType<XMLType>>> unwrappedInputType;
+//
+//        private DataType<XMLType> unwrappedOutputType;
 
         private transient WrapperInfo wrapperInfo;
 
