@@ -72,8 +72,10 @@
                 <module>interface</module>
                 <module>interface-java</module>
                 <module>interface-java-xml</module>
+                <module>interface-java-runtime</module>
                 <module>interface-wsdl</module>
                 <module>interface-wsdl-xml</module>
+                <module>interface-wsdl-runtime</module>
                 <module>implementation-java</module>
                 <module>implementation-java-xml</module>
                 <module>implementation-java-runtime</module>

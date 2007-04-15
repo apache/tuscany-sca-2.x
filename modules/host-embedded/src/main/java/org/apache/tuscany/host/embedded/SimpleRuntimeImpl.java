@@ -34,9 +34,9 @@ import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
@@ -53,19 +53,14 @@ import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
-import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
-import org.apache.tuscany.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 
@@ -119,50 +114,56 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         ExtensionPointRegistry extensionRegistry = new ExtensionPointRegistryImpl();
         ContributionRepository repository = new ContributionRepositoryImpl("target");
 
+        // Add artifact processor extension points
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        extensionRegistry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
+        DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
+        extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
+
+        // Register base artifact processors
         staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
         staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
-        staxProcessors.addExtension(new JavaInterfaceProcessor());
-        staxProcessors.addExtension(new WSDLInterfaceProcessor());
-        extensionRegistry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
 
-        DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors));
         documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors));
         documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors));
-        documentProcessors.addExtension(new WSDLDocumentProcessor());
-        extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
 
+        // Create package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint(describer);
+        extensionRegistry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
+        
+        // Register base package processors
         new JarContributionProcessor(packageProcessors);
         new FolderContributionProcessor(packageProcessors);
 
+        // Create a work context
         WorkContext workContext = new SimpleWorkContext();
         workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
         WorkContextTunnel.setThreadWorkContext(workContext);
 
+        // Create contribution service
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
-
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
                                                                               documentProcessors, artifactResolver);
-
         extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
         initialize(extensionRegistry, contributionService);
 
+        // Create a scope registry
         ScopeRegistry scopeRegistry = getScopeRegistry();
         container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
 
+        // Contribute and activate the SCA contribution
         URI uri = URI.create("sca://default/");
         URL root = getContributionLocation(getApplicationScdl(), runtimeInfo.getCompositePath());
         contributionService.contribute(uri, root, false);
         Contribution contribution = contributionService.getContribution(uri);
-
         // FIXME: Need to getDeployables() as list of Composites
         DeployedArtifact artifact = contribution.getArtifact(URI.create(uri + runtimeInfo.getCompositePath()));
-        Composite composite = (Composite)artifact.getModelObject();
 
+        // Start all components
+        Composite composite = (Composite)artifact.getModelObject();
         Collection<Component> components = getDeployer().deploy(composite);
         for (Component component : components) {
             component.start();
@@ -171,9 +172,8 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         getWorkContext().setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
         tuscanySystem = getComponentManager().getComponent(URI.create("/" + composite.getName().getLocalPart()));
 
-        // Temporary here to help the bring up of samples and integration tests
-        // that still
-        // use the 0.95 API
+        // FIXME: Temporary here to help the bring up of samples and integration tests
+        // that still use the 0.95 API
         CompositeContext context = new SimpleCompositeContextImpl(this, composite);
         CurrentCompositeContext.setContext(context);
 
