@@ -49,11 +49,8 @@ import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.Property;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-
-import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
 
 /**
  * Util class to deal with processing of component properties that are take values from the parent 
