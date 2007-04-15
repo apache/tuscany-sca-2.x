@@ -41,6 +41,13 @@
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-databinding</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+                
     </dependencies>
 
     <build>
