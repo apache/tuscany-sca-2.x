@@ -224,7 +224,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         }
     }
 
-    public Class getJavaType(QName xmlType) {
+    public static Class getJavaType(QName xmlType) {
         if (URI_2001_SCHEMA_XSD.equals(xmlType.getNamespaceURI())) {
             return XML2JAVA.get(xmlType.getLocalPart());
         } else {
