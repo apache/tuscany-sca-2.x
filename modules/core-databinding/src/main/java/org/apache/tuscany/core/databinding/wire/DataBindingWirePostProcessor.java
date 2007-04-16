@@ -55,7 +55,15 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         if (source == target) {
             return false;
         }
-        return !source.getDataBinding().equals(target.getDataBinding());
+        String sourceDataBinding = source.getDataBinding();
+        String targetDataBinding = target.getDataBinding();
+        if (sourceDataBinding == targetDataBinding) {
+            return false;
+        }
+        if (sourceDataBinding == null || targetDataBinding == null) {
+            return true;
+        }
+        return !sourceDataBinding.equals(targetDataBinding);
     }
 
     public boolean isTransformationRequired(Operation source, Operation target) {
@@ -96,7 +104,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         if (sourceContract == targetContract) {
             return false;
         }
-        return true;
+        return isTransformationRequired(sourceOperation, targetOperation);
     }
 
     public void process(Wire wire) {
