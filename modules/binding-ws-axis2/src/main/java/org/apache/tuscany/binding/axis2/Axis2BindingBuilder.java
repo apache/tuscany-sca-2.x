@@ -74,7 +74,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         compositeReference.getInterfaceContract().getInterface().setDefaultDataBinding(OMElement.class.getName());        
 
         URI targetURI = wsBinding.getURI() != null ? URI.create(wsBinding.getURI()) : URI.create("foo");
-        URI name = URI.create(context.getComponentId() + "#" + wsBinding.getName());
+        URI name = URI.create(context.getComponentId() + "#" + compositeReference.getName());
 
         return new Axis2ReferenceBinding(name, targetURI, wsBinding);
     }
@@ -87,8 +87,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         // Set to use the Axiom data binding 
         interfaceContract.getInterface().setDefaultDataBinding(OMElement.class.getName());        
 
-        URI name = URI.create(context.getComponentId() + "#" + wsBinding.getName());
-        URI uri = computeActualURI(wsBinding, BASE_URI, name, compositeService.getName()).normalize();
+        URI uri = computeActualURI(wsBinding, BASE_URI, compositeService.getName()).normalize();
 
         ServiceBinding serviceBinding = new Axis2ServiceBinding(uri, interfaceContract, null, wsBinding, servletHost, configContext, null);
 
@@ -114,7 +113,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
      * over any implicitly used WSDL.
      * @param parent 
      */
-    protected URI computeActualURI(WebServiceBinding wsBinding, String baseURI, URI componentURI, String bindingName) {
+    protected URI computeActualURI(WebServiceBinding wsBinding, String baseURI, String componentName) {
         URI wsdlURI = null;         
         if (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null) {
             // <binding.ws> explicitly points at a wsdl port, may be a relative URI
@@ -142,6 +141,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
         }
         
+        URI componentURI = URI.create(componentName);
+        
         if (componentURI == null) { // null for references
             wsdlURI = getEndpoint(wsBinding.getPort());
             if (bindingURI != null) {
@@ -155,9 +156,9 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         //        boolean singleService = (parent != null) && (((Component)parent.getChild(componentURI.toString())).getInboundWires().size() == 1);
         //        if (bindingURI == null && !singleService) {
 
-        if (bindingURI == null) {
-            bindingURI = URI.create(bindingName);
-        }
+//        if (bindingURI == null) {
+//            bindingURI = URI.create(bindingName);
+//        }
 
         if (componentURI.isAbsolute()) {
             if (bindingURI == null && wsdlURI == null) {
@@ -194,10 +195,12 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
      * Returns the endpoint of a given port.
      */
     protected URI getEndpoint(Port wsdlPort) {
-        final List wsdlPortExtensions = wsdlPort.getExtensibilityElements();
-        for (final Object extension : wsdlPortExtensions) {
-            if (extension instanceof SOAPAddress) {
-                return URI.create(((SOAPAddress) extension).getLocationURI());
+        if (wsdlPort != null) {
+            final List wsdlPortExtensions = wsdlPort.getExtensibilityElements();
+            for (final Object extension : wsdlPortExtensions) {
+                if (extension instanceof SOAPAddress) {
+                    return URI.create(((SOAPAddress) extension).getLocationURI());
+                }
             }
         }
         return null;
