@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -153,7 +153,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.sdo</groupId>
                 <artifactId>tuscany-sdo-plugin</artifactId>
-                <version>1.0-incubator-SNAPSHOT</version>
+                <version>1.0-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>generate-sdo</id>
