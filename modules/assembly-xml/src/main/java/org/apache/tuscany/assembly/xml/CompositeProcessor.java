@@ -52,7 +52,7 @@ import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -68,7 +68,7 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Composite> {
+public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessorExtension<Composite> {
 
     /**
      * Construct a new composite processor
@@ -76,7 +76,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      * @param policyFactory
      * @param extensionProcessor 
      */
-    public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+    public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
     }
 
@@ -84,7 +84,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      * Construct a new composite processor.
      * @param extensionProcessor
      */
-    public CompositeProcessor(StAXArtifactProcessor extensionProcessor) {
+    public CompositeProcessor(StAXArtifactProcessorExtension extensionProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
     }
 

@@ -29,10 +29,10 @@ public interface ContributionPostProcessorExtensionPoint {
      * Add a ContributionPostProcessor
      * @param processor
      */
-    void addExtension(ContributionPostProcessor processor);
+    void addExtension(ContributionPostProcessorExtension processor);
     /**
      * Remove a ContributionPostProcessor
      * @param processor
      */
-    void removeExtension(ContributionPostProcessor processor);
+    void removeExtension(ContributionPostProcessorExtension processor);
 }

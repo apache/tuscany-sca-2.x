@@ -34,7 +34,7 @@ import org.apache.tuscany.assembly.AbstractService;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -50,7 +50,7 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<ConstrainingType> {
+public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessorExtension<ConstrainingType> {
 
     /**
      * Construct a new constrainingType processor.
@@ -58,7 +58,7 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
      * @param policyFactory
      * @param extensionProcessor
      */
-    public ConstrainingTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+    public ConstrainingTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
     }
 
@@ -66,7 +66,7 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
      * Construct a new constrainingType processor.
      * @param extensionProcessor
      */
-    public ConstrainingTypeProcessor(StAXArtifactProcessor extensionProcessor) {
+    public ConstrainingTypeProcessor(StAXArtifactProcessorExtension extensionProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
     }
 

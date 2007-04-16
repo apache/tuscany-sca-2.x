@@ -40,7 +40,7 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -56,7 +56,7 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<ComponentType> {
+public class ComponentTypeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessorExtension<ComponentType> {
     
     /**
      * Constructs a new componentType processor.
@@ -64,7 +64,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
     }
     
@@ -72,7 +72,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
      * Constructs a new componentType processor.
      * @param extensionProcessor
      */
-    public ComponentTypeProcessor(StAXArtifactProcessor extensionProcessor) {
+    public ComponentTypeProcessor(StAXArtifactProcessorExtension extensionProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
     }
     

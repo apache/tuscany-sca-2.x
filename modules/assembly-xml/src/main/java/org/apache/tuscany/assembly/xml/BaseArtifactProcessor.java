@@ -51,7 +51,7 @@ import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -76,7 +76,7 @@ public abstract class BaseArtifactProcessor implements Constants {
 
     protected AssemblyFactory factory;
     protected PolicyFactory policyFactory;
-    protected StAXArtifactProcessor<Object> extensionProcessor;
+    protected StAXArtifactProcessorExtension<Object> extensionProcessor;
 
     private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
     static {
@@ -95,10 +95,10 @@ public abstract class BaseArtifactProcessor implements Constants {
      * @param policyFactory
      */
     @SuppressWarnings("unchecked")
-    public BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+    public BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension extensionProcessor) {
         this.factory = factory;
         this.policyFactory = policyFactory;
-        this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
+        this.extensionProcessor = (StAXArtifactProcessorExtension<Object>)extensionProcessor;
     }
 
     /**

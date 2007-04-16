@@ -30,12 +30,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.apache.tuscany.contribution.ContentType;
-import org.apache.tuscany.contribution.processor.PackageProcessor;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtension;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.service.ContributionException;
 
 public class JarContributionProcessor extends AbstractContributionPackageProcessor implements
-    PackageProcessor {
+    PackageProcessorExtension {
     /**
      * Package-type that this package processor can handle
      */

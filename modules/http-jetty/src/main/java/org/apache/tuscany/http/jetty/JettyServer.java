@@ -25,7 +25,7 @@ import java.util.List;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
-import org.apache.tuscany.http.ServletHost;
+import org.apache.tuscany.http.ServletHostExtension;
 import org.apache.tuscany.http.ServletMappingException;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
@@ -46,7 +46,7 @@ import org.mortbay.thread.BoundedThreadPool;
  * @version $$Rev$$ $$Date: 2007-02-21 13:28:30 +0000 (Wed, 21 Feb
  *          2007) $$
  */
-public class JettyServer implements ServletHost {
+public class JettyServer implements ServletHostExtension {
 
     private static final String ROOT = "/";
     private static final int ERROR = 0;
