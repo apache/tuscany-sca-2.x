@@ -20,9 +20,9 @@ package org.apache.tuscany.interfacedef.java.introspect;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidCallbackException;
@@ -84,7 +84,7 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
         }
         javaInterface.setCallbackClass(callbackClass);
         
-        javaInterface.getOperations().addAll(getOperations(type, remotable, conversational).values());
+        javaInterface.getOperations().addAll(getOperations(type, remotable, conversational));
 
         for (JavaInterfaceIntrospectorExtension extension : extensions) {
             extension.visitInterface(javaInterface);
@@ -92,14 +92,18 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
         return javaInterface;
     }
 
-    private <T> Map<String, Operation> getOperations(Class<T> type, boolean remotable, boolean conversational)
+    private <T> List<Operation> getOperations(Class<T> type, boolean remotable, boolean conversational)
         throws InvalidInterfaceException {
         Method[] methods = type.getMethods();
-        Map<String, Operation> operations = new HashMap<String, Operation>(methods.length);
+        List<Operation> operations = new ArrayList<Operation>(methods.length);
+        Set<String> names = remotable? new HashSet<String>() : null;
         for (Method method : methods) {
             String name = method.getName();
-            if (remotable && operations.containsKey(name)) {
+            if (remotable && names.contains(name)) {
                 throw new OverloadedOperationException(method);
+            }
+            if(remotable) {
+                names.add(name);
             }
 
             Class returnType = method.getReturnType();
@@ -136,7 +140,7 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
             operation.setFaultTypes(faultDataTypes);
             operation.setConversationSequence(conversationSequence);
             operation.setNonBlocking(nonBlocking);
-            operations.put(name, operation);
+            operations.add(operation);
         }
         return operations;
     }
