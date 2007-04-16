@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.crud;
+package crud;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static org.osoa.sca.Constants.SCA_NS;

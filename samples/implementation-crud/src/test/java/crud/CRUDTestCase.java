@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.container.crud;
+package crud;
 
 import junit.framework.TestCase;
 
@@ -25,8 +25,10 @@ import org.apache.tuscany.host.embedded.SCARuntime;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
+import crud.CRUD;
+
 /**
- * @version $Rev: 525225 $ $Date: 2007-04-03 11:08:56 -0700 (Tue, 03 Apr 2007) $
+ * @version $Rev$ $Date$
  */
 public class CRUDTestCase extends TestCase {
     private CRUD crudService;

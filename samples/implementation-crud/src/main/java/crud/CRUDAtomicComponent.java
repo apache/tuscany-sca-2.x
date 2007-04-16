@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.crud;
+package crud;
 
 import java.net.URI;
 import java.util.List;

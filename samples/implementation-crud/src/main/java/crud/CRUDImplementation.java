@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.crud;
+package crud;
 
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Implementation;
