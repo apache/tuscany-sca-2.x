@@ -92,6 +92,10 @@ public class Axis2ServiceServlet extends AxisServlet {
                         return null;
                     }
 
+                    public String getContextPath() {
+                        return null;
+                    }
+
                     public int getMajorVersion() {
                         return 0;
                     }
