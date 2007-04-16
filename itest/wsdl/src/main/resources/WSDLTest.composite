@@ -128,7 +128,7 @@
     <reference name="Component3a4aRef" promote="Component3a4a/comp" >
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-                    uri="http://localhost:8080/HelloWorldServiceComponent/HelloWorldWebService" />
+                    uri="http://localhost:8080/HelloWorldWebService" />
     </reference>
 
     <component name="Component3a4b">
@@ -138,7 +138,7 @@
     <reference name="Component3a4bRef" promote="Component3a4b/comp" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-                    uri="http://localhost:8080/HelloWorldServiceComponent/HelloWorldWebService" />
+                    uri="http://localhost:8080/HelloWorldWebService" />
     </reference>
 
     <component name="Component3b4a">
@@ -148,7 +148,7 @@
     <reference name="Component3b4aRef" promote="Component3b4a/comp" >
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-                    uri="http://localhost:8080/HelloWorldServiceComponent/HelloWorldWebService" />
+                    uri="http://localhost:8080/HelloWorldWebService" />
     </reference>
 
     <component name="Component3b4b">
@@ -158,7 +158,7 @@
     <reference name="Component3b4bRef" promote="Component3b4b/comp" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-                    uri="http://localhost:8080/HelloWorldServiceComponent/HelloWorldWebService" />
+                    uri="http://localhost:8080/HelloWorldWebService" />
     </reference>
 
 
