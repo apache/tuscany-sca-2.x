@@ -1,18 +1,14 @@
-=========================================================================
-==  NOTICE file corresponding to the section 4 d of                    ==
-==  the Apache License, Version 2.0,                                   ==
-==  in this case for the Apache Tuscany distribution.                  ==
-=========================================================================
+${pom.name}
+Copyright (c) 2005 - 2006 The Apache Software Foundation
 
-This product includes software developed by the Apache Software Foundation
-(http://www.apache.org/).
+Apache Tuscany is an effort undergoing incubation at The Apache Software
+Foundation (ASF), sponsored by the Apache Web Services PMC. Incubation is
+required of all newly accepted projects until a further review indicates that
+the infrastructure, communications, and decision making process have stabilized
+in a manner consistent with other successful ASF projects. While incubation
+status is not necessarily a reflection of the completeness or stability of the
+code, it does indicate that the project has yet to be fully endorsed by the ASF.
 
-This product also includes software developed by:
-- the Eclipse Modeling Framework project (http://www.eclipse.org/emf/)
-- the Celtix project (http://celtix.objectweb.org/)
-- the Mozilla Rhino project (http://www.mozilla.org/rhino/)
-- the GlassFish JAX-WS project (https://jax-ws.dev.java.net/)
-
-Please read the LICENSE.txt file present in the root directory of this
-distribution.
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
 
