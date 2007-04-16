@@ -57,11 +57,11 @@ public interface Mediator {
      * Get the DataBinding registry
      * @return
      */
-    DataBindingRegistry getDataBindingRegistry();
+    DataBindingExtensionPoint getDataBindingRegistry();
     
     /**
      * Get the Transformer registry
      * @return
      */
-    TransformerRegistry getTransformerRegistry();    
+    TransformerExtensionPoint getTransformerRegistry();    
 }

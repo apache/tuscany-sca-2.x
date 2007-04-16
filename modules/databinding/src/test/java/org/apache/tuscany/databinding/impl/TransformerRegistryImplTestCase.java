@@ -28,22 +28,22 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.TransformerRegistry;
-import org.apache.tuscany.databinding.impl.TransformerRegistryImpl;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 
 /**
  * 
  */
 public class TransformerRegistryImplTestCase extends TestCase {
-    private TransformerRegistry registry;
+    private TransformerExtensionPoint registry;
 
     /**
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new TransformerRegistryImpl();
+        registry = new DefaultTransformerExtensionPoint();
     }
 
     public void testRegisterTransformer1() {

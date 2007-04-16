@@ -21,8 +21,8 @@ package org.apache.tuscany.databinding.jaxb.bootstrap;
 
 import java.util.Map;
 
-import org.apache.tuscany.databinding.DataBindingRegistry;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.jaxb.JAXB2Node;
 import org.apache.tuscany.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.databinding.jaxb.JAXWSJavaInterfaceProcessor;
@@ -45,10 +45,10 @@ public class JAXBDataBindingModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        DataBindingRegistry dataBindingRegistry = registry.getExtensionPoint(DataBindingRegistry.class);
+        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         dataBindingRegistry.register(new JAXBDataBinding());
 
-        TransformerRegistry transformerRegistry = registry.getExtensionPoint(TransformerRegistry.class);
+        TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
         transformerRegistry.registerTransformer(new JAXB2Node());
         transformerRegistry.registerTransformer(new Node2JAXB());
         transformerRegistry.registerTransformer(new Reader2JAXB());

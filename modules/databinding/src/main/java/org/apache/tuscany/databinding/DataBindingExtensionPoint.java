@@ -25,7 +25,7 @@ import org.apache.tuscany.interfacedef.DataType;
 /**
  * The registry for data bindings
  */
-public interface DataBindingRegistry {
+public interface DataBindingExtensionPoint {
     /**
      * Register a data binding
      * 

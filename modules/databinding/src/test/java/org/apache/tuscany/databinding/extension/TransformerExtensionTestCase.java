@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.easymock.EasyMock;
 import org.w3c.dom.Node;
@@ -46,7 +46,7 @@ public class TransformerExtensionTestCase extends TestCase {
         assertEquals(Node.class.getName(), transformer.getSourceDataBinding());
         assertEquals(XMLStreamReader.class.getName(), transformer.getTargetDataBinding());
         assertEquals(50, transformer.getWeight());
-        TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
+        TransformerExtensionPoint registry = EasyMock.createMock(TransformerExtensionPoint.class);
         registry.registerTransformer(EasyMock.isA(Transformer.class));
         EasyMock
                 .expect(registry.getTransformer(transformer.getSourceDataBinding(), transformer.getTargetDataBinding()))

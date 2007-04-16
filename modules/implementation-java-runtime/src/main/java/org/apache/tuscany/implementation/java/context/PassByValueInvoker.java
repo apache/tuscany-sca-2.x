@@ -24,7 +24,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.apache.tuscany.databinding.DataBinding;
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public class PassByValueInvoker extends JavaTargetInvoker {
-    private DataBindingRegistry registry;
+    private DataBindingExtensionPoint registry;
     private Operation operation;
 
     /**
@@ -48,7 +48,7 @@ public class PassByValueInvoker extends JavaTargetInvoker {
      * @param scopeContainer
      * @param passByValue
      */
-    public PassByValueInvoker(DataBindingRegistry registry, Operation operation, Method method, AtomicComponent component, ScopeContainer scopeContainer) {
+    public PassByValueInvoker(DataBindingExtensionPoint registry, Operation operation, Method method, AtomicComponent component, ScopeContainer scopeContainer) {
         super(method, component, scopeContainer);
         this.registry = registry;
         this.operation = operation;

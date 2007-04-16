@@ -29,7 +29,8 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.DataBinding;
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.easymock.EasyMock;
@@ -39,14 +40,14 @@ import org.xml.sax.ContentHandler;
  * 
  */
 public class DataBindingRegistryImplTestCase extends TestCase {
-    private DataBindingRegistry registry;
+    private DataBindingExtensionPoint registry;
 
     /**
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new DataBindingRegistryImpl();
+        registry = new DefaultDataBindingExtensionPoint();
     }
 
     @SuppressWarnings("unchecked")

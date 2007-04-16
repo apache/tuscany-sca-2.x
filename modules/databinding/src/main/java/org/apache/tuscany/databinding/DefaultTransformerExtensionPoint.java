@@ -16,21 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.impl;
+package org.apache.tuscany.databinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.databinding.DataBinding;
-import org.apache.tuscany.databinding.DataBindingRegistry;
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.impl.DirectedGraph;
 
 /**
  * @version $Rev$ $Date$
  */
-public class TransformerRegistryImpl implements TransformerRegistry {
-    private DataBindingRegistry dataBindingRegistry;
+public class DefaultTransformerExtensionPoint implements TransformerExtensionPoint {
+    private DataBindingExtensionPoint dataBindingRegistry;
     
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
 
@@ -75,7 +72,7 @@ public class TransformerRegistryImpl implements TransformerRegistry {
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
-    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+    public void setDataBindingRegistry(DataBindingExtensionPoint dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }
     

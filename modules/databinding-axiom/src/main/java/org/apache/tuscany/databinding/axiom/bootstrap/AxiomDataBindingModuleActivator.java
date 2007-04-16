@@ -21,8 +21,8 @@ package org.apache.tuscany.databinding.axiom.bootstrap;
 
 import java.util.Map;
 
-import org.apache.tuscany.databinding.DataBindingRegistry;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.axiom.AxiomDataBinding;
 import org.apache.tuscany.databinding.axiom.OMElement2Object;
 import org.apache.tuscany.databinding.axiom.OMElement2String;
@@ -45,10 +45,10 @@ public class AxiomDataBindingModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        DataBindingRegistry dataBindingRegistry = registry.getExtensionPoint(DataBindingRegistry.class);
+        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         dataBindingRegistry.register(new AxiomDataBinding());
 
-        TransformerRegistry transformerRegistry = registry.getExtensionPoint(TransformerRegistry.class);
+        TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
         transformerRegistry.registerTransformer(new Object2OMElement());
         transformerRegistry.registerTransformer(new OMElement2Object());
         transformerRegistry.registerTransformer(new OMElement2String());

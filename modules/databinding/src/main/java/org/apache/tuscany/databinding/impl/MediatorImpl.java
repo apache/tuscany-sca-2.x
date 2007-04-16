@@ -21,7 +21,7 @@ package org.apache.tuscany.databinding.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DataPipe;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.PullTransformer;
@@ -29,7 +29,7 @@ import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 
@@ -38,18 +38,18 @@ import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
  */
 public class MediatorImpl implements Mediator {
 
-    private DataBindingRegistry dataBindingRegistry;
+    private DataBindingExtensionPoint dataBindingRegistry;
 
-    private TransformerRegistry transformerRegistry;
+    private TransformerExtensionPoint transformerRegistry;
 
-    public void setTransformerRegistry(TransformerRegistry transformerRegistry) {
+    public void setTransformerRegistry(TransformerExtensionPoint transformerRegistry) {
         this.transformerRegistry = transformerRegistry;
     }
 
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
-    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+    public void setDataBindingRegistry(DataBindingExtensionPoint dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }
 
@@ -165,14 +165,14 @@ public class MediatorImpl implements Mediator {
     /**
      * @return the dataBindingRegistry
      */
-    public DataBindingRegistry getDataBindingRegistry() {
+    public DataBindingExtensionPoint getDataBindingRegistry() {
         return dataBindingRegistry;
     }
 
     /**
      * @return the transformerRegistry
      */
-    public TransformerRegistry getTransformerRegistry() {
+    public TransformerExtensionPoint getTransformerRegistry() {
         return transformerRegistry;
     }
 }
