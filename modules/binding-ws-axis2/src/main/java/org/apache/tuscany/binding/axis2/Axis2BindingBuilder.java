@@ -114,6 +114,9 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
      * @param parent 
      */
     protected URI computeActualURI(WebServiceBinding wsBinding, String baseURI, String componentName) {
+        
+        // TODO: support wsa:Address
+        
         URI wsdlURI = null;         
         if (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null) {
             // <binding.ws> explicitly points at a wsdl port, may be a relative URI
@@ -134,12 +137,16 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         }
 
         if (bindingURI != null && bindingURI.isAbsolute()) {
+            // there is an absoulte uri specified on the binding: <binding.ws uri="xxx"
             if (wsdlURI != null) {
                 return URI.create(bindingURI + "/" + wsdlURI);
             } else {
                 return bindingURI;
             }
         }
+        
+        // both the WSDL endpoint and binding uri are either unspecified or relative so
+        // the endpoint is based on the component uri and service name
         
         URI componentURI = URI.create(componentName);
         
