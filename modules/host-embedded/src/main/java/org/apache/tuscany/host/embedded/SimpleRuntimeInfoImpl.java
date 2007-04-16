@@ -19,14 +19,9 @@
 
 package org.apache.tuscany.host.embedded;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
 
 import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.host.AbstractRuntimeInfo;
@@ -37,11 +32,7 @@ import org.apache.tuscany.host.AbstractRuntimeInfo;
 public class SimpleRuntimeInfoImpl extends AbstractRuntimeInfo implements SimpleRuntimeInfo {
     private ClassLoader classLoader;
     private String compositePath;
-
-    private List<URL> extensions;
     private URL applicationSCDL;
-    private URL systemSCDL;
-
     private URL contributionURL;
     private URI contributionURI;
 
@@ -53,20 +44,15 @@ public class SimpleRuntimeInfoImpl extends AbstractRuntimeInfo implements Simple
      * @param systemSCDL
      */
     public SimpleRuntimeInfoImpl(ClassLoader classLoader,
-                                 URL systemSCDL,
-                                 List<URL> extensions,
                                  URI contributionURI,
                                  URL applicationSCDL,
                                  String compositePath) {
         this(classLoader, compositePath);
-        this.extensions = extensions;
         this.applicationSCDL = applicationSCDL;
-        this.systemSCDL = systemSCDL;
         this.contributionURI = contributionURI;
     }
 
     public SimpleRuntimeInfoImpl(ClassLoader classLoader, String compositePath) {
-        // super(domain, applicationRootDirectory, baseUrl, online, runtimeId);
         super(URI.create("sca://domain/local"), null, null, false, "simple");
         if (classLoader != null) {
             this.classLoader = classLoader;
@@ -91,18 +77,13 @@ public class SimpleRuntimeInfoImpl extends AbstractRuntimeInfo implements Simple
             applicationSCDL = classLoader.getResource(compositePath);
             if (applicationSCDL == null) {
                 applicationSCDL = classLoader.getResource(APPLICATION_SCDL);
-                if (applicationSCDL == null) {
-                    applicationSCDL = classLoader.getResource(META_APPLICATION_SCDL);
-                    if (applicationSCDL != null) {
-                        compositePath = META_APPLICATION_SCDL;
-                    }
-                } else {
+                if (applicationSCDL != null) {
                     if (compositePath == null) {
                         compositePath = APPLICATION_SCDL;
                     }
                 }
                 if (applicationSCDL == null) {
-                    throw new IllegalArgumentException("application SCDL not found: " + APPLICATION_SCDL);
+                    throw new IllegalArgumentException("Application composite not found: " + APPLICATION_SCDL);
                 }
             }
         }
@@ -114,39 +95,6 @@ public class SimpleRuntimeInfoImpl extends AbstractRuntimeInfo implements Simple
             contributionURL = getContributionLocation(getApplicationSCDL(), compositePath);
         }
         return contributionURL;
-    }
-
-    public List<URL> getExtensionSCDLs() {
-        if (extensions == null) {
-            try {
-                List<URL> extensionURLs = new ArrayList<URL>();
-                Enumeration<URL> urls = classLoader.getResources(SERVICE_SCDL);
-                extensionURLs.addAll(Collections.list(urls));
-                urls = classLoader.getResources(EXTENSION_SCDL);
-                extensionURLs.addAll(Collections.list(urls));
-                if (extensions != null) {
-                    for (URL ext : extensions) {
-                        if (!extensionURLs.contains(ext)) {
-                            extensionURLs.add(ext);
-                        }
-                    }
-                }
-                extensions = extensionURLs;
-            } catch (IOException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-        return extensions;
-    }
-
-    public URL getSystemSCDL() {
-        if (systemSCDL == null) {
-            systemSCDL = classLoader.getResource(SYSTEM_SCDL);
-            if (systemSCDL == null) {
-                systemSCDL = classLoader.getResource(DEFAULT_SYSTEM_SCDL);
-            }
-        }
-        return systemSCDL;
     }
 
     private static URL getContributionLocation(URL applicationSCDL, String compositePath) {
