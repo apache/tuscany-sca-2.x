@@ -34,10 +34,16 @@
     
         <!-- runtime is need for webapp integration to include jar -->
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-api</artifactId>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         
         <!--  das service -->
@@ -50,14 +56,14 @@
         <dependency>
             <groupId>org.apache.tuscany.das</groupId>
             <artifactId>tuscany-das-rdb</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>        
             
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -66,7 +72,7 @@
     <!-- this will place the java source files inside the war -->
     <build>
        <!-- <finalName>companyweb-service-client</finalName> -->
-       <plugins>
+       <!-- plugins>
     	<plugin>
     	    <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
     	    <artifactId>tuscany-war-plugin</artifactId>
@@ -79,7 +85,7 @@
     		</execution>
     	    </executions>
     	</plugin>
-       </plugins>
+       </plugins -->
 
     
     
