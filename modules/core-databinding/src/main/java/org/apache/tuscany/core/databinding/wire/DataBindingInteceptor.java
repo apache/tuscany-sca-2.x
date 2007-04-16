@@ -34,7 +34,6 @@ import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.ExceptionHandler;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.Wire;
@@ -63,7 +62,7 @@ public class DataBindingInteceptor implements Interceptor {
         this.sourceOperation = sourceOperation;
         this.targetOperation = targetOperation;
         URI uri = wire.getSourceUri();
-        URI sourceUri = UriHelper.getDefragmentedName(uri);
+        URI sourceUri = URIHelper.getDefragmentedName(uri);
         this.composite = componentManager.getComponent(sourceUri);
 
     }

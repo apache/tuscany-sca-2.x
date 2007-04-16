@@ -47,7 +47,6 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
@@ -83,8 +82,8 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         // expect(component1.getReference("reference1")).andReturn(null);
         Component component2 = createMock(Component.class);
         // expect(component2.getService("service1")).andReturn(null);
-        expect(componentManager.getComponent(UriHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
-        expect(componentManager.getComponent(UriHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
         replay(mediator, componentManager, component1, component2);
         DataBindingWirePostProcessor processor = new DataBindingWirePostProcessor(componentManager, mediator);
 
@@ -110,8 +109,8 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         expect(component1.getReference("reference1")).andReturn(null);
         Component component2 = createMock(Component.class);
         expect(component2.getReference("reference1")).andReturn(null);
-        expect(componentManager.getComponent(UriHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
-        expect(componentManager.getComponent(UriHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
         replay(mediator, componentManager, component1, component2);
         DataBindingWirePostProcessor processor = new DataBindingWirePostProcessor(componentManager, mediator);
         
@@ -132,8 +131,8 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         expect(component1.getService("service1")).andReturn(null);
         Component component2 = createMock(Component.class);
         expect(component2.getService("service1")).andReturn(null);
-        expect(componentManager.getComponent(UriHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
-        expect(componentManager.getComponent(UriHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
         replay(mediator, componentManager, component1, component2);
         DataBindingWirePostProcessor processor = new DataBindingWirePostProcessor(componentManager, mediator);
         
