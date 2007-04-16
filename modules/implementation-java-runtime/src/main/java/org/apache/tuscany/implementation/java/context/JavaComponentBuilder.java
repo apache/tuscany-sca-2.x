@@ -28,6 +28,7 @@ import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.host.ResourceHost;
@@ -41,6 +42,8 @@ import org.osoa.sca.annotations.Reference;
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
     private JavaPropertyValueObjectFactory propertyValueObjectFactory;
+    private DataBindingRegistry dataBindingRegistry;
+    
     private ResourceHost host;
 
     @Reference
@@ -63,6 +66,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setPropertyValueFactory(propertyValueObjectFactory);
+        component.setDataBindingRegistry(dataBindingRegistry);
 
         if (componentType.getConversationIDMember() != null) {
             component.addConversationIDFactory(componentType.getConversationIDMember());
@@ -106,6 +110,10 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
     public void setPropertyValueObjectFactory(JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         this.propertyValueObjectFactory = propertyValueObjectFactory;
+    }
+
+    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+        this.dataBindingRegistry = dataBindingRegistry;
     }
 
 }

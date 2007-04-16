@@ -50,9 +50,9 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.wire.ProxyService;
@@ -77,21 +77,24 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = extensionPointRegistry
             .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
 
-        JavaClassIntrospectorExtensionPoint classIntrospector = extensionPointRegistry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
-        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {
-            new ConstructorProcessor(),
-            new AllowsPassByReferenceProcessor(),
-            new ContextProcessor(),
-            new ConversationProcessor(),
-            new DestroyProcessor(),
-            new EagerInitProcessor(),
-            new InitProcessor(),
-            new PropertyProcessor(),
-            new ReferenceProcessor(interfaceIntrospector),
-            new ResourceProcessor(),
-            new ScopeProcessor(),
-            new ServiceProcessor(interfaceIntrospector),
-            new HeuristicPojoProcessor(interfaceIntrospector)
+        JavaClassIntrospectorExtensionPoint classIntrospector = extensionPointRegistry
+            .getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
+        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {new ConstructorProcessor(),
+                                                                                                    new AllowsPassByReferenceProcessor(),
+                                                                                                    new ContextProcessor(),
+                                                                                                    new ConversationProcessor(),
+                                                                                                    new DestroyProcessor(),
+                                                                                                    new EagerInitProcessor(),
+                                                                                                    new InitProcessor(),
+                                                                                                    new PropertyProcessor(),
+                                                                                                    new ReferenceProcessor(
+                                                                                                                           interfaceIntrospector),
+                                                                                                    new ResourceProcessor(),
+                                                                                                    new ScopeProcessor(),
+                                                                                                    new ServiceProcessor(
+                                                                                                                         interfaceIntrospector),
+                                                                                                    new HeuristicPojoProcessor(
+                                                                                                                               interfaceIntrospector)
 
         };
         for (JavaClassIntrospectorExtension e : extensions) {
@@ -109,10 +112,13 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         builder.setProxyService(extensionPointRegistry.getExtensionPoint(ProxyService.class));
         builder.setWorkContext(extensionPointRegistry.getExtensionPoint(WorkContext.class));
         builderRegistry.register(JavaImplementation.class, builder);
-        
+
         Mediator mediator = extensionPointRegistry.getExtensionPoint(Mediator.class);
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
         builder.setPropertyValueObjectFactory(factory);
+
+        DataBindingRegistry dataBindingRegistry = extensionPointRegistry.getExtensionPoint(DataBindingRegistry.class);
+        builder.setDataBindingRegistry(dataBindingRegistry);
 
     }
 

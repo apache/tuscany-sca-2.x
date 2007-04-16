@@ -27,16 +27,18 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The runtime instantiation of Java component implementations
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class JavaAtomicComponent extends PojoAtomicComponent {
     private JavaPropertyValueObjectFactory propertyValueFactory;
+    private DataBindingRegistry dataBindingRegistry;
 
     public JavaAtomicComponent(PojoConfiguration configuration) {
         super(configuration);
@@ -47,13 +49,21 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
 
         Class<?> implClass;
         if (isCallback) {
-            implClass = ((JavaInterface) operation.getInterface()).getJavaClass();
+            implClass = ((JavaInterface)operation.getInterface()).getJavaClass();
         } else {
             implClass = configuration.getImplementationClass();
         }
         try {
             Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-            return new JavaTargetInvoker(method, this, scopeContainer);
+            boolean passByValue = operation.getInterface().isRemotable() && (!configuration.getDefinition()
+                                      .isAllowsPassByReference(method));
+
+            TargetInvoker invoker = new JavaTargetInvoker(method, this, scopeContainer);
+            if (passByValue) {
+                return new PassByValueInvoker(dataBindingRegistry, operation, method, this, scopeContainer);
+            } else {
+                return invoker;
+            }
         } catch (NoSuchMethodException e) {
             throw new TargetMethodNotFoundException(operation);
         }
@@ -63,15 +73,19 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) {
         return new WireObjectFactory<B>(interfaze, wire, proxyService);
     }
-    
 
-    protected ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, Class javaType) {
+    protected ObjectFactory<?> createPropertyValueFactory(ComponentProperty property,
+                                                          Object propertyValue,
+                                                          Class javaType) {
         return propertyValueFactory.createValueFactory(property, propertyValue, javaType);
     }
 
     public void setPropertyValueFactory(JavaPropertyValueObjectFactory propertyValueFactory) {
         this.propertyValueFactory = propertyValueFactory;
     }
-    
-    
+
+    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+        this.dataBindingRegistry = dataBindingRegistry;
+    }
+
 }
