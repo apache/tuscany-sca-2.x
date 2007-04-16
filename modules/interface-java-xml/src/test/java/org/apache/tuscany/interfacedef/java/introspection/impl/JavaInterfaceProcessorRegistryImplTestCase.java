@@ -24,6 +24,7 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -65,8 +66,8 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         List<DataType> faultTypes = baseInt.getFaultTypes();
         assertEquals(1, faultTypes.size());
         DataType<Type> fault0 = faultTypes.get(0);
-        assertEquals(IllegalArgumentException.class, fault0.getPhysical());
-        assertEquals(IllegalArgumentException.class, fault0.getLogical());
+        assertEquals(IOException.class, fault0.getPhysical());
+        assertEquals(IOException.class, fault0.getLogical());
     }
 
     public void testUnregister() throws Exception {
@@ -88,7 +89,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     }
 
     private static interface Base {
-        int baseInt(int param) throws IllegalArgumentException;
+        int baseInt(int param) throws IllegalArgumentException, IOException;
     }
 
     private static interface Simple extends Base {

@@ -129,7 +129,10 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
             }
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             for (Class faultType : faultTypes) {
-                faultDataTypes.add(new DataTypeImpl<Class>(UNKNOWN_DATABINDING, faultType, faultType));
+                // Only add checked exceptions
+                if (Exception.class.isAssignableFrom(faultType) && (!RuntimeException.class.isAssignableFrom(faultType))) {
+                    faultDataTypes.add(new DataTypeImpl<Class>(UNKNOWN_DATABINDING, faultType, faultType));
+                }
             }
 
             DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class,
