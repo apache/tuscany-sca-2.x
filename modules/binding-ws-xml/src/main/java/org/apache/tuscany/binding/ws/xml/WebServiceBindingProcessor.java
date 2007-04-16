@@ -28,6 +28,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
@@ -40,17 +43,22 @@ import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
-public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
+public class WebServiceBindingProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
     private WebServiceBindingFactory wsFactory;
 
-    public WebServiceBindingProcessor(WebServiceBindingFactory wsFactory) {
+    public WebServiceBindingProcessor(AssemblyFactory assemblyFactory,
+                                      PolicyFactory policyFactory,
+                                      WebServiceBindingFactory wsFactory) {
+        super(assemblyFactory, policyFactory, null);
         this.wsFactory = wsFactory;
     }
     
     public WebServiceBindingProcessor() {
-        this(new DefaultWebServiceBindingFactory());
+        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), new DefaultWebServiceBindingFactory());
     }
 
     public WebServiceBinding read(XMLStreamReader reader) throws ContributionReadException {
@@ -59,6 +67,9 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
             // Read a <binding.ws>
             WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
             wsBinding.setUnresolved(true);
+            
+            // Read policies
+            readPolicies(wsBinding, reader);
 
             // Read URI
             wsBinding.setURI(reader.getAttributeValue(null, Constants.URI));

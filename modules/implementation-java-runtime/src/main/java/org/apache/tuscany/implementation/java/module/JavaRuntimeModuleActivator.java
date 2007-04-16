@@ -38,6 +38,7 @@ import org.apache.tuscany.implementation.java.introspect.impl.DestroyProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.EagerInitProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.InitProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.PolicyProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.PropertyProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ReferenceProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ResourceProcessor;
@@ -79,23 +80,21 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
         JavaClassIntrospectorExtensionPoint classIntrospector = extensionPointRegistry
             .getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
-        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {new ConstructorProcessor(),
-                                                                                                    new AllowsPassByReferenceProcessor(),
-                                                                                                    new ContextProcessor(),
-                                                                                                    new ConversationProcessor(),
-                                                                                                    new DestroyProcessor(),
-                                                                                                    new EagerInitProcessor(),
-                                                                                                    new InitProcessor(),
-                                                                                                    new PropertyProcessor(),
-                                                                                                    new ReferenceProcessor(
-                                                                                                                           interfaceIntrospector),
-                                                                                                    new ResourceProcessor(),
-                                                                                                    new ScopeProcessor(),
-                                                                                                    new ServiceProcessor(
-                                                                                                                         interfaceIntrospector),
-                                                                                                    new HeuristicPojoProcessor(
-                                                                                                                               interfaceIntrospector)
-
+        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {
+            new ConstructorProcessor(),
+            new AllowsPassByReferenceProcessor(),
+            new ContextProcessor(),
+            new ConversationProcessor(),
+            new DestroyProcessor(),
+            new EagerInitProcessor(),
+            new InitProcessor(),
+            new PropertyProcessor(),
+            new ReferenceProcessor(interfaceIntrospector),
+            new ResourceProcessor(),
+            new ScopeProcessor(),
+            new ServiceProcessor(interfaceIntrospector),
+            new HeuristicPojoProcessor(interfaceIntrospector),
+            new PolicyProcessor()
         };
         for (JavaClassIntrospectorExtension e : extensions) {
             classIntrospector.addExtension(e);

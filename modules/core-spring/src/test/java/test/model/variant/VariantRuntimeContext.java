@@ -66,7 +66,8 @@ public class VariantRuntimeContext {
         staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
         staxProcessors.addExtension(new JavaInterfaceProcessor());
-        staxProcessors.addExtension(new JavaImplementationProcessor(javaImplementationFactory, new DefaultJavaClassIntrospector()));
+        staxProcessors.addExtension(new JavaImplementationProcessor(
+            assemblyFactory, policyFactory, javaImplementationFactory, new DefaultJavaClassIntrospector()));
         
         // Create a resolver
         DefaultArtifactResolver resolver = new DefaultArtifactResolver();

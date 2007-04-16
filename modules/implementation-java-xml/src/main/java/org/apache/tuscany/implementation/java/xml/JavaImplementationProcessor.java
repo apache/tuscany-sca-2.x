@@ -26,8 +26,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.impl.ServiceImpl;
+import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
@@ -41,24 +43,36 @@ import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFact
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
-public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation>,
+public class JavaImplementationProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<JavaImplementation>,
     JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
     private JavaClassIntrospectorExtensionPoint introspector;
 
-    public JavaImplementationProcessor(JavaImplementationFactory javaFactory, JavaClassIntrospectorExtensionPoint introspector) {
+    public JavaImplementationProcessor(AssemblyFactory assemblyFactory,
+                                       PolicyFactory policyFactory,
+                                       JavaImplementationFactory javaFactory,
+                                       JavaClassIntrospectorExtensionPoint introspector) {
+        super(assemblyFactory, policyFactory, null);
         this.javaFactory = javaFactory;
         this.introspector = introspector;
     }
 
     public JavaImplementationProcessor(JavaClassIntrospectorExtensionPoint introspector) {
-        this(new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()), introspector);
+        this(new DefaultAssemblyFactory(),
+             new DefaultPolicyFactory(),
+             new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()),
+             introspector);
     }
 
     public JavaImplementationProcessor() {
-        this(new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()), new DefaultJavaClassIntrospector());
+        this(new DefaultAssemblyFactory(),
+             new DefaultPolicyFactory(),
+             new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()),
+             new DefaultJavaClassIntrospector());
     }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException {
@@ -69,6 +83,9 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
             JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
             javaImplementation.setUnresolved(true);
             javaImplementation.setName(reader.getAttributeValue(null, CLASS));
+            
+            // Read policies
+            readPolicies(javaImplementation, reader);
 
             // Skip to end element
             while (reader.hasNext()) {
