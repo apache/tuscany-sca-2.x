@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.databinding.DataBindingRegistry;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.sdo.DataObject2String;
 import org.apache.tuscany.databinding.sdo.DataObject2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.HelperContextProcessor;
@@ -53,7 +53,7 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        DataBindingRegistry dataBindingRegistry = registry.getExtensionPoint(DataBindingRegistry.class);
+        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         dataBindingRegistry.register(new SDODataBinding());
 
         StAXArtifactProcessorExtensionPoint processorRegistry = registry
@@ -61,7 +61,7 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         HelperContextRegistry contextRegistry = registry.getExtensionPoint(HelperContextRegistry.class);
         processorRegistry.addExtension(new ImportSDOProcessor(contextRegistry));
 
-        TransformerRegistry transformerRegistry = registry.getExtensionPoint(TransformerRegistry.class);
+        TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
         transformerRegistry.registerTransformer(new DataObject2String());
         transformerRegistry.registerTransformer(new DataObject2XMLStreamReader());
         transformerRegistry.registerTransformer(new XMLDocument2String());

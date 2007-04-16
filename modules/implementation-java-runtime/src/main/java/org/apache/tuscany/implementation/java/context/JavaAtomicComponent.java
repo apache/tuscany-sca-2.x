@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.core.wire.WireObjectFactory;
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.wire.Wire;
  */
 public class JavaAtomicComponent extends PojoAtomicComponent {
     private JavaPropertyValueObjectFactory propertyValueFactory;
-    private DataBindingRegistry dataBindingRegistry;
+    private DataBindingExtensionPoint dataBindingRegistry;
 
     public JavaAtomicComponent(PojoConfiguration configuration) {
         super(configuration);
@@ -84,7 +84,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         this.propertyValueFactory = propertyValueFactory;
     }
 
-    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+    public void setDataBindingRegistry(DataBindingExtensionPoint dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }
 

@@ -23,7 +23,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.databinding.DataBinding;
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.ExceptionHandler;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.WrapperHandler;
@@ -37,7 +37,7 @@ import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
  */
 public abstract class DataBindingExtension implements DataBinding {
 
-    protected DataBindingRegistry registry;
+    protected DataBindingExtensionPoint registry;
 
     protected Class<?> baseType;
 
@@ -80,7 +80,7 @@ public abstract class DataBindingExtension implements DataBinding {
         this.aliases = aliases;
     }    
 
-    public void setDataBindingRegistry(DataBindingRegistry registry) {
+    public void setDataBindingRegistry(DataBindingExtensionPoint registry) {
         this.registry = registry;
     }
 

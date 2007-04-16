@@ -27,13 +27,13 @@ import org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTrans
 import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
 import org.apache.tuscany.core.databinding.transformers.Output2OutputTransformer;
 import org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor;
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
+import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.databinding.Mediator;
-import org.apache.tuscany.databinding.TransformerRegistry;
-import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.databinding.impl.MediatorImpl;
-import org.apache.tuscany.databinding.impl.TransformerRegistryImpl;
 import org.apache.tuscany.databinding.javabeans.DOMNode2JavaBeanTransformer;
 import org.apache.tuscany.databinding.javabeans.JavaBean2DOMNodeTransformer;
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
@@ -73,11 +73,11 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
-        DataBindingRegistryImpl dataBindingRegistryImpl = new DataBindingRegistryImpl();
-        map.put(DataBindingRegistry.class, dataBindingRegistryImpl);
-        TransformerRegistryImpl transformerRegistryImpl = new TransformerRegistryImpl();
+        DefaultDataBindingExtensionPoint dataBindingRegistryImpl = new DefaultDataBindingExtensionPoint();
+        map.put(DataBindingExtensionPoint.class, dataBindingRegistryImpl);
+        DefaultTransformerExtensionPoint transformerRegistryImpl = new DefaultTransformerExtensionPoint();
         transformerRegistryImpl.setDataBindingRegistry(dataBindingRegistryImpl);
-        map.put(TransformerRegistry.class, transformerRegistryImpl);
+        map.put(TransformerExtensionPoint.class, transformerRegistryImpl);
         MediatorImpl mediatorImpl = new MediatorImpl();
         mediatorImpl.setDataBindingRegistry(dataBindingRegistryImpl);
         mediatorImpl.setTransformerRegistry(transformerRegistryImpl);
@@ -86,7 +86,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        TransformerRegistry transformerRegistry = registry.getExtensionPoint(TransformerRegistry.class);
+        TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
         Mediator mediator = registry.getExtensionPoint(Mediator.class);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
         input2InputTransformer.setMediator(mediator);
@@ -111,7 +111,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
         ComponentManager componentManager = registry.getExtensionPoint(ComponentManager.class);
         wirePostProcessorRegistry.register(new DataBindingWirePostProcessor(componentManager, mediator));
         
-        DataBindingRegistry dataBindingRegistry = registry.getExtensionPoint(DataBindingRegistry.class);
+        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         DOMDataBinding domDataBinding = new DOMDataBinding();
         domDataBinding.setDataBindingRegistry(dataBindingRegistry);
         dataBindingRegistry.register(domDataBinding);

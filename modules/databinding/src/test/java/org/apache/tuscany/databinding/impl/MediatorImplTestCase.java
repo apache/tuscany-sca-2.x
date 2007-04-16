@@ -24,9 +24,11 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
+import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.xml.Node2String;
 import org.apache.tuscany.databinding.xml.Node2Writer;
 import org.apache.tuscany.databinding.xml.SAX2DOMPipe;
@@ -76,7 +78,7 @@ public class MediatorImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        TransformerRegistry registry = new TransformerRegistryImpl();
+        TransformerExtensionPoint registry = new DefaultTransformerExtensionPoint();
         registry.registerTransformer(new String2SAX());
         registry.registerTransformer(new SAX2DOMPipe());
         registry.registerTransformer(new Node2String());
@@ -85,7 +87,7 @@ public class MediatorImplTestCase extends TestCase {
         mediator = new MediatorImpl();
         mediator.setTransformerRegistry(registry);
 
-        DataBindingRegistry dataBindingRegistry = new DataBindingRegistryImpl();
+        DataBindingExtensionPoint dataBindingRegistry = new DefaultDataBindingExtensionPoint();
         mediator.setDataBindingRegistry(dataBindingRegistry);
     }
 

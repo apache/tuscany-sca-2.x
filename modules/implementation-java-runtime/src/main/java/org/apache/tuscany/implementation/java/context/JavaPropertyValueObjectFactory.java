@@ -24,14 +24,14 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
+import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
-import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
 import org.apache.tuscany.databinding.impl.MediatorImpl;
-import org.apache.tuscany.databinding.impl.TransformerRegistryImpl;
 import org.apache.tuscany.databinding.javabeans.DOMNode2JavaBeanTransformer;
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.databinding.xml.DOMDataBinding;

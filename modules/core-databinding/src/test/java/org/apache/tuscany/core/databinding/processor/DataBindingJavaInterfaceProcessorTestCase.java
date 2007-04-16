@@ -21,9 +21,9 @@ package org.apache.tuscany.core.databinding.processor;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.databinding.annotation.DataBinding;
-import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
@@ -50,7 +50,7 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
      * @throws InvalidServiceContractException
      */
     public final void testVisitInterface() throws InvalidInterfaceException {
-        DataBindingRegistry registry = new DataBindingRegistryImpl();
+        DataBindingExtensionPoint registry = new DefaultDataBindingExtensionPoint();
         DataBindingJavaInterfaceProcessor processor = new DataBindingJavaInterfaceProcessor(registry);
         
         JavaInterface contract = new JavaInterfaceImpl();

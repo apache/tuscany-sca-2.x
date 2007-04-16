@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
@@ -39,10 +39,10 @@ import org.osoa.sca.annotations.Reference;
  * @version $Rev$ $Date$
  */
 public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospectorExtension {
-    private DataBindingRegistry dataBindingRegistry;
+    private DataBindingExtensionPoint dataBindingRegistry;
 
     public DataBindingJavaInterfaceProcessor(@Reference
-    DataBindingRegistry dataBindingRegistry) {
+    DataBindingExtensionPoint dataBindingRegistry) {
         super();
         this.dataBindingRegistry = dataBindingRegistry;
     }

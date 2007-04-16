@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
@@ -116,7 +116,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
         builder.setPropertyValueObjectFactory(factory);
 
-        DataBindingRegistry dataBindingRegistry = extensionPointRegistry.getExtensionPoint(DataBindingRegistry.class);
+        DataBindingExtensionPoint dataBindingRegistry = extensionPointRegistry.getExtensionPoint(DataBindingExtensionPoint.class);
         builder.setDataBindingRegistry(dataBindingRegistry);
 
     }

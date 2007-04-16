@@ -21,7 +21,7 @@ package org.apache.tuscany.implementation.java.context;
 import java.net.URI;
 
 import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
@@ -42,7 +42,7 @@ import org.osoa.sca.annotations.Reference;
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
     private JavaPropertyValueObjectFactory propertyValueObjectFactory;
-    private DataBindingRegistry dataBindingRegistry;
+    private DataBindingExtensionPoint dataBindingRegistry;
     
     private ResourceHost host;
 
@@ -112,7 +112,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         this.propertyValueObjectFactory = propertyValueObjectFactory;
     }
 
-    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+    public void setDataBindingRegistry(DataBindingExtensionPoint dataBindingRegistry) {
         this.dataBindingRegistry = dataBindingRegistry;
     }
 

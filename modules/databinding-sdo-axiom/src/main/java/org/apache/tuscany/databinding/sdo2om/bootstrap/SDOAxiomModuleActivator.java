@@ -21,7 +21,7 @@ package org.apache.tuscany.databinding.sdo2om.bootstrap;
 
 import java.util.Map;
 
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.sdo2om.DataObject2OMElement;
 import org.apache.tuscany.databinding.sdo2om.XMLDocument2OMElement;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
@@ -39,7 +39,7 @@ public class SDOAxiomModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        TransformerRegistry transformerRegistry = registry.getExtensionPoint(TransformerRegistry.class);
+        TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
         transformerRegistry.registerTransformer(new DataObject2OMElement());
         transformerRegistry.registerTransformer(new XMLDocument2OMElement());
     }

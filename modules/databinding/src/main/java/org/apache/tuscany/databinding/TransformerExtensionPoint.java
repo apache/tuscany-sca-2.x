@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Registry for data transformers
  */
-public interface TransformerRegistry {
+public interface TransformerExtensionPoint {
     /**
      * Register a transformer
      * 

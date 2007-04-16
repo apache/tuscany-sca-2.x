@@ -19,7 +19,7 @@
 package org.apache.tuscany.databinding.extension;
 
 import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
 
 /**
  * Base Implementation of Transformer which provides the registration to the transformer registry
@@ -28,13 +28,13 @@ import org.apache.tuscany.databinding.TransformerRegistry;
  */
 public abstract class TransformerExtension<S, T> implements Transformer {
 
-    protected TransformerRegistry registry;
+    protected TransformerExtensionPoint registry;
 
     protected TransformerExtension() {
         super();
     }
 
-    public void setTransformerRegistry(TransformerRegistry registry) {
+    public void setTransformerRegistry(TransformerExtensionPoint registry) {
         this.registry = registry;
     }
 
