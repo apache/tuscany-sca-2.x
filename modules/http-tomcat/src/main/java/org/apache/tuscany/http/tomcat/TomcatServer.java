@@ -31,7 +31,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Embedded;
 import org.apache.tomcat.util.buf.MessageBytes;
 import org.apache.tomcat.util.http.mapper.MappingData;
-import org.apache.tuscany.http.ServletHost;
+import org.apache.tuscany.http.ServletHostExtension;
 import org.apache.tuscany.http.ServletMappingException;
 
 /**
@@ -39,7 +39,7 @@ import org.apache.tuscany.http.ServletMappingException;
  * 
  * @version $Rev$ $Date$
  */
-public class TomcatServer implements ServletHost {
+public class TomcatServer implements ServletHostExtension {
 
     private Embedded tomcat;
     private Host host;

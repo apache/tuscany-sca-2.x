@@ -23,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.processor.PackageProcessor;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtension;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 
 /**
@@ -31,7 +31,7 @@ import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractContributionPackageProcessor implements PackageProcessor {
+public abstract class AbstractContributionPackageProcessor implements PackageProcessorExtension {
     /**
      * The ContributionProcessorRegistry that this processor should register
      * with; usually set by injection. This registry may also be used to process

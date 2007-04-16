@@ -31,7 +31,7 @@ import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 
-import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -50,7 +50,7 @@ import org.xml.sax.InputSource;
  *
  * @version $Rev$ $Date$
  */
-public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinition> {
+public class WSDLDocumentProcessor implements URLArtifactProcessorExtension<WSDLDefinition> {
 
     private javax.wsdl.factory.WSDLFactory wsdlFactory;
     private ExtensionRegistry wsdlExtensionRegistry;

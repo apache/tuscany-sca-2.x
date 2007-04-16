@@ -27,9 +27,9 @@ import org.apache.tuscany.contribution.service.ContributionWireException;
 /**
  * Interface for extensions that can process contributions.
  * 
- * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
+ * @version $Rev$ $Date$
  */
-public interface ArtifactProcessor <M> {
+public interface ArtifactProcessorExtension <M> {
     
     /**
      * Resolve references from this model to other models. For example references

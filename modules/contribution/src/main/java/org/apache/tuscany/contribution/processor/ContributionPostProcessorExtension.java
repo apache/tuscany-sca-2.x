@@ -24,8 +24,8 @@ import org.apache.tuscany.contribution.Contribution;
 /**
  * A processor invoked after the contribution is loaded 
  * 
- * @version $Rev: 528640 $ $Date: 2007-04-13 13:12:12 -0700 (Fri, 13 Apr 2007) $
+ * @version $Rev$ $Date$
  */
-public interface ContributionPostProcessor {
+public interface ContributionPostProcessorExtension {
     void visit(Contribution contribution);
 }

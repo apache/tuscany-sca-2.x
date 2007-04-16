@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.contribution.processor.PackageProcessor;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtension;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.TypeDescriber;
@@ -44,7 +44,7 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
     /**
      * Processor registry
      */
-    private Map<String, PackageProcessor> registry = new HashMap<String, PackageProcessor>();
+    private Map<String, PackageProcessorExtension> registry = new HashMap<String, PackageProcessorExtension>();
     /**
      * Helper method to describe contentType for each artifact
      */
@@ -58,7 +58,7 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
         }
     }
 
-    public void register(String contentType, PackageProcessor processor) {
+    public void register(String contentType, PackageProcessorExtension processor) {
         registry.put(contentType, processor);
     }
 
@@ -72,7 +72,7 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
             throw new UnsupportedContentTypeException("Unsupported contribution package", packageSourceURL.toString());
         }
 
-        PackageProcessor packageProcessor = this.registry.get(contentType);
+        PackageProcessorExtension packageProcessor = this.registry.get(contentType);
         if (packageProcessor == null) {
             throw new UnsupportedContentTypeException(contentType, packageSourceURL.getPath());
         }
@@ -81,11 +81,11 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
     }
     
     /**
-     * @see org.apache.tuscany.contribution.processor.PackageProcessor#getArtifactURL(java.net.URL, java.net.URI)
+     * @see org.apache.tuscany.contribution.processor.PackageProcessorExtension#getArtifactURL(java.net.URL, java.net.URI)
      */
     public URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException {
         String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
-        PackageProcessor packageProcessor = this.registry.get(contentType);
+        PackageProcessorExtension packageProcessor = this.registry.get(contentType);
         return packageProcessor.getArtifactURL(packageSourceURL, artifact);
     }    
 }

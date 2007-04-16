@@ -30,8 +30,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -45,7 +45,7 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessor<ComponentType> {
+public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessorExtension<ComponentType> {
     private XMLInputFactory inputFactory;
     
     /**
@@ -54,7 +54,7 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
+    public ComponentTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension staxProcessor, XMLInputFactory inputFactory) {
         super(factory, policyFactory, staxProcessor);
         this.inputFactory = inputFactory;
     }
@@ -63,7 +63,7 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
      * Constructs a new componentType processor.
      * @param registry
      */
-    public ComponentTypeDocumentProcessor(StAXArtifactProcessor staxProcessor) {
+    public ComponentTypeDocumentProcessor(StAXArtifactProcessorExtension staxProcessor) {
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
     }
     

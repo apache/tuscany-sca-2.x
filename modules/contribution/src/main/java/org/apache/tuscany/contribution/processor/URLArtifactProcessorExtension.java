@@ -27,9 +27,9 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 /**
  * An artifact processor that can read models from an InputStream.
  * 
- * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
+ * @version $Rev$ $Date$
  */
-public interface URLArtifactProcessor<M> extends ArtifactProcessor<M> {
+public interface URLArtifactProcessorExtension<M> extends ArtifactProcessorExtension<M> {
 
     /**
      * Reads a model from an input source. Examples of input sources are: a URI, a

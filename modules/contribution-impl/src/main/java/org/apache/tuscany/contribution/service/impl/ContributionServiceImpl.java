@@ -34,8 +34,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.processor.PackageProcessor;
-import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtension;
+import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
@@ -56,13 +56,13 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * Registry of available package processors.
      */
-    protected PackageProcessor packageProcessor;
+    protected PackageProcessorExtension packageProcessor;
 
     /**
      * Registry of available artifact processors
      */
 
-    protected URLArtifactProcessor artifactProcessor;
+    protected URLArtifactProcessorExtension artifactProcessor;
 
     /**
      * xml factory used to create reader instance to load contribution metadata
@@ -82,8 +82,8 @@ public class ContributionServiceImpl implements ContributionService {
     protected ArtifactResolver artifactResolver;
 
     public ContributionServiceImpl(ContributionRepository repository,
-                                   PackageProcessor packageProcessor,
-                                   URLArtifactProcessor artifactProcessor,
+                                   PackageProcessorExtension packageProcessor,
+                                   URLArtifactProcessorExtension artifactProcessor,
                                    ArtifactResolver artifactResolver) {
         super();
         this.contributionRepository = repository;

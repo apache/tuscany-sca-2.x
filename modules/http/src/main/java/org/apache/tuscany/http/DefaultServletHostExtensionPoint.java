@@ -31,13 +31,13 @@ import javax.servlet.Servlet;
  */
 public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoint {
 
-    private List<ServletHost> servletHosts = new ArrayList<ServletHost>();
+    private List<ServletHostExtension> servletHosts = new ArrayList<ServletHostExtension>();
 
-    public void addExtension(ServletHost servletHost) {
+    public void addExtension(ServletHostExtension servletHost) {
         servletHosts.add(servletHost);
     }
 
-    public void removeExtension(ServletHost servletHost) {
+    public void removeExtension(ServletHostExtension servletHost) {
         servletHosts.remove(servletHost);
     }
 
