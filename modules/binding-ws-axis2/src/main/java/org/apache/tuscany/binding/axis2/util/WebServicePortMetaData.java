@@ -60,7 +60,9 @@ public class WebServicePortMetaData {
 
         // Lookup the named port
         this.wsdlPort = wsdlPort;
-        wsdlPortName = new QName(wsdlDefinition.getTargetNamespace(), wsdlPort.getName());
+        if (wsdlPort != null) {
+            wsdlPortName = new QName(wsdlDefinition.getTargetNamespace(), wsdlPort.getName());
+        }
         Collection services = wsdlDefinition.getServices().values();
         for (Object serviceObj : services) {
             Service service = (Service) serviceObj;
