@@ -23,7 +23,7 @@ import java.rmi.RemoteException;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import org.osoa.sca.CurrentCompositeContext;
 
 import bigbank.account.services.accountdata.AccountDataService;

@@ -21,7 +21,7 @@ package org.apache.tuscany.binding.axis2.itests;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 

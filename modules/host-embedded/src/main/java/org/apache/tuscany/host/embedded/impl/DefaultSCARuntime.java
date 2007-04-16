@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.host.embedded.impl;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceUnavailableException;

@@ -21,7 +21,7 @@ package org.apache.tuscany.container.crud;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 

@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.itest;
 import helloworld.HelloWorldService;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import org.osoa.sca.CurrentCompositeContext;
 
 /**

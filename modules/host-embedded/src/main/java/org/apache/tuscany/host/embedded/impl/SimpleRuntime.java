@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.host.embedded.impl;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.spi.component.Component;

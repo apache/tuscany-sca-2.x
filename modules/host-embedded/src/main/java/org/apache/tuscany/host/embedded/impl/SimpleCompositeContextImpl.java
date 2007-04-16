@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.host.embedded.impl;
 
 import java.net.URI;
 

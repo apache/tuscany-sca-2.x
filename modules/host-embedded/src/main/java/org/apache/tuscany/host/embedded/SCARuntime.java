@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.api;
+package org.apache.tuscany.host.embedded;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -94,7 +94,7 @@ public abstract class SCARuntime {
                 className = getServiceName(classLoader, name);
             }
             if (className == null) {
-                className = "org.apache.tuscany.host.embedded.DefaultSCARuntime";
+                className = "org.apache.tuscany.host.embedded.impl.DefaultSCARuntime";
             }
             Class cls = Class.forName(className, true, classLoader);
             return (SCARuntime)cls.newInstance(); // NOPMD lresende

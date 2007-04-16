@@ -19,41 +19,45 @@
 
 package org.apache.tuscany.host.embedded;
 
-import java.net.URI;
-
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SimpleRuntime;
-import org.apache.tuscany.host.embedded.SimpleRuntimeImpl;
-import org.apache.tuscany.host.embedded.SimpleRuntimeInfo;
-import org.apache.tuscany.host.embedded.SimpleRuntimeInfoImpl;
+import org.apache.tuscany.container.crud.CRUD;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SimpleRuntimeImplTestCase extends TestCase {
-    private SimpleRuntime runtime;
-
+public class SCARuntimeTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
     protected void setUp() throws Exception {
-        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(getClass().getClassLoader(), "crud.composite");
-        runtime = new SimpleRuntimeImpl(runtimeInfo);
-        runtime.start();
+        SCARuntime.start("crud.composite");
     }
 
     public void testStart() throws Exception {
-        ComponentContext context = runtime.getComponentContext(URI.create("CRUDServiceComponent"));
+        ComponentContext context = SCARuntime.getComponentContext("CRUDServiceComponent");
         assertNotNull(context);
+        ServiceReference<CRUD> self = context.createSelfReference(CRUD.class);
+        CRUD service = self.getService();
+        String id = service.create("ABC");
+        Object result = service.retrieve(id);
+        assertEquals("ABC", result);
+        service.update(id, "EFG");
+        result = service.retrieve(id);
+        assertEquals("EFG", result);
+        service.delete(id);
+        result = service.retrieve(id);
+        assertNull(result);
     }
 
     /**
      * @throws java.lang.Exception
      */
     protected void tearDown() throws Exception {
-        runtime.destroy();
+        SCARuntime.stop();
     }
 
 }
