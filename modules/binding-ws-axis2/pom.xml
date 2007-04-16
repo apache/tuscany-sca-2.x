@@ -29,6 +29,15 @@
     <artifactId>tuscany-binding-ws-axis2</artifactId>
     <name>Apache Tuscany Web Services Binding using Apache Axis2</name>
 
+    <repositories>
+        <repository>
+            <id>apache.ws</id>
+            <name>Apache WebServices Repository</name>
+            <url>http://ws.zones.apache.org/repository/</url>
+            <layout>legacy</layout>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
