@@ -37,7 +37,6 @@ import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.util.UriHelper;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
@@ -69,8 +68,8 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         Mediator mediator = new MediatorImpl();
         ComponentManager componentManager = createMock(ComponentManager.class);
         Component component = createMock(Component.class);
-        expect(componentManager.getComponent(UriHelper.getDefragmentedName(sourceUri))).andReturn(component);
-        expect(componentManager.getComponent(UriHelper.getDefragmentedName(targetUri))).andReturn(component);
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component);
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component);
 
         replay(component, componentManager);
         processor = new DataBindingWirePostProcessor(componentManager, mediator);

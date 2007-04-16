@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.util;
+package org.apache.tuscany.core.databinding.wire;
 
 import java.net.URI;
 
@@ -25,9 +25,9 @@ import java.net.URI;
  *
  * @version $Rev$ $Date$
  */
-public final class UriHelper {
+final class URIHelper {
 
-    private UriHelper() {
+    private URIHelper() {
     }
 
     /**
@@ -36,7 +36,7 @@ public final class UriHelper {
      * @param uri the URI to parse
      * @return the base name
      */
-    public static String getBaseName(URI uri) {
+    static String getBaseName(URI uri) {
         String s = uri.toString();
         int pos = s.lastIndexOf('/');
         if (pos > -1) {
@@ -46,7 +46,7 @@ public final class UriHelper {
         }
     }
 
-    public static URI getDefragmentedName(URI uri) {
+    static URI getDefragmentedName(URI uri) {
         if (uri.getFragment() == null) {
             return uri;
         }

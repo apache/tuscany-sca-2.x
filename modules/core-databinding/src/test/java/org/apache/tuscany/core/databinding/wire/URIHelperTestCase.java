@@ -16,9 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.util;
+package org.apache.tuscany.core.databinding.wire;
 
 import java.net.URI;
+
+import org.apache.tuscany.core.databinding.wire.URIHelper;
 
 import junit.framework.TestCase;
 
@@ -29,42 +31,42 @@ public class URIHelperTestCase extends TestCase {
 
     public void testBaseName() throws Exception {
         URI uri = new URI("foo");
-        assertEquals("foo", UriHelper.getBaseName(uri));
+        assertEquals("foo", URIHelper.getBaseName(uri));
     }
 
     public void testBaseNameScheme() throws Exception {
         URI uri = new URI("sca://foo");
-        assertEquals("foo", UriHelper.getBaseName(uri));
+        assertEquals("foo", URIHelper.getBaseName(uri));
     }
 
     public void testBaseNameSchemePath() throws Exception {
         URI uri = new URI("sca://bar/foo");
-        assertEquals("foo", UriHelper.getBaseName(uri));
+        assertEquals("foo", URIHelper.getBaseName(uri));
     }
 
     public void testBaseNamePath() throws Exception {
         URI uri = new URI("bar/foo");
-        assertEquals("foo", UriHelper.getBaseName(uri));
+        assertEquals("foo", URIHelper.getBaseName(uri));
     }
 
     public void testBaseNameFragment() throws Exception {
         URI uri = new URI("#foo");
-        assertEquals("#foo", UriHelper.getBaseName(uri));
+        assertEquals("#foo", URIHelper.getBaseName(uri));
     }
 
     public void testDefragmentedNameScheme() throws Exception {
         URI uri = new URI("sca://foo/bar#bar");
-        assertEquals("sca://foo/bar", UriHelper.getDefragmentedName(uri).toString());
+        assertEquals("sca://foo/bar", URIHelper.getDefragmentedName(uri).toString());
     }
 
     public void testDefragmentedName() throws Exception {
         URI uri = new URI("foo/bar#bar");
-        assertEquals("foo/bar", UriHelper.getDefragmentedName(uri).toString());
+        assertEquals("foo/bar", URIHelper.getDefragmentedName(uri).toString());
     }
 
     public void testDefragmentedNoName() throws Exception {
         URI uri = new URI("#bar");
-        assertEquals("", UriHelper.getDefragmentedName(uri).toString());
+        assertEquals("", URIHelper.getDefragmentedName(uri).toString());
     }
 
 }
