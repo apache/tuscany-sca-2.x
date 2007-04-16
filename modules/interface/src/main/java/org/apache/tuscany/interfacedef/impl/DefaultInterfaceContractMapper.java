@@ -136,7 +136,7 @@ public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
         }
 
         for (Operation operation : source.getInterface().getOperations()) {
-            Operation targetOperation = getOperation(target.getInterface().getOperations(), operation.getName());
+            Operation targetOperation = map(target.getInterface(), operation);
             if (targetOperation == null) {
                 if (!silent) {
                     throw new IncompatibleInterfaceContractException("Operation not found on target", source, target);
