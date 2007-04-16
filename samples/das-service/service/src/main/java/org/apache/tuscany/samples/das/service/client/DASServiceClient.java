@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.samples.das.service.client;
 
-import org.apache.tuscany.samples.das.service.DASService;
 import org.osoa.sca.annotations.Reference;
+
+import das.DASService;
 
 public class DASServiceClient {
 
