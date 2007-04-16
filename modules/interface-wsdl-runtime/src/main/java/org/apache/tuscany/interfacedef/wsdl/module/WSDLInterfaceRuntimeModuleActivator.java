@@ -23,10 +23,10 @@ import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.core.ExtensionPointRegistry;
+import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
-import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 
 /**
  * @version $Rev$ $Date$
@@ -38,7 +38,7 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
     }
 
     /**
-     * @see org.apache.tuscany.spi.bootstrap.ModuleActivator#start(org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry)
+     * @see org.apache.tuscany.core.ModuleActivator#start(org.apache.tuscany.core.ExtensionPointRegistry)
      */
     public void start(ExtensionPointRegistry extensionPointRegistry) {
         

@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.core.ExtensionPointRegistry;
+import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.implementation.java.JavaImplementation;
@@ -50,8 +52,6 @@ import org.apache.tuscany.implementation.java.proxy.JDKProxyService;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
-import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -72,7 +72,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
     }
 
     /**
-     * @see org.apache.tuscany.spi.bootstrap.ModuleActivator#start(org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry)
+     * @see org.apache.tuscany.core.ModuleActivator#start(org.apache.tuscany.core.ExtensionPointRegistry)
      */
     public void start(ExtensionPointRegistry extensionPointRegistry) {
         JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = extensionPointRegistry

@@ -49,12 +49,12 @@ import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.util.FileHelper;
-import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
+import org.apache.tuscany.core.ExtensionPointRegistry;
+import org.apache.tuscany.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -110,7 +110,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
     @SuppressWarnings("unchecked")
     public Component start() throws Exception {
-        ExtensionPointRegistry extensionRegistry = new ExtensionPointRegistryImpl();
+        ExtensionPointRegistry extensionRegistry = new DefaultExtensionPointRegistry();
         ContributionRepository repository = new ContributionRepositoryImpl("target");
 
         // Add artifact processor extension points

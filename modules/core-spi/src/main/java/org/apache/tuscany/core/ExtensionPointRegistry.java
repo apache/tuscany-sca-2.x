@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.bootstrap;
+package org.apache.tuscany.core;
 
 
 /**
- * The registry for extension points
+ * The registry for the Tuscany core extension points.
  * 
  * @version $Rev$ $Date$
  */

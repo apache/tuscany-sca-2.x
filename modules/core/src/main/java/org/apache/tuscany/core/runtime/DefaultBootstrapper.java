@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.bootstrap;
+package org.apache.tuscany.core.runtime;
 
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
@@ -34,7 +35,6 @@ import org.apache.tuscany.core.implementation.composite.CompositeBuilder;
 import org.apache.tuscany.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;

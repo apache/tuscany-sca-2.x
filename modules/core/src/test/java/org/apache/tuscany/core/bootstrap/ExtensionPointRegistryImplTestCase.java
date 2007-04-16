@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.bootstrap;
 
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
+import org.apache.tuscany.core.ExtensionPointRegistry;
+import org.apache.tuscany.core.DefaultExtensionPointRegistry;
 
 import junit.framework.TestCase;
 
@@ -9,7 +10,7 @@ public class ExtensionPointRegistryImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new ExtensionPointRegistryImpl();
+        registry = new DefaultExtensionPointRegistry();
     }
 
     public void testRegistry() {
