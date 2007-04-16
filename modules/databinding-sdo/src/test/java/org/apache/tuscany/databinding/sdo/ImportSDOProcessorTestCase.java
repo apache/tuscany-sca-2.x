@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.easymock.EasyMock;
 
 import com.example.ipo.sdo.SdoFactory;
@@ -63,7 +64,7 @@ public class ImportSDOProcessorTestCase extends TestCase {
         assertFalse(inited);
         ImportSDO importSDO = loader.read(reader);
         assertNotNull(importSDO);
-        loader.resolve(importSDO, null);
+        loader.resolve(importSDO, new DefaultArtifactResolver());
         assertTrue(inited);
     }
 
