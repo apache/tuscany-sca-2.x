@@ -18,14 +18,7 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.Servlet;
-
 import junit.framework.TestCase;
-
-import org.apache.tuscany.spi.host.ServletHost;
 
 public class Axis2ServiceTestCase extends TestCase {
 
@@ -107,26 +100,5 @@ public class Axis2ServiceTestCase extends TestCase {
 //
 //        return axis2Service;
 //    }
-
-    protected class TestServletHost implements ServletHost {
-        private Map<String, Servlet> mappings = new HashMap<String, Servlet>();
-
-        public void registerMapping(String mapping, Servlet servlet) {
-            mappings.put(mapping, servlet);
-        }
-
-        public Servlet unregisterMapping(String mapping) {
-            return mappings.remove(mapping);
-        }
-
-        public Servlet getMapping(String mapping) {
-            return mappings.get(mapping);
-        }
-
-        public boolean isMappingRegistered(String mapping) {
-            return mappings.containsKey(mapping);
-        }
-
-    }
 
 }
