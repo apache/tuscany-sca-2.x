@@ -42,7 +42,7 @@
         <dependency>
             <groupId>commonj</groupId>
             <artifactId>sdo-api-r2.1</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
-            <version>1.0-incubator-SNAPSHOT</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
