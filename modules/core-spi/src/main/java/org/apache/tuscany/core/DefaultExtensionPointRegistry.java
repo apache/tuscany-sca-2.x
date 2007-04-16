@@ -17,19 +17,18 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.bootstrap;
+package org.apache.tuscany.core;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 
 /**
- * A registry to hold all the extension points and extensions
+ * Default implementation of a registry to hold all the Tuscany core extension points
  * 
  * @version $Rev$ $Date$
  */
-public class ExtensionPointRegistryImpl implements ExtensionPointRegistry {
+public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     private Map<Class, Object> extensionPoints = new HashMap<Class, Object>();
 
     public <T> void addExtensionPoint(Class<T> extensionPointType, T extensionPoint) {

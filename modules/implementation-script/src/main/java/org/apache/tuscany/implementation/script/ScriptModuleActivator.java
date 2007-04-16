@@ -22,8 +22,8 @@ package org.apache.tuscany.implementation.script;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
-import org.apache.tuscany.spi.bootstrap.ModuleActivator;
+import org.apache.tuscany.core.ExtensionPointRegistry;
+import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 public class ScriptModuleActivator implements ModuleActivator {

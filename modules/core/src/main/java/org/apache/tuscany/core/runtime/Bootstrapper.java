@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.bootstrap;
+package org.apache.tuscany.core.runtime;
 
 import org.apache.tuscany.contribution.service.ContributionService;
+import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;

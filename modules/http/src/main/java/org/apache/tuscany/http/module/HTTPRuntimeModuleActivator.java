@@ -22,10 +22,10 @@ package org.apache.tuscany.http.module;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.core.ExtensionPointRegistry;
+import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.DefaultServletHostExtensionPoint;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
-import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 
 /**
  * @version $Rev$ $Date$

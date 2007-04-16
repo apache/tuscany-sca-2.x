@@ -22,6 +22,8 @@ package org.apache.tuscany.core.databinding.bootstrap;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.core.ExtensionPointRegistry;
+import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTransformer;
 import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
@@ -61,8 +63,6 @@ import org.apache.tuscany.databinding.xml.XMLStreamReader2SAX;
 import org.apache.tuscany.databinding.xml.XMLStreamReader2String;
 import org.apache.tuscany.databinding.xml.XMLStringDataBinding;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
-import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 

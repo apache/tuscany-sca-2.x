@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.bootstrap;
+package org.apache.tuscany.core;
 
 import java.util.Map;
 
