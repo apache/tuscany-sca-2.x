@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.host.embedded.impl;
 
-import static org.apache.tuscany.host.embedded.SimpleRuntimeInfo.DEFAULT_COMPOSITE;
+import static org.apache.tuscany.host.embedded.impl.SimpleRuntimeInfo.DEFAULT_COMPOSITE;
 
 import java.net.MalformedURLException;
 import java.net.URI;

@@ -26,7 +26,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 

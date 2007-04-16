@@ -20,7 +20,7 @@ package echo;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 
 /**
  * @version $Rev$ $Date$

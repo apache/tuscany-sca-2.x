@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.test.exceptions;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 
