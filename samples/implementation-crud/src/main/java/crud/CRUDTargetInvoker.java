@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.container.crud;
+package crud;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
