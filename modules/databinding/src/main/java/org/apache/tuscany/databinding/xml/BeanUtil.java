@@ -33,8 +33,8 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.interfacedef.util.TypeInfo;
-import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 
 public final class BeanUtil {
     private static final Object[] NULL = (Object[])null;

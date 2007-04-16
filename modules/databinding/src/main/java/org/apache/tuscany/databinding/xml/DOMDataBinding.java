@@ -21,8 +21,8 @@ package org.apache.tuscany.databinding.xml;
 
 import org.w3c.dom.Node;
 
-import org.apache.tuscany.spi.databinding.WrapperHandler;
-import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.WrapperHandler;
+import org.apache.tuscany.databinding.extension.DataBindingExtension;
 
 /**
  * DOM DataBinding

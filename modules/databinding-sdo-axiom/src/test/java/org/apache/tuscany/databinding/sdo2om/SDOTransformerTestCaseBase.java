@@ -23,9 +23,9 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import com.example.ipo.sdo.SdoFactory;

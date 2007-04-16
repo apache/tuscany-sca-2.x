@@ -22,12 +22,12 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.core.wire.WireObjectFactory;
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 

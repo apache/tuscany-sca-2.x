@@ -27,11 +27,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.ExceptionHandler;
+import org.apache.tuscany.databinding.extension.DOMHelper;
+import org.apache.tuscany.databinding.extension.DataBindingExtension;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.util.XMLType;
-import org.apache.tuscany.spi.databinding.ExceptionHandler;
-import org.apache.tuscany.spi.databinding.extension.DOMHelper;
-import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 import org.w3c.dom.Document;
 
 /**

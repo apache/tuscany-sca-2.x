@@ -21,17 +21,17 @@ package org.apache.tuscany.databinding.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.DataPipe;
+import org.apache.tuscany.databinding.Mediator;
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.PushTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.databinding.DataPipe;
-import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.PushTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
 
 /**
  * Default Mediator implementation

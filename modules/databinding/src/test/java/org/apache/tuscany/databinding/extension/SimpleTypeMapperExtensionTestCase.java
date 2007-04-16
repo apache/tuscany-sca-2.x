@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +26,9 @@ import javax.xml.namespace.NamespaceContext;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.interfacedef.util.TypeInfo;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.easymock.EasyMock;
 
 /**

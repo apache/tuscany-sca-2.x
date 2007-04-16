@@ -17,14 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.easymock.EasyMock;
 import org.w3c.dom.Node;
 

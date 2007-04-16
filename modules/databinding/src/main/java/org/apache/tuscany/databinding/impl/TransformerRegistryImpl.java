@@ -21,10 +21,10 @@ package org.apache.tuscany.databinding.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.databinding.DataBinding;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.TransformerRegistry;
 
 /**
  * @version $Rev$ $Date$

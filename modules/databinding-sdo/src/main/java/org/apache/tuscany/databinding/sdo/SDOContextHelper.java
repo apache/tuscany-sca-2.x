@@ -24,10 +24,10 @@ import java.awt.Component;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.impl.HelperProvider;

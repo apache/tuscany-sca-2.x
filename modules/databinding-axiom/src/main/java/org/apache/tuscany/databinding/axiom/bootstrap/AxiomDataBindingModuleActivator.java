@@ -21,6 +21,8 @@ package org.apache.tuscany.databinding.axiom.bootstrap;
 
 import java.util.Map;
 
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.axiom.AxiomDataBinding;
 import org.apache.tuscany.databinding.axiom.OMElement2Object;
 import org.apache.tuscany.databinding.axiom.OMElement2String;
@@ -30,8 +32,6 @@ import org.apache.tuscany.databinding.axiom.String2OMElement;
 import org.apache.tuscany.databinding.axiom.XMLStreamReader2OMElement;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
 
 /**
  * Module activator for AXIOM databinding

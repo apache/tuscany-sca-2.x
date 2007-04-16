@@ -16,29 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.databinding;
+package org.apache.tuscany.databinding;
 
 /**
- * Data pipe allows a data source pushes data into its sink and pipe the data into its result
+ * A transformer that pushes data from its source into the sink
  * 
- * @param <S> The data binding type of the sink
- * @param <R> The data binding type of the result
+ * @param <S>
+ * @param <R>
  */
-public interface DataPipe<S, R> extends Transformer {
-
+public interface PushTransformer<S, R> extends Transformer {
     /**
-     * Returns a sink (for example, java.io.OutputStream, java.io.Writer or org.xml.sax.ContentHandler) to receive data
-     * pushed by the source
-     * 
-     * @return The sink to consume data
+     * @param source The source data
+     * @param sink The sink to receive the data 
+     * @param context
      */
-    S getSink();
-
-    /**
-     * Returns the data populated by the sink
-     * 
-     * @return
-     */
-    R getResult();
-
+    void transform(S source, R sink, TransformationContext context);
 }

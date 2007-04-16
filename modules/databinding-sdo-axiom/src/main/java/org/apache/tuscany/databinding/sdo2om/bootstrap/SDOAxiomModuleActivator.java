@@ -21,11 +21,11 @@ package org.apache.tuscany.databinding.sdo2om.bootstrap;
 
 import java.util.Map;
 
+import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.sdo2om.DataObject2OMElement;
 import org.apache.tuscany.databinding.sdo2om.XMLDocument2OMElement;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
 
 /**
  * Module activator for SDO/AXIOM databinding

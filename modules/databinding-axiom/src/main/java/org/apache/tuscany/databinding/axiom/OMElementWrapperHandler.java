@@ -29,9 +29,9 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.WrapperHandler;
 import org.apache.tuscany.interfacedef.util.ElementInfo;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.WrapperHandler;
 
 /**
  * OMElement wrapper handler implementation

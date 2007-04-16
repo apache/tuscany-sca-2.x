@@ -19,14 +19,14 @@
 
 package org.apache.tuscany.core.databinding.transformers;
 
+import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.ExceptionHandler;
+import org.apache.tuscany.databinding.Mediator;
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.spi.databinding.DataBinding;
-import org.apache.tuscany.spi.databinding.ExceptionHandler;
-import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -63,7 +63,7 @@ public class Exception2ExceptionTransformer extends TransformerExtension<Object[
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.extension.TransformerExtension#getSourceType()
+     * @see org.apache.tuscany.databinding.extension.TransformerExtension#getSourceType()
      */
     @Override
     protected Class getSourceType() {
@@ -71,7 +71,7 @@ public class Exception2ExceptionTransformer extends TransformerExtension<Object[
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.extension.TransformerExtension#getTargetType()
+     * @see org.apache.tuscany.databinding.extension.TransformerExtension#getTargetType()
      */
     @Override
     protected Class getTargetType() {
@@ -79,7 +79,7 @@ public class Exception2ExceptionTransformer extends TransformerExtension<Object[
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.Transformer#getWeight()
+     * @see org.apache.tuscany.databinding.Transformer#getWeight()
      */
     public int getWeight() {
         return 10000;

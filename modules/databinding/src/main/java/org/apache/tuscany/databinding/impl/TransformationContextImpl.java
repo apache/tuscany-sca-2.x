@@ -22,9 +22,9 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 
 public class TransformationContextImpl implements TransformationContext {
     private DataType sourceDataType;

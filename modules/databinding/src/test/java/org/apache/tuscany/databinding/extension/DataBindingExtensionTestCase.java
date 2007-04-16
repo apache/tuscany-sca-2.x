@@ -17,13 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.extension.DataBindingExtension;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.easymock.EasyMock;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

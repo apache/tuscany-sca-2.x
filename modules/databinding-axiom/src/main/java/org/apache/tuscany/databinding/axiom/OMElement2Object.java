@@ -19,7 +19,7 @@
 package org.apache.tuscany.databinding.axiom;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.spi.databinding.extension.SimpleType2JavaTransformer;
+import org.apache.tuscany.databinding.extension.SimpleType2JavaTransformer;
 
 /**
  * Transformer to convert data from a simple java bject to OMElement

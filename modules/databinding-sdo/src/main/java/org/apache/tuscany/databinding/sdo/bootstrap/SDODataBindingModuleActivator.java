@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.sdo.DataObject2String;
 import org.apache.tuscany.databinding.sdo.DataObject2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.HelperContextProcessor;
@@ -38,8 +40,6 @@ import org.apache.tuscany.databinding.sdo.XMLStreamReader2XMLDocument;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
 
 /**
  * @version $Rev$ $Date$

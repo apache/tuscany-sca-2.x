@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.SimpleTypeMapper;
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.interfacedef.util.XMLType;
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 
 /**
  * Transformer to convert data from a simple java object to a databinding's representation

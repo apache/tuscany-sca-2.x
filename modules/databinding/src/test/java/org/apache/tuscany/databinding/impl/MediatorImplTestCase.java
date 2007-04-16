@@ -24,15 +24,15 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.xml.Node2String;
 import org.apache.tuscany.databinding.xml.Node2Writer;
 import org.apache.tuscany.databinding.xml.SAX2DOMPipe;
 import org.apache.tuscany.databinding.xml.String2SAX;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

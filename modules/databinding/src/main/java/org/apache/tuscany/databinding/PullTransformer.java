@@ -16,19 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.databinding;
+package org.apache.tuscany.databinding;
 
 /**
- * A transformer that pushes data from its source into the sink
+ * PullTransformer transforms data from one binding format to the other one which can be directly consumed
  * 
- * @param <S>
- * @param <R>
+ * @param <S> The source data type
+ * @param <R> the target data type
  */
-public interface PushTransformer<S, R> extends Transformer {
+public interface PullTransformer<S, R> extends Transformer {
     /**
+     * Transform source data into the result type.
+     * 
      * @param source The source data
-     * @param sink The sink to receive the data 
-     * @param context
+     * @param context The context for the transformation
+     * @return The transformed result
      */
-    void transform(S source, R sink, TransformationContext context);
+    R transform(S source, TransformationContext context);
 }

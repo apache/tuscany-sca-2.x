@@ -24,10 +24,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
 public class Reader2JAXB extends TransformerExtension<Reader, Object> implements
     PullTransformer<Reader, Object> {

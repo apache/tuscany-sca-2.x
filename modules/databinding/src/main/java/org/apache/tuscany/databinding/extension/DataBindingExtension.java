@@ -16,19 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.ExceptionHandler;
+import org.apache.tuscany.databinding.SimpleTypeMapper;
+import org.apache.tuscany.databinding.WrapperHandler;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.spi.databinding.DataBinding;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.databinding.ExceptionHandler;
-import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
-import org.apache.tuscany.spi.databinding.WrapperHandler;
 
 /**
  * Base Implementation of DataBinding
@@ -124,7 +124,7 @@ public abstract class DataBindingExtension implements DataBinding {
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.DataBinding#getWrapperHandler()
+     * @see org.apache.tuscany.databinding.DataBinding#getWrapperHandler()
      */
     public WrapperHandler getWrapperHandler() {
         return null;

@@ -32,14 +32,14 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
-import org.apache.tuscany.spi.databinding.DataBinding;
-import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.Wire;

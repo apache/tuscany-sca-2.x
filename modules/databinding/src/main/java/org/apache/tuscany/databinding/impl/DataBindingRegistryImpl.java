@@ -25,11 +25,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.spi.databinding.DataBinding;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 
 /**
  * The default implementation of a data binding registry

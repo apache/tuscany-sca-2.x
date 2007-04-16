@@ -23,8 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.tuscany.spi.databinding.DataPipe;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.DataPipe;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
 public class StreamDataPipe extends TransformerExtension<OutputStream, InputStream> implements
     DataPipe<OutputStream, InputStream> {
