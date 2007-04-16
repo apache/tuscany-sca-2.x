@@ -41,6 +41,7 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -148,6 +149,9 @@ public class WSDLDocumentProcessor implements URLArtifactProcessorExtension<WSDL
             WSDLDefinition wsdlDefinition = factory.createWSDLDefinition();
             wsdlDefinition.setDefinition(definition);
             
+            // get base uri for any relative schema includes
+
+            
             // Read inline schemas 
             Types types = definition.getTypes();
             if (types != null) {
@@ -155,6 +159,16 @@ public class WSDLDocumentProcessor implements URLArtifactProcessorExtension<WSDL
                 for (Object ext : types.getExtensibilityElements()) {
                     if (ext instanceof Schema) {
                         Element element = ((Schema)ext).getElement();
+
+                        // TODO: fix to make includes in imported
+                        //       schema work. The XmlSchema library was crashing
+                        //       because the base uri was not set. This doesn't
+                        //       affect imports. Need to check that this
+                        //       is the right approach for XSDs included by a
+                        //       XSD which is itself imported inline in a WSDL
+                        XmlSchemaCollection schemaCollection = wsdlDefinition.getInlinedSchemas();            
+                        schemaCollection.setBaseUri(((Schema)ext).getDocumentBaseURI());
+
                         wsdlDefinition.getInlinedSchemas().read(element, element.getBaseURI());
                     }
                 }
