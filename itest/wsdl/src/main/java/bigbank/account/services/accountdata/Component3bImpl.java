@@ -21,7 +21,6 @@ package bigbank.account.services.accountdata;
 
 import java.rmi.RemoteException;
 
-import org.apache.tuscany.api.annotation.DataType;
 import org.osoa.sca.annotations.Reference;
 
 import com.bigbank.account.AccountLog;

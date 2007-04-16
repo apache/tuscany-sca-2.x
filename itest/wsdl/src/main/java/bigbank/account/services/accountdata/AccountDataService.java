@@ -18,12 +18,10 @@
  */
 package bigbank.account.services.accountdata;
 
-import org.apache.tuscany.api.annotation.DataType;
 import org.osoa.sca.annotations.AllowsPassByReference;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
-@DataType(name="commonj.sdo.DataObject")
 @AllowsPassByReference
 public interface AccountDataService {
 
@@ -58,7 +56,6 @@ public interface AccountDataService {
      * @param param10*
      * @param param11
      */
-    @DataType(name = "commonj.sdo.DataObject")
     public com.bigbank.account.CustomerProfileData createAccount(com.bigbank.account.CustomerProfileData param9, boolean param10, boolean param11)
             throws java.rmi.RemoteException;
 
