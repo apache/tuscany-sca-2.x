@@ -142,8 +142,14 @@ public class WSDLTestCase extends TestCase {
     	SCARuntime.start("WSDLTest.composite");
     }
 
+//    protected void setUp() throws Exception {
+//        SCARuntime.start("org/apache/tuscany/binding/axis2/itests/HelloWorld.composite");
+//        ComponentContext context = SCARuntime.getComponentContext("HelloWorldComponent");
+//        ServiceReference<HelloWorld> service = context.createSelfReference(HelloWorld.class);
+//        helloWorld = service.getService();
+//    }
+    
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+        SCARuntime.stop();
     }
-
 }

@@ -18,165 +18,156 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
 
            name="WSDLTest">
    
-    <service name="HelloWorldService1a2a3a4a">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2a3a4a</reference>
+    <service name="HelloWorldService1a2a3a4a" promote="Component2a3a4a" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1a2a3a4b">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2a3a4b</reference>
+    <service name="HelloWorldService1a2a3a4b" promote="Component2a3a4b" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1a2a3b4a">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2a3b4a</reference>
+    <service name="HelloWorldService1a2a3b4a" promote="Component2a3b4a" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1a2a3b4b">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2a3b4b</reference>
+    <service name="HelloWorldService1a2a3b4b" promote="Component2a3b4b" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1a2b3a4a">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2b3a4a</reference>
+    <service name="HelloWorldService1a2b3a4a" promote="Component2b3a4a" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1a2b3a4b">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2b3a4b</reference>
+    <service name="HelloWorldService1a2b3a4b" promote="Component2b3a4b" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1a2b3b4a">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2b3b4a</reference>
+    <service name="HelloWorldService1a2b3b4a" promote="Component2b3b4a" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1a2b3b4b">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2b3b4b</reference>
+    <service name="HelloWorldService1a2b3b4b" promote="Component2b3b4b" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
 
-    <service name="HelloWorldService1b2a3a4a">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2a3a4a</reference>
+    <service name="HelloWorldService1b2a3a4a" promote="Component2a3a4a" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1b2a3a4b">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2a3a4b</reference>
+    <service name="HelloWorldService1b2a3a4b" promote="Component2a3a4b" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1b2a3b4a">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2a3b4a</reference>
+    <service name="HelloWorldService1b2a3b4a" promote="Component2a3b4a" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1b2a3b4b">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2a3b4b</reference>
+    <service name="HelloWorldService1b2a3b4b" promote="Component2a3b4b" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1b2b3a4a">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2b3a4a</reference>
+    <service name="HelloWorldService1b2b3a4a" promote="Component2b3a4a" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1b2b3a4b">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2b3a4b</reference>
+    <service name="HelloWorldService1b2b3a4b" promote="Component2b3a4b" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1b2b3b4a">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2b3b4a</reference>
+    <service name="HelloWorldService1b2b3b4a" promote="Component2b3b4a" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
-    <service name="HelloWorldService1b2b3b4b">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>Component2b3b4b</reference>
+    <service name="HelloWorldService1b2b3b4b" promote="Component2b3b4b" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
 
     <component name="Component2a3a4a">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component2aImpl"/>
-        <reference name="comp">Component3a4a</reference>
+        <reference name="comp" target="Component3a4a" />
     </component> 
     <component name="Component2a3a4b">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component2aImpl"/>
-        <reference name="comp">Component3a4b</reference>
+        <reference name="comp" target="Component3a4b" />
     </component> 
     <component name="Component2a3b4a">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component2aImpl"/>
-        <reference name="comp">Component3b4a</reference>
+        <reference name="comp" target="Component3b4a" />
     </component> 
     <component name="Component2a3b4b">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component2aImpl"/>
-        <reference name="comp">Component3b4b</reference>
+        <reference name="comp" target="Component3b4b" />
     </component> 
 
     <component name="Component2b3a4a">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component2bImpl"/>
-        <reference name="comp">Component3a4a</reference>
+        <reference name="comp" target="Component3a4a" />
     </component> 
     <component name="Component2b3a4b">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component2bImpl"/>
-        <reference name="comp">Component3a4b</reference>
+        <reference name="comp" target="Component3a4b" />
     </component> 
     <component name="Component2b3b4a">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component2bImpl"/>
-        <reference name="comp">Component3b4a</reference>
+        <reference name="comp" target="Component3b4a" />
     </component> 
     <component name="Component2b3b4b">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component2bImpl"/>
-        <reference name="comp">Component3b4b</reference>
+        <reference name="comp" target="Component3b4b" />
     </component> 
 
     <component name="Component3a4a">
     	<implementation.java class="org.apache.tuscany.sca.itest.Component3aImpl"/>
-        <reference name="comp">Ref4a</reference>
+        <reference name="comp" />
     </component> 
-    <component name="Component3a4b">
-    	<implementation.java class="org.apache.tuscany.sca.itest.Component3aImpl"/>
-        <reference name="comp">Ref4b</reference>
-    </component> 
-    <component name="Component3b4a">
-    	<implementation.java class="org.apache.tuscany.sca.itest.Component3bImpl"/>
-        <reference name="comp">Ref4a</reference>
-    </component> 
-    <component name="Component3b4b">
-    	<implementation.java class="org.apache.tuscany.sca.itest.Component3bImpl"/>
-        <reference name="comp">Ref4b</reference>
-    </component> 
-
-    <reference name="Ref4a">
-        <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworld.wsdl" />
+    <reference name="Component3a4aRef" promote="Component3a4a/comp" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+                    uri="http://localhost:8080/HelloWorldServiceComponent/HelloWorldWebService" />
     </reference>
 
-    <reference name="Ref4b">
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworld.wsdl" />
+    <component name="Component3a4b">
+    	<implementation.java class="org.apache.tuscany.sca.itest.Component3aImpl"/>
+        <reference name="comp" />
+    </component> 
+    <reference name="Component3a4bRef" promote="Component3a4b/comp" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+                    uri="http://localhost:8080/HelloWorldServiceComponent/HelloWorldWebService" />
+    </reference>
+
+    <component name="Component3b4a">
+    	<implementation.java class="org.apache.tuscany.sca.itest.Component3bImpl"/>
+        <reference name="comp" />
+    </component> 
+    <reference name="Component3b4aRef" promote="Component3b4a/comp" >
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+                    uri="http://localhost:8080/HelloWorldServiceComponent/HelloWorldWebService" />
+    </reference>
+
+    <component name="Component3b4b">
+    	<implementation.java class="org.apache.tuscany.sca.itest.Component3bImpl"/>
+        <reference name="comp" />
+    </component> 
+    <reference name="Component3b4bRef" promote="Component3b4b/comp" >
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+                    uri="http://localhost:8080/HelloWorldServiceComponent/HelloWorldWebService" />
     </reference>
 
 
 <!-- the servive -->    
     
-    <service name="HelloWorldWebService">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworld.wsdl" />
-        <reference>HelloWorldServiceComponent</reference>
+    <service name="HelloWorldWebService"  promote="HelloWorldServiceComponent" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
 
     <component name="HelloWorldServiceComponent">
@@ -187,226 +178,194 @@
 
     <component name="Client1a2a3a4a">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1a2a3a4a</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1a2a3a4a">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1a2a3a4a.wsdl" />
+    <reference name="ClientRef1a2a3a4a" promote="Client1a2a3a4a/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1a2a3a4a" />
     </reference>
     
     <component name="Client1a2a3a4b">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1a2a3a4b</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1a2a3a4b">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1a2a3a4b.wsdl" />
+    <reference name="ClientRef1a2a3a4b" promote="Client1a2a3a4b/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1a2a3a4b" />
     </reference>
     
     <component name="Client1a2a3b4a">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1a2a3b4a</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1a2a3b4a">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1a2a3b4a.wsdl" />
+    <reference name="ClientRef1a2a3b4a" promote="Client1a2a3b4a/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1a2a3b4a" />
     </reference>
     
     <component name="Client1a2a3b4b">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1a2a3b4b</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1a2a3b4b">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1a2a3b4b.wsdl" />
+    <reference name="ClientRef1a2a3b4b" promote="Client1a2a3b4b/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1a2a3b4b" />
     </reference>
     
     <component name="Client1a2b3a4a">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1a2b3a4a</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1a2b3a4a">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1a2b3a4a.wsdl" />
+    <reference name="ClientRef1a2b3a4a" promote="Client1a2b3a4a/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1a2b3a4a" />
     </reference>
     
     <component name="Client1a2b3a4b">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1a2b3a4b</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1a2b3a4b">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1a2b3a4b.wsdl" />
+    <reference name="ClientRef1a2b3a4b" promote="Client1a2b3a4b/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1a2b3a4b" />
     </reference>
     
     <component name="Client1a2b3b4a">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1a2b3b4a</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1a2b3b4a">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1a2b3b4a.wsdl" />
+    <reference name="ClientRef1a2b3b4a" promote="Client1a2b3b4a/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1a2b3b4a" />
     </reference>
     
     <component name="Client1a2b3b4b">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1a2b3b4b</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1a2b3b4b">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1a2b3b4b.wsdl" />
+    <reference name="ClientRef1a2b3b4b" promote="Client1a2b3b4b/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1a2b3b4b" />
     </reference>
     
     <component name="Client1b2a3a4a">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1b2a3a4a</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1b2a3a4a">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1b2a3a4a.wsdl" />
+    <reference name="ClientRef1b2a3a4a" promote="Client1b2a3a4a/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1b2a3a4a" />
     </reference>
     
     <component name="Client1b2a3a4b">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1b2a3a4b</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1b2a3a4b">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1b2a3a4b.wsdl" />
+    <reference name="ClientRef1b2a3a4b" promote="Client1b2a3a4b/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1b2a3a4b" />
     </reference>
     
     <component name="Client1b2a3b4a">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1b2a3b4a</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1b2a3b4a">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1b2a3b4a.wsdl" />
+    <reference name="ClientRef1b2a3b4a" promote="Client1b2a3b4a/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1b2a3b4a" />
     </reference>
     
     <component name="Client1b2a3b4b">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1b2a3b4b</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1b2a3b4b">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1b2a3b4b.wsdl" />
+    <reference name="ClientRef1b2a3b4b" promote="Client1b2a3b4b/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1b2a3b4b" />
     </reference>
     
     <component name="Client1b2b3a4a">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1b2b3a4a</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1b2b3a4a">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1b2b3a4a.wsdl" />
+    <reference name="ClientRef1b2b3a4a" promote="Client1b2b3a4a/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1b2b3a4a" />
     </reference>
     
     <component name="Client1b2b3a4b">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1b2b3a4b</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1b2b3a4b">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1b2b3a4b.wsdl" />
+    <reference name="ClientRef1b2b3a4b" promote="Client1b2b3a4b/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"/>
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1b2b3a4b" />
     </reference>
     
     <component name="Client1b2b3b4a">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1b2b3b4a</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1b2b3b4a">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1b2b3b4a.wsdl" />
+    <reference name="ClientRef1b2b3b4a" promote="Client1b2b3b4a/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1b2b3b4a" />
     </reference>
     
     <component name="Client1b2b3b4b">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">ClientRef1b2b3b4b</reference>
+      <reference name="helloWorldService" />
     </component>
 
-    <reference name="ClientRef1b2b3b4b">
-        <!-- interface.java class="helloworld.HelloWorldService" / -->
-        <interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.ws endpoint="http://helloworld#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-			location="wsdl/helloworldC1b2b3b4b.wsdl" />
+    <reference name="ClientRef1b2b3b4b" promote="Client1b2b3b4b/helloWorldService" >
+        <!-- interface.java interface="helloworld.HelloWorldService" / -->
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+			uri="http://localhost:8080/HelloWorldService1b2b3b4b" />
     </reference>
     
 </composite>
