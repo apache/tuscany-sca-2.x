@@ -72,7 +72,7 @@ import org.w3c.dom.Node;
  * 
  * @version $Rev$ $Date$
  */
-abstract class BaseArtifactProcessor implements Constants {
+public abstract class BaseArtifactProcessor implements Constants {
 
     protected AssemblyFactory factory;
     protected PolicyFactory policyFactory;
@@ -86,7 +86,7 @@ abstract class BaseArtifactProcessor implements Constants {
     /**
      * Constructs a new BaseArtifactProcessor.
      */
-    BaseArtifactProcessor() {
+    public BaseArtifactProcessor() {
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param policyFactory
      */
     @SuppressWarnings("unchecked")
-    BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+    public BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
         this.factory = factory;
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
@@ -252,7 +252,7 @@ abstract class BaseArtifactProcessor implements Constants {
     }
     
     /**
-     * Read list of refence targets
+     * Read list of reference targets
      * @param reference
      * @param reader
      */

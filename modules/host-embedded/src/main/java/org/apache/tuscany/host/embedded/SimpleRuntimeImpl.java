@@ -51,6 +51,7 @@ import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
 import org.apache.tuscany.core.component.SimpleWorkContext;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.spi.Scope;
@@ -139,7 +140,8 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         new FolderContributionProcessor(packageProcessors);
 
         // Create a work context
-        WorkContext workContext = new SimpleWorkContext();
+        //WorkContext workContext = new SimpleWorkContext();
+        WorkContext workContext = new WorkContextImpl();
         workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
         WorkContextTunnel.setThreadWorkContext(workContext);
 
