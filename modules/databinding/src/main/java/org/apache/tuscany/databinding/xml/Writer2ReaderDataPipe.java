@@ -23,8 +23,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.apache.tuscany.spi.databinding.DataPipe;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.DataPipe;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
 public class Writer2ReaderDataPipe extends TransformerExtension<Writer, Reader> implements DataPipe<Writer, Reader> {
 

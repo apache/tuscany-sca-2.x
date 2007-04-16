@@ -17,39 +17,28 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import junit.framework.TestCase;
 
 /**
- * 
+ * Type Mapper between XML schema simple data types and java objects
  */
-public class DOMHelperTestCase extends TestCase {
-    private static final QName FOO_NAME = new QName("http://foo", "foo");
-
+public interface SimpleTypeMapper {
     /**
-     * @see junit.framework.TestCase#setUp()
+     * Parse the XML lexical representation into a java object 
+     * @param simpleType The XSD simple type
+     * @param value the XML lexical representation
+     * @param context The context of the transformation
+     * @return A java object for the XML value
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void testDOM() throws Exception {
-        DocumentBuilder builder = DOMHelper.newDocumentBuilder();
-        assertNotNull(builder);
-        Document document = DOMHelper.newDocument();
-        assertNotNull(document);
-        Element element = DOMHelper.createElement(document, FOO_NAME);
-        document.appendChild(element);
-        QName name = DOMHelper.getQName(element);
-        assertEquals(FOO_NAME, name);
-
-    }
-
+    Object toJavaObject(QName simpleType, String value, TransformationContext context);
+    /**
+     * Create the XML lexical representation for a java object
+     * @param simpleType The XSD simple type
+     * @param obj The java object
+     * @param context The context of the transformation
+     * @return The XML lexical representation
+     */
+    String toXMLLiteral(QName simpleType, Object obj, TransformationContext context);
 }

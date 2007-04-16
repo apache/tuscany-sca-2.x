@@ -20,12 +20,12 @@ package org.apache.tuscany.databinding.javabeans;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.databinding.xml.BeanUtil;
 import org.apache.tuscany.databinding.xml.XMLDocumentStreamReader;
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 
 public class JavaBean2XMLStreamReader extends TransformerExtension<Object, XMLStreamReader> implements
     PullTransformer<Object, XMLStreamReader> {

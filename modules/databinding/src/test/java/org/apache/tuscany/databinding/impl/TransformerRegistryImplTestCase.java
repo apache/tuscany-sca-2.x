@@ -28,9 +28,9 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.impl.TransformerRegistryImpl;
-import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
 
 /**
  * 

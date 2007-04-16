@@ -20,10 +20,10 @@ package org.apache.tuscany.databinding.xml;
 
 import java.io.StringReader;
 
-import org.apache.tuscany.spi.databinding.PushTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.PushTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 

@@ -16,21 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.databinding;
+package org.apache.tuscany.databinding;
 
 /**
- * PullTransformer transforms data from one binding format to the other one which can be directly consumed
+ * Data pipe allows a data source pushes data into its sink and pipe the data into its result
  * 
- * @param <S> The source data type
- * @param <R> the target data type
+ * @param <S> The data binding type of the sink
+ * @param <R> The data binding type of the result
  */
-public interface PullTransformer<S, R> extends Transformer {
+public interface DataPipe<S, R> extends Transformer {
+
     /**
-     * Transform source data into the result type.
+     * Returns a sink (for example, java.io.OutputStream, java.io.Writer or org.xml.sax.ContentHandler) to receive data
+     * pushed by the source
      * 
-     * @param source The source data
-     * @param context The context for the transformation
-     * @return The transformed result
+     * @return The sink to consume data
      */
-    R transform(S source, TransformationContext context);
+    S getSink();
+
+    /**
+     * Returns the data populated by the sink
+     * 
+     * @return
+     */
+    R getResult();
+
 }

@@ -29,10 +29,10 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
 /**
  * Transformer to convert data from a JavaBean object to xml

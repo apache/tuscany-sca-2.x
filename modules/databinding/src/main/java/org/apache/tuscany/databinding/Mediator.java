@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.databinding;
+package org.apache.tuscany.databinding;
 
 import java.util.Map;
 

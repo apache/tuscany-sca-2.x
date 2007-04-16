@@ -24,13 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.osoa.sca.annotations.Reference;
 
 /**

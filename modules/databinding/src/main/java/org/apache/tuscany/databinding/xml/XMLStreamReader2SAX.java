@@ -20,10 +20,10 @@ package org.apache.tuscany.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.databinding.PushTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.PushTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -33,30 +33,30 @@ public class XMLStreamReader2SAX extends TransformerExtension<XMLStreamReader, C
     PushTransformer<XMLStreamReader, ContentHandler> {
 
     /**
-     * @see org.apache.tuscany.spi.databinding.PushTransformer#getSourceType()
+     * @see org.apache.tuscany.databinding.PushTransformer#getSourceType()
      */
     public Class getTargetType() {
         return ContentHandler.class;
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.PushTransformer#getSourceType()
+     * @see org.apache.tuscany.databinding.PushTransformer#getSourceType()
      */
     public Class getSourceType() {
         return XMLStreamReader.class;
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.PushTransformer#getWeight()
+     * @see org.apache.tuscany.databinding.PushTransformer#getWeight()
      */
     public int getWeight() {
         return 20;
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.PushTransformer#transform(java.lang.Object,
+     * @see org.apache.tuscany.databinding.PushTransformer#transform(java.lang.Object,
      *      java.lang.Object,
-     *      org.apache.tuscany.spi.databinding.TransformationContext)
+     *      org.apache.tuscany.databinding.TransformationContext)
      */
     public void transform(XMLStreamReader source, ContentHandler sink, TransformationContext context) {
         StAX2SAXAdapter adapter = new StAX2SAXAdapter(false);

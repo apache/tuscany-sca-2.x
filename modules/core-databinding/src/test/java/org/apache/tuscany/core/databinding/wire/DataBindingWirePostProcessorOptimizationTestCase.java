@@ -28,6 +28,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.impl.MediatorImpl;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -36,7 +37,6 @@ import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
-import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;

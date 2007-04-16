@@ -16,21 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.xml;
 
-import junit.framework.TestCase;
+package org.apache.tuscany.databinding.extension;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.tuscany.databinding.extension.DOMHelper;
-import org.apache.tuscany.databinding.xml.Node2String;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class Node2StringTestCase extends TestCase {
-    public void testTransformation() throws Exception {
-        Document document = DOMHelper.newDocument();
-        Element element = document.createElementNS("http://ns1", "test");
-        document.appendChild(element);
+import junit.framework.TestCase;
 
-        new Node2String().transform(document, null);
+/**
+ * 
+ */
+public class DOMHelperTestCase extends TestCase {
+    private static final QName FOO_NAME = new QName("http://foo", "foo");
+
+    /**
+     * @see junit.framework.TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
     }
+
+    public void testDOM() throws Exception {
+        DocumentBuilder builder = DOMHelper.newDocumentBuilder();
+        assertNotNull(builder);
+        Document document = DOMHelper.newDocument();
+        assertNotNull(document);
+        Element element = DOMHelper.createElement(document, FOO_NAME);
+        document.appendChild(element);
+        QName name = DOMHelper.getQName(element);
+        assertEquals(FOO_NAME, name);
+
+    }
+
 }

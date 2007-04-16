@@ -29,7 +29,7 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.extension.DataBindingExtension;
 
 /**
  * DataBinding for JavaBeans

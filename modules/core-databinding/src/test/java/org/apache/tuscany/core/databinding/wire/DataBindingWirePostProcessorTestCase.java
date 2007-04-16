@@ -35,6 +35,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.databinding.xml.StAXDataBinding;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -46,7 +47,6 @@ import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntro
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;

@@ -25,10 +25,10 @@ import java.lang.reflect.Method;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.ExceptionHandler;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.util.XMLType;
-import org.apache.tuscany.spi.databinding.ExceptionHandler;
 
 import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;

@@ -21,6 +21,7 @@ package org.apache.tuscany.core.databinding.processor;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
@@ -30,7 +31,6 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 

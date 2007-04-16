@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
 import java.io.IOException;
 import java.io.OutputStream;

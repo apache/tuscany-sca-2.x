@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.databinding;
+package org.apache.tuscany.databinding;
 
 import java.lang.annotation.Annotation;
 

@@ -19,11 +19,11 @@
 
 package org.apache.tuscany.databinding.impl;
 
+import org.apache.tuscany.databinding.Mediator;
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 
 /**
  * This is a special transformer to transform the output from one IDL to the
@@ -59,7 +59,7 @@ public class Group2GroupTransformer extends TransformerExtension<Object, Object>
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.extension.TransformerExtension#getSourceType()
+     * @see org.apache.tuscany.databinding.extension.TransformerExtension#getSourceType()
      */
     @Override
     protected Class getSourceType() {
@@ -67,7 +67,7 @@ public class Group2GroupTransformer extends TransformerExtension<Object, Object>
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.extension.TransformerExtension#getTargetType()
+     * @see org.apache.tuscany.databinding.extension.TransformerExtension#getTargetType()
      */
     @Override
     protected Class getTargetType() {
@@ -75,7 +75,7 @@ public class Group2GroupTransformer extends TransformerExtension<Object, Object>
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.Transformer#getWeight()
+     * @see org.apache.tuscany.databinding.Transformer#getWeight()
      */
     public int getWeight() {
         return 10;

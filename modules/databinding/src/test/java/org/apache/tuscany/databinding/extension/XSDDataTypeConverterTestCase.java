@@ -17,11 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import org.apache.tuscany.databinding.extension.XSDDataTypeConverter;
 
 import junit.framework.TestCase;
 

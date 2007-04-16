@@ -21,6 +21,7 @@ package org.apache.tuscany.implementation.java.context;
 import java.net.URI;
 
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
@@ -28,7 +29,6 @@ import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.host.ResourceHost;

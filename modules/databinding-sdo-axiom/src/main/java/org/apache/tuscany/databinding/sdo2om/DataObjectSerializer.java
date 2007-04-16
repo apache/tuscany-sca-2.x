@@ -11,11 +11,11 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.sdo.impl.AttributeImpl;
 import org.apache.tuscany.sdo.impl.ReferenceImpl;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EReference;

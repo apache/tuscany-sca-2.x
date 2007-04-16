@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
-import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
+import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.TransformerRegistry;
 
 /**
  * Base Implementation of Transformer which provides the registration to the transformer registry

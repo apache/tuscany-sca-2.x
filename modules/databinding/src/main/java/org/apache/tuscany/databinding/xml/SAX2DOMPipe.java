@@ -20,8 +20,8 @@ package org.apache.tuscany.databinding.xml;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.tuscany.spi.databinding.DataPipe;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.DataPipe;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 

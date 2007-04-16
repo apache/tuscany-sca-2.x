@@ -25,9 +25,9 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.WrapperHandler;
 import org.apache.tuscany.interfacedef.util.ElementInfo;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.WrapperHandler;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
@@ -44,7 +44,7 @@ import commonj.sdo.helper.XMLHelper;
 public class SDOWrapperHandler implements WrapperHandler<Object> {
 
     /**
-     * @see org.apache.tuscany.spi.databinding.WrapperHandler#create(ElementInfo, TransformationContext)
+     * @see org.apache.tuscany.databinding.WrapperHandler#create(ElementInfo, TransformationContext)
      */
     public Object create(ElementInfo element, TransformationContext context) {
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
@@ -56,7 +56,7 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.WrapperHandler#setChild(java.lang.Object, int, ElementInfo,
+     * @see org.apache.tuscany.databinding.WrapperHandler#setChild(java.lang.Object, int, ElementInfo,
      *      java.lang.Object)
      */
     public void setChild(Object wrapper, int i, ElementInfo childElement, Object value) {

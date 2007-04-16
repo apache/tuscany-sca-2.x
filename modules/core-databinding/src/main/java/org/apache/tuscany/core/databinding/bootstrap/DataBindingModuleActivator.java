@@ -27,6 +27,9 @@ import org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTrans
 import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
 import org.apache.tuscany.core.databinding.transformers.Output2OutputTransformer;
 import org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor;
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.Mediator;
+import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
 import org.apache.tuscany.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.databinding.impl.MediatorImpl;
@@ -61,9 +64,6 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
 import org.apache.tuscany.spi.bootstrap.ExtensionPointRegistry;
 import org.apache.tuscany.spi.bootstrap.ModuleActivator;
 import org.apache.tuscany.spi.component.ComponentManager;
-import org.apache.tuscany.spi.databinding.DataBindingRegistry;
-import org.apache.tuscany.spi.databinding.Mediator;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
 /**

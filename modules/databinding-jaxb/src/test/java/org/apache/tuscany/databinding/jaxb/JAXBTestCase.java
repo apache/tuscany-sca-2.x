@@ -29,10 +29,10 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.util.XMLType;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.w3c.dom.Node;
 
 import com.example.ipo.jaxb.ObjectFactory;

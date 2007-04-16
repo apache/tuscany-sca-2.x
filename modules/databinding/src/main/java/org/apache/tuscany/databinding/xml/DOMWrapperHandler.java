@@ -25,11 +25,11 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.WrapperHandler;
+import org.apache.tuscany.databinding.extension.DOMHelper;
 import org.apache.tuscany.interfacedef.util.ElementInfo;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.WrapperHandler;
-import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

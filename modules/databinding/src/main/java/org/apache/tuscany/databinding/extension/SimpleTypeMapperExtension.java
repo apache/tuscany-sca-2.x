@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.databinding.extension;
+package org.apache.tuscany.databinding.extension;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -30,9 +30,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.SimpleTypeMapper;
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.interfacedef.util.TypeInfo;
-import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
-import org.apache.tuscany.spi.databinding.TransformationContext;
 
 public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements SimpleTypeMapper {
 

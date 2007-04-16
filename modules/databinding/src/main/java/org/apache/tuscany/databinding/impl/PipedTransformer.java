@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.databinding.impl;
 
-import org.apache.tuscany.spi.databinding.DataPipe;
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.PushTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.databinding.DataPipe;
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.PushTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
 
 /**
  * A utility class to connect PushTransformer and DataPipe to create a

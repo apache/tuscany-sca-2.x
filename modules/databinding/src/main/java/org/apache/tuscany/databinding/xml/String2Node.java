@@ -22,11 +22,11 @@ import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformationException;
-import org.apache.tuscany.spi.databinding.extension.DOMHelper;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.DOMHelper;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
