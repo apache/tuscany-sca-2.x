@@ -50,7 +50,6 @@ import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.core.bootstrap.ExtensionPointRegistryImpl;
-import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
@@ -75,8 +74,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         super(SimpleRuntimeInfo.class);
         ClassLoader hostClassLoader = runtimeInfo.getClassLoader();
         setHostClassLoader(hostClassLoader);
-        setApplicationScdl(runtimeInfo.getApplicationSCDL());
-        setSystemScdl(runtimeInfo.getSystemSCDL());
+        setApplicationSCDL(runtimeInfo.getApplicationSCDL());
         setRuntimeInfo(runtimeInfo);
     }
 
@@ -158,7 +156,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         // Contribute and activate the SCA contribution
         URI uri = URI.create("sca://default/");
-        URL root = getContributionLocation(getApplicationScdl(), runtimeInfo.getCompositePath());
+        URL root = getContributionLocation(getApplicationSCDL(), runtimeInfo.getCompositePath());
         contributionService.contribute(uri, root, false);
         Contribution contribution = contributionService.getContribution(uri);
         // FIXME: Need to getDeployables() as list of Composites

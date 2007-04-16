@@ -38,12 +38,10 @@ public class DefaultSCARuntime extends SCARuntime {
 
     protected SimpleRuntime runtime;
 
-    protected void startup(URL system, URL[] exts, URL applicationSCDL, String compositePath) throws Exception {
+    protected void startup(URL applicationSCDL, String compositePath) throws Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        List<URL> extensions = exts == null ? null : Arrays.asList(exts);
         URI contributionURI = URI.create("/default");
-        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(cl, system, extensions, contributionURI,
-                                                                  applicationSCDL, compositePath);
+        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(cl, contributionURI, applicationSCDL, compositePath);
         runtime = new SimpleRuntimeImpl(runtimeInfo);
 
         try {

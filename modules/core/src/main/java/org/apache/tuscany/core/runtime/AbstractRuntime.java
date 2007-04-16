@@ -165,11 +165,11 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         this.applicationName = applicationName;
     }
 
-    public URL getApplicationScdl() {
+    public URL getApplicationSCDL() {
         return applicationScdl;
     }
 
-    public void setApplicationScdl(URL applicationScdl) {
+    public void setApplicationSCDL(URL applicationScdl) {
         this.applicationScdl = applicationScdl;
     }
 

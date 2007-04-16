@@ -122,22 +122,7 @@ public abstract class SCARuntime {
      */
     public static void start() {
         try {
-            getInstance().startup(null, null, null, null);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    /**
-     * Start the SCA Runtime with the given SCDLs
-     * 
-     * @param system The URL for the system SCDL
-     * @param extensions An array of URLs for extensions
-     * @param application The URL for the application SCDL
-     */
-    public static void start(URL system, URL[] extensions, URL application, String compositePath) {
-        try {
-            getInstance().startup(system, extensions, application, compositePath);
+            getInstance().startup(null, null);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -150,39 +135,22 @@ public abstract class SCARuntime {
      */
     public static void start(URL application, String compositePath) {
         try {
-            getInstance().startup(null, null, application, compositePath);
+            getInstance().startup(application, compositePath);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
     /**
-     * Start the SCA Runtime with the given SCDL
+     * Start the SCA Runtime with the given composite file.
      * 
-     * @param compositePath The path of the application SCDL
+     * @param compositePath The path of the composite file.
      */
     public static void start(String compositePath) {
         try {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             URL applicationURL = cl.getResource(compositePath);
-            getInstance().startup(null, null, applicationURL, compositePath);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    /**
-     * Start the SCA Runtime with the given SCDL
-     * 
-     * @param compositePath The path of the system SCDL
-     * @param compositePath The path of the application SCDL
-     */
-    public static void start(String system, String compositePath) {
-        try {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            URL systemURL = cl.getResource(system);
-            URL applicationURL = cl.getResource(compositePath);
-            getInstance().startup(systemURL, null, applicationURL, compositePath);
+            getInstance().startup(applicationURL, compositePath);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -230,14 +198,12 @@ public abstract class SCARuntime {
     /**
      * Start up the runtime
      * 
-     * @param system The URL of the SCDL for tuscany system composite
-     * @param extensions The URLs of the SCDLs for tuscany extension composites
      * @param application The URL of the SCDL for the application composite
      * @param compositePath The path of the application composite relative to
      *            the application URL
      * @throws Exception
      */
-    protected abstract void startup(URL system, URL[] extensions, URL application, String compositePath)
+    protected abstract void startup(URL application, String compositePath)
         throws Exception;
 
     /**
