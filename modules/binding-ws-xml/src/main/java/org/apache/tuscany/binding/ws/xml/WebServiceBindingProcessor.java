@@ -22,6 +22,7 @@ package org.apache.tuscany.binding.ws.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
 import javax.wsdl.Definition;
+import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -83,6 +84,7 @@ public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
                     throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
                 }
                 String namespace = wsdlElement.substring(0, index);
+                wsBinding.setNamespace(namespace);
                 String name = wsdlElement.substring(index + 1);
                 if (name.startsWith("wsdl.service")) {
                     
@@ -196,7 +198,7 @@ public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
     public void resolve(WebServiceBinding model, ArtifactResolver resolver) throws ContributionResolveException {
         WSDLDefinition wsdlDefinition = new DefaultWSDLFactory().createWSDLDefinition();
         wsdlDefinition.setUnresolved(true);
-        wsdlDefinition.setNamespace(model.getServiceName().getNamespaceURI());
+        wsdlDefinition.setNamespace(model.getNamespace());
         wsdlDefinition = resolver.resolve(WSDLDefinition.class, wsdlDefinition);
         if (!wsdlDefinition.isUnresolved()) {
             model.setDefinition(wsdlDefinition);
@@ -208,7 +210,9 @@ public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
                 Service service = definition.getService(model.getServiceName());
                 model.setService(service);
                 if (service != null && model.getPortName() != null) {
-                    model.setPort(service.getPort(model.getPortName()));
+                    Port port = service.getPort(model.getPortName());
+                    model.setPort(port);
+                    model.setBinding(port.getBinding());
                 }
             }
         }
