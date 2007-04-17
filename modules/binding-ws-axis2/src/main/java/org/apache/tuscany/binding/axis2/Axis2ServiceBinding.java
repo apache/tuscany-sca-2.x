@@ -103,7 +103,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         try {
             configContext.getAxisConfiguration().addService(createAxisService(wsBinding));
         } catch (AxisFault e) {
-            throw new Axis2BindingRunTimeException(e);
+            throw new RuntimeException(e);
         }
 
         Axis2ServiceServlet servlet = new Axis2ServiceServlet();
@@ -118,7 +118,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         try {
             configContext.getAxisConfiguration().removeService(getUri().toString());
         } catch (AxisFault e) {
-            throw new Axis2BindingRunTimeException(e);
+            throw new RuntimeException(e);
         }
         super.stop();
     }

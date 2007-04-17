@@ -77,7 +77,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
         } catch (Throwable t) {
-            throw new Axis2BindingRunTimeException(t);
+            throw new InvocationTargetException(t);
         }
 
         return RESPONSE;
