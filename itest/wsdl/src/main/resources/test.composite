@@ -36,7 +36,7 @@
     <reference name="Component3a4aRef" promote="Component3a4a/comp" >
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-                    uri="http://localhost:8080/HelloWorldWebService" />
+                    uri="http://localhost:8080/HelloWorldServiceComponent" />
     </reference>
 
 <!-- the servive -->    
@@ -62,7 +62,7 @@
         <!-- interface.java interface="helloworld.HelloWorldService" / -->
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-			uri="http://localhost:8080/HelloWorldService1a2a3a4a" />
+			uri="http://localhost:8080/Component2a3a4a" />
     </reference>
     
 </composite>
