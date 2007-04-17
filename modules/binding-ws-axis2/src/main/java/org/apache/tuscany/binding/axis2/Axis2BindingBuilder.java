@@ -40,8 +40,9 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 
 /**
- * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.ReferenceBinding} configured
- * with the Axis2 binding
+ * Builds a {@link org.osoa.sca.annotations.Service} or
+ * {@link org.apache.tuscany.spi.component.ReferenceBinding} configured with the
+ * Axis2 binding
  */
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
 
@@ -51,8 +52,9 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     private ServletHostExtensionPoint servletHost;
 
     private ConfigurationContext configContext;
-//
-//    private WorkContext workContext;
+
+    //
+    // private WorkContext workContext;
 
     public Axis2BindingBuilder() {
         initAxis();
@@ -68,10 +70,17 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     @Override
-    public ReferenceBinding build(CompositeReference compositeReference, WebServiceBinding wsBinding, DeploymentContext context) throws BuilderException {
+    public ReferenceBinding build(CompositeReference compositeReference,
+                                  WebServiceBinding wsBinding,
+                                  DeploymentContext context) throws BuilderException {
 
-        // Set to use the Axiom data binding 
-        compositeReference.getInterfaceContract().getInterface().setDefaultDataBinding(OMElement.class.getName());        
+        // Set to use the Axiom data binding
+        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
+        if (contract == null) {
+            contract = compositeReference.getInterfaceContract();
+            wsBinding.setBindingInterfaceContract(contract);
+        }
+        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
 
         URI targetURI = wsBinding.getURI() != null ? URI.create(wsBinding.getURI()) : URI.create("foo");
         URI name = URI.create(context.getComponentId() + "#" + compositeReference.getName());
@@ -80,22 +89,27 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     @Override
-    public ServiceBinding build(CompositeService compositeService, WebServiceBinding wsBinding, DeploymentContext context) throws BuilderException {
+    public ServiceBinding build(CompositeService compositeService,
+                                WebServiceBinding wsBinding,
+                                DeploymentContext context) throws BuilderException {
 
-        InterfaceContract interfaceContract = compositeService.getInterfaceContract();
-        
-        // Set to use the Axiom data binding 
-        interfaceContract.getInterface().setDefaultDataBinding(OMElement.class.getName());        
+        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
+        if (contract == null) {
+            contract = compositeService.getInterfaceContract();
+            wsBinding.setBindingInterfaceContract(contract);
+        }
+        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
 
         URI uri = computeActualURI(wsBinding, BASE_URI, compositeService.getName()).normalize();
 
-        ServiceBinding serviceBinding = new Axis2ServiceBinding(uri, interfaceContract, null, wsBinding, servletHost, configContext, null);
+        ServiceBinding serviceBinding = new Axis2ServiceBinding(uri, wsBinding, servletHost, configContext, null);
 
         return serviceBinding;
     }
 
     protected void initAxis() {
-        // TODO: consider having a system component wrapping the Axis2 ConfigContext
+        // TODO: consider having a system component wrapping the Axis2
+        // ConfigContext
         try {
             this.configContext = new TuscanyAxisConfigurator().getConfigurationContext();
         } catch (AxisFault e) {
@@ -104,22 +118,25 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     /**
-     * Compute the endpoint URI based on section 2.1.1 of the WS binding spec
-     * 1. The URIs in the endpoint(s) of the referenced WSDL, which may be relative
-     * 2. The URI specified by the wsa:Address element of the wsa:EndpointReference, which may be relative
-     * 3. The explicitly stated URI in the "uri" attribute of the binding.ws element, which may be relative,
-     * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly spec 
-     * If the <binding.ws> has no wsdlElement but does have a uri attribute then the uri takes precidence
-     * over any implicitly used WSDL.
-     * @param parent 
+     * Compute the endpoint URI based on section 2.1.1 of the WS binding spec 1.
+     * The URIs in the endpoint(s) of the referenced WSDL, which may be relative
+     * 2. The URI specified by the wsa:Address element of the
+     * wsa:EndpointReference, which may be relative 3. The explicitly stated URI
+     * in the "uri" attribute of the binding.ws element, which may be relative,
+     * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly spec
+     * If the <binding.ws> has no wsdlElement but does have a uri attribute then
+     * the uri takes precidence over any implicitly used WSDL.
+     * 
+     * @param parent
      */
     protected URI computeActualURI(WebServiceBinding wsBinding, String baseURI, String componentName) {
-        
+
         // TODO: support wsa:Address
-        
-        URI wsdlURI = null;         
+
+        URI wsdlURI = null;
         if (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null) {
-            // <binding.ws> explicitly points at a wsdl port, may be a relative URI
+            // <binding.ws> explicitly points at a wsdl port, may be a relative
+            // URI
             wsdlURI = getEndpoint(wsBinding.getPort());
         }
         if (wsdlURI != null && wsdlURI.isAbsolute()) {
@@ -128,28 +145,30 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
             return URI.create(wsdlURI.toString());
         }
-        
+
         // there is no wsdl port endpoint URI or that URI is relative
-        
+
         URI bindingURI = null;
         if (wsBinding.getURI() != null) {
             bindingURI = URI.create(wsBinding.getURI());
         }
 
         if (bindingURI != null && bindingURI.isAbsolute()) {
-            // there is an absoulte uri specified on the binding: <binding.ws uri="xxx"
+            // there is an absoulte uri specified on the binding: <binding.ws
+            // uri="xxx"
             if (wsdlURI != null) {
                 return URI.create(bindingURI + "/" + wsdlURI);
             } else {
                 return bindingURI;
             }
         }
-        
-        // both the WSDL endpoint and binding uri are either unspecified or relative so
+
+        // both the WSDL endpoint and binding uri are either unspecified or
+        // relative so
         // the endpoint is based on the component uri and service name
-        
+
         URI componentURI = URI.create(componentName);
-        
+
         if (componentURI == null) { // null for references
             wsdlURI = getEndpoint(wsBinding.getPort());
             if (bindingURI != null) {
@@ -159,13 +178,16 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
         }
 
-        // TODO: TUSCANY-xxx, how to tell if component has multiple services using <binding.ws>?
-        //        boolean singleService = (parent != null) && (((Component)parent.getChild(componentURI.toString())).getInboundWires().size() == 1);
-        //        if (bindingURI == null && !singleService) {
+        // TODO: TUSCANY-xxx, how to tell if component has multiple services
+        // using <binding.ws>?
+        // boolean singleService = (parent != null) &&
+        // (((Component)parent.getChild(componentURI.toString())).getInboundWires().size()
+        // == 1);
+        // if (bindingURI == null && !singleService) {
 
-//        if (bindingURI == null) {
-//            bindingURI = URI.create(bindingName);
-//        }
+        // if (bindingURI == null) {
+        // bindingURI = URI.create(bindingName);
+        // }
 
         if (componentURI.isAbsolute()) {
             if (bindingURI == null && wsdlURI == null) {
@@ -178,7 +200,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                 return URI.create(componentURI + "/" + bindingURI + "/" + wsdlURI);
             }
         }
-                
+
         String actualURI = "";
 
         if (bindingURI == null) {
@@ -192,9 +214,9 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         }
 
         if (actualURI.endsWith("/")) {
-            actualURI = actualURI.substring(0, actualURI.length() -1);
+            actualURI = actualURI.substring(0, actualURI.length() - 1);
         }
-        
+
         return URI.create(actualURI);
     }
 
@@ -206,7 +228,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             final List wsdlPortExtensions = wsdlPort.getExtensibilityElements();
             for (final Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
-                    return URI.create(((SOAPAddress) extension).getLocationURI());
+                    return URI.create(((SOAPAddress)extension).getLocationURI());
                 }
             }
         }

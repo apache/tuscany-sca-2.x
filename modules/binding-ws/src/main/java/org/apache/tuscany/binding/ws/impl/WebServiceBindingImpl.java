@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.impl.BindingImpl;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 
 /**
@@ -46,6 +47,8 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     private String endpointName;
     private WSDLDefinition wsdlDefinition;
     private String wsdlNamespace;
+    
+    private InterfaceContract bindingInterfaceContract;
     
     public String getLocation() {
         return location;
@@ -170,6 +173,14 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
 
     public void setNamespace(String namespace) {
         this.wsdlNamespace = namespace;
+    }
+
+    public InterfaceContract getBindingInterfaceContract() {
+        return bindingInterfaceContract;
+    }
+
+    public void setBindingInterfaceContract(InterfaceContract bindingInterfaceContract) {
+        this.bindingInterfaceContract = bindingInterfaceContract;
     }
 
 }

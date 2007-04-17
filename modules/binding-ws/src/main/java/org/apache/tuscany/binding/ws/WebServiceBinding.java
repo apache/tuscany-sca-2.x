@@ -23,6 +23,7 @@ import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 
 
@@ -172,4 +173,7 @@ public interface WebServiceBinding extends Binding {
      * @param namspace the WSDL namspace
      */
     void setNamespace(String namespace);
+    
+    InterfaceContract getBindingInterfaceContract();
+    void setBindingInterfaceContract(InterfaceContract bindingInterfaceContract);
 }
