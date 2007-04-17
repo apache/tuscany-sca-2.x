@@ -56,7 +56,7 @@ public class Axis2OneWayTargetInvoker extends Axis2TargetInvoker {
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
         } catch (Throwable t) {
-            throw new Axis2BindingRunTimeException(t);
+            throw new InvocationTargetException(t);
         }
     }
 
