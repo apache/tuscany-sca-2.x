@@ -57,6 +57,9 @@ public abstract class AbstractHelloWorldOMTestCase extends TestCase {
         SCARuntime.stop();
     }
     
-    abstract String getCompositeName();
+    protected String getCompositeName() {
+        String className = this.getClass().getName();
+        return className.substring(0, className.length() - 8).replace('.', '/') + ".composite";
+    }
 
 }

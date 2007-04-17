@@ -19,11 +19,6 @@
 
 package org.apache.tuscany.binding.axis2.itests.endpoints;
 
-public class Endpoint1TestCase extends AbstractHelloWorldOMTestCase {
-
-    @Override
-    String getCompositeName() {
-        return "org/apache/tuscany/binding/axis2/itests/endpoints/endpoint1.composite";
-    }
-
+public class WSDLExplicitURITestCase extends AbstractHelloWorldOMTestCase {
+    // super class does it all getting composite based on this class name
 }
