@@ -23,7 +23,8 @@
            
     <!-- 
     exposing a component with a WS binding, endpoint should be <componentURI>/<serviceName>
-    so for this composite: http://localhost:8080/HelloWorldService/helloWorld 
+    unless the component has just a single service in which case its just <componentURI>
+    so for this composite: http://localhost:8080/HelloWorldService 
     -->      
 
     <service name="helloWorld" promote="HelloWorldService">
@@ -43,7 +44,7 @@
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld-om#wsdl.binding(HelloWorldSoapBinding)"
-                    uri="http://localhost:8080/helloWorld"/>
+                    uri="http://localhost:8080/HelloWorldService"/>
     </reference>
 
 </composite>
