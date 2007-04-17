@@ -31,7 +31,6 @@ import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.SCABinding;
-import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContract;
