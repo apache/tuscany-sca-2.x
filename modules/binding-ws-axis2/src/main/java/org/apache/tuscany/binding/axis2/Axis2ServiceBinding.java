@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import javax.wsdl.Definition;
-import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
@@ -48,7 +47,6 @@ import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
-import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -132,13 +130,14 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
     private AxisService createAxisService(WebServiceBinding wsBinding) throws AxisFault {
         Definition definition = wsBinding.getWSDLDefinition().getDefinition();
-        WebServicePortMetaData wsdlPortInfo =
-            new WebServicePortMetaData(definition, wsBinding.getPort(), null, false);
 
-        // TODO investigate if this is 20 wsdl what todo?
-        WSDLToAxisServiceBuilder builder =
-            new WSDL11ToAxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort()
-                .getName());
+        // WSDLToAxisServiceBuilder only uses the service and port to find the wsdl4J Binding
+        // An SCA service with binding.ws does not require a service or port so we may not have these
+        // but 
+
+        QName wsdlServiceName = wsBinding.getServiceName();
+        String wsdlPortName = wsBinding.getPortName();
+        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, wsdlServiceName, wsdlPortName );
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
@@ -156,14 +155,10 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         Parameter userWSDL = new Parameter("useOriginalwsdl", "true");
         axisService.addParameter(userWSDL);
 
-        PortType wsdlPortType = wsdlPortInfo.getPortType();
-        for (Object o : wsdlPortType.getOperations()) {
-            javax.wsdl.Operation wsdlOperation = (javax.wsdl.Operation) o;
-            String operationName = wsdlOperation.getName();
-
-            Operation op = getOperation(operationName);
+        for (Iterator i = axisService.getOperations(); i.hasNext();) {
+            AxisOperation axisOp = (AxisOperation) i.next();
+            Operation op = getOperation(axisOp);
             if (op != null) {
-                AxisOperation axisOp = axisService.getOperation(new QName(definition.getTargetNamespace(), operationName));
 
                 if (op.isNonBlocking()) {
                     axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_ONLY);
@@ -186,7 +181,8 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         return axisService;
     }
 
-    protected Operation getOperation(String operationName) {
+    protected Operation getOperation(AxisOperation axisOp) {
+        String operationName = axisOp.getName().getLocalPart();
         for (Operation op : serviceContract.getInterface().getOperations()) {
            if (op.getName().equalsIgnoreCase(operationName)) {
                return op;
@@ -283,16 +279,8 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
      * Get the Method from an interface matching the WSDL operation name
      */
     protected Method getMethod(Class<?> serviceInterface, String operationName) throws BuilderConfigException {
-        // Note: this doesn't support overloaded operations
-        Method[] methods = serviceInterface.getMethods();
-        for (Method m : methods) {
-            if (m.getName().equals(operationName)) {
-                return m;
-            }
-            // tolerate WSDL with capatalized operation name
-            StringBuilder sb = new StringBuilder(operationName);
-            sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
-            if (m.getName().equals(sb.toString())) {
+        for (Method m : serviceInterface.getMethods()) {
+            if (m.getName().equalsIgnoreCase(operationName)) {
                 return m;
             }
         }
