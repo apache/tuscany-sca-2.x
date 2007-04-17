@@ -174,7 +174,12 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         
         // with multiple services the default binding URI is the binding name
         if (bindingURI == null && component.getServices().size() > 1) {
-            bindingURI = URI.create(wsBinding.getName());
+            // if the binding doesn't have a name use the name of the service (assumption, not in spec)
+            if (wsBinding.getName() != null) {
+                bindingURI = URI.create(wsBinding.getName());
+            } else {
+                bindingURI = URI.create(compositeService.getName());
+            }
         }
 
         if (bindingURI != null) {
