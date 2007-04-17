@@ -41,11 +41,11 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
     public Axis2AsyncTargetInvoker(ServiceClient serviceClient,
                                    QName wsdlOperationName,
                                    Options options,
-                                   SOAPFactory soapFactory, WorkContext workContext) {
-        super(serviceClient, wsdlOperationName, options, soapFactory, workContext);
+                                   SOAPFactory soapFactory) {
+        super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
         throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
     }
 
@@ -53,7 +53,7 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
         throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
-            OperationClient operationClient = createOperationClient(args);
+            OperationClient operationClient = createOperationClient(args, null);
             callbackInvoker.setCallbackRoutingChain(callbackRoutingChain);
             Axis2ReferenceCallback callback = new Axis2ReferenceCallback(callbackInvoker);
             operationClient.setCallback(callback);
@@ -76,17 +76,6 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
         }
-    }
-
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-//            Object resp = invokeTarget(msg.getBody(), msg.getCallbackRoutingChain()); // TODO: getCallbackRoutingChain no longer exists
-            Object resp = invokeTarget(msg.getBody(), null);
-            msg.setBody(resp);
-        } catch (Throwable e) {
-            msg.setBodyWithFault(e);
-        }
-        return msg;
     }
 
     public void setCallbackTargetInvoker(Axis2ReferenceCallbackTargetInvoker callbackInvoker) {

@@ -156,11 +156,11 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
 
         Axis2TargetInvoker invoker;
         if (hasCallback) {
-            invoker = new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
+            invoker = new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         } else if (isOneWay) {
-            invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
+            invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         } else {
-            invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
+            invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         }
 
         return invoker;

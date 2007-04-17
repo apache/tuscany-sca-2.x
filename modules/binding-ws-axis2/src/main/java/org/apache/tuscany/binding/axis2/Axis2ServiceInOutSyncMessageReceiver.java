@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.AxisFault;
@@ -25,6 +27,7 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
 
@@ -32,13 +35,12 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
 
     private Axis2ServiceBinding axis2Service;
 
+    public Axis2ServiceInOutSyncMessageReceiver() {
+    }
+
     public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBinding service, Operation operation) {
         this.axis2Service = service;
         this.operation = operation;
-    }
-
-    public Axis2ServiceInOutSyncMessageReceiver() {
-
     }
 
     @Override
@@ -58,13 +60,13 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             outMC.setEnvelope(soapEnvelope);
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
-//        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//            Throwable t = e.getCause();
-//            if (t instanceof Exception) {
-//                throw AxisFault.makeFault((Exception)t);
-//            }
-//            throw new InvocationRuntimeException(e);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            Throwable t = e.getCause();
+            if (t instanceof Exception) {
+                throw AxisFault.makeFault((Exception)t);
+            }
+            throw new InvocationRuntimeException(e);
         } catch (Exception e) {
             e.printStackTrace();
             throw AxisFault.makeFault(e);

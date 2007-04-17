@@ -22,37 +22,33 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.namespace.QName;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
 
 public class Axis2OneWayTargetInvoker extends Axis2TargetInvoker {
-
-    protected static final OMElement RESPONSE = null;
 
     public Axis2OneWayTargetInvoker(ServiceClient serviceClient,
                                     QName wsdlOperationName,
                                     Options options,
-                                    SOAPFactory soapFactory, WorkContext workContext) {
+                                    SOAPFactory soapFactory) {
 
-        super(serviceClient, wsdlOperationName, options, soapFactory, workContext);
+        super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
-            OperationClient operationClient = createOperationClient(args);
 
+            OperationClient operationClient = createOperationClient(args, workContext);
             operationClient.execute(false);
 
             // REVIEW it seems ok to return null
-            return RESPONSE;
+            return null;
+
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
         } catch (Throwable t) {
@@ -60,13 +56,4 @@ public class Axis2OneWayTargetInvoker extends Axis2TargetInvoker {
         }
     }
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            Object resp = invokeTarget(msg.getBody(), NONE);
-            msg.setBody(resp);
-        } catch (Throwable e) {
-            msg.setBodyWithFault(e);
-        }
-        return msg;
-    }
 }
