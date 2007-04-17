@@ -23,68 +23,68 @@
    
     <service name="HelloWorldService1a2a3a4a" promote="Component2a3a4a" >
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1a2a3a4a"/>
     </service>
     <service name="HelloWorldService1a2a3a4b" promote="Component2a3a4b" >
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1a2a3a4b"/>
     </service>
     <service name="HelloWorldService1a2a3b4a" promote="Component2a3b4a" >
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1a2a3b4a"/>
     </service>
     <service name="HelloWorldService1a2a3b4b" promote="Component2a3b4b" >
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1a2a3b4b"/>
     </service>
     <service name="HelloWorldService1a2b3a4a" promote="Component2b3a4a" >
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1a2b3a4a"/>
     </service>
     <service name="HelloWorldService1a2b3a4b" promote="Component2b3a4b" >
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1a2b3a4b"/>
     </service>
     <service name="HelloWorldService1a2b3b4a" promote="Component2b3b4a" >
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1a2b3b4a"/>
     </service>
     <service name="HelloWorldService1a2b3b4b" promote="Component2b3b4b" >
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1a2b3b4b"/>
     </service>
 
     <service name="HelloWorldService1b2a3a4a" promote="Component2a3a4a" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1b2a3a4a"/>
     </service>
     <service name="HelloWorldService1b2a3a4b" promote="Component2a3a4b" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1b2a3a4b"/>
     </service>
     <service name="HelloWorldService1b2a3b4a" promote="Component2a3b4a" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1b2a3b4a"/>
     </service>
     <service name="HelloWorldService1b2a3b4b" promote="Component2a3b4b" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1b2a3b4b"/>
     </service>
     <service name="HelloWorldService1b2b3a4a" promote="Component2b3a4a" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1b2b3a4a"/>
     </service>
     <service name="HelloWorldService1b2b3a4b" promote="Component2b3a4b" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1b2b3a4b"/>
     </service>
     <service name="HelloWorldService1b2b3b4a" promote="Component2b3b4a" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1b2b3b4a"/>
     </service>
     <service name="HelloWorldService1b2b3b4b" promote="Component2b3b4b" >
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldService1b2b3b4b"/>
     </service>
 
     <component name="Component2a3a4a">
@@ -167,7 +167,7 @@
     <service name="HelloWorldWebService"  promote="HelloWorldServiceComponent" >
         <!-- interface.java interface="helloworld.HelloWorldService" / -->
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"  />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="../HelloWorldWebService"/>
     </service>
 
     <component name="HelloWorldServiceComponent">
