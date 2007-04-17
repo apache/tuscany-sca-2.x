@@ -19,8 +19,13 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.net.URI;
+import java.util.List;
 
+import javax.wsdl.Binding;
+import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
+import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -33,8 +38,6 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
-import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
-import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.xml.WebServiceConstants;
 import org.apache.tuscany.interfacedef.Operation;
@@ -49,13 +52,13 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class Axis2ReferenceBinding extends ReferenceBindingExtension {
 
     private WorkContext workContext;
-    private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
+    private WebServiceBinding wsBinding;
 
     public Axis2ReferenceBinding(URI name, URI targetUri, WebServiceBinding wsBinding) {
         super(name, targetUri);
-        this.wsPortMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition().getDefinition(), wsBinding.getPort(), wsBinding.getURI(), false);
-        this.serviceClient = createServiceClient(wsBinding.getWSDLDefinition().getDefinition(), wsPortMetaData);
+        this.wsBinding = wsBinding;
+        this.serviceClient = createServiceClient();
     }
 
     public QName getBindingType() {
@@ -72,7 +75,6 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
             Axis2AsyncTargetInvoker asyncInvoker =
                 (Axis2AsyncTargetInvoker) createOperationInvoker(serviceClient,
                     operation,
-                    wsPortMetaData,
                     true,
                     false);
             // FIXME: This makes the (BIG) assumption that there is only one
@@ -91,7 +93,7 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
 
             invoker = asyncInvoker;
         } else {
-            invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false, operation.isNonBlocking());
+            invoker = createOperationInvoker(serviceClient, operation, false, operation.isNonBlocking());
         }
         return invoker;
     }
@@ -111,13 +113,14 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
     /**
      * Create an Axis2 ServiceClient
      */
-    protected ServiceClient createServiceClient(Definition wsdlDefinition, WebServicePortMetaData wsPortMetaData) {
+    protected ServiceClient createServiceClient() {
         try {
 
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
-            QName serviceQName = wsPortMetaData.getServiceName();
-            String portName = wsPortMetaData.getPortName().getLocalPart();
+            QName serviceQName = wsBinding.getServiceName();
+            String portName = wsBinding.getPortName();
+            Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
             AxisService axisService = AxisService.createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
 
             return new ServiceClient(configurationContext, axisService);
@@ -131,44 +134,66 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
      * Create and configure an Axis2TargetInvoker for each operations
      */
     private Axis2TargetInvoker createOperationInvoker(ServiceClient serviceClient,
-                                                      Operation m,
-                                                      WebServicePortMetaData wsPortMetaData,
+                                                      Operation operation,
                                                       boolean hasCallback,
                                                       boolean isOneWay) {
-        SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
-        String portTypeNS = wsPortMetaData.getPortTypeName().getNamespaceURI();
-
-        String methodName = m.getName();
-
-        WebServiceOperationMetaData operationMetaData = wsPortMetaData.getOperationMetaData(methodName);
 
         Options options = new Options();
-        options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));
+        options.setTo(getPortLocationEPR());
         options.setProperty(HTTPConstants.CHUNKED, Boolean.FALSE);
 
-        String wsdlOperationName = operationMetaData.getBindingOperation().getOperation().getName();
+        String operationName = operation.getName();
 
-        String soapAction = wsPortMetaData.getOperationMetaData(wsdlOperationName).getSOAPAction();
+        String soapAction = getSOAPAction(operationName);
         if (soapAction != null && soapAction.length() > 1) {
             options.setAction(soapAction);
         }
 
         options.setTimeOutInMilliSeconds(5 * 60 * 1000);
 
-        QName wsdlOperationQName = new QName(portTypeNS, wsdlOperationName);
+        SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
+        QName wsdlOperationQName = new QName(wsBinding.getNamespace(), operationName);
 
         Axis2TargetInvoker invoker;
         if (hasCallback) {
-            invoker =
-                new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
+            invoker = new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         } else if (isOneWay) {
-            invoker =
-                new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
+            invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         } else {
             invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         }
 
         return invoker;
     }
+    
+    protected EndpointReference getPortLocationEPR() {
+        String ep = wsBinding.getURI();
+        if (ep == null && wsBinding.getPort() != null) {
+            List wsdlPortExtensions = wsBinding.getPort().getExtensibilityElements();
+            for (final Object extension : wsdlPortExtensions) {
+                if (extension instanceof SOAPAddress) {
+                    ep = ((SOAPAddress) extension).getLocationURI();
+                    break;
+                }
+            }
+        }
+        return new EndpointReference(ep);
+    }
 
+    protected String getSOAPAction(String operationName) {
+        Binding binding = wsBinding.getBinding();
+        if (binding != null) {
+            for (Object o : binding.getBindingOperations()) {
+                BindingOperation bop = (BindingOperation) o;
+                if (bop.getName().equalsIgnoreCase(operationName)) {
+                    for (Object o2 : bop.getExtensibilityElements()) {
+                        if (o2 instanceof SOAPOperation) {
+                            return ((SOAPOperation)o2).getSoapActionURI();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }
