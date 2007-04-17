@@ -69,8 +69,6 @@ import org.osoa.sca.annotations.Destroy;
  * An implementation of a {@link ServiceBindingExtension} configured with the Axis2 binding
  */
 public class Axis2ServiceBinding extends ServiceBindingExtension {
-
-    private InterfaceContract serviceContract;
     private ConfigurationContext configContext;
     private WebServiceBinding wsBinding;
     private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
@@ -82,8 +80,6 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     private static final QName BINDING_WS = new QName(SCA_NS, "binding.ws");
 
     public Axis2ServiceBinding(URI uri,
-                               InterfaceContract serviceContract,
-                               InterfaceContract serviceBindingContract,
                                WebServiceBinding wsBinding,
                                ServletHostExtensionPoint servletHost,
                                ConfigurationContext configContext,
@@ -91,8 +87,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
         super(uri);
 
-        this.serviceContract = serviceContract;
-        this.bindingServiceContract = serviceBindingContract;
+        this.bindingServiceContract = wsBinding.getBindingInterfaceContract();
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.configContext = configContext;
@@ -167,7 +162,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
                 }
 
                 MessageReceiver msgrec = null;
-                if (serviceContract.getCallbackInterface() != null) {
+                if (bindingServiceContract.getCallbackInterface() != null) {
                     msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op);
                 } else if (op.isNonBlocking()) {
                     msgrec = new Axis2ServiceInMessageReceiver(this, op);
@@ -183,7 +178,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
     protected Operation getOperation(AxisOperation axisOp) {
         String operationName = axisOp.getName().getLocalPart();
-        for (Operation op : serviceContract.getInterface().getOperations()) {
+        for (Operation op : bindingServiceContract.getInterface().getOperations()) {
            if (op.getName().equalsIgnoreCase(operationName)) {
                return op;
            }
@@ -370,7 +365,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     }
 
     boolean isConversational() {
-        return serviceContract.getInterface().isConversational();
+        return bindingServiceContract.getInterface().isConversational();
     }
 
 }

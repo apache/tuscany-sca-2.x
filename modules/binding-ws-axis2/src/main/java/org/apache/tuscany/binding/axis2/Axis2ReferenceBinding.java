@@ -59,6 +59,7 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
         super(name, targetUri);
         this.wsBinding = wsBinding;
         this.serviceClient = createServiceClient();
+        this.bindingServiceContract = wsBinding.getBindingInterfaceContract();
     }
 
     public QName getBindingType() {

@@ -51,5 +51,11 @@
             <artifactId>tuscany-interface-wsdl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>                
     </dependencies>
 </project>

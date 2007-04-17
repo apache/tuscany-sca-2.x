@@ -91,7 +91,11 @@ public class DeployerImpl implements Deployer {
     private WorkScheduler workScheduler;
     private WorkContext workContext;
 
-    public DeployerImpl(XMLInputFactory xmlFactory, Builder builder, ComponentManager componentManager, WorkScheduler workScheduler, WorkContext workContext) {
+    public DeployerImpl(XMLInputFactory xmlFactory,
+                        Builder builder,
+                        ComponentManager componentManager,
+                        WorkScheduler workScheduler,
+                        WorkContext workContext) {
         this.xmlFactory = xmlFactory;
         this.builder = builder;
         this.componentManager = componentManager;
@@ -205,12 +209,11 @@ public class DeployerImpl implements Deployer {
             }
         }
     }
-    
-    public void configureProperties(Component source,
-                                    org.apache.tuscany.assembly.Component definition) throws BuilderException {
+
+    public void configureProperties(Component source, org.apache.tuscany.assembly.Component definition)
+        throws BuilderException {
         if (source == null) {
-            throw new ComponentNotFoundException("Source not found", URI.create(definition
-                .getName()));
+            throw new ComponentNotFoundException("Source not found", URI.create(definition.getName()));
         }
 
         for (ComponentProperty property : definition.getProperties()) {
@@ -219,7 +222,6 @@ public class DeployerImpl implements Deployer {
             }
         }
     }
-
 
     public void connect(Component source, org.apache.tuscany.assembly.Component definition) throws WiringException {
 
@@ -240,7 +242,10 @@ public class DeployerImpl implements Deployer {
                 // FIXME: Assume we only have one binding
                 ReferenceBinding binding = target.getReferenceBindings().get(0);
                 URI targetUri = binding.getUri();
-                InterfaceContract contract = compositeReference.getInterfaceContract();
+                InterfaceContract contract = binding.getBindingInterfaceContract();
+                if (contract == null) {
+                    contract = compositeReference.getInterfaceContract();
+                }
                 QName type = binding.getBindingType();
                 URI sourceUri = URI.create(source.getUri() + "#" + refName);
                 Wire wire;
@@ -323,14 +328,18 @@ public class DeployerImpl implements Deployer {
         }
         URI sourceURI = service.getUri();
         URI targetURI = URI.create(target.getUri() + "#" + definition.getPromotedService().getName());
-        InterfaceContract sourceContract = definition.getInterfaceContract();
         InterfaceContract targetContract = definition.getPromotedService().getService().getInterfaceContract();
-        if (sourceContract == null) {
-            sourceContract = targetContract;
-        }
 
         // TODO if no binding, do local
         for (ServiceBinding binding : service.getServiceBindings()) {
+            InterfaceContract sourceContract = binding.getBindingInterfaceContract();
+            if (sourceContract == null) {
+                sourceContract = definition.getInterfaceContract();
+            }
+            if (sourceContract == null) {
+                sourceContract = targetContract;
+            }
+
             Wire wire = createWire(sourceURI, targetURI, sourceContract, targetContract, binding.getBindingType());
             binding.setWire(wire);
             if (postProcessorRegistry != null) {
@@ -356,10 +365,10 @@ public class DeployerImpl implements Deployer {
      * @throws IncompatibleInterfaceContractException
      */
     private Wire createWire(URI sourceURI,
-                              URI targetUri,
-                              InterfaceContract sourceContract,
-                              InterfaceContract targetContract,
-                              QName bindingType) throws IncompatibleInterfaceContractException {
+                            URI targetUri,
+                            InterfaceContract sourceContract,
+                            InterfaceContract targetContract,
+                            QName bindingType) throws IncompatibleInterfaceContractException {
         Wire wire = new WireImpl(bindingType);
         wire.setSourceContract(sourceContract);
         wire.setTargetContract(targetContract);
@@ -370,10 +379,11 @@ public class DeployerImpl implements Deployer {
         for (Operation operation : sourceContract.getInterface().getOperations()) {
             Operation targetOperation = mapper.map(targetContract.getInterface(), operation);
             InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-               /* lresende */
-               if (operation.isNonBlocking()) { 
-                   chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext)); }
-               /* lresende */
+            /* lresende */
+            if (operation.isNonBlocking()) {
+                chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+            }
+            /* lresende */
             chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(chain);
 
@@ -382,10 +392,11 @@ public class DeployerImpl implements Deployer {
             for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
                 Operation targetOperation = mapper.map(targetContract.getCallbackInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                   /* lresende */
-                   if (operation.isNonBlocking()) { 
-                       chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext)); }
-                   /* lresende */
+                /* lresende */
+                if (operation.isNonBlocking()) {
+                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                }
+                /* lresende */
                 chain.addInterceptor(new InvokerInterceptor());
                 wire.addCallbackInvocationChain(chain);
             }
