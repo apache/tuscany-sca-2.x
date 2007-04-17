@@ -160,4 +160,16 @@ public interface WebServiceBinding extends Binding {
      * @param binding the WSDL binding
      */
     void setDefinition(WSDLDefinition wsdlDefinition);
+
+    /**
+     * Returns the WSDL namespace.
+     * @return the WSDL namespace
+     */
+    String getNamespace();
+    
+    /**
+     * Sets the WSDL namespace
+     * @param namspace the WSDL namspace
+     */
+    void setNamespace(String namespace);
 }

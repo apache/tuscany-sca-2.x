@@ -45,6 +45,7 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     private QName serviceName;
     private String endpointName;
     private WSDLDefinition wsdlDefinition;
+    private String wsdlNamespace;
     
     public String getLocation() {
         return location;
@@ -161,6 +162,14 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
 
     public void setDefinition(WSDLDefinition wsdlDefinition) {
         this.wsdlDefinition = wsdlDefinition;
+    }
+
+    public String getNamespace() {
+        return wsdlNamespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.wsdlNamespace = namespace;
     }
 
 }
