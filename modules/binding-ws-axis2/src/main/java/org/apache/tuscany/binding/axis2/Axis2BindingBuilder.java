@@ -139,13 +139,12 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             return URI.create(wsdlURI.toString());
         }
         
-        // there is no wsdl port endpoint URI or that URI is relative
+        // either there is no wsdl port endpoint URI or that URI is relative
         
         URI bindingURI = null;
         if (wsBinding.getURI() != null) {
             bindingURI = URI.create(wsBinding.getURI());
         }
-
         if (bindingURI != null && bindingURI.isAbsolute()) {
             // there is an absoulte uri specified on the binding: <binding.ws uri="xxx"
             if (wsdlURI != null) {
@@ -157,7 +156,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         }
         
         // both the WSDL endpoint and binding uri are either unspecified or relative so
-        // the endpoint is based on the component uri and service name
+        // the endpoint is based on the component name and service binding URI
  
         // TODO: hack to get the component for the service
         SCABinding scaBinding = compositeService.getPromotedService().getBinding(SCABinding.class);
@@ -181,10 +180,12 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
         }
 
+        // add any relative binding URI
         if (bindingURI != null) {
             actualURI += "/" + bindingURI;
          }
 
+        // add any relative WSDL port URI
         if (wsdlURI != null) {
             actualURI += "/" + wsdlURI.toString();
         }
