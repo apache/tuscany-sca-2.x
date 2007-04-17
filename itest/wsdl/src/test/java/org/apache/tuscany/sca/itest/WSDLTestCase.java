@@ -36,43 +36,41 @@ import org.osoa.sca.CurrentCompositeContext;
  */
 public class WSDLTestCase extends TestCase {
 
-    public void testClient1a2a3a4a()  {
-//        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3a4a");
-//        assertEquals("Hi petra", client.getGreetings("petra"));
-//        HelloWorldService client1 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3a4b");
-//        assertEquals("Hi petra", client1.getGreetings("petra"));
-//        HelloWorldService client2 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3b4a");
-//        assertEquals("Hi petra", client2.getGreetings("petra"));
-//        HelloWorldService client3 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3b4b");
-//        assertEquals("Hi petra", client3.getGreetings("petra"));
-//        HelloWorldService client4 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3a4a");
-//        assertEquals("Hi petra", client4.getGreetings("petra"));
-//        HelloWorldService client5 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3a4b");
-//        assertEquals("Hi petra", client5.getGreetings("petra"));
-//        HelloWorldService client6 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3b4a");
-//        assertEquals("Hi petra", client6.getGreetings("petra"));
-//        HelloWorldService client7 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3b4b");
-//        assertEquals("Hi petra", client7.getGreetings("petra"));
-//        HelloWorldService client8 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3a4a");
-//        assertEquals("Hi petra", client8.getGreetings("petra"));
+    public void testAllClients()  {
+        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3a4a");
+        assertEquals("Hi petra", client.getGreetings("petra"));
+        HelloWorldService client1 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3a4b");
+        assertEquals("Hi petra", client1.getGreetings("petra"));
+        HelloWorldService client2 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3b4a");
+        assertEquals("Hi petra", client2.getGreetings("petra"));
+        HelloWorldService client3 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3b4b");
+        assertEquals("Hi petra", client3.getGreetings("petra"));
+        HelloWorldService client4 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3a4a");
+        assertEquals("Hi petra", client4.getGreetings("petra"));
+        HelloWorldService client5 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3a4b");
+        assertEquals("Hi petra", client5.getGreetings("petra"));
+        HelloWorldService client6 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3b4a");
+        assertEquals("Hi petra", client6.getGreetings("petra"));
+        HelloWorldService client7 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3b4b");
+        assertEquals("Hi petra", client7.getGreetings("petra"));
+        HelloWorldService client8 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3a4a");
+        assertEquals("Hi petra", client8.getGreetings("petra"));
         HelloWorldService client9 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3a4b");
         assertEquals("Hi petra", client9.getGreetings("petra"));
-//        HelloWorldService client10 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3b4a");
-//        assertEquals("Hi petra", client10.getGreetings("petra"));
+        HelloWorldService client10 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3b4a");
+        assertEquals("Hi petra", client10.getGreetings("petra"));
         HelloWorldService client11 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3b4b");
         assertEquals("Hi petra", client11.getGreetings("petra"));
-//TODO: TUSCANY-1124 DataBindingInterceptor incorrect when binding.ws wired to java component using interface.wsdl 
-//     HelloWorldService client12 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3a4a");
-//      assertEquals("Hi petra", client12.getGreetings("petra"));
-      HelloWorldService client13 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3a4b");
-      assertEquals("Hi petra", client13.getGreetings("petra"));
-//      HelloWorldService client14 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3b4a");
-//      assertEquals("Hi petra", client14.getGreetings("petra"));
-      HelloWorldService client15 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3b4b");
-      assertEquals("Hi petra", client15.getGreetings("petra"));
+        HelloWorldService client12 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3a4a");
+        assertEquals("Hi petra", client12.getGreetings("petra"));
+        HelloWorldService client13 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3a4b");
+        assertEquals("Hi petra", client13.getGreetings("petra"));
+        HelloWorldService client14 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3b4a");
+        assertEquals("Hi petra", client14.getGreetings("petra"));
+        HelloWorldService client15 = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3b4b");
+        assertEquals("Hi petra", client15.getGreetings("petra"));
     }
 
-    // TODO: TUSCANY-1125, Testcases fail with out of heap space if too many individual test run in one testcase 
 //    public void testClient1a2a3a4a()  {
 //        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3a4a");
 //        assertEquals("Hi petra", client.getGreetings("petra"));
