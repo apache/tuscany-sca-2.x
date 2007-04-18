@@ -29,7 +29,7 @@
     <artifactId>tuscany-itest-databindings-common</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Common elements of Databindings Integration Tests</name>
+    <name>Apache Tuscany Common elements of Databindings Integration Tests</name>
 
     <repositories>
         <repository>
