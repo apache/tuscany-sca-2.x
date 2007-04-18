@@ -17,8 +17,8 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<wsdl:definitions targetNamespace="http://apache.org/tuscany/sca/itest/databinding/services"
-                  xmlns:tns="http://apache.org/tuscany/sca/itest/databinding/services" 
+<wsdl:definitions targetNamespace="http://apache.org/tuscany/sca/itest/databinding/services/jaxb"
+                  xmlns:tns="http://apache.org/tuscany/sca/itest/databinding/services/jaxb" 
                   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
                   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
@@ -29,7 +29,7 @@
 #foreach($file in $fileList)
             xmlns:$file.getPrefix()="$file.getNamespace()"
 #end        
-            targetNamespace="http://apache.org/tuscany/sca/itest/databinding/services" 
+            targetNamespace="http://apache.org/tuscany/sca/itest/databinding/services/jaxb" 
             elementFormDefault="qualified">
 
 #foreach($file in $fileList)

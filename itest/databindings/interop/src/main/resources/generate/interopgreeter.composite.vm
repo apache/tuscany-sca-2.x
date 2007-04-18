@@ -22,83 +22,57 @@
 	xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
     name="SDOGreeterService">
 
-    <!-- SDO factory classes -->
-<!--    
+    <!-- SDO factory classes -->  
     #foreach( $file in $fileList )
     <dbsdo:import.sdo factory="$file.getJavaPackage().$file.getFactory()"/>
-    #end 
--->
-    <!-- 
-       manually inserted bcause the generator for interop 
-       is set to generate JAXB methods not SDO methods. Need 
-       to switch this round so the client is SDO based
-     -->
-    <dbsdo:import.sdo factory="org.apache.tuscany.sca.itest.databinding.types.TypesFactory"/>
-    <dbsdo:import.sdo factory="org.apache.tuscany.interop.InteropFactory"/>
-    
+    #end   
     
     <!-- Default binding test -->
-    <component name="DefaultGreeterServiceClient">
-        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
-        <reference name="greeterService">SDODefaultGreeterServiceClient</reference>
-    </component>
-
     <component name="SDODefaultGreeterServiceClient">
         <implementation.java class="org.apache.tuscany.sca.itest.sdodatabinding.GreeterServiceClientImpl" />
-        <reference name="greeterService">JAXBGreeterService</reference>
-    </component>
+        <reference name="greeterService" target="JAXBDefaultGreeterServiceClient"/>
+    </component> 
+        
+    <component name="JAXBDefaultGreeterServiceClient">
+        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
+        <reference name="greeterService" target="SDODefaultGreeterServiceComponent"/>
+    </component> 
 
-    <component name="JAXBGreeterService">
-        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceImpl" />
+    <component name="SDODefaultGreeterServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.sdodatabinding.GreeterServiceImpl" />
     </component>
 
     <!-- WS binding test -->
-    <component name="WSGreeterServiceClient">
-        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
-        <reference name="greeterService">SDOGreeterServiceWSRef</reference>
-    </component>
-
-    <reference name="SDOGreeterServiceWSRef">
-        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"
-            wsdli:wsdlLocation="http://apache.org/tuscany/sca/itest/databinding/services wsdl/SDOGreeter.wsdl" />
-        <binding.ws
-            endpoint="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.endpoint(GreeterService/GreeterPort)"
-            location="wsdl/SDOGreeter.wsdl" />
-    </reference>  
-
-    <service name="SDOGreeterServiceWebServiceBinding">
-        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"
-            wsdli:wsdlLocation="http://apache.org/tuscany/sca/itest/databinding/services wsdl/SDOGreeter.wsdl" />
-        <binding.ws
-            endpoint="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.endpoint(GreeterService/GreeterPort)"
-            location="wsdl/SDOGreeter.wsdl" />
-        <reference>SDOWSGreeterServiceClient</reference>
-    </service>
-
     <component name="SDOWSGreeterServiceClient">
         <implementation.java class="org.apache.tuscany.sca.itest.sdodatabinding.GreeterServiceClientImpl" />
-        <reference name="greeterService">JAXBGreeterServiceWSRef</reference>
     </component>
 
-    <reference name="JAXBGreeterServiceWSRef">
-        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"
-            wsdli:wsdlLocation="http://apache.org/tuscany/sca/itest/databinding/services wsdl/JAXBGreeter.wsdl" />
-        <binding.ws
-            endpoint="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.endpoint(GreeterService/GreeterPort)"
-            location="wsdl/JAXBGreeter.wsdl" />
+    <reference name="JAXBWSGreeterServiceReference" promote="SDOWSGreeterServiceClient/greeterService">
+        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services/jaxb#wsdl.interface(GreeterPortType)"/>
+        <binding.ws wsdlElement="http://apache.org/tuscany/sca/itest/databinding/services/jaxb#wsdl.port(GreeterService/GreeterPort)"/>
     </reference>  
 
-    <service name="JAXBGreeterServiceWebServiceBinding">
-        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"
-            wsdli:wsdlLocation="http://apache.org/tuscany/sca/itest/databinding/services wsdl/JAXBGreeter.wsdl" />
-        <binding.ws
-            endpoint="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.endpoint(GreeterService/GreeterPort)"
-            location="wsdl/JAXBGreeter.wsdl" />
-        <reference>JAXBWSGreeterService</reference>
+    <service name="JAXBWSGreeterService" promote="JAXBWSGreeterServiceClient">
+        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services/jaxb#wsdl.interface(GreeterPortType)"/>
+        <binding.ws wsdlElement="http://apache.org/tuscany/sca/itest/databinding/services/jaxb#wsdl.port(GreeterService/GreeterPort)"/>
     </service>
 
-    <component name="JAXBWSGreeterService">
-        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceImpl" />
+    <component name="JAXBWSGreeterServiceClient">
+        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
+    </component>
+
+    <reference name="SDOWSGreeterServiceReference" promote="JAXBWSGreeterServiceClient/greeterService">
+        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services/sdo#wsdl.interface(GreeterPortType)"/>
+        <binding.ws wsdlElement="http://apache.org/tuscany/sca/itest/databinding/services/sdo#wsdl.port(GreeterService/GreeterPort)"/>
+    </reference>  
+
+    <service name="SDOWSGreeterService" promote="SDOWSGreeterServiceComponent">
+        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services/sdo#wsdl.interface(GreeterPortType)"/>
+        <binding.ws wsdlElement="http://apache.org/tuscany/sca/itest/databinding/services/sdo#wsdl.port(GreeterService/GreeterPort)"/>
+    </service>
+
+    <component name="SDOWSGreeterServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.sdodatabinding.GreeterServiceImpl" />
     </component>
 
 </composite>
