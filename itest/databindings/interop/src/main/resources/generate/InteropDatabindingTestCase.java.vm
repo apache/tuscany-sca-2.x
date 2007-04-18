@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 import ${template.getJavaPackage()}.GreeterService;
 
 // Data types
@@ -74,7 +74,7 @@ public class InteropDatabindingTestCase extends TestCase  {
      */
     private void setUpClient(String ext) throws Exception {
         CompositeContext ctx = CurrentCompositeContext.getContext();
-        greeterClient = ctx.locateService(GreeterService.class, ext + "GreeterServiceClient");
+        greeterClient = ctx.locateService(GreeterService.class, "SDO" + ext + "GreeterServiceClient");
     }
 
     /**
@@ -88,13 +88,10 @@ public class InteropDatabindingTestCase extends TestCase  {
     /**
      * Invokes the SDO Greet service using default bindings with SDO payload
      */
-// Not sure that transformations should work with
-// local connections because the interface type will
-// be incorrect when specified in the SCDL
-//    public void testDefaultGreet() throws Exception {
-//        setUpClient("Default");
-//        greet();
-//    }
+    public void testDefaultGreet() throws Exception {
+        setUpClient("Default");
+        greet();
+    }
 
     /**
      * A generic method which, regarless of which client is connected, sends out a 

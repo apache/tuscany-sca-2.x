@@ -23,8 +23,8 @@
                               
   <Template>
     <TemplateName>InteropDatabindingTestCase.java.vm</TemplateName>
-    <TemplateTargetDir>../src/test/java/org/apache/tuscany/sca/itest/jaxbdatabinding</TemplateTargetDir>
-    <JavaPackage>org.apache.tuscany.sca.itest.jaxbdatabinding</JavaPackage>
+    <TemplateTargetDir>../src/test/java/org/apache/tuscany/sca/itest/sdodatabinding</TemplateTargetDir>
+    <JavaPackage>org.apache.tuscany.sca.itest.sdodatabinding</JavaPackage>
   </Template> 
   <Template>
     <TemplateName>interopgreeter.composite.vm</TemplateName>
@@ -41,14 +41,14 @@
   <InputFile>
     <FileName>Person.xsd</FileName>
     <FilePath>xsd</FilePath>
-    <JavaPackage>org.apache.tuscany.sca.itest.jaxbdatabinding.generated</JavaPackage>
-    <Factory>ObjectFactory</Factory> 
+    <JavaPackage>org.apache.tuscany.sca.itest.databinding.types</JavaPackage>
+    <Factory>TypesFactory</Factory> 
     <Namespace>http://apache.org/tuscany/sca/itest/databinding/types</Namespace>  
     <Prefix>p</Prefix> 
     <Type>
       <TypeName>PersonType</TypeName>
       <CreateTypeCode>
-        ObjectFactory factory = new ObjectFactory();
+        TypesFactory factory = TypesFactory.INSTANCE;
         param = factory.createPersonType();
         param.setFirstName("George");
         param.setLastName("Doors");
@@ -64,14 +64,14 @@
   <InputFile>
     <FileName>Interop.xsd</FileName>
     <FilePath>xsd</FilePath>
-    <JavaPackage>org.apache.tuscany.sca.itest.jaxbdatabinding.generated</JavaPackage>  
-    <Factory>ObjectFactory</Factory>
+    <JavaPackage>org.apache.tuscany.interop</JavaPackage>  
+    <Factory>InteropFactory</Factory>
     <Namespace>http://www.apache.org/tuscany/interop</Namespace>  
     <Prefix>i</Prefix>       
     <Type>
       <TypeName>SimpleTypeWithNameComplexType</TypeName>
       <CreateTypeCode>
-        ObjectFactory factory = new ObjectFactory();
+        InteropFactory factory = InteropFactory.INSTANCE;
         param = factory.createSimpleTypeWithNameComplexType();
         param.setSimpleTypeWithNameElement("SomeText");
        </CreateTypeCode>
@@ -85,7 +85,7 @@
     <Type>
       <TypeName>ComplexTypeWithContentType</TypeName>
       <CreateTypeCode>
-        ObjectFactory factory = new ObjectFactory();
+        InteropFactory factory = InteropFactory.INSTANCE;
         param = factory.createComplexTypeWithContentType();
         param.setSimpleTypeWithName("SomeText");
        </CreateTypeCode>
@@ -96,5 +96,5 @@
         assertEquals("data not changed corretly", "SomeChangedText", result.getSimpleTypeWithName());
       </ResultComparison>      
     </Type> 
-  </InputFile>  
+  </InputFile> 
 </tns:Generate>

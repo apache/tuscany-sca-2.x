@@ -58,6 +58,12 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>${pom.version}</version>
+            <scope>runtime</scope>
+        </dependency>     
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-jaxb</artifactId>
             <version>${pom.version}</version>
             <scope>runtime</scope>
@@ -93,7 +99,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscnay-itest-databingings-common</artifactId>
+            <artifactId>tuscany-itest-databindings-common</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency> 
@@ -109,6 +115,24 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-runtime</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>         
     </dependencies>
 
     <build>
@@ -135,7 +159,8 @@
                       </configuration>
                   </execution>
               </executions>              
-            </plugin>      
+            </plugin>
+<!--                   
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -155,6 +180,7 @@
                     </execution>
                 </executions>
             </plugin>
+-->            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -174,6 +200,7 @@
                     </arguments>
                 </configuration>
             </plugin> 
+<!--             
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
@@ -195,6 +222,7 @@
                     <verbose>true</verbose>
                 </configuration>
             </plugin>
+-->            
         </plugins>
     </build>
 </project>
