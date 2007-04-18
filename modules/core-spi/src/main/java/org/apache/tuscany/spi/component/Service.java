@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.component;
 
 import java.util.List;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.CompositeService;
 
 /**
  * The runtime instantiation of an SCA service
@@ -31,11 +31,11 @@ import org.apache.tuscany.assembly.Contract;
 public interface Service extends SCAObject {
 
     /**
-     * Returns the contract for the service.
+     * Returns the model for the service.
      *
-     * @return the contract for the service.
+     * @return the model for the service.
      */
-    Contract getServiceContract();
+    CompositeService getCompositeService();
 
     /**
      * Returns the collection of bindings configured for the service.

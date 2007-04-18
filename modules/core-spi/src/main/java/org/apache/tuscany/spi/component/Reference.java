@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.component;
 
 import java.util.List;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.CompositeReference;
 
 /**
  * The runtime instantiation of an SCA reference
@@ -31,11 +31,11 @@ import org.apache.tuscany.assembly.Contract;
 public interface Reference extends SCAObject {
 
     /**
-     * Returns the contract for the reference.
+     * Returns the model for the reference.
      *
-     * @return the contract for the reference.
+     * @return the model for the reference.
      */
-    Contract getServiceContract();
+    CompositeReference getCompositeReference();
 
     /**
      * Returns the collection of bindings configured for the reference.

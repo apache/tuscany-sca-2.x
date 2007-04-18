@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
@@ -34,16 +34,16 @@ import org.apache.tuscany.spi.component.ReferenceBinding;
  * @version $Rev$ $Date$
  */
 public class ReferenceImpl extends AbstractSCAObject implements Reference {
-    private Contract serviceContract;
+    private CompositeReference compositeReference;
     private List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
 
-    public ReferenceImpl(URI name, Contract contract) {
+    public ReferenceImpl(URI name, CompositeReference contract) {
         super(name);
-        this.serviceContract = contract;
+        this.compositeReference = contract;
     }
 
-    public Contract getServiceContract() {
-        return serviceContract;
+    public CompositeReference getCompositeReference() {
+        return compositeReference;
     }
 
     public List<ReferenceBinding> getReferenceBindings() {
