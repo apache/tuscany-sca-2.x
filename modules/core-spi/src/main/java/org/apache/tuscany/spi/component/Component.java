@@ -28,133 +28,138 @@ import org.osoa.sca.ComponentContext;
 
 /**
  * The runtime instantiation of an SCA component
- *
- * @version $$Rev$$ $$Date$$
+ * 
+ * @version $$Rev$$ $$Date: 2007-04-15 03:53:20 -0700 (Sun, 15 Apr
+ *          2007) $$
  */
 public interface Component extends Invocable {
 
     /**
      * Returns the SCA ComponentContext for this component.
-     *
+     * 
      * @return the SCA ComponentContext for this component
      */
     ComponentContext getComponentContext();
 
     /**
-     * Returns a collection of wires for the component associated with a reference.
-     *
+     * Returns a collection of wires for the component associated with a
+     * reference.
+     * 
      * @param name the reference name
-     * @return a collection of wires for the component associated with the reference
+     * @return a collection of wires for the component associated with the
+     *         reference
      */
     List<Wire> getWires(String name);
 
     /**
      * Returns the default property values associated with the component.
-     *
+     * 
      * @return default property values associated with the component.
      */
     Map<String, Property> getDefaultPropertyValues();
 
     /**
      * Sets the default property values associated with the component.
-     *
-     * @param defaultPropertyValues Default property values associated with the component.
+     * 
+     * @param defaultPropertyValues Default property values associated with the
+     *            component.
      */
     void setDefaultPropertyValues(Map<String, Property> defaultPropertyValues);
 
     /**
-     * Returns the ScopeContainer responsible for managing implementation instance or null if a ScopeContainer is not
-     * associated with the Component
-     *
+     * Returns the ScopeContainer responsible for managing implementation
+     * instance or null if a ScopeContainer is not associated with the Component
+     * 
      * @return the scope container
      */
     ScopeContainer getScopeContainer();
 
-    
     void configureProperty(String propertyName);
-    
+
     /**
      * Returns the component scope
-     *
+     * 
      * @return the component scope
      */
-    @Deprecated
+
     Scope getScope();
 
     /**
      * Sets the scope container associated with the component
-     *
+     * 
      * @param scopeContainer the scope container associated with the component
      */
-    @Deprecated
+
     void setScopeContainer(ScopeContainer scopeContainer);
 
     /**
-     * Returns true if invocation dispatching can be optimized, i.e. invocation chains are not required
-     *
-     * @return true if invocation dispatching can be optimized, i.e. invocation chains are not required
+     * Returns true if invocation dispatching can be optimized, i.e. invocation
+     * chains are not required
+     * 
+     * @return true if invocation dispatching can be optimized, i.e. invocation
+     *         chains are not required
      */
-    @Deprecated
+
     boolean isOptimizable();
 
     /**
      * Registers a service of this composite.
-     *
+     * 
      * @param service the service to add as a child
      * @throws RegistrationException
      */
-    @Deprecated
+
     void register(Service service) throws RegistrationException;
 
     /**
      * Registers a reference of this composite.
-     *
+     * 
      * @param reference the reference to add as a child
      * @throws RegistrationException
      */
-    @Deprecated
+
     void register(Reference reference) throws RegistrationException;
 
     /**
      * Returns the service with the given name or null if not found
-     *
+     * 
      * @param name the service name which is relative to the composite
      * @return the service with the given name or null if not found
      */
-    @Deprecated
+
     Service getService(String name);
 
     /**
      * Returns the reference with the given name or null if not found
-     *
+     * 
      * @param name the reference name which is relative to the composite
      * @return the reference with the given name or null if not found
      */
-    @Deprecated
+
     Reference getReference(String name);
 
     /**
      * Attaches a callback wire to the comoponent
-     *
+     * 
      * @param wire the wire to attach
      */
-    @Deprecated
+
     void attachCallbackWire(Wire wire);
 
     /**
      * Attaches a wire to a component reference
-     *
+     * 
      * @param wire the wire to attach
      */
-    @Deprecated
+
     void attachWire(Wire wire);
 
     /**
      * Attaches a set of wires to a component reference. Used for multiplicity.
-     *
+     * 
      * @param wires the wire to attach
      */
-    @Deprecated
+
     void attachWires(List<Wire> wires);
 
 }
