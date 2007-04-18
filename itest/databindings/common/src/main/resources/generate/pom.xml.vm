@@ -29,7 +29,7 @@
     <artifactId>tuscany-itest-databindings-sdo</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>SDO Databinding Integration Test</name>
+    <name>Apache Tuscany SDO Databinding Integration Test</name>
 
     <repositories>
         <repository>
@@ -58,6 +58,18 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>${pom.version}</version>
+            <scope>runtime</scope>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-databinding</artifactId>
+            <version>${pom.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-jaxb</artifactId>
             <version>${pom.version}</version>
             <scope>runtime</scope>
@@ -80,6 +92,18 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-runtime</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>                 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-itest-databindings-common</artifactId>

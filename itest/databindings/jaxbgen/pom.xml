@@ -29,7 +29,7 @@
     <artifactId>tuscany-itest-databindings-jaxb</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>JAXB Databinding Integration Test</name>
+    <name>Apache Tuscany JAXB Databinding Integration Test</name>
 
     <repositories>
         <repository>

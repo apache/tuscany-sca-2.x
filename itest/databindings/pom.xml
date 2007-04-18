@@ -28,7 +28,7 @@
   
   <groupId>org.apache.tuscany.sca</groupId>
   <artifactId>tuscany-itest-databindings</artifactId>
-  <name>SCA Databindings Integration Tests</name>
+  <name>Apache Tuscany SCA Databindings Integration Tests</name>
   <version>1.0-incubating-SNAPSHOT</version>
   
   
