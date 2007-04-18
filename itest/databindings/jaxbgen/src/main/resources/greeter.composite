@@ -17,21 +17,30 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
-    name="JAXBGreeterService">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+           xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
+           name="JAXBGreeterService">
+           
+    <!-- Clients to test the services -->
+    <component name="DefaultGreeterServiceClient">
+        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
+        <reference name="greeterService" target="JAXBGreeterServiceComponent"/>
+    </component>
 
-    <!-- Services Exposed via different bindings -->
-    <service name="JAXBGreeterServiceDefaultBinding">
-        <interface.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterService" />
-        <reference>JAXBGreeterServiceComponent</reference>
-    </service>
+    <component name="WSGreeterServiceClient">
+        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
+        <reference name="greeterService" target="JAXBGreeterServiceWSRef"/>
+    </component>
 
-    <service name="GreeterServiceWebServiceBinding">
-        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"
-            wsdli:wsdlLocation="http://apache.org/tuscany/sca/itest/databinding/services wsdl/Greeter.wsdl" />
-        <binding.ws
-            endpoint="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.endpoint(GreeterService/GreeterPort)"
-            location="wsdl/Greeter.wsdl" />
+    <reference name="JAXBGreeterServiceWSReference" promote="WSGreeterServiceClient/greeterService">
+        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"/>
+        <binding.ws wsdlElement="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.port(GreeterService/GreeterPort)"/>
+    </reference>           
+
+    <!-- The greeter service -->
+    <service name="JAXBGreeterService" promote="JAXBGreeterServiceComponent">
+        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"/>
+        <binding.ws wsdlElement="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.port(GreeterService/GreeterPort)"/>
         <reference>JAXBGreeterServiceComponent</reference>
     </service>
 
@@ -39,30 +48,4 @@
     <component name="JAXBGreeterServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceImpl" />
     </component>
-
-
-    <!-- Clients to test the services -->
-    <component name="DefaultGreeterServiceClient">
-        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
-        <!--reference name="greeterService">JAXBGreeterServiceDefaultRef</reference-->
-        <reference name="greeterService">JAXBGreeterServiceComponent</reference>
-    </component>
-
-    <reference name="JAXBGreeterServiceDefaultRef">
-        <interface.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterService" />
-    </reference>
-
-    <component name="WSGreeterServiceClient">
-        <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
-        <reference name="greeterService">JAXBGreeterServiceWSRef</reference>
-    </component>
-
-    <reference name="JAXBGreeterServiceWSRef">
-        <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"
-            wsdli:wsdlLocation="http://apache.org/tuscany/sca/itest/databinding/services wsdl/Greeter.wsdl" />
-        <binding.ws
-            endpoint="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.endpoint(GreeterService/GreeterPort)"
-            location="wsdl/Greeter.wsdl" />
-    </reference>
-
 </composite>

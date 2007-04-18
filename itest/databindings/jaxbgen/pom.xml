@@ -58,6 +58,12 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>${pom.version}</version>
+            <scope>runtime</scope>
+        </dependency>  
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-jaxb</artifactId>
             <version>${pom.version}</version>
             <scope>runtime</scope>
@@ -80,6 +86,24 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-runtime</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>          
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
