@@ -21,7 +21,7 @@
         targetNamespace="http://www.apache.org/tuscany/interop" 
         xmlns:tns="http://www.apache.org/tuscany/interop">
  
-  <include schemaLocation="SimpleTypeWithName.xsd"/> 
+  <include schemaLocation="../xsd/SimpleTypeWithName.xsd"/> 
       
   <!-- top level test type -->       
   <complexType name="IncludeComplexType">
