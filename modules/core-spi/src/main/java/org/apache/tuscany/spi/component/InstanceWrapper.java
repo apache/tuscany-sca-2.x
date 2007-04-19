@@ -18,22 +18,34 @@
  */
 package org.apache.tuscany.spi.component;
 
-
 /**
- * Provides lifecycle management for an implementation instance associated with an {@link
- * org.apache.tuscany.spi.component.AtomicComponent} for use by the atomic component's associated {@link
+ * Provides lifecycle management for an implementation instance associated with
+ * an {@link org.apache.tuscany.spi.component.AtomicComponent} for use by the
+ * atomic component's associated {@link
  * org.apache.tuscany.spi.component.ScopeContainer}
- *
+ * 
  * @version $Rev$ $Date$
  */
 public interface InstanceWrapper<T> {
 
+    /**
+     * @return
+     */
     T getInstance();
 
+    /**
+     * @return
+     */
     boolean isStarted();
 
+    /**
+     * @throws TargetInitializationException
+     */
     void start() throws TargetInitializationException;
 
+    /**
+     * @throws TargetDestructionException
+     */
     void stop() throws TargetDestructionException;
 
 }

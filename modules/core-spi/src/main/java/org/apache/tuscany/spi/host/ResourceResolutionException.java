@@ -24,6 +24,7 @@ import org.apache.tuscany.spi.TuscanyException;
  * @version $Rev$ $Date$
  */
 public class ResourceResolutionException extends TuscanyException {
+    private static final long serialVersionUID = 13421352711315479L;
 
     public ResourceResolutionException(String message, String identifier) {
         super(message, identifier);
