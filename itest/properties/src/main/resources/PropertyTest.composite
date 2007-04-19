@@ -18,7 +18,12 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
        xmlns:foo="http://foo"
+       targetNamespace="http://foo"
            name="PropertyTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+           
+    <service name="ProperterTestService" promote="ABComponent">
+        <interface.java interface="org.apache.tuscany.sca.itest.ABComponent"/>
+    </service>           
            
     <property name="number" type="xsd:int">1</property>
     <property name="complex" type="foo:MyComplexType" >
