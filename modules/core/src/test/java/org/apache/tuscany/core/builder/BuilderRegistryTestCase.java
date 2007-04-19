@@ -86,8 +86,9 @@ public class BuilderRegistryTestCase extends TestCase {
         for (Property p : componentDefinition.getProperties()) {
             properties.put(p.getName(), p);
         }
-        component.setDefaultPropertyValues(properties);
+        component.setProperties(properties);
         component.setScopeContainer(scopeContainer);
+        EasyMock.expect(component.getProperties()).andReturn(properties).anyTimes();
         EasyMock.expect(component.getUri()).andReturn(componentId);
         EasyMock.replay(component);
 

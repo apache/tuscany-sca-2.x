@@ -20,6 +20,7 @@ package org.apache.tuscany.core.builder;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.tuscany.assembly.Binding;
@@ -111,13 +112,19 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             throw new NoRegisteredBuilderException("No builder registered for implementation", name);
         }
         Component component = componentBuilder.build(componentDef, context);
-        componentManager.add(component, componentDef);
         assert component != null;
-        Map<String, Property> properties = new HashMap<String, Property>();
-        for (Property p : componentDef.getProperties()) {
-            properties.put(p.getName(), p);
+        
+        //if there are builders that have not handled properties, then ensure
+        //it is copied into the component atleast at this point
+        if (componentDef.getProperties().size() != component.getProperties().size()) {
+            Map<String, Property> compProperties = new Hashtable<String, Property>();
+            for (Property aProperty : componentDef.getProperties()) {
+                compProperties.put(aProperty.getName(), aProperty);
+            }
+            component.setProperties(compProperties);
         }
-        component.setDefaultPropertyValues(properties);
+        
+        componentManager.add(component, componentDef);
 
         // FIXME: How to deal scopes?
         // Scope scope = componentDef.getImplementation().getScope();

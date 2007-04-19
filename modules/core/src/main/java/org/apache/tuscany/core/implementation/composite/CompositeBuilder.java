@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
 
+import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.core.deployer.ChildDeploymentContext;
@@ -43,7 +44,12 @@ public class CompositeBuilder extends AbstractCompositeBuilder<Composite> {
 
         URI name = URI.create(context.getComponentId() + definition.getName());
         Component component = new CompositeComponentImpl(name);
-
+        
+        //configure the composite component with properties
+        for (ComponentProperty compProp : definition.getProperties()) {
+            component.getProperties().put(compProp.getName(), compProp);
+        }
+        
         return build(component, composite, childContext);
     }
 

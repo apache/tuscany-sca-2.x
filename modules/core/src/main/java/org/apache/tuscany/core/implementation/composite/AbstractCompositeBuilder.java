@@ -22,6 +22,8 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.util.PropertyUtil;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
@@ -40,7 +42,15 @@ public abstract class AbstractCompositeBuilder<T extends Implementation> extends
 
     public Component build(Component component, Composite componentType, DeploymentContext deploymentContext)
         throws BuilderException {
+
         for (org.apache.tuscany.assembly.Component definition : componentType.getComponents()) {
+            //update component defn. properties that might be using $source with the
+            //composites configured property values
+            try {
+                PropertyUtil.sourceComponentProperties(component.getProperties(), definition);
+            } catch (Exception e) {
+                throw new BuilderConfigException(e);
+            }
             builderRegistry.build(definition, deploymentContext);
         }
         for (org.apache.tuscany.assembly.Service definition : componentType.getServices()) {
@@ -65,5 +75,4 @@ public abstract class AbstractCompositeBuilder<T extends Implementation> extends
         }
         return component;
     }
-
 }
