@@ -17,17 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests;
+package org.apache.tuscany.implementation.script.itests.helloworld;
 
-import org.osoa.sca.annotations.Reference;
-
-public class HelloWorldProxy implements HelloWorld {
-
-    @Reference
-    public HelloWorld delegate;
+public interface HelloWorld {
     
-    public String sayHello(String s) {
-        return delegate.sayHello(s);
-    }
+    public String sayHello(String s);
 
 }
