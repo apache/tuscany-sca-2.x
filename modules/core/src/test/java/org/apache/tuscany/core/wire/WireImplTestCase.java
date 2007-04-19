@@ -20,7 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.spi.SingletonObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;

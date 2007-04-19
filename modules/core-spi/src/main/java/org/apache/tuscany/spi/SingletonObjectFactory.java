@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.spi;
 
-import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * Implementation of ObjectFactory that returns a single instance, typically an immutable type.
