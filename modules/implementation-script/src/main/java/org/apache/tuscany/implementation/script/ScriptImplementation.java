@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 
@@ -69,4 +70,7 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
         return componentType.getServices();
     }
 
+    public List<Reference> getReferences() {
+        return componentType.getReferences();
+    }
 }

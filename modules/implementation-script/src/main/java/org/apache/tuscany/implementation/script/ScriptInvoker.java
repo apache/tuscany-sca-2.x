@@ -25,7 +25,6 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 
 import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
@@ -44,13 +43,13 @@ public class ScriptInvoker<T> extends TargetInvokerExtension {
     protected Object clazz;
     protected String operationName;
 
-    private final AtomicComponent<T> component;
+    private final ScriptComponent component;
     private final ScopeContainer scopeContainer;
     protected InstanceWrapper<T> target;
     protected boolean stateless;
 
     public ScriptInvoker(String operationName,
-                         AtomicComponent component,
+                         ScriptComponent component,
                          ScopeContainer scopeContainer,
                          WorkContext workContext) {
 
@@ -62,6 +61,7 @@ public class ScriptInvoker<T> extends TargetInvokerExtension {
         // TODO: support script classes
     }
 
+    @SuppressWarnings("unchecked")
     public Object invokeTarget(Object payload, short sequence, WorkContext workContext) throws InvocationTargetException {
         Object contextId = workContext.getIdentifier(scopeContainer.getScope());
         try {
@@ -91,6 +91,7 @@ public class ScriptInvoker<T> extends TargetInvokerExtension {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ScriptInvoker clone() throws CloneNotSupportedException {
         try {
@@ -105,6 +106,7 @@ public class ScriptInvoker<T> extends TargetInvokerExtension {
     /**
      * Resolves the target service instance or returns a cached one
      */
+    @SuppressWarnings("unchecked")
     protected InstanceWrapper<T> getInstance(short sequence, Object contextId) throws TargetException {
         switch (sequence) {
         case NONE:
