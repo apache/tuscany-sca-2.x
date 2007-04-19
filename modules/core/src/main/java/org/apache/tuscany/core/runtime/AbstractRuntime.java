@@ -69,7 +69,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     private static final URI BOOT_CLASSLOADER_ID = URI.create("sca://./bootClassLoader");
 
     protected final XMLInputFactory xmlFactory;
-    protected URL systemScdl;
     protected String applicationName;
     protected URL applicationScdl;
     protected Class<I> runtimeInfoType;
@@ -116,14 +115,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         classLoaderRegistry = new ClassLoaderRegistryImpl();
         classLoaderRegistry.register(BOOT_CLASSLOADER_ID, getClass().getClassLoader());
-    }
-
-    public URL getSystemScdl() {
-        return systemScdl;
-    }
-
-    public void setSystemScdl(URL systemScdl) {
-        this.systemScdl = systemScdl;
     }
 
     public String getApplicationName() {
@@ -205,7 +196,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
             activator.start(extensionRegistry);
         }
 
-        registerBaselineSystemComponents();
+        registerSystemExtensionPoints();
     }
 
     public void destroy() {
@@ -238,7 +229,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager);
     }
 
-    protected void registerBaselineSystemComponents() throws InitializationException {
+    protected void registerSystemExtensionPoints() throws InitializationException {
         // register the RuntimeInfo provided by the host
         extensionRegistry.addExtensionPoint(runtimeInfoType, runtimeInfo);
 
