@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
@@ -121,18 +122,26 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         return wires.get(name);
     }
     
-    public void configureProperty(String propertyName) {
-        JavaElement element = configuration.getDefinition().getPropertyMembers().get(propertyName);
-
-        if (element != null && !(element.getAnchor() instanceof Constructor)) {
-            configuration.getInjectionSites().add(element);
+    public void configureProperties(List<ComponentProperty> definedProperties) {
+        for (ComponentProperty p : definedProperties) {
+            getProperties().put(p.getName(), p);
+            configureProperty(p);
         }
+    }
+
+    public void configureProperty(ComponentProperty configuredProperty) {
+        JavaElement element = 
+            configuration.getDefinition().getPropertyMembers().get(configuredProperty.getName());
+
+        if (element != null && !(element.getAnchor() instanceof Constructor) && 
+            configuredProperty.getValue() != null) {
+            configuration.getInjectionSites().add(element);
         
-        ComponentProperty configuredProperty = (ComponentProperty)getDefaultPropertyValues().get(propertyName);
-        Class propertyJavaType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
-        ObjectFactory<?> propertyObjectFactory =
-            createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), propertyJavaType);
-        configuration.setObjectFactory(element, propertyObjectFactory);
+            Class propertyJavaType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
+            ObjectFactory<?> propertyObjectFactory =
+                createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), propertyJavaType);
+            configuration.setObjectFactory(element, propertyObjectFactory);
+        }
     }
 
 

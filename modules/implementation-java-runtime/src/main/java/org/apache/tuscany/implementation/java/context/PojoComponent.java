@@ -126,11 +126,11 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
         return null;
     }
 
-    public Map<String, Property> getDefaultPropertyValues() {
+    public Map<String, Property> getProperties() {
         return null;
     }
 
-    public void setDefaultPropertyValues(Map<String, Property> defaultPropertyValues) {
+    public void setProperties(Map<String, Property> defaultPropertyValues) {
     }
 
     public ScopeContainer getScopeContainer() {
