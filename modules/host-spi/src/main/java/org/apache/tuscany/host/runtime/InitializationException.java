@@ -25,6 +25,7 @@ package org.apache.tuscany.host.runtime;
  * @version $Rev$ $Date$
  */
 public class InitializationException extends Exception {
+    private static final long serialVersionUID = 8612661660934426123L;
 
     public InitializationException(String message) {
         super(message);

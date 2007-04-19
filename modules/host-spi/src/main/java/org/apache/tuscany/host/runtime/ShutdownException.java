@@ -25,6 +25,7 @@ package org.apache.tuscany.host.runtime;
  * @version $Rev$ $Date$
  */
 public class ShutdownException extends Exception {
+    private static final long serialVersionUID = 2030266845028793696L;
 
     public ShutdownException(Throwable cause) {
         super(cause);

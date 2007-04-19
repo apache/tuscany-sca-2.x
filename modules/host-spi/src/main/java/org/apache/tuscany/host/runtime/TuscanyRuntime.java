@@ -18,33 +18,17 @@
  */
 package org.apache.tuscany.host.runtime;
 
-import java.net.URL;
 import java.net.URI;
-
-import org.osoa.sca.ComponentContext;
 
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
+import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface TuscanyRuntime<I extends RuntimeInfo> {
-    /**
-     * Returns the location of the SCDL used to boot this runtime.
-     *
-     * @return the location of the SCDL used to boot this runtime
-     */
-    URL getSystemScdl();
-
-    /**
-     * Sets the location of the SCDL used to boot this runtime.
-     *
-     * @param systemScdl the location of the SCDL used to boot this runtime
-     */
-    void setSystemScdl(URL systemScdl);
-
     /**
      * Returns the host ClassLoader that is parent to all Tuscany classloaders.
      *
