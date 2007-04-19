@@ -21,7 +21,6 @@ package org.apache.tuscany.spi.component;
 import java.net.URI;
 import java.util.List;
 
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**

@@ -24,6 +24,8 @@ import org.apache.tuscany.spi.CoreRuntimeException;
  * @version $Rev$ $Date$
  */
 public class DuplicateClassLoaderException extends CoreRuntimeException {
+    private static final long serialVersionUID = 781324115102345668L;
+
     /**
      * Constructor specifying message and the ID of the duplicate classloader.
      *
