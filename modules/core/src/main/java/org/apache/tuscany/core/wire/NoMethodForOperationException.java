@@ -25,6 +25,8 @@ import org.apache.tuscany.spi.wire.ProxyCreationException;
  * @version $Rev$ $Date$
  */
 public class NoMethodForOperationException extends ProxyCreationException {
+    private static final long serialVersionUID = 5116536602309483679L;
+
     public NoMethodForOperationException() {
     }
 

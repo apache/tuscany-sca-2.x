@@ -34,9 +34,6 @@ import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
@@ -51,9 +48,6 @@ import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -256,17 +250,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
         // register the ScopeRegistry
         extensionRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
-    }
-
-    private <S> ComponentService createContract(Class<S> type) {
-        AssemblyFactory factory = new DefaultAssemblyFactory();
-        ComponentService contract = factory.createComponentService();
-        JavaInterface javaInterface = new DefaultJavaFactory().createJavaInterface();
-        javaInterface.setJavaClass(type);
-        JavaInterfaceContract javaInterfaceContract = new DefaultJavaFactory().createJavaInterfaceContract();
-        contract.setInterfaceContract(javaInterfaceContract);
-        javaInterfaceContract.setInterface(javaInterface);
-        return contract;
     }
 
     protected ComponentManager getComponentManager() {

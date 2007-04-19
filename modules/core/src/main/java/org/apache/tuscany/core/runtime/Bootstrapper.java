@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.spi.component.ComponentManager;
