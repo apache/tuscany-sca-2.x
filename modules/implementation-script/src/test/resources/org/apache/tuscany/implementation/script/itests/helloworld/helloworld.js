@@ -18,5 +18,5 @@
  */
  
 function getGreetings(s) {
-   return "jsHello " + s;
+   return "Hello " + s;
 }
