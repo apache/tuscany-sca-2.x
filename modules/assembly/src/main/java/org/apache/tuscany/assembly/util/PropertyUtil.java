@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -64,11 +65,13 @@ public class PropertyUtil {
     public static Document evaluate(NamespaceContext nsContext, Node node, String xPathExpression)
         throws XPathExpressionException, ParserConfigurationException {
         XPath path = XPATH_FACTORY.newXPath();
+        
         if (nsContext != null) {
             path.setNamespaceContext(nsContext);
         } else {
             path.setNamespaceContext(new DOMNamespeceContext(node));
         }
+        
         XPathExpression expression = path.compile(xPathExpression);
         Node result = (Node)expression.evaluate(node, XPathConstants.NODE);
         if (result == null) {
@@ -169,6 +172,69 @@ public class PropertyUtil {
         }
     }
     
+    public static void sourceComponentProperties(Map<String, Property> compositeProperties,
+                                                 Component componentDefinition) throws InvalidValueException,
+                                                                               ParserConfigurationException,
+                                                                               XPathExpressionException,
+                                                                               TransformerException,
+                                                                               IOException {
+
+        List<ComponentProperty> componentProperties = componentDefinition.getProperties();
+        for (ComponentProperty aProperty : componentProperties) {
+            String source = aProperty.getSource();
+            String file = aProperty.getFile();
+            if (source != null) {
+                // $<name>/...
+                int index = source.indexOf('/');
+                if (index == -1) {
+                    // Tolerating $prop
+                    source = source + "/";
+                    index = source.length() - 1;
+                }
+                if (source.charAt(0) == '$') {
+                    String name = source.substring(1, index);
+                    Property compositeProp = compositeProperties.get(name);
+                    if (compositeProp == null) {
+                        InvalidValueException ex =
+                            new InvalidValueException(
+                                                      "The 'source' cannot be resolved to a composite property - " + source);
+                        throw ex;
+                    }
+
+                    boolean prependValue = false;
+                    DocumentBuilder builder =
+                        DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                    Document compositePropDefValues = (Document)compositeProp.getValue();
+
+                    // Adding /value because the document root is "value"
+                    String path = source.substring(index);
+                    String xpath = null;
+
+                    if ("/".equals(path)) {
+                        // trailing / is not legal for xpath
+                        xpath = "/value";
+                    } else {
+                        xpath = "/value" + path;
+                    }
+
+                    // FIXME: How to deal with namespaces?
+                    Document node = evaluate(null, compositePropDefValues, xpath);
+
+                    if (node != null) {
+                        aProperty.setValue(node);
+                    }
+                } else {
+                    InvalidValueException ex =
+                        new InvalidValueException("The 'source' has an invalid value - " + source);
+                    throw ex;
+                }
+            } else if (file != null) {
+                aProperty.setValue(loadFromFile(aProperty.getFile()));
+
+            }
+        }
+    }
+    
     private static Property getPropertyByName(List<Property> properties, String propertyName) {
         for (Property property : properties) {
             if (property.getName().equals(propertyName)) {
@@ -191,12 +257,10 @@ public class PropertyUtil {
         }
 
         public String getNamespaceURI(String prefix) {
-            //return "http://foo";
             return node.lookupNamespaceURI(prefix);
         }
 
         public String getPrefix(String namespaceURI) {
-            //return "foo";
             return node.lookupPrefix(namespaceURI);
         }
 
@@ -206,13 +270,18 @@ public class PropertyUtil {
 
     }
     
-    private static void printNode(Node node) throws Exception {
-        javax.xml.transform.Transformer transformer =
-            TransformerFactory.newInstance().newTransformer();
-        StringWriter sw = new StringWriter();
-        transformer.transform(new DOMSource(node), new StreamResult(sw));
+    public static void printNode(Node node)  {
+        try {
+            javax.xml.transform.Transformer transformer =
+                TransformerFactory.newInstance().newTransformer();
+            StringWriter sw = new StringWriter();
+            transformer.transform(new DOMSource(node), new StreamResult(sw));
+            
+            System.out.println(sw.toString());
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
         
-        System.out.println(sw.toString());
     }
 
 }

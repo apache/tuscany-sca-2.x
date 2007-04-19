@@ -300,20 +300,12 @@ public class CompositeUtil {
             reconcileComponentServices(component, implServices, compServices, problems);
             reconcileComponentReferences(component, implReferences, compReferences, problems);
             reconcileComponentProperties(component, implProperties, compProperties, problems);
-            try {
-                PropertyUtil.processProperties(composite, component);
-            } catch ( Exception e) {
-                problems.add(component);
-            }
         }
     }
-
-    private void wire(List<Base> problems) {
-
-        // Index and bind all component services and references
-        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-        
+    
+    private void indexAndBind(Map<String, ComponentService> componentServices,
+                              Map<String, ComponentReference> componentReferences,
+                              List<Base> problems) {
         for (Component component : composite.getComponents()) {
             int i =0;
             for (ComponentService componentService : component.getServices()) {
@@ -347,8 +339,11 @@ public class CompositeUtil {
                 scaBinding.setComponent(component);
             }
         }
-
-        // Resolve promoted services and references
+        
+    }
+    
+    private void resolvePromotedServices(Map<String, ComponentService> componentServices,
+                                         List<Base> problems) {
         for (Service service : composite.getServices()) {
             CompositeService compositeService = (CompositeService)service;
             ComponentService componentService = compositeService.getPromotedService();
@@ -371,6 +366,10 @@ public class CompositeUtil {
                 }
             }
         }
+    }
+    
+    private void resolvePromotedReferences(Map<String, ComponentReference> componentReferences,
+                                           List<Base> problems) {
         for (Reference reference : composite.getReferences()) {
             CompositeReference compositeReference = (CompositeReference)reference;
             List<ComponentReference> promotedReferences =
@@ -398,8 +397,11 @@ public class CompositeUtil {
                 }
             }
         }
-
-        // Wire references to their targets
+    }
+    
+    private void wireCompRefToCompSvc(Map<String, ComponentService> componentServices,
+                                      Map<String, ComponentReference> componentReferences,
+                                      List<Base> problems) {
         for (ComponentReference componentReference : componentReferences.values()) {
             List<ComponentService> targets = componentReference.getTargets();
             if (!targets.isEmpty()) {
@@ -430,8 +432,11 @@ public class CompositeUtil {
                 }
             }
         }
-
-        // Wire references as specified in wires
+    }
+    
+    private void resolveWireDefns(Map<String, ComponentService> componentServices,
+                                  Map<String, ComponentReference> componentReferences,
+                                  List<Base> problems) {
         List<Wire> wires = composite.getWires();
         for (int i = 0, n = wires.size(); i < n; i++) {
             Wire wire = wires.get(i);
@@ -466,6 +471,25 @@ public class CompositeUtil {
                 resolvedReference.getTargets().add(resolvedService);
             }
         }
+    }
+
+    private void wire(List<Base> problems) {
+
+        // Index and bind all component services and references
+        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+        
+        indexAndBind(componentServices, componentReferences, problems);
+
+        // Resolve promoted services and references
+        resolvePromotedServices(componentServices, problems);
+        resolvePromotedReferences(componentReferences, problems);
+        
+        // Wire references to their targets
+        wireCompRefToCompSvc(componentServices, componentReferences, problems);
+
+        // Wire references as specified in wires
+        resolveWireDefns(componentServices, componentReferences, problems);
 
 
         // Validate that references are wired or promoted, according
@@ -482,5 +506,4 @@ public class CompositeUtil {
         // Clear wires
         composite.getWires().clear();
     }
-
 }
