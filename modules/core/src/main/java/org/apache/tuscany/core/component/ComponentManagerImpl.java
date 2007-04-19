@@ -72,16 +72,6 @@ public class ComponentManagerImpl implements ComponentManager {
         }
     }
 
-    public <I> void registerJavaObject(URI uri, ComponentService service, I instance) throws RegistrationException {
-        SingletonAtomicComponent<I> component = new SingletonAtomicComponent<I>(uri, service, instance);
-        register(component);
-    }
-
-    public <I> void registerJavaObject(URI uri, List<ComponentService> services, I instance) throws RegistrationException {
-        SingletonAtomicComponent<I> component = new SingletonAtomicComponent<I>(uri, services, instance);
-        register(component);
-    }
-
     public synchronized void unregister(Component component) throws RegistrationException {
         URI uri = component.getUri();
         components.remove(uri);

@@ -56,7 +56,6 @@ import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
-import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
@@ -268,19 +267,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         contract.setInterfaceContract(javaInterfaceContract);
         javaInterfaceContract.setInterface(javaInterface);
         return contract;
-    }
-
-    protected <I> void registerSystemComponent(URI uri, List<Class<?>> types, I component)
-        throws InitializationException {
-        try {
-            List<ComponentService> contracts = new ArrayList<ComponentService>();
-            for (Class<?> type : types) {
-                contracts.add(createContract(type));
-            }
-            componentManager.registerJavaObject(uri, contracts, component);
-        } catch (RegistrationException e) {
-            throw new InitializationException(e);
-        }
     }
 
     protected ComponentManager getComponentManager() {

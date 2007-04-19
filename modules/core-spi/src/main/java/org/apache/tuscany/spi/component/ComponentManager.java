@@ -50,30 +50,6 @@ public interface ComponentManager extends RuntimeEventListener {
     void unregister(Component component) throws RegistrationException;
 
     /**
-     * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
-     * create the initial configuration components.
-     *
-     * @param uri      the uri of the resulting component
-     * @param service  the service contract the component should expose
-     * @param instance the Object that will become the component's implementation
-     * @throws RegistrationException
-     */
-    <I> void registerJavaObject(URI uri, ComponentService service, I instance)
-        throws RegistrationException;
-
-    /**
-     * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
-     * create the initial configuration components.
-     *
-     * @param uri      the name of the resulting component
-     * @param services the service contracts the component should expose
-     * @param instance the Object that will become the component's implementation
-     * @throws RegistrationException
-     */
-    <I> void registerJavaObject(URI uri, List<ComponentService> services, I instance)
-        throws RegistrationException;
-
-    /**
      * Returns the component with the given URI
      *
      * @param uri the component URI
