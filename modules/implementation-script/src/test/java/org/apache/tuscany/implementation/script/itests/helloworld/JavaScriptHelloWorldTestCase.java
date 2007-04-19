@@ -17,10 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests;
+package org.apache.tuscany.implementation.script.itests.helloworld;
 
-public interface HelloWorld {
-    
-    public String sayHello(String s);
 
+public class JavaScriptHelloWorldTestCase extends AbstractHelloWorldTestCase {
+    // super class does it all getting composite based on this class name
 }

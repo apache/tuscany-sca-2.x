@@ -17,32 +17,34 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests.javascript;
+package org.apache.tuscany.implementation.script.itests;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
-import org.apache.tuscany.implementation.script.itests.HelloWorld;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
-public class HelloWorldTestCase extends TestCase {
+public abstract class AbstractSCATestCase<T> extends TestCase {
 
-    private HelloWorld helloWorld;
-
-    public void testCalculator() throws Exception {
-        assertEquals("Hello petra", helloWorld.sayHello("petra"));
-    }
+    protected T service;
 
     protected void setUp() throws Exception {
-        SCARuntime.start("org/apache/tuscany/implementation/script/itests/javascript/HelloWorldJS.composite");
-        ComponentContext context = SCARuntime.getComponentContext("HelloWorldComponent");
-        ServiceReference<HelloWorld> service = context.createSelfReference(HelloWorld.class);
-        helloWorld = service.getService();
+        SCARuntime.start(getCompositeName());
+        ComponentContext context = SCARuntime.getComponentContext("ClientComponent");
+        ServiceReference<T> serviceReference = context.createSelfReference(getServiceClass());
+        service = serviceReference.getService();
     }
     
+    abstract protected Class getServiceClass();
+
     protected void tearDown() throws Exception {
         SCARuntime.stop();
+    }
+
+    protected String getCompositeName() {
+        String className = this.getClass().getName();
+        return className.substring(0, className.length() - 8).replace('.', '/') + ".composite";
     }
 
 }

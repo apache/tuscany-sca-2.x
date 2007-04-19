@@ -18,15 +18,15 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="HelloWorldJS">
+           name="JavaScriptHelloWorld">
 
-    <component name="HelloWorldComponent">
-		<implementation.java class="org.apache.tuscany.implementation.script.itests.HelloWorldProxy"/>
-        <reference name="delegate" target="HelloWorldJSComponent"></reference>
+    <component name="ClientComponent">
+		<implementation.java class="org.apache.tuscany.implementation.script.itests.helloworld.HelloWorldProxy"/>
+        <reference name="delegate" target="HelloWorldComponent"></reference>
     </component>
 
-    <component name="HelloWorldJSComponent">
-        <implementation.script script="org/apache/tuscany/implementation/script/itests/javascript/helloworld.js"/>
+    <component name="HelloWorldComponent">
+        <implementation.script script="org/apache/tuscany/implementation/script/itests/helloworld/helloworld.js"/>
     </component>
 
 </composite>
