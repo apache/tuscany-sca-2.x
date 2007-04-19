@@ -45,6 +45,7 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<ScriptImplementation> {
 
     private static final String SCRIPT = "script";
+    private static final String LANGUAGE = "language";
     private static final String IMPLEMENTATION_SCRIPT = "implementation.script";
     private static final QName IMPLEMENTATION_SCRIPT_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_SCRIPT);
 
@@ -56,7 +57,12 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
         try {
 
             String scriptName = reader.getAttributeValue(null, SCRIPT);
-            ScriptImplementation scriptImplementation = new ScriptImplementation(scriptName);
+            String scriptLanguage = reader.getAttributeValue(null, LANGUAGE);
+            if (scriptLanguage == null || scriptLanguage.length() < 1) {
+                int i = scriptName.lastIndexOf('.');
+                scriptLanguage = scriptName.substring(i+1);
+            }
+            ScriptImplementation scriptImplementation = new ScriptImplementation(scriptName, scriptLanguage);
 
             // Skip to end element
             while (reader.hasNext()) {
@@ -77,7 +83,7 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
     private void processComponentType(ScriptImplementation scriptImplementation) {
         // Form the URI of the expected .componentType file;
 
-        String ctName = scriptImplementation.getName();
+        String ctName = scriptImplementation.getScriptName();
         int lastDot = ctName.lastIndexOf('.');
         ctName = ctName.substring(0, lastDot) + ".componentType";
         
@@ -94,8 +100,8 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
         try {
 
             writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_SCRIPT);
-            if (scriptImplementation.getName() != null) {
-                writer.writeAttribute(SCRIPT, scriptImplementation.getName());
+            if (scriptImplementation.getScriptName() != null) {
+                writer.writeAttribute(SCRIPT, scriptImplementation.getScriptName());
             }
             writer.writeEndElement();
 
@@ -106,10 +112,10 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
 
     public void resolve(ScriptImplementation scriptImplementation, ArtifactResolver resolver) throws ContributionResolveException {
 
-        scriptImplementation.setScriptSrc(readScript(scriptImplementation.getName()));
+        scriptImplementation.setScriptSrc(readScript(scriptImplementation.getScriptName()));
 
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        String scriptURI = cl.getResource(scriptImplementation.getName()).toString();
+        String scriptURI = cl.getResource(scriptImplementation.getScriptName()).toString();
         int lastDot = scriptURI.lastIndexOf('.');
         String ctURI = scriptURI.substring(0, lastDot) + ".componentType";
         ComponentType ct = scriptImplementation.getComponentType();
