@@ -19,10 +19,11 @@
 
 package org.apache.tuscany.implementation.script;
 
-import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -47,11 +48,13 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
 
     private ScriptImplementation impl;
     private ComponentContext componentContext;
+    private Map<String, Object> references;
 
     public ScriptComponent(URI uri, URI groupId, ScriptImplementation impl) {
         super(uri, null, null, groupId, 50);
         this.impl = impl;
         componentContext = new ComponentContextImpl(this);
+        references = new HashMap<String, Object>();
     }
 
     public void configureProperty(String propertyName) {
@@ -70,31 +73,27 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
         return componentContext;
     }
 
+    @SuppressWarnings("unchecked")
     public InstanceWrapper createInstanceWrapper() throws ObjectCreationException {
         return new InstanceWrapperBase(createInstance());
     }
 
     public Object createInstance() throws ObjectCreationException {
         try {
-            
-            // TODO: classloader?
-            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-           
+
             ScriptEngineManager manager = new ScriptEngineManager();
+            
+            for (String referenceName : references.keySet()) {
+                Object reference = references.get(referenceName);
+                manager.put(referenceName, reference);
+            }
+            
             ScriptEngine engine = manager.getEngineByExtension(impl.getScriptLanguage());
             if (engine == null) {
                 throw new ObjectCreationException("no script engine found for language: " + impl.getScriptLanguage());
             }
            
-            Reader reader;
-//            if (impl.getInlineSrc() == null) {
-//                URL url = impl.getClassLoader().getResource(impl.getScriptName());
-//                reader = new InputStreamReader(url.openStream());
-//            } else {
-            reader = new StringReader(impl.getScriptSrc());
-//            }
-                       
-            engine.eval(reader);
+            engine.eval(new StringReader(impl.getScriptSrc()));
            
             return engine;
            
@@ -110,7 +109,19 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
     public void attachCallbackWire(Wire arg0) {
     }
 
-    public void attachWire(Wire arg0) {
+    public void attachWire(Wire wire) {
+        references.put(wire.getSourceUri().getFragment(), createWireProxy(wire));
+    }
+
+    protected Object createWireProxy(Wire wire) {
+        // TODO: this is completly wrong :) Need to create a proxy wraping the wire
+        Object ref;
+        try {
+            ref = wire.getTargetInstance();
+        } catch (TargetResolutionException e) {
+            throw new RuntimeException(e);
+        }
+        return ref;
     }
 
     public void attachWires(List<Wire> arg0) {
@@ -139,150 +150,4 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
         // TODO Auto-generated method stub
         return null;
     }
-    // protected ScriptComponent(URI name,
-    // ScriptImplementation implementation,
-    // ProxyService proxyService,
-    // WorkContext workContext,
-    // URI groupId,
-    // int initLevel) {
-    // super(name, proxyService, workContext, groupId, initLevel);
-    // impl = implementation;
-    // }
-    //
-    // public TargetInvoker createTargetInvoker(String targetName, Operation
-    // operation) {
-    // return new ScriptInvoker(operation.getName(), this, scopeContainer,
-    // workContext);
-    // }
-    //
-    // @SuppressWarnings("unchecked")
-    // public InstanceWrapper<?> createInstanceWrapper() throws
-    // ObjectCreationException {
-    // try {
-    //
-    // Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-    // // TODO: classloader?
-    //
-    // ScriptEngineManager manager = new ScriptEngineManager();
-    // ScriptEngine engine =
-    // manager.getEngineByExtension(impl.getScriptLanguage());
-    // if (engine == null) {
-    // throw new ObjectCreationException("no script engine found for language: "
-    // + impl.getScriptLanguage());
-    // }
-    //
-    // Reader reader;
-    // if (impl.getInlineSrc() == null) {
-    // URL url = impl.getClassLoader().getResource(impl.getScriptName());
-    // reader = new InputStreamReader(url.openStream());
-    // } else {
-    // reader = new StringReader(impl.getInlineSrc());
-    // }
-    //            
-    // engine.eval(reader);
-    //
-    // return new InstanceWrapperBase(engine);
-    //
-    // } catch (ScriptException e) {
-    // throw new ObjectCreationException(e);
-    // } catch (IOException e) {
-    // throw new ObjectCreationException(e);
-    // }
-    // }
-    //
-    // // TODO: move all the rest to SPI extension
-    //
-    // @Deprecated
-    // public Object createInstance() throws ObjectCreationException {
-    // throw new UnsupportedOperationException();
-    // }
-    //
-    // public Object getAssociatedTargetInstance() throws
-    // TargetResolutionException {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // public Object getTargetInstance() throws TargetResolutionException {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // public void attachCallbackWire(Wire wire) {
-    // // TODO Auto-generated method stub
-    //
-    // }
-    //
-    // public void attachWire(Wire wire) {
-    // assert wire.getSourceUri().getFragment() != null;
-    // String referenceName = wire.getSourceUri().getFragment();
-    // List<Wire> wireList = wires.get(referenceName);
-    // if (wireList == null) {
-    // wireList = new ArrayList<Wire>();
-    // wires.put(referenceName, wireList);
-    // }
-    // wireList.add(wire);
-    // // Member member = referenceSites.get(referenceName);
-    // // if (member != null) {
-    // // injectors.add(createInjector(member, wire));
-    // // }
-    // // // cycle through constructor param names as well
-    // // for (int i = 0; i < constructorParamNames.size(); i++) {
-    // // if (referenceName.equals(constructorParamNames.get(i))) {
-    // // ObjectFactory[] initializerFactories =
-    // instanceFactory.getInitializerFactories();
-    // // initializerFactories[i] =
-    // createWireFactory(constructorParamTypes.get(i), wire);
-    // // break;
-    // // }
-    // // }
-    // // //TODO error if ref not set on constructor or ref site
-    //
-    // }
-    //
-    //
-    // public void attachWires(List<Wire> attachWires) {
-    // assert attachWires.size() > 0;
-    // assert attachWires.get(0).getSourceUri().getFragment() != null;
-    // String referenceName = attachWires.get(0).getSourceUri().getFragment();
-    // List<Wire> wireList = wires.get(referenceName);
-    // if (wireList == null) {
-    // wireList = new ArrayList<Wire>();
-    // wires.put(referenceName, wireList);
-    // }
-    // wireList.addAll(attachWires);
-    // // Member member = referenceSites.get(referenceName);
-    // // if (member == null) {
-    // // if (constructorParamNames.contains(referenceName)) {
-    // // // injected on the constructor
-    // // throw new UnsupportedOperationException();
-    // // } else {
-    // // throw new NoAccessorException(referenceName);
-    // // }
-    // // }
-    // //
-    // // Class<?> type =
-    // attachWires.get(0).getSourceContract().getInterfaceClass();
-    // // if (type == null) {
-    // // throw new NoMultiplicityTypeException("Java interface must be
-    // specified for multiplicity", referenceName);
-    // // }
-    // // injectors.add(createMultiplicityInjector(member, type, wireList));
-    //
-    // }
-    //
-    // public List<Wire> getWires(String name) {
-    // return wires.get(name);
-    // }
-    //
-    // public TargetInvoker createTargetInvoker(String targetName,
-    // PhysicalOperationDefinition operation) {
-    // throw new UnsupportedOperationException();
-    // }
-    //
-    // protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire
-    // wire) {
-    // return new WireObjectFactory<B>(interfaze, wire, proxyService);
-    // }
-
 }
