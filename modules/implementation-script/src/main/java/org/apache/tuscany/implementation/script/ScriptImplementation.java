@@ -32,15 +32,21 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
 
     private String scriptName;
     private String scriptSrc;
+    private String scriptLanguage;
     private ComponentType componentType;
 
-    public ScriptImplementation(String scriptName) {
+    public ScriptImplementation(String scriptName, String scriptLanguage) {
         this.scriptName = scriptName;
+        this.scriptLanguage = scriptLanguage;
         setUnresolved(true);
     }
 
-    public String getName() {
+    public String getScriptName() {
         return scriptName;
+    }
+
+    public String getScriptLanguage() {
+        return scriptLanguage;
     }
 
     public String getScriptSrc() {

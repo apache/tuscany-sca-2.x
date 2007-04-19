@@ -16,7 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
- 
-function sayHello(s) {
-   return "Hello " + s;
+
+package org.apache.tuscany.implementation.script.itests.helloworld;
+
+
+public class JythonHelloWorldTestCase extends AbstractHelloWorldTestCase {
+    // super class does it all getting composite based on this class name
 }

@@ -81,17 +81,17 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
            
             ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByExtension("js");
+            ScriptEngine engine = manager.getEngineByExtension(impl.getScriptLanguage());
             if (engine == null) {
-                throw new ObjectCreationException("no script engine found for language: " + "js");
+                throw new ObjectCreationException("no script engine found for language: " + impl.getScriptLanguage());
             }
            
             Reader reader;
 //            if (impl.getInlineSrc() == null) {
-//            URL url = impl.getClassLoader().getResource(impl.getScriptName());
-//            reader = new InputStreamReader(url.openStream());
+//                URL url = impl.getClassLoader().getResource(impl.getScriptName());
+//                reader = new InputStreamReader(url.openStream());
 //            } else {
-            reader = new StringReader("function sayHello(s) { return 'Hello ' + s; }");
+            reader = new StringReader(impl.getScriptSrc());
 //            }
                        
             engine.eval(reader);
