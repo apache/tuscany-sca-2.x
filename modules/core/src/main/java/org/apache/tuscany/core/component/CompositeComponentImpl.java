@@ -69,7 +69,7 @@ public class CompositeComponentImpl extends CompositeComponentExtension {
     }
     
     public void configureProperty(String propertyName) {
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
         
     }
 

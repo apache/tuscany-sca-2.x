@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.deployer;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +27,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
@@ -33,8 +35,11 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.util.InvalidValueException;
+import org.apache.tuscany.assembly.util.PropertyUtil;
 import org.apache.tuscany.core.builder.ComponentNotFoundException;
 import org.apache.tuscany.core.builder.IncompatibleInterfacesException;
 import org.apache.tuscany.core.builder.WireCreationException;
@@ -50,6 +55,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.builder.Builder;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -118,6 +124,24 @@ public class DeployerImpl implements Deployer {
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
     }
+    
+    private org.apache.tuscany.assembly.Component createDefaultComponentForDeployedComposite(Composite composite) {
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        org.apache.tuscany.assembly.Component componentDef = assemblyFactory.createComponent();
+        componentDef.setName(composite.getName().getLocalPart());
+        componentDef.setImplementation(composite);
+        ComponentProperty componentProperty = null;
+        for (Property property : composite.getProperties()) {
+            componentProperty = assemblyFactory.createComponentProperty();
+            componentProperty.setName(property.getName());
+            componentProperty.setMany(property.isMany());
+            componentProperty.setXSDElement(property.getXSDElement());
+            componentProperty.setXSDType(property.getXSDType());
+            componentProperty.setProperty(property);
+            componentDef.getProperties().add(componentProperty);
+        }
+        return componentDef;
+    }
 
     public Collection<Component> deploy(Composite composite) throws BuilderException, ResolutionException {
         @SuppressWarnings("unchecked")
@@ -128,17 +152,15 @@ public class DeployerImpl implements Deployer {
         DeploymentContext deploymentContext = new RootDeploymentContext(null, groupId, componentId, xmlFactory,
                                                                         scopeContainer);
 
-        // Create a default component implemented by the given composite
-        org.apache.tuscany.assembly.Component componentDef = new DefaultAssemblyFactory().createComponent();
-        componentDef.setName(composite.getName().getLocalPart());
-        componentDef.setImplementation(composite);
-
+        
+        org.apache.tuscany.assembly.Component componentDef = 
+            createDefaultComponentForDeployedComposite(composite);
+        
         // Adjust the composite graph and wire the references with SCA bindings
         processSCABinding(composite);
 
-        // Build runtime artifacts using the builders
         builder.build(componentDef, deploymentContext);
-
+        
         // Register all components with the component manager
         Collection<Component> components = deploymentContext.getComponents().values();
         for (Component toRegister : components) {
@@ -156,7 +178,6 @@ public class DeployerImpl implements Deployer {
             Object model = componentManager.getModelObject(Object.class, scaObject);
             if (model instanceof org.apache.tuscany.assembly.Component) {
                 connect((Component)scaObject, (org.apache.tuscany.assembly.Component)model);
-                configureProperties((Component)scaObject, (org.apache.tuscany.assembly.Component)model);
             } else if (model instanceof CompositeService) {
                 try {
                     connect((Service)scaObject, (CompositeService)model);
@@ -209,20 +230,7 @@ public class DeployerImpl implements Deployer {
             }
         }
     }
-
-    public void configureProperties(Component source, org.apache.tuscany.assembly.Component definition)
-        throws BuilderException {
-        if (source == null) {
-            throw new ComponentNotFoundException("Source not found", URI.create(definition.getName()));
-        }
-
-        for (ComponentProperty property : definition.getProperties()) {
-            if (property.getValue() != null) {
-                source.configureProperty(property.getName());
-            }
-        }
-    }
-
+    
     public void connect(Component source, org.apache.tuscany.assembly.Component definition) throws WiringException {
 
         if (definition.getImplementation() instanceof Composite) {
