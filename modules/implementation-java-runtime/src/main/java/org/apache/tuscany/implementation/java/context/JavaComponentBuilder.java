@@ -82,16 +82,15 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         JavaAtomicComponent component) {
         for (Resource resource : componentType.getResources().values()) {
             String name = resource.getName();
-            ObjectFactory<?> objectFactory = null;
-            if (objectFactory == null) {
-                Class<?> type = resource.getElement().getType();
-                if (ComponentContext.class.equals(type)) {
-                    objectFactory = new PojoComponentContextFactory(component);
-                } else {
-                    boolean optional = resource.isOptional();
-                    String mappedName = resource.getMappedName();
-                    objectFactory = createResourceObjectFactory(type, mappedName, optional, host);
-                }
+            
+            ObjectFactory<?> objectFactory = (ObjectFactory<?>) component.getConfiguration().getFactories().get(resource.getElement());
+            Class<?> type = resource.getElement().getType();
+            if (ComponentContext.class.equals(type)) {
+                objectFactory = new PojoComponentContextFactory(component);
+            } else {
+                boolean optional = resource.isOptional();
+                String mappedName = resource.getMappedName();
+                objectFactory = createResourceObjectFactory(type, mappedName, optional, host);
             }
             component.addResourceFactory(name, objectFactory);
         }

@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.component.DuplicateNameException;
  */
 public class JavaObjectRegistrationTestCase extends TestCase {
     private ComponentManager componentManager;
-    
+
     private <S> ComponentService createContract(Class<S> type) {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         ComponentService contract = factory.createComponentService();
@@ -49,16 +49,17 @@ public class JavaObjectRegistrationTestCase extends TestCase {
         javaInterfaceContract.setInterface(javaInterface);
         return contract;
     }
-    
+
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         URI uri = URI.create("foo");
-        
+
         ComponentService contract = createContract(MockComponent.class);
         componentManager.registerJavaObject(uri, contract, instance);
         Component component = componentManager.getComponent(URI.create("foo"));
         assertTrue(component instanceof AtomicComponent);
-        MockComponent resolvedInstance = (MockComponent) ((AtomicComponent) component).getTargetInstance();
+        MockComponent resolvedInstance = (MockComponent)((AtomicComponent)component).createObjectFactory()
+            .getInstance();
         assertSame(instance, resolvedInstance);
     }
 

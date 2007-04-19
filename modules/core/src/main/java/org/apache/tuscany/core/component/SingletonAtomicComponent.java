@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
@@ -94,7 +95,7 @@ public class SingletonAtomicComponent<T> extends AbstractComponentExtension impl
     }
 
     public InstanceWrapper<T> createInstanceWrapper() throws ObjectCreationException {
-        throw new UnsupportedOperationException();
+        return new InstanceWrapperBase<T>(instance);
     }
 
     public ObjectFactory<T> createObjectFactory() {

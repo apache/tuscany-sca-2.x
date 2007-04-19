@@ -76,7 +76,7 @@ public interface ContributionService {
 
     /**
      * Adds or updates a deployment composite using a supplied composite
-     * ("composite by value" � a data structure, not an existing resource in the
+     * ("composite by value" - a data structure, not an existing resource in the
      * domain) to the contribution identified by a supplied contribution URI.
      * The added or updated deployment composite is given a relative URI that
      * matches the "name" attribute of the composite, with a ".composite"

@@ -74,31 +74,4 @@ public interface AtomicComponent<T> extends Component {
      */
     ObjectFactory<T> createObjectFactory();
 
-    /**
-     * Creates a new implementation instance, generally used as a callback by a {@link
-     * org.apache.tuscany.spi.component.ScopeContainer}.
-     *
-     * @return the instance
-     * @throws ObjectCreationException
-     */
-    @Deprecated
-    Object createInstance() throws ObjectCreationException;
-
-    /**
-     * Removes an implementation instance associated with the current invocation context.
-     *
-     * @throws ComponentException
-     */
-    @Deprecated
-    void removeInstance() throws ComponentException;
-
-    /**
-     * Returns the target instance associated with the component. A target instance is the actual object a request is
-     * dispatched to sans wire chain.
-     *
-     * @throws TargetResolutionException
-     */
-    @Deprecated
-    Object getTargetInstance() throws TargetResolutionException;
-
 }

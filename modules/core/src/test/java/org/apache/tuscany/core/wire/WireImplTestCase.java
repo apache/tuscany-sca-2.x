@@ -18,10 +18,11 @@
  */
 package org.apache.tuscany.core.wire;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
@@ -30,8 +31,8 @@ import org.easymock.EasyMock;
 public class WireImplTestCase extends TestCase {
 
     /**
-     * Tests that the target wire returns null if there is no connected wire. This behavior is needed for optional
-     * autowires.
+     * Tests that the target wire returns null if there is no connected wire.
+     * This behavior is needed for optional autowires.
      */
     public void testGetNonExistentTarget() throws Exception {
         Wire wire = new WireImpl();
@@ -41,7 +42,7 @@ public class WireImplTestCase extends TestCase {
     public void testTargetInstance() throws Exception {
         Wire wire = new WireImpl();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getTargetInstance()).andReturn(new Object());
+        EasyMock.expect(component.createObjectFactory()).andReturn(new SingletonObjectFactory<Object>(new Object()));
         EasyMock.replay(component);
         wire.setTarget(component);
         assertNotNull(wire.getTargetInstance());

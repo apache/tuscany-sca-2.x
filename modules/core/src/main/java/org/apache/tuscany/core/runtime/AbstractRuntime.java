@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_DEPLOYER;
-import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_SYSTEM;
-import static org.apache.tuscany.spi.bootstrap.ComponentNames.TUSCANY_SYSTEM_ROOT;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,7 +41,6 @@ import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.services.classloading.ClassLoaderRegistryImpl;
 import org.apache.tuscany.core.util.IOHelper;
@@ -54,18 +49,15 @@ import org.apache.tuscany.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
-import org.apache.tuscany.host.monitor.FormatterRegistry;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.RegistrationException;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
@@ -79,20 +71,6 @@ import commonj.work.WorkManager;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyRuntime<I> {
-    private static final URI MONITOR_URI = TUSCANY_SYSTEM_ROOT.resolve("MonitorFactory");
-
-    private static final URI COMPONENT_MGR_URI = TUSCANY_SYSTEM_ROOT.resolve("ComponentManager");
-
-    private static final URI SCOPE_REGISTRY_URI = TUSCANY_SYSTEM_ROOT.resolve("ScopeRegistry");
-
-    private static final URI WORK_CONTEXT_URI = TUSCANY_SYSTEM.resolve("WorkContext");
-    
-    private static final URI WORK_SCHEDULER_URI = TUSCANY_SYSTEM.resolve("WorkScheduler");
-
-    private static final URI RUNTIME_INFO_URI = TUSCANY_SYSTEM_ROOT.resolve("RuntimeInfo");
-
-    private static final URI CLASSLOADER_REGISTRY_URI = TUSCANY_SYSTEM_ROOT.resolve("ClassLoaderRegistry");
-
     private static final URI HOST_CLASSLOADER_ID = URI.create("sca://./hostClassLoader");
 
     private static final URI BOOT_CLASSLOADER_ID = URI.create("sca://./bootClassLoader");
@@ -215,10 +193,9 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
         extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
 
-        registerSystemComponent(TUSCANY_DEPLOYER, Deployer.class, deployer);
-        registerSystemComponent(WORK_CONTEXT_URI, WorkContext.class, new WorkContextImpl());
+        extensionRegistry.addExtensionPoint(Deployer.class, deployer);
         WorkManager workManager = new ThreadPoolWorkManager(10);
-        registerSystemComponent(WORK_SCHEDULER_URI, WorkScheduler.class, new Jsr237WorkScheduler(workManager)); //lresende
+        extensionRegistry.addExtensionPoint(WorkScheduler.class, new Jsr237WorkScheduler(workManager)); //lresende
 
         this.scopeRegistry = bootstrapper.getScopeRegistry();
 
@@ -270,33 +247,16 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     protected void registerBaselineSystemComponents() throws InitializationException {
         // register the RuntimeInfo provided by the host
-        registerSystemComponent(RUNTIME_INFO_URI, runtimeInfoType, runtimeInfo);
-
-        // register the MonitorFactory provided by the host
-        List<Class<?>> monitorServices = new ArrayList<Class<?>>();
-        monitorServices.add(MonitorFactory.class);
-        monitorServices.add(FormatterRegistry.class);
-        registerSystemComponent(MONITOR_URI, monitorServices, getMonitorFactory());
+        extensionRegistry.addExtensionPoint(runtimeInfoType, runtimeInfo);
 
         // register the ClassLoaderRegistry
-        registerSystemComponent(CLASSLOADER_REGISTRY_URI, ClassLoaderRegistry.class, classLoaderRegistry);
+        extensionRegistry.addExtensionPoint(ClassLoaderRegistry.class, classLoaderRegistry);
 
         // register the ComponentManager to that the fabric can wire to it
-        registerSystemComponent(COMPONENT_MGR_URI, ComponentManager.class, componentManager);
+        extensionRegistry.addExtensionPoint(ComponentManager.class, componentManager);
 
         // register the ScopeRegistry
-        registerSystemComponent(SCOPE_REGISTRY_URI, ScopeRegistry.class, scopeRegistry);
-    }
-
-    protected <S, I extends S> void registerSystemComponent(URI uri, Class<S> type, I component)
-        throws InitializationException {
-        try {
-            ComponentService contract = createContract(type);
-            componentManager.registerJavaObject(uri, contract, component);
-            extensionRegistry.addExtensionPoint(type, component);
-        } catch (RegistrationException e) {
-            throw new InitializationException(e);
-        }
+        extensionRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
     }
 
     private <S> ComponentService createContract(Class<S> type) {
@@ -332,21 +292,11 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     }
 
     protected WorkContext getWorkContext() {
-        try {
-            AtomicComponent component = (AtomicComponent)getComponentManager().getComponent(WORK_CONTEXT_URI);
-            return (WorkContext)component.getTargetInstance();
-        } catch (TargetResolutionException e) {
-            throw new AssertionError(e);
-        }
+        return extensionRegistry.getExtensionPoint(WorkContext.class);
     }
 
     protected Deployer getDeployer() {
-        try {
-            AtomicComponent component = (AtomicComponent)getComponentManager().getComponent(TUSCANY_DEPLOYER);
-            return (Deployer)component.getTargetInstance();
-        } catch (TargetResolutionException e) {
-            throw new AssertionError(e);
-        }
+        return extensionRegistry.getExtensionPoint(Deployer.class);
     }
 
     /**
