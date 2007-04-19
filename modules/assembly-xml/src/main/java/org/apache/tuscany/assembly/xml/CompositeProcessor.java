@@ -460,6 +460,13 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
             include = resolver.resolve(Composite.class, include);
             composite.getIncludes().set(i, include);
         }
+
+        // resolve and extensions to the standard SCDL that appear in the 
+        // SCDL. 
+        for (int i = 0, n = composite.getExtensions().size(); i < n; i++) {
+            Object model = composite.getExtensions().get(i);
+            extensionProcessor.resolve(model, resolver);
+        }
         
         // Resolve component implementations, services and references 
         for (Component component: composite.getComponents()) {
@@ -478,12 +485,6 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         // Resolve composite services and references
         resolveContracts(composite.getServices(), resolver);
         resolveContracts(composite.getReferences(), resolver);
-
-        for (int i = 0, n = composite.getExtensions().size(); i < n; i++) {
-            Object model = composite.getExtensions().get(i);
-            extensionProcessor.resolve(model, resolver);
-        }
-
     }
 
     public void wire(Composite composite) throws ContributionWireException {
