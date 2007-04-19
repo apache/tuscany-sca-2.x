@@ -415,4 +415,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         return createInstanceWrapper().getInstance();
     }
 
+    public PojoConfiguration<?> getConfiguration() {
+        return configuration;
+    }
+
 }

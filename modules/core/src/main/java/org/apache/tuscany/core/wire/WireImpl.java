@@ -21,14 +21,11 @@ package org.apache.tuscany.core.wire;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -115,7 +112,7 @@ public class WireImpl implements Wire {
         if (target == null) {
             return null;
         }
-        return target.getTargetInstance();
+        return target.createObjectFactory().getInstance();
     }
 
     public void setTarget(AtomicComponent target) {

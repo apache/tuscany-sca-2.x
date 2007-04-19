@@ -73,7 +73,7 @@ public class JavaBuilderPropertyTestCaseFIXME extends TestCase {
         propertyValue.setName(property.getName());
         definition.getProperties().add(propertyValue);
         AtomicComponent component = builder.build(definition, deploymentContext);
-        JavaBuilderPropertyTestCaseFIXME.Foo foo = (JavaBuilderPropertyTestCaseFIXME.Foo)component.createInstance();
+        JavaBuilderPropertyTestCaseFIXME.Foo foo = (JavaBuilderPropertyTestCaseFIXME.Foo)component.createObjectFactory().getInstance();
         assertEquals("foo", foo.getTest());
     }
 
@@ -101,7 +101,7 @@ public class JavaBuilderPropertyTestCaseFIXME extends TestCase {
         propertyValue.setName(property.getName());
         definition.getProperties().add(propertyValue);
         AtomicComponent component = builder.build(definition, deploymentContext);
-        FooInt foo = (FooInt)component.createInstance();
+        FooInt foo = (FooInt)component.createObjectFactory().getInstance();
         assertEquals(1, foo.getTest());
     }
 

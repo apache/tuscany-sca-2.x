@@ -102,7 +102,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     public Deployer createDeployer(ExtensionPointRegistry extensionRegistry) {
         ScopeRegistry scopeRegistry = getScopeRegistry();
         BuilderRegistry builder = createBuilder(scopeRegistry);
-        WorkContext workContext = new WorkContextImpl();
+        WorkContext workContext = extensionRegistry.getExtensionPoint(WorkContext.class);
         WorkManager workManager = new ThreadPoolWorkManager(10);
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
         DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager, workScheduler, workContext);

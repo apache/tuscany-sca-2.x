@@ -140,6 +140,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         // Create a work context
         //WorkContext workContext = new SimpleWorkContext();
         WorkContext workContext = new WorkContextImpl();
+        extensionRegistry.addExtensionPoint(WorkContext.class, workContext);
         workContext.setIdentifier(Scope.COMPOSITE, DEFAULT_COMPOSITE);
         WorkContextTunnel.setThreadWorkContext(workContext);
 
