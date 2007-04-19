@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.extension;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +44,7 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
     protected final List<Reference> references = new ArrayList<Reference>();
     protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected ScopeContainer scopeContainer;
-    private Map<String, Property> defaultPropertyValues;
+    private Map<String, Property> properties = new Hashtable<String, Property>();
 
     /**
      * Initializes component name and parent.
@@ -62,12 +63,12 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
         this.scopeContainer = scopeContainer;
     }
 
-    public Map<String, Property> getDefaultPropertyValues() {
-        return defaultPropertyValues;
+    public Map<String, Property> getProperties() {
+        return properties;
     }
 
-    public void setDefaultPropertyValues(Map<String, Property> defaultPropertyValues) {
-        this.defaultPropertyValues = defaultPropertyValues;
+    public void setProperties(Map<String, Property> properties) {
+        this.properties = properties;
     }
 
     public boolean isOptimizable() {
