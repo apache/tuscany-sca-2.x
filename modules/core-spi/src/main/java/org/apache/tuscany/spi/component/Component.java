@@ -52,19 +52,19 @@ public interface Component extends Invocable {
     List<Wire> getWires(String name);
 
     /**
-     * Returns the default property values associated with the component.
+     * Returns the properties associated with the component.
      * 
-     * @return default property values associated with the component.
+     * @return properties associated with the component.
      */
-    Map<String, Property> getDefaultPropertyValues();
+    Map<String, Property> getProperties();
 
     /**
-     * Sets the default property values associated with the component.
+     * Sets the properties associated with the component.
      * 
-     * @param defaultPropertyValues Default property values associated with the
+     * @param properties Properties associated with the
      *            component.
      */
-    void setDefaultPropertyValues(Map<String, Property> defaultPropertyValues);
+    void setProperties(Map<String, Property> properties);
 
     /**
      * Returns the ScopeContainer responsible for managing implementation
@@ -73,8 +73,6 @@ public interface Component extends Invocable {
      * @return the scope container
      */
     ScopeContainer getScopeContainer();
-
-    void configureProperty(String propertyName);
 
     /**
      * Returns the component scope
