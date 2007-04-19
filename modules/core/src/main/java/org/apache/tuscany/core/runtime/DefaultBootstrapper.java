@@ -24,7 +24,6 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.AbstractScopeContainer;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;

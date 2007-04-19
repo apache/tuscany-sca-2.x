@@ -18,12 +18,9 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.util.List;
-
 import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.ProxyService;
 
@@ -36,23 +33,24 @@ public abstract class ProxyServiceExtension implements ProxyService {
     protected WorkContext context;
     protected InterfaceContractMapper contractMapper;
 
-    protected ProxyServiceExtension(WorkContext context) {
+    protected ProxyServiceExtension(WorkContext context, InterfaceContractMapper mapper) {
         this.context = context;
+        this.contractMapper = mapper;
     }
 
-    // FIXME: How to improve the performance for the lookup
-    private Operation getOperation(List<Operation> operations, String name) {
-        for (Operation op : operations) {
-            if (op.getName().equals(name)) {
-                return op;
-            }
-        }
-        return null;
-    }
-
-    public boolean checkCompatibility(InterfaceContract source, InterfaceContract target, boolean ignoreCallback, boolean silent)
-        throws IncompatibleInterfaceContractException {
+    public boolean checkCompatibility(InterfaceContract source,
+                                      InterfaceContract target,
+                                      boolean ignoreCallback,
+                                      boolean silent) throws IncompatibleInterfaceContractException {
         return contractMapper.checkCompatibility(source, target, ignoreCallback, silent);
+    }
+
+    public void setInterfaceContractMapper(InterfaceContractMapper contractMapper) {
+        this.contractMapper = contractMapper;
+    }
+
+    public void setWorkContext(WorkContext context) {
+        this.context = context;
     }
 
 }

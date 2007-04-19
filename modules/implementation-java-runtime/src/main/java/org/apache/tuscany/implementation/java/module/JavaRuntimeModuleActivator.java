@@ -50,12 +50,12 @@ import org.apache.tuscany.implementation.java.introspect.impl.ScopeProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.implementation.java.proxy.JDKProxyService;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
@@ -65,7 +65,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(ProxyService.class, new JDKProxyService(WorkContextTunnel.getThreadWorkContext()));
+        map.put(ProxyService.class, new JDKProxyService());
         map.put(JavaClassIntrospectorExtensionPoint.class, new DefaultJavaClassIntrospector());
         map.put(JavaInterfaceIntrospectorExtensionPoint.class, new DefaultJavaInterfaceIntrospector());
         return map;
@@ -75,6 +75,14 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
      * @see org.apache.tuscany.core.ModuleActivator#start(org.apache.tuscany.core.ExtensionPointRegistry)
      */
     public void start(ExtensionPointRegistry extensionPointRegistry) {
+        
+        // Inject InterfaceContractMapper and WorkContext into JDKProxyService
+        JDKProxyService proxyService = (JDKProxyService) extensionPointRegistry.getExtensionPoint(ProxyService.class);
+        InterfaceContractMapper mapper = extensionPointRegistry.getExtensionPoint(InterfaceContractMapper.class);
+        proxyService.setInterfaceContractMapper(mapper);
+        WorkContext workContext = extensionPointRegistry.getExtensionPoint(WorkContext.class);
+        proxyService.setWorkContext(workContext);
+        
         JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = extensionPointRegistry
             .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
 

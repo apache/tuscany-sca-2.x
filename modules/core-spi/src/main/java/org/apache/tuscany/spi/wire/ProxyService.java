@@ -22,8 +22,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
 import org.osoa.sca.CallableReference;
 
 /**

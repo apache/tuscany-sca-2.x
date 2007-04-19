@@ -27,12 +27,15 @@ import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.implementation.java.proxy.JDKProxyService;
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JDKProxyTestCaseFIXME extends TestCase {
+public class JDKProxyTestCase extends TestCase {
     private JDKProxyService proxyService;
 
     public void testCreateProxy() {
@@ -40,6 +43,9 @@ public class JDKProxyTestCaseFIXME extends TestCase {
         Wire wire = new WireImpl();
         wire.setSourceUri(uri);
         Contract contract = new DefaultAssemblyFactory().createComponentReference();
+        InterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        interfaceContract.setInterface(new JavaInterfaceImpl());
+        contract.setInterfaceContract(interfaceContract);
         wire.setSourceContract(contract.getInterfaceContract());
         TestInterface proxy = proxyService.createProxy(TestInterface.class, wire);
         assertTrue(Proxy.isProxyClass(proxy.getClass()));
@@ -47,7 +53,7 @@ public class JDKProxyTestCaseFIXME extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        proxyService = new JDKProxyService();
+        proxyService = new JDKProxyService(null, null);
     }
 
     public static interface TestInterface {
