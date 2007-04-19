@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.SingletonObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetResolutionException;
