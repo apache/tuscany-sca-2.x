@@ -61,7 +61,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospec
         }
         DataType outputType = operation.getOutputType();
         DataType<List<DataType>> inputType = operation.getInputType();
-        if (outputType != null || inputType == null) {
+        if (outputType == null || inputType == null) {
             return;
         }
         if (inputType.getLogical().size() != 1) {
@@ -128,7 +128,8 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospec
                 dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
 
-            introspectWrapperStyle(operation);
+            // FIXME: Do we want to heuristically check the wrapper style?
+            // introspectWrapperStyle(operation);
         }
     }
 }
