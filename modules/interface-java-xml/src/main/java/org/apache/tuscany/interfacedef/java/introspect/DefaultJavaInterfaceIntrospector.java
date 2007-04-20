@@ -122,7 +122,10 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
                 conversationSequence = Operation.ConversationSequence.CONVERSATION_CONTINUE;
             }
 
-            DataType<Class> returnDataType = new DataTypeImpl<Class>(UNKNOWN_DATABINDING, returnType, returnType);
+            // Set outputType to null for void
+            DataType<Class> returnDataType = returnType == void.class ? null
+                                                                     : new DataTypeImpl<Class>(UNKNOWN_DATABINDING,
+                                                                                               returnType, returnType);
             List<DataType> paramDataTypes = new ArrayList<DataType>(paramTypes.length);
             for (Class paramType : paramTypes) {
                 paramDataTypes.add(new DataTypeImpl<Class>(UNKNOWN_DATABINDING, paramType, paramType));

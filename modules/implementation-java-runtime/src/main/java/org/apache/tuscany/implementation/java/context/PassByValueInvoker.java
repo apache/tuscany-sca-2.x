@@ -29,9 +29,7 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * An interceptor to enforce pass-by-value semantics for remotable interfaces
@@ -58,10 +56,10 @@ public class PassByValueInvoker extends JavaTargetInvoker {
     public Message invoke(Message msg) {
         Object obj = msg.getBody();
         msg.setBody(copy((Object[])obj));
-        
+
         Message result = super.invoke(msg);
 
-        if (!result.isFault()) {
+        if (!result.isFault() && operation.getOutputType() != null) {
             String dataBindingId = operation.getOutputType().getDataBinding();
             DataBinding dataBinding = registry.getDataBinding(dataBindingId);
             result.setBody(copy(result.getBody(), dataBinding));
