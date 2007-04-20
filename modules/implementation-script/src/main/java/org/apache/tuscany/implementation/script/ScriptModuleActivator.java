@@ -24,6 +24,8 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 public class ScriptModuleActivator implements ModuleActivator {
@@ -40,6 +42,14 @@ public class ScriptModuleActivator implements ModuleActivator {
 
         builder = new ScriptComponentBuilder();
         builder.setBuilderRegistry(builderRegistry);
+        
+        Mediator mediator = registry.getExtensionPoint(Mediator.class);
+        ScriptPropertyValueObjectFactory factory = new ScriptPropertyValueObjectFactory(mediator);
+        builder.setPropertyValueObjectFactory(factory);
+
+        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
+        builder.setDataBindingRegistry(dataBindingRegistry);
+        
         builder.init();
     }
 

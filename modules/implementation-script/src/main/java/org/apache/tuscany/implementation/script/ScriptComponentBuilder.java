@@ -22,13 +22,16 @@ package org.apache.tuscany.implementation.script;
 import java.net.URI;
 
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 
 public class ScriptComponentBuilder extends ComponentBuilderExtension<ScriptImplementation> {
-
+    private ScriptPropertyValueObjectFactory propertyValueObjectFactory = null;
+    private DataBindingExtensionPoint dataBindingRegistry;
+    
     public ScriptComponentBuilder() {
     }
 
@@ -36,12 +39,25 @@ public class ScriptComponentBuilder extends ComponentBuilderExtension<ScriptImpl
         URI id = URI.create(context.getComponentId() + assemblyComponent.getName());
         ScriptImplementation scriptImplementation = (ScriptImplementation)assemblyComponent.getImplementation();
         ScriptComponent scriptComponent = new ScriptComponent(id, context.getGroupId(), scriptImplementation);
+        scriptComponent.setPropertyValueObjectFactory(propertyValueObjectFactory);
+        scriptComponent.setDataBindingRegistry(dataBindingRegistry);
+        
+        scriptComponent.initializePropertyValueFactories(assemblyComponent.getProperties());
+        
         return scriptComponent;
     }
 
     @Override
     protected Class<ScriptImplementation> getImplementationType() {
         return ScriptImplementation.class;
+    }
+
+    public void setPropertyValueObjectFactory(ScriptPropertyValueObjectFactory propertyValueObjectFactory) {
+        this.propertyValueObjectFactory = propertyValueObjectFactory;
+    }
+
+    public void setDataBindingRegistry(DataBindingExtensionPoint dataBindingRegistry) {
+        this.dataBindingRegistry = dataBindingRegistry;
     }
 
 }

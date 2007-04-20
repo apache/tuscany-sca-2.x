@@ -17,11 +17,15 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance">
+<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+	xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
   <service name="HelloWorldService">
         <interface.java interface="org.apache.tuscany.implementation.script.itests.helloworld.HelloWorld" />
   </service>
+  <property name="greeter" type="xsd:string">Tuscany</property>
 
 </componentType>              
        
