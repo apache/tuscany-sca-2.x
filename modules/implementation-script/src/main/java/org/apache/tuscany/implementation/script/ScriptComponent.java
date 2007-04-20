@@ -29,11 +29,14 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -49,16 +52,17 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
     private ScriptImplementation impl;
     private ComponentContext componentContext;
     private Map<String, Object> references;
+    private Map<String, ObjectFactory<?>> propertyValueFactories;
+    
+    private ScriptPropertyValueObjectFactory propertyValueObjectFactory = null;
+    private DataBindingExtensionPoint dataBindingRegistry;
 
     public ScriptComponent(URI uri, URI groupId, ScriptImplementation impl) {
         super(uri, null, null, groupId, 50);
         this.impl = impl;
         componentContext = new ComponentContextImpl(this);
         references = new HashMap<String, Object>();
-    }
-
-    public void configureProperty(String propertyName) {
-       
+        propertyValueFactories = new HashMap<String, ObjectFactory<?>>();
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean callback)
@@ -80,12 +84,19 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
 
     public Object createInstance() throws ObjectCreationException {
         try {
-
+            ObjectFactory<?> propertyValueFactory = null;
             ScriptEngineManager manager = new ScriptEngineManager();
             
             for (String referenceName : references.keySet()) {
                 Object reference = references.get(referenceName);
                 manager.put(referenceName, reference);
+            }
+            
+            for (String propertyName : propertyValueFactories.keySet()) {
+                propertyValueFactory = propertyValueFactories.get(propertyName);
+                if ( propertyValueFactory != null) {
+                    manager.put(propertyName, propertyValueFactory.getInstance());
+                }
             }
             
             ScriptEngine engine = manager.getEngineByExtension(impl.getScriptLanguage());
@@ -149,5 +160,24 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
     public <B> ServiceReference<B> getServiceReference(Class<B> arg0, String arg1) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void setDataBindingRegistry(DataBindingExtensionPoint dataBindingRegistry) {
+        this.dataBindingRegistry = dataBindingRegistry;
+    }
+
+    public void setPropertyValueObjectFactory(ScriptPropertyValueObjectFactory propertyValueObjectFactory) {
+        this.propertyValueObjectFactory = propertyValueObjectFactory;
+    }
+    
+    public void initializePropertyValueFactories(List<ComponentProperty> properties) {
+        ObjectFactory<?> propertyObjectFactory = null;
+        
+        for (ComponentProperty aProperty : properties) {
+            if (aProperty.getValue() != null) {
+                propertyObjectFactory = propertyValueObjectFactory.createValueFactory(aProperty);
+                propertyValueFactories.put(aProperty.getName(), propertyObjectFactory);
+            }
+        }
     }
 }

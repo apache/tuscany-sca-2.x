@@ -33,6 +33,9 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.ComponentType;
+import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.Reference;
+import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
@@ -123,6 +126,15 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
         ComponentType componentType = resolver.resolve(ComponentType.class, ct);
         if (componentType.isUnresolved()) {
             throw new ContributionResolveException("missing .componentType side file");
+        }
+        for (Reference reference : componentType.getReferences()) {
+            scriptImplementation.getReferences().add(reference);
+        }
+        for (Service service : componentType.getServices()) {
+            scriptImplementation.getServices().add(service);
+        }
+        for (Property property : componentType.getProperties()) {
+            scriptImplementation.getProperties().add(property);
         }
         scriptImplementation.setComponentType(componentType);
     }
