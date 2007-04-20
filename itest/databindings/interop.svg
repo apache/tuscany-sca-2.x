@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\itest\databindings"
+   sodipodi:docname="interop.svg"
+   version="1.0"
+   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\itest\databindings\interop.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path3078"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="428.95418"
+     inkscape:cy="356.33178"
+     inkscape:document-units="px"
+     inkscape:current-layer="g2997"
+     inkscape:window-width="1234"
+     inkscape:window-height="800"
+     inkscape:window-x="27"
+     inkscape:window-y="108" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="matrix(0.979246,0,0,1.158467,-105.7257,-23.34339)">
+      <rect
+         rx="25.230545"
+         ry="12.196672"
+         y="179.85953"
+         x="146.34595"
+         height="288.28497"
+         width="817.08154"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:1.87776983;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"
+         transform="translate(-102.7603,-25.12021)"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">InteropGreeterService</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3332"
+       width="115.66247"
+       height="85.862968"
+       x="77.514153"
+       y="231.09024"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3334"
+       transform="translate(-185.0766,21.58025)"><flowRegion
+         id="flowRegion3336"><rect
+           id="rect3338"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3340">SDO</flowPara><flowPara
+         id="flowPara3379">DefaultGreeter</flowPara><flowPara
+         id="flowPara2019">ServiceClient</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 60.363662,262.93721 L 93.698702,262.93721 L 99.759609,276.06919 L 92.688552,288.19103 L 60.363662,288.19103 L 67.939812,276.06919 L 60.363662,262.93721 z "
+       id="path3343" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 173.6161,261.09893 L 206.95114,261.09893 L 213.01205,274.23091 L 205.94099,286.35275 L 173.6161,286.35275 L 181.19225,274.23091 L 173.6161,261.09893 z "
+       id="path3345" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1985"
+       width="115.66247"
+       height="85.862968"
+       x="681.65045"
+       y="289.48157"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1987"
+       transform="translate(423.3454,80.68594)"><flowRegion
+         id="flowRegion1989"><rect
+           id="rect1991"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1993">SDO</flowPara><flowPara
+         id="flowPara3399">GreeterService</flowPara><flowPara
+         id="flowPara2017">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 664.49995,321.32854 L 697.83499,321.32854 L 703.8959,334.46052 L 696.82484,346.58236 L 664.49995,346.58236 L 672.0761,334.46052 L 664.49995,321.32854 z "
+       id="path1997" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2001"
+       width="115.66247"
+       height="85.862968"
+       x="76.281281"
+       y="356.23575"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2003"
+       transform="translate(-185.5951,150.2971)"><flowRegion
+         id="flowRegion2005"><rect
+           id="rect2007"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2009">SDO</flowPara><flowPara
+         id="flowPara3401">WSGreeter</flowPara><flowPara
+         id="flowPara2021">ServiceClient</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 59.130809,388.08271 L 92.465849,388.08271 L 98.526759,401.21469 L 91.455699,413.33653 L 59.130809,413.33653 L 66.706959,401.21469 L 59.130809,388.08271 z "
+       id="path2013" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 172.38325,386.24443 L 205.71829,386.24443 L 211.7792,399.37641 L 204.70814,411.49825 L 172.38325,411.49825 L 179.9594,399.37641 L 172.38325,386.24443 z "
+       id="path2015" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 226.47114,380.39017 L 271.82375,380.39017 L 280.06966,400.95073 L 270.44943,419.92971 L 226.47114,419.92971 L 236.77856,400.95073 L 226.47114,380.39017 z "
+       id="path3108"
+       inkscape:transform-center-y="-31.845711"
+       inkscape:transform-center-x="27.298337" />
+    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 286.59013,381.79328 L 328.89058,381.79328 L 336.58156,401.62413 L 327.60875,419.92957 L 286.59013,419.92957 L 296.20387,401.62413 L 286.59013,381.79328 z "
+       id="path3110" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3112"
+       transform="matrix(0.654898,0,0,0.869049,51.92158,201.8882)"><flowRegion
+         id="flowRegion3114"><rect
+           id="rect3116"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3120">WS</flowPara><flowPara
+         id="flowPara3124">Reference</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3128"
+       transform="matrix(0.654898,0,0,0.869049,112.0605,203.3723)"><flowRegion
+         id="flowRegion3130"><rect
+           id="rect3132"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3134">WS</flowPara><flowPara
+         id="flowPara3136">Service</flowPara></flowRoot>    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3381"
+       width="115.66247"
+       height="85.862968"
+       x="376.54059"
+       y="229.73444"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3383"
+       transform="translate(113.9499,20.22444)"><flowRegion
+         id="flowRegion3385"><rect
+           id="rect3387"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3389">JAXB</flowPara><flowPara
+         id="flowPara3391">DefaultGreeter</flowPara><flowPara
+         id="flowPara3393">ServiceClient</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 359.39009,261.5814 L 392.72513,261.5814 L 398.78604,274.71338 L 391.71498,286.83522 L 359.39009,286.83522 L 366.96624,274.71338 L 359.39009,261.5814 z "
+       id="path3395" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 472.64253,259.74312 L 505.97757,259.74312 L 512.03848,272.8751 L 504.96742,284.99694 L 472.64253,284.99694 L 480.21868,272.8751 L 472.64253,259.74312 z "
+       id="path3397" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3403"
+       width="115.66247"
+       height="85.862968"
+       x="375.19193"
+       y="355.69083"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3405"
+       transform="translate(112.6012,146.1808)"><flowRegion
+         id="flowRegion3407"><rect
+           id="rect3409"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3411">JAXB</flowPara><flowPara
+         id="flowPara3413">WSGreeter</flowPara><flowPara
+         id="flowPara3415">ServiceClient</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 358.0414,387.53779 L 391.37644,387.53779 L 397.43735,400.66977 L 390.36629,412.79161 L 358.0414,412.79161 L 365.61755,400.66977 L 358.0414,387.53779 z "
+       id="path3417" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 471.29384,385.69951 L 504.62888,385.69951 L 510.68979,398.83149 L 503.61873,410.95333 L 471.29384,410.95333 L 478.86999,398.83149 L 471.29384,385.69951 z "
+       id="path3419" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 531.84342,380.87285 L 577.19603,380.87285 L 585.44194,401.43341 L 575.82171,420.41239 L 531.84342,420.41239 L 542.15084,401.43341 L 531.84342,380.87285 z "
+       id="path3421"
+       inkscape:transform-center-y="-31.845711"
+       inkscape:transform-center-x="27.298337" />
+    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 591.96241,382.27596 L 634.26286,382.27596 L 641.95384,402.10681 L 632.98103,420.41225 L 591.96241,420.41225 L 601.57615,402.10681 L 591.96241,382.27596 z "
+       id="path3423" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3425"
+       transform="matrix(0.654898,0,0,0.869049,357.2939,202.3709)"><flowRegion
+         id="flowRegion3427"><rect
+           id="rect3429"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3431">WS</flowPara><flowPara
+         id="flowPara3433">Reference</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3435"
+       transform="matrix(0.654898,0,0,0.869049,417.4328,203.855)"><flowRegion
+         id="flowRegion3437"><rect
+           id="rect3439"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara3441">WS</flowPara><flowPara
+         id="flowPara3443">Service</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 212.14286,274.09448 L 366.42857,274.80877"
+       id="path3447" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 512.14286,272.66591 L 599.28571,272.66591 L 599.28571,325.52305 L 665.71429,325.52305"
+       id="path3453" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 210.71429,399.80877 L 235.71429,399.80877"
+       id="path3455" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 278.57143,401.23734 L 295.71429,401.23734"
+       id="path3459" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 336.42857,401.95163 L 365.71429,401.95163"
+       id="path3461" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 510.71429,399.80877 L 540.71429,399.80877"
+       id="path3463" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 585,401.95163 L 600.71429,401.95163"
+       id="path3465" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 641.42857,402.66591 L 657.14286,402.66591 L 657.85714,339.09448 L 669.28571,339.09448"
+       id="path3467" />
+  </g>
+</svg>

@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=us-ascii">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+
+  <title>Tuscany SCA Integration Test Databindings</title>
+  <!-- LINK rel="stylesheet" href="ait.css" type="text/css" -->
+  <link rel="stylesheet" href="../../css/base.css" type="text/css">
+</head>
+
+<body>
+<h3>Tuscany SCA Integation Test Databindings </h3>
+
+<h4>Overview</h4>
+
+<p>
+This integration test tests the Tuscany SCA databinding implementation by passing various data structures 
+across various bindings using the supported databindings. There are tests for the individual databindings 
+which exercise various bindings with the same databinding at client and server ends of each binding. There 
+is also an integration test which exercises the transformer chains by specifying different databindings at 
+client and server ends of the binding. 
+</p>
+<p>
+In doing this testing it is apparent that there is a lot of repetition in creating client, services, idl and 
+type for each of the data types for each of the bindings for each of the databindings. To reduce the amount 
+of effort required to maintain the tests as new types, bindings and databindings are added the test cases 
+themselves are generated from configuration files. 
+</p>
+
+<h4>Test Structure</h4>
+
+Databindings/Common             - hold files common across all tests <br/>
+Databindings/Interop            - test the transformer chains with combinations of databindings<br/>
+Databindings/sdogen and jaxbgen - test each databindings independently<br/>
+
+<h4>Test Generation</h4>
+<p>
+To reduce the amount of manual effort involved in building and maintaining tests cases the test cases 
+themselves are generated at run time using a set of velocity templates. Each test module has a generate.xml 
+file in the resources/generate directory which tells the generator what to do. The file looks like this. 
+</p>
+<img src="config.png">
+<p>
+Each <Template> element describes a velocit template to use in the test. The generator process is to expand
+each velocity template provided with all of the types specified in the <InputFile> sections. 
+</p>
+<p>
+Each <InputFile> element describes a schema file used in the test. It also contains a description of each 
+data type that will be tested. The generator then arranges for the databinding being tested to generate 
+appropriate Java classes to represent the type at runtime. The individual databinding tests use the following 
+flow.
+</p>
+
+Create data object at client<br/>
+Client passes data object to server<br/>
+Server modifies data object<br/>
+Server returns modified data object to client<br/>
+Client tests that modified data object is as expected<br/>
+<p>
+Hence the CreateTypeCode, ModifyTypeCode and ResultComparison elements which contain the type specific code 
+that is used in the tests. 
+</p>
+
+<h4>The Common Directory</h4>
+<p>
+The common directory contains the information that is common across all of the tests. This includes the 
+common velocity templates and the source for the generator that reads the config.xml for each test. Common 
+also contains all of the data type schema as these are common across all tests. Each test pom is written so 
+that the contents of the common project are expanded into the tests target directory before the test starts. 
+In this way all of the common elements are available for the test generation phase and at test runtime. 
+</p>
+
+<h4>Individual Databinding Tests</h4>
+<p>
+The individual databinding tests, for example, sdogen and jaxbgen, are mostly empty as their content is 
+generated at runtime. The configuration and any test specific templates can be found in the resources/generate 
+directory. Some files are hand crafted for each test and live in their static position in the tests directory 
+structure. 
+</p>
+<p>
+Each test uses the same scenario
+</p>
+<img src="databinding.png">
+<p>
+The interface exposed by the greeter service provides a greet method for each data type being tested, for 
+example, 
+</p>
+<code>
+PersonType greetPersonType(PersonType param);<br/>
+AttributeComplexType greetAttributeComplexType(AttributeComplexType param);<br/>
+AttributeReferenceComplexType greetAttributeReferenceComplexType(AttributeReferenceComplexType param);<br/>
+</code>
+<p>
+These methods are taken from the SDO databinding test and hence PersonType, AttributeComplexType, etc. will 
+have been generated by the SDO static type generator. 
+</p>
+<p>
+Hence this tests a single databinding across a variety of data types and a variety of bindings. New bindings 
+be tested by extending the composite. Be datatypes can be tested by updating the confix.xml file.
+</p>
+<h4>Databinding Interoperability Tests</h4>
+<p>
+This test uses the generated client, services and types from the individual databinding tests. It does not
+regenerate them and you will see a dependency in the interop test pom on the other databinding tests. Is also 
+has some generate elements because the composite file must currently have import statements for all of the 
+SDO factories required during tested.
+</p>
+<p>
+The scenario used here is,
+</p>
+<img src="interop.png">
+<p>
+A chain of components is built up for each binding. Each component, drawn from the the inidividual databinding
+tests, tests the full range of datatypes. The client components are designed so that they can be chained together
+and so tranformations across different databindings is tests. The service component simply changes the data
+content and returns it as before. 
+</p>
+<h4>Building And Running The Tests</h4>
+<p>
+The tests can be built by doing the following. 
+</p>
+<code>
+cd sca/itest/databindings <br/>
+mvn
+</code>
+<p>
+The only modification to this process is required if a new input file is added to the tests suite. In this 
+case you will need to edit the config.xml files as appropriate but run mvn twice. This may sound a little 
+odd but currently the sdo test uses its pom file to generate the require SDO types. As the test is self 
+generating the pom file will not be updated to include the new type file until the second time it's run. The 
+aim is at some point to remove this feature from the pom. 
+</p>
+
+
+</body>
+</html>
