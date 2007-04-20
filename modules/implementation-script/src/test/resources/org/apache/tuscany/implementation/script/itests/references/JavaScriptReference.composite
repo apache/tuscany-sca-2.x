@@ -27,7 +27,7 @@
 
     <component name="ReferenceComponent">
         <implementation.script script="org/apache/tuscany/implementation/script/itests/references/reference.js"/>
-        <reference name="ref" target="TargetComponent"></reference>
+        <reference name="ref" target="TargetComponent" />
     </component>
 
     <component name="TargetComponent">
