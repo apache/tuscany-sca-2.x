@@ -26,5 +26,7 @@
         <interface.java interface="org.apache.tuscany.implementation.script.itests.helloworld.HelloWorld" />
   </service>
 
+  <property name="greeter" type="xsd:string">Tuscany</property>
+
 </componentType>              
        
