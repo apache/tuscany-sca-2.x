@@ -38,10 +38,13 @@
         <implementation.composite name="foo:myTotalServiceInCompositeForReferenceOverride"/>
 		<reference name="MyServiceRefNo" target="MyServiceInComponent/MyService"/>
 		<reference name="MyListServiceRefNo" target="MyServiceInComponent/MyListService"/>
+		<reference name="MyListServiceByYearRefNo" target="MyServiceInComponent/MyListServiceByYear"/>
 		<reference name="MyServiceRefMay" target="MyServiceInComponent/MyService"/>
 		<reference name="MyListServiceRefMay" target="MyServiceInComponent/MyListService"/>
+		<reference name="MyListServiceByYearRefMay" target="MyServiceInComponent/MyListServiceByYear"/>
 		<reference name="MyServiceRefMust" target="MyServiceInComponent/MyService"/>
 		<reference name="MyListServiceRefMust" target="MyServiceInComponent/MyListService"/>
+		<reference name="MyListServiceByYearRefMust" target="MyServiceInComponent/MyListServiceByYear"/>
     </component>
 
     <component name="MyServiceInComponent">

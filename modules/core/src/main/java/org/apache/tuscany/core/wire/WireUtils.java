@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,14 @@ public final class WireUtils {
     public static Map<Method, ChainHolder> createInterfaceToWireMapping(Class<?> interfaze, Wire wire)
         throws NoMethodForOperationException {
         List<InvocationChain> invocationChains = wire.getInvocationChains();
+        
+        if (interfaze.isArray()) {
+            interfaze = interfaze.getComponentType();
+        } else {
+            if (List.class.isAssignableFrom(interfaze)) {
+                //FIXME Handle generic types
+            }
+        }
 
         Map<Method, ChainHolder> chains = new HashMap<Method, ChainHolder>(invocationChains.size());
         for (InvocationChain chain : invocationChains) {
@@ -61,7 +70,11 @@ public final class WireUtils {
                 Method method = JavaInterfaceUtil.findMethod(interfaze, operation);
                 chains.put(method, new ChainHolder(chain));
             } catch (NoSuchMethodException e) {
-                throw new NoMethodForOperationException(operation.getName());
+                if (List.class.isAssignableFrom(interfaze)) {
+                    //FIXME Handle generic types
+                } else {
+                    throw new NoMethodForOperationException(operation.getName());
+                }
             }
         }
         return chains;

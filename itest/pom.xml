@@ -48,9 +48,7 @@
                 <module>exceptions</module>
                 <module>operation-overloading</module>
                 <module>properties</module>
-                <!--
                 <module>spec-api</module>
-                -->
                 <module>wsdl</module>
             </modules>
         </profile>

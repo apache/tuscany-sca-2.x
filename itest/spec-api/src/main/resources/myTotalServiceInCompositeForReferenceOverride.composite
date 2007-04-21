@@ -28,8 +28,9 @@
    
     <component name="MyTotalServiceComponentNo">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
-		<reference name="myService" target="MyServiceRefNo"/>
-		<reference name="myListService" target="MyListServiceRefNo"/>
+		<reference name="myService"/>
+		<reference name="myListService"/>
+		<reference name="myListServiceByYear"/>
     </component>
     
     <reference name="MyServiceRefNo" promote="MyTotalServiceComponentNo/myService">
@@ -38,6 +39,10 @@
 
     <reference name="MyListServiceRefNo" promote="MyTotalServiceComponentNo/myListService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
+    </reference>
+
+    <reference name="MyListServiceByYearRefNo" promote="MyTotalServiceComponentNo/myListServiceByYear">
+        <interface.java interface="org.apache.tuscany.sca.test.spec.MyListServiceByYear"/>
     </reference>
 
  	<service name="MyTotalServiceMay" promote="MyTotalServiceComponentMay">
@@ -56,6 +61,10 @@
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
     </reference>
 
+    <reference name="MyListServiceByYearRefMay" promote="MyTotalServiceComponentMay/myListServiceByYear">
+        <interface.java interface="org.apache.tuscany.sca.test.spec.MyListServiceByYear"/>
+    </reference>
+
  	<service name="MyTotalServiceMust" promote="MyTotalServiceComponentMust">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyTotalService"/>
     </service>
@@ -70,6 +79,10 @@
 
     <reference name="MyListServiceRefMust" promote="MyTotalServiceComponentMust/myListService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
+    </reference>
+
+    <reference name="MyListServiceByYearRefMust" promote="MyTotalServiceComponentMust/myListServiceByYear">
+        <interface.java interface="org.apache.tuscany.sca.test.spec.MyListServiceByYear"/>
     </reference>
 
 </composite>

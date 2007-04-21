@@ -20,21 +20,21 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	   xmlns:foo="http://foo" 
 	   targetNamespace="http://foo"
-           name="MySimpleServiceInRecursive2">
+           name="mySimpleServiceInRecursive2">
    
-    <service name="MySimpleServiceDefault"  promote="MySimpleServiceInRecursiveComponent/MySimpleService">
+    <service name="MySimpleService2Default"  promote="MySimpleServiceInRecursiveComponent/MySimpleService">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
     </service>
 
-    <service name="MySimpleServiceNo" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceNo">
+    <service name="MySimpleService2No" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceNo">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
     </service>
 
-    <service name="MySimpleServiceMay" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceMay">
+    <service name="MySimpleService2May" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceMay">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
     </service>
 
-    <service name="MySimpleServiceMust" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceMust">
+    <service name="MySimpleService2Must" promote="MySimpleServiceInRecursiveComponent/MySimpleServiceMust">
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyService"/>
     </service>
    

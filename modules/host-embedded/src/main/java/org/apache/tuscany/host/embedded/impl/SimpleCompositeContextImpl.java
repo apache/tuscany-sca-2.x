@@ -86,7 +86,22 @@ public class SimpleCompositeContextImpl implements CompositeContext {
                         if (binding != null) {
                             Component component = binding.getComponent();
                             if (component != null) {
-                                ComponentContext context = runtime.getComponentContext(URI.create(component.getName()));
+                                ComponentContext context = null;
+                                if (component.getImplementation() instanceof Composite) {
+                                    Service actualService =  componentService.getService();
+                                    if (actualService instanceof CompositeService) {
+                                        componentService = ((CompositeService)actualService).getPromotedService();
+                                        if (componentService != null) {
+                                            binding = componentService.getBinding(SCABinding.class);
+                                            if (binding != null && binding.getComponent() != null) {
+                                                Component innerComponent = binding.getComponent();
+                                                context = runtime.getComponentContext(URI.create(component.getName() + "/" + innerComponent.getName()));
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    context = runtime.getComponentContext(URI.create(component.getName()));
+                                }
                                 if (context == null) {
                                     throw new ServiceRuntimeException("Service not found: " + serviceName);
                                 }
@@ -100,7 +115,25 @@ public class SimpleCompositeContextImpl implements CompositeContext {
             }
             for (Component component: composite.getComponents()) {
                 if (serviceName.equals(component.getName())) {
-                    ComponentContext context = runtime.getComponentContext(URI.create(component.getName()));
+                    ComponentContext context = null;
+                    if (component.getImplementation() instanceof Composite) {
+                        if (!component.getServices().isEmpty()) {
+                            ComponentService componentService =  component.getServices().get(0);
+                            CompositeService compositeService = (CompositeService)componentService.getService();
+                            if (compositeService != null) {
+                                componentService = compositeService.getPromotedService();
+                                if (componentService != null) {
+                                    SCABinding binding = componentService.getBinding(SCABinding.class);
+                                    if (binding != null && binding.getComponent() != null) {
+                                        Component innerComponent = binding.getComponent();
+                                        context = runtime.getComponentContext(URI.create(component.getName() + "/" + innerComponent.getName()));
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        context = runtime.getComponentContext(URI.create(component.getName()));
+                    }
                     if (context == null) {
                         throw new ServiceRuntimeException("Service not found: " + serviceName);
                     }
