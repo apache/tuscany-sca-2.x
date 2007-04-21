@@ -75,7 +75,9 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
 
         if (injectors != null) {
             for (Injector<T> injector : injectors) {
-                injector.inject(instance);
+                //FIXME Injectors should never be null
+                if (injector != null)
+                    injector.inject(instance);
             }
         }
 

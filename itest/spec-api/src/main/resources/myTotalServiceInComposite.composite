@@ -38,4 +38,8 @@
         <interface.java interface="org.apache.tuscany.sca.test.spec.MyListService"/>
     </reference>
 
+    <reference name="MyListServiceByYearRef" promote="MyTotalServiceComponent/myListServiceByYear">
+        <interface.java interface="org.apache.tuscany.sca.test.spec.MyListServiceByYear"/>
+    </reference>
+
 </composite>

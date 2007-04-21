@@ -30,6 +30,7 @@
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
 		<reference name="myService" target="MyServiceInComposite/MyService"/>
 		<reference name="myListService" target="MyServiceInComposite/MyListService"/>
+        <reference name="myListServiceByYear" target="MyServiceInComposite/MyListServiceByYear"/>
     </component>
     
  	<service name="MyTotalServiceInCompositeWithRecursiveUseService" promote="MyTotalServiceInCompositeWithRecursive">
@@ -44,12 +45,14 @@
         <implementation.composite name="foo:myTotalServiceInComposite"/>
 		<reference name="MyServiceRef" target="MyServiceInComposite/MyService"/>
 		<reference name="MyListServiceRef" target="MyServiceInComposite/MyListService"/>
+		<reference name="MyListServiceByYearRef" target="MyServiceInComposite/MyListServiceByYear"/>
     </component>
 
     <component name="MyTotalServiceInCompositeWithComponentService">
         <implementation.composite name="foo:myTotalServiceInComposite"/>
 		<reference name="MyServiceRef" target="MyServiceInComponent/MyService"/>
 		<reference name="MyListServiceRef" target="MyServiceInComponent/MyListService"/>
+		<reference name="MyListServiceByYearRef" target="MyServiceInComponent/MyListServiceByYear"/>
     </component>
 
     <component name="MyServiceInComponent">

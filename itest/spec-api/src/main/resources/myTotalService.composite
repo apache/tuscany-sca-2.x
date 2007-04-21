@@ -22,12 +22,13 @@
 	targetNamespace="http://foo"
     name="myTotalService">
    
-    <include name="myservice"/>
+    <include>foo:myservice</include>
     
     <component name="MyTotalService">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
         <reference name="myService" target="MyNCService/MyService"/>
         <reference name="myListService" target="MyNCService/MyListService"/>
+        <reference name="myListServiceByYear" target="MyNCService/MyListServiceByYear"/>
     </component>
     
 </composite>
