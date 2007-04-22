@@ -33,7 +33,7 @@ import org.apache.tuscany.contribution.service.impl.InvalidValueException;
 /**
  * @version $Rev$ $Date$
  */
-public class ContributionLoaderTestCase extends TestCase {
+public class ContributionMetadataLoaderTestCase extends TestCase {
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 

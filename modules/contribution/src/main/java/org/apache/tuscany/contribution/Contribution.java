@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
+import org.apache.tuscany.assembly.Composite;
 
 /**
  * The representation of a deployed contribution
@@ -40,7 +40,7 @@ public class Contribution extends DeployedArtifact {
 
     protected List<String> exports = new ArrayList<String>();
     protected List<ContributionImport> imports = new ArrayList<ContributionImport>();
-    protected List<QName> deployables = new ArrayList<QName>();
+    protected List<Composite> deployables = new ArrayList<Composite>();
     
     /**
      * A list of artifacts in the contribution
@@ -80,7 +80,7 @@ public class Contribution extends DeployedArtifact {
         return imports;
     }
 
-    public List<QName> getDeployables() {
+    public List<Composite> getDeployables() {
         return deployables;
     }
 

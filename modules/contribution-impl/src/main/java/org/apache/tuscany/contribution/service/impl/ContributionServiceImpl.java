@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtension;
@@ -117,7 +119,7 @@ public class ContributionServiceImpl implements ContributionService {
         InputStream metadataStream = null;
 
         URL[] clUrls = {sourceURL};
-        URLClassLoader cl = new URLClassLoader(clUrls, getClass().getClassLoader());
+        URLClassLoader cl = new URLClassLoader(clUrls);
 
         contributionMetadataURL = cl.getResource(Contribution.SCA_CONTRIBUTION_META);
         generatedContributionMetadataURL = cl.getResource(Contribution.SCA_CONTRIBUTION_GENERATED_META);
@@ -200,7 +202,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     /**
-     * 
+     * Utility/Helper methods for contribution service
      */
 
     /**
@@ -258,6 +260,8 @@ public class ContributionServiceImpl implements ContributionService {
         processResolvePhase(contribution);
         processOptimizationPhase(contribution);
         
+        processDeployables(contribution);
+        
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getUri(), contribution);
     }
@@ -288,7 +292,16 @@ public class ContributionServiceImpl implements ContributionService {
                 this.artifactProcessor.resolve(artifact.getModelObject(), artifactResolver);
             }
         }
-
+        
+        //resolve deployables from contribution metadata
+        List<Composite> resolvedDeployables = new ArrayList<Composite>();
+        for (Composite deployableComposite : contribution.getDeployables()) {
+            deployableComposite = artifactResolver.resolve(Composite.class, deployableComposite);
+            resolvedDeployables.add(deployableComposite);
+        }
+        
+        contribution.getDeployables().clear();
+        contribution.getDeployables().addAll(resolvedDeployables);
     }
 
     private void processOptimizationPhase(Contribution contribution) throws ContributionException {
@@ -300,4 +313,16 @@ public class ContributionServiceImpl implements ContributionService {
 
     }
 
+    private void processDeployables(Contribution contribution) throws ContributionException {
+        if (contribution.getDeployables() == null || contribution.getDeployables().size() == 0){
+            //Contribution metadata not available with a list of deployables
+            //Promote all composites to deployable
+            for (DeployedArtifact deployedArtifact : contribution.getArtifacts().values()) {
+                Object model = deployedArtifact.getModelObject(); 
+                if (model instanceof Composite) {
+                    contribution.getDeployables().add((Composite) model);
+                }
+            }
+        }
+    }
 }

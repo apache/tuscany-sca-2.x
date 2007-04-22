@@ -27,6 +27,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.impl.CompositeImpl;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoader;
@@ -40,6 +42,8 @@ import org.apache.tuscany.contribution.service.ContributionMetadataLoaderExcepti
 public class ContributionMetadataLoaderImpl implements ContributionMetadataLoader {
     //FIXME use this from constants ?
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private static final String TARGET_NAMESPACE = "targetNamespace";
+    private static final String NAME = "composite";
     
     private static final QName CONTRIBUTION = new QName(SCA10_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA10_NS, "deployable");
@@ -80,14 +84,19 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
                             if (ns == null) {
                                 throw new InvalidValueException("Invalid prefix: " + prefix);
                             }
-                            compositeName = new QName(ns, localPart, prefix);
+                            compositeName = new QName(getString(reader, TARGET_NAMESPACE), localPart, prefix);
                         } else {
                             String prefix = "";
                             String ns = reader.getNamespaceURI();
                             String localPart = name;
-                            compositeName = new QName(ns, localPart, prefix);
+                            compositeName = new QName(getString(reader, TARGET_NAMESPACE), localPart, prefix);
                         }
-                        contribution.getDeployables().add(compositeName);
+
+                        Composite composite = new CompositeImpl();
+                        composite.setName(compositeName);
+                        composite.setUnresolved(true);
+                        
+                        contribution.getDeployables().add(composite);
                     } else if (IMPORT.equals(element)) {
                         String ns = reader.getAttributeValue(null, "namespace");
                         if (ns == null) {
@@ -115,6 +124,49 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
                     break;
 
             }
+        }
+    }
+    
+    /**
+     * Returns the string value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
+    protected String getString(XMLStreamReader reader, String name) {
+        return reader.getAttributeValue(null, name);
+    }
+
+    /**
+     * Returns the qname value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
+    protected QName getQName(XMLStreamReader reader, String name) {
+        String qname = reader.getAttributeValue(null, name);
+        return getQNameValue(reader, qname);
+    }
+    
+
+    /**
+     * Returns a qname from a string.  
+     * @param reader
+     * @param value
+     * @return
+     */
+    protected QName getQNameValue(XMLStreamReader reader, String value) {
+        if (value != null) {
+            int index = value.indexOf(':');
+            String prefix = index == -1 ? "" : value.substring(0, index);
+            String localName = index == -1 ? value : value.substring(index + 1);
+            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
+            if (ns == null) {
+                ns = "";
+            }
+            return new QName(ns, localName, prefix);
+        } else {
+            return null;
         }
     }
 
