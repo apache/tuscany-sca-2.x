@@ -44,7 +44,6 @@ public class ChainHolder implements Cloneable {
         this.cachedInvoker = invoker;
     }
 
-    @SuppressWarnings({"CloneDoesntDeclareCloneNotSupportedException"})
     @Override
     public ChainHolder clone() {
         try {

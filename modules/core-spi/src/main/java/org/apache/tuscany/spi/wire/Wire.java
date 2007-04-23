@@ -21,8 +21,6 @@ package org.apache.tuscany.spi.wire;
 import java.net.URI;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -34,8 +32,6 @@ import org.apache.tuscany.spi.component.TargetResolutionException;
  *          2007) $$
  */
 public interface Wire {
-    QName LOCAL_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/binding/1.0", "binding.local");
-
     /**
      * Returns the URI of the wire source
      * 
@@ -63,13 +59,6 @@ public interface Wire {
      * @param uri the URI of the wire target
      */
     void setTargetUri(URI uri);
-
-    /**
-     * Returns the wire binding type
-     * 
-     * @return the wire binding type
-     */
-    QName getBindingType();
 
     /**
      * Returns the service contract associated with the the source side of the

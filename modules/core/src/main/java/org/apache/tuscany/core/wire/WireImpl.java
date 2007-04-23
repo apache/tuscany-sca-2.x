@@ -39,7 +39,6 @@ import org.apache.tuscany.spi.wire.Wire;
 public class WireImpl implements Wire {
     private URI sourceUri;
     private URI targetUri;
-    private QName bindingType;
     private InterfaceContract sourceContract;
     private InterfaceContract targetContract;
     private boolean optimizable;
@@ -51,15 +50,6 @@ public class WireImpl implements Wire {
      * Creates a wire with a local binding
      */
     public WireImpl() {
-    }
-
-    /**
-     * Creates a wire with the given binding type
-     *
-     * @param bindingType the binding type
-     */
-    public WireImpl(QName bindingType) {
-        this.bindingType = bindingType;
     }
 
     public URI getSourceUri() {
@@ -77,11 +67,6 @@ public class WireImpl implements Wire {
     public void setTargetUri(URI targetUri) {
         this.targetUri = targetUri;
     }
-
-    public QName getBindingType() {
-        return bindingType;
-    }
-
 
     public InterfaceContract getSourceContract() {
         return sourceContract;

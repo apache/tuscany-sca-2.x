@@ -36,7 +36,6 @@ import org.apache.tuscany.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.ComponentManager;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
@@ -125,10 +124,9 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     private ScopeRegistry createScopeRegistry() {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
-        ScopeContainerMonitor monitor = monitorFactory.getMonitor(ScopeContainerMonitor.class);
-        AbstractScopeContainer[] containers = new AbstractScopeContainer[] {new CompositeScopeContainer(monitor),
-                                                                            new StatelessScopeContainer(monitor),
-                                                                            new RequestScopeContainer(monitor),
+        AbstractScopeContainer[] containers = new AbstractScopeContainer[] {new CompositeScopeContainer(),
+                                                                            new StatelessScopeContainer(),
+                                                                            new RequestScopeContainer(),
         // new ConversationalScopeContainer(monitor),
         // new HttpSessionScopeContainer(monitor)
         };

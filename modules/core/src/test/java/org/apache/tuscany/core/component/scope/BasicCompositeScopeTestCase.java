@@ -136,7 +136,7 @@ public class BasicCompositeScopeTestCase<T> extends TestCase {
         EasyMock.expect(component.isEagerInit()).andStubReturn(false);
         wrapper = control.createMock(InstanceWrapper.class);
 
-        scopeContainer = new CompositeScopeContainer<URI>(null);
+        scopeContainer = new CompositeScopeContainer<URI>();
         scopeContainer.start();
         scopeContainer.startContext(contextId, groupId);
     }

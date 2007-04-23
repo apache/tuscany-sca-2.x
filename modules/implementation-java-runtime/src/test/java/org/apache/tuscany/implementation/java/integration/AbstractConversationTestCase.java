@@ -40,7 +40,7 @@ public abstract class AbstractConversationTestCase extends TestCase {
     protected void createRuntime() {
         workContext = new WorkContextImpl();
         store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
-        container = new ConversationalScopeContainer(store, workContext, null);
+        container = new ConversationalScopeContainer(store, workContext);
     }
 
     protected void initializeRuntime() {

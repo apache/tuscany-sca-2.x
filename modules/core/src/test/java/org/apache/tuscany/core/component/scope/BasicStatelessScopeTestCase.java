@@ -79,7 +79,7 @@ public class BasicStatelessScopeTestCase<T> extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        scopeContainer = new StatelessScopeContainer<String>(null);
+        scopeContainer = new StatelessScopeContainer<String>();
         contextId = "context";
 
         control = EasyMock.createStrictControl();

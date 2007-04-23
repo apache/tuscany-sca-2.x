@@ -177,7 +177,7 @@ public abstract class ConversationalScopeContainerPersistenceTestCase extends Te
         StoreMonitor mock = EasyMock.createNiceMock(StoreMonitor.class);
         EasyMock.replay(mock);
         Store store = new MemoryStore(mock);
-        container = new ConversationalScopeContainer(store, context, null);
+        container = new ConversationalScopeContainer(store, context);
         container.start();
     }
 

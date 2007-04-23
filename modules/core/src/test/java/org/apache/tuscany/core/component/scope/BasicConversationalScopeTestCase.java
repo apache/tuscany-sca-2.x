@@ -89,7 +89,7 @@ public class BasicConversationalScopeTestCase extends TestCase {
         monitor.stop(EasyMock.isA(String.class));
         MemoryStore store = new MemoryStore(monitor);
         workContext = new SimpleWorkContext();
-        scopeContainer = new ConversationalScopeContainer(store, workContext, null);
+        scopeContainer = new ConversationalScopeContainer(store, workContext);
         scopeContainer.start();
     }
 }

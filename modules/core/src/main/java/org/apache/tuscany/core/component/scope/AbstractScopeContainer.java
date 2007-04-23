@@ -35,7 +35,6 @@ import org.apache.tuscany.spi.component.GroupInitializationException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -70,13 +69,10 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
     protected final Map<URI, List<AtomicComponent<?>>> initQueues =
         new HashMap<URI, List<AtomicComponent<?>>>();
 
-    protected final ScopeContainerMonitor monitor;
-
     private final Scope scope;
 
-    public AbstractScopeContainer(Scope scope, ScopeContainerMonitor monitor) {
+    public AbstractScopeContainer(Scope scope) {
         this.scope = scope;
-        this.monitor = monitor;
     }
 
     protected void checkInit() {
@@ -191,7 +187,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle
                 toDestroy.stop();
             } catch (TargetDestructionException e) {
                 // log the error from destroy but continue
-                monitor.destructionError(e);
             }
         }
     }

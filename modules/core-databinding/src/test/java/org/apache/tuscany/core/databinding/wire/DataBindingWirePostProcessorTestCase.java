@@ -26,18 +26,13 @@ import static org.easymock.EasyMock.verify;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.Mediator;
-import org.apache.tuscany.databinding.xml.DOMDataBinding;
-import org.apache.tuscany.databinding.xml.StAXDataBinding;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
@@ -51,7 +46,6 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
 import org.easymock.EasyMock;
-import org.osoa.sca.Constants;
 import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 
@@ -59,9 +53,6 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class DataBindingWirePostProcessorTestCase extends TestCase {
-    private static final QName BINDING_WS = new QName(Constants.SCA_NS, "binding.ws");
-    private DataBindingWirePostProcessor processor;
-
     /**
      * @see junit.framework.TestCase#setUp()
      */
@@ -75,21 +66,23 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
     public void testProcess1() throws Exception {
         URI sourceUri = URI.create("/composite1/component1/#reference1");
         URI targetUri = URI.create("/composite1/component2/#service1");
-        
+
         Mediator mediator = createMock(Mediator.class);
         ComponentManager componentManager = createMock(ComponentManager.class);
         Component component1 = createMock(Component.class);
         // expect(component1.getReference("reference1")).andReturn(null);
         Component component2 = createMock(Component.class);
         // expect(component2.getService("service1")).andReturn(null);
-        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
-        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1)
+            .anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2)
+            .anyTimes();
         replay(mediator, componentManager, component1, component2);
         DataBindingWirePostProcessor processor = new DataBindingWirePostProcessor(componentManager, mediator);
 
-        Wire wire = createWire(sourceUri, targetUri, Wire.LOCAL_BINDING);
+        Wire wire = createWire(sourceUri, targetUri);
         processor.process(wire);
-        
+
         verify(mediator, componentManager, component1, component2);
     }
 
@@ -109,12 +102,14 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         expect(component1.getReference("reference1")).andReturn(null);
         Component component2 = createMock(Component.class);
         expect(component2.getReference("reference1")).andReturn(null);
-        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
-        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1)
+            .anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2)
+            .anyTimes();
         replay(mediator, componentManager, component1, component2);
         DataBindingWirePostProcessor processor = new DataBindingWirePostProcessor(componentManager, mediator);
-        
-        Wire wire = createWire(sourceUri, targetUri, BINDING_WS);
+
+        Wire wire = createWire(sourceUri, targetUri);
         processor.process(wire);
     }
 
@@ -124,32 +119,34 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
     public void testProcess3() throws Exception {
         URI sourceUri = URI.create("/composite1/#service1");
         URI targetUri = URI.create("/composite1/component1/#service1");
-        
+
         Mediator mediator = createMock(Mediator.class);
         ComponentManager componentManager = createMock(ComponentManager.class);
         Component component1 = createMock(Component.class);
         expect(component1.getService("service1")).andReturn(null);
         Component component2 = createMock(Component.class);
         expect(component2.getService("service1")).andReturn(null);
-        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1).anyTimes();
-        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2).anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component1)
+            .anyTimes();
+        expect(componentManager.getComponent(URIHelper.getDefragmentedName(targetUri))).andReturn(component2)
+            .anyTimes();
         replay(mediator, componentManager, component1, component2);
         DataBindingWirePostProcessor processor = new DataBindingWirePostProcessor(componentManager, mediator);
-        
-        Wire wire = createWire(sourceUri, targetUri, BINDING_WS);
+
+        Wire wire = createWire(sourceUri, targetUri);
         processor.process(wire);
     }
 
-    private Wire createWire(URI sourceUri, URI targetUri, QName bindingType) throws InvalidInterfaceException {
+    private Wire createWire(URI sourceUri, URI targetUri) throws InvalidInterfaceException {
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
         JavaInterface interface1 = introspector.introspect(TestInterface1.class);
         InterfaceContract contract1 = new JavaInterfaceContractImpl();
         contract1.setInterface(interface1);
-//        contract1.setDataBinding(DOMDataBinding.NAME);
+        // contract1.setDataBinding(DOMDataBinding.NAME);
         JavaInterface interface2 = introspector.introspect(TestInterface2.class);
         InterfaceContract contract2 = new JavaInterfaceContractImpl();
         contract2.setInterface(interface2);
-//        contract2.setDataBinding(StAXDataBinding.NAME);
+        // contract2.setDataBinding(StAXDataBinding.NAME);
         List<InvocationChain> chains = new ArrayList<InvocationChain>();
         for (Operation op : interface1.getOperations()) {
             InvocationChain chain = createMock(InvocationChain.class);
@@ -158,7 +155,7 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
             EasyMock.expect(chain.getTargetOperation()).andReturn(op).anyTimes();
             replay(chain);
             chains.add(chain);
-        }   
+        }
         List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
         for (Operation op : interface1.getOperations()) {
             InvocationChain chain = createMock(InvocationChain.class);
@@ -167,9 +164,8 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
             EasyMock.expect(chain.getTargetOperation()).andReturn(op).anyTimes();
             replay(chain);
             callbackChains.add(chain);
-        }                
+        }
         Wire wire = EasyMock.createMock(Wire.class);
-        expect(wire.getBindingType()).andReturn(bindingType).anyTimes();
         expect(wire.getSourceContract()).andReturn(contract1).anyTimes();
         expect(wire.getTargetContract()).andReturn(contract2).anyTimes();
         expect(wire.getInvocationChains()).andReturn(chains);
@@ -197,7 +193,7 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
 
         void test3(int i, String s) throws MyException;
     }
-    
+
     private static class MyException extends Exception {
         private static final long serialVersionUID = 7203411584939696390L;
 

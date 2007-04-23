@@ -56,7 +56,7 @@ public class ConversationalScopeContainerDestroyOnExpirationTestCase extends Tes
         EasyMock.replay(store);
         EasyMock.replay(wrapper);
 
-        new ConversationalScopeContainer(store, context, null);
+        new ConversationalScopeContainer(store, context);
         listener.onEvent(new StoreExpirationEvent(this, component, wrapper));
         EasyMock.verify(store);
         EasyMock.verify(wrapper);
