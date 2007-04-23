@@ -21,7 +21,6 @@ package org.apache.tuscany.binding.axis2;
 import static org.osoa.sca.Constants.SCA_NS;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,7 +52,6 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.Operation.ConversationSequence;
 import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
@@ -69,11 +67,10 @@ import org.osoa.sca.annotations.Destroy;
  * An implementation of a {@link ServiceBindingExtension} configured with the Axis2 binding
  */
 public class Axis2ServiceBinding extends ServiceBindingExtension {
+
     private ConfigurationContext configContext;
     private WebServiceBinding wsBinding;
     private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
-    private String serviceName;
-//    private WorkContext workContext;
     private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
     private ServletHostExtensionPoint servletHost;
 
@@ -82,8 +79,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     public Axis2ServiceBinding(URI uri,
                                WebServiceBinding wsBinding,
                                ServletHostExtensionPoint servletHost,
-                               ConfigurationContext configContext,
-                               WorkContext workContext) {
+                               ConfigurationContext configContext) {
 
         super(uri);
 
@@ -91,8 +87,6 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.configContext = configContext;
-        this.serviceName = uri.toString(); // TODO: whats this for, better name
-//        this.workContext = workContext;
 
         start(); // TODO: hack while start isn't getting called by runtime 
     }
@@ -112,7 +106,6 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         servletHost.addServletMapping(8080, getUri().getPath(), servlet);
     }
 
-    @Destroy
     public void stop() {
         servletHost.removeServletMapping(8080, getUri().getPath());
         try {
@@ -264,24 +257,6 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
                 workContext.clearIdentifier(Scope.CONVERSATION);
             }
         }
-    }
-
-    protected Object getFromAddress() {
-        return this.serviceName;
-    }
-
-    /**
-     * Get the Method from an interface matching the WSDL operation name
-     */
-    protected Method getMethod(Class<?> serviceInterface, String operationName) throws BuilderConfigException {
-        for (Method m : serviceInterface.getMethods()) {
-            if (m.getName().equalsIgnoreCase(operationName)) {
-                return m;
-            }
-        }
-        throw new BuilderConfigException("no operation named " + operationName
-            + " found on service interface: "
-            + serviceInterface.getName());
     }
 
     public QName getBindingType() {
