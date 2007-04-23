@@ -90,7 +90,6 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         chains.add(chain);
 
         wire = EasyMock.createMock(Wire.class);
-        expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING).anyTimes();
         expect(wire.getSourceContract()).andReturn(contract).anyTimes();
         expect(wire.getTargetContract()).andReturn(contract).anyTimes();
         expect(wire.getInvocationChains()).andReturn(chains).anyTimes();

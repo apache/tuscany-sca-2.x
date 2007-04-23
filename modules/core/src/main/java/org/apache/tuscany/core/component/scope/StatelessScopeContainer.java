@@ -19,11 +19,9 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.osoa.sca.annotations.EagerInit;
@@ -38,8 +36,8 @@ import org.osoa.sca.annotations.Service;
 @Service(ScopeContainer.class)
 public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
 
-    public StatelessScopeContainer(@Monitor ScopeContainerMonitor monitor) {
-        super(Scope.STATELESS, monitor);
+    public StatelessScopeContainer() {
+        super(Scope.STATELESS);
     }
 
     public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId)

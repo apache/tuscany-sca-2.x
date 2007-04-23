@@ -24,7 +24,6 @@ import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.easymock.EasyMock;
 
@@ -32,7 +31,6 @@ import org.easymock.EasyMock;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class BasicHttpSessionScopeTestCase extends TestCase {
-    private ScopeContainerMonitor monitor;
     private ScopeContainer scopeContainer;
     private AtomicComponent component;
     private InstanceWrapper wrapper;
@@ -208,8 +206,7 @@ public abstract class BasicHttpSessionScopeTestCase extends TestCase {
         wrapper = EasyMock.createStrictMock(InstanceWrapper.class);
 
         workContext = new SimpleWorkContext();
-        monitor = EasyMock.createStrictMock(ScopeContainerMonitor.class);
-        scopeContainer = new HttpSessionScopeContainer(workContext, monitor);
+        scopeContainer = new HttpSessionScopeContainer(workContext);
         scopeContainer.start();
 
         component.addListener(scopeContainer);

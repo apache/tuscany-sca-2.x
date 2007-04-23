@@ -20,17 +20,13 @@ package org.apache.tuscany.core.component.scope;
 
 import java.net.URI;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.GroupInitializationException;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.ComponentStart;
-import org.apache.tuscany.core.component.event.ComponentStop;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.easymock.EasyMock;
 
 /**
@@ -40,7 +36,7 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
     private URI groupId;
 
     public void testInitializeError() throws Exception {
-        CompositeScopeContainer scope = new CompositeScopeContainer(null);
+        CompositeScopeContainer scope = new CompositeScopeContainer();
         scope.start();
 
         ObjectCreationException ex = new ObjectCreationException("");
@@ -65,11 +61,7 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.expectLastCall().andThrow(new TargetDestructionException("", ""));
         EasyMock.replay(wrapper);
 
-        ScopeContainerMonitor monitor;
-        monitor = EasyMock.createMock(ScopeContainerMonitor.class);
-        monitor.destructionError(EasyMock.isA(TargetDestructionException.class));
-        EasyMock.replay(monitor);
-        CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
+        CompositeScopeContainer scope = new CompositeScopeContainer();
         scope.start();
 
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
@@ -80,7 +72,6 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         scope.register(component, groupId);
         scope.startContext(groupId, groupId);
         scope.stopContext(groupId);
-        EasyMock.verify(monitor);
         EasyMock.verify(component);
         EasyMock.verify(wrapper);
     }

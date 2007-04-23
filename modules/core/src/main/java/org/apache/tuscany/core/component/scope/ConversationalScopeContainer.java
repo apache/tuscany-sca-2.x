@@ -25,7 +25,6 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -45,12 +44,12 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     private final WorkContext workContext;
     private final Store nonDurableStore;
 
-    public ConversationalScopeContainer(Store store, WorkContext workContext, final ScopeContainerMonitor monitor) {
-        super(Scope.CONVERSATION, monitor);
+    public ConversationalScopeContainer(Store store, WorkContext workContext) {
+        super(Scope.CONVERSATION);
         this.workContext = workContext;
         this.nonDurableStore = store;
         if (store != null) {
-            store.addListener(new ExpirationListener(monitor));
+            store.addListener(new ExpirationListener());
         }
     }
 
@@ -169,10 +168,8 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
      * Receives expiration events from the store and notifies the corresponding atomic component
      */
     private static class ExpirationListener implements RuntimeEventListener {
-        private final ScopeContainerMonitor monitor;
 
-        public ExpirationListener(ScopeContainerMonitor monitor) {
-            this.monitor = monitor;
+        public ExpirationListener() {
         }
 
         public void onEvent(Event event) {
@@ -182,7 +179,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                 try {
                     wrapper.stop();
                 } catch (TargetDestructionException e) {
-                    monitor.destructionError(e);
+//                    monitor.destructionError(e);
                 }
             }
         }

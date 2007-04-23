@@ -64,7 +64,7 @@ public class ConversationalScopeContainerMaxAgeTestCase extends TestCase {
         EasyMock.expect(store.readRecord(EasyMock.isA(SCAObject.class), EasyMock.isA(String.class))).andReturn(wrapper);
         store.addListener(EasyMock.isA(RuntimeEventListener.class));
         EasyMock.replay(store);
-        container = new ConversationalScopeContainer(store, context, null);
+        container = new ConversationalScopeContainer(store, context);
         container.start();
     }
 

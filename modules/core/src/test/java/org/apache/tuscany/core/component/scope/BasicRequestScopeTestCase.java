@@ -19,18 +19,16 @@
 package org.apache.tuscany.core.component.scope;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.easymock.EasyMock;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public abstract class BasicRequestScopeTestCase extends TestCase {
-    private ScopeContainerMonitor monitor;
     private ScopeContainer scopeContainer;
     private AtomicComponent component;
     private InstanceWrapper wrapper;
@@ -155,8 +153,7 @@ public abstract class BasicRequestScopeTestCase extends TestCase {
         super.setUp();
         component = EasyMock.createStrictMock(AtomicComponent.class);
         wrapper = EasyMock.createStrictMock(InstanceWrapper.class);
-        monitor = EasyMock.createStrictMock(ScopeContainerMonitor.class);
-        scopeContainer = new RequestScopeContainer(monitor);
+        scopeContainer = new RequestScopeContainer();
         scopeContainer.start();
 
         component.addListener(scopeContainer);

@@ -28,7 +28,6 @@ import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -44,8 +43,8 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
     private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
-    public HttpSessionScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
-        super(Scope.SESSION, monitor);
+    public HttpSessionScopeContainer(WorkContext workContext) {
+        super(Scope.SESSION);
         this.workContext = workContext;
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Object, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();
@@ -130,7 +129,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
                     try {
                         iter.previous().stop();
                     } catch (TargetDestructionException e) {
-                        monitor.destructionError(e);
+//                        monitor.destructionError(e);
                     }
                 }
             }

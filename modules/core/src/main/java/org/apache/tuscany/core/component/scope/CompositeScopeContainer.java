@@ -23,11 +23,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
@@ -65,8 +63,8 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
     private final Map<AtomicComponent<?>, InstanceWrapper<?>> instanceWrappers =
         new ConcurrentHashMap<AtomicComponent<?>, InstanceWrapper<?>>();
 
-    public CompositeScopeContainer(@Monitor ScopeContainerMonitor monitor) {
-        super(Scope.COMPOSITE, monitor);
+    public CompositeScopeContainer() {
+        super(Scope.COMPOSITE);
     }
 
     public <T> void register(AtomicComponent<T> component, URI groupId) {

@@ -254,7 +254,7 @@ public class DeployerImpl implements Deployer {
                 URI sourceUri = URI.create(source.getUri() + "#" + refName);
                 Wire wire;
                 try {
-                    wire = createWire(sourceUri, targetUri, componentReference.getInterfaceContract(), contract, type);
+                    wire = createWire(sourceUri, targetUri, componentReference.getInterfaceContract(), contract);
                 } catch (IncompatibleInterfaceContractException e1) {
                     throw new IllegalStateException(e1);
                 }
@@ -289,7 +289,7 @@ public class DeployerImpl implements Deployer {
                     Wire wire;
                     try {
                         wire = createWire(sourceURI, targetUri, componentReference.getInterfaceContract(), service
-                            .getService().getInterfaceContract(), Wire.LOCAL_BINDING);
+                            .getService().getInterfaceContract());
                     } catch (IncompatibleInterfaceContractException e1) {
                         throw new IncompatibleInterfacesException(sourceURI, targetUri, e1);
                     }
@@ -344,7 +344,7 @@ public class DeployerImpl implements Deployer {
                 sourceContract = targetContract;
             }
 
-            Wire wire = createWire(sourceURI, targetURI, sourceContract, targetContract, binding.getBindingType());
+            Wire wire = createWire(sourceURI, targetURI, sourceContract, targetContract);
             binding.setWire(wire);
             if (postProcessorRegistry != null) {
                 postProcessorRegistry.process(wire);
@@ -371,9 +371,8 @@ public class DeployerImpl implements Deployer {
     private Wire createWire(URI sourceURI,
                             URI targetUri,
                             InterfaceContract sourceContract,
-                            InterfaceContract targetContract,
-                            QName bindingType) throws IncompatibleInterfaceContractException {
-        Wire wire = new WireImpl(bindingType);
+                            InterfaceContract targetContract) throws IncompatibleInterfaceContractException {
+        Wire wire = new WireImpl();
         wire.setSourceContract(sourceContract);
         wire.setTargetContract(targetContract);
         wire.setSourceUri(sourceURI);
