@@ -20,6 +20,7 @@ package org.apache.tuscany.binding.axis2;
 
 import java.net.URI;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.wsdl.Port;
 import javax.wsdl.extensions.soap.SOAPAddress;
@@ -46,17 +47,33 @@ import org.apache.tuscany.spi.extension.BindingBuilderExtension;
  */
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
 
+    private ServletHostExtensionPoint servletHost;
+    private ConfigurationContext configContext;
+
+    // track reference bindings and service bindings so that resources can be released
+    // needed because the stop methods in ReferenceImpl and ServiceImpl aren't being called
+    // TODO: revisit this as part of the lifecycle work
+    private List<ReferenceBinding> referenceBindings = new ArrayList<ReferenceBinding>();
+    private List<ServiceBinding> serviceBindings = new ArrayList<ServiceBinding>();
+
     // TODO: what to do about the base URI?
     private static final String BASE_URI = "http://localhost:8080/";
 
-    private ServletHostExtensionPoint servletHost;
-
-    private ConfigurationContext configContext;
-//
-//    private WorkContext workContext;
-
     public Axis2BindingBuilder() {
         initAxis();
+    }
+
+    // release resources held by bindings
+    // called by stop method of Axis2ModuleActivator
+    // needed because the stop methods in ReferenceImpl and ServiceImpl aren't being called
+    // TODO: revisit this as part of the lifecycle work
+    protected void destroy() {
+       for (ReferenceBinding binding : referenceBindings) {
+          binding.stop();
+       }
+       for (ServiceBinding binding : serviceBindings) {
+          binding.stop();
+       }
     }
 
     public void setServletHost(ServletHostExtensionPoint servletHost) {
@@ -71,18 +88,21 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     @Override
     public ReferenceBinding build(CompositeReference compositeReference, WebServiceBinding wsBinding, DeploymentContext context) throws BuilderException {
 
-        // Set to use the Axiom data binding 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
             contract = compositeReference.getInterfaceContract();
             wsBinding.setBindingInterfaceContract(contract);
         }
+
+        // Set to use the Axiom data binding 
         contract.getInterface().setDefaultDataBinding(OMElement.class.getName());        
 
         URI targetURI = wsBinding.getURI() != null ? URI.create(wsBinding.getURI()) : URI.create("foo");
         URI name = URI.create(context.getComponentId() + "#" + compositeReference.getName());
 
-        return new Axis2ReferenceBinding(name, targetURI, wsBinding);
+        ReferenceBinding referenceBinding = new Axis2ReferenceBinding(name, targetURI, wsBinding);
+        referenceBindings.add(referenceBinding); // track binding so that its resources can be released
+        return referenceBinding;
     }
 
     @Override
@@ -98,14 +118,15 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
 
         URI uri = computeActualURI(wsBinding, BASE_URI, compositeService).normalize();
+        
+        // TODO: if <binding.ws> specifies the wsdl service then should create a service for every port
 
-        ServiceBinding serviceBinding = new Axis2ServiceBinding(uri, wsBinding, servletHost, configContext, null);
-
+        ServiceBinding serviceBinding = new Axis2ServiceBinding(uri, wsBinding, servletHost, configContext);
+        serviceBindings.add(serviceBinding); // track binding so that its resources can be released
         return serviceBinding;
     }
 
     protected void initAxis() {
-        // TODO: consider having a system component wrapping the Axis2 ConfigContext
         try {
             this.configContext = new TuscanyAxisConfigurator().getConfigurationContext();
         } catch (AxisFault e) {
@@ -203,8 +224,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
      */
     protected URI getEndpoint(Port wsdlPort) {
         if (wsdlPort != null) {
-            final List wsdlPortExtensions = wsdlPort.getExtensibilityElements();
-            for (final Object extension : wsdlPortExtensions) {
+            List wsdlPortExtensions = wsdlPort.getExtensibilityElements();
+            for (Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
                     return URI.create(((SOAPAddress) extension).getLocationURI());
                 }

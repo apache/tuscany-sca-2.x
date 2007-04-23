@@ -168,7 +168,7 @@
                <groupId>commons-httpclient</groupId>
                <artifactId>commons-httpclient</artifactId>
                <version>3.0.1</version>
-               <scope>runtime</scope>
+               <scope>compile</scope>
             </dependency>
 
             <dependency>

@@ -37,11 +37,13 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.xml.WebServiceConstants;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -50,7 +52,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class Axis2ReferenceBinding extends ReferenceBindingExtension {
 
-    private WorkContext workContext;
     private ServiceClient serviceClient;
     private WebServiceBinding wsBinding;
 
@@ -61,54 +62,54 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
         this.bindingServiceContract = wsBinding.getBindingInterfaceContract();
     }
 
+    public void stop() {
+        // close all connections that we have initiated, so that the jetty server
+        // can be restarted without seeing ConnectExceptions
+        HttpClient httpClient = (HttpClient)serviceClient.getServiceContext().getConfigurationContext()
+                .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
+        if (httpClient != null) {
+            ((MultiThreadedHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
+        }
+        super.stop();
+    }
+
     public QName getBindingType() {
         return WebServiceConstants.BINDING_WS_QNAME;
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback) throws TargetInvokerCreationException {
         Axis2TargetInvoker invoker;
-//        boolean operationHasCallback = operation.getInterface().contract.getCallbackInterface() != null;
-// TODO: this isn't right, need to get the InterfaceContract         
-        if (isCallback) {
-            // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader
-            // as parameters.
-            Axis2AsyncTargetInvoker asyncInvoker =
-                (Axis2AsyncTargetInvoker) createOperationInvoker(serviceClient,
-                    operation,
-                    true,
-                    false);
-            // FIXME: This makes the (BIG) assumption that there is only one
-            // callback method
-            // Relaxing this assumption, however, does not seem to be trivial,
-            // it may depend on knowledge
-            // of what actual callback method was invoked by the service at the
-            // other end
-//            Operation callbackOperation = findCallbackOperation();
-            Operation callbackOperation = null;
-            Axis2CallbackInvocationHandler invocationHandler =
-                new Axis2CallbackInvocationHandler(wire);
+
+        if (wsBinding.getBindingInterfaceContract().getCallbackInterface() == null) {
+            invoker = createOperationInvoker(serviceClient, operation, false, operation.isNonBlocking());
+        } else {
+            // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader as parameters.
+
+            // FIXME: This makes the (BIG) assumption that there is only one callback method
+            // Relaxing this assumption, however, does not seem to be trivial, it may depend on knowledge
+            // of what actual callback method was invoked by the service at the other end
+            Operation callbackOperation = findCallbackOperation();
+            Axis2CallbackInvocationHandler invocationHandler = new Axis2CallbackInvocationHandler(wire);
             Axis2ReferenceCallbackTargetInvoker callbackInvoker =
                 new Axis2ReferenceCallbackTargetInvoker(callbackOperation, wire, invocationHandler);
-            asyncInvoker.setCallbackTargetInvoker(callbackInvoker);
 
+            Axis2AsyncTargetInvoker asyncInvoker = 
+                (Axis2AsyncTargetInvoker) createOperationInvoker(serviceClient, operation, true, false);
+            asyncInvoker.setCallbackTargetInvoker(callbackInvoker);
             invoker = asyncInvoker;
-        } else {
-            invoker = createOperationInvoker(serviceClient, operation, false, operation.isNonBlocking());
         }
         return invoker;
     }
 
-//    private Operation findCallbackOperation() {
-//        ServiceContract contract = wire.getTargetContract(); // TODO: which end?
-//        Operation callbackOperation = null;
-//        Collection callbackOperations = contract.getCallbackOperations().values();
-//        if (callbackOperations.size() != 1) {
-//            throw new Axis2BindingRunTimeException("Can only handle one callback operation");
-//        } else {
-//            callbackOperation = (Operation) callbackOperations.iterator().next();
-//        }
-//        return callbackOperation;
-//    }
+    private Operation findCallbackOperation() {
+        InterfaceContract contract = wire.getTargetContract(); // TODO: which end?
+        List callbackOperations = contract.getCallbackInterface().getOperations();
+        if (callbackOperations.size() != 1) {
+            throw new RuntimeException("Can only handle one callback operation");
+        }
+        Operation callbackOperation = (Operation) callbackOperations.get(0);
+        return callbackOperation;
+    }
 
     /**
      * Create an Axis2 ServiceClient
@@ -149,7 +150,7 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
             options.setAction(soapAction);
         }
 
-        options.setTimeOutInMilliSeconds(5 * 60 * 1000);
+        options.setTimeOutInMilliSeconds(30 * 1000); // 30 seconds
 
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
         QName wsdlOperationQName = new QName(wsBinding.getNamespace(), operationName);

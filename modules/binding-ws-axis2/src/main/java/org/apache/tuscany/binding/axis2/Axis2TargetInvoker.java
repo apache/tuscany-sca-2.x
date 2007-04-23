@@ -39,6 +39,7 @@ import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
+import org.apache.axis2.transport.http.HTTPConstants;
 
 /**
  * Axis2TargetInvoker uses an Axis2 OperationClient to invoke a remote web service
@@ -66,6 +67,10 @@ public class Axis2TargetInvoker extends TargetInvokerExtension {
             Object[] args = (Object[]) payload;
             OperationClient operationClient = createOperationClient(args, workContext);
 
+            // ensure connections are tracked so that they can be closed by the reference binding
+            MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
+            requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
+            
             operationClient.execute(true);
 
             MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);

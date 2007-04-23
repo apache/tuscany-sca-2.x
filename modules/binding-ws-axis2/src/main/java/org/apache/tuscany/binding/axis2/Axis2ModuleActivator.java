@@ -30,6 +30,8 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 public class Axis2ModuleActivator implements ModuleActivator {
 
+    private Axis2BindingBuilder builder;
+
     public void start(ExtensionPointRegistry extensionPointRegistry) {
 
         StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -38,7 +40,7 @@ public class Axis2ModuleActivator implements ModuleActivator {
         ServletHostExtensionPoint servletHost = extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
         
         BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);
-        Axis2BindingBuilder builder = new Axis2BindingBuilder();
+        builder = new Axis2BindingBuilder();
         builder.setBuilderRegistry(builderRegistry);
         builder.setServletHost(servletHost);
         builder.init();
@@ -46,6 +48,10 @@ public class Axis2ModuleActivator implements ModuleActivator {
     }
 
     public void stop(ExtensionPointRegistry registry) {
+        // release resources held by bindings
+        // needed because the stop methods in ReferenceImpl and ServiceImpl aren't being called
+        // TODO: revisit this as part of the lifecycle work
+        builder.destroy(); // release connections
     }
 
     public Map<Class, Object> getExtensionPoints() {
