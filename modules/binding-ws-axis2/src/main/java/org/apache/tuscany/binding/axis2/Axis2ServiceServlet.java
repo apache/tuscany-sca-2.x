@@ -74,6 +74,16 @@ public class Axis2ServiceServlet extends AxisServlet {
     protected ConfigurationContext initConfigContext(ServletConfig config) throws ServletException {
         return this.configContext;
     }
+    
+    @Override
+    public ServletConfig getServletConfig() {
+        return DUMMY_CONFIG;
+    }
+    
+    @Override
+    public String getServletName() {
+        return "TuscanyAxis2DummyServlet";
+    }
 
     /**
      * The AxisServlet gets NPE during init without a ServletConfig so this is a mocked up one to prevent that.
@@ -219,4 +229,12 @@ public class Axis2ServiceServlet extends AxisServlet {
         super.service(request, response);
     }
 
+    @Override
+    public void destroy() {
+        try {
+            super.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
