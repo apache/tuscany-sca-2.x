@@ -18,6 +18,7 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://sample/crud"
 	xmlns:sc="http://sample/crud"
 	xmlns:c="http://crud"
 	name="crud">
