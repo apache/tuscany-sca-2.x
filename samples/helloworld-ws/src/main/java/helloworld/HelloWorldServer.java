@@ -3,7 +3,7 @@ package helloworld;
 
 import java.io.IOException;
 
-import org.apache.tuscany.api.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntime;
 
 public class HelloWorldServer {
 

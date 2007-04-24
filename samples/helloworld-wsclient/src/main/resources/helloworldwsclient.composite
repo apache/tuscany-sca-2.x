@@ -18,20 +18,17 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="helloworldwsclient">
+	targetNamespace="http://helloworld"
+	xmlns:hw="http://helloworld"
+	name="helloworldwsclient">
     
     <component name="HelloWorldServiceComponent">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService">HelloWorldService</reference>
     </component>
 
-    <reference name="HelloWorldService">
+    <reference name="HelloWorldService" promote="HelloWorldServiceComponent/helloWorldService">
         <interface.java class="helloworld.HelloWorldService" />
-        <!-- interface.wsdl xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
-            interface="http://helloworld#wsdl.interface(HelloWorld)" 
-            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" / -->
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </reference>
 
 </composite>
