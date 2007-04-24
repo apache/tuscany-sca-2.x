@@ -42,6 +42,8 @@
                 <module>das-service</module>
                 -->
                 <module>databinding-echo</module>
+                <module>helloworld-ws</module>
+                <module>helloworld-wsclient</module>
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
                 <!--

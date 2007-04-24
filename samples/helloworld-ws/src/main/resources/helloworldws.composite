@@ -17,13 +17,14 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://helloworld"
+	xmlns:hw="http://helloworld"
     name="helloworldws">
 
-    <service name="HelloWorldWebService">
+    <service name="HelloWorldWebService" promote="HelloWorldServiceComponent">
         <interface.java class="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <reference>HelloWorldServiceComponent</reference>
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </service>
 
     <component name="HelloWorldServiceComponent">

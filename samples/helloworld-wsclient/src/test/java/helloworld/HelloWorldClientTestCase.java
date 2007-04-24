@@ -20,10 +20,9 @@
 package helloworld;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
-import org.apache.tuscany.api.SCARuntime;
-import org.apache.tuscany.core.test.SCATestCaseRunner;
+import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCATestCaseRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,13 +40,17 @@ public class HelloWorldClientTestCase {
 
     @Before
     public void startClient() throws Exception {
-    	SCARuntime.start("helloworldwsclient.composite");
-        
-        CompositeContext compositeContext = CurrentCompositeContext.getContext();
-        helloWorldService = compositeContext.locateService(HelloWorldService.class, "HelloWorldServiceComponent");
-
-        server =  new SCATestCaseRunner(HelloWorldServerTest.class);
-        server.before();
+        try {
+            SCARuntime.start("helloworldwsclient.composite");
+            
+            CompositeContext compositeContext = CurrentCompositeContext.getContext();
+            helloWorldService = compositeContext.locateService(HelloWorldService.class, "HelloWorldServiceComponent");
+    
+            server =  new SCATestCaseRunner(HelloWorldServerTest.class);
+            server.before();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     @Test
