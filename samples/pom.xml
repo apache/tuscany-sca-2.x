@@ -36,12 +36,12 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>binding-echo</module>
                 <module>calculator</module>
-                <module>echo-binding</module>
                 <!--
                 <module>das-service</module>
                 -->
-                <module>echo-databinding</module>
+                <module>databinding-echo</module>
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
                 <!--
