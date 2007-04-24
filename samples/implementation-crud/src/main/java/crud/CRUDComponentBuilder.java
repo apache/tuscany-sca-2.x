@@ -22,28 +22,24 @@ import java.net.URI;
 
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 
 /**
- * Builds a Java-based atomic context from a component definition
+ * A builder that builds a Java-based atomic context from an implementation model.
+ * FIXME We need to remove the requirement for builders.
  * 
- * @version $$Rev$$ $$Date: 2007-03-28 09:03:01 -0700 (Wed, 28 Mar
- *          2007) $$
+ * @version $$Rev$$ $$Date$$
  */
-public class CRUDComponentBuilder extends ComponentBuilderExtension<CRUDImplementation> {
+public class CRUDComponentBuilder implements ComponentBuilder {
 
-    @SuppressWarnings("unchecked")
     public AtomicComponent build(Component definition, DeploymentContext context) throws BuilderConfigException {
-        URI id = URI.create(context.getComponentId() + definition.getName());
-        CRUDAtomicComponent component = new CRUDAtomicComponent(id, context.getGroupId(),
+        URI uri = URI.create(context.getComponentId() + definition.getName());
+        CRUDAtomicComponent component = new CRUDAtomicComponent(
+                                                                uri, context.getGroupId(),
                                                                 (CRUDImplementation)definition.getImplementation());
         return component;
-    }
-
-    protected Class<CRUDImplementation> getImplementationType() {
-        return CRUDImplementation.class;
     }
 
 }

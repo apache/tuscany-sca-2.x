@@ -19,7 +19,6 @@
 package crud;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static org.osoa.sca.Constants.SCA_NS;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -28,38 +27,54 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
-import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
-public class CRUDImplementationLoader implements StAXArtifactProcessorExtension<CRUDImplementation> {
-    public static final QName IMPLEMENTATION_CRUD = new QName(SCA_NS, "implementation.crud");
+/**
+ * Implements a STAX artifact processor for CRUD implementations.
+ * 
+ * The artifact processor is responsible for processing <implementation.crud>
+ * elements in SCA assembly XML composite files and populating the CRUD
+ * implementation model, resolving its references to other artifacts in the SCA
+ * contribution, and optionally write the model back to SCA assembly XML. 
+ *
+ * @version $Rev$ $Date$
+ */
+public class CRUDImplementationProcessor implements StAXArtifactProcessorExtension<CRUDImplementation> {
+    private static final QName IMPLEMENTATION_CRUD = new QName("http://crud", "implementation.crud");
 
     public QName getArtifactType() {
+        // Returns the qname of the XML element processed by this processor
         return IMPLEMENTATION_CRUD;
     }
 
     public Class<CRUDImplementation> getModelType() {
+        // Returns the type of model processed by this processor
         return CRUDImplementation.class;
-    }
-
-    public void optimize(CRUDImplementation impl) throws ContributionException {
     }
 
     public CRUDImplementation read(XMLStreamReader reader) throws ContributionReadException {
         assert IMPLEMENTATION_CRUD.equals(reader.getName());
+        
+        // Read an <implementation.crud> element
         try {
-            String dir = reader.getAttributeValue(null, "directory");
+            // Read the directory attribute. This is where the sample
+            // CRUD implementation will persist resources.
+            String directory = reader.getAttributeValue(null, "directory");
 
-            CRUDImplementation implementation = new CRUDImplementation(dir);
+            // Create an initialize the CRUD implementation model
+            CRUDImplementation implementation = new CRUDImplementation();
+            implementation.setDirectory(directory);
+            
             // Skip to end element
             while (reader.hasNext()) {
                 if (reader.next() == END_ELEMENT && IMPLEMENTATION_CRUD.equals(reader.getName())) {
                     break;
                 }
             }
+            
             return implementation;
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
