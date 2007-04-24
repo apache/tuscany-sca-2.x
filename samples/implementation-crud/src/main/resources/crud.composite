@@ -17,10 +17,13 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="CRUDComposite">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:sc="http://sample/crud"
+	xmlns:c="http://crud"
+	name="crud">
 
     <component name="CRUDServiceComponent">
-        <implementation.crud diretory="C:\\Temp" />
+        <c:implementation.crud directory="tmp" />
     </component>
 
 </composite>

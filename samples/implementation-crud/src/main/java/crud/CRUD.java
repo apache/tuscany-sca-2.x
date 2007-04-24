@@ -19,18 +19,38 @@
 package crud;
 
 /**
- * The service interface implemented by CRUD components.
+ * The service interface of the single CRUD service provided by CRUD components.
  * 
  * @version $Rev$ $Date$
  */
 public interface CRUD {
 
+    /**
+     * Create a new resource.
+     * @param resource
+     * @return
+     */
     String create(Object resource);
 
+    /**
+     * Retrieve a resource.
+     * @param id
+     * @return
+     */
     Object retrieve(String id);
 
+    /**
+     * Update a resource.
+     * @param id
+     * @param resource
+     * @return
+     */
     Object update(String id, Object resource);
 
+    /**
+     * Delete a resource.
+     * @param id
+     */
     void delete(String id);
 
 }

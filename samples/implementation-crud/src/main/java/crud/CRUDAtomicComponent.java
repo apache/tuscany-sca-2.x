@@ -39,23 +39,24 @@ import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
 /**
- * The runtime instantiation of Java component implementations
+ * The runtime instantiation of CRUD component implementations.
+ * FIXME We need to remove the requirement for such a class, implementing
+ * the implementation model should be sufficient.
  * 
  * @version $Rev$ $Date$
  */
 public class CRUDAtomicComponent extends AtomicComponentExtension implements ComponentContextProvider {
-    private CRUDImplementation impl;
     private ComponentContext componentContext;
+    private ResourceManager resourceManager;
 
-    public CRUDAtomicComponent(URI uri, URI groupId, CRUDImplementation impl) {
+    public CRUDAtomicComponent(URI uri, URI groupId, CRUDImplementation implementation) {
         super(uri, null, null, groupId, 50);
-        this.impl = impl;
         componentContext = new ComponentContextImpl(this);
-
+        resourceManager = new ResourceManager(implementation.getDirectory());
     }
 
     public Object createInstance() throws ObjectCreationException {
-        return new CRUDImpl(impl.getDirectory());
+        return resourceManager;
     }
 
     public InstanceWrapper createInstanceWrapper() throws ObjectCreationException {
@@ -63,7 +64,7 @@ public class CRUDAtomicComponent extends AtomicComponentExtension implements Com
     }
 
     public Object getTargetInstance() throws TargetResolutionException {
-        return new CRUDImpl(impl.getDirectory());
+        return resourceManager;
     }
 
     public void attachCallbackWire(Wire arg0) {
@@ -81,8 +82,7 @@ public class CRUDAtomicComponent extends AtomicComponentExtension implements Com
 
     public TargetInvoker createTargetInvoker(String targetName, final Operation operation, boolean callback)
         throws TargetInvokerCreationException {
-        return new CRUDTargetInvoker(operation, impl.getDirectory());
-
+        return new CRUDTargetInvoker(operation, resourceManager);
     }
 
     @Override
@@ -91,7 +91,6 @@ public class CRUDAtomicComponent extends AtomicComponentExtension implements Com
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) {
-        // TODO Auto-generated method stub
         return null;
     }
 
