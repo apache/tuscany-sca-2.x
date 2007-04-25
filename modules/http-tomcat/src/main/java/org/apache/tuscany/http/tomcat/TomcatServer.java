@@ -30,9 +30,10 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardEngine;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.ContextConfig;
-import org.apache.coyote.http11.Http11NioProtocol;
+import org.apache.coyote.http11.Http11Protocol;
 import org.apache.tomcat.util.buf.MessageBytes;
 import org.apache.tomcat.util.http.mapper.MappingData;
+import org.apache.tomcat.util.net.JIoEndpoint;
 import org.apache.tuscany.http.ServletHostExtension;
 import org.apache.tuscany.http.ServletMappingException;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
@@ -55,24 +56,73 @@ public class TomcatServer implements ServletHostExtension {
      */
     private class CustomConnector extends Connector {
 
-        private class CustomHttpProtocolHandler extends Http11NioProtocol {
-        
+        private class CustomHttpProtocolHandler extends Http11Protocol {
+
+            /**
+             * An Executor wrappering our WorkScheduler
+             */
             private class WorkSchedulerExecutor implements Executor {
                 public void execute(Runnable command) {
                     workScheduler.scheduleWork(command);
                 }
             }
+
+            /**
+             * A custom Endpoint that waits for its acceptor thread to
+             * terminate before stopping.
+             */
+            private class CustomEndpoint extends JIoEndpoint {
+                private Thread acceptorThread;
+
+                private class CustomAcceptor extends Acceptor {
+                    CustomAcceptor() {
+                        super();
+                    }
+                }
+                
+                public void start() throws Exception {
+                    if (!initialized)
+                        init();
+                    if (!running) {
+                        running = true;
+                        paused = false;
+                        acceptorThread = new Thread(new CustomAcceptor(), getName() + "-Acceptor-" + 0);
+                        acceptorThread.setPriority(threadPriority);
+                        acceptorThread.setDaemon(daemon);
+                        acceptorThread.start();
+                    }
+                }
+                
+                public void stop() {
+                    super.stop();
+                    try {
+                        acceptorThread.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                
+                public int getCurrentThreadsBusy() {
+                    return 0;
+                }
+            }
             
             CustomHttpProtocolHandler() {
-                ep.setExecutor(new WorkSchedulerExecutor());
+                endpoint = new CustomEndpoint();
+                endpoint.setExecutor(new WorkSchedulerExecutor());
             }
         }
         
         CustomConnector() throws Exception {
-            this.protocolHandler = new CustomHttpProtocolHandler();
+            protocolHandler = new CustomHttpProtocolHandler();
         }
     }
 
+    /**
+     * Constructs a new embedded Tomcat server.
+     * 
+     * @param workScheduler the WorkScheduler to use to process requests.
+     */
     public TomcatServer(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
     }
