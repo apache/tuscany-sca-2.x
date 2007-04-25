@@ -33,5 +33,5 @@
     </sequence>
   </complexType>
 
-  <element name="SimpleTypeWithSDOName" type="SimpleTypeWithSDONameComplexType">
+  <element name="SimpleTypeWithSDOName" type="tns:SimpleTypeWithSDONameComplexType"/>
 </schema>

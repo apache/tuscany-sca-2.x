@@ -20,5 +20,5 @@
 <tns:Annotation xmlns:tns="http://www.apache.org/tuscany/interop"
 	            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	            xsi:schemaLocation="http://www.apache.org/tuscany/interop Annotation.xsd">
-	<SimpleTypeWithName>SimpleTypeWithName</SimpleTypeWithName>
+	<SimpleTypeWithNameElement>SimpleTypeWithName</SimpleTypeWithNameElement>
 </tns:Annotation>

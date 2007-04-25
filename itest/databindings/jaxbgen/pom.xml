@@ -103,7 +103,13 @@
             <artifactId>tuscany-interface-java-runtime</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency>          
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-http-jetty</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>           
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>

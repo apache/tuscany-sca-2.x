@@ -80,7 +80,66 @@
     <JavaPackage>org.apache.tuscany.sca.itest.jaxbdatabinding.generated</JavaPackage>  
     <Factory>ObjectFactory</Factory>
     <Namespace>http://www.apache.org/tuscany/interop</Namespace>  
-    <Prefix>i</Prefix>       
+    <Prefix>i</Prefix>   
+    <!-- Type>
+      <TypeName>AnnotationComplexType</TypeName>
+      <CreateTypeCode>
+        ObjectFactory factory = new ObjectFactory();
+        param = factory.createAnnotationComplexType();
+        param.setSimpleTypeWithNameElement("SomeText");
+       </CreateTypeCode>
+      <ModifyTypeCode>
+        param.setSimpleTypeWithNameElement("SomeChangedText");;
+      </ModifyTypeCode>
+      <ResultComparison>
+        assertEquals("data not changed corretly", "SomeChangedText", result.getSimpleTypeWithNameElement());
+      </ResultComparison>      
+    </Type-->  
+    <Type>
+      <TypeName>AttributeComplexType</TypeName>
+      <CreateTypeCode>
+        ObjectFactory factory = new ObjectFactory();
+        org.apache.tuscany.sca.itest.jaxbdatabinding.generated.AttributeType attrib = factory.createAttributeType();
+        attrib.setAttribute("SomeText");
+        param = factory.createAttributeComplexType();
+        param.setAttributeElement(attrib);
+       </CreateTypeCode>
+      <ModifyTypeCode>
+        param.getAttributeElement().setAttribute("SomeChangedText");;
+      </ModifyTypeCode>
+      <ResultComparison>
+        assertEquals("data not changed corretly", "SomeChangedText", result.getAttributeElement().getAttribute());
+      </ResultComparison>      
+    </Type> 
+    <Type>
+      <TypeName>AttributeReferenceComplexType</TypeName>
+      <CreateTypeCode>
+        ObjectFactory factory = new ObjectFactory();
+        param = factory.createAttributeReferenceComplexType();
+        
+        param.setReferencedAttribute("SomeText");
+       </CreateTypeCode>
+      <ModifyTypeCode>
+        param.setReferencedAttribute("SomeChangedText");;
+      </ModifyTypeCode>
+      <ResultComparison>
+        assertEquals("data not changed corretly", "SomeChangedText", result.getReferencedAttribute());
+      </ResultComparison>      
+    </Type>     
+    <Type>
+      <TypeName>SimpleTypeWithAbstractComplexType</TypeName>
+      <CreateTypeCode>
+        ObjectFactory factory = new ObjectFactory();
+        param = factory.createSimpleTypeWithAbstractComplexType();
+        param.setSimpleTypeWithAbstractExtensionElement("SomeText");
+       </CreateTypeCode>
+      <ModifyTypeCode>
+        param.setSimpleTypeWithAbstractExtensionElement("SomeChangedText");;
+      </ModifyTypeCode>
+      <ResultComparison>
+        assertEquals("data not changed corretly", "SomeChangedText", result.getSimpleTypeWithAbstractExtensionElement());
+      </ResultComparison>      
+    </Type>         
     <Type>
       <TypeName>SimpleTypeWithNameComplexType</TypeName>
       <CreateTypeCode>

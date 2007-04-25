@@ -20,7 +20,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
 	xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
 	xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
-    name="SDOGreeterService">
+    name="InteropGreeterService">
 
     <!-- SDO factory classes -->  
     #foreach( $file in $fileList )

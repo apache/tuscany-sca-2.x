@@ -28,11 +28,12 @@
     <attribute name="Attribute" type="string"/>
   </complexType> 
                  
-  <element name="Attribute">
-    <complexType>
-      <sequence>
-        <element name="AttributeElement" type="tns:AttributeType"/>
-      </sequence>
-    </complexType>
-  </element>
+  <complexType name="AttributeComplexType">
+    <sequence>
+       <element name="AttributeElement" type="tns:AttributeType"/>
+    </sequence>
+  </complexType>
+  
+  <element name="Attribute" type="tns:AttributeComplexType"/>
+ 
 </schema>
