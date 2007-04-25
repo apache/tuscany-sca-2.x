@@ -31,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.http.jetty.JettyServer;
+import org.apache.tuscany.spi.services.work.NotificationListener;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 import junit.framework.TestCase;
 
@@ -50,11 +52,23 @@ public class JettyServerTestCase extends TestCase {
 
     private static final int HTTP_PORT = 8585;
 
+    private WorkScheduler workScheduler = new WorkScheduler() {
+        
+        public <T extends Runnable> void scheduleWork(T work) {
+            Thread thread = new Thread(work);
+            thread.start();
+        }
+        
+        public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
+            scheduleWork(work);
+        }
+    };
+    
     /**
      * Verifies requests are properly routed according to the servlet mapping
      */
     public void testRegisterServletMapping() throws Exception {
-        JettyServer service = new JettyServer();
+        JettyServer service = new JettyServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping(HTTP_PORT, "/", servlet);
@@ -68,7 +82,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testUnregisterMapping() throws Exception {
-        JettyServer service = new JettyServer();
+        JettyServer service = new JettyServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping(HTTP_PORT, "/foo", servlet);
@@ -83,7 +97,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testRequestSession() throws Exception {
-        JettyServer service = new JettyServer();
+        JettyServer service = new JettyServer(workScheduler);
         service.setDebug(true);
         service.init();
         TestServlet servlet = new TestServlet();
@@ -99,7 +113,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testRestart() throws Exception {
-        JettyServer service = new JettyServer();
+        JettyServer service = new JettyServer(workScheduler);
         service.init();
         service.destroy();
         service.init();
@@ -107,7 +121,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     public void testNoMappings() throws Exception {
-        JettyServer service = new JettyServer();
+        JettyServer service = new JettyServer(workScheduler);
         service.init();
         Exception ex = null;
         try {

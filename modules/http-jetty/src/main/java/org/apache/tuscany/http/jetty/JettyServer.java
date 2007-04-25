@@ -27,6 +27,7 @@ import javax.servlet.ServletException;
 
 import org.apache.tuscany.http.ServletHostExtension;
 import org.apache.tuscany.http.ServletMappingException;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandler;
@@ -38,7 +39,7 @@ import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.jetty.servlet.SessionHandler;
 import org.mortbay.log.Log;
 import org.mortbay.log.Logger;
-import org.mortbay.thread.BoundedThreadPool;
+import org.mortbay.thread.ThreadPool;
 
 /**
  * Implements an HTTP transport service using Jetty.
@@ -68,6 +69,7 @@ public class JettyServer implements ServletHostExtension {
     private Server server;
     private Connector connector;
     private ServletHandler servletHandler;
+    private WorkScheduler workScheduler;
 
     static {
         // hack to replace the static Jetty logger
@@ -75,7 +77,8 @@ public class JettyServer implements ServletHostExtension {
 
     }
 
-    public JettyServer() {
+    public JettyServer(WorkScheduler workScheduler) {
+        this.workScheduler = workScheduler;
 
         // Configure the Jetty logger
         Logger logger = Log.getLogger(null);
@@ -135,9 +138,7 @@ public class JettyServer implements ServletHostExtension {
 
             try {
                 server = new Server();
-                BoundedThreadPool threadPool = new BoundedThreadPool();
-                threadPool.setMaxThreads(100);
-                server.setThreadPool(threadPool);
+                server.setThreadPool(new WorkSchedulerThreadPool());
                 if (connector == null) {
                     if (https) {
                         Connector httpConnector = new SelectChannelConnector();
@@ -206,6 +207,62 @@ public class JettyServer implements ServletHostExtension {
             servletHandler.setServletMappings((ServletMapping[])mappings.toArray(new ServletMapping[mappings.size()]));
         }
         return removedServlet;
+    }
+
+    /**
+     * An integration wrapper to enable use of a {@link WorkScheduler} with Jetty
+     */
+    private class WorkSchedulerThreadPool implements ThreadPool {
+
+        public boolean dispatch(Runnable work) {
+            workScheduler.scheduleWork(work);
+            return true;
+        }
+
+        public void join() throws InterruptedException {
+            synchronized (joinLock) {
+                joinLock.wait();
+            }
+        }
+
+        public int getThreads() {
+            throw new UnsupportedOperationException();
+        }
+
+        public int getIdleThreads() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean isLowOnThreads() {
+            // TODO FIXME
+            return false;
+        }
+
+        public void start() throws Exception {
+        }
+
+        public void stop() throws Exception {
+        }
+
+        public boolean isRunning() {
+            return state == STARTING || state == STARTED;
+        }
+
+        public boolean isStarted() {
+            return state == STARTED;
+        }
+
+        public boolean isStarting() {
+            return state == STARTING;
+        }
+
+        public boolean isStopping() {
+            return state == STOPPING;
+        }
+
+        public boolean isFailed() {
+            return state == ERROR;
+        }
     }
 
 }

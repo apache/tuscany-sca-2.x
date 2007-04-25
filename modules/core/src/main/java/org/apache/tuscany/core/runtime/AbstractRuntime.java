@@ -58,8 +58,6 @@ import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.osoa.sca.ComponentContext;
 
-import commonj.work.WorkManager;
-
 /**
  * @version $Rev$ $Date$
  */
@@ -104,6 +102,8 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     protected ScopeRegistry scopeRegistry;
     protected Collection<ModuleActivator> activators;
+    
+    protected ThreadPoolWorkManager workManager;
 
     protected AbstractRuntime(Class<I> runtimeInfoType) {
         this(runtimeInfoType, new NullMonitorFactory());
@@ -178,7 +178,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
 
         extensionRegistry.addExtensionPoint(Deployer.class, deployer);
-        WorkManager workManager = new ThreadPoolWorkManager(10);
+        workManager = new ThreadPoolWorkManager(10);
         extensionRegistry.addExtensionPoint(WorkScheduler.class, new Jsr237WorkScheduler(workManager)); //lresende
 
         this.scopeRegistry = bootstrapper.getScopeRegistry();
@@ -212,6 +212,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
             systemComponent.stop();
             systemComponent = null;
         }
+        workManager.destroy();
     }
 
     public ComponentContext getComponentContext(URI componentName) {
