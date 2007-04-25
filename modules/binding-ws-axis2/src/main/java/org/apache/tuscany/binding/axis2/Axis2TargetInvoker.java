@@ -74,6 +74,8 @@ public class Axis2TargetInvoker extends TargetInvokerExtension {
             operationClient.execute(true);
 
             MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            
+            operationClient.complete(requestMC);
 
             return responseMC.getEnvelope().getBody().getFirstElement();
 
