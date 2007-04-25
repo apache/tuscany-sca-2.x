@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.http.tomcat;
 
-import java.net.InetAddress;
-
 import javax.servlet.Servlet;
 
 import org.apache.catalina.Context;
@@ -84,7 +82,12 @@ public class TomcatServer implements ServletHostExtension {
         // Install a default HTTP connector
         if (connector == null) {
             //TODO support multiple connectors on different ports
-            connector = tomcat.createConnector((InetAddress)null, port, false);
+            try {
+                connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+                connector.setPort(port);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             tomcat.addConnector(connector);
         }
         

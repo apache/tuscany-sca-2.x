@@ -102,8 +102,6 @@ public class TomcatServerTestCase extends TestCase {
         service.destroy();
     }
 
-    // FIXME this test randomly breaks on Linux, probably something
-    // to do with cleaning up TCP/IP connections?
     public void testNoMappings() throws Exception {
         TomcatServer service = new TomcatServer();
         service.init();
