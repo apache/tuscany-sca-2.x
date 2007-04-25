@@ -25,6 +25,7 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.http.jetty.JettyServer;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 /**
  * @version $Rev$ $Date$
@@ -42,7 +43,8 @@ public class JettyRuntimeModuleActivator implements ModuleActivator {
         // Register a Jetty servlet host
         ServletHostExtensionPoint servletHosts =
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
-        server = new JettyServer();
+        WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
+        server = new JettyServer(workScheduler);
         servletHosts.addExtension(server);
         server.init();
     }

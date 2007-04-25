@@ -18,19 +18,24 @@
  */
 package org.apache.tuscany.http.tomcat;
 
+import java.util.concurrent.Executor;
+
 import javax.servlet.Servlet;
 
 import org.apache.catalina.Context;
-import org.apache.catalina.Engine;
-import org.apache.catalina.Host;
-import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Lifecycle;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
-import org.apache.catalina.startup.Embedded;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardEngine;
+import org.apache.catalina.core.StandardHost;
+import org.apache.catalina.startup.ContextConfig;
+import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.tomcat.util.buf.MessageBytes;
 import org.apache.tomcat.util.http.mapper.MappingData;
 import org.apache.tuscany.http.ServletHostExtension;
 import org.apache.tuscany.http.ServletMappingException;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 /**
  * A Tomcat based implementation of ServletHost.
@@ -39,58 +44,91 @@ import org.apache.tuscany.http.ServletMappingException;
  */
 public class TomcatServer implements ServletHostExtension {
 
-    private Embedded tomcat;
-    private Host host;
-    Connector connector;
-    private boolean started;
+    private StandardEngine engine;
+    private StandardHost host;
+    private Connector connector;
+    private WorkScheduler workScheduler;
+    
+    /**
+     * A custom connector that uses our WorkScheduler to schedule
+     * worker threads.
+     */
+    private class CustomConnector extends Connector {
 
+        private class CustomHttpProtocolHandler extends Http11NioProtocol {
+        
+            private class WorkSchedulerExecutor implements Executor {
+                public void execute(Runnable command) {
+                    workScheduler.scheduleWork(command);
+                }
+            }
+            
+            CustomHttpProtocolHandler() {
+                ep.setExecutor(new WorkSchedulerExecutor());
+            }
+        }
+        
+        CustomConnector() throws Exception {
+            this.protocolHandler = new CustomHttpProtocolHandler();
+        }
+    }
+
+    public TomcatServer(WorkScheduler workScheduler) {
+        this.workScheduler = workScheduler;
+    }
+    
     public void init() throws ServletMappingException {
-        tomcat = new Embedded();
 
         // Create an engine
-        Engine engine = tomcat.createEngine();
+        engine = new StandardEngine();
+        engine.setBaseDir("");
         engine.setDefaultHost("localhost");
 
         // Create a host
-        host = tomcat.createHost("localhost", "");
+        host = new StandardHost();
+        host.setAppBase("");
+        host.setName("localhost");
         engine.addChild(host);
 
-        // Create the ROOT context
-        Context context = tomcat.createContext("", "");
+        // Create the root context
+        StandardContext context = new StandardContext();
+        context.setDocBase("");
+        context.setPath("");
+        ContextConfig config = new ContextConfig();
+        ((Lifecycle)context).addLifecycleListener(config);
         host.addChild(context);
-
-        // Install the engine
-        tomcat.addEngine(engine);
-
     }
 
     public void destroy() throws ServletMappingException {
 
         // Stop the server
-        if (started) {
-            try {
-                tomcat.stop();
-            } catch (LifecycleException e) {
-                throw new ServletMappingException(e);
+        try {
+            if (connector !=null) {
+                connector.stop();
+                engine.stop();
             }
-            started = false;
+        } catch (Exception e) {
+            throw new ServletMappingException(e);
         }
     }
 
     public void addServletMapping(int port, String mapping, Servlet servlet) {
-
+        
         // Install a default HTTP connector
         if (connector == null) {
             //TODO support multiple connectors on different ports
             try {
-                connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+                engine.start();
+                connector = new CustomConnector();
                 connector.setPort(port);
+                connector.setContainer(engine);
+                connector.initialize();
+                connector.start();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            tomcat.addConnector(connector);
         }
-        
+
         // Register the servlet mapping
         Context context = host.map(mapping);
         Wrapper wrapper = new ServletWrapper(servlet);
@@ -98,18 +136,7 @@ public class TomcatServer implements ServletHostExtension {
         wrapper.addMapping(mapping);
         context.addChild(wrapper);
         context.addServletMapping(mapping, mapping);
-
-        // Start Tomcat
-        try {
-            if (!started) {
-                tomcat.start();
-                started = true;
-            }
-
-        } catch (LifecycleException e) {
-            // TODO use a better runtime exception
-            throw new RuntimeException(e);
-        }
+        connector.getMapper().addWrapper("localhost", "", mapping, wrapper);
     }
 
     public Servlet removeServletMapping(int port, String mapping) {

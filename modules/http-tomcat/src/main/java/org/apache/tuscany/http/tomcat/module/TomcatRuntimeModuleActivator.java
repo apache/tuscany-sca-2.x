@@ -25,6 +25,7 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.http.tomcat.TomcatServer;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 /**
  * @version $Rev$ $Date$
@@ -42,7 +43,8 @@ public class TomcatRuntimeModuleActivator implements ModuleActivator {
         // Register a Tomcat servlet host
         ServletHostExtensionPoint servletHosts =
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
-        server = new TomcatServer();
+        WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
+        server = new TomcatServer(workScheduler);
         server.init();
         servletHosts.addExtension(server);
     }

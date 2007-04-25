@@ -29,6 +29,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tuscany.spi.services.work.NotificationListener;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
+
 import junit.framework.TestCase;
 
 /**
@@ -46,12 +49,24 @@ public class TomcatServerTestCase extends TestCase {
         REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
 
     private static final int HTTP_PORT = 8586;
-
+    
+    private WorkScheduler workScheduler = new WorkScheduler() {
+        
+        public <T extends Runnable> void scheduleWork(T work) {
+            Thread thread = new Thread(work);
+            thread.start();
+        }
+        
+        public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
+            scheduleWork(work);
+        }
+    };
+    
     /**
      * Verifies requests are properly routed according to the servlet mapping
      */
     public void testRegisterServletMapping() throws Exception {
-        TomcatServer service = new TomcatServer();
+        TomcatServer service = new TomcatServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping(HTTP_PORT, "/foo", servlet);
@@ -65,7 +80,7 @@ public class TomcatServerTestCase extends TestCase {
     }
 
     public void testUnregisterMapping() throws Exception {
-        TomcatServer service = new TomcatServer();
+        TomcatServer service = new TomcatServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping(HTTP_PORT, "/foo", servlet);
@@ -80,7 +95,7 @@ public class TomcatServerTestCase extends TestCase {
     }
 
     public void testRequestSession() throws Exception {
-        TomcatServer service = new TomcatServer();
+        TomcatServer service = new TomcatServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping(HTTP_PORT, "/foo", servlet);
@@ -95,7 +110,7 @@ public class TomcatServerTestCase extends TestCase {
     }
 
     public void testRestart() throws Exception {
-        TomcatServer service = new TomcatServer();
+        TomcatServer service = new TomcatServer(workScheduler);
         service.init();
         service.destroy();
         service.init();
@@ -103,7 +118,7 @@ public class TomcatServerTestCase extends TestCase {
     }
 
     public void testNoMappings() throws Exception {
-        TomcatServer service = new TomcatServer();
+        TomcatServer service = new TomcatServer(workScheduler);
         service.init();
         Exception ex = null;
         try {
