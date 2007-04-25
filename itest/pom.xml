@@ -44,9 +44,7 @@
                 <module>callback-set-conversation</module>
                 <module>contribution</module>
                 <module>conversations</module>
-                <!--
                 <module>databindings</module>
-                -->
                 <module>exceptions</module>
                 <module>operation-overloading</module>
                 <module>properties</module>
