@@ -44,25 +44,21 @@ import $file.getJavaPackage().$file.getFactory();
  */
 public class DatabindingTestCase extends TestCase  {
 
-    private static boolean initalised = false;
     private GreeterService greeterClient;
 
     /**
      * Runs before each test method
      */
     protected void setUp() throws Exception {
-        if (!initalised) {
-            SCARuntime.start("greeter.composite");
+        SCARuntime.start("greeter.composite");
             super.setUp();
-            initalised = true;
-        }
     }
 
     /**
      * Runs after each test method
      */
     protected void tearDown() {
-
+        SCARuntime.stop();
     }
 
     /**

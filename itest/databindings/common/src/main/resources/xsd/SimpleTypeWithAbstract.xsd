@@ -21,7 +21,8 @@
         targetNamespace="http://www.apache.org/tuscany/interop" 
         xmlns:tns="http://www.apache.org/tuscany/interop">      
         
-  <simpleType name="SimpleTypeWithAbstractType" abstract="true">
+  <!--simpleType name="SimpleTypeWithAbstractType" abstract="true"-->
+  <simpleType name="SimpleTypeWithAbstractType" >
     <restriction base="string"/>
   </simpleType>
 
@@ -29,12 +30,11 @@
     <restriction base="tns:SimpleTypeWithAbstractType"/>
   </simpleType>
                  
-
   <complexType name="SimpleTypeWithAbstractComplexType">
     <sequence>
       <element name="SimpleTypeWithAbstractExtensionElement" type="tns:SimpleTypeWithAbstractExtensionType"/>  
     </sequence>
   </complexType>
 
-  <element name="SimpleTypeWithAbstract" type="SimpleTypeWithAbstractComplexType">
+  <element name="SimpleTypeWithAbstract" type="tns:SimpleTypeWithAbstractComplexType"/>
 </schema>

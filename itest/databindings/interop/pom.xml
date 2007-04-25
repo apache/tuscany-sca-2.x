@@ -60,13 +60,13 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
             <version>${pom.version}</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>     
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-jaxb</artifactId>
             <version>${pom.version}</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -132,7 +132,13 @@
             <artifactId>tuscany-interface-java-runtime</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency>         
+        </dependency>  
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-http-jetty</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>                 
     </dependencies>
 
     <build>

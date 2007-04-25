@@ -24,7 +24,7 @@
           
   <attribute name="ReferencedAttribute" type="string"/>    
    
-  <complexType name="AttributeReferenceType">
+  <complexType name="AttributeReferenceComplexType">
     <sequence>
     </sequence> 
     <attribute ref="tns:ReferencedAttribute"/>   
@@ -33,7 +33,7 @@
   <element name="AttributeReference">
     <complexType>
       <sequence>
-        <element name="AttributeReferenceElement" type="tns:AttributeReferenceType"/>
+        <element name="AttributeReferenceElement" type="tns:AttributeReferenceComplexType"/>
       </sequence>
     </complexType>
   </element>

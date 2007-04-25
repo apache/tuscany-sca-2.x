@@ -20,10 +20,13 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
         targetNamespace="http://www.apache.org/tuscany/interop" 
         xmlns:tns="http://www.apache.org/tuscany/interop">
-<!--        
-  <include schemaLocation="Annotation.xsd"/>
-  <include schemaLocation="Attribute.xsd"/>
-  <include schemaLocation="AttributeReference.xsd"/>
+        
+<!-- Causes SDO generator to crash
+  <include schemaLocation="../xsd/Annotation.xsd"/>
+-->
+  <include schemaLocation="../xsd/Attribute.xsd"/>
+  <include schemaLocation="../xsd/AttributeReference.xsd"/>
+<!-- 
   <include schemaLocation="AttributeWithDefaultValue.xsd"/>
   <include schemaLocation="AttributeWithFixedValue.xsd"/>
   <include schemaLocation="AttributeWithSDOAliasName.xsd"/>
@@ -113,12 +116,14 @@
   <include schemaLocation="GlobalElementSimpleType.xsd"/>
   <include schemaLocation="Import.xsd"/>
   <include schemaLocation="ImportedSchema.xsd"/>
- -->
+-->
   <include schemaLocation="../xsd/Include.xsd"/>
 <!--
   <include schemaLocation="Notation.xsd"/>
   <include schemaLocation="SDOJavaPackage.xsd"/>
-  <include schemaLocation="SimpleTypeWithAbstract.xsd"/>
+-->
+  <include schemaLocation="../xsd/SimpleTypeWithAbstract.xsd"/>
+<!-- 
   <include schemaLocation="SimpleTypeWithExtendedInstanceClass.xsd"/>
   <include schemaLocation="SimpleTypeWithInstanceClass.xsd"/>
   <include schemaLocation="SimpleTypeWithList.xsd"/>

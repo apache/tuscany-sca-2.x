@@ -30,7 +30,7 @@
            
   <complexType name="AnnotationComplexType">
     <sequence>
-      <element name="SimpleTypeWithName" type="string"/>
+      <element name="SimpleTypeWithNameElement" type="string"/>
     </sequence>
   </complexType>  
                  
