@@ -42,8 +42,9 @@
                 <!--
                 <module>binding-jms</module>
                 <module>binding-jsonrpc</module>
-                <module>binding-rmi</module>
-                -->
+		-->
+                
+		<module>binding-rmi</module>
                 <module>binding-ws</module>
                 <module>binding-ws-axis2</module>
                 <module>binding-ws-xml</module>
@@ -88,6 +89,7 @@
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
                 <module>policy</module>
+		<module>rmi</module>
                 <module>sca-api</module>
                 <module>wsdl2java</module>
             </modules>
