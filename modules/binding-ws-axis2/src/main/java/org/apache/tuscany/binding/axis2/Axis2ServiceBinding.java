@@ -61,7 +61,6 @@ import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.osoa.sca.annotations.Destroy;
 
 /**
  * An implementation of a {@link ServiceBindingExtension} configured with the Axis2 binding
