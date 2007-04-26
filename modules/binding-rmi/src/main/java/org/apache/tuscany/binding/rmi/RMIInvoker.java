@@ -20,10 +20,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
 
+import org.apache.tuscany.rmi.RMIHostException;
+import org.apache.tuscany.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
-
-import org.apache.tuscany.host.rmi.RMIHost;
-import org.apache.tuscany.host.rmi.RMIHostException;
 
 /**
  * Invoke an RMI reference.
@@ -35,12 +35,10 @@ public class RMIInvoker extends TargetInvokerExtension {
     private String host;
     private String port;
     private String svcName;
-    private RMIHost rmiHost;
+    private RMIHostExtensionPoint rmiHost;
     private Remote proxy;
 
-    public RMIInvoker(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
-        super(null, null, null);
-        // assert remoteMethod.isAccessible();
+    public RMIInvoker(RMIHostExtensionPoint rmiHost, String host, String port, String svcName, Method remoteMethod) {
         this.remoteMethod = remoteMethod;
         this.host = host;
         this.port = port;
@@ -48,18 +46,30 @@ public class RMIInvoker extends TargetInvokerExtension {
         this.rmiHost = rmiHost;
     }
 
-    public Object invokeTarget(Object payload, final short sequence) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, 
+                               final short sequence, 
+                               WorkContext workContext) throws InvocationTargetException {
         try {
             if (proxy == null) {
                 proxy = rmiHost.findService(host, port, svcName);
                 // proxy = Naming.lookup(serviceURI);
             }
-            return remoteMethod.invoke(proxy, (Object[]) payload);
+            
+            remoteMethod = proxy.getClass().getMethod(remoteMethod.getName(), remoteMethod.getParameterTypes());
+            
+            if (payload != null && !payload.getClass().isArray()) {
+                return remoteMethod.invoke(proxy, payload);
+            } else {
+                return remoteMethod.invoke(proxy, (Object[])payload);
+                
+            }
         } catch (RMIHostException e) {
             // the method we are passed must be accessible
             throw new AssertionError(e);
         } catch (IllegalAccessException e) {
             // the method we are passed must be accessible
+            throw new AssertionError(e);
+        } catch (NoSuchMethodException e) {
             throw new AssertionError(e);
         }
 

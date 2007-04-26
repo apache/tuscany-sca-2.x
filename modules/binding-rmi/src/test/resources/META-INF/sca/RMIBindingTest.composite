@@ -21,10 +21,10 @@
            xmlns:rmi="http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT"
            name="HelloWorldRmiComposite">
 
-	<service name="HelloWorldRmiService" target="HelloWorldServiceComponent">
+	<service name="HelloWorldRmiService" promote="HelloWorldServiceComponent">
         <interface.java interface="helloworld.HelloWorldService"/>
-        <rmi:binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
-        <reference>HelloWorldServiceComponent</reference>
+        <binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
+        <reference target="HelloWorldServiceComponent">HelloWorldServiceComponent</reference>
     </service>
       
     <component name="HelloWorldServiceComponent">
@@ -33,12 +33,12 @@
   
    <component name="HelloWorldRmiServiceComponent">
         <implementation.java class="helloworld.HelloWorldRmiImpl"/>
-        <reference name="extService" target="HelloWorldRmiReference">HelloWorldRmiReference</reference>
+        <reference name="extService"></reference>
     </component>        
            
-  	<reference name="HelloWorldRmiReference" target="Nothing">
+  	<reference name="HelloWorldRmiReference" promote="HelloWorldRmiServiceComponent/extService">
         <interface.java interface="helloworld.HelloWorldService"/>
-        <rmi:binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
+        <binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
     </reference>
 
 </composite>

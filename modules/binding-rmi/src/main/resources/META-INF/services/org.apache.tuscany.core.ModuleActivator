@@ -1,0 +1,2 @@
+# Implementation class for the ExtensionActivator
+org.apache.tuscany.binding.rmi.RMIModuleActivator
