@@ -16,12 +16,10 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
- * @version $Rev$ $Date$
  */
-public abstract class RMIRuntimeException extends TuscanyRuntimeException {
+public abstract class RMIRuntimeException extends RuntimeException {
     protected RMIRuntimeException() {
     }
 

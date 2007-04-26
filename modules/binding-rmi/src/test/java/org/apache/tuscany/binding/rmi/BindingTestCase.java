@@ -18,33 +18,39 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import junit.framework.TestCase;
+import helloworld.HelloWorldRmiService;
+import junit.framework.Assert;
 
-// TODO: renamed to XXX as it doesn't work for me
-public class BindingTestCase extends TestCase {
-//    private HelloWorldRmiService helloWorldRmiService;
+import org.apache.tuscany.host.embedded.SCARuntime;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.osoa.sca.CurrentCompositeContext;
+
+public class BindingTestCase {
+    private static HelloWorldRmiService helloWorldRmiService;
  
+    @Test
     public void testRmiService() {
-//        System.out.println(helloWorldRmiService.sayRmiHello("Tuscany World!"));
-//        assertEquals("Hello from the RMI Service to - Tuscany World! thro the RMI Reference",
-//                helloWorldRmiService.sayRmiHello("Tuscany World!"));
+        System.out.println(helloWorldRmiService.sayRmiHello("Tuscany World!"));
+        Assert.assertEquals("Hello from the RMI Service to - Tuscany World! thro the RMI Reference",
+                helloWorldRmiService.sayRmiHello("Tuscany World!"));
     }
 
-//    protected void setUp() throws Exception {
-//        addExtension("rmi.binding",
-//                     getClass().getClassLoader().getResource("META-INF/sca/rmi_extension.scdl"));
-//        setApplicationSCDL(getClass().getClassLoader().getResource("META-INF/sca/default.scdl"));
-//
-//        super.setUp();
-//
-//        CompositeContext context = CurrentCompositeContext.getContext();
-//        helloWorldRmiService = context.locateService(HelloWorldRmiService.class,
-//                                                     "HelloWorldRmiServiceComponent");
-//    }
 
-
-//    protected void tearDown() throws Exception {
-//        super.tearDown();
-//    }
+    
+    @BeforeClass
+    public static void init() throws Exception {
+        SCARuntime.start("META-INF/sca/RMIBindingTest.composite");
+        helloWorldRmiService = 
+            CurrentCompositeContext.getContext().locateService(HelloWorldRmiService.class,
+                                                                "HelloWorldRmiServiceComponent");
+       
+    }
+    
+    @AfterClass
+    public static void destroy() throws Exception {
+        SCARuntime.stop();
+    }
 
 }

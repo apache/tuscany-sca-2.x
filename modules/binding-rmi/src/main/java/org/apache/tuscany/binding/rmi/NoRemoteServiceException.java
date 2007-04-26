@@ -17,9 +17,10 @@
 package org.apache.tuscany.binding.rmi;
 
 /**
- * @version $Rev$ $Date$
  */
 public class NoRemoteServiceException extends RMIRuntimeException {
+   private static final long serialVersionUID = 4940083022809126473L;
+
     public NoRemoteServiceException() { 
     }
 

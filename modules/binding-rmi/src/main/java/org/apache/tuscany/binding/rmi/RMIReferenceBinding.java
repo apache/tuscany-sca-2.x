@@ -17,76 +17,55 @@
 package org.apache.tuscany.binding.rmi;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-
-import org.apache.tuscany.host.rmi.RMIHost;
 
 /**
  * @version $Rev$ $Date$
  */
 public class RMIReferenceBinding extends ReferenceBindingExtension {
-    private static final QName BINDING_RMI = new QName(
-        "http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT", "binding.rmi");
-
-    private final String host;
-
-    private final String port;
-
-    private final String svcName;
-
-    private RMIHost rmiHost;
-
-    public RMIReferenceBinding(String name,
-                               CompositeComponent parent,
-                               RMIHost rmiHost,
-                               String host,
-                               String port,
-                               String svcName) {
-        super(name, parent);
-        this.host = host;
-        this.port = port;
-        this.svcName = svcName;
+    private RMIHostExtensionPoint rmiHost;
+    
+    private RMIBinding rmiBindingDefn;
+    
+    public RMIReferenceBinding(URI name, 
+                               URI targetUri, 
+                               RMIBinding rmiBindingDefn, 
+                               RMIHostExtensionPoint rmiHost) {
+        super(name, targetUri);
+        this.rmiBindingDefn = rmiBindingDefn;
         this.rmiHost = rmiHost;
     }
 
-    public QName getBindingType() {
-        return BINDING_RMI;
-    }
+    public TargetInvoker createTargetInvoker(String targetName, 
+                                             Operation operation, 
+                                             boolean isCallback) throws TargetInvokerCreationException {
 
-    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         try {
-            /*Remote proxy = getProxy();
-             Method remoteMethod = proxy.getClass().getMethod(operation.getName(),
-             (Class[]) operation.getParameterTypes());
-             return new RMIInvoker(proxy, remoteMethod);
-             */
-            Method method = findMethod(operation, contract.getInterfaceClass().getMethods());
-            Method remoteMethod =
-                getInboundWire().getServiceContract().getInterfaceClass().getMethod(operation.getName(), (Class[]) method.getParameterTypes());
-            return new RMIInvoker(rmiHost, host, port, svcName, remoteMethod);
+            Method remoteMethod = 
+                JavaInterfaceUtil.findMethod(((JavaInterface)wire.getTargetContract().getInterface()).getJavaClass(),
+                                                operation);
+            
+            return new RMIInvoker(rmiHost, 
+                                  rmiBindingDefn.getRmiHostName(), 
+                                  rmiBindingDefn.getRmiPort(), 
+                                  rmiBindingDefn.getRmiServiceName(), 
+                                  remoteMethod);
         } catch (NoSuchMethodException e) {
             throw new NoRemoteMethodException(operation.toString(), e);
         }
     }
 
-    /*protected Remote getProxy() {
-    try {
-    // todo do we need to cache this result?
-    return Naming.lookup(uri);
-    } catch (NotBoundException e) {
-    throw new NoRemoteServiceException(uri);
-    } catch (MalformedURLException e) {
-    throw new NoRemoteServiceException(uri);
-    } catch (RemoteException e) {
-    throw new NoRemoteServiceException(uri);
+    public QName getBindingType() {
+        return RMIBindingConstants.BINDING_RMI_QNAME;
     }
-    }*/
 }
