@@ -499,12 +499,33 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         
         // Process the composite configuration
         CompositeUtil compositeUtil = new CompositeUtil(factory, interfaceContractMapper, composite);
-        List<Base> problems = new ArrayList<Base>();
+
+        List<Base> problems = new ArrayList<Base>() {
+            private static final long serialVersionUID = 4819831446590718923L;
+
+            
+            @Override
+            public boolean add(Base o) {
+                //TODO Use a monitor to report configuration problems
+                
+                // Uncommenting the following two lines can be useful to detect
+                // and troubleshoot SCA assembly XML composite configuration
+                // problems.
+                
+//                System.err.println("Composite configuration problem:");
+//                new PrintUtil(System.err).print(o);
+                return super.add(o);
+            }
+        };
+        
         compositeUtil.configure(problems);
        
-        /*if (!problems.isEmpty()) {
-            throw new ContributionWireException("Problems in the composite...");
-        }*/
+        // Uncommenting the following three lines can be useful to detect
+        // and troubleshoot SCA assembly XML composite configuration
+        // problems.
+//        if (!problems.isEmpty()) {
+//            throw new ContributionWireException("Problems in the composite...");
+//        }
     }
 
     public QName getArtifactType() {
