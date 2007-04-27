@@ -29,34 +29,38 @@
     <name>Apache Tuscany Java RMI Binding</name>
 
     <dependencies>
-    	<dependency>
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-rmi</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.1_3</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>2.1_3</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
