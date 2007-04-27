@@ -28,6 +28,8 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
@@ -41,6 +43,7 @@ public class StAXPerfTest {
     private XMLInputFactory inputFactory;
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
+    private InterfaceContractMapper interfaceContractMapper;
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
 
     public static void main(String[] args) throws Exception {
@@ -70,6 +73,7 @@ public class StAXPerfTest {
         inputFactory = XMLInputFactory.newInstance();
         assemblyFactory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
+        interfaceContractMapper = new DefaultInterfaceContractMapper();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
     }
 
@@ -82,7 +86,8 @@ public class StAXPerfTest {
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        CompositeProcessor loader = new CompositeProcessor(assemblyFactory, policyFactory, staxProcessors);
+        CompositeProcessor loader = new CompositeProcessor(assemblyFactory,
+                                                           policyFactory, interfaceContractMapper, staxProcessors);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
 
         Composite composite = loader.read(reader);

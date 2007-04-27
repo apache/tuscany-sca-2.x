@@ -40,6 +40,8 @@ import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 
 /**
  * A utility class that handles the configuration of the components inside a 
@@ -50,15 +52,20 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 public class CompositeUtil {
 
     private AssemblyFactory assemblyFactory;
+    private InterfaceContractMapper interfaceContractMapper;
     private Composite composite;
 
-    public CompositeUtil(AssemblyFactory assemblyFactory, Composite composite) {
+    public CompositeUtil(AssemblyFactory assemblyFactory,
+                         InterfaceContractMapper interfaceContractMapper,
+                         Composite composite) {
         this.assemblyFactory = assemblyFactory;
+        this.interfaceContractMapper = interfaceContractMapper;
         this.composite = composite;
     }
 
     public CompositeUtil(Composite composite) {
-        this(new DefaultAssemblyFactory(), composite);
+        this(new DefaultAssemblyFactory(),
+             new DefaultInterfaceContractMapper(), composite);
     }
 
     public void configure(List<Base> problems) {
@@ -165,7 +172,7 @@ public class CompositeUtil {
                 // Reconcile interface
                 if (componentService.getInterfaceContract() != null) {
                     if (!componentService.getInterfaceContract().equals(service.getInterfaceContract())) {
-                        if (!InterfaceUtil.checkInterfaceCompatibility(componentService.getInterfaceContract(), 
+                        if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(), 
                                                                        service.getInterfaceContract())) {
                             problems.add(componentService);
                         }
@@ -232,7 +239,7 @@ public class CompositeUtil {
                 // Reconcile interface
                 if (componentReference.getInterfaceContract() != null) {
                     if (!componentReference.getInterfaceContract().equals(reference.getInterfaceContract())) {
-                        if (!InterfaceUtil.checkInterfaceCompatibility(reference.getInterfaceContract(), 
+                        if (!interfaceContractMapper.isCompatible(reference.getInterfaceContract(), 
                                                                        componentReference.getInterfaceContract())) {
                             problems.add(componentReference);
                         }
@@ -547,7 +554,7 @@ public class CompositeUtil {
                 for (Component component: composite.getComponents()) {
                     for (ComponentService componentService: component.getServices()) {
                         if (componentReference.getInterfaceContract() == null ||
-                            InterfaceUtil.checkInterfaceCompatibility(componentReference.getInterfaceContract(),
+                            interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                             componentService.getInterfaceContract())) {
                             
                             targets.add(componentService);
@@ -570,7 +577,7 @@ public class CompositeUtil {
                             // Check that the target component service provides a superset of
                             // the component reference interface
                             if (componentReference.getInterfaceContract() ==null ||
-                                InterfaceUtil.checkInterfaceCompatibility(componentReference.getInterfaceContract(),
+                                interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                                 resolved.getInterfaceContract())) {
                                 
                                 targets.set(i, resolved);
@@ -594,7 +601,7 @@ public class CompositeUtil {
                             // Check that the target component service provides a superset of
                             // the component reference interface
                             if (componentReference.getInterfaceContract() == null ||
-                                InterfaceUtil.checkInterfaceCompatibility(componentReference.getInterfaceContract(),
+                                interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                                 resolved.getInterfaceContract())) {
                                 
                                 targets.add(resolved);

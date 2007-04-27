@@ -34,6 +34,8 @@ import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.bean.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -57,11 +59,13 @@ public class VariantRuntimeContext {
         // Create SCA assembly and SCA Java factories
         AssemblyFactory assemblyFactory = new BeanAssemblyFactory(new DefaultAssemblyFactory(), beanFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
+        InterfaceContractMapper interfaceContractMapper = new DefaultInterfaceContractMapper();
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
 
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        CompositeProcessor compositeProcessor = new CompositeProcessor(assemblyFactory, policyFactory, staxProcessors);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(assemblyFactory, policyFactory,
+                                                                       interfaceContractMapper, staxProcessors);
         staxProcessors.addExtension(compositeProcessor);
         staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
