@@ -68,7 +68,10 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        new CompositeUtil(composite).configure(new ArrayList<Base>());
+        CompositeUtil compositeUtil = new CompositeUtil(composite);
+        compositeUtil.fuseIncludes(new ArrayList<Base>());
+        compositeUtil.configureComponents(new ArrayList<Base>());
+        compositeUtil.wireReferences(new ArrayList<Base>());
 
         //new PrintUtil(System.out).print(composite);
     }
@@ -83,7 +86,10 @@ public class ReadTestCase extends TestCase {
         ArtifactResolver resolver = new DefaultArtifactResolver(getClass().getClassLoader());
         staxProcessors.resolve(composite, resolver);
 
-        new CompositeUtil(composite).configure(new ArrayList<Base>());
+        CompositeUtil compositeUtil = new CompositeUtil(composite);
+        compositeUtil.fuseIncludes(new ArrayList<Base>());
+        compositeUtil.configureComponents(new ArrayList<Base>());
+        compositeUtil.wireReferences(new ArrayList<Base>());
 
         //new PrintUtil(System.out).print(composite);
     }

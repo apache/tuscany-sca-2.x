@@ -31,7 +31,6 @@ import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.util.CompositeUtil;
-import org.apache.tuscany.assembly.util.PrintUtil;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
@@ -76,7 +75,10 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        new CompositeUtil(composite).configure(new ArrayList<Base>());
+        CompositeUtil compositeUtil = new CompositeUtil(composite);
+        compositeUtil.fuseIncludes(new ArrayList<Base>());
+        compositeUtil.configureComponents(new ArrayList<Base>());
+        compositeUtil.wireReferences(new ArrayList<Base>());
 
         //new PrintUtil(System.out).print(composite);
     }
