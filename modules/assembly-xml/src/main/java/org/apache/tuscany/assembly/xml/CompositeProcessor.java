@@ -59,7 +59,9 @@ import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
@@ -69,6 +71,8 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
  * @version $Rev$ $Date$
  */
 public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessorExtension<Composite> {
+    
+    private InterfaceContractMapper interfaceContractMapper;
 
     /**
      * Construct a new composite processor
@@ -76,8 +80,11 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      * @param policyFactory
      * @param extensionProcessor 
      */
-    public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension extensionProcessor) {
+    public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory,
+                              InterfaceContractMapper interfaceContractMapper,
+                              StAXArtifactProcessorExtension extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
+        this.interfaceContractMapper = interfaceContractMapper;
     }
 
     /**
@@ -85,7 +92,8 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      * @param extensionProcessor
      */
     public CompositeProcessor(StAXArtifactProcessorExtension extensionProcessor) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
+        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(),
+             new DefaultInterfaceContractMapper(), extensionProcessor);
     }
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException {
@@ -490,7 +498,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     public void wire(Composite composite) throws ContributionWireException {
         
         // Process the composite configuration
-        CompositeUtil compositeUtil = new CompositeUtil(factory, composite);
+        CompositeUtil compositeUtil = new CompositeUtil(factory, interfaceContractMapper, composite);
         List<Base> problems = new ArrayList<Base>();
         compositeUtil.configure(problems);
        
