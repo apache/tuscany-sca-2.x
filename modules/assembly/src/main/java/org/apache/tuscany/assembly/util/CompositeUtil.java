@@ -69,25 +69,6 @@ public class CompositeUtil {
     }
 
     public void configure(List<Base> problems) {
-        if (true || problems == null) {
-            problems = new ArrayList<Base>() {
-                private static final long serialVersionUID = 4819831446590718923L;
-
-                
-                @Override
-                public boolean add(Base o) {
-                    //TODO Use a monitor to report configuration problems
-                    
-                    // Uncommenting the following two lines can be useful to detect
-                    // and troubleshoot SCA assembly XML composite configuration
-                    // problems.
-                    
-//                    System.err.println("Composite configuration problem:");
-//                    new PrintUtil(System.err).print(o);
-                    return super.add(o);
-                }
-            };
-        }
 
         // Collect and fuse includes
         List<Composite> includes = new ArrayList<Composite>();
