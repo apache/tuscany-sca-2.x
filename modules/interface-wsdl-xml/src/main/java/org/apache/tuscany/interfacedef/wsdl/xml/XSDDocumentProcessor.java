@@ -22,6 +22,7 @@ package org.apache.tuscany.interfacedef.wsdl.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
@@ -72,11 +73,11 @@ public class XSDDocumentProcessor implements URLArtifactProcessorExtension<XSDef
         this(new DefaultWSDLFactory());
     }
 
-    public XSDefinition read(URL url) throws ContributionReadException {
+    public XSDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
 
             // Read an XSD document
-            InputStream is = url.openStream();
+            InputStream is = artifactURL.openStream();
             try {
     
                 XmlSchemaCollection collection = new XmlSchemaCollection();

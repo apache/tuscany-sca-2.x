@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.contribution.processor;
 
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.contribution.service.ContributionReadException;
@@ -32,12 +33,14 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 public interface URLArtifactProcessorExtension<M> extends ArtifactProcessorExtension<M> {
 
     /**
-     * Reads a model from an input source. Examples of input sources are: a URI, a
-     * DOM node, an XML reader.
-     * @param source
+     * Reads a model from an input source. Examples of input 
+     * sources are: a URI, a DOM node, an XML reader.
+     * @param contributionURL
+     * @param artifactURI
+     * @param artifactURL
      * @return a model representation of the input.
      */
-    M read(URL inputSource) throws ContributionReadException;
+    M read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException;
     
     /**
      * Writes a model to an ouput source. Examples of output sources are: a URI, a

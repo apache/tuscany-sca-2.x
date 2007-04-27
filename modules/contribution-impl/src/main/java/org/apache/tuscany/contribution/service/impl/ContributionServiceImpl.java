@@ -268,9 +268,10 @@ public class ContributionServiceImpl implements ContributionService {
 
     private void processReadPhase(Contribution contribution, List<URI> artifacts) throws ContributionException,
         MalformedURLException {
+        URL contributionURL = contribution.getLocation(); 
         for (URI a : artifacts) {
             URL artifactURL = packageProcessor.getArtifactURL(contribution.getLocation(), a);
-            Object model = this.artifactProcessor.read(artifactURL);
+            Object model = this.artifactProcessor.read(contributionURL, a, artifactURL);
             
             if (model != null) {
                 artifactResolver.add(model);

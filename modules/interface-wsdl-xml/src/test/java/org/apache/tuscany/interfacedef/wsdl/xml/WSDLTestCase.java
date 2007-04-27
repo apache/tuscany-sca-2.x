@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.interfacedef.wsdl.xml;
 
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
@@ -53,7 +54,7 @@ public class WSDLTestCase extends TestCase {
 
     public void testReadWSDLDocument() throws Exception {
         URL url = getClass().getResource("example.wsdl");
-        WSDLDefinition definition = documentProcessors.read(url, WSDLDefinition.class);
+        WSDLDefinition definition = documentProcessors.read(null, new URI("example.wsdl"), url, WSDLDefinition.class);
         assertNotNull(definition);
         assertNotNull(definition.getDefinition());
         assertEquals(definition.getNamespace(), "http://www.example.org");

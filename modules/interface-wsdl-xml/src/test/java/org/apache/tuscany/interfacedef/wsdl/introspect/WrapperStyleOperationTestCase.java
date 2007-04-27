@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.interfacedef.wsdl.introspect;
 
+import java.net.URI;
 import java.net.URL;
 
 import javax.wsdl.Operation;
@@ -53,7 +54,7 @@ public class WrapperStyleOperationTestCase extends TestCase {
 
     public final void testWrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        WSDLDefinition definition = registry.read( url);
+        WSDLDefinition definition = registry.read(null, new URI("stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
         WSDLOperation op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
@@ -64,7 +65,7 @@ public class WrapperStyleOperationTestCase extends TestCase {
 
     public final void testUnwrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/unwrapped-stockquote.wsdl");
-        WSDLDefinition definition = registry.read( url);
+        WSDLDefinition definition = registry.read(null, new URI("unwrapped-stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
         WSDLOperation op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);

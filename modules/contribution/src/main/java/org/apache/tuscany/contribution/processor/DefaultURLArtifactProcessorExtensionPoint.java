@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.contribution.processor;
 
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
@@ -45,11 +46,11 @@ public class DefaultURLArtifactProcessorExtensionPoint
     public DefaultURLArtifactProcessorExtensionPoint() {
     }
 
-    public Object read(URL source) throws ContributionReadException {
+    public Object read(URL contributionURL, URI sourceURI, URL sourceURL) throws ContributionReadException {
         URLArtifactProcessorExtension<Object> processor = null;
         
         // Delegate to the processor associated with file extension
-        String extension = source.getFile();
+        String extension = sourceURL.getFile();
         int extensionStart = extension.lastIndexOf('.');
         //handle files without extension (e.g NOTICE)
         if(extensionStart > 0){
@@ -59,7 +60,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
         if (processor == null) {
             return null;
         }
-        return processor.read(source);
+        return processor.read(contributionURL, sourceURI, sourceURL);
     }
 
     public void write(Object model, URL outputSource) throws ContributionWriteException {
@@ -97,13 +98,13 @@ public class DefaultURLArtifactProcessorExtensionPoint
         }
     }
     
-    public <MO> MO read(URL url, Class<MO> type) throws ContributionReadException {
-        Object mo = read(url);
+    public <MO> MO read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<MO> type) throws ContributionReadException {
+        Object mo = read(contributionURL, artifactURI, artifactUrl);
         if (type.isInstance(mo)) {
             return type.cast(mo);
         } else {
             UnrecognizedElementException e = new UnrecognizedElementException(null);
-            e.setResourceURI(url.toString());
+            e.setResourceURI(artifactURI.toString());
             throw e;
         }
     }
