@@ -33,13 +33,6 @@ public class InterfaceUtil {
         Interface source = sourceContract.getInterface();
         Interface target = targetContract.getInterface();
         if (source != target) {
-            //TODO : Fix comparisons of interaction scopes.
-            /*if (source.getInteractionScope() != target.getInteractionScope()) {
-            throw new IncompatibleOverridingServiceContractException(
-                                                           "Interaction scopes settings do not match",
-                                                           source, target);
-              }*/
-
             Operation targetOperation = null;
             for (Operation sourceOperation : source.getOperations()) {
                 for (Operation anOperation : target.getOperations()) {
