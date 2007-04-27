@@ -39,6 +39,7 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
     public ScriptImplementation(String scriptName, String scriptLanguage) {
         this.scriptName = scriptName;
         this.scriptLanguage = scriptLanguage;
+        setURI(scriptName);
         setUnresolved(true);
     }
 
