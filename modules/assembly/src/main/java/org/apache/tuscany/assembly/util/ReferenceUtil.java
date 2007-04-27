@@ -26,8 +26,8 @@ import org.apache.tuscany.assembly.Multiplicity;
  * This class encapsulates utility methods to deal with reference definitions
  *
  */
-public class ReferenceUtil {
-    public static boolean isValidMultiplicityOverride(Multiplicity definedMul, Multiplicity overridenMul) {
+class ReferenceUtil {
+    static boolean isValidMultiplicityOverride(Multiplicity definedMul, Multiplicity overridenMul) {
         if (definedMul != overridenMul) {
             switch (definedMul) {
                 case ZERO_N:
@@ -42,7 +42,7 @@ public class ReferenceUtil {
         }
     }
     
-    public static boolean validateMultiplicityAndTargets(Multiplicity multiplicity,
+    static boolean validateMultiplicityAndTargets(Multiplicity multiplicity,
                                                          List<?> targets, List<?> promotedAs) {
         
         // Count targets

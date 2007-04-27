@@ -25,6 +25,7 @@ package org.apache.tuscany.assembly.util;
  * @version $Rev: 486986 $ $Date: 2006-12-14 11:48:28 +0530 (Thu, 14 Dec 2006) $
  */
 public class InvalidValueException extends Exception {
+    private static final long serialVersionUID = 3118451244080439391L;
 
     public InvalidValueException(String message) {
         super(message);
