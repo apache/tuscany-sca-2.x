@@ -137,6 +137,8 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
             scriptImplementation.getProperties().add(property);
         }
         scriptImplementation.setComponentType(componentType);
+        
+        scriptImplementation.setUnresolved(false);
     }
 
     public void wire(ScriptImplementation model) throws ContributionWireException {
