@@ -20,7 +20,6 @@ package org.apache.tuscany.assembly.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -29,16 +28,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -47,7 +43,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentProperty;
-import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.Property;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -62,14 +57,14 @@ public class PropertyUtil {
     private static final DocumentBuilderFactory DOC_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
     private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
     
-    public static Document evaluate(NamespaceContext nsContext, Node node, String xPathExpression)
+    static private Document evaluate(NamespaceContext nsContext, Node node, String xPathExpression)
         throws XPathExpressionException, ParserConfigurationException {
         XPath path = XPATH_FACTORY.newXPath();
         
         if (nsContext != null) {
             path.setNamespaceContext(nsContext);
         } else {
-            path.setNamespaceContext(new DOMNamespeceContext(node));
+            path.setNamespaceContext(new DOMNamespaceContext(node));
         }
         
         XPathExpression expression = path.compile(xPathExpression);
@@ -90,7 +85,7 @@ public class PropertyUtil {
         }
     }
     
-    public static Document loadFromFile(String file) throws MalformedURLException, IOException,
+    static private Document loadFromFile(String file) throws MalformedURLException, IOException,
         TransformerException, ParserConfigurationException {
         URI uri = URI.create(file);
         URL url = null;
@@ -110,69 +105,7 @@ public class PropertyUtil {
         return (Document)result.getNode();
     }
     
-    public static void processProperties(Composite composite, Component componentDefinition) throws InvalidValueException,
-                                                                                            ParserConfigurationException,
-                                                                                            XPathExpressionException,
-                                                                                            TransformerException,
-                                                                                            IOException {
-        
-        List<ComponentProperty> componentProperties = componentDefinition.getProperties();
-
-        for (ComponentProperty aProperty : componentProperties) {
-            String source = aProperty.getSource();
-            String file = aProperty.getFile();
-            if (source != null) {
-                // $<name>/...
-                int index = source.indexOf('/');
-                if (index == -1) {
-                    // Tolerating $prop
-                    source = source + "/";
-                    index = source.length() - 1;
-                }
-                if (source.charAt(0) == '$') {
-                    String name = source.substring(1, index);
-                    Property compositeProp = getPropertyByName(composite.getProperties(), name);
-                    if (compositeProp == null) {
-                        InvalidValueException ex =
-                            new InvalidValueException("The 'source' cannot be resolved to a composite property - " + source);
-                        throw ex;
-                    }
-
-                    boolean prependValue = false;
-                    DocumentBuilder builder =
-                        DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                    Document compositePropDefValues = (Document)compositeProp.getValue();
-
-                    // Adding /value because the document root is "value"
-                    String path = source.substring(index);
-                    String xpath = null;
-
-                    if ("/".equals(path)) {
-                        // trailing / is not legal for xpath
-                        xpath = "/value";
-                    } else {
-                        xpath = "/value" + path;
-                    }
-
-                    // FIXME: How to deal with namespaces?
-                    Document node = evaluate(null, compositePropDefValues, xpath);
-
-                    if (node != null) {
-                        aProperty.setValue(node);
-                    }
-                } else {
-                    InvalidValueException ex =
-                        new InvalidValueException("The 'source' has an invalid value - " + source);
-                    throw ex;
-                }
-            } else if (file != null) {
-                aProperty.setValue(loadFromFile(aProperty.getFile()));
-                
-            }
-        }
-    }
-    
-    public static void sourceComponentProperties(Map<String, Property> compositeProperties,
+    static public void sourceComponentProperties(Map<String, Property> compositeProperties,
                                                  Component componentDefinition) throws InvalidValueException,
                                                                                ParserConfigurationException,
                                                                                XPathExpressionException,
@@ -201,9 +134,6 @@ public class PropertyUtil {
                         throw ex;
                     }
 
-                    boolean prependValue = false;
-                    DocumentBuilder builder =
-                        DocumentBuilderFactory.newInstance().newDocumentBuilder();
                     Document compositePropDefValues = (Document)compositeProp.getValue();
 
                     // Adding /value because the document root is "value"
@@ -235,23 +165,13 @@ public class PropertyUtil {
         }
     }
     
-    private static Property getPropertyByName(List<Property> properties, String propertyName) {
-        for (Property property : properties) {
-            if (property.getName().equals(propertyName)) {
-                return property;
-            }
-        }
-        
-        return null;
-    }
-
-    private static class DOMNamespeceContext implements NamespaceContext {
+    private static class DOMNamespaceContext implements NamespaceContext {
         private Node node;
 
         /**
          * @param node
          */
-        public DOMNamespeceContext(Node node) {
+        public DOMNamespaceContext(Node node) {
             super();
             this.node = node;
         }
@@ -270,18 +190,4 @@ public class PropertyUtil {
 
     }
     
-    public static void printNode(Node node)  {
-        try {
-            javax.xml.transform.Transformer transformer =
-                TransformerFactory.newInstance().newTransformer();
-            StringWriter sw = new StringWriter();
-            transformer.transform(new DOMSource(node), new StreamResult(sw));
-            
-            System.out.println(sw.toString());
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-        
-    }
-
 }
