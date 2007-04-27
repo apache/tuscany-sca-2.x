@@ -55,6 +55,13 @@ public class CompositeUtil {
     private InterfaceContractMapper interfaceContractMapper;
     private Composite composite;
 
+    /**
+     * Constructs a new composite util.
+     * 
+     * @param assemblyFactory
+     * @param interfaceContractMapper
+     * @param composite
+     */
     public CompositeUtil(AssemblyFactory assemblyFactory,
                          InterfaceContractMapper interfaceContractMapper,
                          Composite composite) {
@@ -63,21 +70,32 @@ public class CompositeUtil {
         this.composite = composite;
     }
 
+    /**
+     * Constructs a new composite util.
+     *  
+     * @param composite
+     */
     public CompositeUtil(Composite composite) {
         this(new DefaultAssemblyFactory(),
              new DefaultInterfaceContractMapper(), composite);
     }
 
+    /**
+     * Configure a composite.
+     * @param problems
+     */
     public void configure(List<Base> problems) {
 
         // Collect and fuse includes
-        List<Composite> includes = new ArrayList<Composite>();
-        collectIncludes(composite, includes);
-        fuseIncludes(composite, includes);
+        fuseIncludes(problems);
+
+        // Configure all components
         configureComponents(problems);
+        
+        // Wire all references
         wireReferences(problems);
     }
-
+    
     /**
      * Collect all includes in a graph of includes
      * @param composite
@@ -95,7 +113,13 @@ public class CompositeUtil {
      * @param composite
      * @param includes
      */
-    private void fuseIncludes(Composite composite, List<Composite> includes) {
+    private void fuseIncludes(List<Base> problems) {
+        
+        // First collect all includes
+        List<Composite> includes = new ArrayList<Composite>();
+        collectIncludes(composite, includes);
+        
+        // Then copy them
         for (Composite include : includes) {
             include = include.copy();
             composite.getComponents().addAll(include.getComponents());
@@ -106,6 +130,8 @@ public class CompositeUtil {
             composite.getPolicySets().addAll(include.getPolicySets());
             composite.getRequiredIntents().addAll(include.getRequiredIntents());
         }
+        
+        // Clear the list of includes
         composite.getIncludes().clear();
     }
 
@@ -339,17 +365,27 @@ public class CompositeUtil {
     private void configureComponents(List<Base> problems) {
 
         // Initialize all component services and references
+        Map<String, Component> components = new HashMap<String, Component>();
         for (Component component : composite.getComponents()) {
-            Map<String, Service> services = new HashMap<String, Service>();
-            Map<String, Reference> references = new HashMap<String, Reference>();
-            Map<String, Property> properties = new HashMap<String, Property>();
+            
+            // Index all components and check for duplicates
+            if (components.containsKey(component.getName())) {
+                problems.add(component);
+            } else {
+                components.put(component.getName(), component);
+            }
             
             // Propagate the autowire flag from the composite to components
             if (composite.isAutowire()) {
                 component.setAutowire(true);
             }
+
+            // Index properties, services and references
+            Map<String, Service> services = new HashMap<String, Service>();
+            Map<String, Reference> references = new HashMap<String, Reference>();
+            Map<String, Property> properties = new HashMap<String, Property>();
             
-            // Check that the component has a resolved implementation
+            // First check that the component has a resolved implementation
             Implementation implementation = component.getImplementation();
             if (implementation == null) {
                 
@@ -360,31 +396,56 @@ public class CompositeUtil {
                 // The implementation must be fully resolved 
                 problems.add(implementation);
             } else {
-
-                // Index properties, services and references
+                
+                // Index properties, services and references, also check for duplicates
+                for (Property property : implementation.getProperties()) {
+                    if (properties.containsKey(property.getName())) {
+                        problems.add(property);
+                    } else {
+                        properties.put(property.getName(), property);
+                    }
+                }
                 for (Service service : implementation.getServices()) {
-                    services.put(service.getName(), service);
+                    if (services.containsKey(service.getName())) {
+                        problems.add(service);
+                    } else {
+                        services.put(service.getName(), service);
+                    }
                 }
                 for (Reference reference : implementation.getReferences()) {
-                    references.put(reference.getName(), reference);
-                }
-                for (Property property : implementation.getProperties()) {
-                    properties.put(property.getName(), property);
+                    if (references.containsKey(reference.getName())) {
+                        problems.add(reference);
+                    } else {
+                        references.put(reference.getName(), reference);
+                    }
                 }
             }
 
             // Index component services, references and properties
+            // Also check for duplicates
             Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
             Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
             Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
             for (ComponentService componentService : component.getServices()) {
-                componentServices.put(componentService.getName(), componentService);
+                if (componentServices.containsKey(componentService.getName())) {
+                    problems.add(componentService);
+                } else {
+                    componentServices.put(componentService.getName(), componentService);
+                }
             }
             for (ComponentReference componentReference : component.getReferences()) {
-                componentReferences.put(componentReference.getName(), componentReference);
+                if (componentReferences.containsKey(componentReference.getName())) {
+                    problems.add(componentReference);
+                } else {
+                    componentReferences.put(componentReference.getName(), componentReference);
+                }
             }
             for (ComponentProperty componentProperty : component.getProperties()) {
-                componentProperties.put(componentProperty.getName(), componentProperty);
+                if (componentProperties.containsKey(componentProperty.getName())) {
+                    problems.add(componentProperty);
+                } else {
+                    componentProperties.put(componentProperty.getName(), componentProperty);
+                }
             }
 
             // Reconcile component services/references/properties and implementation
@@ -453,6 +514,7 @@ public class CompositeUtil {
                                          List<Base> problems) {
 
         for (Service service : composite.getServices()) {
+
             CompositeService compositeService = (CompositeService)service;
             ComponentService componentService = compositeService.getPromotedService();
             if (componentService != null && componentService.isUnresolved()) {
