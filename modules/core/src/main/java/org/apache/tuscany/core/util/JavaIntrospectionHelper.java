@@ -267,16 +267,6 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Loads a class corresponding to the class name using the current context class loader.
-     *
-     * @throws ClassNotFoundException if the class was not found on the classpath
-     */
-    public static Class loadClass(String pName) throws ClassNotFoundException {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        return Class.forName(pName, true, loader);
-    }
-
-    /**
      * Returns the simple name of a class - i.e. the class name devoid of its package qualifier
      *
      * @param implClass the implmentation class

@@ -33,6 +33,7 @@ import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ClassReference;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
@@ -42,6 +43,7 @@ import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -115,22 +117,28 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
     }
 
     public void resolve(JavaImplementation javaImplementation, ArtifactResolver resolver) throws ContributionResolveException {
-        try {
-            Class javaClass = Class.forName(javaImplementation.getName(), true, Thread.currentThread().getContextClassLoader());
-            javaImplementation.setJavaClass(javaClass);
-            javaImplementation.setUnresolved(false);
-            
-            //FIXME JavaImplementationDefinition should not be mandatory 
-            if (javaImplementation instanceof JavaImplementationDefinition) {
+
+        ClassReference classReference = new ClassReference(javaImplementation.getName());
+        classReference = resolver.resolve(ClassReference.class, classReference);
+        Class javaClass = classReference.getJavaClass();
+        if (javaClass == null) {
+            throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
+        }
+        javaImplementation.setJavaClass(javaClass);
+        javaImplementation.setUnresolved(false);
+        
+        //FIXME JavaImplementationDefinition should not be mandatory 
+        if (javaImplementation instanceof JavaImplementationDefinition) {
+            try {
                 introspector.introspect(javaImplementation.getJavaClass(), (JavaImplementationDefinition)javaImplementation);
-                
-                //FIXME the introspector should always create at least one service
-                if (javaImplementation.getServices().isEmpty()) {
-                    javaImplementation.getServices().add(new ServiceImpl());
-                }
+            } catch (IntrospectionException e) {
+                throw new ContributionResolveException(e);
             }
-        } catch (Exception e) {
-            throw new ContributionResolveException(e);
+            
+            //FIXME the introspector should always create at least one service
+            if (javaImplementation.getServices().isEmpty()) {
+                javaImplementation.getServices().add(new ServiceImpl());
+            }
         }
     }
 
