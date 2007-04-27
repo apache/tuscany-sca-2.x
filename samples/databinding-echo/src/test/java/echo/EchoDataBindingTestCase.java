@@ -31,7 +31,7 @@ public class EchoDataBindingTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        SCARuntime.start();
+        SCARuntime.start("EchoDataBinding.composite");
     }
 
     @Override
