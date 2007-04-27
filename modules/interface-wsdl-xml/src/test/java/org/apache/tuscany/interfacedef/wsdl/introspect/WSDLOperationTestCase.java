@@ -52,7 +52,7 @@ public class WSDLOperationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         processor = new WSDLDocumentProcessor();
-        resolver = new DefaultArtifactResolver();
+        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
     public final void testWrappedOperation() throws Exception {

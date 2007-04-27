@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.contribution.resolver;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,13 @@ import java.util.Map;
 public class DefaultArtifactResolver implements ArtifactResolver {
     private static final long serialVersionUID = -7826976465762296634L;
     
-    private Map<Object, Object> map = new HashMap<Object, Object>(); 
+    private Map<Object, Object> map = new HashMap<Object, Object>();
+    
+    private WeakReference<ClassLoader> classLoader;
+    
+    public DefaultArtifactResolver(ClassLoader classLoader) {
+        this.classLoader = new WeakReference<ClassLoader>(classLoader);
+    }
 
     public <T> T resolve(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
@@ -39,6 +46,27 @@ public class DefaultArtifactResolver implements ArtifactResolver {
             
             // Return the resolved object
             return modelClass.cast(resolved);
+            
+        } else if (unresolved instanceof ClassReference) {
+            
+            // Load a class on demand
+            ClassReference classReference = (ClassReference)unresolved;
+            Class clazz;
+            try {
+                clazz = Class.forName(classReference.getClassName(), true, classLoader.get());
+            } catch (ClassNotFoundException e) {
+                
+                // Return the unresolved object
+                return unresolved;
+            }
+            
+            // Store a new ClassReference wrappering the loaded class
+            resolved = new ClassReference(clazz);
+            map.put(resolved, resolved);
+            
+            // Return the resolved ClassReference
+            return modelClass.cast(resolved);
+                
         } else {
             
             // Return the unresolved object

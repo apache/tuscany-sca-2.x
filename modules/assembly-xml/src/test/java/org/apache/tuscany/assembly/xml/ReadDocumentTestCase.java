@@ -37,6 +37,7 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 public class ReadDocumentTestCase extends TestCase {
 
     private DefaultURLArtifactProcessorExtensionPoint documentProcessors;
+    private DefaultArtifactResolver resolver; 
 
     public void setUp() throws Exception {
         documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
@@ -51,14 +52,16 @@ public class ReadDocumentTestCase extends TestCase {
         documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors));
         documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors));
         documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors));
+
+        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
         documentProcessors = null;
+        resolver = null;
     }
 
     public void testResolveConstrainingType() throws Exception {
-        DefaultArtifactResolver resolver = new DefaultArtifactResolver();
         
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = (ConstrainingType)documentProcessors.read(url);
@@ -76,8 +79,6 @@ public class ReadDocumentTestCase extends TestCase {
     }
 
     public void testResolveComposite() throws Exception {
-        DefaultArtifactResolver resolver = new DefaultArtifactResolver();
-        
         URL url = getClass().getResource("Calculator.composite");
         Composite nestedComposite = (Composite)documentProcessors.read(url);
         assertNotNull(nestedComposite);

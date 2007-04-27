@@ -145,7 +145,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         // Create contribution service
         ContributionRepository repository = new ContributionRepositoryImpl("target");
-        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
+        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(getHostClassLoader());
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
                                                                               documentProcessors, artifactResolver);
         initialize(extensionRegistry);

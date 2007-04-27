@@ -96,7 +96,7 @@ public class ContributionServiceTestCase extends TestCase {
         ContributionRepository repository = new ContributionRepositoryImpl("target");
         
         // Create an artifact resolver and contribution service
-        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
+        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(getClass().getClassLoader());
         this.contributionService = new ContributionServiceImpl(repository, packageProcessors,
                                                                               documentProcessors, artifactResolver);
     }

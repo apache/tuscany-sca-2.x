@@ -40,20 +40,21 @@ public class ResolveTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private DefaultArtifactResolver resolver; 
 
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
         inputFactory = null;
         staxProcessors = null;
+        resolver = null;
     }
 
     public void testResolveConstrainingType() throws Exception {
-        DefaultArtifactResolver resolver = new DefaultArtifactResolver();
-        
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(staxProcessors);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -76,8 +77,6 @@ public class ResolveTestCase extends TestCase {
     }
 
     public void testResolveComposite() throws Exception {
-        DefaultArtifactResolver resolver = new DefaultArtifactResolver();
-        
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         CompositeProcessor compositeReader = new CompositeProcessor(staxProcessors);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);

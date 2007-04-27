@@ -55,7 +55,7 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = new WSDLDocumentProcessor();
-        resolver = new DefaultArtifactResolver();
+        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         definition = registry.read(url);
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
