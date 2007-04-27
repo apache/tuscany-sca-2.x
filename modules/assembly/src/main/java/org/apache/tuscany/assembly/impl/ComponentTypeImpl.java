@@ -21,11 +21,13 @@ package org.apache.tuscany.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
+import org.apache.tuscany.assembly.util.Visitable;
 import org.apache.tuscany.assembly.util.Visitor;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
@@ -35,7 +37,9 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeImpl extends BaseImpl implements ComponentType {
+public class ComponentTypeImpl implements ComponentType, Visitable {
+    private List<Object> extensions = new ArrayList<Object>();
+    private boolean unresolved;
     private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
@@ -55,22 +59,39 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType {
      * @param other
      */
     public ComponentTypeImpl(ComponentType other) {
-        super(other);
+        unresolved = other.isUnresolved();
+        extensions.addAll(other.getExtensions());
+        
         uri = other.getURI();
         constrainingType = other.getConstrainingType();
-        getServices().clear();
         for (Service service: other.getServices()) {
-            getServices().add(new ServiceImpl(service));
+            services.add(new ServiceImpl(service));
         }
-        getReferences().clear();
         for (Reference reference: other.getReferences()) {
-            getReferences().add(new ReferenceImpl(reference));
+            references.add(new ReferenceImpl(reference));
         }
         for (Property property: other.getProperties()) {
-            getProperties().add(new PropertyImpl(property));
+            properties.add(new PropertyImpl(property));
         }
         requiredIntents.addAll(other.getRequiredIntents());
         policySets.addAll(other.getPolicySets());
+    }
+    
+    /**
+     * Instanciate...
+     * @param other
+     */
+    protected void instanciate(ComponentType other) {
+        unresolved = other.isUnresolved();
+        extensions = other.getExtensions();
+        
+        uri = other.getURI();
+        constrainingType = other.getConstrainingType();
+        services = other.getServices();
+        references = other.getReferences();
+        properties = other.getProperties();
+        requiredIntents = other.getRequiredIntents();
+        policySets = other.getPolicySets();
     }
     
     public String getURI() {
@@ -109,8 +130,20 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType {
         return policySets;
     }
 
+    public List<Object> getExtensions() {
+        return extensions;
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean undefined) {
+        this.unresolved = undefined;
+    }
+
     public boolean accept(Visitor visitor) {
-        if (!super.accept(visitor)) {
+        if (!visitor.visit(this)) {
             return false;
         }
         for (Property property : properties) {

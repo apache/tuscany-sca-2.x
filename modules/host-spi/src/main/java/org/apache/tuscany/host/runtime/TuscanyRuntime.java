@@ -30,34 +30,6 @@ import org.osoa.sca.ComponentContext;
  */
 public interface TuscanyRuntime<I extends RuntimeInfo> {
     /**
-     * Returns the host ClassLoader that is parent to all Tuscany classloaders.
-     *
-     * @return the host's ClassLoader
-     */
-    ClassLoader getHostClassLoader();
-
-    /**
-     * Sets the host ClassLoader; this will be a parent for all Tuscany classloaders.
-     *
-     * @param classLoader the host's ClassLoader
-     */
-    void setHostClassLoader(ClassLoader classLoader);
-
-    /**
-     * Returns the info this runtime will make available to service components.
-     *
-     * @return the info this runtime will make available to service components
-     */
-    I getRuntimeInfo();
-
-    /**
-     * Sets the info this runtime should make available to service components.
-     *
-     * @param runtimeInfo the information this runtime should make available to service components
-     */
-    void setRuntimeInfo(I runtimeInfo);
-
-    /**
      * Returns the MonitorFactory that this runtime is using.
      *
      * @return the MonitorFactory that this runtime is using

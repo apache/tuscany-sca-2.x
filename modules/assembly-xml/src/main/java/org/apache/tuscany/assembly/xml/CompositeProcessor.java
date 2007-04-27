@@ -498,7 +498,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     public void wire(Composite composite) throws ContributionWireException {
         
         // Process the composite configuration
-        CompositeUtil compositeUtil = new CompositeUtil(factory, interfaceContractMapper, composite);
+        CompositeUtil compositeUtil = new CompositeUtil(factory, interfaceContractMapper);
 
         List<Base> problems = new ArrayList<Base>() {
             private static final long serialVersionUID = 4819831446590718923L;
@@ -520,14 +520,14 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         
 
         // Collect and fuse includes
-        compositeUtil.fuseIncludes(problems);
+        compositeUtil.fuseIncludes(composite, problems);
 
         // Configure all components
-        compositeUtil.configureComponents(problems);
+        compositeUtil.configureComponents(composite, problems);
         
         //FIXME this should be done only on top level deployable composites
         // Wire references
-        compositeUtil.wireReferences(problems);
+        compositeUtil.wireReferences(composite, problems);
        
         // Uncommenting the following three lines can be useful to detect
         // and troubleshoot SCA assembly XML composite configuration

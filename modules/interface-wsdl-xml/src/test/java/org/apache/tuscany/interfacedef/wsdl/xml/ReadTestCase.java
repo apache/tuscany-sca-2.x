@@ -87,10 +87,10 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        CompositeUtil compositeUtil = new CompositeUtil(composite);
-        compositeUtil.fuseIncludes(new ArrayList<Base>());
-        compositeUtil.configureComponents(new ArrayList<Base>());
-        compositeUtil.wireReferences(new ArrayList<Base>());
+        CompositeUtil compositeUtil = new CompositeUtil();
+        compositeUtil.fuseIncludes(composite, new ArrayList<Base>());
+        compositeUtil.configureComponents(composite, new ArrayList<Base>());
+        compositeUtil.wireReferences(composite, new ArrayList<Base>());
 
         //new PrintUtil(System.out).print(composite);
     }
