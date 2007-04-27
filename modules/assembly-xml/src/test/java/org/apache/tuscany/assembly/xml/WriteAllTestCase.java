@@ -37,16 +37,19 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
  */
 public class WriteAllTestCase extends TestCase {
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private DefaultArtifactResolver resolver; 
 
     public void setUp() throws Exception {
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
         staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
         staxProcessors = null;
+        resolver = null;
     }
 
     public void testReadWriteComposite() throws Exception {
@@ -59,7 +62,7 @@ public class WriteAllTestCase extends TestCase {
     public void testReadWireWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = staxProcessors.read(is, Composite.class);
-        staxProcessors.resolve(composite, new DefaultArtifactResolver());
+        staxProcessors.resolve(composite, resolver);
         staxProcessors.wire(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessors.write(composite, bos);
@@ -68,7 +71,7 @@ public class WriteAllTestCase extends TestCase {
     public void testReadWriteComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         ComponentType componentType = staxProcessors.read(is, ComponentType.class);
-        staxProcessors.resolve(componentType, new DefaultArtifactResolver());
+        staxProcessors.resolve(componentType, resolver);
         staxProcessors.wire(componentType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessors.write(componentType, bos);
@@ -77,7 +80,7 @@ public class WriteAllTestCase extends TestCase {
     public void testReadWriteConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = staxProcessors.read(is, ConstrainingType.class);
-        staxProcessors.resolve(constrainingType, new DefaultArtifactResolver());
+        staxProcessors.resolve(constrainingType, resolver);
         staxProcessors.wire(constrainingType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessors.write(constrainingType, bos);

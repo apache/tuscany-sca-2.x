@@ -80,7 +80,7 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
         
-        ArtifactResolver resolver = new DefaultArtifactResolver();
+        ArtifactResolver resolver = new DefaultArtifactResolver(getClass().getClassLoader());
         staxProcessors.resolve(composite, resolver);
 
         new CompositeUtil(composite).configure(new ArrayList<Base>());

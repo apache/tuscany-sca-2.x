@@ -74,11 +74,12 @@ public class VariantRuntimeContext {
             assemblyFactory, policyFactory, javaImplementationFactory, new DefaultJavaClassIntrospector()));
         
         // Create a resolver
-        DefaultArtifactResolver resolver = new DefaultArtifactResolver();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        DefaultArtifactResolver resolver = new DefaultArtifactResolver(classLoader);
 
         try {
             // Parse the composite file
-            InputStream is = getClass().getClassLoader().getResourceAsStream(compositeFile);
+            InputStream is = classLoader.getResourceAsStream(compositeFile);
             Composite composite = staxProcessors.read(is, Composite.class);
             resolver.add(composite);
             

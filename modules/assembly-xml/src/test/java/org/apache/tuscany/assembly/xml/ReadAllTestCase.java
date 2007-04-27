@@ -46,16 +46,20 @@ import org.w3c.dom.Element;
  */
 public class ReadAllTestCase extends TestCase {
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private DefaultArtifactResolver resolver; 
 
     public void setUp() throws Exception {
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
         staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+
+        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
         staxProcessors = null;
+        resolver = null;
     }
 
     public void testReadComposite() throws Exception {
@@ -144,7 +148,6 @@ public class ReadAllTestCase extends TestCase {
     }
 
     public void testReadCompositeAndWireIt() throws Exception {
-        DefaultArtifactResolver resolver = new DefaultArtifactResolver();
 
         InputStream is = getClass().getResourceAsStream("TestAllDivide.composite");
         Composite included = staxProcessors.read(is, Composite.class);
