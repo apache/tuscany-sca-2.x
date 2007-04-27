@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ClassReference;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
@@ -119,20 +120,24 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessorExtension<Ja
             if (javaInterface.isUnresolved()) {
 
                 // If the Java interface has never been resolved yet, do it now
-                Class javaClass;
+                ClassReference classReference = new ClassReference(javaInterface.getName());
+                classReference = resolver.resolve(ClassReference.class, classReference);
+                Class javaClass = classReference.getJavaClass();
+                if (javaClass == null) {
+                    throw new ContributionResolveException(new ClassNotFoundException(javaInterface.getName()));
+                }
                 try {
-                    javaClass = Class.forName(javaInterface.getName(), true, Thread.currentThread().getContextClassLoader());
                         
                     // Introspect the Java interface and populate the interface and
                     // operations
                     javaInterface = introspector.introspect(javaClass);
                 
-                } catch (ClassNotFoundException e) {
-                    throw new ContributionResolveException(e);
                 } catch (InvalidInterfaceException e) {
                     throw new ContributionResolveException(e);
                 }
-                
+
+                // Cache the resolved interface
+                javaInterface.setUnresolved(false);
                 resolver.add(javaInterface);
             }
         }
