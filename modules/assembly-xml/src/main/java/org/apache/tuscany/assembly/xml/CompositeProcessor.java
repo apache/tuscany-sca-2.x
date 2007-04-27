@@ -518,7 +518,16 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
             }
         };
         
-        compositeUtil.configure(problems);
+
+        // Collect and fuse includes
+        compositeUtil.fuseIncludes(problems);
+
+        // Configure all components
+        compositeUtil.configureComponents(problems);
+        
+        //FIXME this should be done only on top level deployable composites
+        // Wire references
+        compositeUtil.wireReferences(problems);
        
         // Uncommenting the following three lines can be useful to detect
         // and troubleshoot SCA assembly XML composite configuration

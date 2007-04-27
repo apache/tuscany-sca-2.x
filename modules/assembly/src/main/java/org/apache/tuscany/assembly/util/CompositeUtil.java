@@ -81,22 +81,6 @@ public class CompositeUtil {
     }
 
     /**
-     * Configure a composite.
-     * @param problems
-     */
-    public void configure(List<Base> problems) {
-
-        // Collect and fuse includes
-        fuseIncludes(problems);
-
-        // Configure all components
-        configureComponents(problems);
-        
-        // Wire all references
-        wireReferences(problems);
-    }
-    
-    /**
      * Collect all includes in a graph of includes
      * @param composite
      * @param includes
@@ -113,7 +97,7 @@ public class CompositeUtil {
      * @param composite
      * @param includes
      */
-    private void fuseIncludes(List<Base> problems) {
+    public void fuseIncludes(List<Base> problems) {
         
         // First collect all includes
         List<Composite> includes = new ArrayList<Composite>();
@@ -362,7 +346,7 @@ public class CompositeUtil {
      * Configure components in the composite.
      * @param problems
      */
-    private void configureComponents(List<Base> problems) {
+    public void configureComponents(List<Base> problems) {
 
         // Initialize all component services and references
         Map<String, Component> components = new HashMap<String, Component>();
@@ -722,7 +706,7 @@ public class CompositeUtil {
      * 
      * @param problems
      */
-    private void wireReferences(List<Base> problems) {
+    public void wireReferences(List<Base> problems) {
 
         // Index and bind all component services and references
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
