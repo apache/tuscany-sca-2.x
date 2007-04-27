@@ -26,12 +26,31 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
+import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
+import org.apache.tuscany.assembly.xml.CompositeDocumentProcessor;
+import org.apache.tuscany.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
+import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
+import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
+import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
+import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
+import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
+import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.contribution.service.util.IOHelper;
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.apache.tuscany.host.embedded.impl.DefaultSCARuntime;
+import org.apache.tuscany.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.core.ExtensionPointRegistry;
 
 /**
  * This is more intended to be a integration test then a unit test. *
@@ -45,10 +64,41 @@ public class ContributionServiceTestCase extends TestCase {
     private ContributionService contributionService;
     
     protected void setUp() throws Exception {
-        super.setUp();
-        SCARuntime.start("application.composite");
         
-        this.contributionService = ((DefaultSCARuntime)SCARuntime.getInstance()).getExtensionPoint(ContributionService.class);
+        // Create an extension point registry
+        ExtensionPointRegistry extensionRegistry = new DefaultExtensionPointRegistry();
+
+        // Add artifact processor extension points
+        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        extensionRegistry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
+        DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
+        extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
+
+        // Register base artifact processors
+        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+
+        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors));
+        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors));
+        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors));
+
+        // Create package processor extension point
+        PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
+        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint(describer);
+        extensionRegistry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
+        
+        // Register base package processors
+        new JarContributionProcessor(packageProcessors);
+        new FolderContributionProcessor(packageProcessors);
+
+        // Create a repository
+        ContributionRepository repository = new ContributionRepositoryImpl("target");
+        
+        // Create an artifact resolver and contribution service
+        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
+        this.contributionService = new ContributionServiceImpl(repository, packageProcessors,
+                                                                              documentProcessors, artifactResolver);
     }
 
     public void testContributeJAR() throws Exception {

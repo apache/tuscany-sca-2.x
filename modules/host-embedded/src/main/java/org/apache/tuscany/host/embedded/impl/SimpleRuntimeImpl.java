@@ -49,8 +49,8 @@ import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.util.FileHelper;
-import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
@@ -111,7 +111,6 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
     @SuppressWarnings("unchecked")
     public Component start() throws Exception {
         ExtensionPointRegistry extensionRegistry = new DefaultExtensionPointRegistry();
-        ContributionRepository repository = new ContributionRepositoryImpl("target");
 
         // Add artifact processor extension points
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
@@ -145,11 +144,11 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         WorkContextTunnel.setThreadWorkContext(workContext);
 
         // Create contribution service
+        ContributionRepository repository = new ContributionRepositoryImpl("target");
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
                                                                               documentProcessors, artifactResolver);
-        extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
-        initialize(extensionRegistry, contributionService);
+        initialize(extensionRegistry);
 
         // Create a scope registry
         ScopeRegistry scopeRegistry = getScopeRegistry();

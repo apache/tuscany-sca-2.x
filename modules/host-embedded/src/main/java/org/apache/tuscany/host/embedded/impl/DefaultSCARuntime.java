@@ -20,13 +20,9 @@ package org.apache.tuscany.host.embedded.impl;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceUnavailableException;
 
 /**
  * Default implementation of SCARuntime.
@@ -61,12 +57,4 @@ public class DefaultSCARuntime extends SCARuntime {
         return runtime.getComponentContext(URI.create(componentName));
     }
 
-    @Override
-    public <T> T getExtensionPoint(Class<T> extensionPointType) {
-        try {
-            return runtime.getExtensionPoint(extensionPointType);
-        } catch (TargetResolutionException e) {
-            throw new ServiceUnavailableException(e);
-        }
-    }
 }

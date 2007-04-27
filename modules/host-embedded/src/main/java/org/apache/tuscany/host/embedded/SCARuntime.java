@@ -167,14 +167,6 @@ public abstract class SCARuntime {
     }
 
     /**
-     * Get access to an extension point
-     * 
-     * @param extensionPointType The interface for the extension point
-     * @return The instance of the extension point
-     */
-    protected abstract <T> T getExtensionPoint(Class<T> extensionPointType);
-
-    /**
      * Stop the SCA Runtime
      */
     public static void stop() {
