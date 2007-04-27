@@ -21,6 +21,7 @@ package org.apache.tuscany.interfacedef.wsdl.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import javax.wsdl.Definition;
@@ -134,16 +135,16 @@ public class WSDLDocumentProcessor implements URLArtifactProcessorExtension<WSDL
         this(new DefaultWSDLFactory(), null);
     }
 
-    public WSDLDefinition read(URL url) throws ContributionReadException {
+    public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
 
             // Read a WSDL document
-            InputStream is = url.openStream();
+            InputStream is = artifactURL.openStream();
             WSDLReader reader = wsdlFactory.newWSDLReader();
             reader.setFeature("javax.wsdl.verbose", false);
             reader.setExtensionRegistry(wsdlExtensionRegistry);
 
-            WSDLLocatorImpl locator = new WSDLLocatorImpl(url, is);
+            WSDLLocatorImpl locator = new WSDLLocatorImpl(artifactURL, is);
             Definition definition = reader.readWSDL(locator);
             
             WSDLDefinition wsdlDefinition = factory.createWSDLDefinition();

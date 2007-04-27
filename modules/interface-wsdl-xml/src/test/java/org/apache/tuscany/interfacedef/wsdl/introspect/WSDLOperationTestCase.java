@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.interfacedef.wsdl.introspect;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class WSDLOperationTestCase extends TestCase {
 
     public final void testWrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        WSDLDefinition definition = processor.read(url);
+        WSDLDefinition definition = processor.read(null, new URI("stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
 
@@ -85,7 +86,7 @@ public class WSDLOperationTestCase extends TestCase {
 
     public final void testUnwrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/unwrapped-stockquote.wsdl");
-        WSDLDefinition definition = processor.read(url);
+        WSDLDefinition definition = processor.read(null, new URI("unwrapped-stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
 
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
@@ -101,7 +102,7 @@ public class WSDLOperationTestCase extends TestCase {
 
     public final void testInvalidWSDL() throws Exception {
         URL url = getClass().getResource("../xml/invalid-stockquote.wsdl");
-        WSDLDefinition definition = processor.read(url);
+        WSDLDefinition definition = processor.read(null, new URI("invalid-stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
 
         Operation operation = portType.getOperation("getLastTradePrice", null, null);

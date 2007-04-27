@@ -21,6 +21,7 @@ package org.apache.tuscany.assembly.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
@@ -67,7 +68,7 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
     }
 
-    public ConstrainingType read(URL url) throws ContributionReadException {
+    public ConstrainingType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null;
         try {
             urlStream = url.openStream();

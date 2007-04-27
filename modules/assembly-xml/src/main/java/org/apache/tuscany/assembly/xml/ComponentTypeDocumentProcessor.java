@@ -21,6 +21,7 @@ package org.apache.tuscany.assembly.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
@@ -67,7 +68,7 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
         this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
     }
     
-    public ComponentType read(URL url) throws ContributionReadException {
+    public ComponentType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null;
         try {
             urlStream = url.openStream();

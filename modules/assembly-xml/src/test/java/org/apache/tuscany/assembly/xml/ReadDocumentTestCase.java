@@ -64,12 +64,12 @@ public class ReadDocumentTestCase extends TestCase {
     public void testResolveConstrainingType() throws Exception {
         
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)documentProcessors.read(url);
+        ConstrainingType constrainingType = (ConstrainingType)documentProcessors.read(null, null, url);
         assertNotNull(constrainingType);
         resolver.add(constrainingType);
 
         url = getClass().getResource("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessors.read(url);
+        Composite composite = (Composite)documentProcessors.read(null, null, url);
         assertNotNull(composite);
         
         documentProcessors.resolve(composite, resolver);
@@ -80,12 +80,12 @@ public class ReadDocumentTestCase extends TestCase {
 
     public void testResolveComposite() throws Exception {
         URL url = getClass().getResource("Calculator.composite");
-        Composite nestedComposite = (Composite)documentProcessors.read(url);
+        Composite nestedComposite = (Composite)documentProcessors.read(null, null, url);
         assertNotNull(nestedComposite);
         resolver.add(nestedComposite);
 
         url = getClass().getResource("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessors.read(url);
+        Composite composite = (Composite)documentProcessors.read(null, null, url);
         
         documentProcessors.resolve(composite, resolver);
         

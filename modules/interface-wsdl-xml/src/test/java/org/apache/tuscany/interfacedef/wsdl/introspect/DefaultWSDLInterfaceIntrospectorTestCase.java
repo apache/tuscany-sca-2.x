@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.interfacedef.wsdl.introspect;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
         registry = new WSDLDocumentProcessor();
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        definition = registry.read(url);
+        definition = registry.read(null, new URI("stockquote.wsdl"), url);
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
     }
 
