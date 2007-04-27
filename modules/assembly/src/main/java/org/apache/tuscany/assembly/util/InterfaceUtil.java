@@ -33,18 +33,23 @@ public class InterfaceUtil {
         Interface source = sourceContract.getInterface();
         Interface target = targetContract.getInterface();
         if (source != target) {
-            Operation targetOperation = null;
             for (Operation sourceOperation : source.getOperations()) {
+                Operation targetOperation = null;
                 for (Operation anOperation : target.getOperations()) {
-                    if (targetOperation.getName().equals(sourceOperation.getName())) {
+                    if (anOperation.getName().equals(sourceOperation.getName())) {
                         targetOperation = anOperation;
                         break;
                     }
                 }
                 if (targetOperation == null) {
                     isCompatible = false;
+                    
                 } else if (!sourceOperation.equals(targetOperation)) {
-                    isCompatible = false;
+//                  FIXME Work around the fact that OperationImpl.equals() returns false 
+//                  in some cases when the two operations have compatible but
+//                  not identical input types. Uncomment the following line after 
+//                  OperationImpl gets fixed.
+//                    isCompatible = false;
                 }
             }
         }
