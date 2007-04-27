@@ -21,7 +21,6 @@ package org.apache.tuscany.host.embedded.impl;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 
 /**
  * A simple runtime to host both Tuscany and application code on the same classpath
@@ -36,13 +35,4 @@ public interface SimpleRuntime extends TuscanyRuntime<SimpleRuntimeInfo> {
      */
     Component start() throws Exception;
     
-    /**
-     * Look up an extension point by type
-     * @param <T>
-     * @param type
-     * @param name
-     * @return
-     * @throws TargetResolutionException
-     */
-    <T> T getExtensionPoint(Class<T> type) throws TargetResolutionException;
 }

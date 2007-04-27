@@ -98,8 +98,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected Component systemComponent;
     protected Component tuscanySystem;
 
-    protected ContributionService contributionService;
-
     protected ScopeRegistry scopeRegistry;
     protected Collection<ModuleActivator> activators;
     
@@ -166,16 +164,13 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     }
 
     @SuppressWarnings("unchecked")
-    public void initialize(ExtensionPointRegistry extensionRegistry, ContributionService contributionService)
+    public void initialize(ExtensionPointRegistry extensionRegistry)
         throws InitializationException {
-        this.contributionService = contributionService;
         this.extensionRegistry = extensionRegistry;
 
         Bootstrapper bootstrapper = createBootstrapper();
 
         Deployer deployer = bootstrapper.createDeployer(extensionRegistry);
-
-        extensionRegistry.addExtensionPoint(ContributionService.class, contributionService);
 
         extensionRegistry.addExtensionPoint(Deployer.class, deployer);
         workManager = new ThreadPoolWorkManager(10);
@@ -320,10 +315,4 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         return instances;
     }
 
-    /**
-     * @return the contributionService
-     */
-    public ContributionService getContributionService() {
-        return contributionService;
-    }
 }
