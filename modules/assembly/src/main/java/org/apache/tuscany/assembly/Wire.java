@@ -27,7 +27,7 @@ import org.apache.tuscany.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Wire extends Base, IntentAttachPoint, PolicySetAttachPoint, Visitable {
+public interface Wire extends Base, IntentAttachPoint, PolicySetAttachPoint {
 
     /**
      * Returns the source of the wire.

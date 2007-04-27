@@ -34,12 +34,9 @@ import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.core.services.classloading.ClassLoaderRegistryImpl;
 import org.apache.tuscany.core.util.IOHelper;
 import org.apache.tuscany.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.core.work.ThreadPoolWorkManager;
@@ -53,7 +50,6 @@ import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.services.classloading.ClassLoaderRegistry;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.osoa.sca.ComponentContext;
@@ -62,17 +58,15 @@ import org.osoa.sca.ComponentContext;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyRuntime<I> {
-    private static final URI HOST_CLASSLOADER_ID = URI.create("sca://./hostClassLoader");
-
-    private static final URI BOOT_CLASSLOADER_ID = URI.create("sca://./bootClassLoader");
 
     protected final XMLInputFactory xmlFactory;
     protected String applicationName;
     protected URL applicationScdl;
     protected Class<I> runtimeInfoType;
     protected ManagementService<?> managementService;
+    
+    protected ClassLoader hostClassLoader;
 
-    // primorial components automatically registered with the runtime
     /**
      * Information provided by the host about its runtime environment.
      */
@@ -90,11 +84,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected ComponentManager componentManager;
     protected ExtensionPointRegistry extensionRegistry;
 
-    /**
-     * Registry for ClassLoaders used by this runtime.
-     */
-    protected ClassLoaderRegistry classLoaderRegistry;
-
     protected Component systemComponent;
     protected Component tuscanySystem;
 
@@ -103,24 +92,12 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     
     protected ThreadPoolWorkManager workManager;
 
-    protected AbstractRuntime(Class<I> runtimeInfoType) {
-        this(runtimeInfoType, new NullMonitorFactory());
-    }
-
-    protected AbstractRuntime(Class<I> runtimeInfoType, MonitorFactory monitorFactory) {
+    protected AbstractRuntime(Class<I> runtimeInfoType, I runtimeInfo, MonitorFactory monitorFactory, ClassLoader hostClassLoader) {
         this.runtimeInfoType = runtimeInfoType;
+        this.runtimeInfo = runtimeInfo;
         this.monitorFactory = monitorFactory;
+        this.hostClassLoader = hostClassLoader;
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
-        classLoaderRegistry = new ClassLoaderRegistryImpl();
-        classLoaderRegistry.register(BOOT_CLASSLOADER_ID, getClass().getClassLoader());
-    }
-
-    public String getApplicationName() {
-        return applicationName;
-    }
-
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
     }
 
     public URL getApplicationSCDL() {
@@ -129,22 +106,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
     public void setApplicationSCDL(URL applicationScdl) {
         this.applicationScdl = applicationScdl;
-    }
-
-    public ClassLoader getHostClassLoader() {
-        return classLoaderRegistry.getClassLoader(HOST_CLASSLOADER_ID);
-    }
-
-    public void setHostClassLoader(ClassLoader hostClassLoader) {
-        classLoaderRegistry.register(HOST_CLASSLOADER_ID, hostClassLoader);
-    }
-
-    public I getRuntimeInfo() {
-        return runtimeInfo;
-    }
-
-    public void setRuntimeInfo(I runtimeInfo) {
-        this.runtimeInfo = runtimeInfo;
     }
 
     public MonitorFactory getMonitorFactory() {
@@ -178,7 +139,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
         this.scopeRegistry = bootstrapper.getScopeRegistry();
 
-        activators = getInstances(getHostClassLoader(), ModuleActivator.class);
+        activators = getInstances(hostClassLoader, ModuleActivator.class);
         for (ModuleActivator activator : activators) {
             Map<Class, Object> extensionPoints = activator.getExtensionPoints();
             if (extensionPoints != null) {
@@ -228,9 +189,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected void registerSystemExtensionPoints() throws InitializationException {
         // register the RuntimeInfo provided by the host
         extensionRegistry.addExtensionPoint(runtimeInfoType, runtimeInfo);
-
-        // register the ClassLoaderRegistry
-        extensionRegistry.addExtensionPoint(ClassLoaderRegistry.class, classLoaderRegistry);
 
         // register the ComponentManager to that the fabric can wire to it
         extensionRegistry.addExtensionPoint(ComponentManager.class, componentManager);

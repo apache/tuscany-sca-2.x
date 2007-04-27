@@ -22,12 +22,14 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.assembly.util.Visitable;
+
 /**
  * Represents a composite.
  * 
  * @version $Rev$ $Date$
  */
-public interface Composite extends Implementation {
+public interface Composite extends Implementation, Visitable {
 
     /**
      * Returns the name of the composite.
@@ -101,4 +103,13 @@ public interface Composite extends Implementation {
      * @return a copy of the composite.
      */
     Composite copy();
+    
+    /**
+     * Returns an instance of the composite. Components inside the
+     * composite are copied but the aspects of the componentType
+     * (services, references and properties) are not copied.
+     * @return
+     */
+    Composite instanciate();
+    
 }

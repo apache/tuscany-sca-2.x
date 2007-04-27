@@ -53,7 +53,6 @@ public class CompositeUtil {
 
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
-    private Composite composite;
 
     /**
      * Constructs a new composite util.
@@ -63,11 +62,9 @@ public class CompositeUtil {
      * @param composite
      */
     public CompositeUtil(AssemblyFactory assemblyFactory,
-                         InterfaceContractMapper interfaceContractMapper,
-                         Composite composite) {
+                         InterfaceContractMapper interfaceContractMapper) {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
-        this.composite = composite;
     }
 
     /**
@@ -75,13 +72,14 @@ public class CompositeUtil {
      *  
      * @param composite
      */
-    public CompositeUtil(Composite composite) {
+    public CompositeUtil() {
         this(new DefaultAssemblyFactory(),
-             new DefaultInterfaceContractMapper(), composite);
+             new DefaultInterfaceContractMapper());
     }
 
     /**
-     * Collect all includes in a graph of includes
+     * Collect all includes in a graph of includes.
+     * 
      * @param composite
      * @param includes
      */
@@ -93,11 +91,12 @@ public class CompositeUtil {
     }
 
     /**
-     * Copy a list of includes into a composite
+     * Copy a list of includes into a composite.
+     * 
      * @param composite
      * @param includes
      */
-    public void fuseIncludes(List<Base> problems) {
+    public void fuseIncludes(Composite composite, List<Base> problems) {
         
         // First collect all includes
         List<Composite> includes = new ArrayList<Composite>();
@@ -344,9 +343,11 @@ public class CompositeUtil {
 
     /**
      * Configure components in the composite.
+     * 
+     * @param composite
      * @param problems
      */
-    public void configureComponents(List<Base> problems) {
+    public void configureComponents(Composite composite, List<Base> problems) {
 
         // Initialize all component services and references
         Map<String, Component> components = new HashMap<String, Component>();
@@ -443,11 +444,14 @@ public class CompositeUtil {
     
     /**
      * Create SCA bindings for component services and references.
+     * 
+     * @param composite
      * @param componentServices
      * @param componentReferences
      * @param problems
      */
-    private void createSCABindings(Map<String, ComponentService> componentServices,
+    private void createSCABindings(Composite composite,
+                              Map<String, ComponentService> componentServices,
                               Map<String, ComponentReference> componentReferences,
                               List<Base> problems) {
         
@@ -490,10 +494,11 @@ public class CompositeUtil {
     /**
      * Resolves promoted services
      * 
+     * @param composite
      * @param componentServices
      * @param problems
      */
-    private void connectPromotedServices(
+    private void connectPromotedServices(Composite composite,
                                          Map<String, ComponentService> componentServices,
                                          List<Base> problems) {
 
@@ -523,11 +528,13 @@ public class CompositeUtil {
     }
 
     /**
-     * Resolves promoted references
+     * Resolves promoted references.
+     * 
+     * @param composite
      * @param componentReferences
      * @param problems
      */
-    private void connectPromotedReferences(
+    private void connectPromotedReferences(Composite composite,
                                            Map<String, ComponentReference> componentReferences,
                                            List<Base> problems) {
 
@@ -560,12 +567,14 @@ public class CompositeUtil {
     }
 
     /**
-     * Connect references to their targets
+     * Connect references to their targets.
+     * 
+     * @param composite
      * @param componentServices
      * @param componentReferences
      * @param problems
      */
-    private void connectReferenceTargets(
+    private void connectReferenceTargets(Composite composite,
                                       Map<String, ComponentService> componentServices,
                                       Map<String, ComponentReference> componentReferences,
                                       List<Base> problems) {
@@ -646,11 +655,13 @@ public class CompositeUtil {
     
     /**
      * Resolve wires and connect the sources to their targets
+     * 
+     * @param composite
      * @param componentServices
      * @param componentReferences
      * @param problems
      */
-    private void connectWiredReferences(
+    private void connectWiredReferences(Composite composite,
                                   Map<String, ComponentService> componentServices,
                                   Map<String, ComponentReference> componentReferences,
                                   List<Base> problems) {
@@ -706,24 +717,24 @@ public class CompositeUtil {
      * 
      * @param problems
      */
-    public void wireReferences(List<Base> problems) {
+    public void wireReferences(Composite composite, List<Base> problems) {
 
         // Index and bind all component services and references
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
         Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
         
         // Create SCA bindings on all component services and references
-        createSCABindings(componentServices, componentReferences, problems);
+        createSCABindings(composite, componentServices, componentReferences, problems);
 
         // Resolve promoted services and references
-        connectPromotedServices(componentServices, problems);
-        connectPromotedReferences(componentReferences, problems);
+        connectPromotedServices(composite, componentServices, problems);
+        connectPromotedReferences(composite, componentReferences, problems);
         
         // Connect references to their targets
-        connectReferenceTargets(componentServices, componentReferences, problems);
+        connectReferenceTargets(composite, componentServices, componentReferences, problems);
 
         // Connect references as described in wires
-        connectWiredReferences(componentServices, componentReferences, problems);
+        connectWiredReferences(composite, componentServices, componentReferences, problems);
 
         // Validate that references are wired or promoted, according
         // to their multiplicity
@@ -735,5 +746,23 @@ public class CompositeUtil {
                 problems.add(componentReference);
             }
          }
+    }
+    
+    /**
+     * Expand composite component implementations.
+     * @param composite
+     * @param problems
+     */
+    public void expandComposites(Composite composite, List<Base> problems) {
+        for (Component component: composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                
+                Composite compositeImplementation = (Composite)implementation;
+                Composite instance = compositeImplementation.instanciate();
+                component.setImplementation(instance);
+                expandComposites(instance, problems);
+            }
+        }
     }
 }

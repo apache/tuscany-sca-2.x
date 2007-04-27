@@ -52,6 +52,7 @@ import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.spi.Scope;
@@ -69,13 +70,13 @@ import org.osoa.sca.CurrentCompositeContext;
  */
 public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implements SimpleRuntime {
     private ScopeContainer<URI> container;
+    
+    private SimpleRuntimeInfo simpleRuntimeInfo;
 
     public SimpleRuntimeImpl(SimpleRuntimeInfo runtimeInfo) {
-        super(SimpleRuntimeInfo.class);
-        ClassLoader hostClassLoader = runtimeInfo.getClassLoader();
-        setHostClassLoader(hostClassLoader);
+        super(SimpleRuntimeInfo.class, runtimeInfo, new NullMonitorFactory(), runtimeInfo.getClassLoader());
         setApplicationSCDL(runtimeInfo.getApplicationSCDL());
-        setRuntimeInfo(runtimeInfo);
+        this.simpleRuntimeInfo = runtimeInfo;
     }
 
     public void initialize() throws InitializationException {
@@ -145,7 +146,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         // Create contribution service
         ContributionRepository repository = new ContributionRepositoryImpl("target");
-        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(getHostClassLoader());
+        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(simpleRuntimeInfo.getClassLoader());
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
                                                                               documentProcessors, artifactResolver);
         initialize(extensionRegistry);

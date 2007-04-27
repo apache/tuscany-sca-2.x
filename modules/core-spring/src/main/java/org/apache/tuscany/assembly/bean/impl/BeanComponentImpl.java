@@ -27,6 +27,7 @@ import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.util.Visitor;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -157,4 +158,25 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component 
 		this.unresolved = undefined;
 	}
 
+            public boolean accept(Visitor visitor) {
+                if (!visitor.visit(this)) {
+                    return false;
+                }
+                for (ComponentProperty property : properties) {
+                    if (!visitor.visit(property)) {
+                        return false;
+                    }
+                }
+                for (ComponentReference reference : references) {
+                    if (!visitor.visit(reference)) {
+                        return false;
+                    }
+                }
+                for (ComponentService service : services) {
+                    if (!visitor.visit(service)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
 }

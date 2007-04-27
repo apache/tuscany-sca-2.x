@@ -20,6 +20,7 @@ package org.apache.tuscany.assembly;
 
 import java.util.List;
 
+import org.apache.tuscany.assembly.util.Visitable;
 import org.apache.tuscany.policy.IntentAttachPoint;
 import org.apache.tuscany.policy.PolicySetAttachPoint;
 
@@ -29,7 +30,7 @@ import org.apache.tuscany.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Component extends Base, IntentAttachPoint, PolicySetAttachPoint {
+public interface Component extends Base, IntentAttachPoint, PolicySetAttachPoint, Visitable {
 
     /**
      * Returns the name of the component.

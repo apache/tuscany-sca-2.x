@@ -28,7 +28,6 @@ import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
-import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
@@ -54,6 +53,9 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
      */
     public CompositeImpl(Composite other) {
         super(other);
+        name = other.getName();
+        autowire = other.isAutowire();
+        local = other.isLocal();
         for (Component component: other.getComponents()) {
             components.add(new ComponentImpl(component));
         }
@@ -65,15 +67,9 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
         for (Reference reference: other.getReferences()) {
             getReferences().add(new CompositeReferenceImpl((CompositeReference)reference));
         }
-        for (Property property: other.getProperties()) {
-            getProperties().add(new PropertyImpl(property));
-        }
-        name = other.getName();
         for (Wire wire: other.getWires()) {
             wires.add(new WireImpl(wire));
         }
-        autowire = other.isAutowire();
-        local = other.isLocal();
     }
 
     public List<Component> getComponents() {
@@ -119,8 +115,14 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
             return false;
         }
         
+        for (Component component: components) {
+            if (!component.accept(visitor)) {
+                return false;
+            }
+        }
+        
         for (Wire wire: wires) {
-            if (!wire.accept(visitor))
+            if (!visitor.visit(wire))
                 return false;
         }
         return true;
@@ -129,6 +131,26 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
     public Composite copy() {
         CompositeImpl copy = new CompositeImpl(this);
         return copy;
+    }
+    
+    public Composite instanciate() {
+        CompositeImpl instance = new CompositeImpl();
+        instance.instanciate(this);
+        return instance;
+    }
+    
+    protected void instanciate(Composite other) {
+        super.instanciate(other);
+        
+        name = other.getName();
+        autowire = other.isAutowire();
+        local = other.isLocal();
+        for (Component component: other.getComponents()) {
+            components.add(new ComponentImpl(component));
+        }
+        for (Wire wire: other.getWires()) {
+            wires.add(new WireImpl(wire));
+        }
     }
 
     @Override
