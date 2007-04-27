@@ -54,8 +54,8 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
- * Util class to deal with processing of component properties that are take values from the parent 
- * composite's properties or thro an external file
+ * Utility class to deal with processing of component properties that are taking values from the parent 
+ * composite's properties or an external file.
  */
 public class PropertyUtil {
     private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
