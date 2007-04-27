@@ -33,6 +33,7 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
@@ -61,7 +62,7 @@ public class CompositeUtil {
     }
 
     public void configure(List<Base> problems) {
-        if (problems == null) {
+        if (true || problems == null) {
             problems = new ArrayList<Base>() {
                 private static final long serialVersionUID = 4819831446590718923L;
 
@@ -164,8 +165,8 @@ public class CompositeUtil {
                 // Reconcile interface
                 if (componentService.getInterfaceContract() != null) {
                     if (!componentService.getInterfaceContract().equals(service.getInterfaceContract())) {
-                        if (!InterfaceUtil.checkInterfaceCompatibility(service.getInterfaceContract(), 
-                                                                       componentService.getInterfaceContract())) {
+                        if (!InterfaceUtil.checkInterfaceCompatibility(componentService.getInterfaceContract(), 
+                                                                       service.getInterfaceContract())) {
                             problems.add(componentService);
                         }
                     }
@@ -238,6 +239,11 @@ public class CompositeUtil {
                     }
                 } else {
                     componentReference.setInterfaceContract(reference.getInterfaceContract());
+                }
+                
+                // Propagate autowire setting from the component
+                if (component.isAutowire()) {
+                    componentReference.setAutowire(true);
                 }
     
                 // Reconcile targets
@@ -349,6 +355,11 @@ public class CompositeUtil {
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();
             Map<String, Property> properties = new HashMap<String, Property>();
+            
+            // Propagate the autowire flag from the composite to components
+            if (composite.isAutowire()) {
+                component.setAutowire(true);
+            }
             
             // Check that the component has a resolved implementation
             Implementation implementation = component.getImplementation();
@@ -527,13 +538,45 @@ public class CompositeUtil {
         
         for (ComponentReference componentReference : componentReferences.values()) {
             List<ComponentService> targets = componentReference.getTargets();
-            if (!targets.isEmpty()) {
+            
+            if (componentReference.isAutowire()) {
+                
+                // Find suitable targets in the current composite for an autowired
+                // reference
+                Multiplicity multiplicity = componentReference.getMultiplicity();
+                for (Component component: composite.getComponents()) {
+                    for (ComponentService componentService: component.getServices()) {
+                        if (componentReference.getInterfaceContract() == null ||
+                            InterfaceUtil.checkInterfaceCompatibility(componentReference.getInterfaceContract(),
+                            componentService.getInterfaceContract())) {
+                            
+                            targets.add(componentService);
+                            if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+            } else if (!targets.isEmpty()) {
+                
+                // Resolve targets specified on the component reference
                 for (int i = 0, n = targets.size(); i < n; i++) {
                     ComponentService target = targets.get(i);
                     if (target.isUnresolved()) {
                         ComponentService resolved = componentServices.get(target.getName());
                         if (resolved != null) {
-                            targets.set(i, resolved);
+                            
+                            // Check that the target component service provides a superset of
+                            // the component reference interface
+                            if (componentReference.getInterfaceContract() ==null ||
+                                InterfaceUtil.checkInterfaceCompatibility(componentReference.getInterfaceContract(),
+                                resolved.getInterfaceContract())) {
+                                
+                                targets.set(i, resolved);
+                            } else {
+                                problems.add(target);
+                            }
                         } else {
                             problems.add(target);
                         }
@@ -541,13 +584,23 @@ public class CompositeUtil {
                 }
             } else if (componentReference.getReference() != null) {
 
-                // Wire reference targets from the corresponding reference in
-                // the componentType
+                // Resolve targets from the corresponding reference in the
+                // componentType
                 for (ComponentService target : componentReference.getReference().getTargets()) {
                     if (target.isUnresolved()) {
                         ComponentService resolved = componentServices.get(target.getName());
                         if (resolved != null) {
-                            targets.add(resolved);
+                            
+                            // Check that the target component service provides a superset of
+                            // the component reference interface
+                            if (componentReference.getInterfaceContract() == null ||
+                                InterfaceUtil.checkInterfaceCompatibility(componentReference.getInterfaceContract(),
+                                resolved.getInterfaceContract())) {
+                                
+                                targets.add(resolved);
+                            } else {
+                                problems.add(target);
+                            }
                         } else {
                             problems.add(target);
                         }
