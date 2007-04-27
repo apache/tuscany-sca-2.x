@@ -56,7 +56,11 @@ public class ClassReference {
      * @return
      */
     public Class getJavaClass() {
-        return clazz.get();
+        if (clazz != null) {
+            return clazz.get();
+        } else {
+            return null;
+        }
     }
     
     /**
