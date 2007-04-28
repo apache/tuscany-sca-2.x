@@ -37,9 +37,7 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentImpl implements Component, Visitable {
-    private List<Object> extensions = new ArrayList<Object>();
-    private boolean unresolved;
+public class ComponentImpl extends BaseImpl implements Component {
     private ConstrainingType constrainingType;
     private Implementation implementation;
     private String name;
@@ -57,9 +55,9 @@ public class ComponentImpl implements Component, Visitable {
     }
     
     public ComponentImpl(Component other) {
-        unresolved = other.isUnresolved();
-        extensions.addAll(other.getExtensions());
-
+        super(other);
+        
+        // Copy ComponentImpl attributes
         constrainingType = other.getConstrainingType();
         implementation = other.getImplementation();
         name = other.getName();
@@ -75,40 +73,6 @@ public class ComponentImpl implements Component, Visitable {
         requiredIntents.addAll(other.getRequiredIntents());
         policySets.addAll(other.getPolicySets());
         autowire = other.isAutowire();
-    }
-
-    public Component instanciate() {
-        ComponentImpl instance = new ComponentImpl();
-        instance.instanciate(this);
-        return instance;
-    }
-    
-    private void instanciate(Component other) {
-        unresolved = other.isUnresolved();
-        extensions.addAll(other.getExtensions());
-
-        constrainingType = other.getConstrainingType();
-        implementation = other.getImplementation();
-        name = other.getName();
-        properties = other.getProperties();
-        for (ComponentReference reference: other.getReferences()) {
-            references.add(new ComponentReferenceImpl(reference));
-        }
-        requiredIntents = other.getRequiredIntents();
-        policySets = other.getPolicySets();;
-        autowire = other.isAutowire();
-    }
-    
-    public List<Object> getExtensions() {
-        return extensions;
-    }
-
-    public boolean isUnresolved() {
-        return unresolved;
-    }
-
-    public void setUnresolved(boolean undefined) {
-        this.unresolved = undefined;
     }
 
     public ConstrainingType getConstrainingType() {
@@ -164,7 +128,7 @@ public class ComponentImpl implements Component, Visitable {
     }
 
     public boolean accept(Visitor visitor) {
-        if (!visitor.visit(this)) {
+        if (!super.accept(visitor)) {
             return false;
         }
         for (ComponentProperty property : properties) {

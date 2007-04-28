@@ -50,7 +50,6 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
@@ -61,9 +60,7 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * A composite processor.
@@ -85,15 +82,6 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                               StAXArtifactProcessorExtension extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
         this.interfaceContractMapper = interfaceContractMapper;
-    }
-
-    /**
-     * Construct a new composite processor.
-     * @param extensionProcessor
-     */
-    public CompositeProcessor(StAXArtifactProcessorExtension extensionProcessor) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(),
-             new DefaultInterfaceContractMapper(), extensionProcessor);
     }
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException {
@@ -525,9 +513,13 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         // Configure all components
         compositeUtil.configureComponents(composite, problems);
         
-        //FIXME this should be done only on top level deployable composites
-        // Wire references
-        compositeUtil.wireReferences(composite, problems);
+        //FIXME this should only be done on top level deployable composites
+
+        // Expand nested composites
+        //compositeUtil.expandComposites(composite, problems);
+        
+        // Wire the composite
+        compositeUtil.wireComposite(composite, problems);
        
         // Uncommenting the following three lines can be useful to detect
         // and troubleshoot SCA assembly XML composite configuration

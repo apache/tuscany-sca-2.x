@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.assembly;
 
-import org.apache.tuscany.assembly.util.Visitable;
 import org.apache.tuscany.policy.IntentAttachPoint;
 import org.apache.tuscany.policy.PolicySetAttachPoint;
 

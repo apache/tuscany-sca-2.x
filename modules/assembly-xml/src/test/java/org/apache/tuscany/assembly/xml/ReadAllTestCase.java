@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Callback;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentReference;
@@ -34,8 +35,13 @@ import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -49,10 +55,14 @@ public class ReadAllTestCase extends TestCase {
     private DefaultArtifactResolver resolver; 
 
     public void setUp() throws Exception {
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        PolicyFactory policyFactory = new DefaultPolicyFactory();
+        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
 
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }

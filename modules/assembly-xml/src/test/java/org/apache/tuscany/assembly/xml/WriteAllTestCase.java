@@ -24,11 +24,17 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * Test writing SCA XML assemblies.
@@ -38,18 +44,27 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 public class WriteAllTestCase extends TestCase {
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     private DefaultArtifactResolver resolver; 
+    private AssemblyFactory factory;
+    private PolicyFactory policyFactory;
+    private InterfaceContractMapper mapper;
 
     public void setUp() throws Exception {
+        factory = new DefaultAssemblyFactory();
+        policyFactory = new DefaultPolicyFactory();
+        mapper = new DefaultInterfaceContractMapper();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
         staxProcessors = null;
         resolver = null;
+        policyFactory = null;
+        factory = null;
+        mapper = null;
     }
 
     public void testReadWriteComposite() throws Exception {

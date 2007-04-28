@@ -25,7 +25,11 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 
+import javax.xml.stream.XMLInputFactory;
+
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeDocumentProcessor;
@@ -55,6 +59,10 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -118,15 +126,21 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         extensionRegistry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
         DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
+        
+        // Create default factories
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        PolicyFactory policyFactory = new DefaultPolicyFactory();
+        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
 
         // Register base artifact processors
-        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
 
-        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors));
-        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors));
-        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors));
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
 
         // Create package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();

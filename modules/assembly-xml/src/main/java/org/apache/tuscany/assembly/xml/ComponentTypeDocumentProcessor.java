@@ -28,9 +28,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentType;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
@@ -38,8 +36,6 @@ import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * A componentType processor.
@@ -55,17 +51,9 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension staxProcessor, XMLInputFactory inputFactory) {
-        super(factory, policyFactory, staxProcessor);
+    public ComponentTypeDocumentProcessor(StAXArtifactProcessorExtension staxProcessor, XMLInputFactory inputFactory) {
+        super(null, null, staxProcessor);
         this.inputFactory = inputFactory;
-    }
-    
-    /**
-     * Constructs a new componentType processor.
-     * @param registry
-     */
-    public ComponentTypeDocumentProcessor(StAXArtifactProcessorExtension staxProcessor) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
     }
     
     public ComponentType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {

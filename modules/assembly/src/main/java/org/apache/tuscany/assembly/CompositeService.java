@@ -38,5 +38,5 @@ public interface CompositeService extends Service {
      * @param promotedService the promoted component service.
      */
     void setPromotedService(ComponentService promotedService);
-
+    
 }

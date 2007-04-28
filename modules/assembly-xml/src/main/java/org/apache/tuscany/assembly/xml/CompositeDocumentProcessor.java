@@ -28,9 +28,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
@@ -38,8 +36,6 @@ import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * A composite processor.
@@ -55,17 +51,9 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
      * @param policyFactory
      * @param staxProcessor
      */
-    public CompositeDocumentProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension staxProcessor, XMLInputFactory inputFactory) {
-        super(factory, policyFactory, staxProcessor);
+    public CompositeDocumentProcessor(StAXArtifactProcessorExtension staxProcessor, XMLInputFactory inputFactory) {
+        super(null, null, staxProcessor);
         this.inputFactory = inputFactory;
-    }
-
-    /**
-     * Construct a new composite processor.
-     * @param staxProcessor
-     */
-    public CompositeDocumentProcessor(StAXArtifactProcessorExtension staxProcessor) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), staxProcessor, XMLInputFactory.newInstance());
     }
 
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {

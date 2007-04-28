@@ -21,13 +21,11 @@ package org.apache.tuscany.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.util.Visitable;
 import org.apache.tuscany.assembly.util.Visitor;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
@@ -37,9 +35,7 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeImpl implements ComponentType, Visitable {
-    private List<Object> extensions = new ArrayList<Object>();
-    private boolean unresolved;
+public class ComponentTypeImpl extends BaseImpl implements ComponentType {
     private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
@@ -59,9 +55,7 @@ public class ComponentTypeImpl implements ComponentType, Visitable {
      * @param other
      */
     public ComponentTypeImpl(ComponentType other) {
-        unresolved = other.isUnresolved();
-        extensions.addAll(other.getExtensions());
-        
+        super(other);
         uri = other.getURI();
         constrainingType = other.getConstrainingType();
         for (Service service: other.getServices()) {
@@ -75,23 +69,6 @@ public class ComponentTypeImpl implements ComponentType, Visitable {
         }
         requiredIntents.addAll(other.getRequiredIntents());
         policySets.addAll(other.getPolicySets());
-    }
-    
-    /**
-     * Instanciate...
-     * @param other
-     */
-    protected void instanciate(ComponentType other) {
-        unresolved = other.isUnresolved();
-        extensions = other.getExtensions();
-        
-        uri = other.getURI();
-        constrainingType = other.getConstrainingType();
-        services = other.getServices();
-        references = other.getReferences();
-        properties = other.getProperties();
-        requiredIntents = other.getRequiredIntents();
-        policySets = other.getPolicySets();
     }
     
     public String getURI() {
@@ -130,20 +107,8 @@ public class ComponentTypeImpl implements ComponentType, Visitable {
         return policySets;
     }
 
-    public List<Object> getExtensions() {
-        return extensions;
-    }
-
-    public boolean isUnresolved() {
-        return unresolved;
-    }
-
-    public void setUnresolved(boolean undefined) {
-        this.unresolved = undefined;
-    }
-
     public boolean accept(Visitor visitor) {
-        if (!visitor.visit(this)) {
+        if (!super.accept(visitor)) {
             return false;
         }
         for (Property property : properties) {
