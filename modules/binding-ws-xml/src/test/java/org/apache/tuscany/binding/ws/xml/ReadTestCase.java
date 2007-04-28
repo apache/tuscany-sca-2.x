@@ -35,9 +35,15 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.binding.ws.impl.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
@@ -53,6 +59,9 @@ public class ReadTestCase extends TestCase {
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
+    private WebServiceBindingFactory wsFactory;
+    private WSDLInterfaceIntrospector introspector;
+    private WSDLFactory wsdlFactory;
 
     public void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
@@ -60,8 +69,14 @@ public class ReadTestCase extends TestCase {
         mapper = new DefaultInterfaceContractMapper();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        wsFactory = new DefaultWebServiceBindingFactory();
+        wsdlFactory = new DefaultWSDLFactory();
+        
+        introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
 
-        WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor();
+        WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor(
+                                                                                  factory, policyFactory, wsFactory,
+                                                                                  wsdlFactory, introspector);
         staxProcessors.addExtension(wsdlProcessor);
     }
 

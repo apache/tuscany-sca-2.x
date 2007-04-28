@@ -35,6 +35,9 @@ public class IntentMapImpl implements IntentMap {
     private List<Object> policies;
     private Intent providedIntent;
     private List<IntentMap> qualifiedIntentMaps;
+    
+    protected IntentMapImpl() {
+    }
 
     public IntentMap getDefaultQualifiedIntentMap() {
         return defaultQualifiedIntentMap;

@@ -74,7 +74,7 @@ public class ContributionServiceTestCase extends TestCase {
     protected void setUp() throws Exception {
         
         // Create default factories
-        AssemblyFactory factory = new DefaultAssemblyFactory();
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
         
@@ -88,9 +88,9 @@ public class ContributionServiceTestCase extends TestCase {
         extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
 
         // Register base artifact processors
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
 
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors, inputFactory));
@@ -112,7 +112,7 @@ public class ContributionServiceTestCase extends TestCase {
         // Create an artifact resolver and contribution service
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(getClass().getClassLoader());
         this.contributionService = new ContributionServiceImpl(repository, packageProcessors,
-                                                                              documentProcessors, artifactResolver);
+                                                                              documentProcessors, artifactResolver, assemblyFactory);
     }
 
     public void testContributeJAR() throws Exception {

@@ -27,8 +27,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.impl.CompositeImpl;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoader;
@@ -50,9 +50,11 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
     private static final QName IMPORT = new QName(SCA10_NS, "import");
     private static final QName EXPORT = new QName(SCA10_NS, "export");
     
+    private AssemblyFactory assemblyFactory;
 
-    public ContributionMetadataLoaderImpl() {
+    public ContributionMetadataLoaderImpl(AssemblyFactory assemblyFactory) {
         super();
+        this.assemblyFactory = assemblyFactory;
     }
 
     public QName getXMLType() {
@@ -92,7 +94,7 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
                             compositeName = new QName(getString(reader, TARGET_NAMESPACE), localPart, prefix);
                         }
 
-                        Composite composite = new CompositeImpl();
+                        Composite composite = assemblyFactory.createComposite();
                         composite.setName(compositeName);
                         composite.setUnresolved(true);
                         

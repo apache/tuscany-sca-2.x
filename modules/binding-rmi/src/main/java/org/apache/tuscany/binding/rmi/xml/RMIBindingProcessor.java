@@ -27,13 +27,11 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.binding.rmi.RMIBinding;
 import org.apache.tuscany.binding.rmi.RMIBindingConstants;
 import org.apache.tuscany.binding.rmi.RMIBindingFactory;
-import org.apache.tuscany.binding.rmi.impl.DefaultRMIBindingFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
@@ -41,7 +39,6 @@ import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 public class RMIBindingProcessor extends BaseArtifactProcessor implements
     StAXArtifactProcessorExtension<RMIBinding>, RMIBindingConstants {
@@ -53,12 +50,6 @@ public class RMIBindingProcessor extends BaseArtifactProcessor implements
                                RMIBindingFactory rmiBindingFactory) {
         super(assemblyFactory, policyFactory, null);
         this.rmiBindingFactory = rmiBindingFactory;
-    }
-
-    public RMIBindingProcessor() {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(),
-             new DefaultRMIBindingFactory());
-
     }
 
     public RMIBinding read(XMLStreamReader reader) throws ContributionReadException {

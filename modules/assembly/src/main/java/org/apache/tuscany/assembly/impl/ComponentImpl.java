@@ -27,7 +27,6 @@ import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
-import org.apache.tuscany.assembly.util.Visitable;
 import org.apache.tuscany.assembly.util.Visitor;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
@@ -51,10 +50,10 @@ public class ComponentImpl extends BaseImpl implements Component {
     /**
      * Constructs a new component.
      */
-    public ComponentImpl() {
+    protected ComponentImpl() {
     }
     
-    public ComponentImpl(Component other) {
+    protected ComponentImpl(Component other) {
         super(other);
         
         // Copy ComponentImpl attributes

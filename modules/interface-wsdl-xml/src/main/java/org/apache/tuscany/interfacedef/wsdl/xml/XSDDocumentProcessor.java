@@ -33,7 +33,6 @@ import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
-import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.resolver.URIResolver;
@@ -69,10 +68,6 @@ public class XSDDocumentProcessor implements URLArtifactProcessorExtension<XSDef
         this.factory = factory;
     }
     
-    public XSDDocumentProcessor() {
-        this(new DefaultWSDLFactory());
-    }
-
     public XSDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
 

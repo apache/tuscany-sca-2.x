@@ -21,9 +21,13 @@ package crud;
 
 import java.util.Map;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 /**
@@ -44,7 +48,9 @@ public class CRUDModuleActivator implements ModuleActivator {
         // Add the CRUD implementation extension to the StAXArtifactProcessor
         // extension point
         StAXArtifactProcessorExtensionPoint artifactProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        implementationArtifactProcessor = new CRUDImplementationProcessor();
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        JavaFactory javaFactory = new DefaultJavaFactory();
+        implementationArtifactProcessor = new CRUDImplementationProcessor(assemblyFactory, javaFactory);
         artifactProcessors.addExtension(implementationArtifactProcessor);
 
         //FIXME Remove the requirement to have a builder

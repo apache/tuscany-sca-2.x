@@ -27,6 +27,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
 
@@ -40,7 +41,7 @@ public class HelperContextProcessorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testProcessor() throws Exception {
         HelperContextRegistry registry = new HelperContextRegistryImpl();
-        HelperContextProcessor processor = new HelperContextProcessor(registry);
+        HelperContextProcessor processor = new HelperContextProcessor(new DefaultAssemblyFactory(), registry);
         URI id = URI.create("/composite1/");
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
 

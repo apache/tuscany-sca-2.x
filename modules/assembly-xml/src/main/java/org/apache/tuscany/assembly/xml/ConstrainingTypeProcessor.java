@@ -80,14 +80,14 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                         
                         // Read a <constrainingType>
                         if (Constants.CONSTRAINING_TYPE_QNAME.equals(name)) {
-                            constrainingType = factory.createConstrainingType();
+                            constrainingType = assemblyFactory.createConstrainingType();
                             constrainingType.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
                             readIntents(constrainingType, reader);
     
                         } else if (Constants.SERVICE_QNAME.equals(name)) {
                             
                             // Read a <service>
-                            abstractService = factory.createAbstractService();
+                            abstractService = assemblyFactory.createAbstractService();
                             abstractContract = abstractService;
                             abstractService.setName(getString(reader, Constants.NAME));
                             constrainingType.getServices().add(abstractService);
@@ -96,7 +96,7 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                         } else if (Constants.REFERENCE_QNAME.equals(name)) {
                             
                             // Read a <reference>
-                            abstractReference = factory.createAbstractReference();
+                            abstractReference = assemblyFactory.createAbstractReference();
                             abstractContract = abstractReference;
                             abstractReference.setName(getString(reader, Constants.NAME));
                             readMultiplicity(abstractReference, reader);
@@ -106,7 +106,7 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                         } else if (Constants.PROPERTY_QNAME.equals(name)) {
                             
                             // Read a <property>
-                            abstractProperty = factory.createAbstractProperty();
+                            abstractProperty = assemblyFactory.createAbstractProperty();
                             readAbstractProperty(abstractProperty, reader);
                             constrainingType.getProperties().add(abstractProperty);
                             readIntents(abstractProperty, reader);
@@ -114,7 +114,7 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                         } else if (OPERATION.equals(name)) {
     
                             // Read an <operation>
-                            Operation operation = factory.createOperation();
+                            Operation operation = assemblyFactory.createOperation();
                             operation.setName(getString(reader, NAME));
                             operation.setUnresolved(true);
                             readIntents(abstractContract, operation, reader);

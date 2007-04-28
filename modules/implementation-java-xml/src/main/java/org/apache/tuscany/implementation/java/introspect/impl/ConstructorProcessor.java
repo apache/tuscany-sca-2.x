@@ -20,6 +20,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Constructor;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
@@ -34,6 +35,10 @@ import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
  */
 @SuppressWarnings("unchecked")
 public class ConstructorProcessor extends BaseJavaClassIntrospectorExtension {
+    
+    public ConstructorProcessor(AssemblyFactory factory) {
+        super(factory);
+    }
 
     public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
         Constructor[] ctors = clazz.getConstructors();

@@ -25,7 +25,10 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 
@@ -33,10 +36,18 @@ import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
+    
+    private JavaFactory javaFactory;
+    private JavaInterfaceIntrospector introspector;
+    
+    public JavaInterfaceRuntimeModuleActivator() {
+        javaFactory = new DefaultJavaFactory();
+        introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
+    }
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(JavaInterfaceIntrospectorExtensionPoint.class, new DefaultJavaInterfaceIntrospector());
+        map.put(JavaInterfaceIntrospectorExtensionPoint.class, introspector);
         return map;
     }
 
@@ -45,9 +56,10 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
      */
     public void start(ExtensionPointRegistry extensionPointRegistry) {
         
-        // Register <interface.wsdl> processor
+        // Register <interface.java> processor
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessors.addExtension(new JavaInterfaceProcessor());
+        JavaInterfaceProcessor javaInterfaceProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
+        staxProcessors.addExtension(javaInterfaceProcessor);
         
     }
 

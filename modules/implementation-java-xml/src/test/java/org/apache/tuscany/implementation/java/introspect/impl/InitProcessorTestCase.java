@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.impl.DuplicateInitException;
 import org.apache.tuscany.implementation.java.introspect.impl.IllegalInitException;
@@ -34,7 +35,7 @@ import org.osoa.sca.annotations.Init;
 public class InitProcessorTestCase extends TestCase {
 
     public void testInit() throws Exception {
-        InitProcessor processor = new InitProcessor();
+        InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Method method = InitProcessorTestCase.Foo.class.getMethod("init");
@@ -43,7 +44,7 @@ public class InitProcessorTestCase extends TestCase {
     }
 
     public void testBadInit() throws Exception {
-        InitProcessor processor = new InitProcessor();
+        InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Method method = InitProcessorTestCase.Bar.class.getMethod("badInit", String.class);
@@ -56,7 +57,7 @@ public class InitProcessorTestCase extends TestCase {
     }
 
     public void testTwoInit() throws Exception {
-        InitProcessor processor = new InitProcessor();
+        InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Method method = InitProcessorTestCase.Bar.class.getMethod("init");

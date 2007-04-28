@@ -27,8 +27,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.impl.ServiceImpl;
 import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
@@ -40,41 +38,24 @@ import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 public class JavaImplementationProcessor extends BaseArtifactProcessor implements StAXArtifactProcessorExtension<JavaImplementation>,
     JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
-    private JavaClassIntrospectorExtensionPoint introspector;
+    private JavaClassIntrospector introspector;
 
     public JavaImplementationProcessor(AssemblyFactory assemblyFactory,
                                        PolicyFactory policyFactory,
                                        JavaImplementationFactory javaFactory,
-                                       JavaClassIntrospectorExtensionPoint introspector) {
+                                       JavaClassIntrospector introspector) {
         super(assemblyFactory, policyFactory, null);
         this.javaFactory = javaFactory;
         this.introspector = introspector;
-    }
-
-    public JavaImplementationProcessor(JavaClassIntrospectorExtensionPoint introspector) {
-        this(new DefaultAssemblyFactory(),
-             new DefaultPolicyFactory(),
-             new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()),
-             introspector);
-    }
-
-    public JavaImplementationProcessor() {
-        this(new DefaultAssemblyFactory(),
-             new DefaultPolicyFactory(),
-             new DefaultJavaImplementationFactory(new DefaultAssemblyFactory()),
-             new DefaultJavaClassIntrospector());
     }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException {
@@ -137,7 +118,7 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
             
             //FIXME the introspector should always create at least one service
             if (javaImplementation.getServices().isEmpty()) {
-                javaImplementation.getServices().add(new ServiceImpl());
+                javaImplementation.getServices().add(assemblyFactory.createService());
             }
         }
     }

@@ -37,6 +37,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**
@@ -55,7 +56,7 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new WSDLDocumentProcessor();
+        registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         definition = registry.read(null, new URI("stockquote.wsdl"), url);
@@ -63,7 +64,7 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
     }
 
     public final void testIntrospectPortType() throws InvalidInterfaceException {
-        DefaultWSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector();
+        DefaultWSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(new DefaultWSDLFactory());
         WSDLInterface contract = introspector.introspect(portType, definition.getInlinedSchemas(), resolver);
         Assert.assertEquals(contract.getName().getLocalPart(), "StockQuotePortType");
         List<Operation> operations = contract.getOperations();

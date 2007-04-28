@@ -44,14 +44,14 @@ public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
     /**
      * Constructs a new abstract property.
      */
-    public AbstractPropertyImpl() {
+    protected AbstractPropertyImpl() {
     }
     
     /**
      * Copy constructor.
      * @param other
      */
-    public AbstractPropertyImpl(AbstractProperty other) {
+    protected AbstractPropertyImpl(AbstractProperty other) {
         super(other);
         value = other.getValue();
         many = other.isMany();

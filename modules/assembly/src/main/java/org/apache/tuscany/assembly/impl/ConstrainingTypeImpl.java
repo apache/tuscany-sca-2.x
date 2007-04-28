@@ -41,6 +41,12 @@ public class ConstrainingTypeImpl extends BaseImpl implements ConstrainingType {
     private List<AbstractReference> references = new ArrayList<AbstractReference>();
     private List<AbstractService> services = new ArrayList<AbstractService>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    
+    /**
+     * Constructs a new ConstrainingType
+     */
+    protected ConstrainingTypeImpl() {
+    }
 
     public QName getName() {
         return name;

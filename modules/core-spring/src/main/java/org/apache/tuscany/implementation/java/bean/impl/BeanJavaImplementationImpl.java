@@ -49,7 +49,7 @@ public class BeanJavaImplementationImpl extends RootBeanDefinition implements Ja
 	private BeanDefinitionRegistry beanRegistry;
         private String uri;
 	
-	public BeanJavaImplementationImpl(BeanDefinitionRegistry beanRegistry) {
+	protected BeanJavaImplementationImpl(BeanDefinitionRegistry beanRegistry) {
 		this.beanRegistry = beanRegistry;
 
 		// Register this bean definition in the bean registry

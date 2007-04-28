@@ -25,6 +25,8 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidOperationException;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
@@ -33,8 +35,15 @@ import org.osoa.sca.annotations.EndsConversation;
  * @version $Rev$ $Date$
  */
 public class ConversationalIntrospectionTestCase extends TestCase {
-    private AssemblyFactory factory = new DefaultAssemblyFactory();
-    private DefaultJavaInterfaceIntrospector registry = new DefaultJavaInterfaceIntrospector();
+    private AssemblyFactory factory;
+    private JavaFactory javaFactory;
+    private DefaultJavaInterfaceIntrospector introspector;
+    
+    protected void setUp() throws Exception {
+        factory =  new DefaultAssemblyFactory();
+        javaFactory = new DefaultJavaFactory();
+        introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
+    }
 
     private Operation getOperation(Interface i, String name) {
         for (Operation op : i.getOperations()) {
@@ -46,7 +55,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     }
 
     public void testServiceContractConversationalInformationIntrospection() throws Exception {
-        Interface i = registry.introspect(Foo.class);
+        Interface i = introspector.introspect(Foo.class);
         assertNotNull(i);
         assertTrue(i.isConversational());
         Operation.ConversationSequence seq = getOperation(i, "operation").getConversationSequence();
@@ -57,7 +66,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
 
     public void testBadServiceContract() throws Exception {
         try {
-            registry.introspect(BadFoo.class);
+            introspector.introspect(BadFoo.class);
             fail();
         } catch (InvalidOperationException e) {
             // expected
@@ -65,7 +74,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     }
 
     public void testNonConversationalInformationIntrospection() throws Exception {
-        Interface i = registry.introspect(NonConversationalFoo.class);
+        Interface i = introspector.introspect(NonConversationalFoo.class);
         assertFalse(i.isConversational());
         Operation.ConversationSequence seq = getOperation(i, "operation")
             .getConversationSequence();

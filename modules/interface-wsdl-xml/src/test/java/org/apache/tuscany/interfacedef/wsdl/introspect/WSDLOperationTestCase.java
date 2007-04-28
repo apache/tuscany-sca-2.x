@@ -35,6 +35,8 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**
@@ -46,14 +48,16 @@ public class WSDLOperationTestCase extends TestCase {
 
     private WSDLDocumentProcessor processor;
     private ArtifactResolver resolver;
+    private WSDLFactory wsdlFactory;
 
     /**
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        processor = new WSDLDocumentProcessor();
+        processor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
+        wsdlFactory = new DefaultWSDLFactory();
     }
 
     public final void testWrappedOperation() throws Exception {
@@ -62,7 +66,7 @@ public class WSDLOperationTestCase extends TestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
 
-        WSDLOperation op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
 
         DataType<List<DataType>> inputType = op.getInputType();
         Assert.assertEquals(1, inputType.getLogical().size());
@@ -90,12 +94,12 @@ public class WSDLOperationTestCase extends TestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
 
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
-        WSDLOperation op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
         Assert.assertEquals(1, op.getInputType().getLogical().size());
 
         operation = portType.getOperation("getLastTradePrice2", null, null);
-        op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
         Assert.assertEquals(2, op.getInputType().getLogical().size());
     }
@@ -106,7 +110,7 @@ public class WSDLOperationTestCase extends TestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
 
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
-        WSDLOperation op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
 
         try {
             op.isWrapperStyle();

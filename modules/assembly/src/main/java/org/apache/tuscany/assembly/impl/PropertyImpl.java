@@ -36,13 +36,13 @@ public class PropertyImpl extends AbstractPropertyImpl implements Property {
     /**
      * Constructs a new property.
      */
-    public PropertyImpl() {
+    protected PropertyImpl() {
     }
     
     /**
      * Copy constructor.
      */
-    public PropertyImpl(Property other) {
+    protected PropertyImpl(Property other) {
         super(other);
         policySets.addAll(other.getPolicySets());
     }

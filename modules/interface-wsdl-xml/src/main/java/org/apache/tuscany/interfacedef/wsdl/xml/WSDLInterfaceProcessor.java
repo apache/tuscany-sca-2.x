@@ -39,8 +39,6 @@ import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
-import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 
 public class WSDLInterfaceProcessor implements StAXArtifactProcessorExtension<WSDLInterfaceContract>, WSDLConstants {
@@ -53,10 +51,6 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessorExtension<WS
         this.wsdlIntrospector = wsdlIntrospector;
     }
     
-    public WSDLInterfaceProcessor() {
-        this(new DefaultWSDLFactory(), new DefaultWSDLInterfaceIntrospector());
-    }
-
     /**
      * Create a WSDL interface from a URI.
      * @param uri

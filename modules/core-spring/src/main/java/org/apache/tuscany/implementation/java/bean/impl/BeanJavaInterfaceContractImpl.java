@@ -16,32 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.impl;
 
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.SCABinding;
+package org.apache.tuscany.implementation.java.bean.impl;
+
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 
 /**
- * Represents an SCA binding.
- * 
+ * An implementation of a Java interface contract. 
+ *
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl extends BindingImpl implements SCABinding {
+public class BeanJavaInterfaceContractImpl extends JavaInterfaceContractImpl {
     
-    private Component component;
-    
-    /**
-     * Constructs a new SCA binding.
-     */
-    protected SCABindingImpl() {
-    }
-    
-    public Component getComponent() {
-        return component;
-    }
-    
-    public void setComponent(Component component) {
-        this.component = component;
+    protected BeanJavaInterfaceContractImpl() {
     }
 
 }

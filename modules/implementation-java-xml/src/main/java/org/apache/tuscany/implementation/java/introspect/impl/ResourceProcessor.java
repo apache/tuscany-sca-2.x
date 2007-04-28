@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
@@ -36,6 +37,10 @@ import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
  * @version $Rev$ $Date$
  */
 public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
+    
+    public ResourceProcessor(AssemblyFactory factory) {
+        super(factory);
+    }
 
     public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
         org.apache.tuscany.api.annotation.Resource annotation = method

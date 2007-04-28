@@ -82,7 +82,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
     private SimpleRuntimeInfo simpleRuntimeInfo;
 
     public SimpleRuntimeImpl(SimpleRuntimeInfo runtimeInfo) {
-        super(SimpleRuntimeInfo.class, runtimeInfo, new NullMonitorFactory(), runtimeInfo.getClassLoader());
+        super(SimpleRuntimeInfo.class, runtimeInfo, new NullMonitorFactory(), runtimeInfo.getClassLoader(), new DefaultAssemblyFactory());
         setApplicationSCDL(runtimeInfo.getApplicationSCDL());
         this.simpleRuntimeInfo = runtimeInfo;
     }
@@ -128,14 +128,14 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
         
         // Create default factories
-        AssemblyFactory factory = new DefaultAssemblyFactory();
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
 
         // Register base artifact processors
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
 
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors, inputFactory));
@@ -162,7 +162,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         ContributionRepository repository = new ContributionRepositoryImpl("target");
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(simpleRuntimeInfo.getClassLoader());
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
-                                                                              documentProcessors, artifactResolver);
+                                                                              documentProcessors, artifactResolver, assemblyFactory);
         initialize(extensionRegistry);
 
         // Create a scope registry

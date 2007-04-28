@@ -74,7 +74,7 @@ import org.w3c.dom.Node;
  */
 public abstract class BaseArtifactProcessor implements Constants {
 
-    protected AssemblyFactory factory;
+    protected AssemblyFactory assemblyFactory;
     protected PolicyFactory policyFactory;
     protected StAXArtifactProcessorExtension<Object> extensionProcessor;
 
@@ -96,7 +96,7 @@ public abstract class BaseArtifactProcessor implements Constants {
      */
     @SuppressWarnings("unchecked")
     public BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension extensionProcessor) {
-        this.factory = factory;
+        this.assemblyFactory = factory;
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessorExtension<Object>)extensionProcessor;
     }
@@ -261,7 +261,7 @@ public abstract class BaseArtifactProcessor implements Constants {
         ComponentService target = null;
         if (value != null) {
             for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                target = factory.createComponentService();
+                target = assemblyFactory.createComponentService();
                 target.setUnresolved(true);
                 target.setName(tokens.nextToken());
                 reference.getTargets().add(target);
@@ -293,7 +293,7 @@ public abstract class BaseArtifactProcessor implements Constants {
     protected ConstrainingType getConstrainingType(XMLStreamReader reader) {
         QName constrainingTypeName = getQName(reader, "constrainingType");
         if (constrainingTypeName != null) {
-            ConstrainingType constrainingType = factory.createConstrainingType();
+            ConstrainingType constrainingType = assemblyFactory.createConstrainingType();
             constrainingType.setName(constrainingTypeName);
             constrainingType.setUnresolved(true);
             return constrainingType;

@@ -29,6 +29,9 @@ import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
 public class WSDLInterfaceContractImpl extends InterfaceContractImpl implements WSDLInterfaceContract {
     private String location;
     
+    protected WSDLInterfaceContractImpl() {
+    }
+    
     public String getLocation() {
         return location;
     }

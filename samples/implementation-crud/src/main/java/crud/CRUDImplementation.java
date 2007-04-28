@@ -21,16 +21,15 @@ package crud;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.impl.ServiceImpl;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
 
@@ -57,15 +56,15 @@ public class CRUDImplementation implements Implementation {
     /**
      * Constructs a new CRUD implementation.
      */
-    public CRUDImplementation() {
+    public CRUDImplementation(AssemblyFactory assemblyFactory, JavaFactory javaFactory) {
         
         // CRUD implementation always provide a single service exposing
         // the CRUD interface, and have no references and properties
-        crudService = new ServiceImpl();
+        crudService = assemblyFactory.createService();
         crudService.setName("CRUD");
-        JavaInterface javaInterface = new JavaInterfaceImpl();
+        JavaInterface javaInterface = javaFactory.createJavaInterface();
         javaInterface.setJavaClass(CRUD.class);
-        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         interfaceContract.setInterface(javaInterface);
         crudService.setInterfaceContract(interfaceContract);
     }

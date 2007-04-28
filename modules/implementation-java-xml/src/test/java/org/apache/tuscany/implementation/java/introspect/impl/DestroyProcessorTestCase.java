@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.impl.DestroyProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.DuplicateDestructorException;
@@ -32,9 +34,11 @@ import org.osoa.sca.annotations.Destroy;
  * @version $Rev$ $Date$
  */
 public class DestroyProcessorTestCase extends TestCase {
+    
+    private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
 
     public void testDestroy() throws Exception {
-        DestroyProcessor processor = new DestroyProcessor();
+        DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Method method = Foo.class.getMethod("destroy");
@@ -43,7 +47,7 @@ public class DestroyProcessorTestCase extends TestCase {
     }
 
     public void testBadDestroy() throws Exception {
-        DestroyProcessor processor = new DestroyProcessor();
+        DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Method method = Bar.class.getMethod("badDestroy", String.class);
@@ -56,7 +60,7 @@ public class DestroyProcessorTestCase extends TestCase {
     }
 
     public void testTwoDestroy() throws Exception {
-        DestroyProcessor processor = new DestroyProcessor();
+        DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         Method method = Bar.class.getMethod("destroy");

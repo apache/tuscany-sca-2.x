@@ -40,14 +40,14 @@ public class ServiceImpl extends AbstractServiceImpl implements Service {
     /**
      * Constructs a new service.
      */
-    public ServiceImpl() {
+    protected ServiceImpl() {
     }
     
     /**
      * Copy constructor.
      * @param other
      */
-    public ServiceImpl(Service other) {
+    protected ServiceImpl(Service other) {
         super(other);
         bindings.addAll(other.getBindings());
         policySets.addAll(other.getPolicySets());

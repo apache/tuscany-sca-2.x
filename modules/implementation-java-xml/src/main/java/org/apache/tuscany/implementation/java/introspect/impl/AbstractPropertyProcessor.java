@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
@@ -43,8 +44,8 @@ import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 public abstract class AbstractPropertyProcessor<A extends Annotation> extends BaseJavaClassIntrospectorExtension {
     private final Class<A> annotationClass;
     
-    
-    protected AbstractPropertyProcessor(Class<A> annotationClass) {
+    protected AbstractPropertyProcessor(AssemblyFactory assemblyFactory, Class<A> annotationClass) {
+        super(assemblyFactory);
         this.annotationClass = annotationClass;
     }
 
@@ -151,7 +152,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
     @SuppressWarnings("unchecked")
     protected  Property createProperty(String name, JavaElement element) throws IntrospectionException {
 
-        Property property = factory.createProperty();
+        Property property = assemblyFactory.createProperty();
         property.setName(name);
         Class<?> baseType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
         property.setXSDType(JavaXMLMapper.getXMLType(baseType));

@@ -25,10 +25,13 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.osoa.sca.annotations.Requires;
 import org.osoa.sca.annotations.Service;
 
@@ -214,9 +217,9 @@ public class PolicyProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
-        serviceProcessor = new ServiceProcessor(introspector);
-        policyProcessor = new PolicyProcessor();
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
+        serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), introspector);
+        policyProcessor = new PolicyProcessor(new DefaultAssemblyFactory(), new DefaultPolicyFactory());
         type = new JavaImplementationDefinition();
     }
 

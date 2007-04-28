@@ -33,6 +33,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
@@ -86,7 +87,8 @@ public class ContributionServiceImpl implements ContributionService {
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessorExtension packageProcessor,
                                    URLArtifactProcessorExtension artifactProcessor,
-                                   ArtifactResolver artifactResolver) {
+                                   ArtifactResolver artifactResolver,
+                                   AssemblyFactory assemblyFactory) {
         super();
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
@@ -94,7 +96,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.artifactResolver = artifactResolver;
 
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
-        this.contributionLoader = new ContributionMetadataLoaderImpl();
+        this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory);
     }
 
     public void contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,

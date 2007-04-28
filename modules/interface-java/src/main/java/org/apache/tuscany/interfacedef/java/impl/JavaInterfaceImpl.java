@@ -31,6 +31,9 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     private String className;
     private Class<?> javaClass;
     private Class<?> callbackClass;
+    
+    protected JavaInterfaceImpl() {
+    }
 
     public String getName() {
         if (isUnresolved()) {

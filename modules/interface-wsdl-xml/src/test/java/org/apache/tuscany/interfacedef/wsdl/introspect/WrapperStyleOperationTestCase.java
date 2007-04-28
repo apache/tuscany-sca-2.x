@@ -29,9 +29,13 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**
@@ -42,14 +46,16 @@ public class WrapperStyleOperationTestCase extends TestCase {
 
     private WSDLDocumentProcessor registry;
     private ArtifactResolver resolver;
+    private WSDLFactory wsdlFactory;
 
     /**
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new WSDLDocumentProcessor();
+        registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
+        wsdlFactory = new DefaultWSDLFactory();
     }
 
     public final void testWrappedOperation() throws Exception {
@@ -57,7 +63,7 @@ public class WrapperStyleOperationTestCase extends TestCase {
         WSDLDefinition definition = registry.read(null, new URI("stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
-        WSDLOperation op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertTrue(op.isWrapperStyle());
         Assert.assertEquals(1, op.getWrapper().getInputChildElements().size());
         Assert.assertEquals(1, op.getWrapper().getOutputChildElements().size());
@@ -68,10 +74,10 @@ public class WrapperStyleOperationTestCase extends TestCase {
         WSDLDefinition definition = registry.read(null, new URI("unwrapped-stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
-        WSDLOperation op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
         operation = portType.getOperation("getLastTradePrice2", null, null);
-        op = new WSDLOperation(operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
     }
 

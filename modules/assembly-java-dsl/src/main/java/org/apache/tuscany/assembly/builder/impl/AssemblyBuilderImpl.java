@@ -56,13 +56,13 @@ public class AssemblyBuilderImpl extends DefaultAssemblyFactory implements Assem
 	}
 
 	public ComponentReferenceBuilder reference(String name) {
-		ComponentReferenceBuilderImpl reference = new ComponentReferenceBuilderImpl();
+		ComponentReferenceBuilderImpl reference = new ComponentReferenceBuilderImpl(this);
 		reference.setName(name);
 		return reference;
 	}
 
 	public ComponentServiceBuilder service(String name) {
-		ComponentServiceBuilderImpl service = new ComponentServiceBuilderImpl();
+		ComponentServiceBuilderImpl service = new ComponentServiceBuilderImpl(this);
 		service.setName(name);
 		return service;
 	}

@@ -47,14 +47,14 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType {
     /**
      * Constructs a new component type.
      */
-    public ComponentTypeImpl() {
+    protected ComponentTypeImpl() {
     }
     
     /**
      * Copy constructor.
      * @param other
      */
-    public ComponentTypeImpl(ComponentType other) {
+    protected ComponentTypeImpl(ComponentType other) {
         super(other);
         uri = other.getURI();
         constrainingType = other.getConstrainingType();

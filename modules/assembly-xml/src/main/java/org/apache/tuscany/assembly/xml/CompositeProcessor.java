@@ -111,7 +111,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         if (COMPOSITE_QNAME.equals(name)) {
     
                             // Read a <composite>
-                            composite = factory.createComposite();
+                            composite = assemblyFactory.createComposite();
                             composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
                             composite.setAutowire(getBoolean(reader, AUTOWIRE));
                             composite.setLocal(getBoolean(reader, LOCAL));
@@ -121,7 +121,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         } else if (INCLUDE_QNAME.equals(name)) {
     
                             // Read an <include>
-                            include = factory.createComposite();
+                            include = assemblyFactory.createComposite();
                             include.setUnresolved(true);
                             composite.getIncludes().add(include);
     
@@ -129,7 +129,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                             if (component != null) {
     
                                 // Read a <component><service>
-                                componentService = factory.createComponentService();
+                                componentService = assemblyFactory.createComponentService();
                                 contract = componentService;
                                 componentService.setName(getString(reader, NAME));
                                 component.getServices().add(componentService);
@@ -137,11 +137,11 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                             } else {
     
                                 // Read a <composite><service>
-                                compositeService = factory.createCompositeService();
+                                compositeService = assemblyFactory.createCompositeService();
                                 contract = compositeService;
                                 compositeService.setName(getString(reader, NAME));
     
-                                ComponentService promoted = factory.createComponentService();
+                                ComponentService promoted = assemblyFactory.createComponentService();
                                 promoted.setUnresolved(true);
                                 promoted.setName(getString(reader, PROMOTE));
                                 compositeService.setPromotedService(promoted);
@@ -153,7 +153,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         } else if (REFERENCE_QNAME.equals(name)) {
                             if (component != null) {
                                 // Read a <component><reference>
-                                componentReference = factory.createComponentReference();
+                                componentReference = assemblyFactory.createComponentReference();
                                 contract = componentReference;
                                 componentReference.setName(getString(reader, NAME));
                                 readMultiplicity(componentReference, reader);
@@ -164,7 +164,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                                 readPolicies(contract, reader);
                             } else {
                                 // Read a <composite><reference>
-                                compositeReference = factory.createCompositeReference();
+                                compositeReference = assemblyFactory.createCompositeReference();
                                 contract = compositeReference;
                                 compositeReference.setName(getString(reader, NAME));
                                 readMultiplicity(compositeReference, reader);
@@ -178,7 +178,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         } else if (PROPERTY_QNAME.equals(name)) {
                             if (component != null) {
                                 // Read a <component><property>
-                                componentProperty = factory.createComponentProperty();
+                                componentProperty = assemblyFactory.createComponentProperty();
                                 property = componentProperty;
                                 componentProperty.setSource(getString(reader, SOURCE));
                                 componentProperty.setFile(getString(reader, FILE));
@@ -188,7 +188,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                             } else {
     
                                 // Read a <composite><property>
-                                property = factory.createProperty();
+                                property = assemblyFactory.createProperty();
                                 readPolicies(property, reader);
                                 readProperty(property, reader);
                                 composite.getProperties().add(property);
@@ -197,7 +197,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         } else if (COMPONENT_QNAME.equals(name)) {
     
                             // Read a <component>
-                            component = factory.createComponent();
+                            component = assemblyFactory.createComponent();
                             component.setName(getString(reader, NAME));
                             component.setConstrainingType(getConstrainingType(reader));
                             composite.getComponents().add(component);
@@ -206,13 +206,13 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         } else if (WIRE_QNAME.equals(name)) {
     
                             // Read a <wire>
-                            wire = factory.createWire();
-                            ComponentReference source = factory.createComponentReference();
+                            wire = assemblyFactory.createWire();
+                            ComponentReference source = assemblyFactory.createComponentReference();
                             source.setUnresolved(true);
                             source.setName(getString(reader, SOURCE));
                             wire.setSource(source);
     
-                            ComponentService target = factory.createComponentService();
+                            ComponentService target = assemblyFactory.createComponentService();
                             target.setUnresolved(true);
                             target.setName(getString(reader, TARGET));
                             wire.setTarget(target);
@@ -223,14 +223,14 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         } else if (CALLBACK_QNAME.equals(name)) {
     
                             // Read a <callback>
-                            callback = factory.createCallback();
+                            callback = assemblyFactory.createCallback();
                             contract.setCallback(callback);
                             readPolicies(callback, reader);
     
                         } else if (OPERATION_QNAME.equals(name)) {
     
                             // Read an <operation>
-                            Operation operation = factory.createOperation();
+                            Operation operation = assemblyFactory.createOperation();
                             operation.setName(getString(reader, NAME));
                             operation.setUnresolved(true);
                             if (callback != null) {
@@ -241,7 +241,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
                             
                             // Read an implementation.composite
-                            Composite implementation = factory.createComposite();
+                            Composite implementation = assemblyFactory.createComposite();
                             implementation.setName(getQName(reader, NAME));
                             implementation.setUnresolved(true);
                             component.setImplementation(implementation);
@@ -486,7 +486,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     public void wire(Composite composite) throws ContributionWireException {
         
         // Process the composite configuration
-        CompositeUtil compositeUtil = new CompositeUtil(factory, interfaceContractMapper);
+        CompositeUtil compositeUtil = new CompositeUtil(assemblyFactory, interfaceContractMapper);
 
         List<Base> problems = new ArrayList<Base>() {
             private static final long serialVersionUID = 4819831446590718923L;
@@ -547,7 +547,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         ComponentReference promoted = null;
         if (value != null) {
             for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                promoted = factory.createComponentReference();
+                promoted = assemblyFactory.createComponentReference();
                 promoted.setUnresolved(true);
                 promoted.setName(tokens.nextToken());
                 reference.getPromotedReferences().add(promoted);

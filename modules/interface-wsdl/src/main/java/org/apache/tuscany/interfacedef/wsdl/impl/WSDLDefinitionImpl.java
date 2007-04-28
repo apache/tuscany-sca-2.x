@@ -35,6 +35,9 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     private String namespace;
     private XmlSchemaCollection inlineSchemas = new XmlSchemaCollection();
     private boolean unresolved;
+    
+    protected WSDLDefinitionImpl() {
+    }
 
     public Definition getDefinition() {
         return definition;

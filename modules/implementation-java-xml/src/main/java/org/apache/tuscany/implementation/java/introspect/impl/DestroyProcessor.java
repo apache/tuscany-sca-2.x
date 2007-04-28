@@ -21,6 +21,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
@@ -34,6 +35,10 @@ import org.osoa.sca.annotations.Destroy;
  */
 public class DestroyProcessor extends BaseJavaClassIntrospectorExtension {
     
+    public DestroyProcessor(AssemblyFactory factory) {
+        super(factory);
+    }
+
     public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
         Destroy annotation = method.getAnnotation(Destroy.class);
         if (annotation == null) {

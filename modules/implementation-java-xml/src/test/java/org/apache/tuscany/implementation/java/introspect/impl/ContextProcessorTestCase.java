@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.impl.ContextProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.IllegalContextException;
@@ -145,7 +146,7 @@ public class ContextProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        processor = new ContextProcessor();
+        processor = new ContextProcessor(new DefaultAssemblyFactory());
         // processor.setWorkContext(EasyMock.createNiceMock(WorkContext.class));
         composite = EasyMock.createNiceMock(Component.class);
     }

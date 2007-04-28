@@ -19,10 +19,10 @@
 package org.apache.tuscany.implementation.java.bean.impl;
 
 import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**
@@ -31,7 +31,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
  *
  *  @version $Rev$ $Date$
  */
-public class BeanJavaFactory implements JavaFactory {
+public class BeanJavaFactory implements JavaFactory, JavaImplementationFactory {
 	
 	private BeanDefinitionRegistry beanRegistry;
 	
@@ -48,7 +48,7 @@ public class BeanJavaFactory implements JavaFactory {
 	}
         
         public JavaInterfaceContract createJavaInterfaceContract() {
-            return new JavaInterfaceContractImpl();
+            return new BeanJavaInterfaceContractImpl();
         }
 
 }

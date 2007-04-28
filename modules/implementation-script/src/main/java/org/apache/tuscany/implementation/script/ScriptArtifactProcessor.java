@@ -32,11 +32,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
@@ -51,8 +51,11 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
     private static final String LANGUAGE = "language";
     private static final String IMPLEMENTATION_SCRIPT = "implementation.script";
     private static final QName IMPLEMENTATION_SCRIPT_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_SCRIPT);
+    
+    private AssemblyFactory assemblyFactory;
 
-    public ScriptArtifactProcessor() {
+    public ScriptArtifactProcessor(AssemblyFactory assemblyFactory) {
+        this.assemblyFactory = assemblyFactory;
     }
 
     public ScriptImplementation read(XMLStreamReader reader) throws ContributionReadException {
@@ -93,7 +96,7 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
         String uri = ctName;
 
         // Create a ComponentType and mark it unresolved
-        ComponentType componentType = new DefaultAssemblyFactory().createComponentType();
+        ComponentType componentType = assemblyFactory.createComponentType();
         componentType.setURI(uri);
         componentType.setUnresolved(true);
         scriptImplementation.setComponentType(componentType);

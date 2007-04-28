@@ -26,10 +26,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.wire.WireImpl;
-import org.apache.tuscany.implementation.java.proxy.JDKProxyService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
@@ -43,8 +42,9 @@ public class JDKProxyTestCase extends TestCase {
         Wire wire = new WireImpl();
         wire.setSourceUri(uri);
         Contract contract = new DefaultAssemblyFactory().createComponentReference();
-        InterfaceContract interfaceContract = new JavaInterfaceContractImpl();
-        interfaceContract.setInterface(new JavaInterfaceImpl());
+        JavaFactory javaFactory = new DefaultJavaFactory();
+        InterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        interfaceContract.setInterface(javaFactory.createJavaInterface());
         contract.setInterfaceContract(interfaceContract);
         wire.setSourceContract(contract.getInterfaceContract());
         TestInterface proxy = proxyService.createProxy(TestInterface.class, wire);

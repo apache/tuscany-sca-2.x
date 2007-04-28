@@ -21,6 +21,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
@@ -39,6 +40,10 @@ import org.osoa.sca.annotations.Context;
  */
 public class ContextProcessor extends BaseJavaClassIntrospectorExtension {
     
+    public ContextProcessor(AssemblyFactory factory) {
+        super(factory);
+    }
+
     public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
         if (method.getAnnotation(Context.class) == null) {
             return;

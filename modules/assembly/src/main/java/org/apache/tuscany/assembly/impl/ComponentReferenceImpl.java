@@ -39,14 +39,14 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     /**
      * Constructs a new component reference.
      */
-    public ComponentReferenceImpl() {
+    protected ComponentReferenceImpl() {
     }
 
     /**
      * Copy constructor.
      * @param other
      */
-    public ComponentReferenceImpl(ComponentReference other) {
+    protected ComponentReferenceImpl(ComponentReference other) {
         super(other);
         reference = other.getReference();
         autowire = other.isAutowire();

@@ -25,17 +25,17 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.assembly.impl.ReferenceImpl;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Reference;
 
@@ -48,8 +48,11 @@ import org.osoa.sca.annotations.Reference;
  */
 public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
     private JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
+    private JavaFactory javaFactory;
     
-    public ReferenceProcessor(JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+    public ReferenceProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+        super(assemblyFactory);
+        this.javaFactory = javaFactory;
         this.interfaceIntrospector = interfaceIntrospector;
     }
 
@@ -126,8 +129,8 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     private org.apache.tuscany.assembly.Reference createReference(JavaElement element, String name) throws IntrospectionException {
-        org.apache.tuscany.assembly.Reference reference = new ReferenceImpl();
-        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        org.apache.tuscany.assembly.Reference reference = assemblyFactory.createReference();
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
         
         // reference.setMember((Member)element.getAnchor());

@@ -22,14 +22,18 @@ package org.apache.tuscany.implementation.java.module;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
@@ -51,8 +55,12 @@ import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.implementation.java.proxy.JDKProxyService;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -62,21 +70,27 @@ import org.apache.tuscany.spi.wire.ProxyService;
  * @version $Rev$ $Date$
  */
 public class JavaRuntimeModuleActivator implements ModuleActivator {
+    
+    private AssemblyFactory assemblyFactory;
+    private JavaFactory javaFactory;
+    private PolicyFactory policyFactory;
+    
+    public JavaRuntimeModuleActivator() {
+        assemblyFactory = new DefaultAssemblyFactory();
+        javaFactory = new DefaultJavaFactory();
+        policyFactory = new DefaultPolicyFactory();
+    }
+     
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
         map.put(ProxyService.class, new JDKProxyService());
         map.put(JavaClassIntrospectorExtensionPoint.class, new DefaultJavaClassIntrospector());
-        map.put(JavaInterfaceIntrospectorExtensionPoint.class, new DefaultJavaInterfaceIntrospector());
+        map.put(JavaInterfaceIntrospectorExtensionPoint.class, new DefaultJavaInterfaceIntrospector(javaFactory));
         return map;
     }
 
-    /**
-     * @see org.apache.tuscany.core.ModuleActivator#start(org.apache.tuscany.core.ExtensionPointRegistry)
-     */
     public void start(ExtensionPointRegistry extensionPointRegistry) {
-        
-        // Inject InterfaceContractMapper and WorkContext into JDKProxyService
         JDKProxyService proxyService = (JDKProxyService) extensionPointRegistry.getExtensionPoint(ProxyService.class);
         InterfaceContractMapper mapper = extensionPointRegistry.getExtensionPoint(InterfaceContractMapper.class);
         proxyService.setInterfaceContractMapper(mapper);
@@ -89,20 +103,20 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         JavaClassIntrospectorExtensionPoint classIntrospector = extensionPointRegistry
             .getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
         BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {
-            new ConstructorProcessor(),
-            new AllowsPassByReferenceProcessor(),
-            new ContextProcessor(),
-            new ConversationProcessor(),
-            new DestroyProcessor(),
-            new EagerInitProcessor(),
-            new InitProcessor(),
-            new PropertyProcessor(),
-            new ReferenceProcessor(interfaceIntrospector),
-            new ResourceProcessor(),
-            new ScopeProcessor(),
-            new ServiceProcessor(interfaceIntrospector),
-            new HeuristicPojoProcessor(interfaceIntrospector),
-            new PolicyProcessor()
+            new ConstructorProcessor(assemblyFactory),
+            new AllowsPassByReferenceProcessor(assemblyFactory),
+            new ContextProcessor(assemblyFactory),
+            new ConversationProcessor(assemblyFactory),
+            new DestroyProcessor(assemblyFactory),
+            new EagerInitProcessor(assemblyFactory),
+            new InitProcessor(assemblyFactory),
+            new PropertyProcessor(assemblyFactory),
+            new ReferenceProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+            new ResourceProcessor(assemblyFactory),
+            new ScopeProcessor(assemblyFactory),
+            new ServiceProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+            new HeuristicPojoProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+            new PolicyProcessor(assemblyFactory, policyFactory)
         };
         for (JavaClassIntrospectorExtension e : extensions) {
             classIntrospector.addExtension(e);
@@ -110,7 +124,9 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
         StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = extensionPointRegistry
             .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        JavaImplementationProcessor javaImplementationProcessor = new JavaImplementationProcessor(classIntrospector);
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(assemblyFactory);
+        JavaImplementationProcessor javaImplementationProcessor =
+            new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
         artifactProcessorRegistry.addExtension(javaImplementationProcessor);
 
         BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);

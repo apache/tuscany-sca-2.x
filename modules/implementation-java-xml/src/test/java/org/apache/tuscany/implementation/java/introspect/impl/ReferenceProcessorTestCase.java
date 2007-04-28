@@ -26,11 +26,10 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.DuplicateReferenceException;
-import org.apache.tuscany.implementation.java.introspect.impl.IllegalReferenceException;
-import org.apache.tuscany.implementation.java.introspect.impl.ReferenceProcessor;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Reference;
 
@@ -112,7 +111,7 @@ public class ReferenceProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         type = new JavaImplementationDefinition();
-        processor = new ReferenceProcessor(new DefaultJavaInterfaceIntrospector());
+        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory()));
     }
 
     private interface Ref {

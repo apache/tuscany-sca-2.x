@@ -52,7 +52,7 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component 
 	private boolean unresolved = false;
 	private BeanDefinitionRegistry beanRegistry;
 	
-	public BeanComponentImpl(BeanDefinitionRegistry beanRegistry) {
+	protected BeanComponentImpl(BeanDefinitionRegistry beanRegistry) {
 		super((String)"");
 		this.beanRegistry = beanRegistry;
 	}

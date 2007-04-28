@@ -36,7 +36,7 @@ public class ScriptImplementation  extends ComponentTypeImpl implements Implemen
     private String scriptLanguage;
     private ComponentType componentType;
 
-    public ScriptImplementation(String scriptName, String scriptLanguage) {
+    protected ScriptImplementation(String scriptName, String scriptLanguage) {
         this.scriptName = scriptName;
         this.scriptLanguage = scriptLanguage;
         setURI(scriptName);

@@ -20,6 +20,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.introspect.impl.ConversationProcessor;
 
 /**
@@ -103,6 +104,10 @@ public class ConvertTimeMillisTestCase extends TestCase {
     }
 
     private class MockProcessor extends ConversationProcessor {
+        
+        public MockProcessor() {
+            super(new DefaultAssemblyFactory());
+        }
 
         @Override
         protected long convertTimeMillis(String expr) throws NumberFormatException {

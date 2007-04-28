@@ -20,6 +20,7 @@ package org.apache.tuscany.core.runtime;
 
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
@@ -55,6 +56,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private final XMLInputFactory xmlFactory;
     private final ComponentManager componentManager;
     private final ScopeRegistry scopeRegistry;
+    private AssemblyFactory assemblyFactory;
     /**
      * Create a default bootstrapper.
      * 
@@ -68,11 +70,13 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
                                XMLInputFactory xmlFactory,
-                               ComponentManager componentManager) {
+                               ComponentManager componentManager,
+                               AssemblyFactory assemblyFactory) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = xmlFactory;
         this.componentManager = componentManager;
         this.scopeRegistry = createScopeRegistry();
+        this.assemblyFactory = assemblyFactory;
     }
     
     public DefaultBootstrapper(MonitorFactory monitorFactory) {
@@ -103,7 +107,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         WorkContext workContext = extensionRegistry.getExtensionPoint(WorkContext.class);
         WorkManager workManager = new ThreadPoolWorkManager(10);
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
-        DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager, workScheduler, workContext);
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, builder, componentManager, workScheduler, workContext, assemblyFactory);
         deployer.setScopeRegistry(getScopeRegistry());
         WirePostProcessorRegistry wirePostProcessorRegistry = new WirePostProcessorRegistryImpl();
         deployer.setWirePostProcessorRegistry(wirePostProcessorRegistry);

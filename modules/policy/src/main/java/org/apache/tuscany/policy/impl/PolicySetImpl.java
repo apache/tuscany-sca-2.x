@@ -41,6 +41,9 @@ public class PolicySetImpl implements PolicySet {
     private List<PolicySet> referencedPolicySets;
     private List<Object> policies;
     private boolean unresolved;
+    
+    protected PolicySetImpl() {
+    }
 
     public QName getName() {
         return name;

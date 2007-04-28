@@ -43,14 +43,14 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference {
     /**
      * Constructs a new reference.
      */
-    public ReferenceImpl() {
+    protected ReferenceImpl() {
     }
     
     /**
      * Copy constructor.
      * @param reference
      */
-    public ReferenceImpl(Reference other) {
+    protected ReferenceImpl(Reference other) {
         super(other);
         bindings.addAll(other.getBindings());
         wiredByImpl = other.isWiredByImpl();

@@ -23,9 +23,8 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.ConversationProcessor;
-import org.apache.tuscany.implementation.java.introspect.impl.InvalidConversationalImplementation;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
@@ -34,7 +33,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 public class ConversationProcessorTestCase extends TestCase {
-    private ConversationProcessor processor = new ConversationProcessor();
+    private ConversationProcessor processor = new ConversationProcessor(new DefaultAssemblyFactory());
 
     public void testMaxIdleTime() throws Exception {
         JavaImplementationDefinition type =
