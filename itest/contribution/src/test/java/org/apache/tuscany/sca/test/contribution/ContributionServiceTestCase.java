@@ -24,8 +24,12 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import javax.xml.stream.XMLInputFactory;
+
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeDocumentProcessor;
@@ -51,6 +55,10 @@ import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.contribution.service.util.IOHelper;
 import org.apache.tuscany.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.core.ExtensionPointRegistry;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * This is more intended to be a integration test then a unit test. *
@@ -65,6 +73,11 @@ public class ContributionServiceTestCase extends TestCase {
     
     protected void setUp() throws Exception {
         
+        // Create default factories
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        PolicyFactory policyFactory = new DefaultPolicyFactory();
+        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        
         // Create an extension point registry
         ExtensionPointRegistry extensionRegistry = new DefaultExtensionPointRegistry();
 
@@ -75,13 +88,14 @@ public class ContributionServiceTestCase extends TestCase {
         extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
 
         // Register base artifact processors
-        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
 
-        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors));
-        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors));
-        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors));
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
 
         // Create package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();

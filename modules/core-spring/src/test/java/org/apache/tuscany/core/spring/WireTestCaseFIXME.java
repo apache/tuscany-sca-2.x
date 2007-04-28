@@ -17,37 +17,36 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.ws.xml;
+package org.apache.tuscany.core.spring;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
- * Test reading/write WSDL interfaces.
+ * Test the wiring of SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
-public class WriteTestCase extends TestCase {
+public class WireTestCaseFIXME extends TestCase {
 
-    XMLInputFactory inputFactory;
-    DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private XMLInputFactory inputFactory;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private DefaultArtifactResolver resolver; 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
@@ -58,37 +57,37 @@ public class WriteTestCase extends TestCase {
         mapper = new DefaultInterfaceContractMapper();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
-
-        WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor();
-        staxProcessors.addExtension(wsdlProcessor);
+        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
         inputFactory = null;
         staxProcessors = null;
+        resolver = null;
         policyFactory = null;
         factory = null;
         mapper = null;
     }
 
-    public void testReadWriteComponentType() throws Exception {
-        InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
-        ComponentType componentType = staxProcessors.read(is, ComponentType.class);
-        assertNotNull(componentType);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessors.write(componentType, bos);
-    }
+    public void testWireComposite() throws Exception {
+        InputStream is = getClass().getResourceAsStream("OuterCalculator.composite");
+        CompositeProcessor compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+        Composite nestedComposite = compositeReader.read(reader);
+        is.close();
+        assertNotNull(nestedComposite);
+        resolver.add(nestedComposite);
 
-    public void testReadWriteComposite() throws Exception {
-        InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        Composite composite = staxProcessors.read(is, Composite.class);
-        assertNotNull(composite);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessors.write(composite, bos);
+        is = getClass().getResourceAsStream("TestAllCalculator.composite");
+        compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        reader = inputFactory.createXMLStreamReader(is);
+        Composite composite = compositeReader.read(reader);
+        is.close();
+        
+        compositeReader.resolve(composite, resolver);
+        compositeReader.wire(composite);
+        
+        assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }
 
 }

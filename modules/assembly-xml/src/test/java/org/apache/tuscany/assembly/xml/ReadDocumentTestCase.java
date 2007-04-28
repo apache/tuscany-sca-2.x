@@ -21,13 +21,21 @@ package org.apache.tuscany.assembly.xml;
 
 import java.net.URL;
 
+import javax.xml.stream.XMLInputFactory;
+
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -40,18 +48,23 @@ public class ReadDocumentTestCase extends TestCase {
     private DefaultArtifactResolver resolver; 
 
     public void setUp() throws Exception {
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        PolicyFactory policyFactory = new DefaultPolicyFactory();
+        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        
         documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         
         // Create Stax processors
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessors.addExtension(new CompositeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
         
         // Create document processors
-        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors));
-        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors));
-        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors));
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance(); 
+        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
 
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }

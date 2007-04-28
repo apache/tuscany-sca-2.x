@@ -20,7 +20,9 @@ package test.application.context;
 
 import java.io.InputStream;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
@@ -29,7 +31,11 @@ import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.core.bean.context.CompositeApplicationContext;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * A mini test runtime that uses a custom Spring ApplicationContext to turn an
@@ -43,12 +49,16 @@ public class TestRuntimeContext {
 
     public TestRuntimeContext(String compositeFile) {
         
+        AssemblyFactory factory = new DefaultAssemblyFactory();
+        PolicyFactory policyFactory = new DefaultPolicyFactory();
+        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        CompositeProcessor compositeProcessor = new CompositeProcessor(staxProcessors);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
         staxProcessors.addExtension(compositeProcessor);
-        staxProcessors.addExtension(new ComponentTypeProcessor(staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new JavaInterfaceProcessor());
         staxProcessors.addExtension(new JavaImplementationProcessor());
         

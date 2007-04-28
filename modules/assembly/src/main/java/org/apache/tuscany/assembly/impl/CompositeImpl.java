@@ -28,6 +28,7 @@ import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
@@ -52,18 +53,30 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
      * @param other
      */
     public CompositeImpl(Composite other) {
-        super(other);
+        
+        // Copy BaseImpl attributes
+        setUnresolved(other.isUnresolved());
+        getExtensions().addAll(other.getExtensions());
+        
+        // Copy ComponentTypeImpl attributes
+        setURI(other.getURI());
+        setConstrainingType(other.getConstrainingType());
+        for (Property property: other.getProperties()) {
+            getProperties().add(new PropertyImpl(property));
+        }
+        getRequiredIntents().addAll(other.getRequiredIntents());
+        getPolicySets().addAll(other.getPolicySets());
+
+        // Copy CompositeImpl attributes
         name = other.getName();
         autowire = other.isAutowire();
         local = other.isLocal();
         for (Component component: other.getComponents()) {
             components.add(new ComponentImpl(component));
         }
-        getServices().clear();
         for (Service service: other.getServices()) {
             getServices().add(new CompositeServiceImpl((CompositeService)service));
         }
-        getReferences().clear();
         for (Reference reference: other.getReferences()) {
             getReferences().add(new CompositeReferenceImpl((CompositeReference)reference));
         }
@@ -133,26 +146,6 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
         return copy;
     }
     
-    public Composite instanciate() {
-        CompositeImpl instance = new CompositeImpl();
-        instance.instanciate(this);
-        return instance;
-    }
-    
-    protected void instanciate(Composite other) {
-        super.instanciate(other);
-        
-        name = other.getName();
-        autowire = other.isAutowire();
-        local = other.isLocal();
-        for (Component component: other.getComponents()) {
-            components.add(new ComponentImpl(component));
-        }
-        for (Wire wire: other.getWires()) {
-            wires.add(new WireImpl(wire));
-        }
-    }
-
     @Override
     public int hashCode() {
         return String.valueOf(getName()).hashCode();

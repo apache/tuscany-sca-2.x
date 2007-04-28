@@ -33,7 +33,6 @@ import org.apache.tuscany.assembly.AbstractReference;
 import org.apache.tuscany.assembly.AbstractService;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
@@ -43,7 +42,6 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * A contrainingType content handler.
@@ -60,14 +58,6 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
      */
     public ConstrainingTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessorExtension extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
-    }
-
-    /**
-     * Construct a new constrainingType processor.
-     * @param extensionProcessor
-     */
-    public ConstrainingTypeProcessor(StAXArtifactProcessorExtension extensionProcessor) {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), extensionProcessor);
     }
 
     public ConstrainingType read(XMLStreamReader reader) throws ContributionReadException {

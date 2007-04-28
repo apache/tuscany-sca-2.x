@@ -39,9 +39,7 @@ import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 
 /**
  * A utility class that handles the configuration of the components inside a 
@@ -59,22 +57,11 @@ public class CompositeUtil {
      * 
      * @param assemblyFactory
      * @param interfaceContractMapper
-     * @param composite
      */
     public CompositeUtil(AssemblyFactory assemblyFactory,
                          InterfaceContractMapper interfaceContractMapper) {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
-    }
-
-    /**
-     * Constructs a new composite util.
-     *  
-     * @param composite
-     */
-    public CompositeUtil() {
-        this(new DefaultAssemblyFactory(),
-             new DefaultInterfaceContractMapper());
     }
 
     /**
@@ -492,13 +479,14 @@ public class CompositeUtil {
     }
 
     /**
-     * Resolves promoted services
+     * Connect composite services to the component services that they
+     * promote. 
      * 
      * @param composite
      * @param componentServices
      * @param problems
      */
-    private void connectPromotedServices(Composite composite,
+    private void connectCompositeServices(Composite composite,
                                          Map<String, ComponentService> componentServices,
                                          List<Base> problems) {
 
@@ -534,7 +522,7 @@ public class CompositeUtil {
      * @param componentReferences
      * @param problems
      */
-    private void connectPromotedReferences(Composite composite,
+    private void connectCompositeReferences(Composite composite,
                                            Map<String, ComponentReference> componentReferences,
                                            List<Base> problems) {
 
@@ -574,7 +562,7 @@ public class CompositeUtil {
      * @param componentReferences
      * @param problems
      */
-    private void connectReferenceTargets(Composite composite,
+    private void connectComponentReferences(Composite composite,
                                       Map<String, ComponentService> componentServices,
                                       Map<String, ComponentReference> componentReferences,
                                       List<Base> problems) {
@@ -661,7 +649,7 @@ public class CompositeUtil {
      * @param componentReferences
      * @param problems
      */
-    private void connectWiredReferences(Composite composite,
+    private void connectWires(Composite composite,
                                   Map<String, ComponentService> componentServices,
                                   Map<String, ComponentReference> componentReferences,
                                   List<Base> problems) {
@@ -713,11 +701,211 @@ public class CompositeUtil {
     }
 
     /**
-     * Wire the references inside the composite.
+     * Follow a service promotion chain down to the inner most
+     * (non composite) component service.
      * 
+     * @param topCompositeService
+     * @return
+     */
+    private ComponentService getPromotedComponentService(CompositeService compositeService) {
+        ComponentService componentService = compositeService.getPromotedService();
+        if (componentService != null) {
+            Service service = componentService.getService();
+            if (service instanceof CompositeService) {
+                
+                // Continue to follow the service promotion chain
+                return getPromotedComponentService((CompositeService)service);
+
+            } else {
+                
+                // Found a non-composite service
+                return componentService;
+            }
+        } else {
+            
+            // No promoted service
+            return null;
+        }
+    }
+    
+    /**
+     * Follow a reference promotion chain down to the inner most
+     * (non composite) component references.
+     * 
+     * @param compositeReference
+     * @return
+     */
+    private List<ComponentReference> getPromotedComponentReferences(CompositeReference compositeReference) {
+        List<ComponentReference> componentReferences = new ArrayList<ComponentReference>();
+        collectPromotedComponentReferences(compositeReference, componentReferences);
+        return componentReferences;
+    }
+    
+    /**
+     * Follow a reference promotion chain down to the inner most
+     * (non composite) component references.
+     * 
+     * @param compositeReference
+     * @param componentReferences
+     * @return
+     */
+    private void collectPromotedComponentReferences(CompositeReference compositeReference, List<ComponentReference> componentReferences) {
+        for (ComponentReference componentReference: compositeReference.getPromotedReferences()) {
+            Reference reference = componentReference.getReference();
+            if (reference instanceof CompositeReference) {
+                
+                // Continue to follow the reference promotion chain
+                collectPromotedComponentReferences((CompositeReference)reference, componentReferences);
+
+            } else if (reference != null) {
+                
+                // Found a non-composite reference
+                componentReferences.add(componentReference);
+            }
+        }
+    }
+
+    /**
+     * Activate composite services in nested composites.
+     * 
+     * @param composite
      * @param problems
      */
-    public void wireReferences(Composite composite, List<Base> problems) {
+    public void activateCompositeServices(Composite composite, List<Base> problems)  {
+        
+        // Process nested composites recursively
+        for (Component component: composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                
+                // First process nested composites
+                activateCompositeServices((Composite)implementation, problems);
+                
+                // Process the component services declared on components
+                // in this composite
+                for (ComponentService componentService: component.getServices()) {
+                    CompositeService compositeService = (CompositeService)componentService.getService();
+                    if (compositeService != null) {
+                        ComponentService promotedService = getPromotedComponentService(compositeService);
+                        if (promotedService != null) {
+                            
+                            // Add the component service to the innermost promoted component
+                            SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
+                            Component promotedComponent = scaBinding.getComponent();
+                            promotedComponent.getServices().add(componentService);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Process composite services declared in this composite 
+        for (Service service: composite.getServices()) {
+            CompositeService compositeService = (CompositeService)service;
+            ComponentService promotedService = getPromotedComponentService(compositeService);
+            if (promotedService != null) {
+
+                // Create a new component service to represent this composite service
+                // on the promoted component
+                ComponentService newComponentService = assemblyFactory.createComponentService();
+                newComponentService.setName(compositeService.getName());
+                newComponentService.setService(compositeService);
+                SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
+                Component component = scaBinding.getComponent();
+                component.getServices().add(newComponentService);
+                
+                // Change the composite service to now promote the newly created
+                // component service directly
+                compositeService.setPromotedService(newComponentService);
+            }
+        }
+    }
+
+    /**
+     * Wire composite references in nested composites.
+     * @param composite
+     * @param problems
+     */
+    public void wireCompositeReferences(Composite composite, List<Base> problems)  {
+        
+        // Process nested composites recursively
+        for (Component component: composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                wireCompositeReferences((Composite)implementation, problems);
+            }
+        }
+        
+        // Process composite references declared in this composite 
+        for (Reference reference: composite.getReferences()) {
+            CompositeReference compositeReference = (CompositeReference)reference;
+            List<ComponentReference> promotedReferences = getPromotedComponentReferences(compositeReference);
+            for (ComponentReference promotedReference: promotedReferences) {
+
+                // Override the configuration of the promoted reference
+                promotedReference.getBindings().clear();
+                promotedReference.getBindings().addAll(compositeReference.getBindings());
+            }
+        }
+
+        // Process the component references declared on components
+        // in this composite
+        for (Component component: composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                for (ComponentReference componentReference: component.getReferences()) {
+                    CompositeReference compositeReference = (CompositeReference)componentReference.getReference();
+                    if (compositeReference != null) {
+                        List<ComponentReference> promotedReferences = getPromotedComponentReferences(compositeReference);
+                        for (ComponentReference promotedReference: promotedReferences) {
+                            
+                            // Override the configuration of the promoted reference
+                            promotedReference.getBindings().clear();
+                            promotedReference.getBindings().addAll(componentReference.getBindings());
+                            
+                            // Wire the promoted reference to the actual non-composite
+                            // component services
+                            promotedReference.getTargets().clear();
+                            for (ComponentService target: componentReference.getTargets()) {
+                                if (target.getService() instanceof CompositeService) {
+                                    
+                                    // Wire to the actual component service promoted by a 
+                                    // composite service
+                                    CompositeService compositeService = (CompositeService)target.getService();
+                                    ComponentService componentService = compositeService.getPromotedService();
+                                    if (componentService != null) {
+                                        promotedReference.getTargets().add(componentService);
+                                    }
+                                } else {
+                                    
+                                    // Wire to a non-composite target service
+                                    promotedReference.getTargets().add(target);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Wire component references to component services and connect 
+     * promoted services/references to component services/references
+     * inside a composite.
+     * 
+     * @param composite
+     * @param problems
+     */
+    public void wireComposite(Composite composite, List<Base> problems) {
+        
+        // Wire nested composites recursively
+        for (Component component: composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                wireComposite((Composite)implementation, problems);
+            }
+        }
 
         // Index and bind all component services and references
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
@@ -726,15 +914,16 @@ public class CompositeUtil {
         // Create SCA bindings on all component services and references
         createSCABindings(composite, componentServices, componentReferences, problems);
 
-        // Resolve promoted services and references
-        connectPromotedServices(composite, componentServices, problems);
-        connectPromotedReferences(composite, componentReferences, problems);
+        // Connect composite services and references to the component
+        // services and references that they promote
+        connectCompositeServices(composite, componentServices, problems);
+        connectCompositeReferences(composite, componentReferences, problems);
         
-        // Connect references to their targets
-        connectReferenceTargets(composite, componentServices, componentReferences, problems);
+        // Connect component references to their targets
+        connectComponentReferences(composite, componentServices, componentReferences, problems);
 
-        // Connect references as described in wires
-        connectWiredReferences(composite, componentServices, componentReferences, problems);
+        // Connect component references as described in wires
+        connectWires(composite, componentServices, componentReferences, problems);
 
         // Validate that references are wired or promoted, according
         // to their multiplicity
@@ -759,10 +948,11 @@ public class CompositeUtil {
             if (implementation instanceof Composite) {
                 
                 Composite compositeImplementation = (Composite)implementation;
-                Composite instance = compositeImplementation.instanciate();
-                component.setImplementation(instance);
-                expandComposites(instance, problems);
+                Composite copy = compositeImplementation.copy();
+                component.setImplementation(copy);
+                expandComposites(copy, problems);
             }
         }
     }
+    
 }

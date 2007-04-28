@@ -104,12 +104,4 @@ public interface Composite extends Implementation, Visitable {
      */
     Composite copy();
     
-    /**
-     * Returns an instance of the composite. Components inside the
-     * composite are copied but the aspects of the componentType
-     * (services, references and properties) are not copied.
-     * @return
-     */
-    Composite instanciate();
-    
 }

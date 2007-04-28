@@ -68,7 +68,7 @@ public class VariantRuntimeContext {
                                                                        interfaceContractMapper, staxProcessors);
         staxProcessors.addExtension(compositeProcessor);
         staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(staxProcessors));
+        staxProcessors.addExtension(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new JavaInterfaceProcessor());
         staxProcessors.addExtension(new JavaImplementationProcessor(
             assemblyFactory, policyFactory, javaImplementationFactory, new DefaultJavaClassIntrospector()));

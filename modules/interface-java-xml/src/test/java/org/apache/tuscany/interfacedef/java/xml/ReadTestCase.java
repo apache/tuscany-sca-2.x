@@ -27,15 +27,21 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * Test reading Java interfaces.
@@ -46,8 +52,14 @@ public class ReadTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
     DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private AssemblyFactory factory;
+    private PolicyFactory policyFactory;
+    private InterfaceContractMapper mapper;
 
     public void setUp() throws Exception {
+        factory = new DefaultAssemblyFactory();
+        policyFactory = new DefaultPolicyFactory();
+        mapper = new DefaultInterfaceContractMapper();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
 
@@ -58,10 +70,13 @@ public class ReadTestCase extends TestCase {
     public void tearDown() throws Exception {
         inputFactory = null;
         staxProcessors = null;
+        policyFactory = null;
+        factory = null;
+        mapper = null;
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeProcessor componentTypeReader = new ComponentTypeProcessor(staxProcessors);
+        ComponentTypeProcessor componentTypeReader = new ComponentTypeProcessor(factory, policyFactory, staxProcessors);
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = componentTypeReader.read(reader);
@@ -71,7 +86,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadConstrainingType() throws Exception {
-        ConstrainingTypeProcessor constrainingTypeProcessor = new ConstrainingTypeProcessor(staxProcessors);
+        ConstrainingTypeProcessor constrainingTypeProcessor = new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors);
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ConstrainingType constrainingType = constrainingTypeProcessor.read(reader);
@@ -81,16 +96,16 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(staxProcessors);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        CompositeUtil compositeUtil = new CompositeUtil();
+        CompositeUtil compositeUtil = new CompositeUtil(factory, mapper);
         compositeUtil.fuseIncludes(composite, new ArrayList<Base>());
         compositeUtil.configureComponents(composite, new ArrayList<Base>());
-        compositeUtil.wireReferences(composite, new ArrayList<Base>());
+        compositeUtil.wireComposite(composite, new ArrayList<Base>());
 
         //new PrintUtil(System.out).print(composite);
     }
