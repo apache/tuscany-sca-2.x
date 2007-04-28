@@ -21,6 +21,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
@@ -38,6 +39,10 @@ public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
     private static final String DAYS = " DAYS";
     private static final String YEARS = " YEARS";
     
+    public ConversationProcessor(AssemblyFactory factory) {
+        super(factory);
+    }
+
     public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
 
         ConversationAttributes conversation = clazz.getAnnotation(ConversationAttributes.class);

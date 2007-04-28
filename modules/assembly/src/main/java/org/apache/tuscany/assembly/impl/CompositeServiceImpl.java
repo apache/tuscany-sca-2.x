@@ -33,14 +33,14 @@ public class CompositeServiceImpl extends ServiceImpl implements CompositeServic
     /**
      * Constructs a new composite service.
      */
-    public CompositeServiceImpl() {
+    protected CompositeServiceImpl() {
     }
 
     /**
      * Copy constructor.
      * @param other
      */
-    public CompositeServiceImpl(CompositeService other) {
+    protected CompositeServiceImpl(CompositeService other) {
         super(other);
         promotedService = other.getPromotedService();
     }

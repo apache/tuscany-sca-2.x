@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Scope;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
@@ -30,6 +31,10 @@ import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
  */
 public class ScopeProcessor extends BaseJavaClassIntrospectorExtension {
     
+    public ScopeProcessor(AssemblyFactory factory) {
+        super(factory);
+    }
+
     public <T> void visitClass(Class<T> clazz,
                                JavaImplementationDefinition type)
         throws IntrospectionException {

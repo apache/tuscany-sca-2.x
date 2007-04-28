@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
@@ -47,8 +48,8 @@ public class HelperContextProcessor extends BaseJavaClassIntrospectorExtension {
     /**
      * @param registry
      */
-    public HelperContextProcessor(@Reference HelperContextRegistry registry) {
-        super();
+    public HelperContextProcessor(AssemblyFactory assemblyFactory, HelperContextRegistry registry) {
+        super(assemblyFactory);
         this.registry = registry;
     }
 

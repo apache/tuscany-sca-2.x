@@ -25,11 +25,13 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.impl.IllegalCallbackReferenceException;
 import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.interfacedef.InvalidCallbackException;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Service;
@@ -42,7 +44,7 @@ public class ServiceCallbackTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        processor = new ServiceProcessor(new DefaultJavaInterfaceIntrospector());
+        processor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory()));
     }
 
     public void testMethodCallbackInterface() throws Exception {

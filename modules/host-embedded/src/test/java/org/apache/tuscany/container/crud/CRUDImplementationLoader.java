@@ -26,17 +26,26 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
-import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
 
 public class CRUDImplementationLoader implements StAXArtifactProcessorExtension<CRUDImplementation> {
     public static final QName IMPLEMENTATION_CRUD = new QName(SCA_NS, "implementation.crud");
 
+    private AssemblyFactory assemblyFactory;
+    private JavaFactory javaFactory;
+    
+    public CRUDImplementationLoader(AssemblyFactory assemblyFactory, JavaFactory javaFactory) {
+        this.assemblyFactory = assemblyFactory;
+        this.javaFactory = javaFactory;
+    }
+    
     public QName getArtifactType() {
         return IMPLEMENTATION_CRUD;
     }
@@ -45,15 +54,12 @@ public class CRUDImplementationLoader implements StAXArtifactProcessorExtension<
         return CRUDImplementation.class;
     }
 
-    public void optimize(CRUDImplementation impl) throws ContributionException {
-    }
-
     public CRUDImplementation read(XMLStreamReader reader) throws ContributionReadException {
         assert IMPLEMENTATION_CRUD.equals(reader.getName());
         try {
             String dir = reader.getAttributeValue(null, "directory");
 
-            CRUDImplementation implementation = new CRUDImplementation(dir);
+            CRUDImplementation implementation = new CRUDImplementation(assemblyFactory, javaFactory, dir);
             // Skip to end element
             while (reader.hasNext()) {
                 if (reader.next() == END_ELEMENT && IMPLEMENTATION_CRUD.equals(reader.getName())) {

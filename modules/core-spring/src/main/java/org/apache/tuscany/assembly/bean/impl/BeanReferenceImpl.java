@@ -31,7 +31,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 public class BeanReferenceImpl extends RuntimeBeanReference {
 	private Reference reference;
 	
-	public BeanReferenceImpl(Reference reference) {
+	protected BeanReferenceImpl(Reference reference) {
 		super("temp");
 		this.reference = reference;
 	}

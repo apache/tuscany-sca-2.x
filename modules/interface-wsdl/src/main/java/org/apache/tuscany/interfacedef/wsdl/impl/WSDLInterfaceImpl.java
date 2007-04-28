@@ -34,7 +34,7 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
     private QName name;
     private PortType portType;
 
-    public WSDLInterfaceImpl() {
+    protected WSDLInterfaceImpl() {
         setRemotable(true);
     }
 

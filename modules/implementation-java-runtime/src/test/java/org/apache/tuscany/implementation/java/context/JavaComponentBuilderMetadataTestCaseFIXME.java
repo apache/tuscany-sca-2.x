@@ -36,6 +36,8 @@ import org.apache.tuscany.implementation.java.impl.Scope;
 import org.apache.tuscany.implementation.java.mock.Source;
 import org.apache.tuscany.implementation.java.mock.SourceImpl;
 import org.apache.tuscany.implementation.java.mock.Target;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -56,6 +58,7 @@ public class JavaComponentBuilderMetadataTestCaseFIXME extends TestCase {
     private org.apache.tuscany.assembly.Component definition;
     private ScopeContainer scopeContainer;
     private AssemblyFactory factory = new DefaultAssemblyFactory();
+    private JavaFactory javaFactory = new DefaultJavaFactory();
 
     public void testMaxAge() throws Exception {
         type.setMaxAge(100);
@@ -117,7 +120,7 @@ public class JavaComponentBuilderMetadataTestCaseFIXME extends TestCase {
                                        new JavaElement(SourceImpl.class.getMethod("setTarget", Target.class), 0));
         type.getReferences().add(reference);
 
-        ComponentService serviceDefinition = ModelHelper.createService(Source.class);
+        ComponentService serviceDefinition = ModelHelper.createService(factory, javaFactory, Source.class);
         serviceDefinition.setName("Source");
         type.getServices().add(serviceDefinition);
         type.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));

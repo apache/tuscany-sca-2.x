@@ -25,15 +25,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
@@ -47,8 +48,11 @@ import org.osoa.sca.annotations.Remotable;
  */
 public class ServiceProcessor extends BaseJavaClassIntrospectorExtension {
     private JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
+    private JavaFactory javaFactory;
     
-    public ServiceProcessor(JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+    public ServiceProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+        super(assemblyFactory);
+        this.javaFactory = javaFactory;
         this.interfaceIntrospector = interfaceIntrospector;
     }
 
@@ -140,8 +144,8 @@ public class ServiceProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public Service createService(Class<?> interfaze) throws InvalidInterfaceException {
-        Service service = factory.createService();
-        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        Service service = assemblyFactory.createService();
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
 
         // create a relative URI

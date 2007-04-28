@@ -37,8 +37,6 @@ import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
  * @version $Rev$ $Date$
  */
 public class ModelHelper {
-    private final static AssemblyFactory factory = new DefaultAssemblyFactory();
-    private final static JavaFactory javaFactory = new DefaultJavaFactory();
 
     public static Property getProperty(JavaImplementationDefinition type, String name) {
         for (Property prop : type.getProperties()) {
@@ -76,7 +74,8 @@ public class ModelHelper {
         }
     }
 
-    public static ComponentService createService(Class<?> type) {
+    public static ComponentService createService(AssemblyFactory factory,
+                                                 JavaFactory javaFactory, Class<?> type) {
         org.apache.tuscany.assembly.ComponentService ref = factory.createComponentService();
         ref.setName(type.getSimpleName());
         JavaInterface i = javaFactory.createJavaInterface();
@@ -87,7 +86,8 @@ public class ModelHelper {
         return ref;
     }
 
-    public static Reference createReference(String name, Class<?> type) {
+    public static Reference createReference(AssemblyFactory factory,
+                                            JavaFactory javaFactory, String name, Class<?> type) {
         org.apache.tuscany.assembly.Reference ref = factory.createReference();
         ref.setName(name);
         JavaInterface i = javaFactory.createJavaInterface();

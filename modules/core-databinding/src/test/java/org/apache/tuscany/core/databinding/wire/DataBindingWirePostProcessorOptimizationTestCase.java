@@ -33,8 +33,8 @@ import org.apache.tuscany.databinding.impl.MediatorImpl;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -74,9 +74,10 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         replay(component, componentManager);
         processor = new DataBindingWirePostProcessor(componentManager, mediator);
 
-        InterfaceContract contract = new JavaInterfaceContractImpl();
-        contract.setInterface(new JavaInterfaceImpl());
-        contract.setCallbackInterface(new JavaInterfaceImpl());
+        JavaFactory javaFactory = new DefaultJavaFactory();
+        InterfaceContract contract = javaFactory.createJavaInterfaceContract();
+        contract.setInterface(javaFactory.createJavaInterface());
+        contract.setCallbackInterface(javaFactory.createJavaInterface());
         Operation operation = new OperationImpl("test", null, null, null);
         contract.getInterface().getOperations().add(operation);
         contract.getCallbackInterface().getOperations().add(operation);

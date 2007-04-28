@@ -20,11 +20,13 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.impl.IllegalServiceDefinitionException;
 import org.apache.tuscany.implementation.java.introspect.impl.InvalidServiceType;
 import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
@@ -92,8 +94,8 @@ public class ServiceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
-        processor = new ServiceProcessor(introspector);
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
+        processor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), introspector);
         type = new JavaImplementationDefinition();
     }
 

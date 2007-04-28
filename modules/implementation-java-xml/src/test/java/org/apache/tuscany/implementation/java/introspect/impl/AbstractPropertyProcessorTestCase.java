@@ -29,13 +29,13 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
-import org.apache.tuscany.implementation.java.introspect.impl.AbstractPropertyProcessor;
 
 
 /**
@@ -119,7 +119,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
     private class TestProcessor extends AbstractPropertyProcessor<Bar> {
 
         public TestProcessor() {
-            super(Bar.class);
+            super(new DefaultAssemblyFactory(), Bar.class);
         }
 
         @SuppressWarnings("unchecked")

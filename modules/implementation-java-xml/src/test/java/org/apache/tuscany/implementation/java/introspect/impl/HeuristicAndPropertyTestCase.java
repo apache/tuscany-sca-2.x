@@ -22,10 +22,11 @@ import java.lang.reflect.Constructor;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor;
-import org.apache.tuscany.implementation.java.introspect.impl.PropertyProcessor;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Property;
 
@@ -36,6 +37,8 @@ public class HeuristicAndPropertyTestCase extends TestCase {
 
     private PropertyProcessor propertyProcessor;
     private HeuristicPojoProcessor heuristicProcessor;
+    private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+
 
     /**
      * Verifies the property and heuristic processors don't collide
@@ -53,9 +56,9 @@ public class HeuristicAndPropertyTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
-        propertyProcessor = new PropertyProcessor();
-        heuristicProcessor = new HeuristicPojoProcessor(introspector);
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
+        propertyProcessor = new PropertyProcessor(assemblyFactory);
+        heuristicProcessor = new HeuristicPojoProcessor(assemblyFactory, new DefaultJavaFactory(), introspector);
     }
 
     public static class Foo {

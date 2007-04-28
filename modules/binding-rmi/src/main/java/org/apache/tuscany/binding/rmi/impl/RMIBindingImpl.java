@@ -27,10 +27,11 @@ import org.apache.tuscany.binding.rmi.RMIBindingConstants;
  */
 public class RMIBindingImpl extends BindingImpl implements RMIBinding, RMIBindingConstants {
     private String host;
-
     private String port;
-
     private String serviceName;
+    
+    protected RMIBindingImpl() {
+    }
 
     public String getURI() {
         return host + COLON + port + serviceName;

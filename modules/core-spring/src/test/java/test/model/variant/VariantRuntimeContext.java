@@ -33,9 +33,14 @@ import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.bean.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -60,7 +65,10 @@ public class VariantRuntimeContext {
         AssemblyFactory assemblyFactory = new BeanAssemblyFactory(new DefaultAssemblyFactory(), beanFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper interfaceContractMapper = new DefaultInterfaceContractMapper();
+        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceIntrospector interfaceIntrospector = new DefaultJavaInterfaceIntrospector(javaFactory);
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
+        JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector();
 
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
@@ -69,9 +77,8 @@ public class VariantRuntimeContext {
         staxProcessors.addExtension(compositeProcessor);
         staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new JavaInterfaceProcessor());
-        staxProcessors.addExtension(new JavaImplementationProcessor(
-            assemblyFactory, policyFactory, javaImplementationFactory, new DefaultJavaClassIntrospector()));
+        staxProcessors.addExtension(new JavaInterfaceProcessor(javaFactory, interfaceIntrospector));
+        staxProcessors.addExtension(new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector));
         
         // Create a resolver
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

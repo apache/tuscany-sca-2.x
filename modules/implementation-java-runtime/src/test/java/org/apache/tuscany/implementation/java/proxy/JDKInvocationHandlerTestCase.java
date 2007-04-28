@@ -28,7 +28,9 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
@@ -37,6 +39,8 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -51,9 +55,17 @@ import org.apache.tuscany.spi.wire.Wire;
  */
 public class JDKInvocationHandlerTestCase extends TestCase {
 
+    private AssemblyFactory assemblyFactory;
+    private JavaFactory javaFactory;
+    
+    protected void setUp() throws Exception {
+        assemblyFactory = new DefaultAssemblyFactory();
+        javaFactory = new DefaultJavaFactory();
+    }
+
     public void testToString() {
         Wire wire = new WireImpl();
-        Contract contract = ModelHelper.createReference("foo", Foo.class);
+        Contract contract = ModelHelper.createReference(assemblyFactory, javaFactory, "foo", Foo.class);
         wire.setSourceContract(contract.getInterfaceContract());
         wire.setSourceUri(URI.create("foo#bar"));
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
@@ -63,7 +75,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
     public void testHashCode() {
         Wire wire = new WireImpl();
-        Contract contract = ModelHelper.createReference("foo", Foo.class);
+        Contract contract = ModelHelper.createReference(assemblyFactory, javaFactory, "foo", Foo.class);
         wire.setSourceContract(contract.getInterfaceContract());
         wire.setSourceUri(URI.create("foo#bar"));
         JDKInvocationHandler handler = new JDKInvocationHandler(Foo.class, wire, null);
@@ -81,7 +93,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         Operation op1 = new OperationImpl("test");
         op1.setInputType(inputType1);
         op1.setOutputType(outputType1);
-        Contract contract = ModelHelper.createReference("foo", Foo.class);
+        Contract contract = ModelHelper.createReference(assemblyFactory, javaFactory, "foo", Foo.class);
         op1.setInterface(contract.getInterfaceContract().getInterface());
 
         WorkContext wc = new SimpleWorkContext();

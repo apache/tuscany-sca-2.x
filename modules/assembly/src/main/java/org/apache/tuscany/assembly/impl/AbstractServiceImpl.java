@@ -30,14 +30,14 @@ public class AbstractServiceImpl extends ContractImpl implements AbstractService
     /**
      * Constructs a new abstract service.
      */
-    public AbstractServiceImpl() {
+    protected AbstractServiceImpl() {
     }
     
     /**
      * Copy constructor.
      * @param service
      */
-    public AbstractServiceImpl(AbstractService other) {
+    protected AbstractServiceImpl(AbstractService other) {
         super(other);
     }
 

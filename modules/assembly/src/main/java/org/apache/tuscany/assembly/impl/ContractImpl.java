@@ -33,7 +33,7 @@ public class ContractImpl extends BaseImpl implements AbstractContract {
     /**
      * Constructs a new contract.
      */
-    public ContractImpl() {
+    protected ContractImpl() {
     }
     
     /**

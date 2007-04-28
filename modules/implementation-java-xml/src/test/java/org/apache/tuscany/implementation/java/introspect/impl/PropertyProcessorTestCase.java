@@ -25,6 +25,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
@@ -107,7 +108,7 @@ public class PropertyProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         type = new JavaImplementationDefinition();
-        processor = new PropertyProcessor();
+        processor = new PropertyProcessor(new DefaultAssemblyFactory());
     }
 
     private class Foo {

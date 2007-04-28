@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.osoa.sca.annotations.AllowsPassByReference;
@@ -49,7 +50,7 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         type = new JavaImplementationDefinition();
-        processor = new AllowsPassByReferenceProcessor();
+        processor = new AllowsPassByReferenceProcessor(new DefaultAssemblyFactory());
     }
 
     @AllowsPassByReference

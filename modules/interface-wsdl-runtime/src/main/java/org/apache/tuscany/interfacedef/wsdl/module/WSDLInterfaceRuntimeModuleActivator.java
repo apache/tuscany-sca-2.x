@@ -25,6 +25,10 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
 
@@ -32,7 +36,7 @@ import org.apache.tuscany.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
  * @version $Rev$ $Date$
  */
 public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
-
+    
     public Map<Class, Object> getExtensionPoints() {
         return null;
     }
@@ -42,13 +46,16 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
      */
     public void start(ExtensionPointRegistry extensionPointRegistry) {
         
+        WSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        WSDLInterfaceIntrospector interfaceIntrospector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
+        
         // Register <interface.wsdl> processor
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessors.addExtension(new WSDLInterfaceProcessor());
+        staxProcessors.addExtension(new WSDLInterfaceProcessor(wsdlFactory, interfaceIntrospector));
         
         // Register .wsdl document processor 
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPointRegistry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessors.addExtension(new WSDLDocumentProcessor());
+        documentProcessors.addExtension(new WSDLDocumentProcessor(wsdlFactory, null));
     }
 
     public void stop(ExtensionPointRegistry registry) {

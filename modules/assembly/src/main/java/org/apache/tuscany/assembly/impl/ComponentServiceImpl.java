@@ -38,14 +38,14 @@ public class ComponentServiceImpl extends ServiceImpl implements ComponentServic
     /**
      * Constructs a new component service.
      */
-    public ComponentServiceImpl() {
+    protected ComponentServiceImpl() {
     }
 
     /**
      * Copy constructor.
      * @param other
      */
-    public ComponentServiceImpl(ComponentService other) {
+    protected ComponentServiceImpl(ComponentService other) {
         super(other);
         service = other.getService();
     }

@@ -36,14 +36,14 @@ public class CompositeReferenceImpl extends ReferenceImpl implements CompositeRe
     /**
      * Constructs a new composite reference.
      */
-    public CompositeReferenceImpl() {
+    protected CompositeReferenceImpl() {
     }
 
     /**
      * Copy constructor.
      * @param other
      */
-    public CompositeReferenceImpl(CompositeReference other) {
+    protected CompositeReferenceImpl(CompositeReference other) {
         super(other);
         promotedReferences.addAll(other.getPromotedReferences());
     }

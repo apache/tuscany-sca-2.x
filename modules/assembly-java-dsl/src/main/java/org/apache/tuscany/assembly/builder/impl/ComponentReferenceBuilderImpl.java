@@ -19,20 +19,25 @@
 
 package org.apache.tuscany.assembly.builder.impl;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.builder.ComponentReferenceBuilder;
 import org.apache.tuscany.assembly.builder.ComponentServiceBuilder;
 import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
-import org.apache.tuscany.assembly.impl.CompositeReferenceImpl;
 
 public class ComponentReferenceBuilderImpl extends ComponentReferenceImpl implements ComponentReferenceBuilder {
 	
 	private CompositeReference compositeReference;
+        private AssemblyFactory assemblyFactory;
+        
+        protected ComponentReferenceBuilderImpl(AssemblyFactory assemblyFactory) {
+            this.assemblyFactory = assemblyFactory;
+        }
 	
 	public ComponentReferenceBuilder wiredTo(String target) {
-		ComponentService componentService = new ComponentServiceImpl();
+		ComponentService componentService = assemblyFactory.createComponentService();
 		componentService.setUnresolved(true);
 		componentService.setName(target);
 		getTargets().add(componentService);
@@ -50,13 +55,13 @@ public class ComponentReferenceBuilderImpl extends ComponentReferenceImpl implem
 	}
 	
 	public ComponentReferenceBuilderImpl promotedAs(String promoted) {
-		compositeReference = new CompositeReferenceImpl();
+		compositeReference = assemblyFactory.createCompositeReference();
 		compositeReference.setName(promoted);
 		return this;
 	}
 
 	public ComponentReferenceBuilderImpl promoted() {
-		compositeReference = new CompositeReferenceImpl();
+		compositeReference = assemblyFactory.createCompositeReference();
 		compositeReference.setName(getName());
 		return this;
 	}

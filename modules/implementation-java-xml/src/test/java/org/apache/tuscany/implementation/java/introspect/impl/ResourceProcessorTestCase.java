@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
 import org.apache.tuscany.implementation.java.introspect.impl.DuplicateResourceException;
@@ -35,7 +36,7 @@ import org.apache.tuscany.implementation.java.introspect.impl.ResourceProcessor;
 public class ResourceProcessorTestCase extends TestCase {
 
     JavaImplementationDefinition type;
-    ResourceProcessor processor = new ResourceProcessor();
+    ResourceProcessor processor = new ResourceProcessor(new DefaultAssemblyFactory());
 
     public void testVisitField() throws Exception {
         Field field = Foo.class.getDeclaredField("bar");

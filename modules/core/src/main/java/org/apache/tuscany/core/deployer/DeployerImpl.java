@@ -36,7 +36,6 @@ import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.SCABinding;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.builder.ComponentNotFoundException;
 import org.apache.tuscany.core.builder.IncompatibleInterfacesException;
 import org.apache.tuscany.core.builder.WireCreationException;
@@ -92,17 +91,20 @@ public class DeployerImpl implements Deployer {
     private WirePostProcessorRegistry postProcessorRegistry;
     private WorkScheduler workScheduler;
     private WorkContext workContext;
+    private AssemblyFactory assemblyFactory;
 
     public DeployerImpl(XMLInputFactory xmlFactory,
                         Builder builder,
                         ComponentManager componentManager,
                         WorkScheduler workScheduler,
-                        WorkContext workContext) {
+                        WorkContext workContext,
+                        AssemblyFactory assemblyFactory) {
         this.xmlFactory = xmlFactory;
         this.builder = builder;
         this.componentManager = componentManager;
         this.workScheduler = workScheduler;
         this.workContext = workContext;
+        this.assemblyFactory = assemblyFactory;
     }
 
     public DeployerImpl() {
@@ -122,7 +124,6 @@ public class DeployerImpl implements Deployer {
     }
     
     private org.apache.tuscany.assembly.Component createDefaultComponentForDeployedComposite(Composite composite) {
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         org.apache.tuscany.assembly.Component componentDef = assemblyFactory.createComponent();
         componentDef.setName(composite.getName().getLocalPart());
         componentDef.setImplementation(composite);

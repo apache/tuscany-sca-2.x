@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.osoa.sca.annotations.Property;
 
 /**
@@ -28,8 +29,8 @@ import org.osoa.sca.annotations.Property;
  */
 public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
     
-    public PropertyProcessor() {
-        super(Property.class);
+    public PropertyProcessor(AssemblyFactory assemblyFactory) {
+        super(assemblyFactory, Property.class);
     }
 
     protected String getName(Property annotation) {

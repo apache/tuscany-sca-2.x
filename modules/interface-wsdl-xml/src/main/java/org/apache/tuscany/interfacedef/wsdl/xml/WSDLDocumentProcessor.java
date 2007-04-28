@@ -41,7 +41,6 @@ import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.w3c.dom.Element;
@@ -131,10 +130,6 @@ public class WSDLDocumentProcessor implements URLArtifactProcessorExtension<WSDL
         wsdlExtensionRegistry = this.wsdlFactory.newPopulatedExtensionRegistry();
     }
     
-    public WSDLDocumentProcessor() {
-        this(new DefaultWSDLFactory(), null);
-    }
-
     public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
 

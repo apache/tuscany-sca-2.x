@@ -30,13 +30,17 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.implementation.java.context.ModelHelper;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -56,6 +60,9 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
     private WorkContext workContext;
     private TargetInvoker invoker;
 
+    private AssemblyFactory assemblyFactory;
+    private JavaFactory javaFactory;
+    
     public void testSerializeDeserialize() throws Throwable {
         JDKInvocationHandler handler =
             new JDKInvocationHandler(Foo.class, wire, workContext);
@@ -80,15 +87,17 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        super.setUp();
+        assemblyFactory = new DefaultAssemblyFactory();
+        javaFactory = new DefaultJavaFactory();
+        
         SCAObject container = EasyMock.createMock(SCAObject.class);
-        Contract contract = ModelHelper.createReference("foo", Foo.class);
+        Contract contract = ModelHelper.createReference(assemblyFactory, javaFactory, "foo", Foo.class);
         EasyMock.expect(container.getUri()).andReturn(URI.create("bar")).atLeastOnce();
 
         wire = EasyMock.createMock(Wire.class);
         List<InvocationChain> map = new ArrayList<InvocationChain>();
         Operation operation = new OperationImpl("invoke");
-        Contract opContract = ModelHelper.createReference("foo", Foo.class);
+        Contract opContract = ModelHelper.createReference(assemblyFactory, javaFactory, "foo", Foo.class);
         operation.setInterface(opContract.getInterfaceContract().getInterface());
         map.add(createChain(operation));
         EasyMock.expect(wire.getSourceContract()).andReturn(contract.getInterfaceContract()).atLeastOnce();

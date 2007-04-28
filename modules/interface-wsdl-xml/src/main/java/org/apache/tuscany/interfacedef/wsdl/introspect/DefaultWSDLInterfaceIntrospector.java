@@ -27,8 +27,8 @@ import javax.wsdl.PortType;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
-import org.apache.tuscany.interfacedef.wsdl.impl.WSDLInterfaceImpl;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
@@ -36,8 +36,11 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
  */
 public class DefaultWSDLInterfaceIntrospector implements WSDLInterfaceIntrospector {
     
-    public DefaultWSDLInterfaceIntrospector() {
+    private WSDLFactory wsdlFactory;
+    
+    public DefaultWSDLInterfaceIntrospector(WSDLFactory wsdlFactory) {
         super();
+        this.wsdlFactory = wsdlFactory;
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
@@ -45,14 +48,14 @@ public class DefaultWSDLInterfaceIntrospector implements WSDLInterfaceIntrospect
         List<Operation> operations = new ArrayList<Operation>();
         for (Object o : portType.getOperations()) {
             javax.wsdl.Operation wsdlOp = (javax.wsdl.Operation)o;
-            WSDLOperation op = new WSDLOperation(wsdlOp, inlineSchemas, null, resolver);
+            WSDLOperation op = new WSDLOperation(wsdlFactory, wsdlOp, inlineSchemas, null, resolver);
             operations.add(op.getOperation());
         }
         return operations;
     }
 
     public WSDLInterface introspect(PortType portType, XmlSchemaCollection inlineSchemas, ArtifactResolver resolver) throws InvalidInterfaceException {
-        WSDLInterface wsdlInterface = new WSDLInterfaceImpl();
+        WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
         wsdlInterface.setPortType(portType);
         wsdlInterface.getOperations().addAll(introspectOperations(portType, inlineSchemas, resolver));
         // FIXME: set to Non-conversational for now

@@ -87,14 +87,14 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                         if (Constants.COMPONENT_TYPE_QNAME.equals(name)) {
     
                             // Read a <componentType>
-                            componentType = factory.createComponentType();
+                            componentType = assemblyFactory.createComponentType();
                             componentType.setConstrainingType(getConstrainingType(reader));
                             readPolicies(componentType, reader);
     
                         } else if (Constants.SERVICE_QNAME.equals(name)) {
     
                             // Read a <service>
-                            service = factory.createService();
+                            service = assemblyFactory.createService();
                             contract = service;
                             service.setName(getString(reader, Constants.NAME));
                             componentType.getServices().add(service);
@@ -102,7 +102,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
     
                         } else if (Constants.REFERENCE_QNAME.equals(name)) {
                             // Read a <reference>
-                            reference = factory.createReference();
+                            reference = assemblyFactory.createReference();
                             contract = reference;
                             reference.setName(getString(reader, Constants.NAME));
                             reference.setWiredByImpl(getBoolean(reader, Constants.WIRED_BY_IMPL));
@@ -114,7 +114,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                         } else if (Constants.PROPERTY_QNAME.equals(name)) {
     
                             // Read a <property>
-                            property = factory.createProperty();
+                            property = assemblyFactory.createProperty();
                             readPolicies(property, reader);
                             readProperty(property, reader);
                             componentType.getProperties().add(property);
@@ -122,14 +122,14 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                         } else if (Constants.CALLBACK_QNAME.equals(name)) {
     
                             // Read a <callback>
-                            callback = factory.createCallback();
+                            callback = assemblyFactory.createCallback();
                             contract.setCallback(callback);
                             readPolicies(callback, reader);
     
                         } else if (OPERATION.equals(name)) {
     
                             // Read an <operation>
-                            Operation operation = factory.createOperation();
+                            Operation operation = assemblyFactory.createOperation();
                             operation.setName(getString(reader, NAME));
                             operation.setUnresolved(true);
                             if (callback != null) {

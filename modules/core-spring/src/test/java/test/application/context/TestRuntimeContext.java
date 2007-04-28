@@ -30,9 +30,17 @@ import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExt
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.core.bean.context.CompositeApplicationContext;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
@@ -52,6 +60,10 @@ public class TestRuntimeContext {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceIntrospector interfaceIntrospector = new DefaultJavaInterfaceIntrospector(javaFactory);
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
+        JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector();
         
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
@@ -59,8 +71,8 @@ public class TestRuntimeContext {
         staxProcessors.addExtension(compositeProcessor);
         staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new JavaInterfaceProcessor());
-        staxProcessors.addExtension(new JavaImplementationProcessor());
+        staxProcessors.addExtension(new JavaInterfaceProcessor(javaFactory, interfaceIntrospector));
+        staxProcessors.addExtension(new JavaImplementationProcessor(factory, policyFactory, javaImplementationFactory, classIntrospector));
         
         // Create a resolver
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

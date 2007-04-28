@@ -37,14 +37,14 @@ public abstract class BaseImpl implements Base, Visitable {
     /**
      * Constructs a new base model object.
      */
-    public BaseImpl() {
+    protected BaseImpl() {
     }
 
     /**
      * Copy constructor
      * @param other
      */
-    public BaseImpl(Base other) {
+    protected BaseImpl(Base other) {
         unresolved = other.isUnresolved();
         extensions.addAll(other.getExtensions());
     }

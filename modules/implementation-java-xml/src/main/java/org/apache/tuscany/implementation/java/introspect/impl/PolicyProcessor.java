@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Callback;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
@@ -34,7 +35,6 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.osoa.sca.annotations.Requires;
 
 /**
@@ -43,11 +43,12 @@ import org.osoa.sca.annotations.Requires;
  * @version $Rev:
  */
 public class PolicyProcessor extends BaseJavaClassIntrospectorExtension {
-
+    
     private PolicyFactory policyFactory;
 
-    public PolicyProcessor() {
-        this.policyFactory = new DefaultPolicyFactory();
+    public PolicyProcessor(AssemblyFactory assemblyFactory, PolicyFactory policyFactory) {
+        super(assemblyFactory);
+        this.policyFactory = policyFactory;
     }
 
     private QName getQName(String intentName) {
@@ -91,7 +92,7 @@ public class PolicyProcessor extends BaseJavaClassIntrospectorExtension {
         if (intentAnnotation != null) {
             String[] intentNames = intentAnnotation.value();
             if (intentNames.length != 0) {
-                Operation operation = factory.createOperation();
+                Operation operation = assemblyFactory.createOperation();
                 operation.setName(method.getName());
                 operation.setUnresolved(true);
                 for (String intentName : intentNames) {
@@ -140,7 +141,7 @@ public class PolicyProcessor extends BaseJavaClassIntrospectorExtension {
                     if (javaCallbackInterface.getJavaClass() != null) {
                         Callback callback = service.getCallback();
                         if (callback == null) {
-                            callback = factory.createCallback();
+                            callback = assemblyFactory.createCallback();
                             service.setCallback(callback);
                         }
                         readIntents(javaCallbackInterface.getJavaClass(), callback.getRequiredIntents());

@@ -45,14 +45,14 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
     /**
      * Constructs a new composite.
      */
-    public CompositeImpl() {
+    protected CompositeImpl() {
     }
     
     /**
      * Copy constructor.
      * @param other
      */
-    public CompositeImpl(Composite other) {
+    protected CompositeImpl(Composite other) {
         
         // Copy BaseImpl attributes
         setUnresolved(other.isUnresolved());

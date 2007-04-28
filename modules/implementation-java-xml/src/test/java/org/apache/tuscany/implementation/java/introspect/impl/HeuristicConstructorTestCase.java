@@ -22,12 +22,16 @@ import static org.apache.tuscany.implementation.java.introspect.impl.ModelHelper
 
 import java.lang.reflect.Constructor;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.impl.AmbiguousConstructorException;
 import org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.NoConstructorException;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
@@ -38,11 +42,15 @@ import org.osoa.sca.annotations.Remotable;
  */
 public class HeuristicConstructorTestCase extends AbstractProcessorTest {
 
+    private AssemblyFactory factory;
+    private JavaFactory javaFactory;
     private HeuristicPojoProcessor processor;
 
     public HeuristicConstructorTestCase() {
-        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
-        processor = new HeuristicPojoProcessor(introspector);
+        factory = new DefaultAssemblyFactory();
+        javaFactory = new DefaultJavaFactory();
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
+        processor = new HeuristicPojoProcessor(factory, javaFactory, introspector);
     }
 
     private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
@@ -96,7 +104,7 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
         JavaElement element = new JavaElement("foo", String.class, null);
         type.getPropertyMembers().put("foo", element);
 
-        org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference("ref", Foo1.class);
+        org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference(factory, javaFactory, "ref", Foo1.class);
         type.getReferences().add(ref);
         type.getReferenceMembers().put("ref", new JavaElement("ref", Foo1.class, null));
         visitEnd(Foo2.class, type);
@@ -118,10 +126,10 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
 
     public void testSingleConstructorAmbiguousRef() throws Exception {
         JavaImplementationDefinition type = new JavaImplementationDefinition();
-        org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference("ref", Foo1.class);
+        org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference(factory, javaFactory, "ref", Foo1.class);
         type.getReferences().add(ref);
         type.getReferenceMembers().put("ref", new JavaElement("ref", Foo1.class, null));
-        org.apache.tuscany.assembly.Reference ref2 = ModelHelper.createReference("ref2", Foo1.class);
+        org.apache.tuscany.assembly.Reference ref2 = ModelHelper.createReference(factory, javaFactory, "ref2", Foo1.class);
         type.getReferences().add(ref2);
         type.getReferenceMembers().put("ref2", new JavaElement("ref2", Foo1.class, null));
         try {

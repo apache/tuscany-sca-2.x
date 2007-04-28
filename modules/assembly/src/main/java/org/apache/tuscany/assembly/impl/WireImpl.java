@@ -41,14 +41,14 @@ public class WireImpl extends BaseImpl implements Wire {
     /**
      * Constructs a new wire.
      */
-    public WireImpl() {
+    protected WireImpl() {
     }
 
     /**
      * Copy constructor.
      * @param wire
      */
-    public WireImpl(Wire other) {
+    protected WireImpl(Wire other) {
         super(other);
         source = other.getSource();
         target = other.getTarget();

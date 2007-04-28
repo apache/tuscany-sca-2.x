@@ -42,6 +42,9 @@ public class BeanJavaInterfaceImpl implements JavaInterface {
     private List<Object> extensions = new ArrayList<Object>();
     private List<Operation> operations = new ArrayList<Operation>();
     private boolean unresolved = false;
+    
+    protected BeanJavaInterfaceImpl() {
+    }
 
     public String getName() {
         if (isUnresolved()) {

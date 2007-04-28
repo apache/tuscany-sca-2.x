@@ -25,12 +25,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
 
 /**
  * Implements a STAX artifact processor for CRUD implementations.
@@ -44,6 +46,14 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
  */
 public class CRUDImplementationProcessor implements StAXArtifactProcessorExtension<CRUDImplementation> {
     private static final QName IMPLEMENTATION_CRUD = new QName("http://crud", "implementation.crud");
+    
+    private AssemblyFactory assemblyFactory;
+    private JavaFactory javaFactory;
+    
+    public CRUDImplementationProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory) {
+        this.assemblyFactory = assemblyFactory;
+        this.javaFactory = javaFactory;
+    } 
 
     public QName getArtifactType() {
         // Returns the qname of the XML element processed by this processor
@@ -65,7 +75,7 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessorExtensi
             String directory = reader.getAttributeValue(null, "directory");
 
             // Create an initialize the CRUD implementation model
-            CRUDImplementation implementation = new CRUDImplementation();
+            CRUDImplementation implementation = new CRUDImplementation(assemblyFactory, javaFactory);
             implementation.setDirectory(directory);
             
             // Skip to end element

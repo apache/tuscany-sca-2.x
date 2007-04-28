@@ -21,10 +21,12 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
 import org.apache.tuscany.implementation.java.impl.JavaElement;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 
 /**
@@ -39,8 +41,8 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
     private org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor processor;
 
     public HeutisticExtensibleConstructorTestCase() {
-        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector();
-        processor = new HeuristicPojoProcessor(introspector);
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
+        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), introspector);
     }
 
     private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {

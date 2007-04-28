@@ -37,6 +37,9 @@ public class CallbackImpl extends BaseImpl implements Callback {
     private List<Binding> bindings = new ArrayList<Binding>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    
+    protected CallbackImpl() {
+    }
 
     public List<Binding> getBindings() {
         return bindings;

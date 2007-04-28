@@ -32,6 +32,9 @@ public class XSDefinitionImpl implements XSDefinition {
     private XmlSchema definition;
     private String namespace;
     private boolean unresolved;
+    
+    protected XSDefinitionImpl() {
+    }
 
     public XmlSchema getSchema() {
         return definition;

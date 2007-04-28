@@ -21,9 +21,11 @@ package org.apache.tuscany.container.crud;
 
 import java.util.Map;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 /**
@@ -38,7 +40,7 @@ public class CRUDModuleActivator implements ModuleActivator {
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
 
-        implementationLoader = new CRUDImplementationLoader();
+        implementationLoader = new CRUDImplementationLoader(new DefaultAssemblyFactory(), new DefaultJavaFactory());
         processors.addExtension(implementationLoader);
 
         builder = new CRUDComponentBuilder();

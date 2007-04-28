@@ -38,8 +38,6 @@ import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
-import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 public class JavaInterfaceProcessor implements StAXArtifactProcessorExtension<JavaInterfaceContract>, JavaConstants {
@@ -50,10 +48,6 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessorExtension<Ja
     public JavaInterfaceProcessor(JavaFactory javaFactory, JavaInterfaceIntrospector introspector) {
         this.javaFactory = javaFactory;
         this.introspector = introspector;
-    }
-    
-    public JavaInterfaceProcessor() {
-        this(new DefaultJavaFactory(), new DefaultJavaInterfaceIntrospector());
     }
     
     private JavaInterface createJavaInterface(String interfaceName) {

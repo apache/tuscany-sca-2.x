@@ -19,14 +19,19 @@
 
 package org.apache.tuscany.assembly.builder.impl;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.builder.ComponentServiceBuilder;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
-import org.apache.tuscany.assembly.impl.CompositeServiceImpl;
 
 public class ComponentServiceBuilderImpl extends ComponentServiceImpl implements ComponentServiceBuilder {
 	
 	private CompositeService compositeService;
+        private AssemblyFactory assemblyFactory;
+        
+        protected ComponentServiceBuilderImpl(AssemblyFactory assemblyFactory) {
+            this.assemblyFactory = assemblyFactory;
+        }
 	
 	public ComponentServiceBuilderImpl typedBy(Class interfaceClass) {
 		//FIXME support for Java interfaces 
@@ -34,13 +39,13 @@ public class ComponentServiceBuilderImpl extends ComponentServiceImpl implements
 	}
 	
 	public ComponentServiceBuilderImpl promotedAs(String promoted) {
-		compositeService = new CompositeServiceImpl();
+		compositeService = assemblyFactory.createCompositeService();
 		compositeService.setName(promoted);
 		return this;
 	}
 
 	public ComponentServiceBuilderImpl promoted() {
-		compositeService = new CompositeServiceImpl();
+		compositeService = assemblyFactory.createCompositeService();
 		compositeService.setName(getName());
 		return this;
 	}

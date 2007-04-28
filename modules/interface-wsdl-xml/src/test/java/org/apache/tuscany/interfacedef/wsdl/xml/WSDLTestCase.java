@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 
 /**
  * Test reading WSDL interfaces.
@@ -43,7 +44,7 @@ public class WSDLTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
 
-        WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor();
+        WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
         documentProcessors.addExtension(wsdlProcessor);
     }
 

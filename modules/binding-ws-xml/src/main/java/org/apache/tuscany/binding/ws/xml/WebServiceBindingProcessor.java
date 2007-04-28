@@ -33,12 +33,10 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
-import org.apache.tuscany.binding.ws.impl.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
@@ -50,11 +48,8 @@ import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
-import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
     StAXArtifactProcessorExtension<WebServiceBinding>, WebServiceConstants {
@@ -72,12 +67,6 @@ public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
         this.wsFactory = wsFactory;
         this.introspector = introspector;
         this.wsdlFactory = wsdlFactory;
-    }
-
-    public WebServiceBindingProcessor() {
-        this(new DefaultAssemblyFactory(), new DefaultPolicyFactory(), new DefaultWebServiceBindingFactory(),
-             new DefaultWSDLFactory(), new DefaultWSDLInterfaceIntrospector());
-
     }
 
     public WebServiceBinding read(XMLStreamReader reader) throws ContributionReadException {
@@ -224,7 +213,7 @@ public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
     }
 
     public void resolve(WebServiceBinding model, ArtifactResolver resolver) throws ContributionResolveException {
-        WSDLDefinition wsdlDefinition = new DefaultWSDLFactory().createWSDLDefinition();
+        WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
         wsdlDefinition.setUnresolved(true);
         wsdlDefinition.setNamespace(model.getNamespace());
         wsdlDefinition = resolver.resolve(WSDLDefinition.class, wsdlDefinition);

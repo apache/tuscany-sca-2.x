@@ -34,7 +34,6 @@ import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.OneWay;
@@ -53,8 +52,8 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
     private JavaFactory javaFactory;
     private List<JavaInterfaceIntrospectorExtension> extensions = new ArrayList<JavaInterfaceIntrospectorExtension>();
 
-    public DefaultJavaInterfaceIntrospector() {
-        this.javaFactory = new DefaultJavaFactory();
+    public DefaultJavaInterfaceIntrospector(JavaFactory javaFactory) {
+        this.javaFactory = javaFactory;
     }
 
     public void addExtension(JavaInterfaceIntrospectorExtension extension) {

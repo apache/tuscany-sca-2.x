@@ -21,6 +21,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Scope;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
@@ -35,7 +36,7 @@ public class ScopeProcessorTestCase extends TestCase {
     Component parent;
 
     public void testCompositeScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor();
+        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
 
@@ -44,7 +45,7 @@ public class ScopeProcessorTestCase extends TestCase {
     }
 
     public void testSessionScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor();
+        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         processor.visitClass(Session.class, type);
@@ -52,7 +53,7 @@ public class ScopeProcessorTestCase extends TestCase {
     }
 
     public void testConversationalScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor();
+        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         processor.visitClass(Conversation.class, type);
@@ -60,7 +61,7 @@ public class ScopeProcessorTestCase extends TestCase {
     }
 
     public void testRequestScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor();
+        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         processor.visitClass(Request.class, type);
@@ -68,7 +69,7 @@ public class ScopeProcessorTestCase extends TestCase {
     }
 
     public void testSystemScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor();
+        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         processor.visitClass(System.class, type);
@@ -76,7 +77,7 @@ public class ScopeProcessorTestCase extends TestCase {
     }
 
     public void testStatelessScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor();
+        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         processor.visitClass(Stateless.class, type);
@@ -84,7 +85,7 @@ public class ScopeProcessorTestCase extends TestCase {
     }
 
     public void testNoScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor();
+        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementationDefinition type =
             new JavaImplementationDefinition();
         processor.visitClass(None.class, type);

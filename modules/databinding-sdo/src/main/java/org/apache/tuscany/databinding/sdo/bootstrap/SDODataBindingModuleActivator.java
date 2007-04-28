@@ -22,6 +22,8 @@ package org.apache.tuscany.databinding.sdo.bootstrap;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
@@ -71,7 +73,8 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         transformerRegistry.registerTransformer(new XMLStreamReader2XMLDocument());
         
         JavaClassIntrospectorExtensionPoint introspectorExtensionPoint = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
-        introspectorExtensionPoint.addExtension(new HelperContextProcessor(contextRegistry));
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        introspectorExtensionPoint.addExtension(new HelperContextProcessor(assemblyFactory, contextRegistry));
 
     }
 

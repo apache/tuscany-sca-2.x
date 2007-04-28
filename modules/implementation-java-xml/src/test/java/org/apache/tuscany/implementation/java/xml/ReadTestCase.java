@@ -36,6 +36,10 @@ import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.PolicyFactory;
@@ -61,10 +65,13 @@ public class ReadTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
+        JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector();
+        
         CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
         staxProcessors.addExtension(compositeProcessor);
 
-        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor();
+        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(factory, policyFactory, javaImplementationFactory, classIntrospector);
         staxProcessors.addExtension(javaProcessor);
     }
 

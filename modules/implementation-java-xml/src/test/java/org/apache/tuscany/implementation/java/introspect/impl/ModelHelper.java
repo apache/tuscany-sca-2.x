@@ -25,19 +25,16 @@ import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ModelHelper {
-    private final static AssemblyFactory factory = new DefaultAssemblyFactory();
 
     public static Property getProperty(JavaImplementationDefinition type, String name) {
         for (Property prop : type.getProperties()) {
@@ -75,23 +72,25 @@ public class ModelHelper {
         }
     }
 
-    public static ComponentService createService(Class<?> type) {
+    public static ComponentService createService(AssemblyFactory factory,
+                                                 JavaFactory javaFactory, Class<?> type) {
         org.apache.tuscany.assembly.ComponentService ref = factory.createComponentService();
         ref.setName(type.getSimpleName());
-        JavaInterface i = new JavaInterfaceImpl();
+        JavaInterface i = javaFactory.createJavaInterface();
         i.setJavaClass(type);
-        JavaInterfaceContract ic = new JavaInterfaceContractImpl();
+        JavaInterfaceContract ic = javaFactory.createJavaInterfaceContract();
         ic.setInterface(i);
         ref.setInterfaceContract(ic);
         return ref;
     }
 
-    public static Reference createReference(String name, Class<?> type) {
+    public static Reference createReference(AssemblyFactory factory,
+                                            JavaFactory javaFactory, String name, Class<?> type) {
         org.apache.tuscany.assembly.Reference ref = factory.createReference();
         ref.setName(name);
-        JavaInterface i = new JavaInterfaceImpl();
+        JavaInterface i = javaFactory.createJavaInterface();
         i.setJavaClass(type);
-        JavaInterfaceContract ic = new JavaInterfaceContractImpl();
+        JavaInterfaceContract ic = javaFactory.createJavaInterfaceContract();
         ic.setInterface(i);
         ref.setInterfaceContract(ic);
         return ref;

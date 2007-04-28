@@ -23,14 +23,14 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.Contract;
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
-import org.apache.tuscany.implementation.java.proxy.JDKInvocationHandler;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -43,7 +43,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class JDKInvocationHandlerProxyTestCase extends TestCase {
-    private JavaInterfaceIntrospectorExtensionPoint introspector = new DefaultJavaInterfaceIntrospector();
+    private JavaInterfaceIntrospectorExtensionPoint introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
     private Method clientHello;
 
     /**
@@ -52,8 +52,9 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
      */
     public void testDifferentInterface() throws Throwable {
         Wire wire = new WireImpl();
-
-        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        
+        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         interfaceContract.setInterface(introspector.introspect(Target.class));
         for (Operation operation : interfaceContract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);

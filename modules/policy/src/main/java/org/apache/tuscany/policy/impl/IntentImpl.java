@@ -40,6 +40,9 @@ public class IntentImpl implements Intent {
     private List<Intent> qualifiedIntents;
     private List<Intent> requiredIntents;
     private boolean unresolved;
+    
+    protected IntentImpl() {
+    }
 
     public QName getName() {
         return name;

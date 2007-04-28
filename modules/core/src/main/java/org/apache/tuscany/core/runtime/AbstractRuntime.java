@@ -34,6 +34,7 @@ import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.component.ComponentManagerImpl;
@@ -91,13 +92,16 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
     protected Collection<ModuleActivator> activators;
     
     protected ThreadPoolWorkManager workManager;
+    
+    private AssemblyFactory assemblyFactory;
 
-    protected AbstractRuntime(Class<I> runtimeInfoType, I runtimeInfo, MonitorFactory monitorFactory, ClassLoader hostClassLoader) {
+    protected AbstractRuntime(Class<I> runtimeInfoType, I runtimeInfo, MonitorFactory monitorFactory, ClassLoader hostClassLoader, AssemblyFactory assemblyFactory) {
         this.runtimeInfoType = runtimeInfoType;
         this.runtimeInfo = runtimeInfo;
         this.monitorFactory = monitorFactory;
         this.hostClassLoader = hostClassLoader;
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
+        this.assemblyFactory = assemblyFactory;
     }
 
     public URL getApplicationSCDL() {
@@ -183,7 +187,7 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
         TuscanyManagementService tms = (TuscanyManagementService)getManagementService();
         componentManager = new ComponentManagerImpl(tms);
         extensionRegistry.addExtensionPoint(ComponentManager.class, componentManager);
-        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager);
+        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, assemblyFactory);
     }
 
     protected void registerSystemExtensionPoints() throws InitializationException {

@@ -35,6 +35,9 @@ public abstract class BindingImpl extends BaseImpl implements Binding {
     private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    
+    protected BindingImpl() {
+    }
 
     public String getName() {
         return name;

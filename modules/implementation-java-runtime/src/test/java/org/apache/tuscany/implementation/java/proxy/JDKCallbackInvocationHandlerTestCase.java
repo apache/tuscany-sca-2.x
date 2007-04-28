@@ -25,16 +25,28 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.implementation.java.context.ModelHelper;
 import org.apache.tuscany.implementation.java.proxy.JDKCallbackInvocationHandler;
+import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JDKCallbackInvocationHandlerTestCase extends TestCase {
+    
+    private AssemblyFactory assemblyFactory;
+    private JavaFactory javaFactory;
+    
+    protected void setUp() throws Exception {
+        assemblyFactory = new DefaultAssemblyFactory();
+        javaFactory = new DefaultJavaFactory();
+    }
 
     public void testToString() {
         Wire wire = new WireImpl();
@@ -42,7 +54,7 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
         wire.setSourceUri(uri);
         List<Wire> wires = new ArrayList<Wire>();
         wires.add(wire);
-        wire.setSourceContract(ModelHelper.createReference("foo", Foo.class).getInterfaceContract());
+        wire.setSourceContract(ModelHelper.createReference(assemblyFactory, javaFactory, "foo", Foo.class).getInterfaceContract());
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wires, new WorkContextImpl());
         Foo foo = (Foo)Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {Foo.class}, handler);
         assertNotNull(foo.toString());
@@ -50,7 +62,7 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
 
     public void testHashCode() {
         Wire wire = new WireImpl();
-        wire.setSourceContract(ModelHelper.createReference("foo", Foo.class).getInterfaceContract());
+        wire.setSourceContract(ModelHelper.createReference(assemblyFactory, javaFactory, "foo", Foo.class).getInterfaceContract());
         URI uri = URI.create("#wire");
         wire.setSourceUri(uri);
         List<Wire> wires = new ArrayList<Wire>();

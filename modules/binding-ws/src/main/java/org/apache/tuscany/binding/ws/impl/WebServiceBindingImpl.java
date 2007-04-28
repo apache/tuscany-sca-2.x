@@ -47,8 +47,10 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     private String endpointName;
     private WSDLDefinition wsdlDefinition;
     private String wsdlNamespace;
-    
     private InterfaceContract bindingInterfaceContract;
+    
+    protected WebServiceBindingImpl() {
+    }
     
     public String getLocation() {
         return location;

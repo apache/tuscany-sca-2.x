@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Parameter;
 
@@ -34,10 +33,10 @@ import org.apache.tuscany.implementation.java.impl.Parameter;
  * @version $Rev$ $Date$
  */
 public abstract class BaseJavaClassIntrospectorExtension implements JavaClassIntrospectorExtension {
-    protected AssemblyFactory factory;
+    protected AssemblyFactory assemblyFactory;
     
-    public BaseJavaClassIntrospectorExtension() {
-        this.factory = new DefaultAssemblyFactory();
+    public BaseJavaClassIntrospectorExtension(AssemblyFactory factory) {
+        this.assemblyFactory = factory;
     }
 
     public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {

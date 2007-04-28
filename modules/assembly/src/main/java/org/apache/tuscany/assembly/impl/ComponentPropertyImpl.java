@@ -31,6 +31,23 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
     private String file;
     private Property property;
     private String source;
+    
+    /**
+     * Constructs a new component property.
+     */
+    protected ComponentPropertyImpl() {
+    }
+    
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    protected ComponentPropertyImpl(ComponentProperty other) {
+        super(other);
+        file = other.getFile();
+        property = other.getProperty();
+        source = other.getSource();
+    }
 
     public Object getValue() {
         if (super.getValue() == null && property != null) {
@@ -40,23 +57,6 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
         }
     }
  
-    /**
-     * Constructs a new component property.
-     */
-    public ComponentPropertyImpl() {
-    }
-    
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    public ComponentPropertyImpl(ComponentProperty other) {
-        super(other);
-        file = other.getFile();
-        property = other.getProperty();
-        source = other.getSource();
-    }
-
     public String getFile() {
         return file;
     }

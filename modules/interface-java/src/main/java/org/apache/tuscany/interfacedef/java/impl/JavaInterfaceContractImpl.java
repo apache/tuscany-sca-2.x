@@ -27,5 +27,8 @@ import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceContractImpl extends InterfaceContractImpl implements JavaInterfaceContract {
+    
+    protected JavaInterfaceContractImpl() {
+    }
 
 }

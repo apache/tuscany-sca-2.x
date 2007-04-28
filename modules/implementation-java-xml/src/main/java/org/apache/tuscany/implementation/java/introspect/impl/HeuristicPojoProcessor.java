@@ -40,6 +40,7 @@ import java.util.Set;
 
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.api.annotation.Resource;
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
@@ -53,9 +54,7 @@ import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Property;
@@ -77,11 +76,12 @@ import org.osoa.sca.annotations.Service;
  */
 public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
     private JavaFactory javaFactory;
-    private JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
+    private JavaInterfaceIntrospector interfaceIntrospector;
 
-    public HeuristicPojoProcessor(JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+    public HeuristicPojoProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory, JavaInterfaceIntrospector interfaceIntrospector) {
+        super(assemblyFactory);
         this.interfaceIntrospector = interfaceIntrospector;
-        this.javaFactory = new DefaultJavaFactory();
+        this.javaFactory = javaFactory;
     }
 
     public <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
@@ -482,7 +482,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
      * @param paramType the property type
      */
     private org.apache.tuscany.assembly.Property createProperty(String name, Class<?> paramType) {
-        org.apache.tuscany.assembly.Property property = factory.createProperty();
+        org.apache.tuscany.assembly.Property property = assemblyFactory.createProperty();
         property.setName(name);
         property.setXSDType(JavaXMLMapper.getXMLType(paramType));
         return property;
@@ -575,9 +575,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
 
     public org.apache.tuscany.assembly.Reference createReference(String name, Class<?> paramType)
         throws IntrospectionException {
-        org.apache.tuscany.assembly.Reference reference = factory.createReference();
+        org.apache.tuscany.assembly.Reference reference = assemblyFactory.createReference();
         reference.setName(name);
-        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
         try {
             JavaInterface callInterface = interfaceIntrospector.introspect(paramType);
@@ -599,10 +599,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public org.apache.tuscany.assembly.Service createService(Class<?> interfaze) throws InvalidInterfaceException {
-        org.apache.tuscany.assembly.Service service = factory.createService();
+        org.apache.tuscany.assembly.Service service = assemblyFactory.createService();
         service.setName(interfaze.getSimpleName());
 
-        JavaInterfaceContract interfaceContract = new JavaInterfaceContractImpl();
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
         
         JavaInterface callInterface = interfaceIntrospector.introspect(interfaze);

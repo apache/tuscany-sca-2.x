@@ -34,6 +34,7 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension;
 import org.easymock.EasyMock;
@@ -84,7 +85,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        impl = new DefaultJavaInterfaceIntrospector();
+        impl = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
 
     }
 
