@@ -59,6 +59,24 @@
 				<include>**/*</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>../samples</directory>
+			<outputDirectory>tuscany-sca-${tuscany.version}/samples</outputDirectory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+			<excludes>
+				<exclude>pom.xml</exclude>
+				<exclude>*/.classpath</exclude>
+				<exclude>*/.project</exclude>
+				<exclude>*/target/classes</exclude>
+				<exclude>*/target/classes/**/*</exclude>
+				<exclude>*/target/test-classes</exclude>
+				<exclude>*/target/test-classes/**/*</exclude>
+				<exclude>*/target/surefire-reports</exclude>
+				<exclude>*/target/surefire-reports/**/*</exclude>
+			</excludes>
+		</fileSet>
 	</fileSets>
 
 	<dependencySets>
