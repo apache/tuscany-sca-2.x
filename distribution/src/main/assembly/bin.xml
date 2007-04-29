@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	* Licensed to the Apache Software Foundation (ASF) under one
+	* or more contributor license agreements.  See the NOTICE file
+	* distributed with this work for additional information
+	* regarding copyright ownership.  The ASF licenses this file
+	* to you under the Apache License, Version 2.0 (the
+	* "License"); you may not use this file except in compliance
+	* with the License.  You may obtain a copy of the License at
+	*
+	*   http://www.apache.org/licenses/LICENSE-2.0
+	*
+	* Unless required by applicable law or agreed to in writing,
+	* software distributed under the License is distributed on an
+	* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	* KIND, either express or implied.  See the License for the
+	* specific language governing permissions and limitations
+	* under the License.
+-->
+<assembly>
+	<!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
+	<id></id>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<formats>
+          <format>dir</format>
+          <format>tar.gz</format>
+          <format>zip</format>
+	</formats>
+
+	<fileSets>
+		<fileSet>
+			<directory>src/main/release</directory>
+			<outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
+			<includes>
+				<include>DISCLAIMER</include>
+				<include>LICENSE</include>
+				<include>NOTICE</include>
+				<include>release_notes.txt</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/maven-shared-archive-resources/META-INF</directory>
+			<outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
+			<includes>
+				<include>NOTICE</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>manifest/target</directory>
+			<outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
+			<includes>
+				<include>tuscany-sca-manifest-${tuscany.version}.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/javadoc</directory>
+			<outputDirectory>tuscany-sca-${tuscany.version}/docs/sca-api</outputDirectory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+
+	<dependencySets>
+            <dependencySet>
+                <outputDirectory>tuscany-sca-${tuscany.version}/modules</outputDirectory>
+		    <unpack>false</unpack>
+		    <includes>
+                    <include>include>org.apache.tuscany:assembly</include>
+                    <include>org.apache.tuscany.sca:tuscany-assembly-java-dsl</include>
+                    <include>org.apache.tuscany.sca:tuscany-assembly-xml</include>
+                    <include>org.apache.tuscany.sca:tuscany-binding-rmi</include>
+                    <include>org.apache.tuscany.sca:tuscany-binding-ws</include>
+                    <include>org.apache.tuscany.sca:tuscany-binding-ws-axis2</include>
+                    <include>org.apache.tuscany.sca:tuscany-binding-ws-xml</include>
+                    <include>org.apache.tuscany.sca:tuscany-commonj-api</include>
+                    <include>org.apache.tuscany.sca:tuscany-contribution</include>
+                    <include>org.apache.tuscany.sca:tuscany-contribution-impl</include>
+                    <include>org.apache.tuscany.sca:tuscany-core</include>
+                    <include>org.apache.tuscany.sca:tuscany-core-databinding</include>
+                    <include>org.apache.tuscany.sca:tuscany-core-spi</include>
+                    <include>org.apache.tuscany.sca:tuscany-core-spring</include>
+                    <include>org.apache.tuscany.sca:tuscany-databinding</include>
+                    <include>org.apache.tuscany.sca:tuscany-databinding-axiom</include>
+                    <include>org.apache.tuscany.sca:tuscany-databinding-jaxb</include>
+                    <include>org.apache.tuscany.sca:tuscany-databinding-sdo</include>
+                    <include>org.apache.tuscany.sca:tuscany-databinding-sdo-axiom</include>    
+                    <include>org.apache.tuscany.sca:tuscany-host-embedded</include>
+                    <include>org.apache.tuscany.sca:tuscany-host-spi</include>
+                    <include>org.apache.tuscany.sca:tuscany-http</include>
+                    <include>org.apache.tuscany.sca:tuscany-http-jetty</include>
+                    <include>org.apache.tuscany.sca:tuscany-http-tomcat</include>
+                    <include>org.apache.tuscany.sca:tuscany-interface</include>
+                    <include>org.apache.tuscany.sca:tuscany-interface-java</include>
+                    <include>org.apache.tuscany.sca:tuscany-interface-java-xml</include>    
+                    <include>org.apache.tuscany.sca:tuscany-interface-java-runtime</include>
+                    <include>org.apache.tuscany.sca:tuscany-interface-wsdl</include>
+                    <include>org.apache.tuscany.sca:tuscany-interface-wsdl-xml</include>
+                    <include>org.apache.tuscany.sca:tuscany-interface-wsdl-runtime</include>
+                    <include>org.apache.tuscany.sca:tuscany-implementation-java</include>
+                    <include>org.apache.tuscany.sca:tuscany-implementation-java-xml</include>
+                    <include>org.apache.tuscany.sca:tuscany-implementation-java-runtime</include>
+                    <include>org.apache.tuscany.sca:tuscany-implementation-script</include>
+                    <include>org.apache.tuscany.sca:tuscany-java2wsdl</include>
+                    <include>org.apache.tuscany.sca:tuscany-maven-java2wsdl</include>
+                    <include>org.apache.tuscany.sca:tuscany-maven-wsdl2java</include>
+                    <include>org.apache.tuscany.sca:tuscany-policy</include>
+                    <include>org.apache.tuscany.sca:tuscany-rmi</include>
+                    <include>org.apache.tuscany.sca:tuscany-sca-api</include>
+                    <include>org.apache.tuscany.sca:tuscany-wsdl2java</include>
+		    </includes>
+		    <scope>runtime</scope>
+		</dependencySet>
+
+		<dependencySet>
+		    <outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
+		    <unpack>false</unpack>
+			<excludes>
+                    <exclude>org.apache.tuscany.sca:tuscany-bundle</exclude>
+                    <exclude>org.apache.tuscany.sdo:tuscany-sdo-impl</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-assembly</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-assembly-java-dsl</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-assembly-xml</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-binding-rmi</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-binding-ws</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-binding-ws-axis2</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-binding-ws-xml</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-commonj-api</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-contribution</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-contribution-impl</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-core</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-core-databinding</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-core-spi</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-core-spring</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-databinding</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-databinding-axiom</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-databinding-jaxb</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-databinding-sdo</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-databinding-sdo-axiom</exclude>    
+                    <exclude>org.apache.tuscany.sca:tuscany-host-embedded</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-host-spi</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-http</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-http-jetty</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-http-tomcat</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-interface</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-interface-java</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-interface-java-xml</exclude>    
+                    <exclude>org.apache.tuscany.sca:tuscany-interface-java-runtime</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-interface-wsdl</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-interface-wsdl-xml</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-interface-wsdl-runtime</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-implementation-java</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-implementation-java-xml</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-implementation-java-runtime</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-implementation-script</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-java2wsdl</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-maven-java2wsdl</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-maven-wsdl2java</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-policy</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-rmi</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-sca-api</exclude>
+                    <exclude>org.apache.tuscany.sca:tuscany-wsdl2java</exclude>
+                  </excludes>
+                  <scope>runtime</scope>
+		</dependencySet>
+
+		<dependencySet>
+		    <outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
+		    <unpack>false</unpack>
+		    <includes>
+		        <include>org.apache.tuscany.sca:tuscany-bundle</include>
+		    </includes>
+		    <scope>runtime</scope>
+		    <outputFileNameMapping>tuscany-sca-${version}.${extension}</outputFileNameMapping>
+		</dependencySet>
+
+<!--
+            <dependencySet>
+                <outputDirectory>tuscany-sca-${tuscany.version}/modules</outputDirectory>
+		    <unpack>false</unpack>
+		    <includes>
+		        <include>org.apache.tuscany.sca:*</include>
+		    </includes>
+                <excludes>
+                   <exclude>org.apache.tuscany.sca:tuscany-bundle</exclude>
+                </excludes>
+		    <scope>runtime</scope>
+		</dependencySet>
+		<dependencySet>
+			<outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
+			<unpack>false</unpack>
+			<excludes>
+		        <exclude>org.apache.tuscany.sca:*</exclude>
+                  </excludes>
+			<scope>runtime</scope>
+		</dependencySet>
+-->		
+
+	</dependencySets>
+	
+</assembly>
