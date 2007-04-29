@@ -135,7 +135,6 @@
 		    <unpack>false</unpack>
 			<excludes>
                     <exclude>org.apache.tuscany.sca:tuscany-bundle</exclude>
-                    <exclude>org.apache.tuscany.sdo:tuscany-sdo-impl</exclude>
                     <exclude>org.apache.tuscany.sca:tuscany-assembly</exclude>
                     <exclude>org.apache.tuscany.sca:tuscany-assembly-java-dsl</exclude>
                     <exclude>org.apache.tuscany.sca:tuscany-assembly-xml</exclude>
