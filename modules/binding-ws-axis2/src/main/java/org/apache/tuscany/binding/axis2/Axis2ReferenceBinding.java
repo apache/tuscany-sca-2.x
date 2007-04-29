@@ -153,7 +153,7 @@ public class Axis2ReferenceBinding extends ReferenceBindingExtension {
         options.setTimeOutInMilliSeconds(30 * 1000); // 30 seconds
 
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
-        QName wsdlOperationQName = new QName(wsBinding.getNamespace(), operationName);
+        QName wsdlOperationQName = new QName(operationName);
 
         Axis2TargetInvoker invoker;
         if (hasCallback) {
