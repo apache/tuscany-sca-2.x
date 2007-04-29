@@ -30,6 +30,17 @@
     <artifactId>tuscany-implementation-script</artifactId>
     <name>Apache Tuscany Implementation Script</name>
 
+    <repositories>
+       <!-- This is required to work around a bug in the JRuby pom, see http://jira.codehaus.org/browse/JRUBY-901 -->
+       <repository>
+          <id>ant-jruby</id>
+          <url>http://people.apache.org/~antelder/jruby-repo</url>
+          <snapshots>
+             <enabled>true</enabled>
+          </snapshots>
+       </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
