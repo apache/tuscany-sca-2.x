@@ -112,9 +112,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         WirePostProcessorRegistry wirePostProcessorRegistry = new WirePostProcessorRegistryImpl();
         deployer.setWirePostProcessorRegistry(wirePostProcessorRegistry);
         extensionRegistry.addExtensionPoint(WirePostProcessorRegistry.class, wirePostProcessorRegistry);
-        extensionRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
         extensionRegistry.addExtensionPoint(BuilderRegistry.class, builder);
-        // extensionRegistry.addExtension(LoaderRegistry.class, loader);
         extensionRegistry.addExtensionPoint(Deployer.class, deployer);
         return deployer;
     }
@@ -155,7 +153,6 @@ public class DefaultBootstrapper implements Bootstrapper {
         BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(componentManager, scopeRegistry);
         CompositeBuilder compositeBuilder = new CompositeBuilder();
         compositeBuilder.setBuilderRegistry(builderRegistry);
-        compositeBuilder.setScopeRegistry(scopeRegistry);
         compositeBuilder.init();
         // builderRegistry.register(CompositeImplementation.class,
         // compositeBuilder);

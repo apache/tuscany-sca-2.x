@@ -53,7 +53,6 @@ public class JavaComponentBuilderConversationIDTestCaseFIXME extends TestCase {
         EasyMock.expect(registry.getScopeContainer(Scope.STATELESS)).andReturn(container);
         EasyMock.replay(registry);
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setScopeRegistry(registry);
         WorkContext workContext = new WorkContextImpl();
         workContext.setIdentifier(Scope.CONVERSATION, "convID");
         builder.setWorkContext(workContext);
