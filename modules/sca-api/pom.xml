@@ -29,4 +29,31 @@
     <artifactId>sca-api</artifactId>
     <name>Apache Tuscany SCA API</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <attach>true</attach>
+                    <quiet>true</quiet>
+                    <bottom>Apache Tuscany is an effort undergoing incubation at the Apache Software Foundation(ASF) and sponsored by the Apache WS PMC.</bottom>
+                    <header>Apache Tuscany OSOA SCA API</header>
+                    <footer>Apache Tuscany OSOA SCA API</footer>
+                    <sourcepath>${basedir}/src/main/java${path.separator}${basedir}/target/generated/src/main/java</sourcepath>
+                    <subpackages>org.osoa.sca</subpackages>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
