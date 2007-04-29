@@ -62,7 +62,6 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.ProxyService;
 
@@ -131,7 +130,6 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
         BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setScopeRegistry(extensionPointRegistry.getExtensionPoint(ScopeRegistry.class));
         builder.setProxyService(extensionPointRegistry.getExtensionPoint(ProxyService.class));
         builder.setWorkContext(extensionPointRegistry.getExtensionPoint(WorkContext.class));
         builderRegistry.register(JavaImplementation.class, builder);

@@ -196,9 +196,6 @@ public abstract class AbstractRuntime<I extends RuntimeInfo> implements TuscanyR
 
         // register the ComponentManager to that the fabric can wire to it
         extensionRegistry.addExtensionPoint(ComponentManager.class, componentManager);
-
-        // register the ScopeRegistry
-        extensionRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
     }
 
     protected ComponentManager getComponentManager() {

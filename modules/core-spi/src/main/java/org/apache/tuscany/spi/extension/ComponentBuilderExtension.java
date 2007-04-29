@@ -37,18 +37,12 @@ import org.osoa.sca.annotations.Reference;
 @EagerInit
 public abstract class ComponentBuilderExtension<I extends Implementation> implements ComponentBuilder {
     protected BuilderRegistry builderRegistry;
-    protected ScopeRegistry scopeRegistry;
     protected ProxyService proxyService;
     protected WorkContext workContext;
 
     @Reference
     public void setBuilderRegistry(BuilderRegistry registry) {
         this.builderRegistry = registry;
-    }
-
-    @Reference
-    public void setScopeRegistry(ScopeRegistry scopeRegistry) {
-        this.scopeRegistry = scopeRegistry;
     }
 
     @Reference

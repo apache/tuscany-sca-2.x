@@ -53,7 +53,6 @@ public class JavaBuilderPropertyTestCaseFIXME extends TestCase {
     @SuppressWarnings("unchecked")
     public void testPropertyHandling() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setScopeRegistry(registry);
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         Property property = factory.createProperty();
         property.setName("test");
@@ -79,7 +78,6 @@ public class JavaBuilderPropertyTestCaseFIXME extends TestCase {
 
     public void testIntPropertyHandling() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setScopeRegistry(registry);
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         Property property = factory.createProperty();
         property.setName("test");

@@ -57,7 +57,6 @@ public class JavaComponentBuilderResourceTestCaseFIXME extends TestCase {
         EasyMock.replay(host);
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setHost(host);
-        builder.setScopeRegistry(registry);
         ConstructorDefinition<Foo> ctorDef = new ConstructorDefinition<Foo>(Foo.class.getConstructor());
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         Resource resource = new Resource(new JavaElement(Foo.class.getDeclaredField("resource")));
