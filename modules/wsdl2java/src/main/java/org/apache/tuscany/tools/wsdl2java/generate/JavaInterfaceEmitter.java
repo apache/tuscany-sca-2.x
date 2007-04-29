@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.tools.wsdl2java.generate;
 
+import static org.apache.tuscany.tools.wsdl2java.util.XMLNameUtil.getJavaNameFromXMLName;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,6 @@ import org.apache.axis2.wsdl.codegen.writer.InterfaceWriter;
 import org.apache.axis2.wsdl.databinding.TypeMapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import static org.apache.tuscany.tools.java2wsdl.util.XMLNameUtil.getJavaNameFromXMLName;
 
 /**
  * Overrides the Axis2 JavaEmitter to generate unwrapped methods.

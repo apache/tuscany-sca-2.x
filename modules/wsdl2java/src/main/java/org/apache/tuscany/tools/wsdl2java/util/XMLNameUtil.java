@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.tools.java2wsdl.util;
+package org.apache.tuscany.tools.wsdl2java.util;
 
 import java.util.ArrayList;
 import java.util.List;
