@@ -42,10 +42,10 @@ import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
+import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -148,9 +148,9 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
             if (op != null) {
 
                 if (op.isNonBlocking()) {
-                    axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_ONLY);
+                    axisOp.setMessageExchangePattern(WSDL2Constants.MEP_URI_IN_ONLY);
                 } else {
-                    axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
+                    axisOp.setMessageExchangePattern(WSDL2Constants.MEP_URI_IN_OUT);
                 }
 
                 MessageReceiver msgrec = null;

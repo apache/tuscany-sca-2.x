@@ -67,6 +67,15 @@ public class Axis2ServiceServlet extends AxisServlet {
     }
 
     /**
+     * Override Axis2 servlet method to avoid loop when init 
+     * is called after servletConfig already initialized by
+     * this classes init(ConfigurationContext) method.
+     */
+    @Override
+    public void init() throws ServletException {
+    }
+
+    /**
      * We've setup the Servlet by passing in a ConfigurationContext on our init method 
      * override this method to just return that
      */
