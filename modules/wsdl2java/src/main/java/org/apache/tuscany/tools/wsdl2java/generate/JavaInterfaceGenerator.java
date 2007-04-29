@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.tools.wsdl2java.generate;
 
-import static org.apache.tuscany.tools.java2wsdl.util.XMLNameUtil.getPackageNameFromNamespace;
+import static org.apache.tuscany.tools.wsdl2java.util.XMLNameUtil.getPackageNameFromNamespace;
 
 import java.io.File;
 import java.io.IOException;
