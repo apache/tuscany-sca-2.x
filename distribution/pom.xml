@@ -46,6 +46,11 @@
             <artifactId>tuscany-bundle</artifactId>
             <version>${pom.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
