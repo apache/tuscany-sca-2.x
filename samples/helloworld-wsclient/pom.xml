@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-sample-helloworld-wsclient</artifactId>
+    <artifactId>sample-helloworld-wsclient</artifactId>
     <name>Apache Tuscany HelloWorld Web Service Client Sample</name>
 
     <dependencies>
@@ -58,18 +58,7 @@
     </dependencies>
     
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>helloworld.HelloWorldClient</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
+       <finalName>${artifactId}</finalName>
     </build>
+
 </project>
