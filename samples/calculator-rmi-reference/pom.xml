@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-sample-calculator-rmi-reference</artifactId>
+    <artifactId>sample-calculator-rmi-reference</artifactId>
     <name>Apache Tuscany Calculator Sample using an RMI Service Reference</name> <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -47,18 +47,7 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>calculator.CalculatorClient</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
+       <finalName>${artifactId}</finalName>
     </build>
+
 </project>

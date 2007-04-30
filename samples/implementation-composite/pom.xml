@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-sample-implementation-composite</artifactId>
+    <artifactId>sample-implementation-composite</artifactId>
     <name>Apache Tuscany Composite Implementation Sample</name>
     <description>A sample showing local wiring of a component implemented by a nested composite</description>
 
@@ -45,18 +45,7 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>composite.CompositeClient</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
+       <finalName>${artifactId}</finalName>
     </build>
+
 </project>

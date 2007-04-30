@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-sample-binding-echo</artifactId>
+    <artifactId>sample-binding-echo</artifactId>
     <name>Apache Tuscany Echo Binding Sample</name>
 
     <dependencies>
@@ -60,5 +60,9 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
+
+    <build>
+       <finalName>${artifactId}</finalName>
+    </build>
 
 </project>
