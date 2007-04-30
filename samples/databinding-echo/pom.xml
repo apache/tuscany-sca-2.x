@@ -26,8 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-sample-databinding-echo</artifactId>
-    <version>1.0-incubating-SNAPSHOT</version>
+    <artifactId>sample-databinding-echo</artifactId>
     <name>Apache Tuscany Echo Data Binding Sample</name>    
 
     <dependencies>
@@ -113,5 +112,9 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
+
+    <build>
+       <finalName>${artifactId}</finalName>
+    </build>
 
 </project>
