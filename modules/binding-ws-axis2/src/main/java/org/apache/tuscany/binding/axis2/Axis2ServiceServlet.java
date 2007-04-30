@@ -21,6 +21,7 @@ package org.apache.tuscany.binding.axis2;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -35,8 +36,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.transport.http.AxisServlet;
+import org.apache.axis2.transport.http.ListingAgent;
+import org.apache.axis2.transport.http.server.HttpUtils;
 import org.apache.tuscany.core.component.SimpleWorkContext;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
@@ -51,11 +56,11 @@ import org.apache.tuscany.spi.component.WorkContextTunnel;
  */
 public class Axis2ServiceServlet extends AxisServlet {
 
-    private static final long serialVersionUID = 1L;
+    protected TuscanyListingAgent agent;
+    protected boolean inited;
 
+    private static final long serialVersionUID = 1L;
     private static final ServletConfig DUMMY_CONFIG = createDummyServletConfig();
-    
-    private boolean inited;
 
     public void init(ConfigurationContext configContext) {
         this.configContext = configContext;
@@ -64,6 +69,7 @@ public class Axis2ServiceServlet extends AxisServlet {
         } catch (ServletException e) {
             throw new RuntimeException(e);
         }
+        agent = new TuscanyListingAgent(configContext);
     }
 
     /**
@@ -91,7 +97,7 @@ public class Axis2ServiceServlet extends AxisServlet {
     
     @Override
     public String getServletName() {
-        return "TuscanyAxis2DummyServlet";
+        return "TuscanyAxis2Servlet";
     }
 
     /**
@@ -246,4 +252,59 @@ public class Axis2ServiceServlet extends AxisServlet {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Override the AxisServlet doGet to use the TuscanyListingAgent for ?wsdl 
+     */
+    @Override
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException {
+
+        initContextRoot(request);
+
+        String query = request.getQueryString();
+        if ((query != null) && (query.indexOf("wsdl2") >= 0 ||
+                query.indexOf("wsdl") >= 0 || query.indexOf("xsd") >= 0 ||
+                query.indexOf("policy") >= 0)) {
+            agent.processListService(request, response);
+        } else {
+            super.doGet(request, response);
+        }
+    }
+    
+    /**
+
+    /**
+     * Override the AxisServlet method so as to not add "/services" into the url
+     */
+    @Override
+    public EndpointReference[] getEPRsForService(String serviceName, String ip) throws AxisFault {
+        //RUNNING_PORT
+        String port = (String) configContext.getProperty(ListingAgent.RUNNING_PORT);
+        if (port == null) {
+            port = "8080";
+        }
+        if (ip == null) {
+            try {
+                ip = HttpUtils.getIpAddress();
+                if (ip == null) {
+                    ip = "localhost";
+                }
+            } catch (SocketException e) {
+                throw new AxisFault(e);
+            }
+        }
+
+
+        StringBuilder eprString = new StringBuilder("http://");
+        eprString.append(ip).append(":").append(port);
+        if (!serviceName.startsWith("/")) {
+            eprString.append('/');
+        }
+        eprString.append(serviceName);
+        EndpointReference endpoint = new EndpointReference(eprString.toString());
+
+        return new EndpointReference[]{endpoint};
+    }
+    
 }
