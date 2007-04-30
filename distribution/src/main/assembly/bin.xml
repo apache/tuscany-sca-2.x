@@ -84,7 +84,7 @@
 			<directory>manifest/target</directory>
 			<outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
 			<includes>
-				<include>tuscany-sca-manifest-${tuscany.version}.jar</include>
+				<include>tuscany-sca-manifest.jar</include>
 			</includes>
 		</fileSet>
 
