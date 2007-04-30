@@ -50,16 +50,6 @@ public class JavaImplementationDefinition extends JavaImplementationImpl impleme
     private long maxIdleTime = -1;
     private Scope scope = Scope.STATELESS;
 
-    /**
-     * Constructor specifying the java class for the POJO this is describing.
-     *
-     * @param implClass the java class for the POJO this is describing
-     */
-    public JavaImplementationDefinition(Class<?> implClass) {
-        super();
-        setJavaClass(implClass);
-    }
-    
     public JavaImplementationDefinition() {
         super();
     }    
@@ -120,10 +110,6 @@ public class JavaImplementationDefinition extends JavaImplementationImpl impleme
 
     public Map<String, Resource> getResources() {
         return resources;
-    }
-
-    public void add(Resource resource) {
-        resources.put(resource.getName(), resource);
     }
 
     public Member getConversationIDMember() {

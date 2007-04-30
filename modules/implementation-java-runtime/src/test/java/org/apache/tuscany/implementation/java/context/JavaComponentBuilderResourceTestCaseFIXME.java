@@ -60,7 +60,7 @@ public class JavaComponentBuilderResourceTestCaseFIXME extends TestCase {
         ConstructorDefinition<Foo> ctorDef = new ConstructorDefinition<Foo>(Foo.class.getConstructor());
         JavaImplementationDefinition type = new JavaImplementationDefinition();
         Resource resource = new Resource(new JavaElement(Foo.class.getDeclaredField("resource")));
-        type.add(resource);
+        type.getResources().put(resource.getName(), resource);
         type.setScope(org.apache.tuscany.implementation.java.impl.Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);
         type.setJavaClass(Foo.class);

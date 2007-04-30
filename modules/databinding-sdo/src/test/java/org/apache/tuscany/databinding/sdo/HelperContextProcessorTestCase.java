@@ -27,7 +27,10 @@ import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.impl.Resource;
 
@@ -44,8 +47,11 @@ public class HelperContextProcessorTestCase extends TestCase {
         HelperContextProcessor processor = new HelperContextProcessor(new DefaultAssemblyFactory(), registry);
         URI id = URI.create("/composite1/");
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-
-        JavaImplementationDefinition componentType = new JavaImplementationDefinition(FooImpl.class);
+        
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(assemblyFactory);
+        JavaImplementationDefinition componentType = (JavaImplementationDefinition)javaImplementationFactory.createJavaImplementation();
+        componentType.setJavaClass(FooImpl.class);
         for (Field f : FooImpl.class.getDeclaredFields()) {
             processor.visitField(f, componentType);
 

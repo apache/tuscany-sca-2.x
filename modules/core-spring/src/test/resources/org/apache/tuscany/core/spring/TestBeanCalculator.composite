@@ -18,9 +18,8 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	xmlns:calc="http://calc"
-	targetNamespace="http://calc"
-	name="InnerCalculator">
+	xmlns:calc="http://sample.calculator"
+	name="calc:TestBeanCalculator">
 
     <service name="CalculatorService" promote="CalculatorServiceComponent">
         <interface.java interface="calculator.CalculatorService"/>
@@ -28,15 +27,26 @@
 
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
-        <reference name="addService"/>
-        <reference name="subtractService"/>
-        <reference name="multiplyService"/>
-        <reference name="divideService"/>
+        <reference name="addService" target="AddServiceComponent"/>
+        <reference name="subtractService" target="SubtractServiceComponent"/>
+        <reference name="multiplyService" target="MultiplyServiceComponent"/>
+        <reference name="divideService" target="DivideServiceComponent"/>
     </component>
 
-	<reference name="addService" promote="CalculatorServiceComponent/addService"/>
-	<reference name="subtractService" promote="CalculatorServiceComponent/subtractService"/>
-	<reference name="multiplyService" promote="CalculatorServiceComponent/multiplyService"/>
-	<reference name="divideService" promote="CalculatorServiceComponent/divideService"/>
+    <component name="AddServiceComponent">
+        <implementation.java class="calculator.AddServiceImpl"/>
+    </component>
+
+    <component name="SubtractServiceComponent">
+        <implementation.java class="calculator.SubtractServiceImpl"/>
+    </component>
+
+    <component name="MultiplyServiceComponent">
+        <implementation.java class="calculator.MultiplyServiceImpl"/>
+    </component>
+
+    <component name="DivideServiceComponent">
+        <implementation.java class="calculator.DivideServiceImpl"/>
+    </component>
 
 </composite>
