@@ -27,7 +27,7 @@ import calculator.CalculatorService;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        VariantRuntimeContext context = new VariantRuntimeContext("TestBeanCalculator.composite");
+        VariantRuntimeContext context = new VariantRuntimeContext("org/apache/tuscany/core/spring/TestBeanCalculator.composite");
 
         CalculatorService calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
 

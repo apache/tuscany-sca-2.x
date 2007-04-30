@@ -65,7 +65,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
         }
-        type.add(resource);
+        type.getResources().put(resource.getName(), resource);
     }
 
     public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
@@ -90,7 +90,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
         }
-        type.add(resource);
+        type.getResources().put(resource.getName(), resource);
     }
 
     @SuppressWarnings("unchecked")
@@ -128,7 +128,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
             if (mappedName.length() > 0) {
                 resource.setMappedName(mappedName);
             }
-            type.add(resource);
+            type.getResources().put(resource.getName(), resource);
         }
     }
 

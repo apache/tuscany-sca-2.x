@@ -30,7 +30,7 @@ public class CalculatorTestCase extends TestCase {
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        context = new VariantRuntimeContext("TestBeanCalculator.composite");
+        context = new VariantRuntimeContext("org/apache/tuscany/core/spring/TestBeanCalculator.composite");
 
         calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
     }

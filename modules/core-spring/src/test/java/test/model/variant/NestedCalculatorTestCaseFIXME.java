@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.application.context;
+package test.model.variant;
 
 import junit.framework.TestCase;
 import calculator.CalculatorService;
@@ -24,13 +24,19 @@ import calculator.CalculatorService;
 /**
  * This shows how to test the Calculator service component.
  */
-public class CalculatorTestCase extends TestCase {
+public class NestedCalculatorTestCaseFIXME extends TestCase {
 
-    private TestRuntimeContext context;
+    private VariantRuntimeContext context;
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        context = new TestRuntimeContext("org/apache/tuscany/core/spring/TestBeanCalculator.composite");
+        context = new VariantRuntimeContext(
+            new String[] {
+                          "org/apache/tuscany/core/spring/OuterCalculator.composite",
+                          "org/apache/tuscany/core/spring/InnerCalculator.composite",
+                          "org/apache/tuscany/core/spring/InnerOperations.composite"
+                }
+            );
 
         calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
