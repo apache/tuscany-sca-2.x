@@ -80,4 +80,32 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <attach>true</attach>
+                    <quiet>true</quiet>
+                    <bottom>Apache Tuscany is an effort undergoing incubation at the Apache Software Foundation(ASF) and sponsored by the Apache WS PMC.</bottom>
+                    <header>Apache Tuscany SCA Core SPI</header>
+                    <footer>Apache Tuscany SCA Core SPI</footer>
+                    <sourcepath>${basedir}/src/main/java${path.separator}${basedir}/target/generated/src/main/java</sourcepath>
+                    <subpackages>org.apache.tuscany.spi</subpackages>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
