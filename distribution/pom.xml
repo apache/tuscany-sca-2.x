@@ -84,6 +84,12 @@
                                     <classifier>javadoc</classifier>
                                     <version>${pom.version}</version>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.tuscany.sca</groupId>
+                                    <artifactId>tuscany-core-spi</artifactId>
+                                    <classifier>javadoc</classifier>
+                                    <version>${pom.version}</version>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
