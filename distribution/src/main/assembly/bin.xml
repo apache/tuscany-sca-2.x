@@ -35,9 +35,15 @@
 			<outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
 			<includes>
 				<include>DISCLAIMER</include>
+				<include>RELEASE_NOTES</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/release/bin</directory>
+			<outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
+			<includes>
 				<include>LICENSE</include>
 				<include>NOTICE</include>
-				<include>release_notes.txt</include>
 			</includes>
 		</fileSet>
 
