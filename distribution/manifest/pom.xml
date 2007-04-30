@@ -272,7 +272,7 @@
                         </manifest>
                         <manifestEntries>
                             <!-- Add an entry for the renamed bundle jar in the distro -->
-                            <Class-Path>tuscany-sca-${pom.version}.jar</Class-Path>
+                            <Class-Path>tuscany-sca-all-${pom.version}.jar</Class-Path>
                         </manifestEntries>
                     </archive>
                 </configuration>
