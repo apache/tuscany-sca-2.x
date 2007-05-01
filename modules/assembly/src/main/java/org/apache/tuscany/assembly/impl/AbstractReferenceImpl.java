@@ -35,15 +35,6 @@ public class AbstractReferenceImpl extends ContractImpl implements AbstractRefer
     protected AbstractReferenceImpl() {
     }
     
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected AbstractReferenceImpl(AbstractReference other) {
-        super(other);
-        multiplicity = other.getMultiplicity();
-    }
-
     public Multiplicity getMultiplicity() {
         return multiplicity;
     }

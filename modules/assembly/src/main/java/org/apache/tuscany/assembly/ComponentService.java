@@ -49,4 +49,10 @@ public interface ComponentService extends Service {
      */
     List<CompositeService> promotedAs();
     
+    /**
+     * Clone the component service.
+     * 
+     * @return a clone of the component service
+     */
+    Object clone() throws CloneNotSupportedException;
 }

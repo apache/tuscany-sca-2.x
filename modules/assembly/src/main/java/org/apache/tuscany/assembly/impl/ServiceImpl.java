@@ -32,7 +32,7 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ServiceImpl extends AbstractServiceImpl implements Service {
+public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneable {
     private List<Binding> bindings = new ArrayList<Binding>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private Callback callback;
@@ -43,15 +43,12 @@ public class ServiceImpl extends AbstractServiceImpl implements Service {
     protected ServiceImpl() {
     }
     
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected ServiceImpl(Service other) {
-        super(other);
-        bindings.addAll(other.getBindings());
-        policySets.addAll(other.getPolicySets());
-        callback = other.getCallback();
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ServiceImpl clone = (ServiceImpl)super.clone();
+        clone.bindings = new ArrayList<Binding>();
+        clone.bindings.addAll(getBindings());
+        return clone;
     }
 
     public List<Binding> getBindings() {

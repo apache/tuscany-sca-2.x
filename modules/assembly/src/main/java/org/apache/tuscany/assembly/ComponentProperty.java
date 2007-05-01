@@ -23,7 +23,7 @@ package org.apache.tuscany.assembly;
  * 
  * @version $Rev$ $Date$
  */
-public interface ComponentProperty extends Property {
+public interface ComponentProperty extends Property, Cloneable {
 
     /**
      * Returns the property defined by the component implementation.
@@ -70,4 +70,11 @@ public interface ComponentProperty extends Property {
      * @param file a URI to a file containing the property value
      */
     void setFile(String file);
+    
+    /**
+     * Clone the component property.
+     * 
+     * @return a clone of the component property
+     */
+    Object clone() throws CloneNotSupportedException;
 }

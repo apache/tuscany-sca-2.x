@@ -27,7 +27,7 @@ import org.apache.tuscany.assembly.Property;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentPropertyImpl extends PropertyImpl implements ComponentProperty {
+public class ComponentPropertyImpl extends PropertyImpl implements ComponentProperty, Cloneable {
     private String file;
     private Property property;
     private String source;
@@ -38,17 +38,11 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
     protected ComponentPropertyImpl() {
     }
     
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected ComponentPropertyImpl(ComponentProperty other) {
-        super(other);
-        file = other.getFile();
-        property = other.getProperty();
-        source = other.getSource();
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
-
+    
     public Object getValue() {
         if (super.getValue() == null && property != null) {
             return property.getValue();

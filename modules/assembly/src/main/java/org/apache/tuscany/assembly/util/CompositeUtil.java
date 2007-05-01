@@ -89,16 +89,21 @@ public class CompositeUtil {
         List<Composite> includes = new ArrayList<Composite>();
         collectIncludes(composite, includes);
         
-        // Then copy them
+        // Then clone them
         for (Composite include : includes) {
-            include = include.copy();
-            composite.getComponents().addAll(include.getComponents());
-            composite.getServices().addAll(include.getServices());
-            composite.getReferences().addAll(include.getReferences());
-            composite.getProperties().addAll(include.getProperties());
-            composite.getWires().addAll(include.getWires());
-            composite.getPolicySets().addAll(include.getPolicySets());
-            composite.getRequiredIntents().addAll(include.getRequiredIntents());
+            Composite clone;
+            try {
+                clone = (Composite)include.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+            composite.getComponents().addAll(clone.getComponents());
+            composite.getServices().addAll(clone.getServices());
+            composite.getReferences().addAll(clone.getReferences());
+            composite.getProperties().addAll(clone.getProperties());
+            composite.getWires().addAll(clone.getWires());
+            composite.getPolicySets().addAll(clone.getPolicySets());
+            composite.getRequiredIntents().addAll(clone.getRequiredIntents());
         }
         
         // Clear the list of includes
@@ -335,7 +340,38 @@ public class CompositeUtil {
      * @param problems
      */
     public void configureComponents(Composite composite, List<Base> problems) {
+        configureComponents(composite, null, problems);
+    }
 
+    /**
+     * Configure components in the composite.
+     * 
+     * @param composite
+     * @param uri
+     * @param problems
+     */
+    private void configureComponents(Composite composite, String uri, List<Base> problems) {
+        
+        // Process nested composites recursively
+        for (Component component: composite.getComponents()) {
+
+            // Initialize component URI
+            String componentURI;
+            if (uri == null) {
+                componentURI = component.getName();
+            } else {
+                componentURI = uri + "/" + component.getName(); 
+            }
+            component.setURI(componentURI);
+            
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                
+                // Process nested composite
+                configureComponents((Composite)implementation, componentURI, problems);
+            }
+        }
+        
         // Initialize all component services and references
         Map<String, Component> components = new HashMap<String, Component>();
         for (Component component : composite.getComponents()) {
@@ -711,7 +747,7 @@ public class CompositeUtil {
         ComponentService componentService = compositeService.getPromotedService();
         if (componentService != null) {
             Service service = componentService.getService();
-            if (service instanceof CompositeService) {
+            if (componentService.getName() != null && service instanceof CompositeService) {
                 
                 // Continue to follow the service promotion chain
                 return getPromotedComponentService((CompositeService)service);
@@ -808,11 +844,12 @@ public class CompositeUtil {
                 // Create a new component service to represent this composite service
                 // on the promoted component
                 ComponentService newComponentService = assemblyFactory.createComponentService();
-                newComponentService.setName(compositeService.getName());
+                newComponentService.setName(null);
                 newComponentService.setService(compositeService);
                 SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
                 Component component = scaBinding.getComponent();
                 component.getServices().add(newComponentService);
+                newComponentService.getBindings().add(scaBinding);
                 
                 // Change the composite service to now promote the newly created
                 // component service directly
@@ -843,7 +880,9 @@ public class CompositeUtil {
             for (ComponentReference promotedReference: promotedReferences) {
 
                 // Override the configuration of the promoted reference
+                SCABinding scaBinding = promotedReference.getBinding(SCABinding.class);
                 promotedReference.getBindings().clear();
+                promotedReference.getBindings().add(scaBinding);
                 promotedReference.getBindings().addAll(compositeReference.getBindings());
             }
         }
@@ -860,7 +899,9 @@ public class CompositeUtil {
                         for (ComponentReference promotedReference: promotedReferences) {
                             
                             // Override the configuration of the promoted reference
+                            SCABinding scaBinding = promotedReference.getBinding(SCABinding.class);
                             promotedReference.getBindings().clear();
+                            promotedReference.getBindings().add(scaBinding);
                             promotedReference.getBindings().addAll(componentReference.getBindings());
                             
                             // Wire the promoted reference to the actual non-composite
@@ -948,9 +989,14 @@ public class CompositeUtil {
             if (implementation instanceof Composite) {
                 
                 Composite compositeImplementation = (Composite)implementation;
-                Composite copy = compositeImplementation.copy();
-                component.setImplementation(copy);
-                expandComposites(copy, problems);
+                Composite clone;
+                try {
+                    clone = (Composite)compositeImplementation.clone();
+                } catch (CloneNotSupportedException e) {
+                    throw new RuntimeException(e);
+                }
+                component.setImplementation(clone);
+                expandComposites(clone, problems);
             }
         }
     }

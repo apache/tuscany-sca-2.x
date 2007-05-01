@@ -32,7 +32,7 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class WireImpl extends BaseImpl implements Wire {
+public class WireImpl extends BaseImpl implements Wire, Cloneable {
     private ComponentReference source;
     private ComponentService target;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
@@ -44,16 +44,9 @@ public class WireImpl extends BaseImpl implements Wire {
     protected WireImpl() {
     }
 
-    /**
-     * Copy constructor.
-     * @param wire
-     */
-    protected WireImpl(Wire other) {
-        super(other);
-        source = other.getSource();
-        target = other.getTarget();
-        requiredIntents.addAll(other.getRequiredIntents());
-        policySets.addAll(other.getPolicySets());
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public ComponentReference getSource() {

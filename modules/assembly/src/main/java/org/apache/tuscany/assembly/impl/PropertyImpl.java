@@ -30,7 +30,7 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class PropertyImpl extends AbstractPropertyImpl implements Property {
+public class PropertyImpl extends AbstractPropertyImpl implements Property, Cloneable {
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
     /**
@@ -39,12 +39,9 @@ public class PropertyImpl extends AbstractPropertyImpl implements Property {
     protected PropertyImpl() {
     }
     
-    /**
-     * Copy constructor.
-     */
-    protected PropertyImpl(Property other) {
-        super(other);
-        policySets.addAll(other.getPolicySets());
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public List<PolicySet> getPolicySets() {

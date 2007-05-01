@@ -39,12 +39,13 @@ import org.springframework.beans.factory.support.ChildBeanDefinition;
  *
  *  @version $Rev$ $Date$
  */
-public class BeanComponentImpl extends ChildBeanDefinition implements Component {
+public class BeanComponentImpl extends ChildBeanDefinition implements Component, Cloneable {
 	private static final long serialVersionUID = 1L;
 	
 	private ConstrainingType constrainingType;
 	private Implementation implementation;
 	private String name;
+        private String uri;
 	private List<ComponentService> services = new ArrayList<ComponentService>();
 	private List<Intent> requiredIntents = new ArrayList<Intent>();
 	private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -56,6 +57,25 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component 
 		super((String)"");
 		this.beanRegistry = beanRegistry;
 	}
+        
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            BeanComponentImpl clone = (BeanComponentImpl)super.clone();
+
+            clone.getProperties().clear();
+            for (ComponentProperty property: getProperties()) {
+                clone.getProperties().add((ComponentProperty)property.clone());
+            }
+            clone.getReferences().clear();
+            for (ComponentReference reference: getReferences()) {
+                clone.getReferences().add((ComponentReference)reference.clone());
+            }
+            clone.getServices().clear();
+            for (ComponentService service: getServices()) {
+                clone.getServices().add((ComponentService)service.clone());
+            }
+            return clone;
+        }
 	
 	public String getParentName() {
 		//TODO find a better name for bean definitions representing component types
@@ -69,6 +89,17 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component 
 	public Implementation getImplementation() {
 		return implementation;
 	}
+
+        public String getURI() {
+            return uri;
+        }
+        
+        public void setURI(String uri) {
+            this.uri = uri;
+                
+            // Register this bean definition in the bean registry
+            this.beanRegistry.registerBeanDefinition(uri, this);
+        }
 
 	public String getName() {
 		return name;
@@ -125,9 +156,6 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component 
 
 	public void setName(String name) {
 		this.name = name;
-		
-		// Register this bean definition in the bean registry
-		this.beanRegistry.registerBeanDefinition(name, this);
 	}
 
 	public List<Intent> getRequiredIntents() {

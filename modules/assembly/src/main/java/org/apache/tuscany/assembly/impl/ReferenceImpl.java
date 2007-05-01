@@ -33,7 +33,7 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ReferenceImpl extends AbstractReferenceImpl implements Reference {
+public class ReferenceImpl extends AbstractReferenceImpl implements Reference, Cloneable {
     private List<Binding> bindings = new ArrayList<Binding>();
     private boolean wiredByImpl;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -46,17 +46,14 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference {
     protected ReferenceImpl() {
     }
     
-    /**
-     * Copy constructor.
-     * @param reference
-     */
-    protected ReferenceImpl(Reference other) {
-        super(other);
-        bindings.addAll(other.getBindings());
-        wiredByImpl = other.isWiredByImpl();
-        policySets.addAll(other.getPolicySets());
-        targets.addAll(other.getTargets());
-        callback = other.getCallback();
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ReferenceImpl clone = (ReferenceImpl)super.clone();
+        clone.bindings = new ArrayList<Binding>();
+        clone.bindings.addAll(getBindings());
+        clone.targets = new ArrayList<ComponentService>();
+        clone.targets.addAll(getTargets());
+        return clone;
     }
 
     public List<Binding> getBindings() {

@@ -64,4 +64,10 @@ public interface ComponentReference extends Reference {
      */
     List<CompositeReference> promotedAs();
     
+    /**
+     * Clone the component reference.
+     * 
+     * @return a clone of the component reference
+     */
+    Object clone() throws CloneNotSupportedException;
 }

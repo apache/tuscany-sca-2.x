@@ -31,7 +31,7 @@ import org.apache.tuscany.assembly.Service;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentServiceImpl extends ServiceImpl implements ComponentService {
+public class ComponentServiceImpl extends ServiceImpl implements ComponentService, Cloneable {
     private Service service;
     private List<CompositeService> promotedAs = new ArrayList<CompositeService>();
     
@@ -41,15 +41,11 @@ public class ComponentServiceImpl extends ServiceImpl implements ComponentServic
     protected ComponentServiceImpl() {
     }
 
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected ComponentServiceImpl(ComponentService other) {
-        super(other);
-        service = other.getService();
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
-
+    
     public Service getService() {
         return service;
     }

@@ -36,17 +36,6 @@ public class ContractImpl extends BaseImpl implements AbstractContract {
     protected ContractImpl() {
     }
     
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    public ContractImpl(AbstractContract other) {
-        super(other);
-        interfaceContract = other.getInterfaceContract();
-        name = other.getName();
-        requiredIntents.addAll(other.getRequiredIntents());
-    }
-
     public String getName() {
         return name;
     }

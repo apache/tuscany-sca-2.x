@@ -37,7 +37,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
  *
  *  @version $Rev$ $Date$
  */
-public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implements BaseJavaImplementation {
+public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implements BaseJavaImplementation, Cloneable {
 	private static final long serialVersionUID = 1L;
 	
 	private List<Service> services = new ArrayList<Service>();
@@ -58,6 +58,25 @@ public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implement
 		this.beanRegistry.registerBeanDefinition(name, this);
 	}
 
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            BeanBaseJavaImplementationImpl clone = (BeanBaseJavaImplementationImpl)super.clone();
+            
+            clone.getServices().clear();
+            for (Service service: getServices()) {
+                clone.getServices().add((Service)service.clone());
+            }
+            clone.getReferences().clear();
+            for (Reference reference: getReferences()) {
+                clone.getReferences().add((Reference)reference.clone());
+            }
+            clone.getProperties().clear();
+            for (Property property: getProperties()) {
+                clone.getProperties().add((Property)property.clone());
+            }
+            return clone;
+        }
+        
 	public Class<?> getJavaClass() {
 		return super.getBeanClass();
 	}

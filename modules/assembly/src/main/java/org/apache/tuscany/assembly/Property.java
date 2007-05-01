@@ -29,5 +29,13 @@ import org.apache.tuscany.policy.PolicySetAttachPoint;
  * @version $Rev$ $Date$
  */
 public interface Property extends AbstractProperty, PolicySetAttachPoint {
+    
+    /**
+     * Returns a clone of the property.
+     * 
+     * @return a clone of the property
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
 
 }

@@ -47,21 +47,6 @@ public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
     protected AbstractPropertyImpl() {
     }
     
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected AbstractPropertyImpl(AbstractProperty other) {
-        super(other);
-        value = other.getValue();
-        many = other.isMany();
-        mustSupply = other.isMustSupply();
-        name = other.getName();
-        xsdElement = other.getXSDElement();
-        xsdType = other.getXSDType();
-        requiredIntents.addAll(other.getRequiredIntents());
-    }
-
     public Object getValue() {
         return value;
     }

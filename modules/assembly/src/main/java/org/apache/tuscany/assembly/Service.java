@@ -26,4 +26,12 @@ package org.apache.tuscany.assembly;
  */
 public interface Service extends AbstractService, Contract {
 
+    /**
+     * Returns a clone of the service.
+     * 
+     * @return a clone of the service
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
+
 }

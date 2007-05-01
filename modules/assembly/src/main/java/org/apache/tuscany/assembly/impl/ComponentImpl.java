@@ -36,10 +36,11 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentImpl extends BaseImpl implements Component {
+public class ComponentImpl extends BaseImpl implements Component, Cloneable {
     private ConstrainingType constrainingType;
     private Implementation implementation;
     private String name;
+    private String uri;
     private List<ComponentProperty> properties = new ArrayList<ComponentProperty>();
     private List<ComponentReference> references = new ArrayList<ComponentReference>();
     private List<ComponentService> services = new ArrayList<ComponentService>();
@@ -53,25 +54,31 @@ public class ComponentImpl extends BaseImpl implements Component {
     protected ComponentImpl() {
     }
     
-    protected ComponentImpl(Component other) {
-        super(other);
-        
-        // Copy ComponentImpl attributes
-        constrainingType = other.getConstrainingType();
-        implementation = other.getImplementation();
-        name = other.getName();
-        for (ComponentProperty property: other.getProperties()) {
-            properties.add(new ComponentPropertyImpl(property));
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ComponentImpl clone = (ComponentImpl)super.clone();
+
+        clone.properties = new ArrayList<ComponentProperty>();
+        for (ComponentProperty property: getProperties()) {
+            clone.properties.add((ComponentProperty)property.clone());
         }
-        for (ComponentReference reference: other.getReferences()) {
-            references.add(new ComponentReferenceImpl(reference));
+        clone.references = new ArrayList<ComponentReference>();
+        for (ComponentReference reference: getReferences()) {
+            clone.references.add((ComponentReference)reference.clone());
         }
-        for (ComponentService service: other.getServices()) {
-            services.add(new ComponentServiceImpl(service));
+        clone.services = new ArrayList<ComponentService>();
+        for (ComponentService service: getServices()) {
+            clone.services.add((ComponentService)service.clone());
         }
-        requiredIntents.addAll(other.getRequiredIntents());
-        policySets.addAll(other.getPolicySets());
-        autowire = other.isAutowire();
+        return clone;
+    }
+    
+    public String getURI() {
+        return uri;
+    }
+    
+    public void setURI(String uri) {
+        this.uri = uri;
     }
 
     public ConstrainingType getConstrainingType() {
