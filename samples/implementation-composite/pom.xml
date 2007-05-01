@@ -21,13 +21,20 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-samples</artifactId>
+        <artifactId>tuscany-sca</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-implementation-composite</artifactId>
     <name>Apache Tuscany Composite Implementation Sample</name>
     <description>A sample showing local wiring of a component implemented by a nested composite</description>
+
+    <repositories>
+       <repository>
+          <id>apache.incubator</id>
+          <url>http://people.apache.org/repo/m2-incubating-repository</url>
+       </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -42,6 +49,14 @@
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
