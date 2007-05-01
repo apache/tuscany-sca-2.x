@@ -21,13 +21,13 @@
            	targetNamespace="http://DASService"
             name="DASService">
 
-    <service name="DASService"  promote="DASComponent">
-        <interface.java interface="org.apache.tuscany.samples.das.service.DASService"/>
-        <reference>DASComponent</reference>
+    <service name="DASService"  promote="DASServiceComponent">
+        <interface.java interface="das.DASService"/>
+        <reference>DASServiceComponent</reference>
     </service>
     
-    <component name="DASComponent">
-	    <implementation.java class="org.apache.tuscany.samples.das.service.DASServiceImpl"/>
+    <component name="DASServiceComponent">
+	    <implementation.java class="das.DASServiceImpl"/>
     </component>
 
 </composite>

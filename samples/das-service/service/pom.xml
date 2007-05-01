@@ -65,6 +65,20 @@
 			<scope>compile</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.1.2.1</version>
+            <scope>test</scope>
+        </dependency>  
+        		
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
+        </dependency>		
+
 	</dependencies>
 
 	<build>

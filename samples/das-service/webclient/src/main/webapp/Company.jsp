@@ -20,26 +20,33 @@
 
 <%@ page import="java.util.*" %>
 
-<%@ page import="org.osoa.sca.CompositeContext" %>
-<%@ page import="org.osoa.sca.CurrentCompositeContext" %>
+<%@ page import="org.apache.tuscany.host.embedded.SCARuntime"%>
+<%@ page import="org.osoa.sca.ComponentContext" %>
+<%@ page import="org.osoa.sca.ServiceReference" %>
 
 <%@ page import="commonj.sdo.*" %>
-<%@ page import="org.apache.tuscany.samples.das.service.*" %>
+<%@ page import="das.*" %>
 
 <html>
 <head>
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    CompositeContext context = CurrentCompositeContext.getContext();
-    DASService dasService = context.locateService(DASService.class, "DASServiceComponent");
-    List companyList = null;
-    try{
+
+   SCARuntime.start("dasservice.composite");
+   
+   ComponentContext context = SCARuntime.getComponentContext("DASServiceComponent");
+   ServiceReference<DASService> service = context.createSelfReference(DASService.class);
+   DASService dasService = service.getService();
+   List companyList = null;
+
+   try{
 		dasService.configureService(getClass().getClassLoader().getResourceAsStream("CompanyConfig.xml"));
 		DataObject root = dasService.executeCommand("all companies", null);
-    	companyList = root.getList("COMPANY");
-    }catch(Exception e){
-        //TODO: handle case where dasService can't be initiated properly
-    }
+   	companyList = root.getList("COMPANY");
+   }catch(Exception e){
+       //TODO: handle case where dasService can't be initiated properly
+   }
+
 %>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -78,4 +85,8 @@
 
 </form>
 </body>
+<% 
+   //stop the runtime
+   SCARuntime.stop();
+%>
 </html>
