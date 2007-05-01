@@ -462,6 +462,9 @@ public class CompositeUtil {
             reconcileServices(component, services, componentServices, problems);
             reconcileReferences(component, references, componentReferences, problems);
             reconcileProperties(component, properties, componentProperties, problems);
+            
+            // Create self references to the component's services
+            createSelfReferences(component);
         }
     }
     
@@ -1002,23 +1005,24 @@ public class CompositeUtil {
     }
     
     /**
-     * For all the services, create a corresponding self-reference
+     * For all the services, create a corresponding self-reference.
+     * 
      * @param component
      */
     private void createSelfReferences(Component component) {
-        for (Service service : component.getImplementation().getServices()) {
-            ComponentReference ref = assemblyFactory.createComponentReference();
-            ref.setName("$self$." + service.getName());
-            ref.getBindings().addAll(service.getBindings());
+        for (ComponentService service : component.getServices()) {
+            ComponentReference componentReference = assemblyFactory.createComponentReference();
+            componentReference.setName("$self$." + service.getName());
+            componentReference.getBindings().addAll(service.getBindings());
             ComponentService componentService = assemblyFactory.createComponentService();
             componentService.setName(component.getName() + "/" + service.getName());
             componentService.setUnresolved(true);
-            ref.getTargets().add(componentService);
-            ref.getPolicySets().addAll(service.getPolicySets());
-            ref.getRequiredIntents().addAll(service.getRequiredIntents());
-            ref.setInterfaceContract(service.getInterfaceContract());
-            ref.setMultiplicity(Multiplicity.ONE_ONE);
-            component.getImplementation().getReferences().add(ref);
+            componentReference.getTargets().add(componentService);
+            componentReference.getPolicySets().addAll(service.getPolicySets());
+            componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
+            componentReference.setInterfaceContract(service.getInterfaceContract());
+            componentReference.setMultiplicity(Multiplicity.ONE_ONE);
+            component.getReferences().add(componentReference);
         }
     }
     

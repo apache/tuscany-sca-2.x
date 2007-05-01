@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
@@ -160,7 +159,9 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             configuration.getInjectionSites().add(element);
         }
 
-        configuration.setObjectFactory(element, createWireFactory(element.getType(), wire));
+        if (element != null) {
+            configuration.setObjectFactory(element, createWireFactory(element.getType(), wire));
+        }
 
     }
 
