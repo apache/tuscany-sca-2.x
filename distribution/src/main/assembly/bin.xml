@@ -42,6 +42,7 @@
 			<directory>src/main/release/bin</directory>
 			<outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
 			<includes>
+				<include>INSTALL</include>
 				<include>LICENSE</include>
 				<include>NOTICE</include>
 			</includes>
