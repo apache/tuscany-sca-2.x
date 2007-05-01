@@ -181,17 +181,20 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionRegistry.remove(contribution);
     }
 
-    public void addDeploymentComposite(URI contribution, Object composite) {
-        /*
-         * CompositeComponentType model = (CompositeComponentType)composite; URI
-         * compositeURI = contribution.resolve(model.getName() + ".composite");
-         * DeployedArtifact artifact = new DeployedArtifact(compositeURI); //
-         * FIXME: the namespace should be from the CompositeComponentType model
-         * artifact.addModelObject(composite.getClass(), null, composite);
-         * Contribution contributionObject =
-         * (Contribution)getContribution(contribution);
-         * contributionObject.addArtifact(artifact);
-         */
+    public void addDeploymentComposite(URI contributionURI, Composite composite) throws ContributionException {
+        Contribution contribution = getContribution(contributionURI);
+        
+        if(contribution == null) {
+            throw new InvalidContributionURIException("Invalid/Inexistent contribution uri '" + contributionURI.toString());
+        }
+        
+        URI compositeURI = contributionURI.resolve(composite.getName().getLocalPart() + ".composite");
+        DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact(compositeURI);
+        artifact.setModelObject(composite);
+        
+        contribution.addArtifact(artifact);
+        
+        contribution.getDeployables().add(composite);
     }
 
     /*
@@ -234,6 +237,7 @@ public class ContributionServiceImpl implements ContributionService {
                                  URL sourceURL,
                                  InputStream contributionStream,
                                  boolean storeInRepository) throws IOException, ContributionException {
+        
         if (contributionStream == null && sourceURL == null) {
             throw new IllegalArgumentException("The content of the contribution is null");
         }
@@ -280,6 +284,15 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionRegistry.put(contribution.getUri(), contribution);
     }
 
+    /**
+     * This utility method process each artifact and delegates to proper 
+     * artifactProcessor to read the model and generate the in-memory representation
+     *  
+     * @param contribution
+     * @param artifacts
+     * @throws ContributionException
+     * @throws MalformedURLException
+     */
     private void processReadPhase(Contribution contribution, List<URI> artifacts) throws ContributionException,
         MalformedURLException {
         URL contributionURL = contribution.getLocation(); 
@@ -299,6 +312,13 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
+    /**
+     * This utility method process each artifact and delegates to proper 
+     * artifactProcessor to resolve the model references
+     * 
+     * @param contribution
+     * @throws ContributionException
+     */
     private void processResolvePhase(Contribution contribution) throws ContributionException {
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
@@ -319,6 +339,10 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.getDeployables().addAll(resolvedDeployables);
     }
 
+    /**
+     * @param contribution
+     * @throws ContributionException
+     */
     private void processOptimizationPhase(Contribution contribution) throws ContributionException {
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
@@ -328,6 +352,13 @@ public class ContributionServiceImpl implements ContributionService {
 
     }
 
+    /**
+     * If there is no specific composite promoted as deployable in sca contribution metadata sidefile
+     * All composites are promoted as deployables
+     * 
+     * @param contribution
+     * @throws ContributionException
+     */
     private void processDeployables(Contribution contribution) throws ContributionException {
         if (contribution.getDeployables() == null || contribution.getDeployables().size() == 0){
             //Contribution metadata not available with a list of deployables

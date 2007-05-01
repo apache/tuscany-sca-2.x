@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
+import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 
 
@@ -82,7 +83,7 @@ public interface ContributionService {
      * matches the "name" attribute of the composite, with a ".composite"
      * suffix.
      */
-    void addDeploymentComposite(URI contribution, Object composite);
+    void addDeploymentComposite(URI contribution, Composite composite) throws ContributionException;
 
     /**
      * Remove a contribution from the SCA domain
