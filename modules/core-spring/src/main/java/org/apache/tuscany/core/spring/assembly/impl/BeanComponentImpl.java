@@ -131,10 +131,11 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component,
 		public boolean add(ComponentReference reference) {
 			
 			// Add corresponding bean property value
+                    if (!reference.getName().startsWith("$self$.")) {
 			BeanReferenceImpl beanReference = new BeanReferenceImpl(reference);
 			getPropertyValues().addPropertyValue(reference.getName(), beanReference);
-
-			return super.add(reference);
+                    }
+                    return super.add(reference);
 		}
 	};
 	

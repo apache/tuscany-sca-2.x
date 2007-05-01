@@ -274,6 +274,10 @@ public class DeployerImpl implements Deployer {
             } else {
                 List<ComponentService> services = componentReference.getTargets();
                 for (ComponentService service : services) {
+                    if (service.getBinding(SCABinding.class) == null) {
+                        continue;
+                        
+                    }
                     org.apache.tuscany.assembly.Component targetCompoent = service.getBinding(SCABinding.class)
                         .getComponent();
                     Component target = componentManager.getSCAObject(Component.class, targetCompoent);
