@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.axis2.description.AxisMessage;
 import org.apache.axis2.description.AxisOperation;
+import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.util.FileWriter;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.codegen.CodeGenConfiguration;
@@ -146,13 +147,13 @@ public class JavaInterfaceEmitter extends JavaEmitter {
     private boolean isInputPresentForMEP(String MEP) {
         
    
-        return
-        WSDLConstants.WSDL20_2004Constants.MEP_URI_IN_ONLY.equals(MEP) ||
-                WSDLConstants.WSDL20_2004Constants.MEP_URI_IN_OPTIONAL_OUT.equals(MEP) ||
-                WSDLConstants.WSDL20_2004Constants.MEP_URI_OUT_OPTIONAL_IN.equals(MEP) ||
-                WSDLConstants.WSDL20_2004Constants.MEP_URI_ROBUST_OUT_ONLY.equals(MEP) ||
-                WSDLConstants.WSDL20_2004Constants.MEP_URI_ROBUST_IN_ONLY.equals(MEP) ||
-                WSDLConstants.WSDL20_2004Constants.MEP_URI_IN_OUT.equals(MEP) ||
+        // TODO: verify if thi is still correct with Axis2 1.2
+        return WSDL2Constants.MEP_URI_IN_ONLY.equals(MEP) ||
+               WSDL2Constants.MEP_URI_IN_OPTIONAL_OUT.equals(MEP) ||
+               WSDL2Constants.MEP_URI_OUT_OPTIONAL_IN.equals(MEP) ||
+               WSDL2Constants.MEP_URI_ROBUST_OUT_ONLY.equals(MEP) ||
+               WSDL2Constants.MEP_URI_ROBUST_IN_ONLY.equals(MEP) ||
+               WSDL2Constants.MEP_URI_IN_OUT.equals(MEP) ||
 
                 WSDLConstants.WSDL20_2006Constants.MEP_URI_IN_ONLY.equals(MEP) ||
                 WSDLConstants.WSDL20_2006Constants.MEP_URI_IN_OPTIONAL_OUT.equals(MEP) ||
