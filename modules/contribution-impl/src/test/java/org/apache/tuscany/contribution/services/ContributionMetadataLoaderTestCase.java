@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.contribution.service.impl.ContributionMetadataLoaderImpl;
 import org.apache.tuscany.contribution.service.impl.InvalidValueException;
 
@@ -54,16 +55,17 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
             + "<export namespace=\"http://ns1\"/>"
             + "</contribution>";
 
-    private XMLInputFactory factory;
+    private XMLInputFactory xmlFactory;
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = XMLInputFactory.newInstance();
+        xmlFactory = XMLInputFactory.newInstance();
     }
 
     public void testLoad() throws Exception {
-        XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(VALID_XML));
-        ContributionMetadataLoaderImpl loader = new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory());
+        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
+
+        ContributionMetadataLoaderImpl loader = new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new DefaultContributionFactory());
         Contribution contribution = loader.load(reader);
         assertNotNull(contribution);
         assertEquals(1, contribution.getImports().size());
@@ -72,8 +74,8 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
     }
 
     public void testLoadInvalid() throws Exception {
-        XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(INVALID_XML));
-        ContributionMetadataLoaderImpl loader = new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory());
+        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
+        ContributionMetadataLoaderImpl loader = new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new DefaultContributionFactory());
         try {
             loader.load(reader);
             fail("InvalidException should have been thrown");

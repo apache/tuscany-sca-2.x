@@ -36,6 +36,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtension;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
@@ -68,27 +69,37 @@ public class ContributionServiceImpl implements ContributionService {
     protected URLArtifactProcessorExtension artifactProcessor;
 
     /**
+     * Artifact Resolver
+     */
+    protected ArtifactResolver artifactResolver;
+    
+    /**
      * xml factory used to create reader instance to load contribution metadata
      */
     protected XMLInputFactory xmlFactory;
+    
     /**
      * contribution metadata loader
      */
     protected ContributionMetadataLoaderImpl contributionLoader;
 
     /**
-     * Contribution registry This is a registry of processed Contributios index
-     * by URI
+     * Contribution registry This is a registry of processed Contributios index by URI
      */
     protected Map<URI, Contribution> contributionRegistry = new HashMap<URI, Contribution>();
 
-    protected ArtifactResolver artifactResolver;
-
+    /**
+     * Contribution model facotry
+     */
+    protected ContributionFactory contributionFactory;
+    
+    
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessorExtension packageProcessor,
                                    URLArtifactProcessorExtension artifactProcessor,
                                    ArtifactResolver artifactResolver,
-                                   AssemblyFactory assemblyFactory) {
+                                   AssemblyFactory assemblyFactory,
+                                   ContributionFactory contributionFactory) {
         super();
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
@@ -96,7 +107,8 @@ public class ContributionServiceImpl implements ContributionService {
         this.artifactResolver = artifactResolver;
 
         this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
-        this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory);
+        this.contributionFactory = contributionFactory;
+        this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory, contributionFactory);
     }
 
     public void contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
@@ -128,7 +140,7 @@ public class ContributionServiceImpl implements ContributionService {
 
         try {
             if (contributionMetadataURL == null && generatedContributionMetadataURL == null) {
-                contributionMetadata = new Contribution();
+                contributionMetadata = this.contributionFactory.createContribution();
             } else {
                 URL metadataURL = contributionMetadataURL != null ? contributionMetadataURL
                                                                  : generatedContributionMetadataURL;
@@ -153,7 +165,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
 
         if (contributionMetadata == null) {
-            contributionMetadata = new Contribution();
+            contributionMetadata = this.contributionFactory.createContribution();
         }
 
         return contributionMetadata;
@@ -279,7 +291,7 @@ public class ContributionServiceImpl implements ContributionService {
                 artifactResolver.add(model);
                 
                 URI artifactURI = contribution.getUri().resolve(a);
-                DeployedArtifact artifact = new DeployedArtifact(artifactURI);
+                DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact(artifactURI);
                 artifact.setLocation(artifactURL);
                 artifact.setModelObject(model);
                 contribution.addArtifact(artifact);

@@ -19,68 +19,35 @@
 
 package org.apache.tuscany.contribution;
 
-import java.net.URI;
-import java.net.URL;
 
 /**
  * Representation of a deployed artifact
  *
  * @version $Rev$ $Date$
  */
-public class DeployedArtifact {
-    protected Contribution contribution;
-    protected URI uri;
-    protected URL location;
-    protected Object modelObject;
-
-    public DeployedArtifact() {
-        super();
-    }
+public interface DeployedArtifact extends Artifact{
     /**
-     * @param uri the artifact uri
-     */
-    public DeployedArtifact(URI uri) {
-        super();
-        this.uri = uri;
-    }
-    /**
-     * Get the absolute URI as the unique id for the artifact
+     * Get the contribution that this artifact belongs to
      * @return
      */
-    public URI getUri() {
-        return uri;
-    }
-    
-    public void setUri(URI uri) {
-        this.uri = uri;
-    }
-    
-    /**
-     * @return the location
-     */
-    public URL getLocation() {
-        return location;
-    }
+    public Contribution getContribution();
 
     /**
-     * @param location the location to set
+     * Set te contribution that this artifact belongs to
+     * @param contribution
      */
-    public void setLocation(URL location) {
-        this.location = location;
-    }
-
-    public Contribution getContribution() {
-        return contribution;
-    }
-
-    public void setContribution(Contribution contribution) {
-        this.contribution = contribution;
-    }
-    public Object getModelObject() {
-        return modelObject;
-    }
+    public void setContribution(Contribution contribution);
     
-    public void setModelObject(Object modelObject){
-        this.modelObject = modelObject;
-    }
+    /**
+     * Get the Assembly Model Object associated with this artifact
+     * @return
+     */
+    public Object getModelObject();
+    
+    /**
+     * Set the Assembly Model Object associated with this artifact
+     * @param modelObject
+     */
+    public void setModelObject(Object modelObject);
+    
 }

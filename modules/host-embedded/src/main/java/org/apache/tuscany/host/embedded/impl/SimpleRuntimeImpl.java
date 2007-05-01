@@ -38,6 +38,7 @@ import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
+import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
@@ -162,7 +163,7 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         ContributionRepository repository = new ContributionRepositoryImpl("target");
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(simpleRuntimeInfo.getClassLoader());
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
-                                                                              documentProcessors, artifactResolver, assemblyFactory);
+                                                                              documentProcessors, artifactResolver, assemblyFactory, new DefaultContributionFactory());
         initialize(extensionRegistry);
 
         // Create a scope registry

@@ -25,6 +25,8 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
@@ -66,7 +68,7 @@ public class Main {
         
         //start the process of installing the contribution
         ContributionRepository contributionRepository = new ContributionRepositoryImpl(null);
-        ContributionService contributionService = new ContributionServiceImpl(contributionRepository, null, null, null);
+        ContributionService contributionService = new ContributionServiceImpl(contributionRepository, null, null, null, new DefaultAssemblyFactory(), DefaultContributionFactory.getInstance());
 
         URL contributionURL = contributionSource.toURL();
         InputStream contributionStream = null;

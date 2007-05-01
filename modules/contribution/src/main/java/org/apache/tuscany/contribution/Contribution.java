@@ -20,10 +20,6 @@
 package org.apache.tuscany.contribution;
 
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,80 +30,46 @@ import org.apache.tuscany.assembly.Composite;
  *
  * @version $Rev$ $Date$
  */
-public class Contribution extends DeployedArtifact {
+public interface Contribution extends Artifact{
     public static final String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
     public static final String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
 
-    protected List<String> exports = new ArrayList<String>();
-    protected List<ContributionImport> imports = new ArrayList<ContributionImport>();
-    protected List<Composite> deployables = new ArrayList<Composite>();
     
     /**
-     * A list of artifacts in the contribution
+     * Get a list of exports based on the Contribution metadata sidefile
+     * @return
      */
-    protected Map<URI, DeployedArtifact> artifacts = new HashMap<URI, DeployedArtifact>();
-
-    public Contribution() {
-        super();
-    }
+    public List<String> getExports();
 
     /**
+     * Get a list of imports based on the Contribution metadata sidefile
+     * @return
+     */
+    public List<ContributionImport> getImports();
+    
+    /**
+     * Get a list of deployables for the contribution
+     * This is based on the contribution medatata sidefile, or all Composites available on the contribution
+     * @return
+     */
+    public List<Composite> getDeployables();
+
+    /**
+     * Add an deployedArtifact to the contribution
+     * @param artifact
+     */
+    public void addArtifact(DeployedArtifact artifact);
+
+    /**
+     * Get a list of artifacts from the contribution
+     * @return
+     */
+    public Map<URI, DeployedArtifact> getArtifacts();
+    
+    /**
+     * Get a deployed artifact based on it's URI
      * @param uri
+     * @return
      */
-    public Contribution(URI uri) {
-        super(uri);
-        if (uri != null) {
-            artifacts.put(uri, this);
-        }
-    }
-    
-    public URI getUri() {
-        return uri;
-    }
-
-    public void setURI(URI uri) {
-        super.setUri(uri);
-        if (uri != null) {
-            artifacts.put(uri, this);
-        }
-    }
-
-    public List<String> getExports() {
-        return exports;
-    }
-
-    public List<ContributionImport> getImports() {
-        return imports;
-    }
-
-    public List<Composite> getDeployables() {
-        return deployables;
-    }
-
-    public Map<URI, DeployedArtifact> getArtifacts() {
-        return Collections.unmodifiableMap(artifacts);
-    }
-    
-    public void addArtifact(DeployedArtifact artifact) {
-        artifact.setContribution(this);
-        artifacts.put(artifact.getUri(), artifact);
-    }
-    
-    public DeployedArtifact getArtifact(URI uri) {
-        return artifacts.get(uri);
-    }
-
-    /**
-     * @return the location
-     */
-    public URL getLocation() {
-        return location;
-    }
-
-    /**
-     * @param location the location to set
-     */
-    public void setLocation(URL location) {
-        this.location = location;
-    }
+    public DeployedArtifact getArtifact(URI uri);
 }

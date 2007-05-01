@@ -26,25 +26,29 @@ import java.net.URI;
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionImport{
-    private String namespace; // The namespace to be imported
-    private URI location; // Optional location to hint the where it should be imported
-    
+public interface ContributionImport{
     // TODO: We might need the field to point to the imported artifact/model
 
-    public URI getLocation() {
-        return location;
-    }
+    /**
+     * 
+     * @return
+     */
+    public URI getLocation();
 
-    public void setLocation(URI location) {
-        this.location = location;
-    }
+    /**
+     * @param location
+     */
+    public void setLocation(URI location);
 
-    public String getNamespace() {
-        return namespace;
-    }
+    /**
+     * Get Namespace that identifies the import
+     * @return
+     */
+    public String getNamespace();
 
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
+    /**
+     * Set Namespace that identifies the import
+     * @param namespace
+     */
+    public void setNamespace(String namespace);
 }
