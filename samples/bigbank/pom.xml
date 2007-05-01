@@ -20,14 +20,22 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany.sampleapps</groupId>
-        <artifactId>tuscany-sampleapps</artifactId>
+        <artifactId>tuscany-sca</artifactId>
         <version>0.1-integration-incubating-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.samples.bigbank</groupId>
     <artifactId>bigbank-scenario</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany BigBank Scenario Sample</name>
+
+    <repositories>
+       <repository>
+          <id>apache.incubator</id>
+          <url>http://people.apache.org/repo/m2-incubating-repository</url>
+       </repository>
+    </repositories>
 
     <modules>
         <module>account</module>
