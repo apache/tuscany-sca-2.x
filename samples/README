@@ -1,0 +1,9 @@
+The Apache Tuscany Samples
+==========================
+
+
+TODO: say how to run the pre-built samples, how to build with Ant or Maven, and how to setup in IDE 
+
+java -cp target\sample-helloworld-ws.jar;..\..\lib\tuscany-sca-manifest.jar helloworld.HelloWorldServer
+
+
