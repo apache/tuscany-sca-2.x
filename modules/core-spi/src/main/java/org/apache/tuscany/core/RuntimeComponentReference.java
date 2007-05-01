@@ -19,23 +19,20 @@
 
 package org.apache.tuscany.core;
 
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.interfacedef.InterfaceContract;
+import java.util.List;
+
+import org.apache.tuscany.assembly.ComponentReference;
 
 /**
- * A service binding can optionally implement this interface
- * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProvider {
+public interface RuntimeComponentReference extends ComponentReference {
     /**
-     * Get the effective interface contract imposed by the binding. For example,
-     * it will be interface contract introspected from the WSDL portType used by
-     * the endpoint for a WebService binding.
-     * 
-     * @param service The component service that owns the service binding
-     * @return The effective interface contract, if null is returned, the interface contract
-     * for the component service will be used
+     * @param wire
      */
-    InterfaceContract getBindingInterfaceContract(ComponentService service);
+    void addRuntimeWire(RuntimeWire wire);
+    /**
+     * @return
+     */
+    List<RuntimeWire> getRuntimeWires();    
 }

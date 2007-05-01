@@ -48,7 +48,10 @@ public interface ReferenceBindingProvider {
      * the endpoint for a WebService binding.
      * 
      * @param model The model object
-     * @return The effective interface contract
+     * @return The effective interface contract, if null is returned, the interface contract
+     * for the component reference will be used
      */
     InterfaceContract getBindingInterfaceContract(ComponentReference reference);
+    
+
 }
