@@ -19,23 +19,20 @@
 
 package org.apache.tuscany.core;
 
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.assembly.Component;
+import org.osoa.sca.ComponentContext;
 
 /**
- * A service binding can optionally implement this interface
- * 
+ * The runtime component
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProvider {
+public interface RuntimeComponent extends Component, ComponentContext {
     /**
-     * Get the effective interface contract imposed by the binding. For example,
-     * it will be interface contract introspected from the WSDL portType used by
-     * the endpoint for a WebService binding.
-     * 
-     * @param service The component service that owns the service binding
-     * @return The effective interface contract, if null is returned, the interface contract
-     * for the component service will be used
+     * @param configuration
      */
-    InterfaceContract getBindingInterfaceContract(ComponentService service);
+    void setImplementationConfiguration(Object configuration);
+    /**
+     * @return
+     */
+    Object getImplementationConfiguration();
 }
