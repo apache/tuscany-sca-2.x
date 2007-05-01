@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.spring;
 
-import org.apache.tuscany.core.bean.runtime.ComponentContext;
+import org.apache.tuscany.core.spring.runtime.ComponentContext;
 
 import junit.framework.TestCase;
 import calculator.CalculatorService;

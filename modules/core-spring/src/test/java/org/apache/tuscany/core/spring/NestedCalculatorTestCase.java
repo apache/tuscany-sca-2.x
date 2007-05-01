@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.spring;
 
-import org.apache.tuscany.core.bean.runtime.ComponentContext;
+import org.apache.tuscany.core.spring.runtime.ComponentContext;
 
 import junit.framework.TestCase;
 import calculator.CalculatorService;
@@ -37,7 +37,7 @@ public class NestedCalculatorTestCase extends TestCase {
                           "org/apache/tuscany/core/spring/InnerCalculator.composite",
                           "org/apache/tuscany/core/spring/InnerOperations.composite");
 
-        calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent/CalculatorServiceComponent");
+        calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent/InnerCalculatorServiceComponent");
     }
 
     protected void tearDown() throws Exception {

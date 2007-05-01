@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.bean.impl;
+package org.apache.tuscany.core.spring.assembly.impl;
 
 import org.apache.tuscany.assembly.AbstractProperty;
 import org.apache.tuscany.assembly.AbstractReference;

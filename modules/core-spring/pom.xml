@@ -76,21 +76,18 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
