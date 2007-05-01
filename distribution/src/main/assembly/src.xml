@@ -32,6 +32,7 @@
 	     <outputDirectory>tuscany-sca-${tuscany.version}-src</outputDirectory>
 	     <includes>
              <include>DISCLAIMER</include>
+             <include>README</include>
              <include>RELEASE_NOTES</include>
              </includes>
 	 </fileSet>
