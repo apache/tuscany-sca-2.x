@@ -24,10 +24,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.DestroyProcessor;
-import org.apache.tuscany.implementation.java.introspect.impl.DuplicateDestructorException;
-import org.apache.tuscany.implementation.java.introspect.impl.IllegalDestructorException;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.osoa.sca.annotations.Destroy;
 
 /**
@@ -36,11 +35,11 @@ import org.osoa.sca.annotations.Destroy;
 public class DestroyProcessorTestCase extends TestCase {
     
     private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
 
     public void testDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Method method = Foo.class.getMethod("destroy");
         processor.visitMethod(method, type);
         assertNotNull(type.getDestroyMethod());
@@ -48,8 +47,7 @@ public class DestroyProcessorTestCase extends TestCase {
 
     public void testBadDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Method method = Bar.class.getMethod("badDestroy", String.class);
         try {
             processor.visitMethod(method, type);
@@ -61,8 +59,7 @@ public class DestroyProcessorTestCase extends TestCase {
 
     public void testTwoDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Method method = Bar.class.getMethod("destroy");
         Method method2 = Bar.class.getMethod("destroy2");
         processor.visitMethod(method, type);

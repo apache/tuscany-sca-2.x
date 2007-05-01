@@ -84,10 +84,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
     // FIXME: Hack to get the registry working
     private <T extends Implementation> Class<T> getImplementationType(Class<?> implClass) {
+        Class implementationInterface = Implementation.class;
         for (Class<?> interfaze : JavaIntrospectionHelper.getAllInterfaces(implClass)) {
-            if (interfaze != Implementation.class && Implementation.class.isAssignableFrom(interfaze)) {
-                return (Class<T>)interfaze;
+            if (interfaze != implementationInterface && implementationInterface.isAssignableFrom(interfaze)) {
+                implementationInterface = interfaze;
             }
+        }
+        if (implementationInterface != Implementation.class) {
+            return implementationInterface;
         }
         return (Class<T>)implClass;
     }

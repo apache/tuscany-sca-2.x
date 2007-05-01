@@ -23,8 +23,9 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.osoa.sca.annotations.AllowsPassByReference;
 
 /**
@@ -32,8 +33,9 @@ import org.osoa.sca.annotations.AllowsPassByReference;
  */
 public class AllowsPassByReferenceProcessorTestCase extends TestCase {
 
-    JavaImplementationDefinition type;
+    JavaImplementation type;
     AllowsPassByReferenceProcessor processor;
+    private JavaImplementationFactory javaImplementationFactory;
 
     public void testClassAnnotation() throws Exception {
         processor.visitClass(Foo.class, type);
@@ -49,7 +51,8 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        type = new JavaImplementationDefinition();
+        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        type = javaImplementationFactory.createJavaImplementation();
         processor = new AllowsPassByReferenceProcessor(new DefaultAssemblyFactory());
     }
 

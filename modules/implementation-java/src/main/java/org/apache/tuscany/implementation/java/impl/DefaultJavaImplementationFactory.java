@@ -27,14 +27,14 @@ import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 
 public class DefaultJavaImplementationFactory implements JavaImplementationFactory {
 
-    private AssemblyFactory assemblyFactory;
+    //private AssemblyFactory assemblyFactory;
 
     public DefaultJavaImplementationFactory(AssemblyFactory assemblyFactory) {
-        this.assemblyFactory = assemblyFactory;
+        //this.assemblyFactory = assemblyFactory;
     }
 
     public JavaImplementation createJavaImplementation() {
-        JavaImplementation javaImplementation = new JavaImplementationDefinition();
+        JavaImplementation javaImplementation = new JavaImplementationImpl();
         return javaImplementation;
     }
 

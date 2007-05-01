@@ -16,27 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspect;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
+package org.apache.tuscany.implementation.java.impl;
+
+import java.lang.reflect.Constructor;
 
 /**
- * Implementations are responsible for walking a component implementation class,
- * adding additional component type information as appropriate
- * 
  * @version $Rev$ $Date$
  */
-public interface JavaClassIntrospector {
-
+public class JavaParameterImpl extends JavaElementImpl {
     /**
-     * Walks the given component implementation class
-     * 
-     * @param clazz the component implementation class
-     * @param type the component type associated with the implementation class
-     * @return the updated component type
-     * @throws IntrospectionException if an error is encountered evaluating the
-     *             implementation class
+     * @param constructor
+     * @param index
      */
-    JavaImplementation introspect(Class<?> clazz, JavaImplementation type) throws IntrospectionException;
-
+    public JavaParameterImpl(Constructor<?> constructor, int index) {
+        super(constructor, index);
+    }
 }

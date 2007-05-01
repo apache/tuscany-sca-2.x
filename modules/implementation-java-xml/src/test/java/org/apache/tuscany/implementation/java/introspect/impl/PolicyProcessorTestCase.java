@@ -26,7 +26,9 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
@@ -41,7 +43,7 @@ import org.osoa.sca.annotations.Service;
 public class PolicyProcessorTestCase extends TestCase {
     private ServiceProcessor serviceProcessor;
     private PolicyProcessor policyProcessor;
-    private JavaImplementationDefinition type;
+    private JavaImplementation type;
 
     // This actually is a test for PolicyJavaInterfaceProcessor. It will get
     // invoked via the call to ImplementationProcessorServiceImpl.createService in
@@ -85,7 +87,7 @@ public class PolicyProcessorTestCase extends TestCase {
         verifyIntents(Service6.class, type);
     }
 
-    private void verifyIntents(Class serviceImplClass, JavaImplementationDefinition type) {
+    private void verifyIntents(Class serviceImplClass, JavaImplementation type) {
 
         Requires serviceImplIntentAnnotation = (Requires)serviceImplClass.getAnnotation(Requires.class);
         if (serviceImplIntentAnnotation != null) {
@@ -220,7 +222,8 @@ public class PolicyProcessorTestCase extends TestCase {
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
         serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), introspector);
         policyProcessor = new PolicyProcessor(new DefaultAssemblyFactory(), new DefaultPolicyFactory());
-        type = new JavaImplementationDefinition();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        type = javaImplementationFactory.createJavaImplementation();
     }
 
     // @Remotable

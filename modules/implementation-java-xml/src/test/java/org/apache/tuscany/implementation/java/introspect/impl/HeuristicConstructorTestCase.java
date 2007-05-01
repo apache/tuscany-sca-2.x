@@ -24,12 +24,11 @@ import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.implementation.java.introspect.impl.AmbiguousConstructorException;
-import org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor;
-import org.apache.tuscany.implementation.java.introspect.impl.NoConstructorException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
@@ -45,15 +44,17 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
     private AssemblyFactory factory;
     private JavaFactory javaFactory;
     private HeuristicPojoProcessor processor;
+    private JavaImplementationFactory javaImplementationFactory;
 
     public HeuristicConstructorTestCase() {
         factory = new DefaultAssemblyFactory();
         javaFactory = new DefaultJavaFactory();
+        javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
         processor = new HeuristicPojoProcessor(factory, javaFactory, introspector);
     }
 
-    private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    private <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         for (Constructor<T> constructor : clazz.getConstructors()) {
             visitConstructor(constructor, type);
         }
@@ -64,30 +65,30 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
      * Verifies a single constructor is chosen with a parameter as the type
      */
     public void testSingleConstructorWithParam() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         org.apache.tuscany.assembly.Property prop = factory.createProperty();
         prop.setName("foo");
         type.getProperties().add(prop);
         // Hack to add a property member
-        JavaElement element = new JavaElement("foo", String.class, null);
+        JavaElementImpl element = new JavaElementImpl("foo", String.class, null);
         type.getPropertyMembers().put("foo", element);
         visitEnd(Foo1.class, type);
-        assertNotNull(type.getConstructorDefinition().getConstructor());
-        assertEquals("foo", type.getConstructorDefinition().getParameters()[0].getName());
+        assertNotNull(type.getConstructor().getConstructor());
+        assertEquals("foo", type.getConstructor().getParameters()[0].getName());
     }
 
     /**
      * Verifies a single constructor is chosen with a reference as the type
      */
     public void testSingleConstructorWithRef() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         org.apache.tuscany.assembly.Reference ref = factory.createReference();
         ref.setName("foo");
         type.getReferences().add(ref);
-        type.getReferenceMembers().put("foo", new JavaElement("foo", String.class, null));
+        type.getReferenceMembers().put("foo", new JavaElementImpl("foo", String.class, null));
         visitEnd(Foo1.class, type);
-        assertNotNull(type.getConstructorDefinition().getConstructor());
-        assertEquals("foo", type.getConstructorDefinition().getParameters()[0].getName());
+        assertNotNull(type.getConstructor().getConstructor());
+        assertEquals("foo", type.getConstructor().getParameters()[0].getName());
     }
 
     /**
@@ -95,43 +96,43 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
      * as the type
      */
     public void testSingleConstructorWithPropRef() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
 
         org.apache.tuscany.assembly.Property prop = factory.createProperty();
         prop.setName("foo");
         type.getProperties().add(prop);
         // Hack to add a property member
-        JavaElement element = new JavaElement("foo", String.class, null);
+        JavaElementImpl element = new JavaElementImpl("foo", String.class, null);
         type.getPropertyMembers().put("foo", element);
 
         org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference(factory, javaFactory, "ref", Foo1.class);
         type.getReferences().add(ref);
-        type.getReferenceMembers().put("ref", new JavaElement("ref", Foo1.class, null));
+        type.getReferenceMembers().put("ref", new JavaElementImpl("ref", Foo1.class, null));
         visitEnd(Foo2.class, type);
-        assertNotNull(type.getConstructorDefinition().getConstructor());
-        assertEquals(2, type.getConstructorDefinition().getParameters().length);
+        assertNotNull(type.getConstructor().getConstructor());
+        assertEquals(2, type.getConstructor().getParameters().length);
     }
 
     public void testSingleConstructorResolvableParam() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo5.class, type);
         assertEquals(String.class, type.getPropertyMembers().get("string").getType());
     }
 
     public void testSingleConstructorResolvableRef() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo6.class, type);
         assertTrue(ModelHelper.matches(ModelHelper.getReference(type, "ref"), Ref.class));
     }
 
     public void testSingleConstructorAmbiguousRef() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference(factory, javaFactory, "ref", Foo1.class);
         type.getReferences().add(ref);
-        type.getReferenceMembers().put("ref", new JavaElement("ref", Foo1.class, null));
+        type.getReferenceMembers().put("ref", new JavaElementImpl("ref", Foo1.class, null));
         org.apache.tuscany.assembly.Reference ref2 = ModelHelper.createReference(factory, javaFactory, "ref2", Foo1.class);
         type.getReferences().add(ref2);
-        type.getReferenceMembers().put("ref2", new JavaElement("ref2", Foo1.class, null));
+        type.getReferenceMembers().put("ref2", new JavaElementImpl("ref2", Foo1.class, null));
         try {
             visitEnd(Foo4.class, type);
             fail();
@@ -141,26 +142,26 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
     }
 
     public void testConstructorPropertyAnnotatedParamsOnly() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo7.class, type);
         assertNotNull(getProperty(type, "myProp"));
     }
 
     public void testConstructorReferenceAnnotatedParamsOnly() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo8.class, type);
         assertNotNull(ModelHelper.getReference(type, "myRef"));
     }
 
     @SuppressWarnings("unchecked")
     public void testDefaultConstructor() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo3.class, type);
-        assertNotNull(type.getConstructorDefinition().getConstructor());
+        assertNotNull(type.getConstructor().getConstructor());
     }
 
     public void testSameTypesButAnnotated() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo12.class, type);
         assertEquals(2, type.getProperties().size());
         assertNotNull(getProperty(type, "prop1"));
@@ -171,14 +172,14 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
      * Verifies processing executes with additional extension annotations
      */
     public void testRandomAnnotation() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo11.class, type);
         assertEquals(1, type.getProperties().size());
         assertNotNull(getProperty(type, "prop1"));
     }
 
     public void testPrivateConstructor() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             visitEnd(Foo14.class, type);
             fail();

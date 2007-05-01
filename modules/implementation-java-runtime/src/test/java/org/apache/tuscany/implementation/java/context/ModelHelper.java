@@ -25,20 +25,18 @@ import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ModelHelper {
 
-    public static Property getProperty(JavaImplementationDefinition type, String name) {
+    public static Property getProperty(JavaImplementation type, String name) {
         for (Property prop : type.getProperties()) {
             if (prop.getName().equals(name)) {
                 return prop;
@@ -47,7 +45,7 @@ public class ModelHelper {
         return null;
     }
 
-    public static Reference getReference(JavaImplementationDefinition type, String name) {
+    public static Reference getReference(JavaImplementation type, String name) {
         for (Reference ref : type.getReferences()) {
             if (ref.getName().equals(name)) {
                 return ref;
@@ -56,7 +54,7 @@ public class ModelHelper {
         return null;
     }
 
-    public static Service getService(JavaImplementationDefinition type, String name) {
+    public static Service getService(JavaImplementation type, String name) {
         for (Service svc : type.getServices()) {
             if (svc.getName().equals(name)) {
                 return svc;

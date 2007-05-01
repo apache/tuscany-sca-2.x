@@ -43,10 +43,10 @@ import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.Interface;
@@ -84,7 +84,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
         this.javaFactory = javaFactory;
     }
 
-    public <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         List<org.apache.tuscany.assembly.Service> services = type.getServices();
         if (services.isEmpty()) {
             // heuristically determine the service
@@ -114,7 +114,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
         evaluateConstructor(type, clazz);
     }
 
-    private void addService(JavaImplementationDefinition type, Class<?> clazz) throws IntrospectionException {
+    private void addService(JavaImplementation type, Class<?> clazz) throws IntrospectionException {
         try {
             org.apache.tuscany.assembly.Service service = createService(clazz);
             type.getServices().add(service);
@@ -137,7 +137,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
 
     private <T> void calcPropRefs(Set<Method> methods,
                                   List<org.apache.tuscany.assembly.Service> services,
-                                  JavaImplementationDefinition type,
+                                  JavaImplementation type,
                                   Class<T> clazz) throws IntrospectionException {
         // heuristically determine the properties references
         // make a first pass through all public methods with one param
@@ -156,10 +156,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
                     Type genericType = method.getGenericParameterTypes()[0];
                     if (isReferenceType(param, genericType)) {
                         type.getReferences().add(createReference(name, param));
-                        type.getReferenceMembers().put(name, new JavaElement(method, 0));
+                        type.getReferenceMembers().put(name, new JavaElementImpl(method, 0));
                     } else {
                         type.getProperties().add(createProperty(name, param));
-                        type.getPropertyMembers().put(name, new JavaElement(method, 0));
+                        type.getPropertyMembers().put(name, new JavaElementImpl(method, 0));
                     }
                 }
             }
@@ -176,10 +176,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
             if (!type.getPropertyMembers().containsKey(name) && !type.getReferenceMembers().containsKey(name)) {
                 if (isReferenceType(param, method.getGenericParameterTypes()[0])) {
                     type.getReferences().add(createReference(name, param));
-                    type.getReferenceMembers().put(name, new JavaElement(method, 0));
+                    type.getReferenceMembers().put(name, new JavaElementImpl(method, 0));
                 } else {
                     type.getProperties().add(createProperty(name, param));
-                    type.getPropertyMembers().put(name, new JavaElement(method, 0));
+                    type.getPropertyMembers().put(name, new JavaElementImpl(method, 0));
                 }
             }
         }
@@ -196,10 +196,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
             Class<?> paramType = field.getType();
             if (isReferenceType(paramType, field.getGenericType())) {
                 type.getReferences().add(createReference(name, paramType));
-                type.getReferenceMembers().put(name, new JavaElement(field));
+                type.getReferenceMembers().put(name, new JavaElementImpl(field));
             } else {
                 type.getProperties().add(createProperty(name, paramType));
-                type.getPropertyMembers().put(name, new JavaElement(field));
+                type.getPropertyMembers().put(name, new JavaElementImpl(field));
             }
         }
     }
@@ -215,9 +215,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
      *             cannot be unambiguously mapped to references and properties
      */
     @SuppressWarnings("unchecked")
-    private <T> void evaluateConstructor(JavaImplementationDefinition type, Class<T> clazz) throws IntrospectionException {
+    private <T> void evaluateConstructor(JavaImplementation type, Class<T> clazz) throws IntrospectionException {
         // determine constructor if one is not annotated
-        ConstructorDefinition<?> definition = type.getConstructorDefinition();
+        JavaConstructorImpl<?> definition = type.getConstructor();
         Constructor constructor;
         boolean explict = false;
         if (definition != null && definition.getConstructor()
@@ -255,18 +255,18 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
                 }
                 constructor = selected;
                 definition = type.getConstructors().get(selected);
-                type.setConstructorDefinition(definition);
+                type.setConstructor(definition);
                 // return;
             }
             definition = type.getConstructors().get(constructor);
-            type.setConstructorDefinition(definition);
+            type.setConstructor(definition);
         }
-        Parameter[] parameters = definition.getParameters();
+        JavaParameterImpl[] parameters = definition.getParameters();
         if (parameters.length == 0) {
             return;
         }
-        Map<String, JavaElement> props = type.getPropertyMembers();
-        Map<String, JavaElement> refs = type.getReferenceMembers();
+        Map<String, JavaElementImpl> props = type.getPropertyMembers();
+        Map<String, JavaElementImpl> refs = type.getReferenceMembers();
         Annotation[][] annotations = constructor.getParameterAnnotations();
         if (!explict) {
             // the constructor wasn't defined by an annotation, so check to see
@@ -299,21 +299,21 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
         }
     }
 
-    private void calcParamNames(Parameter[] parameters, Map<String, JavaElement> props, Map<String, JavaElement> refs)
+    private void calcParamNames(JavaParameterImpl[] parameters, Map<String, JavaElementImpl> props, Map<String, JavaElementImpl> refs)
         throws AmbiguousConstructorException {
         // the constructor param types must unambiguously match defined
         // reference or property types
-        for (Parameter param : parameters) {
+        for (JavaParameterImpl param : parameters) {
             if (!findReferenceOrProperty(param, props, refs)) {
                 throw new AmbiguousConstructorException(param.getName());
             }
         }
     }
 
-    private void heuristicParamNames(JavaImplementationDefinition type, Parameter[] parameters)
+    private void heuristicParamNames(JavaImplementation type, JavaParameterImpl[] parameters)
         throws IntrospectionException {
         // heuristically determine refs and props from the parameter types
-        for (Parameter p : parameters) {
+        for (JavaParameterImpl p : parameters) {
             String name = p.getType().getSimpleName().toLowerCase();
             if (isReferenceType(p.getType(), p.getGenericType())) {
                 type.getReferences().add(createReference(name, p.getType()));
@@ -337,15 +337,15 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
      * Returns true if the union of the given collections of properties and
      * references have unique Java types
      */
-    private boolean calcPropRefUniqueness(Collection<JavaElement> props, Collection<JavaElement> refs) {
+    private boolean calcPropRefUniqueness(Collection<JavaElementImpl> props, Collection<JavaElementImpl> refs) {
 
         Class[] classes = new Class[props.size() + refs.size()];
         int i = 0;
-        for (JavaElement property : props) {
+        for (JavaElementImpl property : props) {
             classes[i] = property.getType();
             i++;
         }
-        for (JavaElement reference : refs) {
+        for (JavaElementImpl reference : refs) {
             classes[i] = reference.getType();
             i++;
         }
@@ -360,25 +360,25 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
      * @throws AmbiguousConstructorException if the constructor parameter cannot
      *             be resolved to a property or reference
      */
-    private boolean findReferenceOrProperty(Parameter parameter,
-                                            Map<String, JavaElement> props,
-                                            Map<String, JavaElement> refs) throws AmbiguousConstructorException {
+    private boolean findReferenceOrProperty(JavaParameterImpl parameter,
+                                            Map<String, JavaElementImpl> props,
+                                            Map<String, JavaElementImpl> refs) throws AmbiguousConstructorException {
 
         boolean found = false;
         if (!"".equals(parameter.getName())) {
             // Match by name
-            JavaElement prop = props.get(parameter.getName());
+            JavaElementImpl prop = props.get(parameter.getName());
             if (prop != null && prop.getType() == parameter.getType()) {
                 parameter.setClassifer(Property.class);
                 return true;
             }
-            JavaElement ref = refs.get(parameter.getName());
+            JavaElementImpl ref = refs.get(parameter.getName());
             if (ref != null && ref.getType() == parameter.getType()) {
                 parameter.setClassifer(Reference.class);
                 return true;
             }
         }
-        for (JavaElement property : props.values()) {
+        for (JavaElementImpl property : props.values()) {
             if (property.getType() == parameter.getType()) {
                 if (found) {
                     throw new AmbiguousConstructorException("Ambiguous property or reference for constructor type",
@@ -391,7 +391,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
                 // than one prop or ref of the same type
             }
         }
-        for (JavaElement reference : refs.values()) {
+        for (JavaElementImpl reference : refs.values()) {
             if (reference.getType() == parameter.getType()) {
                 if (found) {
                     throw new AmbiguousConstructorException("Ambiguous property or reference for constructor type",
@@ -498,12 +498,12 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
      * @param type the component type
      * @param methods all methods in the class to examine
      */
-    private void calculateServiceInterface(Class<?> clazz, JavaImplementationDefinition type, Set<Method> methods)
+    private void calculateServiceInterface(Class<?> clazz, JavaImplementation type, Set<Method> methods)
         throws IntrospectionException {
         List<Method> nonPropRefMethods = new ArrayList<Method>();
         // Map<String, Service> services = type.getServices();
-        Map<String, JavaElement> references = type.getReferenceMembers();
-        Map<String, JavaElement> properties = type.getPropertyMembers();
+        Map<String, JavaElementImpl> references = type.getReferenceMembers();
+        Map<String, JavaElementImpl> properties = type.getPropertyMembers();
         // calculate methods that are not properties or references
         for (Method method : methods) {
             String name = toPropertyName(method.getName());
@@ -552,7 +552,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
         return true;
     }
 
-    private boolean isAnnotated(Parameter parameter) {
+    private boolean isAnnotated(JavaParameterImpl parameter) {
         for (Annotation annotation : parameter.getAnnotations()) {
             Class<? extends Annotation> annotType = annotation.annotationType();
             if (annotType.equals(Property.class) || annotType.equals(Reference.class)
@@ -563,9 +563,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
         return false;
     }
 
-    public boolean areUnique(Parameter[] parameters) {
+    public boolean areUnique(JavaParameterImpl[] parameters) {
         Set<Class> set = new HashSet<Class>(parameters.length);
-        for (Parameter p : parameters) {
+        for (JavaParameterImpl p : parameters) {
             if (!set.add(p.getType())) {
                 return false;
             }

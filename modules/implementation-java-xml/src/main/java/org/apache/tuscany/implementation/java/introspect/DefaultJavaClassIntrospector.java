@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
 /**
@@ -74,7 +74,7 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
      * ignored.
      * </ol>
      */
-    public JavaImplementationDefinition introspect(Class<?> clazz, JavaImplementationDefinition type)
+    public JavaImplementation introspect(Class<?> clazz, JavaImplementation type)
         throws IntrospectionException {
         for (JavaClassIntrospectorExtension extension : extensions) {
             extension.visitClass(clazz, type);
@@ -85,9 +85,9 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
                 extension.visitConstructor(constructor, type);
                 // Assuming the visitClass or visitConstructor will populate the
                 // type.getConstructors
-                ConstructorDefinition<?> definition = type.getConstructors().get(constructor);
+                JavaConstructorImpl<?> definition = type.getConstructors().get(constructor);
                 if (definition != null) {
-                    for (Parameter p : definition.getParameters()) {
+                    for (JavaParameterImpl p : definition.getParameters()) {
                         extension.visitConstructorParameter(p, type);
                     }
                 }
@@ -119,7 +119,7 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
         return type;
     }
 
-    private void visitSuperClass(Class<?> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    private void visitSuperClass(Class<?> clazz, JavaImplementation type) throws IntrospectionException {
         if (!Object.class.equals(clazz)) {
             for (JavaClassIntrospectorExtension extension : extensions) {
                 extension.visitSuperClass(clazz, type);

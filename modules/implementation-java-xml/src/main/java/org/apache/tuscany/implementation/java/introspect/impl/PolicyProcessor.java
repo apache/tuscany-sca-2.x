@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Callback;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -108,7 +108,7 @@ public class PolicyProcessor extends BaseJavaClassIntrospectorExtension {
         }
     }
 
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         
         // Read intents on the Java implementation class
         readIntents(clazz, type.getRequiredIntents());
@@ -157,7 +157,7 @@ public class PolicyProcessor extends BaseJavaClassIntrospectorExtension {
         }
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         
         // Read the intents specified on the given implementation method
         readIntents(method, type.getRequiredIntents());

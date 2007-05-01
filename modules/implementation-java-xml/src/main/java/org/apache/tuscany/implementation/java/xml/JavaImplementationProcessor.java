@@ -38,7 +38,6 @@ import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.policy.PolicyFactory;
@@ -109,9 +108,9 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
         javaImplementation.setUnresolved(false);
         
         //FIXME JavaImplementationDefinition should not be mandatory 
-        if (javaImplementation instanceof JavaImplementationDefinition) {
+        if (javaImplementation instanceof JavaImplementation) {
             try {
-                introspector.introspect(javaImplementation.getJavaClass(), (JavaImplementationDefinition)javaImplementation);
+                introspector.introspect(javaImplementation.getJavaClass(), javaImplementation);
             } catch (IntrospectionException e) {
                 throw new ContributionResolveException(e);
             }

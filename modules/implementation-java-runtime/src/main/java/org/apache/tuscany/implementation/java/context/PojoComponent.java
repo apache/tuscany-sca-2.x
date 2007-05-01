@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -141,11 +141,11 @@ public abstract class PojoComponent<T> extends AbstractSCAObject implements Atom
         return provider.getImplementationClass();
     }
 
-    public void setObjectFactory(JavaElement name, ObjectFactory<?> objectFactory) {
+    public void setObjectFactory(JavaElementImpl name, ObjectFactory<?> objectFactory) {
         provider.setObjectFactory(name, objectFactory);
     }
 
-    public Class<?> getMemberType(JavaElement injectionSite) {
+    public Class<?> getMemberType(JavaElementImpl injectionSite) {
         return injectionSite.getType();
     }
 

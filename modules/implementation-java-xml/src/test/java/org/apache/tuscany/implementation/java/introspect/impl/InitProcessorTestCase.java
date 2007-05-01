@@ -23,21 +23,25 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.DuplicateInitException;
-import org.apache.tuscany.implementation.java.introspect.impl.IllegalInitException;
-import org.apache.tuscany.implementation.java.introspect.impl.InitProcessor;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.osoa.sca.annotations.Init;
 
 /**
  * @version $Rev$ $Date$
  */
 public class InitProcessorTestCase extends TestCase {
+    
+    private JavaImplementationFactory javaImplementationFactory;
+    
+    public InitProcessorTestCase() {
+        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    }
 
     public void testInit() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Method method = InitProcessorTestCase.Foo.class.getMethod("init");
         processor.visitMethod(method, type);
         assertNotNull(type.getInitMethod());
@@ -45,8 +49,7 @@ public class InitProcessorTestCase extends TestCase {
 
     public void testBadInit() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Method method = InitProcessorTestCase.Bar.class.getMethod("badInit", String.class);
         try {
             processor.visitMethod(method, type);
@@ -58,8 +61,7 @@ public class InitProcessorTestCase extends TestCase {
 
     public void testTwoInit() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Method method = InitProcessorTestCase.Bar.class.getMethod("init");
         Method method2 = InitProcessorTestCase.Bar.class.getMethod("init2");
         processor.visitMethod(method, type);

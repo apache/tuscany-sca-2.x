@@ -23,18 +23,18 @@ package org.apache.tuscany.implementation.java.impl;
  *
  * @version $Rev$ $Date$
  */
-public class Scope {
-    public static final Scope STATELESS = new Scope("STATELESS");
-    public static final Scope REQUEST = new Scope("REQUEST");
-    public static final Scope SESSION = new Scope("SESSION");
-    public static final Scope CONVERSATION = new Scope("CONVERSATION");
-    public static final Scope COMPOSITE = new Scope("COMPOSITE");
-    public static final Scope SYSTEM = new Scope("SYSTEM");
-    public static final Scope UNDEFINED = new Scope("UNDEFINED");
+public class JavaScopeImpl {
+    public static final JavaScopeImpl STATELESS = new JavaScopeImpl("STATELESS");
+    public static final JavaScopeImpl REQUEST = new JavaScopeImpl("REQUEST");
+    public static final JavaScopeImpl SESSION = new JavaScopeImpl("SESSION");
+    public static final JavaScopeImpl CONVERSATION = new JavaScopeImpl("CONVERSATION");
+    public static final JavaScopeImpl COMPOSITE = new JavaScopeImpl("COMPOSITE");
+    public static final JavaScopeImpl SYSTEM = new JavaScopeImpl("SYSTEM");
+    public static final JavaScopeImpl UNDEFINED = new JavaScopeImpl("UNDEFINED");
 
     private String scope;
 
-    public Scope(String scope) {
+    public JavaScopeImpl(String scope) {
         this.scope = scope.toUpperCase().intern();
     }
 
@@ -49,7 +49,7 @@ public class Scope {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Scope scope1 = (Scope) o;
+        final JavaScopeImpl scope1 = (JavaScopeImpl) o;
         return !(scope != null ? scope != scope1.scope.intern() : scope1.scope != null);
     }
 

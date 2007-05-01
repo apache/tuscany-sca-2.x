@@ -26,12 +26,12 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;
-import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
-import org.apache.tuscany.implementation.java.introspect.impl.PropertyProcessor;
 import org.osoa.sca.annotations.Property;
 
 /**
@@ -39,7 +39,7 @@ import org.osoa.sca.annotations.Property;
  */
 public class PropertyProcessorTestCase extends TestCase {
 
-    JavaImplementationDefinition type;
+    JavaImplementation type;
     PropertyProcessor processor;
 
     public void testMethodAnnotation() throws Exception {
@@ -107,7 +107,8 @@ public class PropertyProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        type = new JavaImplementationDefinition();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        type = javaImplementationFactory.createJavaImplementation();
         processor = new PropertyProcessor(new DefaultAssemblyFactory());
     }
 
@@ -173,7 +174,7 @@ public class PropertyProcessorTestCase extends TestCase {
 
     }
 
-    private Class<?> getBaseType(JavaElement element) {
+    private Class<?> getBaseType(JavaElementImpl element) {
         return JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
     }
 

@@ -22,8 +22,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.implementation.java.impl.Parameter;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
 
 /**
  * Implementations process class-level metadata, typically parsing annotations
@@ -48,7 +49,7 @@ public interface JavaClassIntrospectorExtension {
      * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException;
+    <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException;
 
     /**
      * A callback received as the component implementation class hierarchy is
@@ -61,7 +62,7 @@ public interface JavaClassIntrospectorExtension {
      * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    <T> void visitSuperClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException;
+    <T> void visitSuperClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException;
 
     /**
      * A callback received as the component implementation's public and
@@ -73,7 +74,7 @@ public interface JavaClassIntrospectorExtension {
      * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException;
+    void visitMethod(Method method, JavaImplementation type) throws IntrospectionException;
 
     /**
      * A callback received as the component implementation's constructor used
@@ -89,14 +90,14 @@ public interface JavaClassIntrospectorExtension {
      * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    <T> void visitConstructor(Constructor<T> constructor, JavaImplementationDefinition type) throws IntrospectionException;
+    <T> void visitConstructor(Constructor<T> constructor, JavaImplementation type) throws IntrospectionException;
 
     /**
      * @param parameter
      * @param type
      * @throws IntrospectionException
      */
-    void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type) throws IntrospectionException;
+    void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type) throws IntrospectionException;
 
     /**
      * A callback received as the component implementation's public and
@@ -108,7 +109,7 @@ public interface JavaClassIntrospectorExtension {
      * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException;
+    void visitField(Field field, JavaImplementation type) throws IntrospectionException;
 
     /**
      * The final callback received when all other callbacks during evaluation of
@@ -120,6 +121,6 @@ public interface JavaClassIntrospectorExtension {
      * @throws IntrospectionException if an error is encountered while processing
      *             metadata
      */
-    <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException;
+    <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException;
 
 }

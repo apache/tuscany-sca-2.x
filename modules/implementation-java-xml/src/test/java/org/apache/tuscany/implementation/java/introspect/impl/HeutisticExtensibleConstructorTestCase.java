@@ -22,9 +22,11 @@ import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
@@ -39,13 +41,15 @@ import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntro
 public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTest {
 
     private org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor processor;
+    private JavaImplementationFactory javaImplementationFactory;
 
     public HeutisticExtensibleConstructorTestCase() {
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
         processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), introspector);
+        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
     }
 
-    private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    private <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         for (Constructor<T> constructor : clazz.getConstructors()) {
             visitConstructor(constructor, type);
         }
@@ -57,10 +61,10 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
      * annotation processors being called.
      */
     public void testBarAnnotationProcessedFirst() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
-        ConstructorDefinition<Foo> definition = new ConstructorDefinition<Foo>(ctor);
-        type.setConstructorDefinition(definition);
+        JavaConstructorImpl<Foo> definition = new JavaConstructorImpl<Foo>(ctor);
+        type.setConstructor(definition);
         Property property = factory.createProperty();
         property.setName("myBar");
         definition.getParameters()[0].setName("myBar");
@@ -83,11 +87,11 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
      * @throws Exception
      */
     public void testBarAnnotationProcessedLast() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo.class, type);
 
         // now simulate process the bar impl
-        ConstructorDefinition<?> definition = type.getConstructorDefinition();
+        JavaConstructorImpl<?> definition = type.getConstructor();
         definition.getParameters()[0].setName("myBar");
         Property property = factory.createProperty();
         property.setName("myBar");
@@ -104,16 +108,16 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
      * injection names and preserves their ordering.
      */
     public void testBarAnnotationProcessedFirstInMiddle() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo2> ctor = Foo2.class.getConstructor(String.class, String.class, String.class);
-        ConstructorDefinition<Foo2> definition = new ConstructorDefinition<Foo2>(ctor);
-        type.setConstructorDefinition(definition);
+        JavaConstructorImpl<Foo2> definition = new JavaConstructorImpl<Foo2>(ctor);
+        type.setConstructor(definition);
         // insert placeholder for first param, which would be done by a
         // processor
         definition.getParameters()[0].setName("");
         Property property = factory.createProperty();
         // Hack to add a property member
-        JavaElement element = new JavaElement("myBar", String.class, null);
+        JavaElementImpl element = new JavaElementImpl("myBar", String.class, null);
         type.getPropertyMembers().put("myBar", element);
         property.setName("myBar");
         definition.getParameters()[1].setName("myBar");

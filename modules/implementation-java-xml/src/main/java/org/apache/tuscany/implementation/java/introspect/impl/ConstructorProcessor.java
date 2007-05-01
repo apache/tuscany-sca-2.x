@@ -21,9 +21,9 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
@@ -40,35 +40,35 @@ public class ConstructorProcessor extends BaseJavaClassIntrospectorExtension {
         super(factory);
     }
 
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         Constructor[] ctors = clazz.getConstructors();
         boolean found = false;
         for (Constructor constructor : ctors) {
-            ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
+            JavaConstructorImpl<?> definition = new JavaConstructorImpl(constructor);
             type.getConstructors().put(constructor, definition);
             if (constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class) != null) {
                 if (found) {
                     throw new DuplicateConstructorException("Multiple constructors marked with @Constructor", constructor);
                 }
                 found = true;
-                type.setConstructorDefinition(definition);
+                type.setConstructor(definition);
             }
         }
     }
 
-    public <T> void visitConstructor(Constructor<T> constructor, JavaImplementationDefinition type)
+    public <T> void visitConstructor(Constructor<T> constructor, JavaImplementation type)
         throws IntrospectionException {
         org.osoa.sca.annotations.Constructor annotation = constructor
             .getAnnotation(org.osoa.sca.annotations.Constructor.class);
         if (annotation == null) {
             return;
         }
-        ConstructorDefinition<?> definition = type.getConstructorDefinition();
+        JavaConstructorImpl<?> definition = type.getConstructor();
         if (definition == null) {
-            definition = new ConstructorDefinition(constructor);
-            type.setConstructorDefinition(definition);
+            definition = new JavaConstructorImpl(constructor);
+            type.setConstructor(definition);
         }
-        Parameter[] parameters = definition.getParameters();
+        JavaParameterImpl[] parameters = definition.getParameters();
         String[] value = annotation.value();
         boolean isDefault = value.length == 0 || (value.length == 1 && "".equals(value[0]));
         if (!isDefault && value.length != parameters.length) {
@@ -77,6 +77,6 @@ public class ConstructorProcessor extends BaseJavaClassIntrospectorExtension {
         for (int i = 0; i < parameters.length; i++) {
             parameters[i].setName(i < value.length ? value[i] : "");
         }
-        type.setConstructorDefinition(definition);
+        type.setConstructor(definition);
     }
 }

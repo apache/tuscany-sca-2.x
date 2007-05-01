@@ -25,9 +25,11 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
@@ -46,13 +48,15 @@ import org.osoa.sca.annotations.Service;
 public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
 
     private org.apache.tuscany.implementation.java.introspect.impl.HeuristicPojoProcessor processor;
+    private JavaImplementationFactory javaImplementationFactory;
 
     public HeuristicPojoProcessorTestCase() {
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
         processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), introspector);
+        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
     }
 
-    private <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    private <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         for (Constructor<T> constructor : clazz.getConstructors()) {
             visitConstructor(constructor, type);
         }
@@ -64,9 +68,9 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * is implemented
      */
     public void testSingleInterface() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<SingleInterfaceImpl> ctor = SingleInterfaceImpl.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<SingleInterfaceImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<SingleInterfaceImpl>(ctor));
         processor.visitEnd(SingleInterfaceImpl.class, type);
         assertEquals(1, type.getServices().size());
         assertTrue(ModelHelper.matches(ModelHelper.getService(type, PropertyInterface.class.getSimpleName()),
@@ -79,10 +83,10 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * Verifies property and reference setters are computed
      */
     public void testPropertyReference() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<SingleInterfaceWithPropertyReferenceImpl> ctor = SingleInterfaceWithPropertyReferenceImpl.class
             .getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<SingleInterfaceWithPropertyReferenceImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<SingleInterfaceWithPropertyReferenceImpl>(ctor));
         processor.visitEnd(SingleInterfaceWithPropertyReferenceImpl.class, type);
         assertEquals(1, type.getServices().size());
         assertTrue(ModelHelper
@@ -100,9 +104,9 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * operation is in the service interface
      */
     public void testPropertySetterInInterface() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<SingleInterfaceImpl> ctor = SingleInterfaceImpl.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<SingleInterfaceImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<SingleInterfaceImpl>(ctor));
         processor.visitEnd(SingleInterfaceImpl.class, type);
         assertEquals(0, type.getProperties().size());
     }
@@ -112,9 +116,9 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * operation is in the service interface
      */
     public void testReferenceSetterInInterface() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<RefInterfaceImpl> ctor = RefInterfaceImpl.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<RefInterfaceImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<RefInterfaceImpl>(ctor));
         processor.visitEnd(RefInterfaceImpl.class, type);
         assertEquals(0, type.getReferences().size());
     }
@@ -124,9 +128,9 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * references according to spec rules
      */
     public void testReferenceCollectionType() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ReferenceCollectionImpl> ctor = ReferenceCollectionImpl.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<ReferenceCollectionImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<ReferenceCollectionImpl>(ctor));
         processor.visitEnd(ReferenceCollectionImpl.class, type);
         assertEquals(1, type.getProperties().size());
         assertEquals(3, type.getReferences().size());
@@ -137,9 +141,9 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * properties according to spec rules
      */
     public void testPropertyCollectionType() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<PropertyCollectionImpl> ctor = PropertyCollectionImpl.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<PropertyCollectionImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<PropertyCollectionImpl>(ctor));
         processor.visitEnd(PropertyCollectionImpl.class, type);
         assertEquals(0, type.getReferences().size());
         assertEquals(4, type.getProperties().size());
@@ -151,18 +155,18 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * @Remotable
      */
     public void testRemotableRef() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<RemotableRefImpl> ctor = RemotableRefImpl.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<RemotableRefImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<RemotableRefImpl>(ctor));
         processor.visitEnd(RemotableRefImpl.class, type);
         assertEquals(2, type.getReferences().size());
         assertEquals(0, type.getProperties().size());
     }
 
     public void testParentInterface() throws IntrospectionException, NoSuchMethodException {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Child> ctor = Child.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<Child>(ctor));
+        type.setConstructor(new JavaConstructorImpl<Child>(ctor));
         processor.visitEnd(Child.class, type);
         assertNotNull(ModelHelper.getService(type, Interface1.class.getSimpleName()));
     }
@@ -172,47 +176,47 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * given
      */
     public void testExcludedPropertyAndReference() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         org.apache.tuscany.assembly.Reference ref = factory.createReference();
         ref.setName("reference");
         type.getReferences().add(ref);
-        type.getReferenceMembers().put("reference", new JavaElement("reference", Ref.class, null));
+        type.getReferenceMembers().put("reference", new JavaElementImpl("reference", Ref.class, null));
         org.apache.tuscany.assembly.Reference ref2 = factory.createReference();
         ref2.setName("reference2");
         type.getReferences().add(ref2);
-        type.getReferenceMembers().put("reference2", new JavaElement("reference2", Ref.class, null));
+        type.getReferenceMembers().put("reference2", new JavaElementImpl("reference2", Ref.class, null));
         org.apache.tuscany.assembly.Property prop1 = factory.createProperty();
         prop1.setName("string1");
         type.getProperties().add(prop1);
-        type.getPropertyMembers().put("string1", new JavaElement("string1", String.class, null));
+        type.getPropertyMembers().put("string1", new JavaElementImpl("string1", String.class, null));
         org.apache.tuscany.assembly.Property prop2 = factory.createProperty();
         prop2.setName("string2");
         type.getProperties().add(prop2);
-        type.getPropertyMembers().put("string2", new JavaElement("string2", String.class, null));
+        type.getPropertyMembers().put("string2", new JavaElementImpl("string2", String.class, null));
         visitEnd(MockService.class, type);
         assertEquals(1, type.getServices().size());
     }
 
     public void testProtectedRemotableRefField() throws IntrospectionException, NoSuchMethodException {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ProtectedRemotableRefFieldImpl> ctor = ProtectedRemotableRefFieldImpl.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<ProtectedRemotableRefFieldImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<ProtectedRemotableRefFieldImpl>(ctor));
         processor.visitEnd(ProtectedRemotableRefFieldImpl.class, type);
         assertNotNull(ModelHelper.getReference(type, "otherRef"));
     }
 
     public void testProtectedRemotableRefMethod() throws IntrospectionException, NoSuchMethodException {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ProtectedRemotableRefMethodImpl> ctor = ProtectedRemotableRefMethodImpl.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<ProtectedRemotableRefMethodImpl>(ctor));
+        type.setConstructor(new JavaConstructorImpl<ProtectedRemotableRefMethodImpl>(ctor));
         processor.visitEnd(ProtectedRemotableRefMethodImpl.class, type);
         assertNotNull(ModelHelper.getReference(type, "otherRef"));
     }
 
     public void testSetDataTypes() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<PropertyIntTypeOnConstructor> ctor = PropertyIntTypeOnConstructor.class.getConstructor();
-        type.setConstructorDefinition(new ConstructorDefinition<PropertyIntTypeOnConstructor>(ctor));
+        type.setConstructor(new JavaConstructorImpl<PropertyIntTypeOnConstructor>(ctor));
         processor.visitEnd(PropertyIntTypeOnConstructor.class, type);
         org.apache.tuscany.assembly.Property foo = ModelHelper.getProperty(type, "foo");
         assertEquals(int.class, type.getPropertyMembers().get("foo").getType());

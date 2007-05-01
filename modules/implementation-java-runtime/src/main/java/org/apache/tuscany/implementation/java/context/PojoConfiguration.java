@@ -29,9 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.implementation.java.injection.EventInvoker;
 import org.apache.tuscany.implementation.java.injection.FieldInjector;
@@ -51,24 +51,24 @@ import org.apache.tuscany.spi.wire.ProxyService;
  * @version $Rev$ $Date$
  */
 public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
-    private JavaImplementationDefinition definition;
+    private JavaImplementation definition;
     private ProxyService proxyService;
     private WorkContext workContext;
     private URI groupId;
     private URI name;
 
-    private final List<JavaElement> injectionSites;
+    private final List<JavaElementImpl> injectionSites;
     private final EventInvoker<T> initInvoker;
     private final EventInvoker<T> destroyInvoker;
-    private final Map<JavaElement, Object> factories = new HashMap<JavaElement, Object>();
+    private final Map<JavaElementImpl, Object> factories = new HashMap<JavaElementImpl, Object>();
 
-    public PojoConfiguration(JavaImplementationDefinition definition) {
+    public PojoConfiguration(JavaImplementation definition) {
         this.definition = definition;
         this.initInvoker = definition.getInitMethod() == null ? null : new MethodEventInvoker<T>(definition
             .getInitMethod());
         this.destroyInvoker = definition.getDestroyMethod() == null ? null : new MethodEventInvoker<T>(definition
             .getDestroyMethod());
-        injectionSites = new ArrayList<JavaElement>();
+        injectionSites = new ArrayList<JavaElementImpl>();
     }
 
     public void setName(URI name) {
@@ -122,14 +122,14 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
     /**
      * @return the constructor
      */
-    public ConstructorDefinition<?> getConstructor() {
-        return definition.getConstructorDefinition();
+    public JavaConstructorImpl<?> getConstructor() {
+        return definition.getConstructor();
     }
 
     /**
      * @return the definition
      */
-    public JavaImplementationDefinition getDefinition() {
+    public JavaImplementation getDefinition() {
         return definition;
     }
 
@@ -137,12 +137,12 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
     public InstanceFactory<T> createFactory() {
         ObjectFactory<?>[] initArgs = getConstructorArgs();
         Injector<T>[] injectors = getInjectors();
-        return new ReflectiveInstanceFactory<T>((Constructor<T>)definition.getConstructorDefinition().getConstructor(),
+        return new ReflectiveInstanceFactory<T>((Constructor<T>)definition.getConstructor().getConstructor(),
                                                 initArgs, injectors, initInvoker, destroyInvoker);
     }
 
     protected ObjectFactory<?>[] getConstructorArgs() {
-        ConstructorDefinition<?> constructor = definition.getConstructorDefinition();
+        JavaConstructorImpl<?> constructor = definition.getConstructor();
         ObjectFactory<?>[] initArgs = new ObjectFactory<?>[constructor.getParameters().length];
         for (int i = 0; i < initArgs.length; i++) {
             ObjectFactory<?> factory = (ObjectFactory<?>)factories.get(constructor.getParameters()[i]);
@@ -158,7 +158,7 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
         Injector<T>[] injectors = (Injector<T>[])new Injector[injectionSites.size()];
 
         int i = 0;
-        for (JavaElement element : injectionSites) {
+        for (JavaElementImpl element : injectionSites) {
             Object obj = factories.get(element);
             if (obj != null) {
                 if (obj instanceof ObjectFactory) {
@@ -181,7 +181,7 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
         return injectors;
     }
 
-    protected Injector<T> createMultiplicityInjector(JavaElement element, List<ObjectFactory<?>> factories) {
+    protected Injector<T> createMultiplicityInjector(JavaElementImpl element, List<ObjectFactory<?>> factories) {
         Class<?> interfaceType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
 
         if (element.getAnchor() instanceof Field) {
@@ -208,25 +208,25 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
         return (Class<T>)definition.getJavaClass();
     }
 
-    public void setObjectFactory(JavaElement element, ObjectFactory<?> objectFactory) {
+    public void setObjectFactory(JavaElementImpl element, ObjectFactory<?> objectFactory) {
         factories.put(element, objectFactory);
     }
 
-    public void setObjectFactories(JavaElement element, List<ObjectFactory<?>> objectFactory) {
+    public void setObjectFactories(JavaElementImpl element, List<ObjectFactory<?>> objectFactory) {
         factories.put(element, objectFactory);
     }
 
     /**
      * @return the injectionSites
      */
-    public List<JavaElement> getInjectionSites() {
+    public List<JavaElementImpl> getInjectionSites() {
         return injectionSites;
     }
 
     /**
      * @return the factories
      */
-    public Map<JavaElement, Object> getFactories() {
+    public Map<JavaElementImpl, Object> getFactories() {
         return factories;
     }
 

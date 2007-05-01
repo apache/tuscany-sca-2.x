@@ -24,12 +24,12 @@ package org.apache.tuscany.implementation.java.impl;
  * 
  * @version $Rev$ $Date$
  */
-public class Resource {
-    private JavaElement element;
+public class JavaResourceImpl {
+    private JavaElementImpl element;
     private String mappedName;
     private boolean optional;
 
-    public Resource(JavaElement element) {
+    public JavaResourceImpl(JavaElementImpl element) {
         this.element = element;
     }
 
@@ -77,7 +77,7 @@ public class Resource {
     /**
      * @return the element
      */
-    public JavaElement getElement() {
+    public JavaElementImpl getElement() {
         return element;
     }
 

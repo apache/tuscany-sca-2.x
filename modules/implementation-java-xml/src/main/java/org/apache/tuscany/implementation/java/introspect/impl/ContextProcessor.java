@@ -22,9 +22,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Resource;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.ComponentContext;
@@ -44,7 +44,7 @@ public class ContextProcessor extends BaseJavaClassIntrospectorExtension {
         super(factory);
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         if (method.getAnnotation(Context.class) == null) {
             return;
         }
@@ -54,25 +54,25 @@ public class ContextProcessor extends BaseJavaClassIntrospectorExtension {
         Class<?> paramType = method.getParameterTypes()[0];
         String name = JavaIntrospectionHelper.toPropertyName(method.getName());
         if (ComponentContext.class.equals(paramType) || RequestContext.class.equals(paramType)) {
-            JavaElement element = new JavaElement(method, 0);
+            JavaElementImpl element = new JavaElementImpl(method, 0);
             element.setName(name);
             element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
-            Resource resource = new Resource(element);
+            JavaResourceImpl resource = new JavaResourceImpl(element);
             type.getResources().put(resource.getName(), resource);
         } else {
             throw new UnknownContextTypeException(paramType.getName());
         }
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
         if (field.getAnnotation(Context.class) == null) {
             return;
         }
         Class<?> paramType = field.getType();
         if (ComponentContext.class.equals(paramType) || RequestContext.class.equals(paramType)) {
-            JavaElement element = new JavaElement(field);
+            JavaElementImpl element = new JavaElementImpl(field);
             element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
-            Resource resource = new Resource(element);
+            JavaResourceImpl resource = new JavaResourceImpl(element);
             type.getResources().put(resource.getName(), resource);
         } else {
             throw new UnknownContextTypeException(paramType.getName());
