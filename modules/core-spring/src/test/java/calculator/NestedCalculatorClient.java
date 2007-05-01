@@ -16,20 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.model.variant;
+package calculator;
 
-import calculator.CalculatorService;
+import org.apache.tuscany.core.bean.runtime.ComponentContext;
 
 /**
  * This client program shows how to create an SCA runtime, start it, locate the
  * Calculator service and invoke it.
  */
-public class CalculatorClient {
+public class NestedCalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        VariantRuntimeContext context = new VariantRuntimeContext("org/apache/tuscany/core/spring/TestBeanCalculator.composite");
+        ComponentContext context = new ComponentContext(
+                                            "org/apache/tuscany/core/spring/OuterCalculator.composite",
+                                            "org/apache/tuscany/core/spring/InnerCalculator.composite",
+                                            "org/apache/tuscany/core/spring/InnerOperations.composite");
 
-        CalculatorService calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
+        CalculatorService calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent/CalculatorServiceComponent");
 
         // Calculate
         System.out.println("3 + 2=" + calculatorService.add(3, 2));

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.application.context;
+package calculator;
 
-import calculator.CalculatorService;
+import org.apache.tuscany.core.bean.runtime.ComponentContext;
 
 /**
  * This client program shows how to create an SCA runtime, start it, locate the
@@ -27,7 +27,7 @@ import calculator.CalculatorService;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        TestRuntimeContext context = new TestRuntimeContext("org/apache/tuscany/core/spring/TestBeanCalculator.composite");
+        ComponentContext context = new ComponentContext("org/apache/tuscany/core/spring/Calculator.composite");
 
         CalculatorService calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
 

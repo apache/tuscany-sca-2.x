@@ -26,15 +26,10 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.CompositeReference;
-import org.apache.tuscany.assembly.CompositeService;
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.util.Visitor;
 
-public class CompositeImpl extends ComponentTypeImpl implements Composite {
+public class CompositeImpl extends ComponentTypeImpl implements Composite, Cloneable {
     private List<Component> components = new ArrayList<Component>();
     private List<Composite> includes = new ArrayList<Composite>();
     private QName name;
@@ -48,43 +43,21 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
     protected CompositeImpl() {
     }
     
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected CompositeImpl(Composite other) {
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        CompositeImpl clone = (CompositeImpl)super.clone();
         
-        // Copy BaseImpl attributes
-        setUnresolved(other.isUnresolved());
-        getExtensions().addAll(other.getExtensions());
-        
-        // Copy ComponentTypeImpl attributes
-        setURI(other.getURI());
-        setConstrainingType(other.getConstrainingType());
-        for (Property property: other.getProperties()) {
-            getProperties().add(new PropertyImpl(property));
+        clone.components = new ArrayList<Component>();
+        for (Component component: getComponents()) {
+            clone.components.add((Component)component.clone());
         }
-        getRequiredIntents().addAll(other.getRequiredIntents());
-        getPolicySets().addAll(other.getPolicySets());
-
-        // Copy CompositeImpl attributes
-        name = other.getName();
-        autowire = other.isAutowire();
-        local = other.isLocal();
-        for (Component component: other.getComponents()) {
-            components.add(new ComponentImpl(component));
+        clone.wires = new ArrayList<Wire>();
+        for (Wire wire: getWires()) {
+            clone.wires.add((Wire)wire.clone());
         }
-        for (Service service: other.getServices()) {
-            getServices().add(new CompositeServiceImpl((CompositeService)service));
-        }
-        for (Reference reference: other.getReferences()) {
-            getReferences().add(new CompositeReferenceImpl((CompositeReference)reference));
-        }
-        for (Wire wire: other.getWires()) {
-            wires.add(new WireImpl(wire));
-        }
+        return clone;
     }
-
+    
     public List<Component> getComponents() {
         return components;
     }
@@ -139,11 +112,6 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite {
                 return false;
         }
         return true;
-    }
-    
-    public Composite copy() {
-        CompositeImpl copy = new CompositeImpl(this);
-        return copy;
     }
     
     @Override

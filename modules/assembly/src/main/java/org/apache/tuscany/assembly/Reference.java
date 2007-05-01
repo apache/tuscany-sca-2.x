@@ -52,4 +52,13 @@ public interface Reference extends AbstractReference, Contract {
      * @return the targets of this reference.
      */
     List<ComponentService> getTargets();
+
+    /**
+     * Returns a clone of the reference.
+     * 
+     * @return a clone of the reference
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
+
 }

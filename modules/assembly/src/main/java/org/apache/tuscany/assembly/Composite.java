@@ -99,9 +99,11 @@ public interface Composite extends Implementation, Visitable {
     void setAutowire(boolean autowire);
 
     /**
-     * Returns a copy of the composite. 
-     * @return a copy of the composite.
+     * Returns a clone of the component type.
+     * 
+     * @return a clone of the component type
+     * @throws CloneNotSupportedException
      */
-    Composite copy();
-    
+    Object clone() throws CloneNotSupportedException;
+
 }

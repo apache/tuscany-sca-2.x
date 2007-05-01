@@ -31,7 +31,7 @@ import org.apache.tuscany.assembly.Reference;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference {
+public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference, Cloneable {
     private Reference reference;
     private boolean autowire;
     private List<CompositeReference> promotedAs = new ArrayList<CompositeReference>();
@@ -42,16 +42,11 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     protected ComponentReferenceImpl() {
     }
 
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected ComponentReferenceImpl(ComponentReference other) {
-        super(other);
-        reference = other.getReference();
-        autowire = other.isAutowire();
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
-
+    
     public Reference getReference() {
         return reference;
     }

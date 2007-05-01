@@ -31,6 +31,20 @@ import org.apache.tuscany.policy.PolicySetAttachPoint;
  * @version $Rev$ $Date$
  */
 public interface Component extends Base, IntentAttachPoint, PolicySetAttachPoint, Visitable {
+    
+    /**
+     * Returns the URI of the component.
+     *  
+     * @return the URI of the component
+     */
+    String getURI();
+    
+    /**
+     * Sets the URI of the component.
+     * 
+     * @param uri the URI of the component
+     */
+    void setURI(String uri);
 
     /**
      * Returns the name of the component.
@@ -108,4 +122,13 @@ public interface Component extends Base, IntentAttachPoint, PolicySetAttachPoint
      * @param autowire whether component references should be autowired
      */
     void setAutowire(boolean autowire);
+
+    /**
+     * Returns a clone of the component.
+     * 
+     * @return a clone of the component
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
+
 }

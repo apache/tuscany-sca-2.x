@@ -39,18 +39,12 @@ public class BeanReferenceImpl extends RuntimeBeanReference {
 	public String getBeanName() {
 		//TODO handle multiplicity
 		ComponentService componentService = reference.getTargets().get(0);
-		String uri;
 		if (!componentService.isUnresolved()) {
 			SCABinding binding = componentService.getBinding(SCABinding.class);
-			uri = binding.getURI();
+                        return binding.getComponent().getURI();
 		} else {
-			uri = componentService.getName();
+			return null;
 		}
-		int i = uri.indexOf('/');
-		if (i != -1) {
-			uri = uri.substring(0, i);
-		}
-		return uri;
 	}
 	
 	public boolean equals(Object other) {

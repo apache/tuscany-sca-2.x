@@ -30,7 +30,7 @@ import org.apache.tuscany.assembly.CompositeReference;
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceImpl extends ReferenceImpl implements CompositeReference {
+public class CompositeReferenceImpl extends ReferenceImpl implements CompositeReference, Cloneable {
     private List<ComponentReference> promotedReferences = new ArrayList<ComponentReference>();
 
     /**
@@ -38,14 +38,10 @@ public class CompositeReferenceImpl extends ReferenceImpl implements CompositeRe
      */
     protected CompositeReferenceImpl() {
     }
-
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected CompositeReferenceImpl(CompositeReference other) {
-        super(other);
-        promotedReferences.addAll(other.getPromotedReferences());
+    
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public List<ComponentReference> getPromotedReferences() {

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.model.variant;
+package org.apache.tuscany.core.bean.runtime;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,6 +28,7 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.bean.impl.BeanAssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.util.CompositeUtil;
+import org.apache.tuscany.assembly.util.PrintUtil;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
@@ -72,15 +73,11 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class VariantRuntimeContext {
+public class ComponentContext {
 
     private DefaultListableBeanFactory beanFactory;
     
-    public VariantRuntimeContext(String compositeFile) {
-        this(new String[] {compositeFile});
-    }
-
-    public VariantRuntimeContext(String[] compositeFiles) {
+    public ComponentContext(String... compositeFiles) {
 
         // Create Spring bean factory
         beanFactory = new DefaultListableBeanFactory();
@@ -141,11 +138,8 @@ public class VariantRuntimeContext {
             
             for (Composite composite: composites) {
                 
-                // Resolve and configure the composite
+                // Resolve the composite
                 compositeProcessor.resolve(composite, resolver);
-
-                // Normalize the composite
-                normalize(composite, assemblyFactory, interfaceContractMapper);
             }
             
             // Wire the top level component's composite
@@ -156,38 +150,6 @@ public class VariantRuntimeContext {
         }
     }
     
-    private void normalize(Composite composite, AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
-        CompositeUtil compositeUtil = new CompositeUtil(assemblyFactory, interfaceContractMapper);
-
-        List<Base> problems = new ArrayList<Base>() {
-            private static final long serialVersionUID = 4819831446590718923L;
-            
-            @Override
-            public boolean add(Base o) {
-                //TODO Use a monitor to report configuration problems
-                
-                // Uncommenting the following two lines can be useful to detect
-                // and troubleshoot SCA assembly XML composite configuration
-                // problems.
-                
-//                System.err.println("Composite configuration problem:");
-//                new PrintUtil(System.err).print(o);
-                return super.add(o);
-            }
-        };
-        
-
-        // Collect and fuse includes
-        compositeUtil.fuseIncludes(composite, problems);
-
-        // Configure all components
-        compositeUtil.configureComponents(composite, problems);
-        
-//        if (!problems.isEmpty()) {
-//            throw new VariantRuntimeException(new RuntimeException("Problems in the composite..."));
-//        }
-    }
-
     private void wire(Composite composite, AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
         CompositeUtil compositeUtil = new CompositeUtil(assemblyFactory, interfaceContractMapper);
 
@@ -202,18 +164,30 @@ public class VariantRuntimeContext {
                 // and troubleshoot SCA assembly XML composite configuration
                 // problems.
                 
-//                System.err.println("Composite configuration problem:");
-//                new PrintUtil(System.err).print(o);
+                System.err.println("Composite configuration problem:");
+                new PrintUtil(System.err).print(o);
                 return super.add(o);
             }
         };
         
 
+        // Collect and fuse includes
+        compositeUtil.fuseIncludes(composite, problems);
+
         // Expand nested composites
         compositeUtil.expandComposites(composite, problems);
         
+        // Configure all components
+        compositeUtil.configureComponents(composite, problems);
+        
         // Wire the composite
         compositeUtil.wireComposite(composite, problems);
+        
+        // Activate composite services
+        compositeUtil.activateCompositeServices(composite, problems);
+        
+        // Wire composite references
+        compositeUtil.wireCompositeReferences(composite, problems);
        
 //        if (!problems.isEmpty()) {
 //            throw new VariantRuntimeException(new RuntimeException("Problems in the composite..."));

@@ -56,4 +56,12 @@ public interface Wire extends Base, IntentAttachPoint, PolicySetAttachPoint {
      */
     void setTarget(ComponentService target);
 
+    /**
+     * Returns a clone of the wire.
+     * 
+     * @return a clone of the wire
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
+
 }

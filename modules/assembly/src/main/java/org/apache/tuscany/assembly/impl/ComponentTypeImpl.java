@@ -35,7 +35,7 @@ import org.apache.tuscany.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeImpl extends BaseImpl implements ComponentType {
+public class ComponentTypeImpl extends BaseImpl implements ComponentType, Cloneable {
     private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
@@ -50,25 +50,23 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType {
     protected ComponentTypeImpl() {
     }
     
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    protected ComponentTypeImpl(ComponentType other) {
-        super(other);
-        uri = other.getURI();
-        constrainingType = other.getConstrainingType();
-        for (Service service: other.getServices()) {
-            services.add(new ServiceImpl(service));
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ComponentTypeImpl clone = (ComponentTypeImpl)super.clone();
+        
+        clone.services = new ArrayList<Service>();
+        for (Service service: getServices()) {
+            clone.services.add((Service)service.clone());
         }
-        for (Reference reference: other.getReferences()) {
-            references.add(new ReferenceImpl(reference));
+        clone.references = new ArrayList<Reference>();
+        for (Reference reference: getReferences()) {
+            clone.references.add((Reference)reference.clone());
         }
-        for (Property property: other.getProperties()) {
-            properties.add(new PropertyImpl(property));
+        clone.properties = new ArrayList<Property>();
+        for (Property property: getProperties()) {
+            clone.properties.add((Property)property.clone());
         }
-        requiredIntents.addAll(other.getRequiredIntents());
-        policySets.addAll(other.getPolicySets());
+        return clone;
     }
     
     public String getURI() {

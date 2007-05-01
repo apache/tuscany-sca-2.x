@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.application.context;
+package org.apache.tuscany.core.spring;
+
+import org.apache.tuscany.core.bean.runtime.ComponentContext;
 
 import junit.framework.TestCase;
 import calculator.CalculatorService;
@@ -26,11 +28,11 @@ import calculator.CalculatorService;
  */
 public class CalculatorTestCase extends TestCase {
 
-    private TestRuntimeContext context;
+    private ComponentContext context;
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        context = new TestRuntimeContext("org/apache/tuscany/core/spring/TestBeanCalculator.composite");
+        context = new ComponentContext("org/apache/tuscany/core/spring/Calculator.composite");
 
         calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
