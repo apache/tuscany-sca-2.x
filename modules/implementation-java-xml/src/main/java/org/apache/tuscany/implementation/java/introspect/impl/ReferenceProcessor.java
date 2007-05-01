@@ -27,9 +27,9 @@ import java.util.Collection;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
@@ -56,7 +56,7 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
         this.interfaceIntrospector = interfaceIntrospector;
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         Reference annotation = method.getAnnotation(Reference.class);
         if (annotation == null) {
             return; // Not a reference annotation.
@@ -72,13 +72,13 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
             throw new DuplicateReferenceException(name);
         }
 
-        JavaElement element = new JavaElement(method, 0);
+        JavaElementImpl element = new JavaElementImpl(method, 0);
         org.apache.tuscany.assembly.Reference reference = createReference(element, name);
         type.getReferences().add(reference);
         type.getReferenceMembers().put(name, element);
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
         Reference annotation = field.getAnnotation(Reference.class);
         if (annotation == null) {
             return;
@@ -90,13 +90,13 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
         if (type.getReferenceMembers().get(name) != null) {
             throw new DuplicateReferenceException(name);
         }
-        JavaElement element = new JavaElement(field);
+        JavaElementImpl element = new JavaElementImpl(field);
         org.apache.tuscany.assembly.Reference reference = createReference(element, name);
         type.getReferences().add(reference);
         type.getReferenceMembers().put(name, element);
     }
 
-    public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type)
+    public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type)
         throws IntrospectionException {
         Reference refAnnotation = parameter.getAnnotation(Reference.class);
         if (refAnnotation == null) {
@@ -128,7 +128,7 @@ public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
         }
     }
 
-    private org.apache.tuscany.assembly.Reference createReference(JavaElement element, String name) throws IntrospectionException {
+    private org.apache.tuscany.assembly.Reference createReference(JavaElementImpl element, String name) throws IntrospectionException {
         org.apache.tuscany.assembly.Reference reference = assemblyFactory.createReference();
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);

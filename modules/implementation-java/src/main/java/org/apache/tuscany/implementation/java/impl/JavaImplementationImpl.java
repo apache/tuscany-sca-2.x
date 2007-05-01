@@ -18,67 +18,139 @@
  */
 package org.apache.tuscany.implementation.java.impl;
 
-import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.tuscany.implementation.java.JavaImplementation;
 
 /**
- * Represents a Java implementation.
- * 
- * @version $Rev$ $Date$
+ * A component type specialization for POJO implementations
+ *
+ * @version $$Rev$$ $$Date$$
  */
-public class JavaImplementationImpl extends ComponentTypeImpl implements JavaImplementation {
+public class JavaImplementationImpl extends BaseJavaImplementationImpl implements JavaImplementation {
+    private JavaConstructorImpl<?> constructorDefinition;
+    private Map<Constructor, JavaConstructorImpl> constructors = new HashMap<Constructor, JavaConstructorImpl>();
+    private Method initMethod;
+    private Method destroyMethod;
+    private final Map<String, JavaResourceImpl> resources = new HashMap<String, JavaResourceImpl>();
+    private final Map<String, JavaElementImpl> propertyMembers = new HashMap<String, JavaElementImpl>();
+    private final Map<String, JavaElementImpl> referenceMembers = new HashMap<String, JavaElementImpl>();
+    private final Map<String, JavaElementImpl> callbackMembers = new HashMap<String, JavaElementImpl>();
+    private Member conversationIDMember;
+    private boolean eagerInit;
+    private boolean allowsPassByReference;
+    private List<Method> allowsPassByReferenceMethods = new ArrayList<Method>();
+    private long maxAge = -1;
+    private long maxIdleTime = -1;
+    private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
 
-    private String className;
-    private Class<?> javaClass;
-    
     protected JavaImplementationImpl() {
+        super();
+    }    
+
+    public JavaConstructorImpl<?> getConstructor() {
+        return constructorDefinition;
     }
 
-    public String getName() {
-        if (isUnresolved()) {
-            return className;
-        } else if (javaClass != null) {
-            return javaClass.getName();
-        } else {
-            return null;
-        }
+    public void setConstructor(JavaConstructorImpl<?> definition) {
+        this.constructorDefinition = definition;
     }
 
-    public void setName(String className) {
-        if (!isUnresolved()) {
-            throw new IllegalStateException();
-        }
-        this.className = className;
+    public Method getInitMethod() {
+        return initMethod;
     }
 
-    public Class<?> getJavaClass() {
-        return javaClass;
+    public void setInitMethod(Method initMethod) {
+        this.initMethod = initMethod;
     }
 
-    public void setJavaClass(Class<?> javaClass) {
-        this.javaClass = javaClass;
-        if (this.className == null) {
-            this.className = javaClass.getName();
-        }
+    public Method getDestroyMethod() {
+        return destroyMethod;
     }
 
-    @Override
-    public int hashCode() {
-        return String.valueOf(getName()).hashCode();
+    public void setDestroyMethod(Method destroyMethod) {
+        this.destroyMethod = destroyMethod;
+    }
+
+    public Map<String, JavaResourceImpl> getResources() {
+        return resources;
+    }
+
+    public Member getConversationIDMember() {
+        return this.conversationIDMember;
+    }
+
+    public void setConversationIDMember(Member conversationIDMember) {
+        this.conversationIDMember = conversationIDMember;
+    }
+
+    public boolean isAllowsPassByReference() {
+        return allowsPassByReference;
+    }
+
+    public void setAllowsPassByReference(boolean allowsPassByReference) {
+        this.allowsPassByReference = allowsPassByReference;
+    }
+
+    public List<Method> getAllowsPassByReferenceMethods() {
+        return allowsPassByReferenceMethods;
     }
     
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else if (obj instanceof JavaImplementation) {
-            if (getName() != null) {
-                return getName().equals(((JavaImplementation)obj).getName());
-            } else {
-                return ((JavaImplementation)obj).getName() == null;
-            }
-        } else {
-            return false;
-        }
+    public boolean isAllowsPassByReference(Method method) {
+        return allowsPassByReference || allowsPassByReferenceMethods.contains(method);
+    }
+
+    public Map<Constructor, JavaConstructorImpl> getConstructors() {
+        return constructors;
+    }
+
+    public boolean isEagerInit() {
+        return eagerInit;
+    }
+
+    public void setEagerInit(boolean eagerInit) {
+        this.eagerInit = eagerInit;
+    }
+
+    public Map<String, JavaElementImpl> getCallbackMembers() {
+        return callbackMembers;
+    }
+
+    public Map<String, JavaElementImpl> getPropertyMembers() {
+        return propertyMembers;
+    }
+
+    public Map<String, JavaElementImpl> getReferenceMembers() {
+        return referenceMembers;
+    }
+
+    public JavaScopeImpl getJavaScope() {
+        return scope;
+    }
+
+    public void setJavaScope(JavaScopeImpl scope) {
+        this.scope = scope;
+    }
+
+    public long getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
+    }
+
+    public long getMaxIdleTime() {
+        return maxIdleTime;
+    }
+
+    public void setMaxIdleTime(long maxIdleTime) {
+        this.maxIdleTime = maxIdleTime;
     }
 }

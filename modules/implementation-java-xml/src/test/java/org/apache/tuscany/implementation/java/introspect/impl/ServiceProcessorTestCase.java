@@ -21,10 +21,9 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.IllegalServiceDefinitionException;
-import org.apache.tuscany.implementation.java.introspect.impl.InvalidServiceType;
-import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
@@ -37,7 +36,7 @@ import org.osoa.sca.annotations.Service;
  */
 public class ServiceProcessorTestCase extends TestCase {
     private ServiceProcessor processor;
-    private JavaImplementationDefinition type;
+    private JavaImplementation type;
 
     public void testMultipleInterfaces() throws Exception {
         processor.visitClass(FooMultiple.class, type);
@@ -96,7 +95,8 @@ public class ServiceProcessorTestCase extends TestCase {
         super.setUp();
         DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
         processor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), introspector);
-        type = new JavaImplementationDefinition();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        type = javaImplementationFactory.createJavaImplementation();
     }
 
     @Callback(Bar.class)

@@ -23,13 +23,14 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.implementation.java.context.JavaAtomicComponent;
-import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -56,16 +57,19 @@ public class JavaComponentBuilderConversationIDTestCaseFIXME extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         workContext.setIdentifier(Scope.CONVERSATION, "convID");
         builder.setWorkContext(workContext);
+        
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
 
-        ConstructorDefinition<Foo> ctorDef = new ConstructorDefinition<Foo>(Foo.class.getConstructor());
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaConstructorImpl<Foo> ctorDef = new JavaConstructorImpl<Foo>(Foo.class.getConstructor());
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(assemblyFactory);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Field field = Foo.class.getDeclaredField("conversationID");
         type.setConversationIDMember(field);
-        type.setScope(org.apache.tuscany.implementation.java.impl.Scope.STATELESS);
-        type.setConstructorDefinition(ctorDef);
+        type.setJavaScope(org.apache.tuscany.implementation.java.impl.JavaScopeImpl.STATELESS);
+        type.setConstructor(ctorDef);
         type.setJavaClass(Foo.class);
 
-        Component definition = new DefaultAssemblyFactory().createComponent();
+        Component definition = assemblyFactory.createComponent();
         definition.setName("foo");
         definition.setImplementation(type);
         JavaAtomicComponent component = (JavaAtomicComponent)builder.build(definition, ctx);

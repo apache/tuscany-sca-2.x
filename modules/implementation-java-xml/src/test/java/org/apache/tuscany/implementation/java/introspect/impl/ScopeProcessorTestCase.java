@@ -22,10 +22,11 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Scope;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaScopeImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.implementation.java.introspect.impl.ScopeProcessor;
 import org.easymock.EasyMock;
 
 /**
@@ -34,66 +35,54 @@ import org.easymock.EasyMock;
 public class ScopeProcessorTestCase extends TestCase {
 
     Component parent;
+    private JavaImplementationFactory javaImplementationFactory;
 
     public void testCompositeScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
 
         processor.visitClass(Composite.class, type);
-        assertEquals(Scope.COMPOSITE, type.getScope());
+        assertEquals(JavaScopeImpl.COMPOSITE, type.getJavaScope());
     }
 
     public void testSessionScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(Session.class, type);
-        assertEquals(Scope.SESSION, type.getScope());
+        assertEquals(JavaScopeImpl.SESSION, type.getJavaScope());
     }
 
     public void testConversationalScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(Conversation.class, type);
-        assertEquals(Scope.CONVERSATION, type.getScope());
+        assertEquals(JavaScopeImpl.CONVERSATION, type.getJavaScope());
     }
 
     public void testRequestScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(Request.class, type);
-        assertEquals(Scope.REQUEST, type.getScope());
-    }
-
-    public void testSystemScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
-        processor.visitClass(System.class, type);
-        assertEquals(Scope.SYSTEM, type.getScope());
+        assertEquals(JavaScopeImpl.REQUEST, type.getJavaScope());
     }
 
     public void testStatelessScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(Stateless.class, type);
-        assertEquals(Scope.STATELESS, type.getScope());
+        assertEquals(JavaScopeImpl.STATELESS, type.getJavaScope());
     }
 
     public void testNoScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(None.class, type);
-        assertEquals(Scope.STATELESS, type.getScope());
+        assertEquals(JavaScopeImpl.STATELESS, type.getJavaScope());
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
         parent = EasyMock.createNiceMock(Component.class);
     }
 

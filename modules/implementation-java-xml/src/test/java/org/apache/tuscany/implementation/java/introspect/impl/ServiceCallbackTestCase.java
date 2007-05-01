@@ -26,10 +26,10 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.implementation.java.introspect.impl.IllegalCallbackReferenceException;
-import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
@@ -41,14 +41,16 @@ import org.osoa.sca.annotations.Service;
  */
 public class ServiceCallbackTestCase extends TestCase {
     private ServiceProcessor processor;
+    private JavaImplementationFactory javaImplementationFactory;
 
     @Override
     protected void setUp() throws Exception {
         processor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory()));
+        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
     }
 
     public void testMethodCallbackInterface() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooImpl.class, type);
         org.apache.tuscany.assembly.Service service = getService(type, Foo.class.getSimpleName());
         assertNotNull(service);
@@ -58,7 +60,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testFieldCallbackInterface() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooImpl.class, type);
         org.apache.tuscany.assembly.Service service = getService(type, Foo.class.getSimpleName());
         assertNotNull(service);
@@ -68,7 +70,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testMethodDoesNotMatchCallback() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(BadBarImpl.class, type);
         Method method = BadBarImpl.class.getMethod("setWrongInterfaceCallback", String.class);
         try {
@@ -80,7 +82,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testNoParamCallback() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(BadBarImpl.class, type);
         Method method = BadBarImpl.class.getMethod("setNoParamCallback");
         try {
@@ -92,7 +94,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testFieldDoesNotMatchCallback() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(BadBarImpl.class, type);
         Field field = BadBarImpl.class.getDeclaredField("wrongInterfaceCallback");
         try {
@@ -104,7 +106,7 @@ public class ServiceCallbackTestCase extends TestCase {
     }
 
     public void testBadCallbackInterfaceAnnotation() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             processor.visitClass(BadFooImpl.class, type);
             fail();

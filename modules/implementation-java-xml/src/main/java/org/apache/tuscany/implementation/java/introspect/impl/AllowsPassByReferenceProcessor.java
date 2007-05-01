@@ -21,7 +21,7 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.AllowsPassByReference;
@@ -37,12 +37,12 @@ public class AllowsPassByReferenceProcessor extends BaseJavaClassIntrospectorExt
         super(factory);
     }
 
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         type.setAllowsPassByReference(clazz.isAnnotationPresent(AllowsPassByReference.class));
     }
 
     @Override
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         boolean pbr = method.isAnnotationPresent(AllowsPassByReference.class);
         if (pbr) {
             type.getAllowsPassByReferenceMethods().add(method);

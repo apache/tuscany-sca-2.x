@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.context;
 
-import org.apache.tuscany.implementation.java.impl.JavaElement;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
@@ -38,7 +38,7 @@ public interface InstanceFactoryProvider<T> {
      * @param element          the injection site name
      * @param objectFactory the object factory
      */
-    void setObjectFactory(JavaElement element, ObjectFactory<?> objectFactory);
+    void setObjectFactory(JavaElementImpl element, ObjectFactory<?> objectFactory);
 
     /**
      * Create an instance factory that can be used to create component instances.

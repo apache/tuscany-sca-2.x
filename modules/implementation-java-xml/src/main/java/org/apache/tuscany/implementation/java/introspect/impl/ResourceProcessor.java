@@ -23,16 +23,16 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
-import org.apache.tuscany.implementation.java.impl.Resource;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
  * Processes an {@link @Resource} annotation, updating the component type with
- * corresponding {@link org.apache.tuscany.spi.implementation.java.Resource}
+ * corresponding {@link org.apache.tuscany.spi.implementation.java.JavaResourceImpl}
  * 
  * @version $Rev$ $Date$
  */
@@ -42,7 +42,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
         super(factory);
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         org.apache.tuscany.api.annotation.Resource annotation = method
             .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
         if (annotation == null) {
@@ -60,7 +60,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
         }
 
         String mappedName = annotation.mappedName();
-        Resource resource = createResource(name, new JavaElement(method, 0));
+        JavaResourceImpl resource = createResource(name, new JavaElementImpl(method, 0));
         resource.setOptional(annotation.optional());
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
@@ -68,7 +68,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
         type.getResources().put(resource.getName(), resource);
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
 
         org.apache.tuscany.api.annotation.Resource annotation = field
             .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
@@ -85,7 +85,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
 
         String mappedName = annotation.mappedName();
 
-        Resource resource = createResource(name, new JavaElement(field));
+        JavaResourceImpl resource = createResource(name, new JavaElementImpl(field));
         resource.setOptional(annotation.optional());
         if (mappedName.length() > 0) {
             resource.setMappedName(mappedName);
@@ -94,13 +94,13 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     @SuppressWarnings("unchecked")
-    public Resource createResource(String name, JavaElement element) {
+    public JavaResourceImpl createResource(String name, JavaElementImpl element) {
         element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
         element.setName(name);
-        return new Resource(element);
+        return new JavaResourceImpl(element);
     }
 
-    public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type)
+    public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type)
         throws IntrospectionException {
         org.apache.tuscany.api.annotation.Resource resourceAnnotation = parameter
             .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
@@ -123,7 +123,7 @@ public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
 
             String mappedName = resourceAnnotation.mappedName();
 
-            Resource resource = createResource(name, parameter);
+            JavaResourceImpl resource = createResource(name, parameter);
             resource.setOptional(resourceAnnotation.optional());
             if (mappedName.length() > 0) {
                 resource.setMappedName(mappedName);

@@ -24,8 +24,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Property;
@@ -38,17 +40,17 @@ public class HeuristicAndPropertyTestCase extends TestCase {
     private PropertyProcessor propertyProcessor;
     private HeuristicPojoProcessor heuristicProcessor;
     private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
 
     /**
      * Verifies the property and heuristic processors don't collide
      */
     @SuppressWarnings("unchecked")
     public void testPropertyProcessorWithHeuristicProcessor() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor ctor = Foo.class.getConstructor(String.class);
-        type.setConstructorDefinition(new ConstructorDefinition(ctor));
-        propertyProcessor.visitConstructorParameter(type.getConstructorDefinition().getParameters()[0], type);
+        type.setConstructor(new JavaConstructorImpl(ctor));
+        propertyProcessor.visitConstructorParameter(type.getConstructor().getParameters()[0], type);
         heuristicProcessor.visitEnd(Foo.class, type);
         assertEquals(1, type.getProperties().size());
         assertEquals("foo", type.getProperties().get(0).getName());

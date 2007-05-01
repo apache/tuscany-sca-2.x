@@ -24,24 +24,23 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Resource;
-import org.apache.tuscany.implementation.java.introspect.impl.DuplicateResourceException;
-import org.apache.tuscany.implementation.java.introspect.impl.IllegalResourceException;
-import org.apache.tuscany.implementation.java.introspect.impl.ResourceProcessor;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ResourceProcessorTestCase extends TestCase {
 
-    JavaImplementationDefinition type;
+    JavaImplementation type;
     ResourceProcessor processor = new ResourceProcessor(new DefaultAssemblyFactory());
 
     public void testVisitField() throws Exception {
         Field field = Foo.class.getDeclaredField("bar");
         processor.visitField(field, type);
-        Resource resource = type.getResources().get("bar");
+        JavaResourceImpl resource = type.getResources().get("bar");
         assertFalse(resource.isOptional());
         assertNull(resource.getMappedName());
         assertEquals(field.getType(), resource.getElement().getType());
@@ -50,7 +49,7 @@ public class ResourceProcessorTestCase extends TestCase {
     public void testVisitMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", Bar.class);
         processor.visitMethod(method, type);
-        Resource resource = type.getResources().get("bar");
+        JavaResourceImpl resource = type.getResources().get("bar");
         assertFalse(resource.isOptional());
         assertNull(resource.getMappedName());
         assertEquals(method.getParameterTypes()[0], resource.getElement().getType());
@@ -59,7 +58,7 @@ public class ResourceProcessorTestCase extends TestCase {
     public void testVisitNamedMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar2", Bar.class);
         processor.visitMethod(method, type);
-        Resource resource = type.getResources().get("someName");
+        JavaResourceImpl resource = type.getResources().get("someName");
         assertFalse(resource.isOptional());
         assertEquals("mapped", resource.getMappedName());
     }
@@ -87,7 +86,8 @@ public class ResourceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        type = new JavaImplementationDefinition();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        type = javaImplementationFactory.createJavaImplementation();
     }
 
     private class Foo {

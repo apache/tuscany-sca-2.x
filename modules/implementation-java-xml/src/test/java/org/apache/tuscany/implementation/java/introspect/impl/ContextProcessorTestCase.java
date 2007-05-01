@@ -25,10 +25,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.ContextProcessor;
-import org.apache.tuscany.implementation.java.introspect.impl.IllegalContextException;
-import org.apache.tuscany.implementation.java.introspect.impl.UnknownContextTypeException;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.easymock.EasyMock;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
@@ -40,6 +39,7 @@ import org.osoa.sca.annotations.Context;
 public class ContextProcessorTestCase extends TestCase {
     private ContextProcessor processor;
     private Component composite;
+    private JavaImplementationFactory javaImplementationFactory;
 
     // FIXME: resurrect to test ComponentContext injection
 /*
@@ -65,24 +65,21 @@ public class ContextProcessorTestCase extends TestCase {
 
     public void testRequestContextMethod() throws Exception {
         Method method = Foo.class.getMethod("setRequestContext", RequestContext.class);
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitMethod(method, type);
         assertNotNull(type.getResources().get("requestContext"));
     }
 
     public void testRequestContextField() throws Exception {
         Field field = Foo.class.getDeclaredField("requestContext");
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitField(field, type);
         assertNotNull(type.getResources().get("requestContext"));
     }
 
     public void testInvalidParamType() throws Exception {
         Method method = Foo.class.getMethod("setContext", String.class);
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             processor.visitMethod(method, type);
             fail();
@@ -93,8 +90,7 @@ public class ContextProcessorTestCase extends TestCase {
 
     public void testInvalidParamTypeField() throws Exception {
         Field field = Foo.class.getDeclaredField("badContext");
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             processor.visitField(field, type);
             fail();
@@ -106,8 +102,7 @@ public class ContextProcessorTestCase extends TestCase {
 
     public void testInvalidParamNum() throws Exception {
         Method method = Foo.class.getMethod("setContext", ComponentContext.class, String.class);
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             processor.visitMethod(method, type);
             fail();
@@ -118,8 +113,7 @@ public class ContextProcessorTestCase extends TestCase {
 
     public void testInvalidNoParams() throws Exception {
         Method method = Foo.class.getMethod("setContext");
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             processor.visitMethod(method, type);
             fail();
@@ -130,22 +124,21 @@ public class ContextProcessorTestCase extends TestCase {
 
     public void testNoContext() throws Exception {
         Method method = Foo.class.getMethod("noContext", ComponentContext.class);
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitMethod(method, type);
         assertEquals(0, type.getResources().size());
     }
 
     public void testNoContextField() throws Exception {
         Field field = Foo.class.getDeclaredField("noContext");
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitField(field, type);
         assertEquals(0, type.getResources().size());
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
         processor = new ContextProcessor(new DefaultAssemblyFactory());
         // processor.setWorkContext(EasyMock.createNiceMock(WorkContext.class));
         composite = EasyMock.createNiceMock(Component.class);

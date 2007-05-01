@@ -23,8 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 
 /**
  * A convenience class for annotation processors which alleviates the need to
@@ -39,24 +39,24 @@ public abstract class BaseJavaClassIntrospectorExtension implements JavaClassInt
         this.assemblyFactory = factory;
     }
 
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
     }
 
-    public <T> void visitSuperClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitSuperClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
     }
 
-    public <T> void visitConstructor(Constructor<T> constructor, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitConstructor(Constructor<T> constructor, JavaImplementation type) throws IntrospectionException {
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
     }
 
-    public <T> void visitEnd(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
     }
 
-    public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type) throws IntrospectionException {
     }
 }

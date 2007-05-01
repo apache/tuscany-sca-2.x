@@ -16,43 +16,171 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.implementation.java;
 
-import org.apache.tuscany.assembly.Implementation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.implementation.java.impl.JavaScopeImpl;
 
 /**
  * Represents a Java implementation.
- * 
+ *
  * @version $Rev$ $Date$
  */
-public interface JavaImplementation extends Implementation {
+public interface JavaImplementation extends BaseJavaImplementation {
 
     /**
-     * Returns the name of the Java implementation class.
-     * 
-     * @return the name of the Java implementation class
+     * Returns the constructor used to instantiate implementation instances.
+     *
+     * @return the constructor used to instantiate implementation instances
      */
-    String getName();
+    public JavaConstructorImpl<?> getConstructor();
 
     /**
-     * Sets the name of the Java implementation class.
-     * 
-     * @param className the name of the Java implementation class
+     * Sets the constructor used to instantiate implementation instances
+     *
+     * @param definition the constructor used to instantiate implementation instances
      */
-    void setName(String className);
+    public void setConstructor(JavaConstructorImpl<?> definition);
 
     /**
-     * Returns the Java implementation class.
-     * 
-     * @return the Java implementation class
+     * Returns the component initializer method.
+     *
+     * @return the component initializer method
      */
-    Class<?> getJavaClass();
+    public Method getInitMethod();
 
     /**
-     * Sets the Java implementation class.
-     * 
-     * @param javaClass the Java implementation class
+     * Sets the component initializer method.
+     *
+     * @param initMethod the component initializer method
      */
-    void setJavaClass(Class<?> javaClass);
+    public void setInitMethod(Method initMethod);
+
+    /**
+     * Returns the component destructor method.
+     *
+     * @return the component destructor method
+     */
+    public Method getDestroyMethod();
+
+    /**
+     * Sets the component destructor method.
+     *
+     * @param destroyMethod the component destructor method
+     */
+    public void setDestroyMethod(Method destroyMethod);
+
+    /**
+     * Returns the resources injected into this implementation.
+     * 
+     * @return
+     */
+    public Map<String, JavaResourceImpl> getResources();
+
+    /**
+     * Returns the Java member used to inject a conversation ID.
+     * 
+     * @return
+     */
+    public Member getConversationIDMember();
+
+    /**
+     * Sets the Java member used to inject a conversation ID.
+     * 
+     * @param conversationIDMember
+     */
+    public void setConversationIDMember(Member conversationIDMember);
+
+    /**
+     * Returns true if AllowsPassReference is set.
+     *  
+     * @return true if AllowsPassByReference is set
+     */
+    public boolean isAllowsPassByReference();
+
+    /**
+     * @param allowsPassByReference the allowsPassByReference to set
+     */
+    public void setAllowsPassByReference(boolean allowsPassByReference);
+
+    /**
+     * @return the allowsPassByReferenceMethods
+     */
+    public List<Method> getAllowsPassByReferenceMethods();
+    
+    /**
+     * @param method
+     * @return
+     */
+    public boolean isAllowsPassByReference(Method method);
+
+    /**
+     * @return the constructors
+     */
+    public Map<Constructor, JavaConstructorImpl> getConstructors();
+
+    /**
+     * @return the eagerInit
+     */
+    public boolean isEagerInit();
+
+    /**
+     * @param eagerInit the eagerInit to set
+     */
+    public void setEagerInit(boolean eagerInit);
+
+    /**
+     * @return the callbacks
+     */
+    public Map<String, JavaElementImpl> getCallbackMembers();
+
+    /**
+     * @return the properties
+     */
+    public Map<String, JavaElementImpl> getPropertyMembers();
+
+    /**
+     * @return the references
+     */
+    public Map<String, JavaElementImpl> getReferenceMembers();
+
+    /**
+     * @return the scope
+     */
+    public JavaScopeImpl getJavaScope();
+
+    /**
+     * @param scope the scope to set
+     */
+    public void setJavaScope(JavaScopeImpl scope);
+
+    /**
+     * @return the maxAge
+     */
+    public long getMaxAge();
+
+    /**
+     * @param maxAge the maxAge to set
+     */
+    public void setMaxAge(long maxAge);
+
+    /**
+     * @return the maxIdleTime
+     */
+    public long getMaxIdleTime();
+
+    /**
+     * @param maxIdleTime the maxIdleTime to set
+     */
+    public void setMaxIdleTime(long maxIdleTime);
 
 }

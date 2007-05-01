@@ -24,19 +24,21 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.DuplicateReferenceException;
-import org.apache.tuscany.implementation.java.introspect.impl.InvalidConstructorException;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.osoa.sca.annotations.Reference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConstructorReferenceTestCase extends AbstractProcessorTest {
+    
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
 
     public void testReference() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
         org.apache.tuscany.assembly.Reference reference = getReference(type, "myRef");
@@ -45,8 +47,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
     }
 
     public void testTwoReferencesSameType() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
         visitConstructor(ctor, type);
         assertNotNull(getReference(type, "myRef1"));
@@ -54,8 +55,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
     }
 
     public void testDuplicateProperty() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
         try {
             visitConstructor(ctor, type);
@@ -66,24 +66,21 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
     }
 
     public void testNoName() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<NoNameFoo> ctor = NoNameFoo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
         assertNotNull(getReference(type, "_ref0"));
     }
 
     public void testNamesOnConstructor() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
         visitConstructor(ctor, type);
         assertNotNull(getReference(type, "myRef"));
     }
 
     public void testInvalidNumberOfNames() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
         try {
             visitConstructor(ctor, type);
@@ -94,8 +91,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
     }
 
     public void testNoMatchingNames() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(List.class, List.class);
         try {
             visitConstructor(ctor, type);

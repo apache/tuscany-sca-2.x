@@ -27,12 +27,12 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.context.JavaAtomicComponent;
-import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Scope;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaScopeImpl;
 import org.apache.tuscany.implementation.java.mock.Source;
 import org.apache.tuscany.implementation.java.mock.SourceImpl;
 import org.apache.tuscany.implementation.java.mock.Target;
@@ -54,7 +54,7 @@ public class JavaComponentBuilderMetadataTestCaseFIXME extends TestCase {
     private DeploymentContext deploymentContext;
     private Constructor<SourceImpl> constructor;
     private Component parent;
-    private JavaImplementationDefinition type;
+    private JavaImplementation type;
     private org.apache.tuscany.assembly.Component definition;
     private ScopeContainer scopeContainer;
     private AssemblyFactory factory = new DefaultAssemblyFactory();
@@ -85,7 +85,7 @@ public class JavaComponentBuilderMetadataTestCaseFIXME extends TestCase {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         JavaAtomicComponent component = (JavaAtomicComponent)builder.build(definition, deploymentContext);
         component.setScopeContainer(scopeContainer);
-        assertEquals(Scope.COMPOSITE, component.getScope());
+        assertEquals(JavaScopeImpl.COMPOSITE, component.getScope());
     }
 
     protected void setUp() throws Exception {
@@ -112,18 +112,19 @@ public class JavaComponentBuilderMetadataTestCaseFIXME extends TestCase {
     }
 
     private void createComponentDefinitionAndType() throws Exception {
-        type = new JavaImplementationDefinition();
-        type.setScope(Scope.COMPOSITE);
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
+        type = javaImplementationFactory.createJavaImplementation();
+        type.setJavaScope(JavaScopeImpl.COMPOSITE);
         ComponentReference reference = factory.createComponentReference();
         reference.setName("target");
         type.getReferenceMembers().put("target",
-                                       new JavaElement(SourceImpl.class.getMethod("setTarget", Target.class), 0));
+                                       new JavaElementImpl(SourceImpl.class.getMethod("setTarget", Target.class), 0));
         type.getReferences().add(reference);
 
         ComponentService serviceDefinition = ModelHelper.createService(factory, javaFactory, Source.class);
         serviceDefinition.setName("Source");
         type.getServices().add(serviceDefinition);
-        type.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));
+        type.setConstructor(new JavaConstructorImpl<SourceImpl>(constructor));
         type.setJavaClass(SourceImpl.class);
         definition.setImplementation(type);
         definition.setName("component");

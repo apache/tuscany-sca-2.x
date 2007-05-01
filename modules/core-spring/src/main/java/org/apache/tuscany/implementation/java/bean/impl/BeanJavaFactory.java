@@ -18,12 +18,9 @@
  */
 package org.apache.tuscany.implementation.java.bean.impl;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**
  * An alternate implementation of the SCA Java assembly model factory that creates SCA
@@ -31,16 +28,9 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
  *
  *  @version $Rev$ $Date$
  */
-public class BeanJavaFactory implements JavaFactory, JavaImplementationFactory {
+public class BeanJavaFactory implements JavaFactory {
 	
-	private BeanDefinitionRegistry beanRegistry;
-	
-	public BeanJavaFactory(BeanDefinitionRegistry beanRegistry) {
-		this.beanRegistry = beanRegistry;
-	}
-
-	public JavaImplementation createJavaImplementation() {
-		return new BeanJavaImplementationImpl(beanRegistry);
+	public BeanJavaFactory() {
 	}
 
 	public JavaInterface createJavaInterface() {

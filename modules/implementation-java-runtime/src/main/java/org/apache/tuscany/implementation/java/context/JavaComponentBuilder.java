@@ -19,21 +19,14 @@
 package org.apache.tuscany.implementation.java.context;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentProperty;
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.core.builder.ComponentNotFoundException;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Resource;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
@@ -60,8 +53,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     @SuppressWarnings("unchecked")
     public AtomicComponent build(Component definition, DeploymentContext context)
         throws BuilderConfigException {
-        JavaImplementationDefinition componentType = (JavaImplementationDefinition)
-            definition.getImplementation();
+        JavaImplementation componentType = (JavaImplementation)definition.getImplementation();
 
         PojoConfiguration configuration = new PojoConfiguration(componentType);
         URI id = URI.create(context.getComponentId() + definition.getName());
@@ -85,9 +77,9 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     }
     
     private void handleResources(
-        JavaImplementationDefinition componentType,
+        JavaImplementation componentType,
         JavaAtomicComponent component) {
-        for (Resource resource : componentType.getResources().values()) {
+        for (JavaResourceImpl resource : componentType.getResources().values()) {
             String name = resource.getName();
             
             ObjectFactory<?> objectFactory = (ObjectFactory<?>) component.getConfiguration().getFactories().get(resource.getElement());

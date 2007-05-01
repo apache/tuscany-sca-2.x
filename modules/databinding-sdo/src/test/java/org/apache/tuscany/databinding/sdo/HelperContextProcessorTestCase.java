@@ -29,10 +29,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Resource;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 
 import commonj.sdo.helper.HelperContext;
 
@@ -50,7 +50,7 @@ public class HelperContextProcessorTestCase extends TestCase {
         
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(assemblyFactory);
-        JavaImplementationDefinition componentType = (JavaImplementationDefinition)javaImplementationFactory.createJavaImplementation();
+        JavaImplementation componentType = javaImplementationFactory.createJavaImplementation();
         componentType.setJavaClass(FooImpl.class);
         for (Field f : FooImpl.class.getDeclaredFields()) {
             processor.visitField(f, componentType);
@@ -60,9 +60,9 @@ public class HelperContextProcessorTestCase extends TestCase {
             processor.visitMethod(m, componentType);
         }
 
-        Resource r1 = (Resource)componentType.getResources().get("context");
+        JavaResourceImpl r1 = (JavaResourceImpl)componentType.getResources().get("context");
         assertNotNull(r1);
-        Resource r2 = (Resource)componentType.getResources().get("context2");
+        JavaResourceImpl r2 = (JavaResourceImpl)componentType.getResources().get("context2");
         assertNotNull(r2);
 //        HelperContext c1 = (HelperContext)r1.getObjectFactory().getInstance();
 //        HelperContext c2 = (HelperContext)r2.getObjectFactory().getInstance();

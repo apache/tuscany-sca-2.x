@@ -24,14 +24,13 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Resource;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.osoa.sca.annotations.Reference;
 
 import commonj.sdo.helper.HelperContext;
 
@@ -66,7 +65,7 @@ public class HelperContextProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public void visitMethod(Method method,
-                            JavaImplementationDefinition type) throws IntrospectionException {
+                            JavaImplementation type) throws IntrospectionException {
         if (!method.isAnnotationPresent(org.apache.tuscany.databinding.sdo.api.HelperContext.class)) {
             return;
         }
@@ -76,21 +75,21 @@ public class HelperContextProcessor extends BaseJavaClassIntrospectorExtension {
         Class<?> paramType = method.getParameterTypes()[0];
         if (HelperContext.class == paramType) {
             String name = toPropertyName(method.getName());
-            Resource resource = new Resource(new JavaElement(method, 0));
+            JavaResourceImpl resource = new JavaResourceImpl(new JavaElementImpl(method, 0));
 //            resource.setObjectFactory(new HelperContextFactory(context.getComponentId()));
             type.getResources().put(name, resource);
         }
     }
 
     public void visitField(Field field,
-                           JavaImplementationDefinition type) throws IntrospectionException {
+                           JavaImplementation type) throws IntrospectionException {
         if (!field.isAnnotationPresent(org.apache.tuscany.databinding.sdo.api.HelperContext.class)) {
             return;
         }
         Class<?> paramType = field.getType();
         if (HelperContext.class == paramType) {
             String name = field.getName();
-            Resource resource = new Resource(new JavaElement(field));
+            JavaResourceImpl resource = new JavaResourceImpl(new JavaElementImpl(field));
 //            resource.setObjectFactory(new HelperContextFactory(context.getComponentId()));
             type.getResources().put(name, resource);
         }

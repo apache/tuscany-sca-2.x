@@ -18,146 +18,147 @@
  */
 package org.apache.tuscany.implementation.java.bean.impl;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.policy.PolicySet;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.implementation.java.impl.JavaScopeImpl;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.RootBeanDefinition;
 
 /**
  * An implementation of the SCA assembly JavaImplementation interface backed by a Spring
  * Bean definition.
  *
- *  @version $Rev$ $Date$
+ * @version $$Rev$$ $$Date$$
  */
-public class BeanJavaImplementationImpl extends RootBeanDefinition implements JavaImplementation {
-	private static final long serialVersionUID = 1L;
-	
-	private List<Service> services = new ArrayList<Service>();
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
-	private ConstrainingType constrainingType;
-	private List<Object> extensions = new ArrayList<Object>();
-	private boolean unresolved;
-	private BeanDefinitionRegistry beanRegistry;
-        private String uri;
-	
-	protected BeanJavaImplementationImpl(BeanDefinitionRegistry beanRegistry) {
-		this.beanRegistry = beanRegistry;
+public class BeanJavaImplementationImpl extends BeanBaseJavaImplementationImpl implements JavaImplementation {
+    private static final long serialVersionUID = 6792198458193774178L;
+    
+    private JavaConstructorImpl<?> constructorDefinition;
+    private Map<Constructor, JavaConstructorImpl> constructors = new HashMap<Constructor, JavaConstructorImpl>();
+    private Method initMethod;
+    private Method destroyMethod;
+    private final Map<String, JavaResourceImpl> resources = new HashMap<String, JavaResourceImpl>();
+    private final Map<String, JavaElementImpl> propertyMembers = new HashMap<String, JavaElementImpl>();
+    private final Map<String, JavaElementImpl> referenceMembers = new HashMap<String, JavaElementImpl>();
+    private final Map<String, JavaElementImpl> callbackMembers = new HashMap<String, JavaElementImpl>();
+    private Member conversationIDMember;
+    private boolean eagerInit;
+    private boolean allowsPassByReference;
+    private List<Method> allowsPassByReferenceMethods = new ArrayList<Method>();
+    private long maxAge = -1;
+    private long maxIdleTime = -1;
+    private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
 
-		// Register this bean definition in the bean registry
-		//TODO find a better name for bean definitions representing component types
-		String name = String.valueOf(System.identityHashCode(this));
-		this.beanRegistry.registerBeanDefinition(name, this);
-	}
+    protected BeanJavaImplementationImpl(BeanDefinitionRegistry beanRegistry) {
+        super(beanRegistry);
+    }    
 
-	public Class<?> getJavaClass() {
-		return super.getBeanClass();
-	}
+    public JavaConstructorImpl<?> getConstructor() {
+        return constructorDefinition;
+    }
 
-	public String getName() {
-		return super.getBeanClassName();
-	}
+    public void setConstructor(JavaConstructorImpl<?> definition) {
+        this.constructorDefinition = definition;
+    }
 
-	public void setJavaClass(Class<?> javaClass) {
-		super.setBeanClass(javaClass);
-	}
+    public Method getInitMethod() {
+        return initMethod;
+    }
 
-	public void setName(String className) {
-		super.setBeanClassName(className);
-	}
-        
-        public String getURI() {
-            return uri;
-        }
-        
-        public void setURI(String uri) {
-            this.uri = uri;
-        }
+    public void setInitMethod(Method initMethod) {
+        this.initMethod = initMethod;
+    }
 
-	public ConstrainingType getConstrainingType() {
-		return constrainingType;
-	}
+    public Method getDestroyMethod() {
+        return destroyMethod;
+    }
 
-	//TODO use a better list implementation
-	private List<Property> properties = new ArrayList<Property>() {
-		private static final long serialVersionUID = 1L;
-		
-		// Add a property
-		public boolean add(Property property) {
-			
-			// Add corresponding bean property value
-			getPropertyValues().addPropertyValue(property.getName(), property.getValue());
-			
-			return super.add(property);
-		}
-	};
-	
-	public List<Property> getProperties() {
-		return properties;
-	}
+    public void setDestroyMethod(Method destroyMethod) {
+        this.destroyMethod = destroyMethod;
+    }
 
-	//TODO use a better list implementation
-	private List<Reference> references = new ArrayList<Reference>() {
-		private static final long serialVersionUID = 1L;
+    public Map<String, JavaResourceImpl> getResources() {
+        return resources;
+    }
 
-		// Add a reference
-		public boolean add(Reference reference) {
-			
-			// Add corresponding bean property value
-			String target;
-			if (!reference.getTargets().isEmpty()) {
-				//TODO handle multiplicity
-				target = reference.getTargets().get(0).getName();
-				int i = target.indexOf('/');
-				if (i != -1)
-					target = target.substring(0, i);
-			} else {
-				target = null;
-			}
-			getPropertyValues().addPropertyValue(reference.getName(), target);
-			
-			return super.add(reference);
-		}
-	};
-	
-	public List<Reference> getReferences() {
-		return references;
-	}
+    public Member getConversationIDMember() {
+        return this.conversationIDMember;
+    }
 
-	public List<Service> getServices() {
-		return services;
-	}
+    public void setConversationIDMember(Member conversationIDMember) {
+        this.conversationIDMember = conversationIDMember;
+    }
 
-	public void setConstrainingType(ConstrainingType constrainingType) {
-		this.constrainingType = constrainingType;
-	}
+    public boolean isAllowsPassByReference() {
+        return allowsPassByReference;
+    }
 
-	public List<Object> getExtensions() {
-		return extensions;
-	}
+    public void setAllowsPassByReference(boolean allowsPassByReference) {
+        this.allowsPassByReference = allowsPassByReference;
+    }
 
-	public boolean isUnresolved() {
-		return unresolved;
-	}
+    public List<Method> getAllowsPassByReferenceMethods() {
+        return allowsPassByReferenceMethods;
+    }
+    
+    public boolean isAllowsPassByReference(Method method) {
+        return allowsPassByReference || allowsPassByReferenceMethods.contains(method);
+    }
 
-	public void setUnresolved(boolean unresolved) {
-		this.unresolved = unresolved;
-	}
+    public Map<Constructor, JavaConstructorImpl> getConstructors() {
+        return constructors;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
+    public boolean isEagerInit() {
+        return eagerInit;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
+    public void setEagerInit(boolean eagerInit) {
+        this.eagerInit = eagerInit;
+    }
 
+    public Map<String, JavaElementImpl> getCallbackMembers() {
+        return callbackMembers;
+    }
+
+    public Map<String, JavaElementImpl> getPropertyMembers() {
+        return propertyMembers;
+    }
+
+    public Map<String, JavaElementImpl> getReferenceMembers() {
+        return referenceMembers;
+    }
+
+    public JavaScopeImpl getJavaScope() {
+        return scope;
+    }
+
+    public void setJavaScope(JavaScopeImpl scope) {
+        this.scope = scope;
+    }
+
+    public long getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
+    }
+
+    public long getMaxIdleTime() {
+        return maxIdleTime;
+    }
+
+    public void setMaxIdleTime(long maxIdleTime) {
+        this.maxIdleTime = maxIdleTime;
+    }
 }

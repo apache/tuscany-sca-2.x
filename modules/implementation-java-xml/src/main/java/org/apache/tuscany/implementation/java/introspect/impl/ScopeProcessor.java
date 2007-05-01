@@ -19,13 +19,13 @@
 package org.apache.tuscany.implementation.java.introspect.impl;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Scope;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaScopeImpl;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
- * Processes the {@link Scope} annotation and updates the component type with the corresponding implmentation scope
+ * Processes the {@link JavaScopeImpl} annotation and updates the component type with the corresponding implmentation scope
  *
  * @version $Rev$ $Date$
  */
@@ -36,28 +36,26 @@ public class ScopeProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public <T> void visitClass(Class<T> clazz,
-                               JavaImplementationDefinition type)
+                               JavaImplementation type)
         throws IntrospectionException {
         org.osoa.sca.annotations.Scope annotation = clazz.getAnnotation(org.osoa.sca.annotations.Scope.class);
         if (annotation == null) {
-            type.setScope(Scope.STATELESS);
+            type.setJavaScope(JavaScopeImpl.STATELESS);
             return;
         }
         String name = annotation.value();
-        Scope scope;
+        JavaScopeImpl scope;
         if ("COMPOSITE".equals(name)) {
-            scope = Scope.COMPOSITE;
+            scope = JavaScopeImpl.COMPOSITE;
         } else if ("SESSION".equals(name)) {
-            scope = Scope.SESSION;
+            scope = JavaScopeImpl.SESSION;
         } else if ("CONVERSATION".equals(name)) {
-            scope = Scope.CONVERSATION;
+            scope = JavaScopeImpl.CONVERSATION;
         } else if ("REQUEST".equals(name)) {
-            scope = Scope.REQUEST;
-        } else if ("SYSTEM".equals(name)) {
-            scope = Scope.SYSTEM;
+            scope = JavaScopeImpl.REQUEST;
         } else {
-            scope = new Scope(name);
+            scope = new JavaScopeImpl(name);
         }
-        type.setScope(scope);
+        type.setJavaScope(scope);
     }
 }

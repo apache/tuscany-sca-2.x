@@ -26,11 +26,13 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Scope;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
+import org.apache.tuscany.implementation.java.impl.JavaScopeImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -53,17 +55,18 @@ public class JavaBuilderPropertyTestCaseFIXME extends TestCase {
     @SuppressWarnings("unchecked")
     public void testPropertyHandling() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Property property = factory.createProperty();
         property.setName("test");
         // property.setDefaultValueFactory(new
         // SingletonObjectFactory<String>("foo"));
-        JavaElement element = new JavaElement(JavaBuilderPropertyTestCaseFIXME.Foo.class.getMethod("setTest", String.class),
+        JavaElementImpl element = new JavaElementImpl(JavaBuilderPropertyTestCaseFIXME.Foo.class.getMethod("setTest", String.class),
                                               0);
         type.getPropertyMembers().put("test", element);
         type.getProperties().add(property);
-        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[])null)));
-        type.setScope(Scope.STATELESS);
+        type.setConstructor(new JavaConstructorImpl<Foo>(Foo.class.getConstructor((Class[])null)));
+        type.setJavaScope(JavaScopeImpl.STATELESS);
         type.setJavaClass(Foo.class);
         org.apache.tuscany.assembly.Component definition = factory.createComponent();
         definition.setImplementation(type);
@@ -78,17 +81,18 @@ public class JavaBuilderPropertyTestCaseFIXME extends TestCase {
 
     public void testIntPropertyHandling() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Property property = factory.createProperty();
         property.setName("test");
         // property.setDefaultValueFactory(new
         // SingletonObjectFactory<Integer>(1));
-        JavaElement element = new JavaElement(JavaBuilderPropertyTestCaseFIXME.Foo.class.getMethod("setTest", String.class),
+        JavaElementImpl element = new JavaElementImpl(JavaBuilderPropertyTestCaseFIXME.Foo.class.getMethod("setTest", String.class),
                                               0);
         type.getPropertyMembers().put("test", element);
         type.getProperties().add(property);
-        type.setConstructorDefinition(new ConstructorDefinition<FooInt>(FooInt.class.getConstructor((Class[])null)));
-        type.setScope(Scope.STATELESS);
+        type.setConstructor(new JavaConstructorImpl<FooInt>(FooInt.class.getConstructor((Class[])null)));
+        type.setJavaScope(JavaScopeImpl.STATELESS);
         type.setJavaClass(Foo.class);
         org.apache.tuscany.assembly.Component definition = factory.createComponent();
         definition.setImplementation(type);

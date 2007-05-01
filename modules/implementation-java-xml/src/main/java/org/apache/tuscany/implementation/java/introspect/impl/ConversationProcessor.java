@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.ConversationAttributes;
@@ -43,7 +43,7 @@ public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
         super(factory);
     }
 
-    public <T> void visitClass(Class<T> clazz, JavaImplementationDefinition type) throws IntrospectionException {
+    public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
 
         ConversationAttributes conversation = clazz.getAnnotation(ConversationAttributes.class);
         if (conversation == null) {
@@ -52,7 +52,7 @@ public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
         Scope scope = clazz.getAnnotation(Scope.class);
         if (scope == null) {
             // implicitly assume conversation
-            type.setScope(org.apache.tuscany.implementation.java.impl.Scope.CONVERSATION);
+            type.setJavaScope(org.apache.tuscany.implementation.java.impl.JavaScopeImpl.CONVERSATION);
         } else if (scope != null && !"CONVERSATION".equals(scope.value().toUpperCase())) {
             throw new InvalidConversationalImplementation(
                                                           "Service is marked with @ConversationAttributes but the scope is not @Scope(\"CONVERSATION\")"
@@ -86,7 +86,7 @@ public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public void visitMethod(Method method,
-                            JavaImplementationDefinition type) throws IntrospectionException {
+                            JavaImplementation type) throws IntrospectionException {
         ConversationID conversationID = method.getAnnotation(ConversationID.class);
         if (conversationID == null) {
             return;
@@ -95,7 +95,7 @@ public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public void visitField(Field field,
-                           JavaImplementationDefinition type) throws IntrospectionException {
+                           JavaImplementation type) throws IntrospectionException {
         ConversationID conversationID = field.getAnnotation(ConversationID.class);
         if (conversationID == null) {
             return;

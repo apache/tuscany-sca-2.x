@@ -30,9 +30,11 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
@@ -44,10 +46,11 @@ import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorEx
 public class AbstractPropertyProcessorTestCase extends TestCase {
 
     private JavaClassIntrospectorExtension extension;
+    private JavaImplementationFactory javaImplementationFactory;
 
     public void testVisitMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", String.class);
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         extension.visitMethod(method, type);
         Property prop = getProperty(type, "test");
         assertNotNull(prop);
@@ -55,7 +58,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     public void testVisitNoParamsMethod() throws Exception {
         Method method = Foo.class.getMethod("setNoParamsBar");
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             extension.visitMethod(method, type);
             fail();
@@ -66,7 +69,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     public void testVisitNonVoidMethod() throws Exception {
         Method method = Foo.class.getMethod("setBadBar", String.class);
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             extension.visitMethod(method, type);
             fail();
@@ -77,7 +80,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     public void testDuplicateMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", String.class);
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         extension.visitMethod(method, type);
         try {
             extension.visitMethod(method, type);
@@ -89,7 +92,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     public void testVisitField() throws Exception {
         Field field = Foo.class.getDeclaredField("d");
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         extension.visitField(field, type);
         Property prop = getProperty(type, "test");
         assertNotNull(prop);
@@ -97,9 +100,9 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
 
     public void testVisitConstructor() throws Exception {
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
-        ConstructorDefinition<Foo> def = new ConstructorDefinition<Foo>(ctor);
-        Parameter parameter = def.getParameters()[0];
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        JavaConstructorImpl<Foo> def = new JavaConstructorImpl<Foo>(ctor);
+        JavaParameterImpl parameter = def.getParameters()[0];
         extension.visitConstructorParameter(parameter, type);
         assertEquals("test", def.getParameters()[0].getName());
         assertNotNull(getProperty(type, "test"));
@@ -109,6 +112,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         extension = new TestProcessor();
+        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
     }
 
     @Retention(RUNTIME)

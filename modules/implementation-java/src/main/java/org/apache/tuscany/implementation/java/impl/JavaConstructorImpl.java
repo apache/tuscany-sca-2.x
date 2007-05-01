@@ -16,20 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.implementation.java.impl;
 
 import java.lang.reflect.Constructor;
 
 /**
+ * Hold injection information for the constructor used to instantiate a
+ * component implementation instance
+ * 
  * @version $Rev$ $Date$
  */
-public class Parameter extends JavaElement {
+public class JavaConstructorImpl<T> {
+
+    private Constructor<T> constructor;
+    private JavaParameterImpl[] parameters;
+
+    public JavaConstructorImpl(Constructor<T> constructor) {
+        this.constructor = constructor;
+        int size = constructor.getParameterTypes().length;
+        parameters = new JavaParameterImpl[size];
+        for (int i = 0; i < size; i++) {
+            parameters[i] = new JavaParameterImpl(constructor, i);
+        }
+    }
+
+    public Constructor<T> getConstructor() {
+        return constructor;
+    }
+
     /**
-     * @param constructor
-     * @param index
+     * @return the parameters
      */
-    public Parameter(Constructor<?> constructor, int index) {
-        super(constructor, index);
+    public JavaParameterImpl[] getParameters() {
+        return parameters;
     }
 }

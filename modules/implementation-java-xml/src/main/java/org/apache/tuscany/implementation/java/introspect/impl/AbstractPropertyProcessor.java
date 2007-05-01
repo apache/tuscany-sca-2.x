@@ -26,9 +26,9 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;
@@ -49,7 +49,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         this.annotationClass = annotationClass;
     }
 
-    public void visitMethod(Method method, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         A annotation = method.getAnnotation(annotationClass);
         if (annotation == null) {
             return;
@@ -71,12 +71,12 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
             }
         }
 
-        Map<String, JavaElement> properties = type.getPropertyMembers();
+        Map<String, JavaElementImpl> properties = type.getPropertyMembers();
         if (properties.containsKey(name)) {
             throw new DuplicatePropertyException(name);
         }
 
-        JavaElement element = new JavaElement(method, 0);
+        JavaElementImpl element = new JavaElementImpl(method, 0);
         Property property = createProperty(name, element);
 
         // add databinding available as annotations, as extensions
@@ -86,7 +86,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         properties.put(name, element);
     }
 
-    public void visitField(Field field, JavaImplementationDefinition type) throws IntrospectionException {
+    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
 
         A annotation = field.getAnnotation(annotationClass);
         if (annotation == null) {
@@ -101,22 +101,22 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
             name = field.getName();
         }
 
-        Map<String, JavaElement> properties = type.getPropertyMembers();
+        Map<String, JavaElementImpl> properties = type.getPropertyMembers();
         if (properties.containsKey(name)) {
             throw new DuplicatePropertyException(name);
         }
 
-        JavaElement element = new JavaElement(field);
+        JavaElementImpl element = new JavaElementImpl(field);
         Property property = createProperty(name, element);
         initProperty(property, annotation);
         type.getProperties().add(property);
         properties.put(name, element);    
     }
 
-    public void visitConstructorParameter(Parameter parameter, JavaImplementationDefinition type)
+    public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type)
         throws IntrospectionException {
 
-        Map<String, JavaElement> properties = type.getPropertyMembers();
+        Map<String, JavaElementImpl> properties = type.getPropertyMembers();
         A annotation = parameter.getAnnotation(annotationClass);
         if (annotation != null) {
             String name = getName(annotation);
@@ -150,7 +150,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
     protected abstract void initProperty(Property property, A annotation) throws IntrospectionException;
 
     @SuppressWarnings("unchecked")
-    protected  Property createProperty(String name, JavaElement element) throws IntrospectionException {
+    protected  Property createProperty(String name, JavaElementImpl element) throws IntrospectionException {
 
         Property property = assemblyFactory.createProperty();
         property.setName(name);

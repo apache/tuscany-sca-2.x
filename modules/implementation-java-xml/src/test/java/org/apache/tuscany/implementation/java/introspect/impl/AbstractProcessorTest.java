@@ -24,9 +24,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.ConstructorDefinition;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
@@ -59,14 +59,14 @@ public class AbstractProcessorTest extends TestCase {
     }
 
     protected <T> void visitConstructor(Constructor<T> constructor,
-                                        JavaImplementationDefinition type) throws IntrospectionException {
+                                        JavaImplementation type) throws IntrospectionException {
         constructorProcessor.visitConstructor(constructor, type);
-        ConstructorDefinition<?> definition = type.getConstructorDefinition();
+        JavaConstructorImpl<?> definition = type.getConstructor();
         if (definition == null) {
-            definition = new ConstructorDefinition<T>(constructor);
+            definition = new JavaConstructorImpl<T>(constructor);
             type.getConstructors().put(constructor, definition);
         }
-        Parameter[] parameters = definition.getParameters();
+        JavaParameterImpl[] parameters = definition.getParameters();
         for (int i = 0; i < parameters.length; i++) {
             referenceProcessor.visitConstructorParameter(parameters[i], type);
             propertyProcessor.visitConstructorParameter(parameters[i], type);

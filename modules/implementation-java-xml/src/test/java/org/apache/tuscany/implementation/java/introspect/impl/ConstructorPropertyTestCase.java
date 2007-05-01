@@ -23,20 +23,22 @@ import static org.apache.tuscany.implementation.java.introspect.impl.ModelHelper
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
-import org.apache.tuscany.implementation.java.introspect.impl.InvalidConstructorException;
-import org.apache.tuscany.implementation.java.introspect.impl.InvalidPropertyException;
 import org.osoa.sca.annotations.Property;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConstructorPropertyTestCase extends AbstractProcessorTest {
+    
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
 
     public void testProperty() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
         org.apache.tuscany.assembly.Property property = getProperty(type, "myProp");
@@ -45,8 +47,7 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     }
 
     public void testTwoPropertiesSameType() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
         visitConstructor(ctor, type);
         assertNotNull(getProperty(type, "myProp1"));
@@ -54,8 +55,7 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     }
 
     public void testDuplicateProperty() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
         try {
             visitConstructor(ctor, type);
@@ -66,8 +66,7 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     }
 
     public void testNoName() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class);
         try {
             visitConstructor(ctor, type);
@@ -78,16 +77,14 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     }
 
     public void testNamesOnConstructor() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
         visitConstructor(ctor, type);
         assertNotNull(getProperty(type, "myProp"));
     }
 
     public void testInvalidNumberOfNames() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
         try {
             visitConstructor(ctor, type);
@@ -98,8 +95,7 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     }
 
     public void testNoMatchingNames() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(List.class, List.class);
         try {
             visitConstructor(ctor, type);

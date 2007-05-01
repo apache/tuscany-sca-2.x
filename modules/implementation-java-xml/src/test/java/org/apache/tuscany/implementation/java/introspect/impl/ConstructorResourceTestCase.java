@@ -22,28 +22,28 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.apache.tuscany.api.annotation.Resource;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.impl.DuplicateResourceException;
-import org.apache.tuscany.implementation.java.introspect.impl.InvalidConstructorException;
-import org.apache.tuscany.implementation.java.introspect.impl.InvalidResourceException;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConstructorResourceTestCase extends AbstractProcessorTest {
+    
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
 
     public void testResource() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
-        org.apache.tuscany.implementation.java.impl.Resource resource = type.getResources().get("myResource");
+        org.apache.tuscany.implementation.java.impl.JavaResourceImpl resource = type.getResources().get("myResource");
         assertFalse(resource.isOptional());
     }
 
     public void testTwoResourcesSameType() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
         visitConstructor(ctor, type);
         assertNotNull(type.getResources().get("myResource1"));
@@ -51,8 +51,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
     }
 
     public void testDuplicateResource() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
         try {
             visitConstructor(ctor, type);
@@ -63,8 +62,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
     }
 
     public void testNoName() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =
             ConstructorResourceTestCase.BadFoo.class.getConstructor(String.class);
         try {
@@ -76,16 +74,14 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
     }
 
     public void testNamesOnConstructor() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
         visitConstructor(ctor, type);
         assertNotNull(type.getResources().get("myResource"));
     }
 
     public void testInvalidNumberOfNames() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =
             ConstructorResourceTestCase.BadFoo.class.getConstructor(Integer.class, Integer.class);
         try {
@@ -97,8 +93,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
     }
 
     public void testNoMatchingNames() throws Exception {
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =
             ConstructorResourceTestCase.BadFoo.class.getConstructor(List.class, List.class);
         try {

@@ -19,7 +19,7 @@
 package org.apache.tuscany.implementation.java.introspect.impl;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
+import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.EagerInit;
@@ -36,7 +36,7 @@ public class EagerInitProcessor extends BaseJavaClassIntrospectorExtension {
     }
 
     public <T> void visitClass(Class<T> clazz,
-                               JavaImplementationDefinition type) throws IntrospectionException {
+                               JavaImplementation type) throws IntrospectionException {
         super.visitClass(clazz, type);
         EagerInit annotation = clazz.getAnnotation(EagerInit.class);
         if (annotation == null) {

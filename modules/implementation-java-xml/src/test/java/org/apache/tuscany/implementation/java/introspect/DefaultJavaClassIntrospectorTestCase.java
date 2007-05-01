@@ -24,9 +24,12 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
-import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
 import org.easymock.EasyMock;
 
 /**
@@ -51,12 +54,12 @@ public class DefaultJavaClassIntrospectorTestCase extends TestCase {
     public void testWalk() throws Exception {
         DefaultJavaClassIntrospector introspector = new DefaultJavaClassIntrospector();
         JavaClassIntrospectorExtension extension = EasyMock.createMock(JavaClassIntrospectorExtension.class);
-        extension.visitClass(EasyMock.eq(Bar.class), EasyMock.isA(JavaImplementationDefinition.class));
-        extension.visitConstructor(EasyMock.isA(Constructor.class), EasyMock.isA(JavaImplementationDefinition.class));
-        extension.visitMethod(EasyMock.isA(Method.class), EasyMock.isA(JavaImplementationDefinition.class));
-        extension.visitField(EasyMock.isA(Field.class), EasyMock.isA(JavaImplementationDefinition.class));
-        extension.visitSuperClass(EasyMock.isA(Class.class), EasyMock.isA(JavaImplementationDefinition.class));
-        extension.visitEnd(EasyMock.isA(Class.class), EasyMock.isA(JavaImplementationDefinition.class));
+        extension.visitClass(EasyMock.eq(Bar.class), EasyMock.isA(JavaImplementation.class));
+        extension.visitConstructor(EasyMock.isA(Constructor.class), EasyMock.isA(JavaImplementation.class));
+        extension.visitMethod(EasyMock.isA(Method.class), EasyMock.isA(JavaImplementation.class));
+        extension.visitField(EasyMock.isA(Field.class), EasyMock.isA(JavaImplementation.class));
+        extension.visitSuperClass(EasyMock.isA(Class.class), EasyMock.isA(JavaImplementation.class));
+        extension.visitEnd(EasyMock.isA(Class.class), EasyMock.isA(JavaImplementation.class));
 
         // mock.expects(once()).method("visitClass");
         // mock.expects(once()).method("visitMethod");
@@ -66,7 +69,9 @@ public class DefaultJavaClassIntrospectorTestCase extends TestCase {
         // mock.expects(once()).method("visitEnd");
         EasyMock.replay(extension);
         introspector.addExtension(extension);
-        introspector.introspect(Bar.class, new JavaImplementationDefinition());
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(assemblyFactory);
+        introspector.introspect(Bar.class, javaImplementationFactory.createJavaImplementation());
         EasyMock.verify(extension);
     }
 

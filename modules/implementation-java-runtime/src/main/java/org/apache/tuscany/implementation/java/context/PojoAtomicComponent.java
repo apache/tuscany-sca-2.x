@@ -36,8 +36,8 @@ import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
-import org.apache.tuscany.implementation.java.impl.JavaElement;
-import org.apache.tuscany.implementation.java.impl.Parameter;
+import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.implementation.java.injection.CallbackWireObjectFactory;
 import org.apache.tuscany.implementation.java.injection.ConversationIDObjectFactory;
@@ -130,7 +130,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public void configureProperty(ComponentProperty configuredProperty) {
-        JavaElement element = 
+        JavaElementImpl element = 
             configuration.getDefinition().getPropertyMembers().get(configuredProperty.getName());
 
         if (element != null && !(element.getAnchor() instanceof Constructor) && 
@@ -155,7 +155,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         }
         wireList.add(wire);
 
-        JavaElement element = configuration.getDefinition().getReferenceMembers().get(referenceName);
+        JavaElementImpl element = configuration.getDefinition().getReferenceMembers().get(referenceName);
         if (element != null && !(element.getAnchor() instanceof Constructor)) {
             configuration.getInjectionSites().add(element);
         }
@@ -164,8 +164,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     }
 
-    private Parameter getParameter(String name, Class<? extends Annotation> classifer) {
-        for (Parameter param : configuration.getDefinition().getConstructorDefinition().getParameters()) {
+    private JavaParameterImpl getParameter(String name, Class<? extends Annotation> classifer) {
+        for (JavaParameterImpl param : configuration.getDefinition().getConstructor().getParameters()) {
             if (param.getClassifer() == classifer && param.getName().equals(name)) {
                 return param;
             }
@@ -183,7 +183,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             wires.put(referenceName, wireList);
         }
         wireList.addAll(attachWires);
-        JavaElement element = configuration.getDefinition().getReferenceMembers().get(referenceName);
+        JavaElementImpl element = configuration.getDefinition().getReferenceMembers().get(referenceName);
 
         Class<?> type = ((JavaInterface)attachWires.get(0).getSourceContract().getInterface()).getJavaClass();
         if (type == null) {
@@ -214,14 +214,14 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     public void start() throws CoreRuntimeException {
         if (!configuration.getDefinition().getCallbackMembers().isEmpty()) {
-            for (Map.Entry<String, JavaElement> entry : configuration.getDefinition().getCallbackMembers().entrySet()) {
+            for (Map.Entry<String, JavaElementImpl> entry : configuration.getDefinition().getCallbackMembers().entrySet()) {
                 List<Wire> wires = callBackwires.get(entry.getKey());
                 if (wires == null) {
                     // this can happen when there are no client wires to a
                     // component that has a callback
                     continue;
                 }
-                JavaElement element = entry.getValue();
+                JavaElementImpl element = entry.getValue();
                 ObjectFactory<?> factory = new CallbackWireObjectFactory(element.getType(), proxyService, wires);
                 if (!(element.getAnchor() instanceof Constructor)) {
                     configuration.getInjectionSites().add(element);
@@ -230,7 +230,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             }
         }
         for (Reference ref : configuration.getDefinition().getReferences()) {
-            JavaElement element = configuration.getDefinition().getReferenceMembers().get(ref.getName());
+            JavaElementImpl element = configuration.getDefinition().getReferenceMembers().get(ref.getName());
             if (element != null) {
                 if (!(element.getAnchor() instanceof Constructor)) {
                     configuration.getInjectionSites().add(element);
@@ -259,7 +259,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public void addPropertyFactory(String name, ObjectFactory<?> factory) {
-        JavaElement element = configuration.getDefinition().getPropertyMembers().get(name);
+        JavaElementImpl element = configuration.getDefinition().getPropertyMembers().get(name);
 
         if (element != null && !(element.getAnchor() instanceof Constructor)) {
             configuration.getInjectionSites().add(element);
@@ -269,7 +269,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
-        org.apache.tuscany.implementation.java.impl.Resource resource = configuration.getDefinition().getResources()
+        org.apache.tuscany.implementation.java.impl.JavaResourceImpl resource = configuration.getDefinition().getResources()
             .get(name);
 
         if (resource != null && !(resource.getElement().getAnchor() instanceof Constructor)) {
@@ -283,11 +283,11 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
         ObjectFactory<String> factory = new ConversationIDObjectFactory(workContext);
 
         if (member instanceof Field) {
-            JavaElement element = new JavaElement((Field)member);
+            JavaElementImpl element = new JavaElementImpl((Field)member);
             element.setClassifer(ConversationID.class);
             configuration.setObjectFactory(element, factory);
         } else if (member instanceof Method) {
-            JavaElement element = new JavaElement((Method)member, 0);
+            JavaElementImpl element = new JavaElementImpl((Method)member, 0);
             element.setName(JavaIntrospectionHelper.toPropertyName(member.getName()));
             element.setClassifer(ConversationID.class);
             configuration.setObjectFactory(element, factory);
@@ -354,7 +354,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) {
-        JavaElement element = configuration.getDefinition().getPropertyMembers().get(propertyName);
+        JavaElementImpl element = configuration.getDefinition().getPropertyMembers().get(propertyName);
         Object obj = configuration.getFactories().get(element);
         if (obj instanceof ObjectFactory) {
             return type.cast(((ObjectFactory<?>)obj).getInstance());

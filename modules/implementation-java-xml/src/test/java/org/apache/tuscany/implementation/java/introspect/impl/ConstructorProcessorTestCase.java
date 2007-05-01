@@ -31,13 +31,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationDefinition;
-import org.apache.tuscany.implementation.java.impl.Parameter;
-import org.apache.tuscany.implementation.java.introspect.impl.ConstructorProcessor;
-import org.apache.tuscany.implementation.java.introspect.impl.DuplicateConstructorException;
-import org.apache.tuscany.implementation.java.introspect.impl.InvalidConstructorException;
-import org.apache.tuscany.implementation.java.introspect.impl.PropertyProcessor;
-import org.apache.tuscany.implementation.java.introspect.impl.ReferenceProcessor;
+import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
@@ -49,9 +46,11 @@ import org.osoa.sca.annotations.Reference;
  */
 public class ConstructorProcessorTestCase extends TestCase {
     private ConstructorProcessor processor = new ConstructorProcessor(new DefaultAssemblyFactory());
+    
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
 
     public void testDuplicateConstructor() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
             processor.visitClass(BadFoo.class, type);
             fail();
@@ -61,21 +60,21 @@ public class ConstructorProcessorTestCase extends TestCase {
     }
 
     public void testConstructorAnnotation() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor1 = Foo.class.getConstructor(String.class);
         processor.visitConstructor(ctor1, type);
-        assertEquals("foo", type.getConstructorDefinition().getParameters()[0].getName());
+        assertEquals("foo", type.getConstructor().getParameters()[0].getName());
     }
 
     public void testNoAnnotation() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<NoAnnotation> ctor1 = NoAnnotation.class.getConstructor();
         processor.visitConstructor(ctor1, type);
-        assertNull(type.getConstructorDefinition());
+        assertNull(type.getConstructor());
     }
 
     public void testBadAnnotation() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadAnnotation> ctor1 = BadAnnotation.class.getConstructor(String.class, Foo.class);
         try {
             processor.visitConstructor(ctor1, type);
@@ -86,7 +85,7 @@ public class ConstructorProcessorTestCase extends TestCase {
     }
 
     public void testMixedParameters() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Mixed> ctor1 = Mixed.class.getConstructor(String.class, String.class, String.class);
         processor.visitConstructor(ctor1, type);
 
@@ -94,7 +93,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         JavaFactory javaFactory = new DefaultJavaFactory();
         ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory));
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
-        Parameter[] parameters = type.getConstructorDefinition().getParameters();
+        JavaParameterImpl[] parameters = type.getConstructor().getParameters();
         for (int i = 0; i < parameters.length; i++) {
             referenceProcessor.visitConstructorParameter(parameters[i], type);
             propertyProcessor.visitConstructorParameter(parameters[i], type);
@@ -157,7 +156,7 @@ public class ConstructorProcessorTestCase extends TestCase {
     }
 
     public void testMultiplicity() throws Exception {
-        JavaImplementationDefinition type = new JavaImplementationDefinition();
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Multiple> ctor1 = Multiple.class.getConstructor(Collection.class,
                                                                     String[].class,
                                                                     List.class,
@@ -168,7 +167,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         JavaFactory javaFactory = new DefaultJavaFactory();
         ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory));
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
-        Parameter[] parameters = type.getConstructorDefinition().getParameters();
+        JavaParameterImpl[] parameters = type.getConstructor().getParameters();
         for (int i = 0; i < parameters.length; i++) {
             referenceProcessor.visitConstructorParameter(parameters[i], type);
             propertyProcessor.visitConstructorParameter(parameters[i], type);

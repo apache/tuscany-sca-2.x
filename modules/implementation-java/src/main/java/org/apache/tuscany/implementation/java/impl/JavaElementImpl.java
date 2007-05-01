@@ -33,7 +33,7 @@ import java.lang.reflect.Type;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaElement {
+public class JavaElementImpl {
     private AnnotatedElement anchor;
     private ElementType elementType;
     private Class<?> type;
@@ -42,13 +42,13 @@ public class JavaElement {
     private String name;
     private Class<? extends Annotation> classifer;
 
-    public JavaElement(Package pkg) {
+    public JavaElementImpl(Package pkg) {
         this.anchor = pkg;
         this.elementType = ElementType.PACKAGE;
         this.name = pkg.getName();
     }
 
-    public JavaElement(Class<?> cls) {
+    public JavaElementImpl(Class<?> cls) {
         this.anchor = cls;
         this.elementType = ElementType.TYPE;
         this.type = cls;
@@ -56,7 +56,7 @@ public class JavaElement {
         this.name = cls.getName();
     }
 
-    public JavaElement(Field field) {
+    public JavaElementImpl(Field field) {
         this.anchor = field;
         this.elementType = ElementType.FIELD;
         this.type = field.getType();
@@ -64,7 +64,7 @@ public class JavaElement {
         this.name = field.getName();
     }
 
-    public JavaElement(Constructor<?> constructor, int index) {
+    public JavaElementImpl(Constructor<?> constructor, int index) {
         this.anchor = constructor;
         this.elementType = ElementType.PARAMETER;
         this.type = constructor.getParameterTypes()[index];
@@ -73,7 +73,7 @@ public class JavaElement {
         this.name = "";
     }
 
-    public JavaElement(Method method, int index) {
+    public JavaElementImpl(Method method, int index) {
         this.anchor = method;
         this.elementType = ElementType.PARAMETER;
         this.type = method.getParameterTypes()[index];
@@ -90,7 +90,7 @@ public class JavaElement {
      * @param classifer TODO
      * @param elementType
      */
-    public JavaElement(String name, Class<?> type, Class<? extends Annotation> classifer) {
+    public JavaElementImpl(String name, Class<?> type, Class<? extends Annotation> classifer) {
         super();
         this.type = type;
         this.name = name;
@@ -178,7 +178,7 @@ public class JavaElement {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final JavaElement other = (JavaElement)obj;
+        final JavaElementImpl other = (JavaElementImpl)obj;
         if (anchor == null) {
             if (other.anchor != null) {
                 return false;
