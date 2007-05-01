@@ -22,11 +22,11 @@
 	targetNamespace="http://calc"
 	name="InnerCalculator">
 
-    <service name="CalculatorService" promote="CalculatorServiceComponent">
+    <service name="CalculatorService" promote="InnerCalculatorServiceComponent">
         <interface.java interface="calculator.CalculatorService"/>
     </service>
 
-    <component name="CalculatorServiceComponent">
+    <component name="InnerCalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService"/>
         <reference name="subtractService"/>
@@ -34,9 +34,9 @@
         <reference name="divideService"/>
     </component>
 
-	<reference name="addService" promote="CalculatorServiceComponent/addService"/>
-	<reference name="subtractService" promote="CalculatorServiceComponent/subtractService"/>
-	<reference name="multiplyService" promote="CalculatorServiceComponent/multiplyService"/>
-	<reference name="divideService" promote="CalculatorServiceComponent/divideService"/>
+	<reference name="addService" promote="InnerCalculatorServiceComponent/addService"/>
+	<reference name="subtractService" promote="InnerCalculatorServiceComponent/subtractService"/>
+	<reference name="multiplyService" promote="InnerCalculatorServiceComponent/multiplyService"/>
+	<reference name="divideService" promote="InnerCalculatorServiceComponent/divideService"/>
 
 </composite>
