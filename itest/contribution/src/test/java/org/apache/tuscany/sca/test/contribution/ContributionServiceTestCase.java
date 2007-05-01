@@ -37,6 +37,7 @@ import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
@@ -67,7 +68,7 @@ public class ContributionServiceTestCase extends TestCase {
     private static final String CONTRIBUTION_001_ID = "contribution001/";
     private static final String CONTRIBUTION_002_ID = "contribution002/";
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
-    private static final String FOLDER_CONTRIBUTION = "target/classes/calculator/";
+    private static final String FOLDER_CONTRIBUTION = "target/classes/";
 
     private ContributionService contributionService;
     
@@ -112,7 +113,7 @@ public class ContributionServiceTestCase extends TestCase {
         // Create an artifact resolver and contribution service
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(getClass().getClassLoader());
         this.contributionService = new ContributionServiceImpl(repository, packageProcessors,
-                                                                              documentProcessors, artifactResolver, assemblyFactory);
+                                                                              documentProcessors, artifactResolver, assemblyFactory, new DefaultContributionFactory());
     }
 
     public void testContributeJAR() throws Exception {
@@ -173,6 +174,16 @@ public class ContributionServiceTestCase extends TestCase {
         /*
         File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
         URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        
+        //first rename the sca-contribution metadata file
+        File calculatorMetadataFile = new File("target/classes/calculator/sca-contribution.xml");
+        File metadataDirectory = new File("target/classes/META-INF/");
+        
+        if (! metadataDirectory.exists()) {
+            FileHelper.forceMkdir(metadataDirectory);
+        }
+        FileHelper.copyFileToDirectory(calculatorMetadataFile, metadataDirectory);
+        
         contributionService.contribute(contributionId, rootContributionFolder.toURL(), false);
         */
     }

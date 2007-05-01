@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoader;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
@@ -50,11 +51,13 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
     private static final QName IMPORT = new QName(SCA10_NS, "import");
     private static final QName EXPORT = new QName(SCA10_NS, "export");
     
-    private AssemblyFactory assemblyFactory;
+    private final AssemblyFactory assemblyFactory;
+    private final ContributionFactory contributionFactory;
 
-    public ContributionMetadataLoaderImpl(AssemblyFactory assemblyFactory) {
+    public ContributionMetadataLoaderImpl(AssemblyFactory assemblyFactory, ContributionFactory contributionFactory) {
         super();
         this.assemblyFactory = assemblyFactory;
+        this.contributionFactory = contributionFactory;
     }
 
     public QName getXMLType() {
@@ -66,7 +69,7 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
      */
     public Contribution load(XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException {
 
-        Contribution contribution = new Contribution();
+        Contribution contribution = this.contributionFactory.createContribution();
         while (true) {
             int event = reader.next();
             switch (event) {
@@ -89,7 +92,7 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
                             compositeName = new QName(getString(reader, TARGET_NAMESPACE), localPart, prefix);
                         } else {
                             String prefix = "";
-                            String ns = reader.getNamespaceURI();
+                            //String ns = reader.getNamespaceURI();
                             String localPart = name;
                             compositeName = new QName(getString(reader, TARGET_NAMESPACE), localPart, prefix);
                         }
@@ -105,7 +108,7 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
                             throw new InvalidValueException("Attribute 'namespace' is missing");
                         }
                         String location = reader.getAttributeValue(null, "location");
-                        ContributionImport contributionImport = new ContributionImport();
+                        ContributionImport contributionImport = this.contributionFactory.createContributionImport();
                         if (location != null) {
                             contributionImport.setLocation(URI.create(location));
                         }
