@@ -69,22 +69,21 @@ import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
  * @version $Rev$ $Date$
  */
 public class DataBindingModuleActivator implements ModuleActivator {
+    
+    private DataBindingExtensionPoint dataBindings;
+    private TransformerExtensionPoint transformers;
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
-        DefaultDataBindingExtensionPoint dataBindingRegistryImpl = new DefaultDataBindingExtensionPoint();
-        map.put(DataBindingExtensionPoint.class, dataBindingRegistryImpl);
-        DefaultTransformerExtensionPoint transformerRegistryImpl = new DefaultTransformerExtensionPoint();
-        transformerRegistryImpl.setDataBindingRegistry(dataBindingRegistryImpl);
-        map.put(TransformerExtensionPoint.class, transformerRegistryImpl);
+        dataBindings = new DefaultDataBindingExtensionPoint();
+        map.put(DataBindingExtensionPoint.class, dataBindings);
+        transformers = new DefaultTransformerExtensionPoint(dataBindings);
+        map.put(TransformerExtensionPoint.class, transformers);
         return map;
     }
 
     public void start(ExtensionPointRegistry registry) {
-        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-
-        DefaultMediator mediator = new DefaultMediator(dataBindingRegistry, transformerRegistry);
+        DefaultMediator mediator = new DefaultMediator(dataBindings, transformers);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
         input2InputTransformer.setMediator(mediator);
 
@@ -94,64 +93,61 @@ public class DataBindingModuleActivator implements ModuleActivator {
         Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer();
         exception2ExceptionTransformer.setMediator(mediator);
 
-        transformerRegistry.addTransformer(input2InputTransformer);
-        transformerRegistry.addTransformer(output2OutputTransformer);
-        transformerRegistry.addTransformer(exception2ExceptionTransformer);
+        transformers.addTransformer(input2InputTransformer);
+        transformers.addTransformer(output2OutputTransformer);
+        transformers.addTransformer(exception2ExceptionTransformer);
 
-        JavaInterfaceIntrospectorExtensionPoint javaIntrospectorExtensionPoint = registry
-            .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        javaIntrospectorExtensionPoint.addExtension(new DataBindingJavaInterfaceProcessor(mediator
-            .getDataBindings()));
+        JavaInterfaceIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        introspectors.addExtension(new DataBindingJavaInterfaceProcessor(dataBindings));
 
-        WirePostProcessorRegistry wirePostProcessorRegistry = registry
-            .getExtensionPoint(WirePostProcessorRegistry.class);
+        WirePostProcessorRegistry postProcessors = registry.getExtensionPoint(WirePostProcessorRegistry.class);
         ComponentManager componentManager = registry.getExtensionPoint(ComponentManager.class);
-        wirePostProcessorRegistry.register(new DataBindingWirePostProcessor(componentManager, mediator));
+        postProcessors.register(new DataBindingWirePostProcessor(componentManager, mediator));
         
         DOMDataBinding domDataBinding = new DOMDataBinding();
-        domDataBinding.setDataBindingRegistry(dataBindingRegistry);
-        dataBindingRegistry.addDataBinding(domDataBinding);
+        domDataBinding.setDataBindingRegistry(dataBindings);
+        dataBindings.addDataBinding(domDataBinding);
         XMLStringDataBinding xmlStringDataBinding = new XMLStringDataBinding();
-        xmlStringDataBinding.setDataBindingRegistry(dataBindingRegistry);
-        dataBindingRegistry.addDataBinding(xmlStringDataBinding);
+        xmlStringDataBinding.setDataBindingRegistry(dataBindings);
+        dataBindings.addDataBinding(xmlStringDataBinding);
         XMLGroupDataBinding xmlGroupDataBinding = new XMLGroupDataBinding();
-        xmlGroupDataBinding.setDataBindingRegistry(dataBindingRegistry);
-        dataBindingRegistry.addDataBinding(xmlGroupDataBinding);
+        xmlGroupDataBinding.setDataBindingRegistry(dataBindings);
+        dataBindings.addDataBinding(xmlGroupDataBinding);
         JavaBeansDataBinding javaBeansDataBinding = new JavaBeansDataBinding();
-        javaBeansDataBinding.setDataBindingRegistry(dataBindingRegistry);
-        dataBindingRegistry.addDataBinding(javaBeansDataBinding);
+        javaBeansDataBinding.setDataBindingRegistry(dataBindings);
+        dataBindings.addDataBinding(javaBeansDataBinding);
 
         Group2GroupTransformer group2GroupTransformer= new Group2GroupTransformer();
         group2GroupTransformer.setMediator(mediator);
-        transformerRegistry.addTransformer(group2GroupTransformer);
+        transformers.addTransformer(group2GroupTransformer);
         
-        transformerRegistry.addTransformer(new InputSource2Node());
-        transformerRegistry.addTransformer(new InputSource2SAX());
-        transformerRegistry.addTransformer(new InputStream2Node());
-        transformerRegistry.addTransformer(new InputStream2SAX());
+        transformers.addTransformer(new InputSource2Node());
+        transformers.addTransformer(new InputSource2SAX());
+        transformers.addTransformer(new InputStream2Node());
+        transformers.addTransformer(new InputStream2SAX());
 
-        transformerRegistry.addTransformer(new DOMNode2JavaBeanTransformer());
-        transformerRegistry.addTransformer(new Node2OutputStream());
-        transformerRegistry.addTransformer(new Node2String());
-        transformerRegistry.addTransformer(new Node2Writer());
-        transformerRegistry.addTransformer(new Node2XMLStreamReader());
+        transformers.addTransformer(new DOMNode2JavaBeanTransformer());
+        transformers.addTransformer(new Node2OutputStream());
+        transformers.addTransformer(new Node2String());
+        transformers.addTransformer(new Node2Writer());
+        transformers.addTransformer(new Node2XMLStreamReader());
 
-        transformerRegistry.addTransformer(new JavaBean2DOMNodeTransformer());
-        transformerRegistry.addTransformer(new Reader2Node());
+        transformers.addTransformer(new JavaBean2DOMNodeTransformer());
+        transformers.addTransformer(new Reader2Node());
 
-        transformerRegistry.addTransformer(new Reader2SAX());
-        transformerRegistry.addTransformer(new SAX2DOMPipe());
+        transformers.addTransformer(new Reader2SAX());
+        transformers.addTransformer(new SAX2DOMPipe());
         
-        transformerRegistry.addTransformer(new Source2ResultTransformer());
-        transformerRegistry.addTransformer(new StreamDataPipe());
-        transformerRegistry.addTransformer(new String2Node());
-        transformerRegistry.addTransformer(new String2SAX());
-        transformerRegistry.addTransformer(new String2XMLStreamReader());
-        transformerRegistry.addTransformer(new Writer2ReaderDataPipe());
+        transformers.addTransformer(new Source2ResultTransformer());
+        transformers.addTransformer(new StreamDataPipe());
+        transformers.addTransformer(new String2Node());
+        transformers.addTransformer(new String2SAX());
+        transformers.addTransformer(new String2XMLStreamReader());
+        transformers.addTransformer(new Writer2ReaderDataPipe());
 
-        transformerRegistry.addTransformer(new XMLStreamReader2Node());
-        transformerRegistry.addTransformer(new XMLStreamReader2SAX());
-        transformerRegistry.addTransformer(new XMLStreamReader2String());
+        transformers.addTransformer(new XMLStreamReader2Node());
+        transformers.addTransformer(new XMLStreamReader2SAX());
+        transformers.addTransformer(new XMLStreamReader2String());
     }
     
     public void stop(ExtensionPointRegistry registry) {

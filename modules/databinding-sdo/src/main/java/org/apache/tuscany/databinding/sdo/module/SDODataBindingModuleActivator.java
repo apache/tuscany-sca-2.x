@@ -52,26 +52,25 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        dataBindingRegistry.addDataBinding(new SDODataBinding());
+        DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
+        dataBindings.addDataBinding(new SDODataBinding());
 
-        StAXArtifactProcessorExtensionPoint processorRegistry = registry
-            .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         HelperContextRegistry contextRegistry = new HelperContextRegistryImpl();
-        processorRegistry.addExtension(new ImportSDOProcessor(contextRegistry));
+        processors.addExtension(new ImportSDOProcessor(contextRegistry));
 
-        TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformerRegistry.addTransformer(new DataObject2String());
-        transformerRegistry.addTransformer(new DataObject2XMLStreamReader());
-        transformerRegistry.addTransformer(new XMLDocument2String());
-        transformerRegistry.addTransformer(new String2DataObject());
-        transformerRegistry.addTransformer(new XMLDocument2XMLStreamReader());
-        transformerRegistry.addTransformer(new XMLStreamReader2DataObject());
-        transformerRegistry.addTransformer(new XMLStreamReader2XMLDocument());
+        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
+        transformers.addTransformer(new DataObject2String());
+        transformers.addTransformer(new DataObject2XMLStreamReader());
+        transformers.addTransformer(new XMLDocument2String());
+        transformers.addTransformer(new String2DataObject());
+        transformers.addTransformer(new XMLDocument2XMLStreamReader());
+        transformers.addTransformer(new XMLStreamReader2DataObject());
+        transformers.addTransformer(new XMLStreamReader2XMLDocument());
         
-        JavaClassIntrospectorExtensionPoint introspectorExtensionPoint = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
+        JavaClassIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        introspectorExtensionPoint.addExtension(new HelperContextProcessor(assemblyFactory, contextRegistry));
+        introspectors.addExtension(new HelperContextProcessor(assemblyFactory, contextRegistry));
 
     }
 

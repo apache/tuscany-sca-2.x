@@ -27,9 +27,13 @@ import org.apache.tuscany.databinding.impl.DirectedGraph;
  * @version $Rev$ $Date$
  */
 public class DefaultTransformerExtensionPoint implements TransformerExtensionPoint {
-    private DataBindingExtensionPoint dataBindingRegistry;
+    private DataBindingExtensionPoint dataBindings;
     
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
+    
+    public DefaultTransformerExtensionPoint(DataBindingExtensionPoint dataBindings) {
+        this.dataBindings = dataBindings;
+    }
 
     public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
         graph.addEdge(sourceType, resultType, transformer, weight);
@@ -70,20 +74,13 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     }
 
     /**
-     * @param dataBindingRegistry the dataBindingRegistry to set
-     */
-    public void setDataBindingRegistry(DataBindingExtensionPoint dataBindingRegistry) {
-        this.dataBindingRegistry = dataBindingRegistry;
-    }
-    
-    /**
      * Normalize the id to a name of a data binding as databindings may have aliases
      * @param id
      * @return
      */
     private String normalize(String id) {
-        if (dataBindingRegistry != null) {
-            DataBinding dataBinding = dataBindingRegistry.getDataBinding(id);
+        if (dataBindings != null) {
+            DataBinding dataBinding = dataBindings.getDataBinding(id);
             return dataBinding == null ? id : dataBinding.getName();
         } else {
             return id;
