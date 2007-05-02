@@ -23,12 +23,15 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
@@ -120,7 +123,7 @@ public class ContributionServiceTestCase extends TestCase {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         URI contributionId = URI.create(CONTRIBUTION_001_ID);
         contributionService.contribute(contributionId, contributionLocation, false);
-        assertNotNull(contributionId);
+        assertNotNull(contributionService.getContribution(contributionId));
     }
 
     public void testStoreContributionPackageInRepository() throws Exception {
@@ -186,6 +189,29 @@ public class ContributionServiceTestCase extends TestCase {
         
         contributionService.contribute(contributionId, rootContributionFolder.toURL(), false);
         */
+    }
+    
+    
+    public void testAddDeploymentComposites() throws Exception {
+        URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
+        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        contributionService.contribute(contributionId, contributionLocation, false);
+        assertNotNull(contributionService.getContribution(contributionId));
+
+        URI artifactId = contributionId.resolve("contributionComposite.composite");
+        Composite composite = (new DefaultAssemblyFactory()).createComposite();
+        composite.setName(new QName(null, "contributionComposite"));
+        
+        contributionService.addDeploymentComposite(contributionId, composite);
+        
+        
+        List deployables = contributionService.getContribution(contributionId).getDeployables();
+        Composite composite1 = (Composite) deployables.get( deployables.size() -1 );
+        assertEquals("contributionComposite", composite1.getName().toString());
+        
+        
+        Composite composite2 = (Composite) contributionService.getContribution(contributionId).getArtifact(artifactId).getModelObject();
+        assertEquals("contributionComposite", composite2.getName().toString());
     }
 
 }
