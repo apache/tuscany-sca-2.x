@@ -58,7 +58,7 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
         interfaceContract.setInterface(introspector.introspect(Target.class));
         for (Operation operation : interfaceContract.getInterface().getOperations()) {
             InvocationChain chain = new InvocationChainImpl(operation);
-            wire.addInvocationChain(chain);
+            wire.getInvocationChains().add(chain);
         }
         wire.setSourceContract(interfaceContract);
         wire.setSourceUri(URI.create("foo#bar"));

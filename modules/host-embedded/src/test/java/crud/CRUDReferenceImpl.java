@@ -16,34 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.wire.Wire;
+package crud;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeWire;
 
 /**
- * Returns a target instance directly from a wire
- *
  * @version $Rev$ $Date$
- * @Deprecated
  */
-public class OptimizedWireObjectFactory<B> implements ObjectFactory<B> {
-    private final Class<B> type;
-    private Wire wire;
-
-    public OptimizedWireObjectFactory(Class<B> type, Wire factory) {
-        this.wire = factory;
-        this.type = type;
+public class CRUDReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
+    private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
+    public void addRuntimeWire(RuntimeWire wire) {
+        wires.add(wire);
     }
 
-    public B getInstance() throws ObjectCreationException {
-        try {
-            return type.cast(wire.getTargetInstance());
-        } catch (TargetResolutionException e) {
-            throw new ObjectCreationException(e);
-        }
+    public List<RuntimeWire> getRuntimeWires() {
+        return wires;
     }
 
 }

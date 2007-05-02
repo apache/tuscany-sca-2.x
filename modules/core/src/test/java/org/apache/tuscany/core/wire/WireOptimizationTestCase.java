@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Type;
-
 import junit.framework.TestCase;
 
 import org.apache.tuscany.interfacedef.Operation;
@@ -48,7 +46,7 @@ public class WireOptimizationTestCase extends TestCase {
         Wire wire = new WireImpl();
         InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
-        wire.addInvocationChain(chain);
+        wire.getInvocationChains().add(chain);
         assertTrue(WireUtils.isOptimizable(wire));
     }
 
@@ -58,7 +56,7 @@ public class WireOptimizationTestCase extends TestCase {
         Wire wire = new WireImpl();
         InvocationChain chain = new InvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
-        wire.addInvocationChain(chain);
+        wire.getInvocationChains().add(chain);
         assertFalse(WireUtils.isOptimizable(wire));
     }
 

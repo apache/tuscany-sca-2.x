@@ -16,29 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package helloworld;
+package org.apache.tuscany.invocation;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.apache.tuscany.spi.CoreRuntimeException;
 
 /**
- * This class implements the HelloWorld service.
+ * Denotes an error creating a proxy
+ *
+ * @version $$Rev$$ $$Date$$
  */
-@Service(HelloWorldRmiService.class)
-public class HelloWorldRmiImpl implements HelloWorldRmiService {
-    private HelloWorldService extService;
+public class ProxyCreationException extends CoreRuntimeException {
+    private static final long serialVersionUID = 8002454344828513781L;
 
-    public HelloWorldService getExtService() {
-        return extService;
+    public ProxyCreationException() {
     }
 
-    @Reference
-    public void setExtService(HelloWorldService extService) {
-        this.extService = extService;
+    public ProxyCreationException(String message) {
+        super(message);
     }
 
-    public String sayRmiHello(String name) {
-        return extService.sayHello(name) + " thro the RMI Reference";
+    public ProxyCreationException(String message, String identifier) {
+        super(message, identifier);
     }
 
+    public ProxyCreationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ProxyCreationException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+    }
+
+    public ProxyCreationException(Throwable cause) {
+        super(cause);
+    }
 }

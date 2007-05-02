@@ -18,9 +18,7 @@
  */
 package org.apache.tuscany.core.component;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.TuscanyRuntimeException;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
@@ -80,13 +78,14 @@ public class ComponentContextImpl implements ComponentContext {
     }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
+        return getServiceReference(businessInterface, "$self$.");
         // FIXME: How to get the ObjectFactory?
-        ObjectFactory<B> factory = ((AtomicComponent) component).createObjectFactory();
-        return new ServiceReferenceImpl<B>(businessInterface, factory);
+        // ObjectFactory<B> factory = ((AtomicComponent) component).createObjectFactory();
+        // return new ServiceReferenceImpl<B>(businessInterface, factory);
     }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, String serviceName) {
-        return null;
+        return getServiceReference(businessInterface, "$self$."+serviceName);
     }
 
     public RequestContext getRequestContext() {

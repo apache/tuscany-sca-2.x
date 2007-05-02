@@ -29,7 +29,7 @@ public class ComponentContextTestCase extends TestCase {
     public void testCreateSelfReference() {
     	
     	ComponentContext context = SCARuntime.getComponentContext("MyService");        
-        ServiceReference<MyService> service = context.createSelfReference(MyService.class);
+        ServiceReference<MyService> service = context.createSelfReference(MyService.class, "MyService");
         MyService myService = service.getService();
         
         assertNotNull(myService);

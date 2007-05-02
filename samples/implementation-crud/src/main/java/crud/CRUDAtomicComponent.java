@@ -21,11 +21,18 @@ package crud;
 import java.net.URI;
 import java.util.List;
 
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
+import org.apache.tuscany.core.invocation.JDKProxyService;
+import org.apache.tuscany.core.invocation.WireObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.SingletonObjectFactory;
 import org.apache.tuscany.spi.component.InstanceWrapper;
@@ -39,18 +46,22 @@ import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
 /**
- * The runtime instantiation of CRUD component implementations.
- * FIXME We need to remove the requirement for such a class, implementing
- * the implementation model should be sufficient.
+ * The runtime instantiation of CRUD component implementations. FIXME We need to
+ * remove the requirement for such a class, implementing the implementation
+ * model should be sufficient.
  * 
  * @version $Rev$ $Date$
  */
 public class CRUDAtomicComponent extends AtomicComponentExtension implements ComponentContextProvider {
     private ComponentContext componentContext;
     private ResourceManager resourceManager;
+    private Component component;
+    private CRUDImplementation implementation;
 
-    public CRUDAtomicComponent(URI uri, URI groupId, CRUDImplementation implementation) {
+    public CRUDAtomicComponent(URI uri, URI groupId, Component component, CRUDImplementation implementation) {
         super(uri, null, null, groupId, 50);
+        this.component = component;
+        this.implementation = implementation;
         componentContext = new ComponentContextImpl(this);
         resourceManager = new ResourceManager(implementation.getDirectory());
     }
@@ -99,11 +110,32 @@ public class CRUDAtomicComponent extends AtomicComponentExtension implements Com
     }
 
     public <B> B getService(Class<B> businessInterface, String referenceName) {
+        List<ComponentReference> refs = component.getReferences();
+        for (ComponentReference ref : refs) {
+            if (ref.getName().equals(referenceName)) {
+                RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
+                RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
+                return new JDKProxyService(null, new DefaultInterfaceContractMapper()).createProxy(businessInterface,
+                                                                                                   wire);
+            }
+        }
         return null;
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
-        return new ServiceReferenceImpl<B>(businessInterface, new SingletonObjectFactory<B>((B)createInstance()));
+        List<ComponentReference> refs = component.getReferences();
+        for (ComponentReference ref : refs) {
+            if (ref.getName().equals(referenceName) || referenceName.equals("$self$_")
+                && ref.getName().startsWith(referenceName)) {
+                RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
+                RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
+                JDKProxyService proxyService = new JDKProxyService(null, new DefaultInterfaceContractMapper());
+                WireObjectFactory<B> factory = new WireObjectFactory<B>(businessInterface, wire, proxyService);
+                return new ServiceReferenceImpl<B>(businessInterface, factory);
+            }
+        }
+        return null;
+
     }
 
 }

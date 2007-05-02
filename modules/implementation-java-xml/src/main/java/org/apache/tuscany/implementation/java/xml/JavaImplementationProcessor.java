@@ -42,8 +42,8 @@ import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.policy.PolicyFactory;
 
-public class JavaImplementationProcessor extends BaseArtifactProcessor implements StAXArtifactProcessorExtension<JavaImplementation>,
-    JavaImplementationConstants {
+public class JavaImplementationProcessor extends BaseArtifactProcessor implements
+    StAXArtifactProcessorExtension<JavaImplementation>, JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
     private JavaClassIntrospector introspector;
@@ -65,7 +65,7 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
             JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
             javaImplementation.setUnresolved(true);
             javaImplementation.setName(reader.getAttributeValue(null, CLASS));
-            
+
             // Read policies
             readPolicies(javaImplementation, reader);
 
@@ -96,7 +96,8 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
         }
     }
 
-    public void resolve(JavaImplementation javaImplementation, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(JavaImplementation javaImplementation, ArtifactResolver resolver)
+        throws ContributionResolveException {
 
         ClassReference classReference = new ClassReference(javaImplementation.getName());
         classReference = resolver.resolve(ClassReference.class, classReference);
@@ -106,24 +107,20 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
         }
         javaImplementation.setJavaClass(javaClass);
         javaImplementation.setUnresolved(false);
-        
-        //FIXME JavaImplementationDefinition should not be mandatory 
-        if (javaImplementation instanceof JavaImplementation) {
-            try {
-                introspector.introspect(javaImplementation.getJavaClass(), javaImplementation);
-            } catch (IntrospectionException e) {
-                throw new ContributionResolveException(e);
-            }
-            
-            //FIXME the introspector should always create at least one service
-            if (javaImplementation.getServices().isEmpty()) {
-                javaImplementation.getServices().add(assemblyFactory.createService());
-            }
+
+        try {
+            introspector.introspect(javaImplementation.getJavaClass(), javaImplementation);
+        } catch (IntrospectionException e) {
+            throw new ContributionResolveException(e);
+        }
+
+        // FIXME the introspector should always create at least one service
+        if (javaImplementation.getServices().isEmpty()) {
+            javaImplementation.getServices().add(assemblyFactory.createService());
         }
     }
 
     public void wire(JavaImplementation model) throws ContributionWireException {
-        // TODO Auto-generated method stub
     }
 
     public QName getArtifactType() {

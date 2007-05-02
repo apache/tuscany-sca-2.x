@@ -120,7 +120,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     public List<Wire> getWires(String name) {
         return wires.get(name);
     }
-    
+
     public void configureProperties(List<ComponentProperty> definedProperties) {
         for (ComponentProperty p : definedProperties) {
             getProperties().put(p.getName(), p);
@@ -129,20 +129,17 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public void configureProperty(ComponentProperty configuredProperty) {
-        JavaElementImpl element = 
-            configuration.getDefinition().getPropertyMembers().get(configuredProperty.getName());
+        JavaElementImpl element = configuration.getDefinition().getPropertyMembers().get(configuredProperty.getName());
 
-        if (element != null && !(element.getAnchor() instanceof Constructor) && 
-            configuredProperty.getValue() != null) {
+        if (element != null && !(element.getAnchor() instanceof Constructor) && configuredProperty.getValue() != null) {
             configuration.getInjectionSites().add(element);
-        
+
             Class propertyJavaType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
-            ObjectFactory<?> propertyObjectFactory =
-                createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), propertyJavaType);
+            ObjectFactory<?> propertyObjectFactory = createPropertyValueFactory(configuredProperty, configuredProperty
+                .getValue(), propertyJavaType);
             configuration.setObjectFactory(element, propertyObjectFactory);
         }
     }
-
 
     public void attachWire(Wire wire) {
         assert wire.getSourceUri().getFragment() != null;
@@ -215,7 +212,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
 
     public void start() throws CoreRuntimeException {
         if (!configuration.getDefinition().getCallbackMembers().isEmpty()) {
-            for (Map.Entry<String, JavaElementImpl> entry : configuration.getDefinition().getCallbackMembers().entrySet()) {
+            for (Map.Entry<String, JavaElementImpl> entry : configuration.getDefinition().getCallbackMembers()
+                .entrySet()) {
                 List<Wire> wires = callBackwires.get(entry.getKey());
                 if (wires == null) {
                     // this can happen when there are no client wires to a
@@ -270,8 +268,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
-        org.apache.tuscany.implementation.java.impl.JavaResourceImpl resource = configuration.getDefinition().getResources()
-            .get(name);
+        org.apache.tuscany.implementation.java.impl.JavaResourceImpl resource = configuration.getDefinition()
+            .getResources().get(name);
 
         if (resource != null && !(resource.getElement().getAnchor() instanceof Constructor)) {
             configuration.getInjectionSites().add(resource.getElement());
@@ -380,7 +378,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public <B> B getService(Class<B> type, String name) {
-        List<Wire> referenceWires = wires.get(name);
+        List<Wire> referenceWires = getWiresForReference(name);
         if (referenceWires == null || referenceWires.size() < 1) {
             return null;
         } else {
@@ -392,7 +390,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> type, String name) {
-        List<Wire> referenceWires = wires.get(name);
+        List<Wire> referenceWires = getWiresForReference(name);
         if (referenceWires == null || referenceWires.size() < 1) {
             return null;
         } else {
@@ -401,6 +399,24 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
             ObjectFactory<B> factory = createWireFactory(type, wire);
             return new ServiceReferenceImpl<B>(type, factory);
         }
+    }
+
+    private List<Wire> getWiresForReference(String name) {
+        List<Wire> referenceWires = null;
+        if (name.equals("$self$.")) {
+            for (String key : wires.keySet()) {
+                if (key.startsWith(name)) {
+                    if (referenceWires != null) {
+                        throw new IllegalArgumentException("Component" + getUri()
+                                                           + " implements more than one services");
+                    }
+                    referenceWires = wires.get(key);
+                }
+            }
+        } else {
+            referenceWires = wires.get(name);
+        }
+        return referenceWires;
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) {
@@ -416,7 +432,10 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension imple
     }
 
     protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire);
-    protected abstract ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, Class javaType);
+
+    protected abstract ObjectFactory<?> createPropertyValueFactory(ComponentProperty property,
+                                                                   Object propertyValue,
+                                                                   Class javaType);
 
     /**
      * @see org.apache.tuscany.spi.component.AtomicComponent#createInstance()

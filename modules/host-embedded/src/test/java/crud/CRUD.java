@@ -16,30 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.core;
-
+package crud;
 
 /**
- * A component implementation can optionally implement this interface to control
- * how a component is started ot stopped.
+ * The service interface of the single CRUD service provided by CRUD components.
  * 
  * @version $Rev$ $Date$
  */
-public interface ImplementationActivator {
-    /**
-     * This method will be invoked when a component implemented by this
-     * implementation is activated.
-     * 
-     * @param component The component to be started
-     */
-    void start(RuntimeComponent component);
+public interface CRUD {
 
     /**
-     * This method will be invoked when a component implemented by this
-     * implementation is deactivated.
-     * 
-     * @param component The component to be stopped
+     * Create a new resource.
+     * @param resource
+     * @return
      */
-    void stop(RuntimeComponent component);
+    String create(Object resource);
+
+    /**
+     * Retrieve a resource.
+     * @param id
+     * @return
+     */
+    Object retrieve(String id);
+
+    /**
+     * Update a resource.
+     * @param id
+     * @param resource
+     * @return
+     */
+    Object update(String id, Object resource);
+
+    /**
+     * Delete a resource.
+     * @param id
+     */
+    void delete(String id);
+
 }

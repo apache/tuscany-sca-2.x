@@ -16,25 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.context;
 
-import java.net.URI;
+package crud;
 
-import org.apache.tuscany.spi.component.ScopeContainer;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeWire;
 
 /**
- * @version $Revision$ $Date$
- * @param <T> the implementation class for the defined component
+ * @version $Rev$ $Date$
  */
-public class JavaComponent<T> extends PojoComponent<T> {
-    public JavaComponent(URI componentId,
-                         InstanceFactoryProvider<T> instanceFactoryProvider,
-                         ScopeContainer<?> scopeContainer,
-                         URI groupId,
-                         int initLevel,
-                         long maxIdleTime,
-                         long maxAge) {
-        super(componentId, instanceFactoryProvider, scopeContainer, groupId, initLevel, maxIdleTime, maxAge);
+public class CRUDReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
+    private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
+    public void addRuntimeWire(RuntimeWire wire) {
+        wires.add(wire);
+    }
+
+    public List<RuntimeWire> getRuntimeWires() {
+        return wires;
     }
 
 }

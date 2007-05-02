@@ -27,17 +27,17 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
- * A builder that builds a Java-based atomic context from an implementation model.
- * FIXME We need to remove the requirement for builders.
+ * A builder that builds a Java-based atomic context from an implementation
+ * model. FIXME We need to remove the requirement for builders.
  * 
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
+ *          2007) $$
  */
 public class CRUDComponentBuilder implements ComponentBuilder {
 
     public AtomicComponent build(Component definition, DeploymentContext context) throws BuilderConfigException {
         URI uri = URI.create(context.getComponentId() + definition.getName());
-        CRUDAtomicComponent component = new CRUDAtomicComponent(
-                                                                uri, context.getGroupId(),
+        CRUDAtomicComponent component = new CRUDAtomicComponent(uri, context.getGroupId(), definition,
                                                                 (CRUDImplementation)definition.getImplementation());
         return component;
     }

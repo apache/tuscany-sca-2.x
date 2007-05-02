@@ -33,6 +33,7 @@ import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 /**
  * Implements a STAX artifact processor for CRUD implementations.
@@ -49,10 +50,12 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessorExtensi
     
     private AssemblyFactory assemblyFactory;
     private JavaFactory javaFactory;
+    private JavaInterfaceIntrospector introspector;
     
-    public CRUDImplementationProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory) {
+    public CRUDImplementationProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory, JavaInterfaceIntrospector introspector) {
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
+        this.introspector = introspector;
     } 
 
     public QName getArtifactType() {
@@ -75,7 +78,7 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessorExtensi
             String directory = reader.getAttributeValue(null, "directory");
 
             // Create an initialize the CRUD implementation model
-            CRUDImplementation implementation = new CRUDImplementation(assemblyFactory, javaFactory);
+            CRUDImplementation implementation = new CRUDImplementation(assemblyFactory, javaFactory, introspector);
             implementation.setDirectory(directory);
             
             // Skip to end element

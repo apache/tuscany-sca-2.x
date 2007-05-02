@@ -84,8 +84,8 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
         interfaceContract.setInterface(javaInterface);
         crudService.setInterfaceContract(interfaceContract);
         this.assemblyFactory = assemblyFactory;
-        // createSelfReferences();
     }
+
 
     /**
      * Returns the directory used by CRUD implementations to persist resources.

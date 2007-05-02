@@ -105,7 +105,7 @@ public class SimpleCompositeContextImpl implements CompositeContext {
                                 if (context == null) {
                                     throw new ServiceRuntimeException("Service not found: " + serviceName);
                                 }
-                                ServiceReference<T> serviceReference = context.createSelfReference(serviceType);
+                                ServiceReference<T> serviceReference = context.createSelfReference(serviceType, componentService.getName());
                                 return serviceReference.getService();
                             }
                         }
@@ -137,7 +137,8 @@ public class SimpleCompositeContextImpl implements CompositeContext {
                     if (context == null) {
                         throw new ServiceRuntimeException("Service not found: " + serviceName);
                     }
-                    ServiceReference<T> serviceReference = context.createSelfReference(serviceType);
+                    // FIXME: The service name has to be provided if there are more than one services
+                    ServiceReference<T> serviceReference = context.createSelfReference(serviceType, serviceType.getSimpleName());
                     return serviceReference.getService();
                 }
             }
@@ -150,7 +151,7 @@ public class SimpleCompositeContextImpl implements CompositeContext {
             if (context == null) {
                 throw new ServiceRuntimeException("Component not found: " + componentName);
             }
-            ServiceReference<T> serviceReference = context.createSelfReference(serviceType);
+            ServiceReference<T> serviceReference = context.createSelfReference(serviceType, serviceName);
             return serviceReference.getService();
         }
     }

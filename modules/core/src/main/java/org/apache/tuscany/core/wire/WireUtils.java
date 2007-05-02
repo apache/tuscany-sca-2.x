@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
