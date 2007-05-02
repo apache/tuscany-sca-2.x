@@ -46,13 +46,13 @@ public class JAXBDataBindingModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
         DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        dataBindingRegistry.register(new JAXBDataBinding());
+        dataBindingRegistry.addDataBinding(new JAXBDataBinding());
 
         TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformerRegistry.registerTransformer(new JAXB2Node());
-        transformerRegistry.registerTransformer(new Node2JAXB());
-        transformerRegistry.registerTransformer(new Reader2JAXB());
-        transformerRegistry.registerTransformer(new XMLStreamReader2JAXB());
+        transformerRegistry.addTransformer(new JAXB2Node());
+        transformerRegistry.addTransformer(new Node2JAXB());
+        transformerRegistry.addTransformer(new Reader2JAXB());
+        transformerRegistry.addTransformer(new XMLStreamReader2JAXB());
 
         JavaInterfaceIntrospectorExtensionPoint introspectorExtensionPoint = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         introspectorExtensionPoint.addExtension(new JAXWSJavaInterfaceProcessor());

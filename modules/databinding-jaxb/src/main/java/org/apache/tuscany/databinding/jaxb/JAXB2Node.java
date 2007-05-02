@@ -25,12 +25,12 @@ import javax.xml.bind.Marshaller;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.DOMHelper;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.DOMHelper;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class JAXB2Node extends TransformerExtension<Object, Node> implements PullTransformer<Object, Node> {
+public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTransformer<Object, Node> {
 
     public Node transform(Object source, TransformationContext tContext) {
         if (source == null) {

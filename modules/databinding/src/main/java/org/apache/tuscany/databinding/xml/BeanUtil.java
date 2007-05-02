@@ -33,14 +33,14 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
+import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.interfacedef.util.TypeInfo;
 
 public final class BeanUtil {
     private static final Object[] NULL = (Object[])null;
     private static int nsCount = 1;
 
-    private static final SimpleTypeMapperExtension MAPPER = new SimpleTypeMapperExtension();
+    private static final SimpleTypeMapperImpl MAPPER = new SimpleTypeMapperImpl();
 
     private BeanUtil() {
     }

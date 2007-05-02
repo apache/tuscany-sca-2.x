@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.extension;
+package org.apache.tuscany.databinding.impl;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -34,7 +34,7 @@ import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.interfacedef.util.TypeInfo;
 
-public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements SimpleTypeMapper {
+public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements SimpleTypeMapper {
 
     public static final Map<Class, String> JAVA2XML = new HashMap<Class, String>();
 
@@ -215,7 +215,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
 
     private DatatypeFactory factory;
 
-    public SimpleTypeMapperExtension() {
+    public SimpleTypeMapperImpl() {
         super();
         try {
             this.factory = DatatypeFactory.newInstance();

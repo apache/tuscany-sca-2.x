@@ -23,11 +23,11 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.apache.tuscany.databinding.xml.BeanUtil;
 import org.apache.tuscany.databinding.xml.XMLDocumentStreamReader;
 
-public class JavaBean2XMLStreamReader extends TransformerExtension<Object, XMLStreamReader> implements
+public class JavaBean2XMLStreamReader extends BaseTransformer<Object, XMLStreamReader> implements
     PullTransformer<Object, XMLStreamReader> {
 
     public XMLStreamReader transform(Object source, TransformationContext context) {

@@ -24,10 +24,10 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 
-public class Node2JAXB extends TransformerExtension<Node, Object> implements PullTransformer<Node, Object> {
+public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTransformer<Node, Object> {
 
     public Node2JAXB() {
         super();

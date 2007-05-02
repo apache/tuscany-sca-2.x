@@ -21,13 +21,13 @@ package org.apache.tuscany.databinding.sdo;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLHelper;
 
-public class String2DataObject extends TransformerExtension<String, DataObject> implements
+public class String2DataObject extends BaseTransformer<String, DataObject> implements
     PullTransformer<String, DataObject> {
 
     public DataObject transform(String source, TransformationContext context) {

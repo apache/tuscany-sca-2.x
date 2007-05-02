@@ -48,7 +48,7 @@ public class TransformerRegistryImplTestCase extends TestCase {
 
     public void testRegisterTransformer1() {
         Transformer transformer = createMock(Transformer.class);
-        registry.registerTransformer("a", "b", 10, transformer);
+        registry.addTransformer("a", "b", 10, transformer);
         Transformer t = registry.getTransformer("a", "b");
         Assert.assertSame(t, transformer);
     }
@@ -59,15 +59,15 @@ public class TransformerRegistryImplTestCase extends TestCase {
         expect(transformer.getTargetDataBinding()).andReturn("b");
         expect(transformer.getWeight()).andReturn(10);
         replay(transformer);
-        registry.registerTransformer(transformer);
+        registry.addTransformer(transformer);
         Transformer t = registry.getTransformer("a", "b");
         Assert.assertSame(t, transformer);
     }
 
     public void testUnregisterTransformer() {
         Transformer transformer = createMock(Transformer.class);
-        registry.registerTransformer("a", "b", 10, transformer);
-        boolean result = registry.unregisterTransformer("a", "b");
+        registry.addTransformer("a", "b", 10, transformer);
+        boolean result = registry.removeTransformer("a", "b");
         Assert.assertTrue(result);
         Transformer t = registry.getTransformer("a", "b");
         Assert.assertNull(t);
@@ -91,9 +91,9 @@ public class TransformerRegistryImplTestCase extends TestCase {
         expect(t3.getWeight()).andReturn(120);
         replay(t3);
 
-        registry.registerTransformer(t1);
-        registry.registerTransformer(t2);
-        registry.registerTransformer(t3);
+        registry.addTransformer(t1);
+        registry.addTransformer(t2);
+        registry.addTransformer(t3);
 
         List<Transformer> l1 = registry.getTransformerChain("a", "b");
         Assert.assertTrue(l1.size() == 1 && l1.get(0) == t1);

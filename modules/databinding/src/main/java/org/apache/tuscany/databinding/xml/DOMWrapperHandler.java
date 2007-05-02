@@ -28,7 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.databinding.extension.DOMHelper;
+import org.apache.tuscany.databinding.impl.DOMHelper;
 import org.apache.tuscany.interfacedef.util.ElementInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

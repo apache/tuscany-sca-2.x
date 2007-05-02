@@ -28,13 +28,13 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 
 /**
  * Push DOM Node to OutputStream
  */
-public class Node2OutputStream extends TransformerExtension<Node, OutputStream> implements
+public class Node2OutputStream extends BaseTransformer<Node, OutputStream> implements
     PushTransformer<Node, OutputStream> {
     private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
 

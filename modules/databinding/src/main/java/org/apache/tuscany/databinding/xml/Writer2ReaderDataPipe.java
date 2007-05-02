@@ -24,9 +24,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import org.apache.tuscany.databinding.DataPipe;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
-public class Writer2ReaderDataPipe extends TransformerExtension<Writer, Reader> implements DataPipe<Writer, Reader> {
+public class Writer2ReaderDataPipe extends BaseTransformer<Writer, Reader> implements DataPipe<Writer, Reader> {
 
     private StringWriter writer = new StringWriter();
 

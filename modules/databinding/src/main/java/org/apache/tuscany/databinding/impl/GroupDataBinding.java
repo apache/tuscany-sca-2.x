@@ -23,7 +23,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
 import org.apache.tuscany.interfacedef.DataType;
 
 /**
@@ -31,7 +30,7 @@ import org.apache.tuscany.interfacedef.DataType;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class GroupDataBinding extends DataBindingExtension {
+public abstract class GroupDataBinding extends BaseDataBinding {
     public static final String NAME = "databinding:group";
 
     /**

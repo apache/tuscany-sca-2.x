@@ -31,18 +31,18 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
 
-    public void registerTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
+    public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
         graph.addEdge(sourceType, resultType, transformer, weight);
     }
 
-    public void registerTransformer(Transformer transformer) {
+    public void addTransformer(Transformer transformer) {
         graph.addEdge(transformer.getSourceDataBinding(),
             transformer.getTargetDataBinding(),
             transformer,
             transformer.getWeight());
     }
 
-    public boolean unregisterTransformer(String sourceType, String resultType) {
+    public boolean removeTransformer(String sourceType, String resultType) {
         return graph.removeEdge(sourceType, resultType);
     }
 

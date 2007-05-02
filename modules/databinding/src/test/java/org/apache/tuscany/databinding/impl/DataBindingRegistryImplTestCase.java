@@ -61,7 +61,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
             .andReturn(false).anyTimes();
         replay(db1);
 
-        registry.register(db1);
+        registry.addDataBinding(db1);
 
         DataBinding db2 = createMock(DataBinding.class);
         expect(db2.getAliases()).andReturn(new String[] {"db2"}).anyTimes();
@@ -72,7 +72,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
             .andReturn(false).anyTimes();
         replay(db2);
 
-        registry.register(db2);
+        registry.addDataBinding(db2);
 
         // Lookup by name
         String name = db1.getName();
@@ -88,7 +88,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         assertEquals(dataType1.getLogical(), ContentHandler.class);
         assertTrue(dt.getDataBinding().equalsIgnoreCase("java.lang.Object"));
 
-        registry.unregister(name);
+        registry.removeDataBinding(name);
         DataBinding db4 = registry.getDataBinding(name);
         assertNull(db4);
 

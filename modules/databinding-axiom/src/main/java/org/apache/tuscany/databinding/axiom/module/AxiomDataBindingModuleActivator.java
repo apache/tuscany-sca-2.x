@@ -46,15 +46,15 @@ public class AxiomDataBindingModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
         DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        dataBindingRegistry.register(new AxiomDataBinding());
+        dataBindingRegistry.addDataBinding(new AxiomDataBinding());
 
         TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformerRegistry.registerTransformer(new Object2OMElement());
-        transformerRegistry.registerTransformer(new OMElement2Object());
-        transformerRegistry.registerTransformer(new OMElement2String());
-        transformerRegistry.registerTransformer(new OMElement2XMLStreamReader());
-        transformerRegistry.registerTransformer(new String2OMElement());
-        transformerRegistry.registerTransformer(new XMLStreamReader2OMElement());
+        transformerRegistry.addTransformer(new Object2OMElement());
+        transformerRegistry.addTransformer(new OMElement2Object());
+        transformerRegistry.addTransformer(new OMElement2String());
+        transformerRegistry.addTransformer(new OMElement2XMLStreamReader());
+        transformerRegistry.addTransformer(new String2OMElement());
+        transformerRegistry.addTransformer(new XMLStreamReader2OMElement());
     }
 
     public void stop(ExtensionPointRegistry registry) {

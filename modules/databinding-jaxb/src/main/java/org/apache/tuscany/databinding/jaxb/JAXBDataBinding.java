@@ -28,8 +28,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.databinding.ExceptionHandler;
-import org.apache.tuscany.databinding.extension.DOMHelper;
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.impl.DOMHelper;
+import org.apache.tuscany.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.util.XMLType;
 import org.w3c.dom.Document;
@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
 /**
  * JAXB DataBinding
  */
-public class JAXBDataBinding extends DataBindingExtension {
+public class JAXBDataBinding extends BaseDataBinding {
     public static final String NAME = JAXBElement.class.getName();
     public static final String[] ALIASES = new String[] {"jaxb"};
 

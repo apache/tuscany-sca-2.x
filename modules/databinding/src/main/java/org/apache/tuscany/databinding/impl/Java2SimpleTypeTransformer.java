@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.extension;
+package org.apache.tuscany.databinding.impl;
 
 import javax.xml.namespace.QName;
 
@@ -28,17 +28,17 @@ import org.apache.tuscany.interfacedef.util.XMLType;
 /**
  * Transformer to convert data from a simple java object to a databinding's representation
  */
-public abstract class Java2SimpleTypeTransformer<T> extends TransformerExtension<Object, T> implements
+public abstract class Java2SimpleTypeTransformer<T> extends BaseTransformer<Object, T> implements
         PullTransformer<Object, T> {
 
     protected SimpleTypeMapper mapper;
 
     public Java2SimpleTypeTransformer() {
-        this.mapper = new SimpleTypeMapperExtension();
+        this.mapper = new SimpleTypeMapperImpl();
     }
     
     public Java2SimpleTypeTransformer(SimpleTypeMapper mapper) {
-        this.mapper = (mapper != null) ? mapper : new SimpleTypeMapperExtension();
+        this.mapper = (mapper != null) ? mapper : new SimpleTypeMapperImpl();
     }
 
     public T transform(Object source, TransformationContext context) {

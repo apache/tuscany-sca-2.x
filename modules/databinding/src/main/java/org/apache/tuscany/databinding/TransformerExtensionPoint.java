@@ -21,9 +21,10 @@ package org.apache.tuscany.databinding;
 import java.util.List;
 
 /**
- * Registry for data transformers
+ * An extension point for data transformer extensions.
  */
 public interface TransformerExtensionPoint {
+
     /**
      * Register a transformer
      * 
@@ -32,7 +33,7 @@ public interface TransformerExtensionPoint {
      * @param weight
      * @param transformer
      */
-    void registerTransformer(String sourceDataBinding,
+    void addTransformer(String sourceDataBinding,
                              String targetDataBinding,
                              int weight,
                              Transformer transformer);
@@ -42,7 +43,7 @@ public interface TransformerExtensionPoint {
      * 
      * @param transformer
      */
-    void registerTransformer(Transformer transformer);
+    void addTransformer(Transformer transformer);
 
     /**
      * Unregister a transformer
@@ -51,7 +52,7 @@ public interface TransformerExtensionPoint {
      * @param targetDataBinding
      * @return
      */
-    boolean unregisterTransformer(String sourceDataBinding, String targetDataBinding);
+    boolean removeTransformer(String sourceDataBinding, String targetDataBinding);
 
     /**
      * Get the direct Transformer which can transform data from source type to

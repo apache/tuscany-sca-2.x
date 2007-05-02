@@ -29,12 +29,12 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.impl.BaseDataBinding;
 
 /**
  * DataBinding for JavaBeans
  */
-public class JavaBeansDataBinding extends DataBindingExtension {
+public class JavaBeansDataBinding extends BaseDataBinding {
     /**
      * Defining a weight to a very high number so that the transformer won't be picked
      * up by other paths unless it's the only available path

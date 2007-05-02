@@ -23,15 +23,16 @@ import java.lang.annotation.Annotation;
 import org.apache.tuscany.interfacedef.DataType;
 
 /**
- * The registry for data bindings
+ * An extension point for data binding extensions.
  */
 public interface DataBindingExtensionPoint {
+    
     /**
      * Register a data binding
      * 
      * @param dataBinding
      */
-    void register(DataBinding dataBinding);
+    void addDataBinding(DataBinding dataBinding);
 
     /**
      * Look up a data binding by id
@@ -47,7 +48,7 @@ public interface DataBindingExtensionPoint {
      * @param id
      * @return The unregistered databinding
      */
-    DataBinding unregister(String id);
+    DataBinding removeDataBinding(String id);
 
     /**
      * Introspect the java class to figure out what DataType supports it

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.extension;
+package org.apache.tuscany.databinding.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -35,7 +35,7 @@ import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class DataBindingExtension implements DataBinding {
+public abstract class BaseDataBinding implements DataBinding {
 
     protected DataBindingExtensionPoint registry;
 
@@ -51,7 +51,7 @@ public abstract class DataBindingExtension implements DataBinding {
      * @param baseType The base java class or interface representing the
      *            databinding, for example, org.w3c.dom.Node
      */
-    protected DataBindingExtension(Class<?> baseType) {
+    protected BaseDataBinding(Class<?> baseType) {
         this(baseType.getName(), null, baseType);
     }
 
@@ -62,7 +62,7 @@ public abstract class DataBindingExtension implements DataBinding {
      * @param baseType The base java class or interface representing the
      *            databinding, for example, org.w3c.dom.Node
      */
-    protected DataBindingExtension(String name, Class<?> baseType) {
+    protected BaseDataBinding(String name, Class<?> baseType) {
         this(name, null, baseType);
     }
     
@@ -74,7 +74,7 @@ public abstract class DataBindingExtension implements DataBinding {
      * @param baseType The base java class or interface representing the
      *            databinding, for example, org.w3c.dom.Node
      */
-    protected DataBindingExtension(String name, String[] aliases, Class<?> baseType) {
+    protected BaseDataBinding(String name, String[] aliases, Class<?> baseType) {
         this.name = name;
         this.baseType = baseType;
         this.aliases = aliases;
@@ -85,7 +85,7 @@ public abstract class DataBindingExtension implements DataBinding {
     }
 
     public void init() {
-        registry.register(this);
+        registry.addDataBinding(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -139,7 +139,7 @@ public abstract class DataBindingExtension implements DataBinding {
     }
 
     public SimpleTypeMapper getSimpleTypeMapper() {
-        return new SimpleTypeMapperExtension();
+        return new SimpleTypeMapperImpl();
     }
 
     public String[] getAliases() {

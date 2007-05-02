@@ -97,9 +97,9 @@ public class DataBindingModuleActivator implements ModuleActivator {
         Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer();
         exception2ExceptionTransformer.setMediator(mediator);
 
-        transformerRegistry.registerTransformer(input2InputTransformer);
-        transformerRegistry.registerTransformer(output2OutputTransformer);
-        transformerRegistry.registerTransformer(exception2ExceptionTransformer);
+        transformerRegistry.addTransformer(input2InputTransformer);
+        transformerRegistry.addTransformer(output2OutputTransformer);
+        transformerRegistry.addTransformer(exception2ExceptionTransformer);
 
         JavaInterfaceIntrospectorExtensionPoint javaIntrospectorExtensionPoint = registry
             .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
@@ -114,48 +114,48 @@ public class DataBindingModuleActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         DOMDataBinding domDataBinding = new DOMDataBinding();
         domDataBinding.setDataBindingRegistry(dataBindingRegistry);
-        dataBindingRegistry.register(domDataBinding);
+        dataBindingRegistry.addDataBinding(domDataBinding);
         XMLStringDataBinding xmlStringDataBinding = new XMLStringDataBinding();
         xmlStringDataBinding.setDataBindingRegistry(dataBindingRegistry);
-        dataBindingRegistry.register(xmlStringDataBinding);
+        dataBindingRegistry.addDataBinding(xmlStringDataBinding);
         XMLGroupDataBinding xmlGroupDataBinding = new XMLGroupDataBinding();
         xmlGroupDataBinding.setDataBindingRegistry(dataBindingRegistry);
-        dataBindingRegistry.register(xmlGroupDataBinding);
+        dataBindingRegistry.addDataBinding(xmlGroupDataBinding);
         JavaBeansDataBinding javaBeansDataBinding = new JavaBeansDataBinding();
         javaBeansDataBinding.setDataBindingRegistry(dataBindingRegistry);
-        dataBindingRegistry.register(javaBeansDataBinding);
+        dataBindingRegistry.addDataBinding(javaBeansDataBinding);
 
         Group2GroupTransformer group2GroupTransformer= new Group2GroupTransformer();
         group2GroupTransformer.setMediator(mediator);
-        transformerRegistry.registerTransformer(group2GroupTransformer);
+        transformerRegistry.addTransformer(group2GroupTransformer);
         
-        transformerRegistry.registerTransformer(new InputSource2Node());
-        transformerRegistry.registerTransformer(new InputSource2SAX());
-        transformerRegistry.registerTransformer(new InputStream2Node());
-        transformerRegistry.registerTransformer(new InputStream2SAX());
+        transformerRegistry.addTransformer(new InputSource2Node());
+        transformerRegistry.addTransformer(new InputSource2SAX());
+        transformerRegistry.addTransformer(new InputStream2Node());
+        transformerRegistry.addTransformer(new InputStream2SAX());
 
-        transformerRegistry.registerTransformer(new DOMNode2JavaBeanTransformer());
-        transformerRegistry.registerTransformer(new Node2OutputStream());
-        transformerRegistry.registerTransformer(new Node2String());
-        transformerRegistry.registerTransformer(new Node2Writer());
-        transformerRegistry.registerTransformer(new Node2XMLStreamReader());
+        transformerRegistry.addTransformer(new DOMNode2JavaBeanTransformer());
+        transformerRegistry.addTransformer(new Node2OutputStream());
+        transformerRegistry.addTransformer(new Node2String());
+        transformerRegistry.addTransformer(new Node2Writer());
+        transformerRegistry.addTransformer(new Node2XMLStreamReader());
 
-        transformerRegistry.registerTransformer(new JavaBean2DOMNodeTransformer());
-        transformerRegistry.registerTransformer(new Reader2Node());
+        transformerRegistry.addTransformer(new JavaBean2DOMNodeTransformer());
+        transformerRegistry.addTransformer(new Reader2Node());
 
-        transformerRegistry.registerTransformer(new Reader2SAX());
-        transformerRegistry.registerTransformer(new SAX2DOMPipe());
+        transformerRegistry.addTransformer(new Reader2SAX());
+        transformerRegistry.addTransformer(new SAX2DOMPipe());
         
-        transformerRegistry.registerTransformer(new Source2ResultTransformer());
-        transformerRegistry.registerTransformer(new StreamDataPipe());
-        transformerRegistry.registerTransformer(new String2Node());
-        transformerRegistry.registerTransformer(new String2SAX());
-        transformerRegistry.registerTransformer(new String2XMLStreamReader());
-        transformerRegistry.registerTransformer(new Writer2ReaderDataPipe());
+        transformerRegistry.addTransformer(new Source2ResultTransformer());
+        transformerRegistry.addTransformer(new StreamDataPipe());
+        transformerRegistry.addTransformer(new String2Node());
+        transformerRegistry.addTransformer(new String2SAX());
+        transformerRegistry.addTransformer(new String2XMLStreamReader());
+        transformerRegistry.addTransformer(new Writer2ReaderDataPipe());
 
-        transformerRegistry.registerTransformer(new XMLStreamReader2Node());
-        transformerRegistry.registerTransformer(new XMLStreamReader2SAX());
-        transformerRegistry.registerTransformer(new XMLStreamReader2String());
+        transformerRegistry.addTransformer(new XMLStreamReader2Node());
+        transformerRegistry.addTransformer(new XMLStreamReader2SAX());
+        transformerRegistry.addTransformer(new XMLStreamReader2String());
     }
     
     public void stop(ExtensionPointRegistry registry) {

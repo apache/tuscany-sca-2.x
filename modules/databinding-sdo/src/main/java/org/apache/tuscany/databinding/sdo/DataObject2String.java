@@ -23,13 +23,13 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLHelper;
 
-public class DataObject2String extends TransformerExtension<DataObject, String> implements
+public class DataObject2String extends BaseTransformer<DataObject, String> implements
     PullTransformer<DataObject, String> {
 
     public String transform(DataObject source, TransformationContext context) {

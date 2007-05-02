@@ -28,7 +28,7 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
@@ -43,7 +43,7 @@ import org.osoa.sca.annotations.Service;
  * other one
  */
 @Service(Transformer.class)
-public class Input2InputTransformer extends TransformerExtension<Object[], Object[]> implements
+public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> implements
     PullTransformer<Object[], Object[]> {
 
     protected Mediator mediator;
@@ -71,7 +71,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     }
 
     /**
-     * @see org.apache.tuscany.databinding.extension.TransformerExtension#getSourceType()
+     * @see org.apache.tuscany.databinding.impl.BaseTransformer#getSourceType()
      */
     @Override
     protected Class getSourceType() {
@@ -79,7 +79,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     }
 
     /**
-     * @see org.apache.tuscany.databinding.extension.TransformerExtension#getTargetType()
+     * @see org.apache.tuscany.databinding.impl.BaseTransformer#getTargetType()
      */
     @Override
     protected Class getTargetType() {

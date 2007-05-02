@@ -25,9 +25,9 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
-public class XMLStreamReader2OMElement extends TransformerExtension<XMLStreamReader, OMElement> implements
+public class XMLStreamReader2OMElement extends BaseTransformer<XMLStreamReader, OMElement> implements
     PullTransformer<XMLStreamReader, OMElement> {
 
     public XMLStreamReader2OMElement() {

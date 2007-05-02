@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.extension;
+package org.apache.tuscany.databinding.impl;
 
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
@@ -26,11 +26,11 @@ import org.apache.tuscany.databinding.TransformerExtensionPoint;
  *
  * @version $Rev$ $Date$
  */
-public abstract class TransformerExtension<S, T> implements Transformer {
+public abstract class BaseTransformer<S, T> implements Transformer {
 
     protected TransformerExtensionPoint registry;
 
-    protected TransformerExtension() {
+    protected BaseTransformer() {
         super();
     }
 
@@ -39,7 +39,7 @@ public abstract class TransformerExtension<S, T> implements Transformer {
     }
 
     public void init() {
-        registry.registerTransformer(this);
+        registry.addTransformer(this);
     }
 
     protected abstract Class getSourceType();

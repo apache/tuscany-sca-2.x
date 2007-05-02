@@ -40,8 +40,8 @@ public class SDOAxiomModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
         TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformerRegistry.registerTransformer(new DataObject2OMElement());
-        transformerRegistry.registerTransformer(new XMLDocument2OMElement());
+        transformerRegistry.addTransformer(new DataObject2OMElement());
+        transformerRegistry.addTransformer(new XMLDocument2OMElement());
     }
 
     public void stop(ExtensionPointRegistry registry) {

@@ -31,22 +31,22 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.apache.tuscany.interfacedef.util.XMLType;
 
 /**
  * Transformer to convert data from XML to JavaBean
  */
-public abstract class XML2JavaBeanTransformer<T> extends TransformerExtension<T, Object> implements
+public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Object> implements
         PullTransformer<T, Object> {
 
     public static final String SET = "set";
 
-    protected SimpleTypeMapperExtension mapper;
+    protected SimpleTypeMapperImpl mapper;
 
     public XML2JavaBeanTransformer() {
-        this.mapper = new SimpleTypeMapperExtension();
+        this.mapper = new SimpleTypeMapperImpl();
     }
 
     @Override
@@ -60,7 +60,7 @@ public abstract class XML2JavaBeanTransformer<T> extends TransformerExtension<T,
     }
 
     public Object toJavaObject(QName xmlType, T xmlElement, TransformationContext context) {
-        if (SimpleTypeMapperExtension.isSimpleXSDType(xmlType)) {
+        if (SimpleTypeMapperImpl.isSimpleXSDType(xmlType)) {
             return mapper.toJavaObject(xmlType, getText(xmlElement), context);
         } else {
             Class<?> javaType = (Class<?>)context.getTargetDataType().getPhysical();

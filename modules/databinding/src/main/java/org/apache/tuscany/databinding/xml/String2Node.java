@@ -25,12 +25,12 @@ import javax.xml.parsers.DocumentBuilder;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.DOMHelper;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.DOMHelper;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-public class String2Node extends TransformerExtension<String, Node> implements PullTransformer<String, Node> {
+public class String2Node extends BaseTransformer<String, Node> implements PullTransformer<String, Node> {
 
     public Node transform(String source, TransformationContext context) {
         try {
