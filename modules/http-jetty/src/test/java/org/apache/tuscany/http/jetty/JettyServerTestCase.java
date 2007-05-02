@@ -50,7 +50,7 @@ public class JettyServerTestCase extends TestCase {
     private static final String REQUEST1 =
         REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
 
-    private static final int HTTP_PORT = 8585;
+    private static final int HTTP_PORT = 8080;
 
     private WorkScheduler workScheduler = new WorkScheduler() {
         
@@ -71,7 +71,7 @@ public class JettyServerTestCase extends TestCase {
         JettyServer service = new JettyServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping(HTTP_PORT, "/", servlet);
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -85,8 +85,9 @@ public class JettyServerTestCase extends TestCase {
         JettyServer service = new JettyServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping(HTTP_PORT, "/foo", servlet);
-        service.removeServletMapping(HTTP_PORT, "/foo");
+        String uri = "http://127.0.0.1:" + HTTP_PORT + "/foo";
+        service.addServletMapping(uri, servlet);
+        service.removeServletMapping(uri);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -101,7 +102,7 @@ public class JettyServerTestCase extends TestCase {
         service.setDebug(true);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping(HTTP_PORT, "/", servlet);
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());

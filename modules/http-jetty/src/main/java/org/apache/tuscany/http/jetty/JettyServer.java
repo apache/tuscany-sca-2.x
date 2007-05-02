@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.http.jetty;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +57,7 @@ public class JettyServer implements ServletHostExtension {
     private static final int STARTED = 2;
     private static final int STOPPING = 3;
     private static final int STOPPED = 4;
+    private static final int DEFAULT_PORT = 8080;
 
     private final Object joinLock = new Object();
     private int state = UNINITIALIZED;
@@ -133,9 +135,12 @@ public class JettyServer implements ServletHostExtension {
         }
     }
 
-    public void addServletMapping(int port, String path, Servlet servlet) throws ServletMappingException {
+    public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
         if (state == STARTING) {
 
+            // TODO: use the port from the uri, but thats a bit harder to do 
+            int port = DEFAULT_PORT;
+            
             try {
                 server = new Server();
                 server.setThreadPool(new WorkSchedulerThreadPool());
@@ -184,14 +189,16 @@ public class JettyServer implements ServletHostExtension {
         servletHandler.addServlet(holder);
         ServletMapping mapping = new ServletMapping();
         mapping.setServletName(holder.getName());
+        String path = URI.create(uri).getPath();
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
     }
 
-    public Servlet removeServletMapping(int port, String path) {
+    public Servlet removeServletMapping(String uri) {
         Servlet removedServlet = null;
         List<ServletMapping> mappings =
             new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
+        String path = URI.create(uri).getPath();
         for (ServletMapping mapping : mappings) {
             if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
                 try {

@@ -101,12 +101,13 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
         Axis2ServiceServlet servlet = new Axis2ServiceServlet();
         servlet.init(configContext);
-        configContext.setContextRoot(getUri().toString());
-        servletHost.addServletMapping(8080, getUri().getPath(), servlet);
+        String servletURI = getUri().toString();
+        configContext.setContextRoot(servletURI);
+        servletHost.addServletMapping(servletURI, servlet);
     }
 
     public void stop() {
-        servletHost.removeServletMapping(8080, getUri().getPath());
+        servletHost.removeServletMapping(getUri().toString());
         try {
             configContext.getAxisConfiguration().removeService(getUri().toString());
         } catch (AxisFault e) {

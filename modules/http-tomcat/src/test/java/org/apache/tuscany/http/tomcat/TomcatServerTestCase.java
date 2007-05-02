@@ -48,7 +48,7 @@ public class TomcatServerTestCase extends TestCase {
     private static final String REQUEST1 =
         REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
 
-    private static final int HTTP_PORT = 8586;
+    private static final int HTTP_PORT = 8080;
     
     private WorkScheduler workScheduler = new WorkScheduler() {
         
@@ -69,7 +69,7 @@ public class TomcatServerTestCase extends TestCase {
         TomcatServer service = new TomcatServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping(HTTP_PORT, "/foo", servlet);
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -83,8 +83,8 @@ public class TomcatServerTestCase extends TestCase {
         TomcatServer service = new TomcatServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping(HTTP_PORT, "/foo", servlet);
-        service.removeServletMapping(HTTP_PORT, "/foo");
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
+        service.removeServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo");
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
@@ -98,7 +98,7 @@ public class TomcatServerTestCase extends TestCase {
         TomcatServer service = new TomcatServer(workScheduler);
         service.init();
         TestServlet servlet = new TestServlet();
-        service.addServletMapping(HTTP_PORT, "/foo", servlet);
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST1.getBytes());
