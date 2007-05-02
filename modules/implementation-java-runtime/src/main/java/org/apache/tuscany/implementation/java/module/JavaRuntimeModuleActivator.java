@@ -28,7 +28,8 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.databinding.Mediator;
+import org.apache.tuscany.databinding.TransformerExtensionPoint;
+import org.apache.tuscany.databinding.impl.DefaultMediator;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
@@ -127,7 +128,9 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         builder.setWorkContext(extensionPointRegistry.getExtensionPoint(WorkContext.class));
         builderRegistry.register(JavaImplementation.class, builder);
 
-        Mediator mediator = extensionPointRegistry.getExtensionPoint(Mediator.class);
+        DefaultMediator mediator =
+            new DefaultMediator(extensionPointRegistry.getExtensionPoint(DataBindingExtensionPoint.class),
+                             extensionPointRegistry.getExtensionPoint(TransformerExtensionPoint.class));
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
         builder.setPropertyValueObjectFactory(factory);
 

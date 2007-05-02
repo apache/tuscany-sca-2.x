@@ -54,14 +54,14 @@ public interface Mediator {
             Map<String, Object> context);
     
     /**
-     * Get the DataBinding registry
+     * Get the DataBindings used by this mediator.
      * @return
      */
-    DataBindingExtensionPoint getDataBindingRegistry();
+    DataBindingExtensionPoint getDataBindings();
     
     /**
-     * Get the Transformer registry
+     * Get the Transformers used by this mediator.
      * @return
      */
-    TransformerExtensionPoint getTransformerRegistry();    
+    TransformerExtensionPoint getTransformers();    
 }

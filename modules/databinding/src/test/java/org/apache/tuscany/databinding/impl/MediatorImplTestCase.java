@@ -73,22 +73,20 @@ public class MediatorImplTestCase extends TestCase {
             + "  </items>"
             + "</ipo:purchaseOrder>";
 
-    private MediatorImpl mediator;
+    private DefaultMediator mediator;
 
     protected void setUp() throws Exception {
         super.setUp();
 
         TransformerExtensionPoint registry = new DefaultTransformerExtensionPoint();
+        DataBindingExtensionPoint dataBindingRegistry = new DefaultDataBindingExtensionPoint();
+
         registry.addTransformer(new String2SAX());
         registry.addTransformer(new SAX2DOMPipe());
         registry.addTransformer(new Node2String());
         registry.addTransformer(new Node2Writer());
 
-        mediator = new MediatorImpl();
-        mediator.setTransformerRegistry(registry);
-
-        DataBindingExtensionPoint dataBindingRegistry = new DefaultDataBindingExtensionPoint();
-        mediator.setDataBindingRegistry(dataBindingRegistry);
+        mediator = new DefaultMediator(dataBindingRegistry, registry);
     }
 
     private TransformationContext createTransformationContext(Class sourceType, Class targetType) {

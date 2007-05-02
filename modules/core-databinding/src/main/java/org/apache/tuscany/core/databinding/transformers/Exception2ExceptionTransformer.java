@@ -116,7 +116,7 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Ob
     private ExceptionHandler getExceptionHandler(DataType<DataType> targetType) {
         DataType targetFaultType = (DataType)targetType.getLogical();
         DataBinding targetDataBinding =
-            mediator.getDataBindingRegistry().getDataBinding(targetFaultType.getDataBinding());
+            mediator.getDataBindings().getDataBinding(targetFaultType.getDataBinding());
         if (targetDataBinding == null) {
             return null;
         }

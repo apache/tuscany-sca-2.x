@@ -32,10 +32,9 @@ import org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
-import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
+import org.apache.tuscany.databinding.impl.DefaultMediator;
 import org.apache.tuscany.databinding.impl.Group2GroupTransformer;
-import org.apache.tuscany.databinding.impl.MediatorImpl;
 import org.apache.tuscany.databinding.javabeans.DOMNode2JavaBeanTransformer;
 import org.apache.tuscany.databinding.javabeans.JavaBean2DOMNodeTransformer;
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
@@ -78,16 +77,14 @@ public class DataBindingModuleActivator implements ModuleActivator {
         DefaultTransformerExtensionPoint transformerRegistryImpl = new DefaultTransformerExtensionPoint();
         transformerRegistryImpl.setDataBindingRegistry(dataBindingRegistryImpl);
         map.put(TransformerExtensionPoint.class, transformerRegistryImpl);
-        MediatorImpl mediatorImpl = new MediatorImpl();
-        mediatorImpl.setDataBindingRegistry(dataBindingRegistryImpl);
-        mediatorImpl.setTransformerRegistry(transformerRegistryImpl);
-        map.put(Mediator.class, mediatorImpl);
         return map;
     }
 
     public void start(ExtensionPointRegistry registry) {
+        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        Mediator mediator = registry.getExtensionPoint(Mediator.class);
+
+        DefaultMediator mediator = new DefaultMediator(dataBindingRegistry, transformerRegistry);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
         input2InputTransformer.setMediator(mediator);
 
@@ -104,14 +101,13 @@ public class DataBindingModuleActivator implements ModuleActivator {
         JavaInterfaceIntrospectorExtensionPoint javaIntrospectorExtensionPoint = registry
             .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         javaIntrospectorExtensionPoint.addExtension(new DataBindingJavaInterfaceProcessor(mediator
-            .getDataBindingRegistry()));
+            .getDataBindings()));
 
         WirePostProcessorRegistry wirePostProcessorRegistry = registry
             .getExtensionPoint(WirePostProcessorRegistry.class);
         ComponentManager componentManager = registry.getExtensionPoint(ComponentManager.class);
         wirePostProcessorRegistry.register(new DataBindingWirePostProcessor(componentManager, mediator));
         
-        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         DOMDataBinding domDataBinding = new DOMDataBinding();
         domDataBinding.setDataBindingRegistry(dataBindingRegistry);
         dataBindingRegistry.addDataBinding(domDataBinding);
