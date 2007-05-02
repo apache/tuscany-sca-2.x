@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-sample-helloworld-ws</artifactId>
+    <artifactId>sample-helloworld-ws</artifactId>
     <name>Apache Tuscany HelloWorld Web Service Sample</name>
 
     <repositories>
