@@ -22,7 +22,9 @@ import javax.servlet.Servlet;
 
 /**
  * Interface implemented by host environments that allow Servlets to be
- * registered. <p/> This interface allows a system service to register a servlet
+ * registered. 
+ * <p/> 
+ * This interface allows a system service to register a servlet
  * to handle inbound requests.
  * 
  * @version $Rev$ $Date$
@@ -33,21 +35,19 @@ public interface ServletHostExtension {
      * servlet container direct all requests to the designated mapping to the
      * supplied Servlet instance.
      * 
-     * @param port the port for the Servlet
-     * @param mapping the uri-mapping for the Servlet
+     * @param uri the uri-mapping for the Servlet
      * @param servlet the Servlet that should be invoked
      */
-    void addServletMapping(int host, String mapping, Servlet servlet) throws ServletMappingException;
+    void addServletMapping(String uri, Servlet servlet) throws ServletMappingException;
 
     /**
      * Remove a servlet mapping. This directs the servlet contain not to direct
      * any more requests to a previously registered Servlet.
      * 
-     * @param port the port for the Servlet
-     * @param mapping the uri-mapping for the Servlet
+     * @param uri the uri-mapping for the Servlet
      * @return the servlet that was registered to the mapping, null if nothing
      *         was registered to the mapping
      */
-    Servlet removeServletMapping(int host, String mapping) throws ServletMappingException;
+    Servlet removeServletMapping(String uri) throws ServletMappingException;
 
 }

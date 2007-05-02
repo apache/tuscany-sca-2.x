@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.http.tomcat;
 
+import java.net.URI;
 import java.util.concurrent.Executor;
 
 import javax.servlet.Servlet;
@@ -45,6 +46,7 @@ import org.apache.tuscany.spi.services.work.WorkScheduler;
  */
 public class TomcatServer implements ServletHostExtension {
 
+    private static final int DEFAULT_PORT = 8080;
     private StandardEngine engine;
     private StandardHost host;
     private Connector connector;
@@ -162,7 +164,10 @@ public class TomcatServer implements ServletHostExtension {
         }
     }
 
-    public void addServletMapping(int port, String mapping, Servlet servlet) {
+    public void addServletMapping(String uri, Servlet servlet) {
+        
+        // TODO: use the port from the uri, but thats a bit harder to do 
+        int port = DEFAULT_PORT;
         
         // Install a default HTTP connector
         if (connector == null) {
@@ -180,6 +185,7 @@ public class TomcatServer implements ServletHostExtension {
         }
 
         // Register the servlet mapping
+        String mapping = URI.create(uri).getPath();
         Context context = host.map(mapping);
         Wrapper wrapper = new ServletWrapper(servlet);
         wrapper.setName(mapping);
@@ -189,7 +195,8 @@ public class TomcatServer implements ServletHostExtension {
         connector.getMapper().addWrapper("localhost", "", mapping, wrapper);
     }
 
-    public Servlet removeServletMapping(int port, String mapping) {
+    public Servlet removeServletMapping(String uri) {
+        String mapping = URI.create(uri).getPath();
         Context context = host.map(mapping);
         MappingData md = new MappingData();
         MessageBytes mb = MessageBytes.newInstance();

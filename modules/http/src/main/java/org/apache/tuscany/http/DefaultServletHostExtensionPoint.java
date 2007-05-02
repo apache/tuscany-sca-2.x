@@ -41,22 +41,20 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
         servletHosts.remove(servletHost);
     }
 
-    public void addServletMapping(int port, String mapping, Servlet servlet) throws ServletMappingException {
+    public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
         if (servletHosts.isEmpty()) {
             throw new ServletMappingException("No servlet host available");
         }
 
-        // TODO implement selection of the correct servlet host based on the
-        // mapping
+        // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
-        servletHosts.get(0).addServletMapping(port, mapping, servlet);
+        servletHosts.get(0).addServletMapping(uri, servlet);
     }
 
-    public Servlet removeServletMapping(int port, String mapping) throws ServletMappingException {
-        // TODO implement selection of the correct servlet host based on the
-        // mapping
+    public Servlet removeServletMapping(String uri) throws ServletMappingException {
+        // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
-        return servletHosts.get(0).removeServletMapping(port, mapping);
+        return servletHosts.get(0).removeServletMapping(uri);
     }
 
 }
