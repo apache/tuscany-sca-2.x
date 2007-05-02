@@ -134,6 +134,20 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
     }
 
+    public void configure(Composite composite) {
+        for (Component component : composite.getComponents()) {
+
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                configure((Composite)implementation);
+            } else if(implementation instanceof ImplementationProvider) {
+                ((ImplementationProvider) implementation).configure((RuntimeComponent) component); 
+            }
+        }
+
+    }
+    
+    
     public void stop(Composite composite) {
         for (Component component : composite.getComponents()) {
 
@@ -406,6 +420,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
     public void activate(Composite composite) throws IncompatibleInterfaceContractException {
         wire(composite, assemblyFactory, interfaceContractMapper);
+        configure(composite);
         createRuntimeWires(composite);
         start(composite);
     }
