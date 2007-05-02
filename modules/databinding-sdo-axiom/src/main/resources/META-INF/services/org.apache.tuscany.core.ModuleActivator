@@ -1,2 +1,2 @@
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.databinding.sdo2om.bootstrap.SDOAxiomModuleActivator
+org.apache.tuscany.databinding.sdo2om.module.SDOAxiomModuleActivator

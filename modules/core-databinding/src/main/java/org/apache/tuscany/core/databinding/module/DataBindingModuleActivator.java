@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.databinding.bootstrap;
+package org.apache.tuscany.core.databinding.module;
 
 import java.util.HashMap;
 import java.util.Map;

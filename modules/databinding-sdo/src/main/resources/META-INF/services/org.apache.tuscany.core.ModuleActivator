@@ -1,2 +1,2 @@
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.databinding.sdo.bootstrap.SDODataBindingModuleActivator
+org.apache.tuscany.databinding.sdo.module.SDODataBindingModuleActivator

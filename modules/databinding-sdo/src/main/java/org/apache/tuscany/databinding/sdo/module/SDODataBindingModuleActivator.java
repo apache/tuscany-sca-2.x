@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.sdo.bootstrap;
+package org.apache.tuscany.databinding.sdo.module;
 
 import java.util.Map;
 

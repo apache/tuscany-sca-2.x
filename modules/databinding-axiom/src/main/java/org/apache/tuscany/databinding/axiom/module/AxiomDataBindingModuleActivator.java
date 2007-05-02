@@ -17,31 +17,44 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.sdo2om.bootstrap;
+package org.apache.tuscany.databinding.axiom.module;
 
 import java.util.Map;
 
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.databinding.sdo2om.DataObject2OMElement;
-import org.apache.tuscany.databinding.sdo2om.XMLDocument2OMElement;
+import org.apache.tuscany.databinding.axiom.AxiomDataBinding;
+import org.apache.tuscany.databinding.axiom.OMElement2Object;
+import org.apache.tuscany.databinding.axiom.OMElement2String;
+import org.apache.tuscany.databinding.axiom.OMElement2XMLStreamReader;
+import org.apache.tuscany.databinding.axiom.Object2OMElement;
+import org.apache.tuscany.databinding.axiom.String2OMElement;
+import org.apache.tuscany.databinding.axiom.XMLStreamReader2OMElement;
 
 /**
- * Module activator for SDO/AXIOM databinding
+ * Module activator for AXIOM databinding
  * 
  * @version $Rev$ $Date$
  */
-public class SDOAxiomModuleActivator implements ModuleActivator {
+public class AxiomDataBindingModuleActivator implements ModuleActivator {
 
     public Map<Class, Object> getExtensionPoints() {
         return null;
     }
 
     public void start(ExtensionPointRegistry registry) {
+        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
+        dataBindingRegistry.register(new AxiomDataBinding());
+
         TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformerRegistry.registerTransformer(new DataObject2OMElement());
-        transformerRegistry.registerTransformer(new XMLDocument2OMElement());
+        transformerRegistry.registerTransformer(new Object2OMElement());
+        transformerRegistry.registerTransformer(new OMElement2Object());
+        transformerRegistry.registerTransformer(new OMElement2String());
+        transformerRegistry.registerTransformer(new OMElement2XMLStreamReader());
+        transformerRegistry.registerTransformer(new String2OMElement());
+        transformerRegistry.registerTransformer(new XMLStreamReader2OMElement());
     }
 
     public void stop(ExtensionPointRegistry registry) {
