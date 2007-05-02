@@ -19,36 +19,47 @@
 package org.apache.tuscany.sca.test.spec;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
 import org.apache.tuscany.host.embedded.SCARuntime;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
-public class ComponentContextTestCase {
+public class ServiceLocateTest {
+
+    ComponentContext context;
+    BasicService basicService;
 
     @Test
-    public void createSelfReference() {
+    public void negate() {
 
-        ComponentContext context = SCARuntime.getComponentContext("MyService");
-        ServiceReference<MyService> service = context.createSelfReference(MyService.class, "MyService");
-        MyService myService = service.getService();
-
-        assertNotNull(myService);
-        assertEquals("RTP", myService.getLocation());
-        assertEquals("2006", myService.getYear());
+        assertEquals(-99, basicService.negate(99));
 
     }
 
-    @BeforeClass
-    public static void init() throws Exception {
-        SCARuntime.start("CompositeTest.composite");
+    @Ignore
+    @Test
+    public void delegateNegate() {
+
+        assertEquals(-99, basicService.delegateNegate(99));
+
     }
 
-    @AfterClass
-    public static void destroy() throws Exception {
+    @Before
+    public void init() throws Exception {
+
+        SCARuntime.start("BasicService.composite");
+        context = SCARuntime.getComponentContext("BasicServiceComponent");
+        ServiceReference<BasicService> service = context.createSelfReference(BasicService.class);
+        basicService = service.getService();
+
+    }
+
+    @After
+    public void destroy() throws Exception {
         SCARuntime.stop();
     }
 }
