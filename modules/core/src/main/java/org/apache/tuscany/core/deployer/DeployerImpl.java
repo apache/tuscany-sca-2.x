@@ -39,6 +39,7 @@ import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.core.builder.ComponentNotFoundException;
 import org.apache.tuscany.core.builder.IncompatibleInterfacesException;
 import org.apache.tuscany.core.builder.WireCreationException;
+import org.apache.tuscany.core.runtime.DefaultCompositeActivator;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.NonBlockingInterceptor;
@@ -155,7 +156,7 @@ public class DeployerImpl implements Deployer {
         
         // Adjust the composite graph and wire the references with SCA bindings
         processSCABinding(composite);
-
+        
         builder.build(componentDef, deploymentContext);
         
         // Register all components with the component manager
@@ -393,7 +394,7 @@ public class DeployerImpl implements Deployer {
             }
             /* lresende */
             chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(chain);
+            wire.getInvocationChains().add(chain);
 
         }
         if (sourceContract.getCallbackInterface() != null) {
@@ -406,7 +407,7 @@ public class DeployerImpl implements Deployer {
                 }
                 /* lresende */
                 chain.addInterceptor(new InvokerInterceptor());
-                wire.addCallbackInvocationChain(chain);
+                wire.getCallbackInvocationChains().add(chain);
             }
         }
         return wire;

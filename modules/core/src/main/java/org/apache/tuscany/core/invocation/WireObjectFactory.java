@@ -16,19 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.wire;
+package org.apache.tuscany.core.invocation;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.core.wire.NoMethodForOperationException;
+import org.apache.tuscany.core.wire.WireUtils;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.wire.ChainHolder;
-import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
@@ -38,10 +41,8 @@ import org.apache.tuscany.spi.wire.ProxyService;
  */
 public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
-    private Wire wire;
-    private ProxyService proxyService;
-    // the cache of proxy interface method to operation mappings
-    private Map<Method, ChainHolder> mappings;
+    private RuntimeWire wire;
+    private ProxyFactory proxyService;
     private boolean optimizable;
 
     /**
@@ -52,14 +53,14 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
      * @param proxyService the wire service to create the proxy
      * @throws NoMethodForOperationException
      */
-    public WireObjectFactory(Class<T> interfaze, Wire wire, ProxyService proxyService)
+    public WireObjectFactory(Class<T> interfaze, RuntimeWire wire, ProxyFactory proxyService)
         throws NoMethodForOperationException {
         this.interfaze = interfaze;
         this.wire = wire;
         this.proxyService = proxyService;
-        this.mappings = WireUtils.createInterfaceToWireMapping(interfaze, wire);
+        /*
         if (wire.isOptimizable()) {
-            Interface iface = wire.getSourceContract().getInterface();
+            Interface iface = wire.getSource().getInterfaceContract().getInterface();
             if (iface instanceof JavaInterface) {
                 Class type = ((JavaInterface)iface).getJavaClass();
                 if (interfaze.isAssignableFrom(type)) {
@@ -67,10 +68,12 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
                 }
             }
         }
+        */
 
     }
 
     public T getInstance() throws ObjectCreationException {
+        /*
         if (optimizable) {
             try {
                 return interfaze.cast(wire.getTargetInstance());
@@ -78,13 +81,11 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
                 throw new ObjectCreationException(e);
             }
         } else {
-            // clone the cached mappings
-            Map<Method, ChainHolder> newChains = new HashMap<Method, ChainHolder>(mappings.size());
-            for (Map.Entry<Method, ChainHolder> entry : mappings.entrySet()) {
-                newChains.put(entry.getKey(), entry.getValue().clone());
-            }
-            return interfaze.cast(proxyService.createProxy(interfaze, wire, newChains));
+        */
+            return interfaze.cast(proxyService.createProxy(interfaze, wire));
+            /*
         }
+        */
     }
 
 }

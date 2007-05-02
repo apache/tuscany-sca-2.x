@@ -103,7 +103,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
             InvocationChain chain = new InvocationChainImpl(op1);
             chain.setTargetInvoker(invoker);
-            wire.addInvocationChain(chain);
+            wire.getInvocationChains().add(chain);
             URI uri = URI.create("fooRef");
             wire.setSourceUri(uri);
             wire.setSourceContract(contract.getInterfaceContract());

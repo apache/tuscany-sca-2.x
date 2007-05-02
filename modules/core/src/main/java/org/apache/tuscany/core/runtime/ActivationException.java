@@ -6,40 +6,32 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-
-package org.apache.tuscany.core;
+package org.apache.tuscany.core.runtime;
 
 
 /**
- * A component implementation can optionally implement this interface to control
- * how a component is started ot stopped.
- * 
+ * Denotes an error starting the runtime
+ *
  * @version $Rev$ $Date$
  */
-public interface ImplementationActivator {
-    /**
-     * This method will be invoked when a component implemented by this
-     * implementation is activated.
-     * 
-     * @param component The component to be started
-     */
-    void start(RuntimeComponent component);
+public class ActivationException extends Exception {
+    private static final long serialVersionUID = 8612661660934426123L;
 
-    /**
-     * This method will be invoked when a component implemented by this
-     * implementation is deactivated.
-     * 
-     * @param component The component to be stopped
-     */
-    void stop(RuntimeComponent component);
+    public ActivationException(String message) {
+        super(message);
+    }
+
+    public ActivationException(Throwable cause) {
+        super(cause);
+    }
 }

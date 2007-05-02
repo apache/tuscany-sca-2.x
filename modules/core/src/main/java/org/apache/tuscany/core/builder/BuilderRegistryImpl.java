@@ -48,6 +48,7 @@ import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.Scopeable;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.osoa.sca.annotations.EagerInit;
@@ -130,9 +131,11 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         
         componentManager.add(component, componentDef);
 
-        // FIXME: How to deal scopes?
-        // Scope scope = componentDef.getImplementation().getScope();
         Scope scope = Scope.STATELESS;
+        Implementation implementation = componentDef.getImplementation();
+        if(implementation instanceof Scopeable) {
+            scope = ((Scopeable) implementation).getScope();
+        }
 
         if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
             component.setScopeContainer(context.getCompositeScope());

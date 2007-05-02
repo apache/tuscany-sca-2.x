@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.core;
 
-import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -45,7 +44,7 @@ public interface ImplementationProvider {
      * @return An interceptor that handles the invocation logic, null should be
      *         returned if no interceptor is required
      */
-    Interceptor createInterceptor(Component component, ComponentService service, Operation operation, boolean isCallback);
+    Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation, boolean isCallback);
 
     /**
      * Get the effective interface contract imposed by the implementation.

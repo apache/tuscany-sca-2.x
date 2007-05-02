@@ -16,21 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.crud;
+
+package org.apache.tuscany.core.runtime;
+
+import org.apache.tuscany.assembly.Composite;
 
 /**
- * The service interface implemented by CRUD components.
+ * Start/stop a composite
  * 
  * @version $Rev$ $Date$
  */
-public interface CRUD {
+public interface CompositeActivator {
+    /**
+     * Start a composite
+     * @param composite
+     */
+    void start(Composite composite) throws ActivationException;
 
-    String create(Object resource);
-
-    Object retrieve(String id);
-
-    Object update(String id, Object resource);
-
-    void delete(String id);
+    /**
+     * Stop a composite
+     * @param composite
+     */
+    void stop(Composite composite) throws ActivationException;
 
 }

@@ -17,29 +17,31 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core;
+package org.apache.tuscany.core.runtime;
 
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.SCABinding;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 
 /**
- * A component implementation can optionally implement this interface to control
- * how a component is started ot stopped.
- * 
  * @version $Rev$ $Date$
  */
-public interface ImplementationActivator {
-    /**
-     * This method will be invoked when a component implemented by this
-     * implementation is activated.
-     * 
-     * @param component The component to be started
-     */
-    void start(RuntimeComponent component);
+public class RuntimeAssemblyFactory extends DefaultAssemblyFactory {
 
-    /**
-     * This method will be invoked when a component implemented by this
-     * implementation is deactivated.
-     * 
-     * @param component The component to be stopped
-     */
-    void stop(RuntimeComponent component);
+    @Override
+    public Component createComponent() {
+        return new RuntimeComponentImpl();
+    }
+
+    @Override
+    public ComponentReference createComponentReference() {
+        return new RuntimeComponentReferenceImpl();
+    }
+
+    @Override
+    public SCABinding createSCABinding() {
+        return new RuntimeSCABindingImpl();
+    }
+
 }

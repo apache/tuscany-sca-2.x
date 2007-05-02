@@ -16,44 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.host.embedded.impl;
 
 import java.net.URI;
+import java.net.URL;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.host.embedded.impl.SimpleRuntime;
-import org.apache.tuscany.host.embedded.impl.SimpleRuntimeImpl;
-import org.apache.tuscany.host.embedded.impl.SimpleRuntimeInfo;
-import org.apache.tuscany.host.embedded.impl.SimpleRuntimeInfoImpl;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 import org.osoa.sca.ComponentContext;
 
 /**
+ * Default implementation of SCARuntime.
+ * 
  * @version $Rev$ $Date$
  */
-public class SimpleRuntimeImplTestCase extends TestCase {
-    private MiniRuntimeImpl runtime;
+@SuppressWarnings("deprecation")
+public class DefaultSCARuntimeActivator extends SCARuntimeActivator {
 
-    /**
-     * @throws java.lang.Exception
-     */
-    protected void setUp() throws Exception {
-        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(getClass().getClassLoader(), "crud.composite");
+    protected MiniRuntimeImpl runtime;
+
+    protected void startup(URL applicationSCDL, String compositePath) throws Exception {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        URI contributionURI = URI.create("/default");
+        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(cl, contributionURI, applicationSCDL, compositePath);
         runtime = new MiniRuntimeImpl(runtimeInfo);
-        runtime.start();
+
+        try {
+            runtime.start();
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
-    public void testStart() throws Exception {
-        ComponentContext context = runtime.getComponentContext("CRUDServiceComponent");
-        assertNotNull(context);
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    protected void tearDown() throws Exception {
+    protected void shutdown() throws Exception {
         runtime.stop();
+    }
+
+    @Override
+    protected ComponentContext getContext(String componentName) {
+        return runtime.getComponentContext(componentName);
     }
 
 }

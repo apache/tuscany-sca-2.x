@@ -20,10 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -33,7 +30,7 @@ import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Default implementation of a Wire
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class WireImpl implements Wire {
@@ -42,8 +39,8 @@ public class WireImpl implements Wire {
     private InterfaceContract sourceContract;
     private InterfaceContract targetContract;
     private boolean optimizable;
-    private List<InvocationChain> chains = new ArrayList<InvocationChain>();
-    private List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
+    private final List<InvocationChain> chains = new ArrayList<InvocationChain>();
+    private final List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
     private AtomicComponent target;
 
     /**
@@ -76,7 +73,6 @@ public class WireImpl implements Wire {
         this.sourceContract = contract;
     }
 
-
     public InterfaceContract getTargetContract() {
         return targetContract;
     }
@@ -105,7 +101,7 @@ public class WireImpl implements Wire {
     }
 
     public List<InvocationChain> getInvocationChains() {
-        return Collections.unmodifiableList(chains);
+        return chains;
     }
 
     public void addInvocationChain(InvocationChain chain) {
@@ -113,7 +109,7 @@ public class WireImpl implements Wire {
     }
 
     public List<InvocationChain> getCallbackInvocationChains() {
-        return Collections.unmodifiableList(callbackChains);
+        return callbackChains;
     }
 
     public void addCallbackInvocationChain(InvocationChain chain) {
