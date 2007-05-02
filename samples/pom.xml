@@ -38,6 +38,7 @@
             <modules>
                 <module>binding-echo</module>
                 <module>calculator</module>
+                <module>calculator-web</module>
                 <!--
                 <module>das-service</module>
                 -->
