@@ -29,7 +29,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.Mediator;
-import org.apache.tuscany.databinding.impl.MediatorImpl;
+import org.apache.tuscany.databinding.impl.DefaultMediator;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
@@ -65,7 +65,7 @@ public class DataBindingWirePostProcessorOptimizationTestCase extends TestCase {
         URI targetUri = URI.create("/componentB/#svc1");
 
         // FIXME: [rfeng] We should use Mocks here
-        Mediator mediator = new MediatorImpl();
+        Mediator mediator = new DefaultMediator(null, null);
         ComponentManager componentManager = createMock(ComponentManager.class);
         Component component = createMock(Component.class);
         expect(componentManager.getComponent(URIHelper.getDefragmentedName(sourceUri))).andReturn(component);

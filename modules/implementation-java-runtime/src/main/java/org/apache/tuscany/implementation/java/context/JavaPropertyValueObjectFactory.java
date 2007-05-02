@@ -30,7 +30,7 @@ import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.databinding.impl.MediatorImpl;
+import org.apache.tuscany.databinding.impl.DefaultMediator;
 import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.databinding.javabeans.DOMNode2JavaBeanTransformer;
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
@@ -178,7 +178,7 @@ public class JavaPropertyValueObjectFactory {
                 targetDataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
             } else {
                 targetDataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
-                mediator.getDataBindingRegistry().introspectType(targetDataType, null);  
+                mediator.getDataBindings().introspectType(targetDataType, null);  
             }
         }
     }

@@ -187,7 +187,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
     private WrapperHandler getWrapperHandler(String dataBindingId, boolean required) {
         WrapperHandler wrapperHandler = null;
         if (dataBindingId != null) {
-            DataBinding dataBinding = mediator.getDataBindingRegistry().getDataBinding(dataBindingId);
+            DataBinding dataBinding = mediator.getDataBindings().getDataBinding(dataBindingId);
             wrapperHandler = dataBinding == null ? null : dataBinding.getWrapperHandler();
         }
         if (wrapperHandler == null && required) {

@@ -36,27 +36,21 @@ import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 /**
  * Default Mediator implementation
  */
-public class MediatorImpl implements Mediator {
+public class DefaultMediator implements Mediator {
 
-    private DataBindingExtensionPoint dataBindingRegistry;
+    private DataBindingExtensionPoint dataBindings;
+    private TransformerExtensionPoint transformers;
 
-    private TransformerExtensionPoint transformerRegistry;
-
-    public void setTransformerRegistry(TransformerExtensionPoint transformerRegistry) {
-        this.transformerRegistry = transformerRegistry;
-    }
-
-    /**
-     * @param dataBindingRegistry the dataBindingRegistry to set
-     */
-    public void setDataBindingRegistry(DataBindingExtensionPoint dataBindingRegistry) {
-        this.dataBindingRegistry = dataBindingRegistry;
+    public DefaultMediator(DataBindingExtensionPoint dataBindings,
+                        TransformerExtensionPoint transformers) {
+        this.dataBindings = dataBindings;
+        this.transformers = transformers;
     }
 
     @SuppressWarnings("unchecked")
     public Object mediate(Object source, DataType sourceDataType, DataType targetDataType, Map<String, Object> metadata) {
         if (sourceDataType == null || sourceDataType.getDataBinding() == null) {
-            sourceDataType = dataBindingRegistry.introspectType(source);
+            sourceDataType = dataBindings.introspectType(source);
         }
         if (sourceDataType == null) {
             return source;
@@ -118,7 +112,7 @@ public class MediatorImpl implements Mediator {
             return;
         }
         if (sourceDataType == null || sourceDataType.getDataBinding() == null) {
-            sourceDataType = dataBindingRegistry.introspectType(source);
+            sourceDataType = dataBindings.introspectType(source);
         }
         if (sourceDataType == null) {
             return;
@@ -152,7 +146,7 @@ public class MediatorImpl implements Mediator {
     private List<Transformer> getTransformerChain(DataType sourceDataType, DataType targetDataType) {
         String sourceId = sourceDataType.getDataBinding();
         String targetId = targetDataType.getDataBinding();
-        List<Transformer> path = transformerRegistry.getTransformerChain(sourceId, targetId);
+        List<Transformer> path = transformers.getTransformerChain(sourceId, targetId);
         if (path == null) {
             TransformationException ex = new TransformationException("No path found for the transformation");
             ex.setSourceDataBinding(sourceId);
@@ -161,18 +155,13 @@ public class MediatorImpl implements Mediator {
         }
         return path;
     }
-
-    /**
-     * @return the dataBindingRegistry
-     */
-    public DataBindingExtensionPoint getDataBindingRegistry() {
-        return dataBindingRegistry;
+    
+    public DataBindingExtensionPoint getDataBindings() {
+        return dataBindings;
+    }
+    
+    public TransformerExtensionPoint getTransformers() {
+        return transformers;
     }
 
-    /**
-     * @return the transformerRegistry
-     */
-    public TransformerExtensionPoint getTransformerRegistry() {
-        return transformerRegistry;
-    }
 }
