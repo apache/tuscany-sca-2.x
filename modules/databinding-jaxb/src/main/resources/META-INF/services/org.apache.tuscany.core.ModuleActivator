@@ -1,2 +1,2 @@
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.databinding.jaxb.bootstrap.JAXBDataBindingModuleActivator
+org.apache.tuscany.databinding.jaxb.module.JAXBDataBindingModuleActivator

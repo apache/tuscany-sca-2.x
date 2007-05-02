@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.bootstrap;
+package org.apache.tuscany.core;
 
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.DefaultExtensionPointRegistry;

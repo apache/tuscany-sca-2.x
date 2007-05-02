@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.axiom.bootstrap;
+package org.apache.tuscany.databinding.jaxb.module;
 
 import java.util.Map;
 
@@ -25,20 +25,20 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.databinding.axiom.AxiomDataBinding;
-import org.apache.tuscany.databinding.axiom.OMElement2Object;
-import org.apache.tuscany.databinding.axiom.OMElement2String;
-import org.apache.tuscany.databinding.axiom.OMElement2XMLStreamReader;
-import org.apache.tuscany.databinding.axiom.Object2OMElement;
-import org.apache.tuscany.databinding.axiom.String2OMElement;
-import org.apache.tuscany.databinding.axiom.XMLStreamReader2OMElement;
+import org.apache.tuscany.databinding.jaxb.JAXB2Node;
+import org.apache.tuscany.databinding.jaxb.JAXBDataBinding;
+import org.apache.tuscany.databinding.jaxb.JAXWSJavaInterfaceProcessor;
+import org.apache.tuscany.databinding.jaxb.Node2JAXB;
+import org.apache.tuscany.databinding.jaxb.Reader2JAXB;
+import org.apache.tuscany.databinding.jaxb.XMLStreamReader2JAXB;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
- * Module activator for AXIOM databinding
+ * Module activator for JAXB databinding
  * 
  * @version $Rev$ $Date$
  */
-public class AxiomDataBindingModuleActivator implements ModuleActivator {
+public class JAXBDataBindingModuleActivator implements ModuleActivator {
 
     public Map<Class, Object> getExtensionPoints() {
         return null;
@@ -46,15 +46,17 @@ public class AxiomDataBindingModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
         DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        dataBindingRegistry.register(new AxiomDataBinding());
+        dataBindingRegistry.register(new JAXBDataBinding());
 
         TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformerRegistry.registerTransformer(new Object2OMElement());
-        transformerRegistry.registerTransformer(new OMElement2Object());
-        transformerRegistry.registerTransformer(new OMElement2String());
-        transformerRegistry.registerTransformer(new OMElement2XMLStreamReader());
-        transformerRegistry.registerTransformer(new String2OMElement());
-        transformerRegistry.registerTransformer(new XMLStreamReader2OMElement());
+        transformerRegistry.registerTransformer(new JAXB2Node());
+        transformerRegistry.registerTransformer(new Node2JAXB());
+        transformerRegistry.registerTransformer(new Reader2JAXB());
+        transformerRegistry.registerTransformer(new XMLStreamReader2JAXB());
+
+        JavaInterfaceIntrospectorExtensionPoint introspectorExtensionPoint = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        introspectorExtensionPoint.addExtension(new JAXWSJavaInterfaceProcessor());
+        
     }
 
     public void stop(ExtensionPointRegistry registry) {
