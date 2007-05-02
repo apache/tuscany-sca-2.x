@@ -101,7 +101,6 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         this.hostClassLoader = hostClassLoader;
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         this.extensionPointRegistry = extensionPointRegistry;
-        this.scopeRegistry = createScopeRegistry();
     }
 
     public void init() throws ActivationException {
@@ -109,10 +108,12 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         assemblyFactory = new RuntimeAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
         interfaceContractMapper = new DefaultInterfaceContractMapper();
+        scopeRegistry = createScopeRegistry();
 
         extensionPointRegistry.addExtensionPoint(AssemblyFactory.class, assemblyFactory);
         extensionPointRegistry.addExtensionPoint(PolicyFactory.class, policyFactory);
         extensionPointRegistry.addExtensionPoint(InterfaceContractMapper.class, interfaceContractMapper);
+        extensionPointRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
 
         // Create a work context
         // WorkContext workContext = new SimpleWorkContext();
