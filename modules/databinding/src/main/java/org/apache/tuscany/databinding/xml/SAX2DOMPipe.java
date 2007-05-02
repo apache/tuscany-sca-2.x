@@ -21,11 +21,11 @@ package org.apache.tuscany.databinding.xml;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tuscany.databinding.DataPipe;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 
-public class SAX2DOMPipe extends TransformerExtension<ContentHandler, Node> implements
+public class SAX2DOMPipe extends BaseTransformer<ContentHandler, Node> implements
     DataPipe<ContentHandler, Node> {
     private SAX2DOM pipe;
 

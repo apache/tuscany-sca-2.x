@@ -27,13 +27,13 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 
 /**
  * Push DOM Reader to Node
  */
-public class Reader2Node extends TransformerExtension<Reader, Node> implements PullTransformer<Reader, Node> {
+public class Reader2Node extends BaseTransformer<Reader, Node> implements PullTransformer<Reader, Node> {
     private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
 
     public Node transform(Reader source, TransformationContext context) {

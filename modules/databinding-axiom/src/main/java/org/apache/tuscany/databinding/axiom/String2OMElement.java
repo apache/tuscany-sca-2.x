@@ -25,9 +25,9 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
-public class String2OMElement extends TransformerExtension<String, OMElement> implements
+public class String2OMElement extends BaseTransformer<String, OMElement> implements
     PullTransformer<String, OMElement> {
 
     @SuppressWarnings("unchecked")

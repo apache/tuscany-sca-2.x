@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.extension;
+package org.apache.tuscany.databinding.impl;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;

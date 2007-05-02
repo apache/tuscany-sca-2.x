@@ -22,12 +22,12 @@ package org.apache.tuscany.databinding.axiom;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.ExceptionHandler;
 import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.impl.BaseDataBinding;
 
 /**
  * DataBinding for AXIOM
  */
-public class AxiomDataBinding extends DataBindingExtension {
+public class AxiomDataBinding extends BaseDataBinding {
     
     public static final String NAME = OMElement.class.getName();
     public static final String[] ALIASES = new String[] {"axiom"};
@@ -37,7 +37,7 @@ public class AxiomDataBinding extends DataBindingExtension {
     }
 
     /**
-     * @see org.apache.tuscany.databinding.extension.DataBindingExtension#getWrapperHandler()
+     * @see org.apache.tuscany.databinding.impl.BaseDataBinding#getWrapperHandler()
      */
     @Override
     public WrapperHandler getWrapperHandler() {

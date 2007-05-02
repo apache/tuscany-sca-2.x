@@ -24,7 +24,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.extension.Java2SimpleTypeTransformer;
+import org.apache.tuscany.databinding.impl.Java2SimpleTypeTransformer;
 
 /**
  * Transformer to convert data from an simple OMElement to Java Object

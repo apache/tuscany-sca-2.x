@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
-import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
+import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.spi.ObjectCreationException;
@@ -38,7 +38,7 @@ import org.w3c.dom.Node;
 public class ScriptPropertyValueObjectFactory {
     // protected DataBindingRegistry dbRegistry = new DataBindingRegistryImpl();
     protected Mediator mediator = null;
-    protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperExtension();
+    protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
     boolean isSimpleType;
     
     public ScriptPropertyValueObjectFactory(Mediator mediator) {
@@ -95,7 +95,7 @@ public class ScriptPropertyValueObjectFactory {
     
     private boolean isSimpleType(Property property) {
         if (property.getXSDType() != null) {
-            return SimpleTypeMapperExtension.isSimpleXSDType(property.getXSDType());
+            return SimpleTypeMapperImpl.isSimpleXSDType(property.getXSDType());
         } else {
             if (property instanceof Document) {
                 Document doc = (Document)property;
@@ -139,7 +139,7 @@ public class ScriptPropertyValueObjectFactory {
     }
     
     public abstract class ObjectFactoryImplBase  implements ObjectFactory {
-        protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperExtension();
+        protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
         protected Property property;
         protected Object propertyValue;
         protected Class javaType;

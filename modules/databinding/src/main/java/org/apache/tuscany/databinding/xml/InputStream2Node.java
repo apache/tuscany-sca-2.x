@@ -27,14 +27,14 @@ import javax.xml.transform.sax.SAXSource;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
  * Push DOM InputSource to Node
  */
-public class InputStream2Node extends TransformerExtension<InputStream, Node> implements
+public class InputStream2Node extends BaseTransformer<InputStream, Node> implements
     PullTransformer<InputStream, Node> {
     private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
 

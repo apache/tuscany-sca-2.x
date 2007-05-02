@@ -23,14 +23,14 @@ import java.io.StringReader;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
 /**
  * Transform XML string to SAX
  */
-public class String2SAX extends TransformerExtension<String, ContentHandler> implements
+public class String2SAX extends BaseTransformer<String, ContentHandler> implements
     PushTransformer<String, ContentHandler> {
 
     public void transform(String source, ContentHandler target, TransformationContext context) {

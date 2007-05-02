@@ -24,7 +24,7 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.apache.tuscany.databinding.sdo.SDOContextHelper;
 
 import commonj.sdo.helper.HelperContext;
@@ -34,7 +34,7 @@ import commonj.sdo.helper.XMLDocument;
  * SDO XMLDocument --> AXIOM OMElement transformer
  * @version $Rev$ $Date$
  */
-public class XMLDocument2OMElement extends TransformerExtension<XMLDocument, OMElement> implements
+public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElement> implements
     PullTransformer<XMLDocument, OMElement> {
 
     public OMElement transform(XMLDocument source, TransformationContext context) {

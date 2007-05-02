@@ -79,10 +79,10 @@ public class MediatorImplTestCase extends TestCase {
         super.setUp();
 
         TransformerExtensionPoint registry = new DefaultTransformerExtensionPoint();
-        registry.registerTransformer(new String2SAX());
-        registry.registerTransformer(new SAX2DOMPipe());
-        registry.registerTransformer(new Node2String());
-        registry.registerTransformer(new Node2Writer());
+        registry.addTransformer(new String2SAX());
+        registry.addTransformer(new SAX2DOMPipe());
+        registry.addTransformer(new Node2String());
+        registry.addTransformer(new Node2Writer());
 
         mediator = new MediatorImpl();
         mediator.setTransformerRegistry(registry);

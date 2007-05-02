@@ -31,13 +31,13 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
 /**
  * Transformer to convert data from a JavaBean object to xml
  */
-public abstract class JavaBean2XMLTransformer<T> extends TransformerExtension<Object, T> implements
+public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object, T> implements
         PullTransformer<Object, T> {
 
     public static final String GET = "get";
@@ -47,10 +47,10 @@ public abstract class JavaBean2XMLTransformer<T> extends TransformerExtension<Ob
     public static final String HTTP = "http://";
     private static int prefixCount = 1;
     
-    protected SimpleTypeMapperExtension mapper;
+    protected SimpleTypeMapperImpl mapper;
 
     public JavaBean2XMLTransformer() {
-        this.mapper = new SimpleTypeMapperExtension();
+        this.mapper = new SimpleTypeMapperImpl();
     }
 
     public T transform(Object source, TransformationContext context) {

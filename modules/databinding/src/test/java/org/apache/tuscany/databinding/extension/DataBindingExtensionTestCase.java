@@ -22,7 +22,7 @@ package org.apache.tuscany.databinding.extension;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.easymock.EasyMock;
@@ -52,7 +52,7 @@ public class DataBindingExtensionTestCase extends TestCase {
         assertNull(binding1.getWrapperHandler());
         
         DataBindingExtensionPoint registry = EasyMock.createMock(DataBindingExtensionPoint.class);
-        registry.register(binding1);
+        registry.addDataBinding(binding1);
         EasyMock.expect(registry.getDataBinding(Node.class.getName())).andReturn(binding1);
         EasyMock.replay(registry);
         
@@ -64,7 +64,7 @@ public class DataBindingExtensionTestCase extends TestCase {
         assertEquals("dom", binding2.getName());
     }
 
-    private static class DataBinding1 extends DataBindingExtension {
+    private static class DataBinding1 extends BaseDataBinding {
 
         /**
          * @param baseType

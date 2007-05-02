@@ -53,7 +53,7 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
         DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        dataBindingRegistry.register(new SDODataBinding());
+        dataBindingRegistry.addDataBinding(new SDODataBinding());
 
         StAXArtifactProcessorExtensionPoint processorRegistry = registry
             .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -61,13 +61,13 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         processorRegistry.addExtension(new ImportSDOProcessor(contextRegistry));
 
         TransformerExtensionPoint transformerRegistry = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformerRegistry.registerTransformer(new DataObject2String());
-        transformerRegistry.registerTransformer(new DataObject2XMLStreamReader());
-        transformerRegistry.registerTransformer(new XMLDocument2String());
-        transformerRegistry.registerTransformer(new String2DataObject());
-        transformerRegistry.registerTransformer(new XMLDocument2XMLStreamReader());
-        transformerRegistry.registerTransformer(new XMLStreamReader2DataObject());
-        transformerRegistry.registerTransformer(new XMLStreamReader2XMLDocument());
+        transformerRegistry.addTransformer(new DataObject2String());
+        transformerRegistry.addTransformer(new DataObject2XMLStreamReader());
+        transformerRegistry.addTransformer(new XMLDocument2String());
+        transformerRegistry.addTransformer(new String2DataObject());
+        transformerRegistry.addTransformer(new XMLDocument2XMLStreamReader());
+        transformerRegistry.addTransformer(new XMLStreamReader2DataObject());
+        transformerRegistry.addTransformer(new XMLStreamReader2XMLDocument());
         
         JavaClassIntrospectorExtensionPoint introspectorExtensionPoint = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();

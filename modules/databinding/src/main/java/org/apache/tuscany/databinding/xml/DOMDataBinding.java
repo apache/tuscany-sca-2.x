@@ -22,14 +22,14 @@ package org.apache.tuscany.databinding.xml;
 import org.w3c.dom.Node;
 
 import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.impl.BaseDataBinding;
 
 /**
  * DOM DataBinding
  *
  * @version $Rev$ $Date$
  */
-public class DOMDataBinding extends DataBindingExtension {
+public class DOMDataBinding extends BaseDataBinding {
     public static final String NAME = Node.class.getName();
     public static final String[] ALIASES = new String[] {"dom"};
 

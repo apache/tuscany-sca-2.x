@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.util.XMLType;
 
@@ -32,7 +32,7 @@ import org.apache.tuscany.interfacedef.util.XMLType;
  * 
  * @version $Rev$ $Date$
  */
-public class StAXDataBinding extends DataBindingExtension {
+public class StAXDataBinding extends BaseDataBinding {
     public static final String NAME = XMLStreamReader.class.getName();
     public static final String[] ALIASES = new String[] {"stax"};
 

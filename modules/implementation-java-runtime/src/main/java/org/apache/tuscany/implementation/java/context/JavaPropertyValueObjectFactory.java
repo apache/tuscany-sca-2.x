@@ -30,8 +30,8 @@ import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.databinding.impl.MediatorImpl;
+import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.databinding.javabeans.DOMNode2JavaBeanTransformer;
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.databinding.xml.DOMDataBinding;
@@ -48,7 +48,7 @@ import org.w3c.dom.Node;
 public class JavaPropertyValueObjectFactory {
     // protected DataBindingRegistry dbRegistry = new DataBindingRegistryImpl();
     protected Mediator mediator = null;
-    protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperExtension();
+    protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
     boolean isSimpleType;
     
     
@@ -101,7 +101,7 @@ public class JavaPropertyValueObjectFactory {
     
     private boolean isSimpleType(Property property) {
         if (property.getXSDType() != null) {
-            return SimpleTypeMapperExtension.isSimpleXSDType(property.getXSDType());
+            return SimpleTypeMapperImpl.isSimpleXSDType(property.getXSDType());
         } else {
             if (property instanceof Document) {
                 Document doc = (Document)property;
@@ -145,7 +145,7 @@ public class JavaPropertyValueObjectFactory {
     }
     
     public abstract class ObjectFactoryImplBase  implements ObjectFactory {
-        protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperExtension();
+        protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
         protected Property property;
         protected Object propertyValue;
         protected Class javaType;
@@ -163,7 +163,7 @@ public class JavaPropertyValueObjectFactory {
                     new XMLType(null, this.property.getXSDType()));
             TypeInfo typeInfo = null;
             if (this.property.getXSDType() != null) {
-                if (SimpleTypeMapperExtension.isSimpleXSDType(this.property.getXSDType())) {
+                if (SimpleTypeMapperImpl.isSimpleXSDType(this.property.getXSDType())) {
                     typeInfo = new TypeInfo(property.getXSDType(), true, null);
                 } else {
                     typeInfo = new TypeInfo(property.getXSDType(), false, null);

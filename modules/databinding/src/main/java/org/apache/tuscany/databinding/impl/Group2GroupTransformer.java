@@ -22,14 +22,13 @@ package org.apache.tuscany.databinding.impl;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.interfacedef.DataType;
 
 /**
  * This is a special transformer to transform the output from one IDL to the
  * other one
  */
-public class Group2GroupTransformer extends TransformerExtension<Object, Object> implements
+public class Group2GroupTransformer extends BaseTransformer<Object, Object> implements
     PullTransformer<Object, Object> {
 
     protected Mediator mediator;
@@ -59,7 +58,7 @@ public class Group2GroupTransformer extends TransformerExtension<Object, Object>
     }
 
     /**
-     * @see org.apache.tuscany.databinding.extension.TransformerExtension#getSourceType()
+     * @see org.apache.tuscany.databinding.impl.BaseTransformer#getSourceType()
      */
     @Override
     protected Class getSourceType() {
@@ -67,7 +66,7 @@ public class Group2GroupTransformer extends TransformerExtension<Object, Object>
     }
 
     /**
-     * @see org.apache.tuscany.databinding.extension.TransformerExtension#getTargetType()
+     * @see org.apache.tuscany.databinding.impl.BaseTransformer#getTargetType()
      */
     @Override
     protected Class getTargetType() {

@@ -21,7 +21,7 @@ package org.apache.tuscany.databinding.javabeans;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.tuscany.databinding.extension.DOMHelper;
+import org.apache.tuscany.databinding.impl.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

@@ -25,9 +25,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
-public class XMLStreamReader2JAXB extends TransformerExtension<XMLStreamReader, Object> implements
+public class XMLStreamReader2JAXB extends BaseTransformer<XMLStreamReader, Object> implements
     PullTransformer<XMLStreamReader, Object> {
 
     public XMLStreamReader2JAXB() {

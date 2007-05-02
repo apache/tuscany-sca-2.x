@@ -28,7 +28,7 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.extension.DOMHelper;
+import org.apache.tuscany.databinding.impl.DOMHelper;
 import org.apache.tuscany.databinding.impl.PipedTransformer;
 import org.apache.tuscany.databinding.xml.Node2Writer;
 import org.apache.tuscany.databinding.xml.StreamDataPipe;

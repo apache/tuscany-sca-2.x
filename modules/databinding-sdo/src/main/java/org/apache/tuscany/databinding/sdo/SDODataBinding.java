@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.databinding.ExceptionHandler;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.util.XMLType;
 
@@ -42,7 +42,7 @@ import commonj.sdo.impl.HelperProvider;
  * 
  * @version $Reve$ $Date$
  */
-public class SDODataBinding extends DataBindingExtension {
+public class SDODataBinding extends BaseDataBinding {
     public static final String NAME = DataObject.class.getName();
     public static final String[] ALIASES = new String[] {"sdo"};
     

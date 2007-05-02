@@ -26,12 +26,12 @@ import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
 /**
  * Transformer to convert data from an OMElement to XML String
  */
-public class OMElement2String extends TransformerExtension<OMElement, String> implements PullTransformer<OMElement, String> {
+public class OMElement2String extends BaseTransformer<OMElement, String> implements PullTransformer<OMElement, String> {
     // private XmlOptions options;
     
     public String transform(OMElement source, TransformationContext context) {

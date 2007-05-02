@@ -44,7 +44,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         return bindings.get(id.toLowerCase());
     }
 
-    public void register(DataBinding dataBinding) {
+    public void addDataBinding(DataBinding dataBinding) {
         bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
         String[] aliases = dataBinding.getAliases();
         if (aliases != null) {
@@ -54,7 +54,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         }
     }
 
-    public DataBinding unregister(String id) {
+    public DataBinding removeDataBinding(String id) {
         if (id == null) {
             return null;
         }

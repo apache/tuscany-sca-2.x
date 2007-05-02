@@ -23,13 +23,13 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML XMLStreamReader
  */
-public class XMLStreamReader2Node extends TransformerExtension<XMLStreamReader, Node> implements
+public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node> implements
     PullTransformer<XMLStreamReader, Node> {
     private SAX2DOMPipe pipe = new SAX2DOMPipe();
 
