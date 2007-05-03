@@ -19,7 +19,6 @@
 package echo;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
