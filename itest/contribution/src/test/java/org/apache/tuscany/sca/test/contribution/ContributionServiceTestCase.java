@@ -212,8 +212,9 @@ public class ContributionServiceTestCase extends TestCase {
         
         DeployedArtifact artifact = null;
         Contribution contribution = contributionService.getContribution(contributionId);
+        String id = artifactId.toString();
         for (DeployedArtifact a: contribution.getArtifacts()) {
-            if (artifactId.equals(a.getURI())) {
+            if (id.equals(a.getURI())) {
                 artifact = a;
                 break;
             }
