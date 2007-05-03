@@ -19,10 +19,59 @@
 
 package echo;
 
-import org.apache.tuscany.assembly.impl.BindingImpl;
+import java.util.Collections;
+import java.util.List;
 
-public class EchoBindingImpl extends BindingImpl implements EchoBinding {
-    public Object clone() {
-        return this;
+import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.policy.PolicySet;
+
+/**
+ * Implementation of the Echo binding model.
+ *
+ * @version $Rev$ $Date$
+ */
+public class EchoBindingImpl implements EchoBinding {
+    
+    private String name;
+    private String uri;
+
+    public String getName() {
+        return name;
     }
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        // The sample binding does not support policies
+        return Collections.emptyList();
+    }
+
+    public List<Intent> getRequiredIntents() {
+        // The sample binding does not support policies
+        return Collections.emptyList();
+    }
+    
+    public List<Object> getExtensions() {
+        // The sample binding does not support extensions
+        return Collections.emptyList();
+    }
+
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        // The sample binding is always resolved
+    }
+
 }

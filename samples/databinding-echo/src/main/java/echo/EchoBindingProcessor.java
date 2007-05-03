@@ -27,9 +27,13 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
+/**
+ * A processor for <binding.echo> elements.
+ * 
+ * @version $Rev$ $Date$
+ */
 public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> {
     private final EchoBindingFactory factory;
 
@@ -42,7 +46,7 @@ public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> 
     }
 
     public QName getArtifactType() {
-        return EchoConstants.BINDING_ECHO;
+        return EchoBinding.BINDING_ECHO;
     }
 
     public Class<EchoBinding> getModelType() {

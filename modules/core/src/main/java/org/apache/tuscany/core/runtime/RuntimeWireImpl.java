@@ -23,20 +23,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
-import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.SCABinding;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 
 /**
  * @version $Rev$ $Date$
  */
 public class RuntimeWireImpl implements RuntimeWire {
-    private ComponentReference source;
-    private Binding sourceBinding;
-    private ComponentService target;
-    private Binding targetBinding;
+    private Source wireSource;
+    private Target wireTarget;
+
     private final List<InvocationChain> chains = new ArrayList<InvocationChain>();
     private final List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
 
@@ -44,33 +44,10 @@ public class RuntimeWireImpl implements RuntimeWire {
      * @param source
      * @param target
      */
-    public RuntimeWireImpl(ComponentReference source, ComponentService target) {
+    public RuntimeWireImpl(Source source, Target target) {
         super();
-        this.source = source;
-        this.target = target;
-    }
-
-    /**
-     * Create a wire for a promoted reference
-     * @param source
-     * @param sourceBinding
-     */
-    public RuntimeWireImpl(ComponentReference source,
-                           Binding sourceBinding) {
-        this.source = source;
-        this.sourceBinding = sourceBinding;
-        assert !(sourceBinding instanceof SCABinding);
-    }
-    
-    public RuntimeWireImpl(ComponentReference source,
-                           Binding sourceBinding,
-                           ComponentService target,
-                           Binding targetBinding) {
-        super();
-        this.source = source;
-        this.sourceBinding = sourceBinding;
-        this.target = target;
-        this.targetBinding = targetBinding;
+        this.wireSource = source;
+        this.wireTarget = target;
     }
 
     public List<InvocationChain> getCallbackInvocationChains() {
@@ -81,33 +58,96 @@ public class RuntimeWireImpl implements RuntimeWire {
         return chains;
     }
 
-    public ComponentReference getSource() {
-        return source;
-    }
-
-    public ComponentService getTarget() {
-        return target;
-    }
-
-    public Binding getSourceBinding() {
-        return sourceBinding;
-    }
-
-    public void setSourceBinding(Binding sourceBinding) {
-        this.sourceBinding = sourceBinding;
-    }
-
-    public Binding getTargetBinding() {
-        return targetBinding;
-    }
-
-    public void setTargetBinding(Binding targetBinding) {
-        this.targetBinding = targetBinding;
-    }
-
     public boolean isOptimizable() {
-        // TODO Auto-generated method stub
         return false;
+    }
+
+    public static class SourceImpl implements RuntimeWire.Source {
+        private RuntimeComponent component;
+        private RuntimeComponentReference componentReference;
+        private Binding binding;
+        private InterfaceContract interfaceContract;
+
+        /**
+         * @param component
+         * @param componentReference
+         * @param binding
+         * @param interfaceContract
+         */
+        public SourceImpl(RuntimeComponent component,
+                          RuntimeComponentReference componentReference,
+                          Binding binding,
+                          InterfaceContract interfaceContract) {
+            super();
+            this.component = component;
+            this.componentReference = componentReference;
+            this.binding = binding;
+            this.interfaceContract = interfaceContract;
+        }
+
+        public Binding getBinding() {
+            return binding;
+        }
+
+        public RuntimeComponent getComponent() {
+            return component;
+        }
+
+        public RuntimeComponentReference getComponentReference() {
+            return componentReference;
+        }
+
+        public InterfaceContract getInterfaceContract() {
+            return interfaceContract;
+        }
+    }
+
+    public static class TargetImpl implements RuntimeWire.Target {
+        private RuntimeComponent component;
+        private RuntimeComponentService componentService;
+        private Binding binding;
+        private InterfaceContract interfaceContract;
+
+        /**
+         * @param component
+         * @param componentService
+         * @param binding
+         * @param interfaceContract
+         */
+        public TargetImpl(RuntimeComponent component,
+                          RuntimeComponentService componentService,
+                          Binding binding,
+                          InterfaceContract interfaceContract) {
+            super();
+            this.component = component;
+            this.componentService = componentService;
+            this.binding = binding;
+            this.interfaceContract = interfaceContract;
+        }
+
+        public Binding getBinding() {
+            return binding;
+        }
+
+        public RuntimeComponent getComponent() {
+            return component;
+        }
+
+        public RuntimeComponentService getComponentService() {
+            return componentService;
+        }
+
+        public InterfaceContract getInterfaceContract() {
+            return interfaceContract;
+        }
+    }
+
+    public Source getSource() {
+        return wireSource;
+    }
+
+    public Target getTarget() {
+        return wireTarget;
     }
 
 }

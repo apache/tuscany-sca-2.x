@@ -25,30 +25,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EchoTransport
- *
+ * A sample Echo server, showing how to integrate service bindings. 
+ * 
  * @version $Rev$ $Date$
  */
 public class EchoServer {
-    
+
     public static EchoServer server;
-    
-    private Map<URI, EchoService> services = new HashMap<URI, EchoService>(); 
-    
+
+    private Map<URI, EchoService> services = new HashMap<URI, EchoService>();
+
     public static void start() {
         server = new EchoServer();
     }
-    
+
     public static void stop() {
         server = null;
     }
-    
+
     public static EchoServer getServer() {
         return server;
     }
 
     /**
      * Register a service under the given name.
+     * 
      * @param service
      * @param name
      */
@@ -56,15 +57,19 @@ public class EchoServer {
         services.put(name, service);
     }
 
+    public void unregister(URI name) {
+        services.remove(name);
+    }
+
     /**
      * Dispatch an incoming interaction to the corresponding service.
+     * 
      * @param uri
      * @param input
      * @return
      */
-    public String sendReceive(String composite, String service, String input) throws InvocationTargetException {
-        URI uri = URI.create("/" + composite + "/#" + service);
-        return services.get(uri).sendReceive(input);
+    public String sendReceive(String uri, String input) throws InvocationTargetException {
+        return services.get(URI.create(uri)).sendReceive(input);
     }
 
 }

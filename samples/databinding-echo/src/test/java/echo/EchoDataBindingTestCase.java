@@ -20,7 +20,7 @@ package echo;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
@@ -31,19 +31,18 @@ public class EchoDataBindingTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        SCARuntime.start("EchoDataBinding.composite");
+        SCARuntimeActivator.start("EchoDataBinding.composite");
     }
 
     @Override
     protected void tearDown() throws Exception {
-        SCARuntime.stop();
+        SCARuntimeActivator.stop();
     }
 
     protected Interface1 componentA;
 
     public void testTransform() {
- // TODO: fails due to trying to instantiate an OMElement
-        ComponentContext context = SCARuntime.getComponentContext("ComponentA");
+        ComponentContext context = SCARuntimeActivator.getComponentContext("ComponentA");
         ServiceReference<Interface1> ref = context.createSelfReference(Interface1.class);
         componentA = ref.getService();
         componentA.call("<message><foo>123</foo></message>");

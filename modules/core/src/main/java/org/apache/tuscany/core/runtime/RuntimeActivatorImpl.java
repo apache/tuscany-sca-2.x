@@ -39,8 +39,9 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
+import org.apache.tuscany.core.WireProcessorExtensionPoint;
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.invocation.DefaultWireProcessorExtensionPoint;
 import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.core.scope.AbstractScopeContainer;
 import org.apache.tuscany.core.scope.CompositeScopeContainer;
@@ -61,7 +62,6 @@ import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;
 
@@ -119,25 +119,26 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         extensionPointRegistry.addExtensionPoint(WorkContext.class, workContext);
 
         WorkContextTunnel.setThreadWorkContext(workContext);
-        
-        extensionPointRegistry.addExtensionPoint(ProxyFactory.class, new JDKProxyService(workContext, interfaceContractMapper));
+
+        extensionPointRegistry.addExtensionPoint(ProxyFactory.class, new JDKProxyService(workContext,
+                                                                                         interfaceContractMapper));
 
         workManager = new ThreadPoolWorkManager(10);
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
 
-        WirePostProcessorRegistry wirePostProcessorRegistry = new WirePostProcessorRegistryImpl();
-        extensionPointRegistry.addExtensionPoint(WirePostProcessorRegistry.class, wirePostProcessorRegistry);
+        WireProcessorExtensionPoint wireProcessorExtensionPoint = new DefaultWireProcessorExtensionPoint();
+        extensionPointRegistry.addExtensionPoint(WireProcessorExtensionPoint.class, wireProcessorExtensionPoint);
 
         // Create the composite activator
         compositeActivator = new DefaultCompositeActivator(assemblyFactory, interfaceContractMapper, workContext,
-                                                           workScheduler, wirePostProcessorRegistry);
+                                                           workScheduler, wireProcessorExtensionPoint);
 
         // Create the default SCA domain
         domain = assemblyFactory.createComposite();
         domain.setName(new QName(Constants.SCA_NS, "sca.domain"));
         domain.setURI("sca://local/");
     }
-    
+
     public <B> B locateService(Class<B> businessInterface, String componentName, String serviceName) {
         return getComponentContext(componentName).createSelfReference(businessInterface, serviceName).getService();
     }
@@ -145,7 +146,7 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
     public <B> B locateService(Class<B> businessInterface, String componentName) {
         return getComponentContext(componentName).createSelfReference(businessInterface).getService();
     }
-    
+
     public void start() throws ActivationException {
         activators = getInstances(hostClassLoader, ModuleActivator.class);
         for (ModuleActivator activator : activators) {
