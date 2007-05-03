@@ -30,10 +30,7 @@ import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.Implementation;
-import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
@@ -188,37 +185,11 @@ public class DefaultCompositeActivator implements CompositeActivator {
             } else {
                 // createSelfReferences(component);
                 for (ComponentReference reference : component.getReferences()) {
-                    // FIXME: ComponentReference.getBindings() should return the effective bindings
-//                    for (Binding binding : reference.getBindings()) {
-                for (Binding binding : getBindings(reference)) {
+                    for (Binding binding : reference.getBindings()) {
                         createWires(component, reference, binding);
                     }
                 }
             }
-        }
-    }
-
-    public void createSelfReferences(Component component) {
-        for (ComponentService service : component.getServices()) {
-            ComponentReference ref = assemblyFactory.createComponentReference();
-            ref.setName("$self$_" + service.getName());
-            ref.getBindings().addAll(service.getBindings());
-            ref.getTargets().add(service);
-            ref.getPolicySets().addAll(service.getPolicySets());
-            ref.getRequiredIntents().addAll(service.getRequiredIntents());
-            ref.setInterfaceContract(service.getInterfaceContract());
-            ref.setMultiplicity(Multiplicity.ONE_ONE);
-            component.getReferences().add(ref);
-        }
-    }
-    
-    private List<Binding> getBindings(ComponentReference reference) {
-        List<CompositeReference> list = reference.promotedAs();
-        if(!list.isEmpty()) {
-            CompositeReference compositeReference = list.get(0);
-            return compositeReference.getBindings();
-        } else {
-            return reference.getBindings();
         }
     }
 

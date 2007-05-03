@@ -34,7 +34,6 @@ import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
 /**
@@ -89,10 +88,6 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
     
     public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {
         extensionProcessor.resolve(componentType, resolver);
-    }
-    
-    public void wire(ComponentType componentType) throws ContributionWireException {
-        extensionProcessor.wire(componentType);
     }
     
     public String getArtifactType() {

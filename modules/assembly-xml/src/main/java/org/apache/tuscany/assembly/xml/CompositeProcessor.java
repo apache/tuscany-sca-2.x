@@ -483,7 +483,12 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         resolveContracts(composite.getReferences(), resolver);
     }
 
-    public void wire(Composite composite) throws ContributionWireException {
+    /**
+     * FIXME temporarily here, needs to move to CompositeUtil.
+     * @param composite
+     * @throws ContributionWireException
+     */
+    public void configureAndWire(Composite composite) throws ContributionWireException {
         
         // Process the composite configuration
         CompositeUtil compositeUtil = new CompositeUtil(assemblyFactory, interfaceContractMapper);

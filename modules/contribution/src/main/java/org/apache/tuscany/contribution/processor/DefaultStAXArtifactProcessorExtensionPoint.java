@@ -33,7 +33,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.contribution.service.UnrecognizedElementException;
 
@@ -101,18 +100,6 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         }
     }
     
-    public void wire(Object model) throws ContributionWireException {
-
-        // Delegate to the processor associated with the model type
-        if (model != null) {
-            StAXArtifactProcessorExtension<Object> processor = 
-                (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
-            if (processor != null) {
-                processor.wire(model);
-            }
-        }
-    }
-
     /**
      * Read a model from an input stream.
      * @param is

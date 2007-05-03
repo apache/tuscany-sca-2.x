@@ -53,6 +53,7 @@ import org.w3c.dom.Element;
 public class ReadAllTestCase extends TestCase {
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     private DefaultArtifactResolver resolver; 
+    private CompositeProcessor compositeProcessor;
 
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
@@ -60,7 +61,8 @@ public class ReadAllTestCase extends TestCase {
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
         
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        staxProcessors.addExtension(compositeProcessor);
         staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
 
@@ -168,7 +170,7 @@ public class ReadAllTestCase extends TestCase {
         Composite composite = staxProcessors.read(is, Composite.class);
         assertNotNull(composite);
         staxProcessors.resolve(composite, resolver);
-        staxProcessors.wire(composite);
+        compositeProcessor.configureAndWire(composite);
 
         Component calcComponent = composite.getComponents().get(0);
         CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);

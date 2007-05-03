@@ -47,13 +47,16 @@ public class WriteAllTestCase extends TestCase {
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
+    private CompositeProcessor compositeProcessor;
+
 
     public void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
         mapper = new DefaultInterfaceContractMapper();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        staxProcessors.addExtension(compositeProcessor);
         staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
@@ -78,7 +81,7 @@ public class WriteAllTestCase extends TestCase {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = staxProcessors.read(is, Composite.class);
         staxProcessors.resolve(composite, resolver);
-        staxProcessors.wire(composite);
+        compositeProcessor.configureAndWire(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessors.write(composite, bos);
     }
@@ -87,7 +90,6 @@ public class WriteAllTestCase extends TestCase {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         ComponentType componentType = staxProcessors.read(is, ComponentType.class);
         staxProcessors.resolve(componentType, resolver);
-        staxProcessors.wire(componentType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessors.write(componentType, bos);
     }
@@ -96,7 +98,6 @@ public class WriteAllTestCase extends TestCase {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = staxProcessors.read(is, ConstrainingType.class);
         staxProcessors.resolve(constrainingType, resolver);
-        staxProcessors.wire(constrainingType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessors.write(constrainingType, bos);
     }

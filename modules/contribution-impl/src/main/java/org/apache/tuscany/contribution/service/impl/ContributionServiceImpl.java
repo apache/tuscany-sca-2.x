@@ -266,8 +266,6 @@ public class ContributionServiceImpl implements ContributionService {
 
         processReadPhase(contribution, contributionArtifacts);
         processResolvePhase(contribution);
-        processOptimizationPhase(contribution);
-        
         processDeployables(contribution);
         
         // store the contribution on the registry
@@ -327,19 +325,6 @@ public class ContributionServiceImpl implements ContributionService {
         
         contribution.getDeployables().clear();
         contribution.getDeployables().addAll(resolvedDeployables);
-    }
-
-    /**
-     * @param contribution
-     * @throws ContributionException
-     */
-    private void processOptimizationPhase(Contribution contribution) throws ContributionException {
-        // for each artifact that was processed on the contribution
-        for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
-            // resolve the model object
-            this.artifactProcessor.wire(artifact.getModelObject());
-        }
-
     }
 
     /**
