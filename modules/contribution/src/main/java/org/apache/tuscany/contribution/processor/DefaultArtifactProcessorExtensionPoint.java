@@ -28,8 +28,10 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 abstract class DefaultArtifactProcessorExtensionPoint {
-    protected final Map<Object, ArtifactProcessorExtension> processorsByArtifactType = new HashMap<Object, ArtifactProcessorExtension>();
-    protected final Map<Class<?>, ArtifactProcessorExtension> processorsByModelType = new HashMap<Class<?>, ArtifactProcessorExtension>();
+    protected final Map<Object, ArtifactProcessorExtension> processorsByArtifactType = 
+        new HashMap<Object, ArtifactProcessorExtension>();
+    protected final Map<Class<?>, ArtifactProcessorExtension> processorsByModelType = 
+        new HashMap<Class<?>, ArtifactProcessorExtension>();
 
     /**
      * Constructs a new loader registry.
@@ -53,10 +55,11 @@ abstract class DefaultArtifactProcessorExtensionPoint {
      */
     protected ArtifactProcessorExtension getProcessor(Class<?> modelType) {
         Class<?>[] classes = modelType.getInterfaces();
-        for (Class<?> c: classes) {
+        for (Class<?> c : classes) {
             ArtifactProcessorExtension processor = processorsByModelType.get(c);
-            if (processor != null)
+            if (processor != null) {
                 return processor;
+            }
         }
         return processorsByModelType.get(modelType);
     }

@@ -32,7 +32,7 @@ public class ContributionImportImpl implements ContributionImport {
     private String namespace; // The namespace to be imported
     private URI location; // Optional location to hint the where it should be imported
     
-    protected ContributionImportImpl(){
+    protected ContributionImportImpl() {
         
     }
     

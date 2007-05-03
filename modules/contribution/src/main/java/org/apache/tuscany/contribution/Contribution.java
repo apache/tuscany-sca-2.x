@@ -30,46 +30,46 @@ import org.apache.tuscany.assembly.Composite;
  *
  * @version $Rev$ $Date$
  */
-public interface Contribution extends Artifact{
-    public static final String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
-    public static final String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
+public interface Contribution extends Artifact {
+    String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
+    String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
 
     
     /**
      * Get a list of exports based on the Contribution metadata sidefile
      * @return
      */
-    public List<String> getExports();
+    List<String> getExports();
 
     /**
      * Get a list of imports based on the Contribution metadata sidefile
      * @return
      */
-    public List<ContributionImport> getImports();
+    List<ContributionImport> getImports();
     
     /**
      * Get a list of deployables for the contribution
      * This is based on the contribution medatata sidefile, or all Composites available on the contribution
      * @return
      */
-    public List<Composite> getDeployables();
+    List<Composite> getDeployables();
 
     /**
      * Add an deployedArtifact to the contribution
      * @param artifact
      */
-    public void addArtifact(DeployedArtifact artifact);
+    void addArtifact(DeployedArtifact artifact);
 
     /**
      * Get a list of artifacts from the contribution
      * @return
      */
-    public Map<URI, DeployedArtifact> getArtifacts();
+    Map<URI, DeployedArtifact> getArtifacts();
     
     /**
      * Get a deployed artifact based on it's URI
      * @param uri
      * @return
      */
-    public DeployedArtifact getArtifact(URI uri);
+    DeployedArtifact getArtifact(URI uri);
 }

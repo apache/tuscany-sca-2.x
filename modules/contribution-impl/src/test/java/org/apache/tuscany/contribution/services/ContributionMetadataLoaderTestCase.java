@@ -65,7 +65,8 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
     public void testLoad() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
-        ContributionMetadataLoaderImpl loader = new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new DefaultContributionFactory());
+        ContributionMetadataLoaderImpl loader = 
+            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new DefaultContributionFactory());
         Contribution contribution = loader.load(reader);
         assertNotNull(contribution);
         assertEquals(1, contribution.getImports().size());
@@ -75,7 +76,8 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
 
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
-        ContributionMetadataLoaderImpl loader = new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new DefaultContributionFactory());
+        ContributionMetadataLoaderImpl loader = 
+            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new DefaultContributionFactory());
         try {
             loader.load(reader);
             fail("InvalidException should have been thrown");

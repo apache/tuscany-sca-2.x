@@ -25,7 +25,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
@@ -39,19 +38,20 @@ public class JarContributionPackageProcessorTestCase extends TestCase {
     }
     
     public final void testProcessPackageArtifacts() throws Exception {
-        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint(new PackageTypeDescriberImpl()); 
-        JarContributionProcessor jarProcessor = new JarContributionProcessor(packageProcessors);
+        PackageProcessorExtensionPoint packageProcessors = 
+            new DefaultPackageProcessorExtensionPoint(new PackageTypeDescriberImpl()); 
+        JarContributionProcessor jarProcessor = 
+            new JarContributionProcessor(packageProcessors);
 
         URL jarURL = getClass().getResource(JAR_CONTRIBUTION);
         InputStream jarStream = jarURL.openStream();
         List<URI> artifacts = null;
-        try{
+        try {
             artifacts = jarProcessor.getArtifacts(jarURL, jarStream);
-        }finally{
+        } finally {
             IOHelper.closeQuietly(jarStream);
         }
         
         assertNotNull(artifacts);
     }
-    
-    }
+}

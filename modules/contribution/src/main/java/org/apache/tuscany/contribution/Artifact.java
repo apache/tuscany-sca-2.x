@@ -32,24 +32,24 @@ public interface Artifact {
      * Get the URI that unique identifies the artifact
      * @return
      */
-    public URI getUri();
+    URI getUri();
     
     /**
      * Set the URI that unique identifies the artifact
      * @param uri
      */
-    public void setURI(URI uri);
+    void setURI(URI uri);
 
     /**
      * Get the URL location for the artifact
      * @return
      */
-    public URL getLocation();
+    URL getLocation();
     
     /**
      * Set the URL location for the artifact
      * @param location
      */
-    public void setLocation(URL location);
+    void setLocation(URL location);
 
 }

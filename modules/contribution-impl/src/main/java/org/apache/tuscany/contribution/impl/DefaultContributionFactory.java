@@ -27,7 +27,7 @@ import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.DeployedArtifact;
 
 public class DefaultContributionFactory implements ContributionFactory {
-    public DefaultContributionFactory(){
+    public DefaultContributionFactory() {
         
     }
         
@@ -53,7 +53,7 @@ public class DefaultContributionFactory implements ContributionFactory {
         return deployedArtifact;
     }
     
-    public ContributionImport createContributionImport(){
+    public ContributionImport createContributionImport() {
         return new ContributionImportImpl();
     }
 }

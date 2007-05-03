@@ -122,7 +122,8 @@ public class ContributionServiceImpl implements ContributionService {
         addContribution(contributionURI, sourceURL, null, storeInRepository);
     }
 
-    public void contribute(URI contributionURI, URL sourceURL, InputStream input) throws ContributionException, IOException {
+    public void contribute(URI contributionURI, URL sourceURL, InputStream input) 
+        throws ContributionException, IOException {
         addContribution(contributionURI, sourceURL, input, true);
     }
 
@@ -183,31 +184,20 @@ public class ContributionServiceImpl implements ContributionService {
 
     public void addDeploymentComposite(URI contributionURI, Composite composite) throws ContributionException {
         Contribution contribution = getContribution(contributionURI);
-        
-        if(contribution == null) {
-            throw new InvalidContributionURIException("Invalid/Inexistent contribution uri '" + contributionURI.toString());
+
+        if (contribution == null) {
+            throw new InvalidContributionURIException("Invalid/Inexistent contribution uri '" 
+                    + contributionURI.toString());
         }
-        
+
         URI compositeURI = contributionURI.resolve(composite.getName().getLocalPart() + ".composite");
         DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact(compositeURI);
         artifact.setModelObject(composite);
-        
+
         contribution.addArtifact(artifact);
-        
+
         contribution.getDeployables().add(composite);
     }
-
-    /*
-     * public <T> T resolve(URI contribution, Class<T> definitionType, String
-     * namespace, String name) { Contribution contributionObject =
-     * getContribution(contribution); return
-     * resolverRegistry.resolve(contributionObject, definitionType, namespace,
-     * name, null); } public URL resolve(URI contribution, String namespace, URI
-     * uri, URI baseURI) { Contribution contributionObject =
-     * getContribution(contribution); return
-     * resolverRegistry.resolve(contributionObject, namespace, uri.toString(),
-     * baseURI.toString()); }
-     */
 
     public <M> M resolve(Class modelClass,
                          Class<M> elementClass,
@@ -331,8 +321,8 @@ public class ContributionServiceImpl implements ContributionService {
         //resolve deployables from contribution metadata
         List<Composite> resolvedDeployables = new ArrayList<Composite>();
         for (Composite deployableComposite : contribution.getDeployables()) {
-            deployableComposite = artifactResolver.resolve(Composite.class, deployableComposite);
-            resolvedDeployables.add(deployableComposite);
+            Composite resolvedDeployable = artifactResolver.resolve(Composite.class, deployableComposite);
+            resolvedDeployables.add(resolvedDeployable);
         }
         
         contribution.getDeployables().clear();
@@ -347,7 +337,7 @@ public class ContributionServiceImpl implements ContributionService {
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
             // resolve the model object
-           this.artifactProcessor.wire(artifact.getModelObject());
+            this.artifactProcessor.wire(artifact.getModelObject());
         }
 
     }
@@ -360,7 +350,7 @@ public class ContributionServiceImpl implements ContributionService {
      * @throws ContributionException
      */
     private void processDeployables(Contribution contribution) throws ContributionException {
-        if (contribution.getDeployables() == null || contribution.getDeployables().size() == 0){
+        if (contribution.getDeployables() == null || contribution.getDeployables().size() == 0) {
             //Contribution metadata not available with a list of deployables
             //Promote all composites to deployable
             for (DeployedArtifact deployedArtifact : contribution.getArtifacts().values()) {

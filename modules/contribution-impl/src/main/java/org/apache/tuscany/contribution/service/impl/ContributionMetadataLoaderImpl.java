@@ -41,10 +41,9 @@ import org.apache.tuscany.contribution.service.ContributionMetadataLoaderExcepti
  * @version $Rev: 515261 $ $Date: 2007-03-06 11:22:46 -0800 (Tue, 06 Mar 2007) $
  */
 public class ContributionMetadataLoaderImpl implements ContributionMetadataLoader {
-    //FIXME use this from constants ?
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     private static final String TARGET_NAMESPACE = "targetNamespace";
-    private static final String NAME = "composite";
+    //private static final String NAME = "composite";
     
     private static final QName CONTRIBUTION = new QName(SCA10_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA10_NS, "deployable");

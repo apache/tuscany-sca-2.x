@@ -24,11 +24,11 @@ import java.net.URL;
 
 import org.apache.tuscany.contribution.Artifact;
 
-public class BaseArtifactImpl implements Artifact {
+public class ArtifactImpl implements Artifact {
     protected URI uri;
     protected URL location;
 
-    protected BaseArtifactImpl(){
+    protected ArtifactImpl() {
         
     }
     

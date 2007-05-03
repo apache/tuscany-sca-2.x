@@ -53,7 +53,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
         String extension = sourceURL.getFile();
         int extensionStart = extension.lastIndexOf('.');
         //handle files without extension (e.g NOTICE)
-        if(extensionStart > 0){
+        if (extensionStart > 0) {
             extension = extension.substring(extensionStart);
             processor = (URLArtifactProcessorExtension<Object>)this.getProcessor(extension);            
         }
@@ -67,7 +67,8 @@ public class DefaultURLArtifactProcessorExtensionPoint
         
         // Delegate to the processor associated with the particular model type
         if (model != null) {
-            URLArtifactProcessorExtension<Object> processor = (URLArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            URLArtifactProcessorExtension<Object> processor = 
+                (URLArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.write(model, outputSource);
             }
@@ -80,7 +81,8 @@ public class DefaultURLArtifactProcessorExtensionPoint
 
         // Delegate to the processor associated with the model type
         if (model != null) {
-            URLArtifactProcessorExtension<Object> processor = (URLArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            URLArtifactProcessorExtension<Object> processor = 
+                (URLArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.resolve(model, resolver);
             }
@@ -91,14 +93,16 @@ public class DefaultURLArtifactProcessorExtensionPoint
 
         // Delegate to the processor associated with the model type
         if (model != null) {
-            URLArtifactProcessorExtension<Object> processor = (URLArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            URLArtifactProcessorExtension<Object> processor = 
+                (URLArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.wire(model);
             }
         }
     }
     
-    public <MO> MO read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<MO> type) throws ContributionReadException {
+    public <MO> MO read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<MO> type) 
+        throws ContributionReadException {
         Object mo = read(contributionURL, artifactURI, artifactUrl);
         if (type.isInstance(mo)) {
             return type.cast(mo);
