@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.contribution.impl;
 
-import java.net.URI;
-
 import org.apache.tuscany.contribution.ContributionImport;
 
 /**
@@ -30,17 +28,16 @@ import org.apache.tuscany.contribution.ContributionImport;
  */
 public class ContributionImportImpl implements ContributionImport {
     private String namespace; // The namespace to be imported
-    private URI location; // Optional location to hint the where it should be imported
+    private String location; // Optional location to hint the where it should be imported
     
     protected ContributionImportImpl() {
-        
     }
     
-    public URI getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(URI location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.contribution.impl;
 
-import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
 
 /**
@@ -28,26 +27,17 @@ import org.apache.tuscany.contribution.DeployedArtifact;
  * @version $Rev: 527398 $ $Date: 2007-04-10 23:43:31 -0700 (Tue, 10 Apr 2007) $
  */
 public class DeployedArtifactImpl extends ArtifactImpl implements DeployedArtifact {
-    protected Contribution contribution;
-    protected Object modelObject;
+    private Object modelObject;
 
     protected DeployedArtifactImpl() {
         super();
     }
     
-    public Contribution getContribution() {
-        return contribution;
-    }
-
-    public void setContribution(Contribution contribution) {
-        this.contribution = contribution;
-    }
-    
-    public Object getModelObject() {
+    public Object getModel() {
         return modelObject;
     }
     
-    public void setModelObject(Object modelObject) {
+    public void setModel(Object modelObject) {
         this.modelObject = modelObject;
     }
 }

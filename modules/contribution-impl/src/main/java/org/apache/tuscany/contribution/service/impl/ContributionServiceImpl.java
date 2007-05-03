@@ -191,10 +191,11 @@ public class ContributionServiceImpl implements ContributionService {
         }
 
         URI compositeURI = contributionURI.resolve(composite.getName().getLocalPart() + ".composite");
-        DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact(compositeURI);
-        artifact.setModelObject(composite);
+        DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact();
+        artifact.setURI(compositeURI.toString());
+        artifact.setModel(composite);
 
-        contribution.addArtifact(artifact);
+        contribution.getArtifacts().add(artifact);
 
         contribution.getDeployables().add(composite);
     }
@@ -243,8 +244,8 @@ public class ContributionServiceImpl implements ContributionService {
         }
 
         Contribution contribution = initializeContributionMetadata(locationURL);
-        contribution.setURI(contributionURI);
-        contribution.setLocation(locationURL);
+        contribution.setURI(contributionURI.toString());
+        contribution.setLocation(locationURL.toString());
 
         List<URI> contributionArtifacts = null;
 
@@ -269,7 +270,7 @@ public class ContributionServiceImpl implements ContributionService {
         processDeployables(contribution);
         
         // store the contribution on the registry
-        this.contributionRegistry.put(contribution.getUri(), contribution);
+        this.contributionRegistry.put(URI.create(contribution.getURI()), contribution);
     }
 
     /**
@@ -283,19 +284,21 @@ public class ContributionServiceImpl implements ContributionService {
      */
     private void processReadPhase(Contribution contribution, List<URI> artifacts) throws ContributionException,
         MalformedURLException {
-        URL contributionURL = contribution.getLocation(); 
+        URL contributionURL = new URL(contribution.getLocation()); 
+        URI contributionURI = URI.create(contribution.getURI());
         for (URI a : artifacts) {
-            URL artifactURL = packageProcessor.getArtifactURL(contribution.getLocation(), a);
+            URL artifactURL = packageProcessor.getArtifactURL(new URL(contribution.getLocation()), a);
             Object model = this.artifactProcessor.read(contributionURL, a, artifactURL);
             
             if (model != null) {
                 artifactResolver.add(model);
                 
-                URI artifactURI = contribution.getUri().resolve(a);
-                DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact(artifactURI);
-                artifact.setLocation(artifactURL);
-                artifact.setModelObject(model);
-                contribution.addArtifact(artifact);
+                URI artifactURI = contributionURI.resolve(a);
+                DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact();
+                artifact.setURI(artifactURI.toString());
+                artifact.setLocation(artifactURL.toString());
+                artifact.setModel(model);
+                contribution.getArtifacts().add(artifact);
             }
         }
     }
@@ -309,10 +312,10 @@ public class ContributionServiceImpl implements ContributionService {
      */
     private void processResolvePhase(Contribution contribution) throws ContributionException {
         // for each artifact that was processed on the contribution
-        for (DeployedArtifact artifact : contribution.getArtifacts().values()) {
+        for (DeployedArtifact artifact : contribution.getArtifacts()) {
             // resolve the model object
-            if (artifact.getModelObject() != null) {
-                this.artifactProcessor.resolve(artifact.getModelObject(), artifactResolver);
+            if (artifact.getModel() != null) {
+                this.artifactProcessor.resolve(artifact.getModel(), artifactResolver);
             }
         }
         
@@ -338,8 +341,8 @@ public class ContributionServiceImpl implements ContributionService {
         if (contribution.getDeployables() == null || contribution.getDeployables().size() == 0) {
             //Contribution metadata not available with a list of deployables
             //Promote all composites to deployable
-            for (DeployedArtifact deployedArtifact : contribution.getArtifacts().values()) {
-                Object model = deployedArtifact.getModelObject(); 
+            for (DeployedArtifact deployedArtifact : contribution.getArtifacts()) {
+                Object model = deployedArtifact.getModel(); 
                 if (model instanceof Composite) {
                     contribution.getDeployables().add((Composite) model);
                 }

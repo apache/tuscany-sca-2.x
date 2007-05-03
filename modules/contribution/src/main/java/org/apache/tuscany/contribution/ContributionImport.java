@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.contribution;
 
-import java.net.URI;
 
 /**
  * The representation of an import for the contribution
@@ -27,18 +26,17 @@ import java.net.URI;
  * @version $Rev$ $Date$
  */
 public interface ContributionImport {
-    // TODO: We might need the field to point to the imported artifact/model
 
     /**
      * 
      * @return
      */
-    URI getLocation();
+    String getLocation();
 
     /**
      * @param location
      */
-    void setLocation(URI location);
+    void setLocation(String location);
 
     /**
      * Get Namespace that identifies the import

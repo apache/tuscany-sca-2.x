@@ -40,6 +40,7 @@ import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
@@ -131,13 +132,13 @@ public class ContributionServiceTestCase extends TestCase {
         URI contributionId = URI.create(CONTRIBUTION_001_ID);
         contributionService.contribute(contributionId, contributionLocation, true);
         
-        assertTrue(FileHelper.toFile(contributionService.getContribution(contributionId).getLocation()).exists());
+        assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation())).exists());
 
         assertNotNull(contributionId);
 
         Contribution contributionModel = contributionService.getContribution(contributionId);
         
-        File contributionFile = FileHelper.toFile(contributionModel.getLocation());
+        File contributionFile = FileHelper.toFile(new URL(contributionModel.getLocation()));
         assertTrue(contributionFile.exists());
     }
     
@@ -152,13 +153,13 @@ public class ContributionServiceTestCase extends TestCase {
             IOHelper.closeQuietly(contributionStream);
         }
         
-        assertTrue(FileHelper.toFile(contributionService.getContribution(contributionId).getLocation()).exists());
+        assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation())).exists());
 
         assertNotNull(contributionId);
 
         Contribution contributionModel = contributionService.getContribution(contributionId);
         
-        File contributionFile = FileHelper.toFile(contributionModel.getLocation());
+        File contributionFile = FileHelper.toFile(new URL(contributionModel.getLocation()));
         assertTrue(contributionFile.exists());
     }    
     
@@ -209,8 +210,15 @@ public class ContributionServiceTestCase extends TestCase {
         Composite composite1 = (Composite) deployables.get( deployables.size() -1 );
         assertEquals("contributionComposite", composite1.getName().toString());
         
-        
-        Composite composite2 = (Composite) contributionService.getContribution(contributionId).getArtifact(artifactId).getModelObject();
+        DeployedArtifact artifact = null;
+        Contribution contribution = contributionService.getContribution(contributionId);
+        for (DeployedArtifact a: contribution.getArtifacts()) {
+            if (artifactId.equals(a.getURI())) {
+                artifact = a;
+                break;
+            }
+        }
+        Composite composite2 = (Composite) artifact.getModel();
         assertEquals("contributionComposite", composite2.getName().toString());
     }
 

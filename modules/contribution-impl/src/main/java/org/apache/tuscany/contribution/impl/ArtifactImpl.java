@@ -19,32 +19,28 @@
 
 package org.apache.tuscany.contribution.impl;
 
-import java.net.URI;
-import java.net.URL;
-
 import org.apache.tuscany.contribution.Artifact;
 
-public class ArtifactImpl implements Artifact {
-    protected URI uri;
-    protected URL location;
+public abstract class ArtifactImpl implements Artifact {
+    private String uri;
+    private String location;
 
     protected ArtifactImpl() {
-        
     }
     
-    public URL getLocation() {
+    public String getLocation() {
         return this.location;
     }
 
-    public void setLocation(URL location) {
+    public void setLocation(String location) {
         this.location = location;
     }
     
-    public URI getUri() {
+    public String getURI() {
         return this.uri;
     }
     
-    public void setURI(URI uri) {
+    public void setURI(String uri) {
         this.uri = uri;
     }
 }

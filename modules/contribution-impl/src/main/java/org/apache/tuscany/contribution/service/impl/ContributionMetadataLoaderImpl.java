@@ -20,8 +20,6 @@ package org.apache.tuscany.contribution.service.impl;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.net.URI;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -109,7 +107,7 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
                         String location = reader.getAttributeValue(null, "location");
                         ContributionImport contributionImport = this.contributionFactory.createContributionImport();
                         if (location != null) {
-                            contributionImport.setLocation(URI.create(location));
+                            contributionImport.setLocation(location);
                         }
                         contributionImport.setNamespace(ns);
                         contribution.getImports().add(contributionImport);

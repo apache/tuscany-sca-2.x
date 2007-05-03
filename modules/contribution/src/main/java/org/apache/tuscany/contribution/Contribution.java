@@ -19,9 +19,7 @@
 
 package org.apache.tuscany.contribution;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.assembly.Composite;
 
@@ -55,21 +53,9 @@ public interface Contribution extends Artifact {
     List<Composite> getDeployables();
 
     /**
-     * Add an deployedArtifact to the contribution
-     * @param artifact
-     */
-    void addArtifact(DeployedArtifact artifact);
-
-    /**
      * Get a list of artifacts from the contribution
      * @return
      */
-    Map<URI, DeployedArtifact> getArtifacts();
+    List<DeployedArtifact> getArtifacts();
     
-    /**
-     * Get a deployed artifact based on it's URI
-     * @param uri
-     * @return
-     */
-    DeployedArtifact getArtifact(URI uri);
 }

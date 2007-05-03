@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.contribution;
 
-import java.net.URI;
 
 /**
  * 
@@ -33,23 +32,10 @@ public interface ContributionFactory {
     DeployedArtifact createDeplyedArtifact();
     
     /**
-     * Create a deployedArtifact model object setting it's URI
-     * @return
-     */
-    DeployedArtifact createDeplyedArtifact(URI uri);
-    
-    /**
      * Create a contribution model object
      * @return
      */
     Contribution createContribution();
-    
-    /**
-     * Create a contribution model object setting it's URI
-     * @param uri
-     * @return
-     */
-    Contribution createContribution(URI uri);
     
     /**
      * Create a contribution import model

@@ -179,11 +179,21 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         URL root = getContributionLocation(getApplicationSCDL(), runtimeInfo.getCompositePath());
         contributionService.contribute(uri, root, false);
         Contribution contribution = contributionService.getContribution(uri);
+
         // FIXME: Need to getDeployables() as list of Composites
-        DeployedArtifact artifact = contribution.getArtifact(URI.create(uri + runtimeInfo.getCompositePath()));
+        String artifactURI = uri + runtimeInfo.getCompositePath();
+        DeployedArtifact artifact = null;
+        for (DeployedArtifact a: contribution.getArtifacts()) {
+            //FIXME this loop is temporary, as this whole class is going to be
+            // replaced anyway by MiniRuntimeImpl
+            if (artifactURI.equals(a.getURI())) {
+                artifact = a;
+                break;
+            }
+        }
 
         // Start all components
-        Composite composite = (Composite)artifact.getModelObject();
+        Composite composite = (Composite)artifact.getModel();
         
         wire(composite);
         
