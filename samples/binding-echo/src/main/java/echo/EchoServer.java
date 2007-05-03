@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EchoTransport
+ * A sample Echo server, showing how to integrate service bindings. 
  * 
  * @version $Rev$ $Date$
  */
