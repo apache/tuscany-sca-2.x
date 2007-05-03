@@ -56,6 +56,7 @@ import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.implementation.java.invocation.RuntimeJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
@@ -92,14 +93,12 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         return map;
     }
 
-    public void start(ExtensionPointRegistry extensionPointRegistry) {
-        JDKProxyService proxyFactory = (JDKProxyService) extensionPointRegistry.getExtensionPoint(ProxyFactory.class);
+    public void start(ExtensionPointRegistry registry) {
+        JDKProxyService proxyFactory = (JDKProxyService) registry.getExtensionPoint(ProxyFactory.class);
         
-        JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = extensionPointRegistry
-            .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
 
-        JavaClassIntrospectorExtensionPoint classIntrospector = extensionPointRegistry
-            .getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
+        JavaClassIntrospectorExtensionPoint classIntrospector = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
         BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {
             new ConstructorProcessor(assemblyFactory),
             new AllowsPassByReferenceProcessor(assemblyFactory),
@@ -116,49 +115,43 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             new HeuristicPojoProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
-        for (JavaClassIntrospectorExtension e : extensions) {
-            classIntrospector.addExtension(e);
+        for (JavaClassIntrospectorExtension extension : extensions) {
+            classIntrospector.addExtension(extension);
         }
         
-        DefaultMediator mediator =
-            new DefaultMediator(extensionPointRegistry.getExtensionPoint(DataBindingExtensionPoint.class),
-                             extensionPointRegistry.getExtensionPoint(TransformerExtensionPoint.class));
+        DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
+        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
+        DefaultMediator mediator =new DefaultMediator(dataBindings, transformers);
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
 
-        DataBindingExtensionPoint dataBindingRegistry = extensionPointRegistry.getExtensionPoint(DataBindingExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         
-        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = extensionPointRegistry
-            .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        
-        ScopeRegistry scopeRegistry = extensionPointRegistry.getExtensionPoint(ScopeRegistry.class);
+        ScopeRegistry scopeRegistry = registry.getExtensionPoint(ScopeRegistry.class);
 
-        WorkContext workContext = extensionPointRegistry.getExtensionPoint(WorkContext.class);
-        JavaImplementationFactory javaImplementationFactory = new RuntimeJavaImplementationFactory(assemblyFactory,
-                                                                                                   scopeRegistry,
-                                                                                                   proxyFactory,
-                                                                                                   workContext,
-                                                                                                   dataBindingRegistry,
-                                                                                                   factory);
+        WorkContext workContext = registry.getExtensionPoint(WorkContext.class);
+        JavaImplementationFactory javaImplementationFactory =
+            new RuntimeJavaImplementationFactory(assemblyFactory, scopeRegistry, proxyFactory,
+                                                 workContext, dataBindings, factory);
         JavaImplementationProcessor javaImplementationProcessor =
             new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
-        artifactProcessorRegistry.addExtension(javaImplementationProcessor);
+        processors.addExtension(javaImplementationProcessor);
 
         // FIXME: To be removed
-        org.apache.tuscany.implementation.java.proxy.JDKProxyService proxyService = (org.apache.tuscany.implementation.java.proxy.JDKProxyService)extensionPointRegistry
-            .getExtensionPoint(ProxyService.class);
-        InterfaceContractMapper mapper = extensionPointRegistry.getExtensionPoint(InterfaceContractMapper.class);
+        org.apache.tuscany.implementation.java.proxy.JDKProxyService proxyService =
+            (org.apache.tuscany.implementation.java.proxy.JDKProxyService)registry.getExtensionPoint(ProxyService.class);
+        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
         proxyService.setInterfaceContractMapper(mapper);
         proxyService.setWorkContext(workContext);
 
-        BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);
+        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
         if (builderRegistry != null) {
             JavaComponentBuilder builder = new JavaComponentBuilder();
-            builder.setProxyService(extensionPointRegistry.getExtensionPoint(ProxyService.class));
-            builder.setWorkContext(extensionPointRegistry.getExtensionPoint(WorkContext.class));
+            builder.setProxyService(registry.getExtensionPoint(ProxyService.class));
+            builder.setWorkContext(registry.getExtensionPoint(WorkContext.class));
             builderRegistry.register(JavaImplementation.class, builder);
 
             builder.setPropertyValueObjectFactory(factory);
-            builder.setDataBindingRegistry(dataBindingRegistry);
+            builder.setDataBindingRegistry(dataBindings);
         }
 
     }

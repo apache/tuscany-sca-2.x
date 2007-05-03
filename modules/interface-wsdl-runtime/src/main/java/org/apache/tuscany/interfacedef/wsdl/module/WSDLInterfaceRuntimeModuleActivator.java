@@ -41,20 +41,17 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
         return null;
     }
 
-    /**
-     * @see org.apache.tuscany.core.ModuleActivator#start(org.apache.tuscany.core.ExtensionPointRegistry)
-     */
-    public void start(ExtensionPointRegistry extensionPointRegistry) {
+    public void start(ExtensionPointRegistry registry) {
         
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
         WSDLInterfaceIntrospector interfaceIntrospector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
         
         // Register <interface.wsdl> processor
-        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessors.addExtension(new WSDLInterfaceProcessor(wsdlFactory, interfaceIntrospector));
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.addExtension(new WSDLInterfaceProcessor(wsdlFactory, interfaceIntrospector));
         
         // Register .wsdl document processor 
-        URLArtifactProcessorExtensionPoint documentProcessors = extensionPointRegistry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessors.addExtension(new WSDLDocumentProcessor(wsdlFactory, null));
     }
 

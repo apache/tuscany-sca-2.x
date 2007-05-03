@@ -50,9 +50,7 @@ public class ScriptModuleActivator implements ModuleActivator {
         DefaultMediator mediator = new DefaultMediator(dataBindings, transformers);
         ScriptPropertyValueObjectFactory factory = new ScriptPropertyValueObjectFactory(mediator);
         builder.setPropertyValueObjectFactory(factory);
-
-        DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        builder.setDataBindingRegistry(dataBindingRegistry);
+        builder.setDataBindingRegistry(dataBindings);
         
         builder.init();
     }
