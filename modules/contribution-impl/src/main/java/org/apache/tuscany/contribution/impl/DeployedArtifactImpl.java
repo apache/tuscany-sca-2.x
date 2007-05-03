@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.contribution.impl;
 
-import java.net.URI;
-
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
 
@@ -29,7 +27,7 @@ import org.apache.tuscany.contribution.DeployedArtifact;
  *
  * @version $Rev: 527398 $ $Date: 2007-04-10 23:43:31 -0700 (Tue, 10 Apr 2007) $
  */
-public class DeployedArtifactImpl extends BaseArtifactImpl implements DeployedArtifact {
+public class DeployedArtifactImpl extends ArtifactImpl implements DeployedArtifact {
     protected Contribution contribution;
     protected Object modelObject;
 
@@ -49,7 +47,7 @@ public class DeployedArtifactImpl extends BaseArtifactImpl implements DeployedAr
         return modelObject;
     }
     
-    public void setModelObject(Object modelObject){
+    public void setModelObject(Object modelObject) {
         this.modelObject = modelObject;
     }
 }

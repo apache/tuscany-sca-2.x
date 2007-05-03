@@ -18,26 +18,25 @@
  */
 package org.apache.tuscany.contribution.processor;
 
-
-
 /**
  * An extension point for artifact processors.
  * 
  * @version $Rev$ $Date$
  */
 public interface ArtifactProcessorExtensionPoint<P> {
-    
+
     /**
      * Add an artifact processor.
+     * 
      * @param artifactProcessor the artifact processor to add
      */
     void addExtension(P artifactProcessor);
-    
+
     /**
      * Remove an artifact processor.
+     * 
      * @param artifactProcessor the artifact processor to remove
      */
-    
-   void removeExtension(P artifactProcessor);
+    void removeExtension(P artifactProcessor);
 
 }

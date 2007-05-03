@@ -23,21 +23,20 @@ public interface ContentType {
     /**
      * Archive specific content types
      */
-    public static final String JAR = "application/x-compressed";
-    public static final String FOLDER = "application/vnd.tuscany.folder";
+    String JAR = "application/x-compressed";
+    String FOLDER = "application/vnd.tuscany.folder";
 
     /**
      * Artifact/File specific content types
      */
-    public static final String CONTRIBUTION_METADATA = "application/vnd.tuscany.contribution.metadata";
-    public static final String COMPOSITE = "application/vnd.tuscany.composite";
-    public static final String WSDL = "application/vnd.tuscany.wsdl";
-    public static final String JAVA = "application/java-vm";
+    String CONTRIBUTION_METADATA = "application/vnd.tuscany.contribution.metadata";
+    String COMPOSITE = "application/vnd.tuscany.composite";
+    String WSDL = "application/vnd.tuscany.wsdl";
+    String JAVA = "application/java-vm";
     
     /**
      * Unkown contentType
      */
-    
-    public static final String UNKNOWN = "content/unknown";
+    String UNKNOWN = "content/unknown";
  
 }

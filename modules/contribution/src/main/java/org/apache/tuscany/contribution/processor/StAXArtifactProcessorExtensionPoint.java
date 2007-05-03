@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.contribution.processor;
 
-
-
 /**
  * A registry for DOM artifact processors.
  * 
  * @version $Rev$ $Date$
  */
-public interface StAXArtifactProcessorExtensionPoint extends ArtifactProcessorExtensionPoint<StAXArtifactProcessorExtension> {
-    
+public interface StAXArtifactProcessorExtensionPoint extends 
+    ArtifactProcessorExtensionPoint<StAXArtifactProcessorExtension> {
+
 }

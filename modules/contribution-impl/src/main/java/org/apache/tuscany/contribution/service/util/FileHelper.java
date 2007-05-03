@@ -513,7 +513,7 @@ public class FileHelper {
             throw new IOException("Source '" + srcFile + "' and destination '" + destFile + "' are the same");
         }
         if (!(destFile.getParentFile() != null && destFile.getParentFile().exists())) {
-            if (!destFile.getParentFile().mkdirs()) {
+            if (!destFile.getParentFile().mkdirs()) { //NOPMD
                 throw new IOException("Destination '" + destFile + "' directory cannot be created");
             }
         }

@@ -36,7 +36,7 @@ import org.apache.tuscany.contribution.DeployedArtifact;
  *
  * @version $Rev: 531146 $ $Date: 2007-04-21 22:40:50 -0700 (Sat, 21 Apr 2007) $
  */
-public class ContributionImpl extends BaseArtifactImpl implements Contribution {
+public class ContributionImpl extends ArtifactImpl implements Contribution {
     protected List<String> exports = new ArrayList<String>();
     protected List<ContributionImport> imports = new ArrayList<ContributionImport>();
     protected List<Composite> deployables = new ArrayList<Composite>();

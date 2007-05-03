@@ -59,7 +59,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         super();
         this.inputFactory = inputFactory;
         this.outputFactory = outputFactory;
-        this.outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces",Boolean.TRUE);
+        this.outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
     }
 
     public DefaultStAXArtifactProcessorExtensionPoint() {
@@ -81,7 +81,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         
         // Delegate to the processor associated with the model type
         if (model != null) {
-            StAXArtifactProcessorExtension<Object> processor = (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            StAXArtifactProcessorExtension<Object> processor = 
+                (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.write(model, outputSource);
             }
@@ -92,7 +93,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
 
         // Delegate to the processor associated with the model type
         if (model != null) {
-            StAXArtifactProcessorExtension<Object> processor = (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            StAXArtifactProcessorExtension<Object> processor = 
+                (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.resolve(model, resolver);
             }
@@ -103,7 +105,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
 
         // Delegate to the processor associated with the model type
         if (model != null) {
-            StAXArtifactProcessorExtension<Object> processor = (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            StAXArtifactProcessorExtension<Object> processor = 
+                (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.wire(model);
             }

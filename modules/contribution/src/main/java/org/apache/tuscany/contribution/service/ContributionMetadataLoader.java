@@ -32,5 +32,5 @@ public interface ContributionMetadataLoader {
      * @throws XMLStreamException
      * @throws ContributionMetadataReadException
      */
-    public Contribution load(XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException;
+    Contribution load(XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException;
 }

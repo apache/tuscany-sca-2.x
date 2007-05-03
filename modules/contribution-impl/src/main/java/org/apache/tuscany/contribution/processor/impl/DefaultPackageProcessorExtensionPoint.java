@@ -37,7 +37,7 @@ import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 
 /**
  * Default implementation of ContributionProcessorRegistry
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class DefaultPackageProcessorExtensionPoint implements PackageProcessorExtensionPoint {
@@ -45,6 +45,7 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
      * Processor registry
      */
     private Map<String, PackageProcessorExtension> registry = new HashMap<String, PackageProcessorExtension>();
+
     /**
      * Helper method to describe contentType for each artifact
      */
@@ -66,7 +67,8 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
         registry.remove(contentType);
     }
 
-    public List<URI> getArtifacts(URL packageSourceURL,InputStream inputStream) throws ContributionException, IOException{
+    public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) 
+        throws ContributionException, IOException {
         String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
         if (contentType == null) {
             throw new UnsupportedContentTypeException("Unsupported contribution package", packageSourceURL.toString());
@@ -79,13 +81,10 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
 
         return packageProcessor.getArtifacts(packageSourceURL, inputStream);
     }
-    
-    /**
-     * @see org.apache.tuscany.contribution.processor.PackageProcessorExtension#getArtifactURL(java.net.URL, java.net.URI)
-     */
+
     public URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException {
         String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
         PackageProcessorExtension packageProcessor = this.registry.get(contentType);
         return packageProcessor.getArtifactURL(packageSourceURL, artifact);
-    }    
+    }
 }

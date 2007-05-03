@@ -55,7 +55,7 @@ import org.apache.tuscany.contribution.service.util.IOHelper;
  */
 public class ContributionRepositoryImpl implements ContributionRepository {
     private static final String NS = "http://tuscany.apache.org/xmlns/1.0-SNAPSHOT";
-    private static final String domainIndexFilename = "sca-domain.xml";
+    private static final String DOMAIN_INDEX_FILENAME = "sca-domain.xml";
     private final File rootFile;
     private Map<URI, String> contributionMap = new HashMap<URI, String>();
 
@@ -241,7 +241,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
     }
 
     private void saveMap() {
-        File domainFile = new File(rootFile, domainIndexFilename);
+        File domainFile = new File(rootFile, DOMAIN_INDEX_FILENAME);
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(domainFile);
