@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-http</artifactId>
+    <artifactId>tuscany-host-http</artifactId>
     <name>Apache Tuscany HTTP Servlet Host Extension Point</name>
 
     <dependencies>

@@ -65,7 +65,7 @@
                 -->
                 <module>host-embedded</module>
                 <module>host-spi</module>
-                <module>http</module>
+                <module>host-http</module>
                 <module>http-jetty</module>
                 <module>http-tomcat</module>
                 <module>interface</module>
@@ -89,7 +89,7 @@
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
                 <module>policy</module>
-		<module>rmi</module>
+		<module>host-rmi</module>
                 <module>sca-api</module>
                 <module>wsdl2java</module>
             </modules>
