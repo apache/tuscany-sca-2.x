@@ -20,38 +20,24 @@ package echo;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $Rev$ $Date$
  */
-public class EchoInvoker implements TargetInvoker {
+public class EchoBindingInterceptor implements Interceptor {
+    private Interceptor next;
 
-    private boolean cacheable;
-
-    public boolean isCacheable() {
-        return cacheable;
-    }
-
-    public void setCacheable(boolean cacheable) {
-        this.cacheable = cacheable;
-    }
-
-    public boolean isOptimizable() {
-        return isCacheable();
-    }
-
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload) throws InvocationTargetException {
         // echo back the result, a real binding would invoke some API for flowing the request
         return ((Object[])payload)[0];
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody(), NONE);
+            Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());
@@ -60,18 +46,22 @@ public class EchoInvoker implements TargetInvoker {
         }
         return msg;
     }  
-    
-
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.spi.wire.TargetInvoker#invokeTarget(java.lang.Object, short, org.apache.tuscany.spi.component.WorkContext)
-     */
-    public Object invokeTarget(Object payload, short sequence, WorkContext workContext) throws InvocationTargetException {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    public Interceptor getNext() {
+        return next;
+    }
+
+    public void setNext(Interceptor next) {
+        this.next = next;
+    }
+
+    public boolean isOptimizable() {
+        return false;
+    }
+
 }

@@ -16,40 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
+package org.apache.tuscany.core.scope;
 
-import java.net.URI;
-
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 /**
  * @version $Rev$ $Date$
  */
-public class EchoReference extends ReferenceBindingExtension {
+public class InstanceWrapperBase<T> implements InstanceWrapper<T> {
+    protected final T instance;
+    private boolean started;
 
-    protected EchoReference(URI name, URI targetUri) {
-        super(name, targetUri);
+    public InstanceWrapperBase(T instance) {
+        assert instance != null;
+        this.instance = instance;
     }
 
-    public QName getBindingType() {
-        return EchoConstants.BINDING_ECHO;
+    public T getInstance() {
+        assert started;
+        return instance;
     }
 
-    
-    public TargetInvoker createTargetInvoker(String name, Operation operation, boolean isCallback)
-       throws TargetInvokerCreationException {
-    if (isCallback) {
-        throw new UnsupportedOperationException();
-    } else {
-        return new EchoInvoker();
+    public boolean isStarted() {
+        return started;
     }
-}
 
-    
+    public void start() throws TargetInitializationException {
+        started = true;
+    }
 
+    public void stop() throws TargetDestructionException {
+        started = false;
+    }
 }

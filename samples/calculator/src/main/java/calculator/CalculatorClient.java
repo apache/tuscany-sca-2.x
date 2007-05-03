@@ -19,9 +19,7 @@
 
 package calculator;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 
 /**
  * @version $Rev$ $Date$
@@ -29,18 +27,17 @@ import org.osoa.sca.ServiceReference;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        SCARuntime.start("Calculator.composite");
-        ComponentContext context = SCARuntime.getComponentContext("CalculatorServiceComponent");
-        ServiceReference<CalculatorService> service = context.createSelfReference(CalculatorService.class);
-        CalculatorService calculatorService = service.getService();
+        SCARuntimeActivator.start("Calculator.composite");
+        CalculatorService calculatorService = SCARuntimeActivator.locateService(CalculatorService.class,
+                                                                                "CalculatorServiceComponent");
 
         // Calculate
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
-        
-        SCARuntime.stop();
+
+        SCARuntimeActivator.stop();
 
     }
 

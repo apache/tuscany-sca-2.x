@@ -66,7 +66,7 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
             throw new IllegalArgumentException("No matching opeeration is found: " + method);
         }
 
-        return invokeTarget(chain, args, null, null);
+        return invoke(chain, null, args, null, null, workContext);
     }
 
     /**

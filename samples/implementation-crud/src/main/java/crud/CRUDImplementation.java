@@ -170,10 +170,6 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
         return service.getInterfaceContract();
     }
 
-    public Scope getScope() {
-        return null;
-    }
-
     public void start(RuntimeComponent component) {
         System.out.println("Starting " + component.getName());
     }
@@ -184,10 +180,6 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
 
     public void configure(RuntimeComponent component) {
         System.out.println("Configuring " + component.getName());
-    }
-
-    public Object createInstance(RuntimeComponent component, ComponentService service) {
-        return null;
     }
 
 }

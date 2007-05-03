@@ -19,9 +19,59 @@
 
 package echo;
 
-import org.apache.tuscany.assembly.impl.BindingImpl;
+import java.net.URI;
 
-public class EchoBindingImpl extends BindingImpl implements EchoBinding {
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.impl.BindingImpl;
+import org.apache.tuscany.core.ReferenceBindingActivator;
+import org.apache.tuscany.core.ReferenceBindingProvider;
+import org.apache.tuscany.core.ServiceBindingActivator;
+import org.apache.tuscany.core.ServiceBindingProvider;
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.spi.wire.Interceptor;
+
+public class EchoBindingImpl extends BindingImpl implements EchoBinding, ReferenceBindingActivator,
+    ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider {
+
+    public Interceptor createInterceptor(Component component,
+                                         ComponentReference reference,
+                                         Operation operation,
+                                         boolean isCallback) {
+        if (isCallback) {
+            throw new UnsupportedOperationException();
+        } else {
+            return new EchoBindingInterceptor();
+        }
+    }
+
+    public InterfaceContract getBindingInterfaceContract(ComponentReference reference) {
+        return reference.getInterfaceContract();
+    }
+
+    public void start(Component component, ComponentReference reference) {
+    }
+
+    public void stop(Component component, ComponentReference reference) {
+    }
+
+    public InterfaceContract getBindingInterfaceContract(ComponentService service) {
+        return service.getInterfaceContract();
+    }
+
+    public void start(Component component, ComponentService service) {
+        URI uri = URI.create(component.getURI() + "#" + service.getName());
+        // Register with the hosting server
+        EchoServer.getServer().register(new EchoService(uri), uri);
+    }
+
+    public void stop(Component component, ComponentService service) {
+        // Register with the hosting server
+        EchoServer.getServer().unregister(URI.create(component.getURI() + "#" + service.getName()));
+    }
+
     public Object clone() {
         return this;
     }

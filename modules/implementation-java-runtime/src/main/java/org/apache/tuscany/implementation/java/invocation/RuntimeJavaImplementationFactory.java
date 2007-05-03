@@ -24,8 +24,9 @@ import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.invocation.ProxyFactory;
+import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * @version $Rev$ $Date$
@@ -33,15 +34,18 @@ import org.apache.tuscany.spi.wire.ProxyService;
 public class RuntimeJavaImplementationFactory extends DefaultJavaImplementationFactory {
     private JavaPropertyValueObjectFactory propertyValueObjectFactory;
     private DataBindingExtensionPoint dataBindingRegistry;
-    private ProxyService proxyService;
+    private ProxyFactory proxyService;
     private WorkContext workContext;
+    private ScopeRegistry scopeRegistry;
 
     public RuntimeJavaImplementationFactory(AssemblyFactory assemblyFactory,
-                                            ProxyService proxyService,
+                                            ScopeRegistry scopeRegistry,
+                                            ProxyFactory proxyService,
                                             WorkContext workContext,
                                             DataBindingExtensionPoint dataBindingRegistry,
                                             JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super(assemblyFactory);
+        this.scopeRegistry = scopeRegistry;
         this.proxyService = proxyService;
         this.workContext = workContext;
         this.dataBindingRegistry = dataBindingRegistry;
@@ -50,7 +54,7 @@ public class RuntimeJavaImplementationFactory extends DefaultJavaImplementationF
 
     @Override
     public JavaImplementation createJavaImplementation() {
-        return new JavaImplementationProvider(proxyService, workContext, dataBindingRegistry,
+        return new JavaImplementationProvider(scopeRegistry, proxyService, workContext, dataBindingRegistry,
                                               propertyValueObjectFactory);
     }
 

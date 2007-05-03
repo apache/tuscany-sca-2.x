@@ -16,36 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
 
-import junit.framework.TestCase;
+package org.apache.tuscany.scope;
 
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.spi.Scope;
 
 /**
+ * Represents a component implementation that supports scopes
+ * 
  * @version $Rev$ $Date$
  */
-public class EchoReferenceTestCase extends TestCase {
+public interface Scopeable {
+    /**
+     * @param scope
+     */
+    void setScope(Scope scope);
 
-    private Echo service;
-
-    protected void setUp() throws Exception {
-        SCARuntimeActivator.start("EchoBinding.composite");
-        ComponentContext context = SCARuntimeActivator.getComponentContext("EchoComponent");
-        ServiceReference<Echo> serviceReference = context.createSelfReference(Echo.class);
-        service = serviceReference.getService();
-    }
-    
-    protected void tearDown() throws Exception {
-    	SCARuntimeActivator.stop();
-    }
-
-    public void testEchoBinding() {
-        String result = service.invoke("foo");
-        assertEquals(result, "foo");
-    }
-
-
+    /**
+     * @return
+     */
+    Scope getScope();
 }

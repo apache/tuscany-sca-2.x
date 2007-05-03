@@ -24,12 +24,10 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 
 public class EchoModuleActivator implements ModuleActivator {
     private final EchoBindingProcessor echoBindingProcessor = new EchoBindingProcessor();
-    private final EchoBindingBuilder echoBindingBuilder = new EchoBindingBuilder();
 
     public Map<Class, Object> getExtensionPoints() {
         // No extensionPoints being contributed here
@@ -41,13 +39,7 @@ public class EchoModuleActivator implements ModuleActivator {
         // Add the EchoProcessor to the proper registry
         StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         artifactProcessorRegistry.addExtension(echoBindingProcessor);
-        
-        // Add the EchoBuilder to the proper registry
-        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
-        echoBindingBuilder.setBuilderRegistry(builderRegistry);
-        echoBindingBuilder.init();
-        builderRegistry.register(EchoBinding.class, echoBindingBuilder);
-        
+       
         // Start the Echo server
         EchoServer.start();
     }

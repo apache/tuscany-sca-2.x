@@ -16,31 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
+package org.apache.tuscany.scope;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
+import org.apache.tuscany.spi.Scope;
 
 /**
- * @version $Rev$ $Date$
+ * Manages {@link ScopeContainer}s in the runtime
+ *
+ * @version $$Rev$$ $$Date$$
  */
-public class EchoServiceTestCase extends TestCase {
+public interface ScopeRegistry {
 
-    protected void setUp() throws Exception {
-        SCARuntimeActivator.start("EchoBinding.composite");
-    }
-    
-    protected void tearDown() throws Exception {
-    	SCARuntimeActivator.stop();
-    }
+    /**
+     * Returns the scope container for the given scope or null if one not found
+     *
+     * @param scope the scope
+     * @return the scope container for the given scope or null if one not found
+     */
+    ScopeContainer getScopeContainer(Scope scope);
 
-    // FIXME: [rfeng] To be fixed
-    public void testEchoBinding() throws Exception {
-            
-//        String result = EchoServer.getServer().sendReceive("EchoBinding", "EchoService", "foo");
-//        assertEquals(result, "foo");
-    }
-
-
+    /**
+     * @param container
+     */
+    void register(ScopeContainer container);
 }

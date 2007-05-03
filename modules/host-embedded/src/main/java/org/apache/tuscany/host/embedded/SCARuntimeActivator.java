@@ -27,7 +27,6 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.apache.tuscany.host.embedded.impl.DefaultSCARuntime;
 import org.apache.tuscany.host.embedded.impl.DefaultSCARuntimeActivator;
 import org.osoa.sca.ComponentContext;
 
@@ -76,8 +75,8 @@ public abstract class SCARuntimeActivator {
      * of the implementation class. Otherwise, if the resource
      * "META-INF/services/org.apache.tuscany.api.SCARuntime" can be loaded from
      * the supplied classloader. Otherwise, it will use
-     * "org.apache.tuscany.host.embedded.DefaultSCARuntime" as the default.
-     * The named class is loaded from the supplied classloader and instantiated
+     * "org.apache.tuscany.host.embedded.DefaultSCARuntime" as the default. The
+     * named class is loaded from the supplied classloader and instantiated
      * using its default (no-arg) constructor.
      * 
      * @return
@@ -181,6 +180,14 @@ public abstract class SCARuntimeActivator {
         }
     }
 
+    public static <B> B locateService(Class<B> businessInterface, String componentName, String serviceName) {
+        return getInstance().locate(businessInterface, componentName, serviceName);
+    }
+
+    public static <B> B locateService(Class<B> businessInterface, String componentName) {
+        return getInstance().locate(businessInterface, componentName);
+    }
+
     /**
      * Look up the ComponentContext by name
      * 
@@ -197,8 +204,7 @@ public abstract class SCARuntimeActivator {
      *            the application URL
      * @throws Exception
      */
-    protected abstract void startup(URL application, String compositePath)
-        throws Exception;
+    protected abstract void startup(URL application, String compositePath) throws Exception;
 
     /**
      * Shutdown the runtime
@@ -206,4 +212,8 @@ public abstract class SCARuntimeActivator {
      * @throws Exception
      */
     protected abstract void shutdown() throws Exception;
+
+    protected abstract <B> B locate(Class<B> businessInterface, String componentName, String serviceName);
+
+    protected abstract <B> B locate(Class<B> businessInterface, String componentName);
 }

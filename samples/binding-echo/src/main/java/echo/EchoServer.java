@@ -26,29 +26,30 @@ import java.util.Map;
 
 /**
  * EchoTransport
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class EchoServer {
-    
+
     public static EchoServer server;
-    
-    private Map<URI, EchoService> services = new HashMap<URI, EchoService>(); 
-    
+
+    private Map<URI, EchoService> services = new HashMap<URI, EchoService>();
+
     public static void start() {
         server = new EchoServer();
     }
-    
+
     public static void stop() {
         server = null;
     }
-    
+
     public static EchoServer getServer() {
         return server;
     }
 
     /**
      * Register a service under the given name.
+     * 
      * @param service
      * @param name
      */
@@ -56,8 +57,13 @@ public class EchoServer {
         services.put(name, service);
     }
 
+    public void unregister(URI name) {
+        services.remove(name);
+    }
+
     /**
      * Dispatch an incoming interaction to the corresponding service.
+     * 
      * @param uri
      * @param input
      * @return
