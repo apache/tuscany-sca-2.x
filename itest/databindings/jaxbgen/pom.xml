@@ -108,7 +108,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-http-jetty</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>           
         <dependency>
             <groupId>javax.xml.bind</groupId>
