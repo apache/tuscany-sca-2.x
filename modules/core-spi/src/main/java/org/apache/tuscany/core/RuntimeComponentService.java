@@ -17,37 +17,22 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.runtime;
+package org.apache.tuscany.core;
 
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentReference;
+import java.util.List;
+
 import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.SCABinding;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeAssemblyFactory extends DefaultAssemblyFactory {
-
-    @Override
-    public Component createComponent() {
-        return new RuntimeComponentImpl();
-    }
-
-    @Override
-    public ComponentReference createComponentReference() {
-        return new RuntimeComponentReferenceImpl();
-    }
-
-    @Override
-    public SCABinding createSCABinding() {
-        return new RuntimeSCABindingImpl();
-    }
-
-    @Override
-    public ComponentService createComponentService() {
-        return new RuntimeComponentServiceImpl();
-    }
-
+public interface RuntimeComponentService extends ComponentService {
+    /**
+     * @param wire
+     */
+    void addRuntimeWire(RuntimeWire wire);
+    /**
+     * @return
+     */
+    List<RuntimeWire> getRuntimeWires();    
 }

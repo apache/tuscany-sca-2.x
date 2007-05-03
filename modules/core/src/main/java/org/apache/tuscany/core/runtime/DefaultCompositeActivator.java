@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.core.runtime;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +39,12 @@ import org.apache.tuscany.core.ReferenceBindingActivator;
 import org.apache.tuscany.core.ReferenceBindingProvider;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.core.ServiceBindingActivator;
+import org.apache.tuscany.core.ServiceBindingProvider;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.NonBlockingInterceptor;
 import org.apache.tuscany.core.work.Jsr237WorkScheduler;
@@ -91,20 +91,9 @@ public class DefaultCompositeActivator implements CompositeActivator {
         this.wirePostProcessorRegistry = wirePostProcessorRegistry;
     }
 
-    public static <T> T getContract(Object target, Class<T> interfaceClass) {
-        if (interfaceClass.isInstance(target)) {
-            return interfaceClass.cast(target);
-        } else {
-            try {
-                String methodName = JavaIntrospectionHelper.toGetter(interfaceClass.getSimpleName());
-                Method method = target.getClass().getMethod(methodName, new Class[] {});
-                return interfaceClass.cast(method.invoke(target, new Object[] {}));
-            } catch (Exception e) {
-                return null;
-            }
-        }
-    }
-
+    /**
+     * Start a composite
+     */
     public void start(Composite composite) {
         for (Component component : composite.getComponents()) {
 
@@ -134,6 +123,11 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
     }
 
+    /**
+     * Configure a composite
+     * 
+     * @param composite
+     */
     public void configure(Composite composite) {
         for (Component component : composite.getComponents()) {
 
@@ -147,6 +141,9 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
     }
 
+    /**
+     * Stop a composite
+     */
     public void stop(Composite composite) {
         for (Component component : composite.getComponents()) {
 
@@ -176,52 +173,83 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
     }
 
-    public void createRuntimeWires(Composite composite) throws IncompatibleInterfaceContractException {
+    /**
+     * Create runtime wires for the composite
+     * 
+     * @param composite
+     * @throws IncompatibleInterfaceContractException
+     */
+    protected void createRuntimeWires(Composite composite) throws IncompatibleInterfaceContractException {
         for (Component component : composite.getComponents()) {
-
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
+                // Recursively create runtime wires
                 createRuntimeWires((Composite)implementation);
             } else {
-                // createSelfReferences(component);
+                // Create outbound wires for the component references
                 for (ComponentReference reference : component.getReferences()) {
                     for (Binding binding : reference.getBindings()) {
                         createWires(component, reference, binding);
+                    }
+                }
+                // Create inbound wires for the component services
+                for (ComponentService service : component.getServices()) {
+                    for (Binding binding : service.getBindings()) {
+                        createWires(component, service, binding);
                     }
                 }
             }
         }
     }
 
+    /**
+     * Get the effective interface contract for a reference binding
+     * 
+     * @param reference
+     * @param binding
+     * @return
+     */
+    private InterfaceContract getInterfaceContract(ComponentReference reference, Binding binding) {
+        InterfaceContract sourceContract = reference.getInterfaceContract();
+        if (binding instanceof ReferenceBindingProvider) {
+            ReferenceBindingProvider provider = (ReferenceBindingProvider)binding;
+            InterfaceContract bindingContract = provider.getBindingInterfaceContract(reference);
+            if (bindingContract != null) {
+                sourceContract = bindingContract;
+            }
+        }
+        return sourceContract;
+    }
+
+    /**
+     * Create the runtime wires for a reference binding
+     * 
+     * @param component
+     * @param reference
+     * @param binding
+     */
     private void createWires(Component component, ComponentReference reference, Binding binding) {
-        if (!(binding instanceof ReferenceBindingProvider)) {
+        if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-
         RuntimeComponentReference wireSource = (RuntimeComponentReference)reference;
-        ReferenceBindingProvider provider = (ReferenceBindingProvider)binding;
+        InterfaceContract sourceContract = getInterfaceContract(reference, binding);
 
         if (!(binding instanceof SCABinding)) {
             RuntimeWire wire = new RuntimeWireImpl(reference, binding);
-
-            InterfaceContract sourceContract = provider.getBindingInterfaceContract(reference);
             for (Operation operation : sourceContract.getInterface().getOperations()) {
                 Operation targetOperation = operation;
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                /* lresende */
                 if (operation.isNonBlocking()) {
                     chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                 }
-
                 addBindingIntercepor(component, reference, binding, chain, operation, false);
-
                 wire.getInvocationChains().add(chain);
             }
             if (sourceContract.getCallbackInterface() != null) {
                 for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
                     Operation targetOperation = operation;
                     InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                    /* lresende */
                     if (operation.isNonBlocking()) {
                         chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                     }
@@ -229,12 +257,9 @@ public class DefaultCompositeActivator implements CompositeActivator {
                     wire.getCallbackInvocationChains().add(chain);
                 }
             }
-
             wireSource.addRuntimeWire(wire);
         }
         for (ComponentService service : reference.getTargets()) {
-            // FIXME: Need a way to find the owning component of a component
-            // service
             Component target = null;
             SCABinding scaBinding = service.getBinding(SCABinding.class);
             if (scaBinding != null) {
@@ -242,19 +267,14 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
 
             RuntimeWire wire = new RuntimeWireImpl(reference, service);
-
-            InterfaceContract sourceContract = provider.getBindingInterfaceContract(reference);
             InterfaceContract targetContract = service.getInterfaceContract();
             for (Operation operation : sourceContract.getInterface().getOperations()) {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                /* lresende */
                 if (operation.isNonBlocking()) {
                     chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                 }
-
                 addBindingIntercepor(component, reference, binding, chain, operation, false);
-
                 if (target != null) {
                     addImplementationInterceptor(target, service, chain, operation, false);
                 }
@@ -265,7 +285,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
                     Operation targetOperation = interfaceContractMapper.map(targetContract.getCallbackInterface(),
                                                                             operation);
                     InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                    /* lresende */
                     if (operation.isNonBlocking()) {
                         chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                     }
@@ -279,21 +298,106 @@ public class DefaultCompositeActivator implements CompositeActivator {
         }
     }
 
+    /**
+     * Get the effective interface contract for the service binding
+     * 
+     * @param service
+     * @param binding
+     * @return
+     */
+    private InterfaceContract getInterfaceContract(ComponentService service, Binding binding) {
+        InterfaceContract sourceContract = service.getInterfaceContract();
+
+        if (binding instanceof ServiceBindingProvider) {
+            ServiceBindingProvider provider = (ServiceBindingProvider)binding;
+            InterfaceContract bindingContract = provider.getBindingInterfaceContract(service);
+            if (bindingContract != null) {
+                sourceContract = bindingContract;
+            }
+        }
+        return sourceContract;
+    }
+
+    /**
+     * Create runtime wires for a service binding
+     * 
+     * @param component
+     * @param service
+     * @param binding
+     */
+    private void createWires(Component component, ComponentService service, Binding binding) {
+        if (!(service instanceof RuntimeComponentService)) {
+            return;
+        }
+        RuntimeComponentService wireSource = (RuntimeComponentService)service;
+
+        InterfaceContract targetContract = service.getInterfaceContract();
+        InterfaceContract sourceContract = getInterfaceContract(service, binding);
+
+        RuntimeWire wire = new RuntimeWireImpl(null, service);
+
+        for (Operation operation : sourceContract.getInterface().getOperations()) {
+            Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
+            InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+            /* lresende */
+            if (operation.isNonBlocking()) {
+                chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+            }
+
+            addImplementationInterceptor(component, service, chain, operation, false);
+            wire.getInvocationChains().add(chain);
+        }
+        if (sourceContract.getCallbackInterface() != null) {
+            for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
+                Operation targetOperation = interfaceContractMapper.map(targetContract.getCallbackInterface(),
+                                                                        operation);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+                /* lresende */
+                if (operation.isNonBlocking()) {
+                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                }
+                addImplementationInterceptor(component, service, chain, operation, false);
+                wire.getCallbackInvocationChains().add(chain);
+            }
+        }
+
+        wireSource.addRuntimeWire(wire);
+    }
+
+    /**
+     * Add the interceptor for a component implementation
+     * 
+     * @param component
+     * @param service
+     * @param chain
+     * @param operation
+     * @param isCallback
+     */
     private void addImplementationInterceptor(Component component,
                                               ComponentService service,
                                               InvocationChain chain,
                                               Operation operation,
                                               boolean isCallback) {
         if (component.getImplementation() instanceof ImplementationProvider) {
-            ImplementationProvider factory = (ImplementationProvider)component.getImplementation();
-            Interceptor interceptor = factory.createInterceptor((RuntimeComponent)component,
-                                                                service,
-                                                                operation,
-                                                                isCallback);
+            ImplementationProvider provider = (ImplementationProvider)component.getImplementation();
+            Interceptor interceptor = provider.createInterceptor((RuntimeComponent)component,
+                                                                 service,
+                                                                 operation,
+                                                                 isCallback);
             chain.addInterceptor(interceptor);
         }
     }
 
+    /**
+     * Add the interceptor for a binding
+     * 
+     * @param component
+     * @param reference
+     * @param binding
+     * @param chain
+     * @param operation
+     * @param isCallback
+     */
     private void addBindingIntercepor(Component component,
                                       ComponentReference reference,
                                       Binding binding,
@@ -301,14 +405,20 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                       Operation operation,
                                       boolean isCallback) {
         if (binding instanceof ReferenceBindingProvider) {
-            ReferenceBindingProvider factory = (ReferenceBindingProvider)binding;
-            Interceptor interceptor = factory.createInterceptor(component, reference, operation, isCallback);
+            ReferenceBindingProvider provider = (ReferenceBindingProvider)binding;
+            Interceptor interceptor = provider.createInterceptor(component, reference, operation, isCallback);
             if (interceptor != null) {
                 chain.addInterceptor(interceptor);
             }
         }
     }
 
+    /**
+     * Get the scope for a component
+     * 
+     * @param component
+     * @return
+     */
     private Scope getScope(Component component) {
         Implementation impl = component.getImplementation();
         if (impl instanceof ScopedImplementationProvider) {
@@ -411,7 +521,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 return super.add(o);
             }
         };
-        
+
         compositeUtil.configureAndWire(composite, problems);
 
         // if (!problems.isEmpty()) {
@@ -420,6 +530,12 @@ public class DefaultCompositeActivator implements CompositeActivator {
         // }
     }
 
+    /**
+     * Activate a composite
+     * 
+     * @param composite
+     * @throws IncompatibleInterfaceContractException
+     */
     public void activate(Composite composite) throws IncompatibleInterfaceContractException {
         wire(composite, assemblyFactory, interfaceContractMapper);
         configure(composite);
