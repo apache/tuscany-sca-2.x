@@ -56,7 +56,7 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessorExtensi
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
         this.introspector = introspector;
-    } 
+    }
 
     public QName getArtifactType() {
         // Returns the qname of the XML element processed by this processor
@@ -78,7 +78,7 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessorExtensi
             String directory = reader.getAttributeValue(null, "directory");
 
             // Create an initialize the CRUD implementation model
-            CRUDImplementation implementation = new CRUDImplementation(assemblyFactory, javaFactory, introspector);
+            CRUDImplementation implementation = new CRUDImplementationProvider(assemblyFactory, javaFactory, introspector);
             implementation.setDirectory(directory);
             
             // Skip to end element

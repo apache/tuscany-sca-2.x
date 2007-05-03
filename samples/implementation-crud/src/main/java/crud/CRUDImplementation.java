@@ -22,26 +22,18 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
-import org.apache.tuscany.core.ImplementationActivator;
-import org.apache.tuscany.core.ImplementationProvider;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
-import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.wire.Interceptor;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
@@ -55,13 +47,10 @@ import org.apache.tuscany.spi.wire.Interceptor;
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public class CRUDImplementation extends ComponentTypeImpl implements Implementation, ImplementationProvider,
-    ImplementationActivator {
+public class CRUDImplementation implements Implementation {
 
     private Service crudService;
     private String directory;
-
-    private AssemblyFactory assemblyFactory;
 
     /**
      * Constructs a new CRUD implementation.
@@ -83,8 +72,6 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         interfaceContract.setInterface(javaInterface);
         crudService.setInterfaceContract(interfaceContract);
-        this.assemblyFactory = assemblyFactory;
-        // createSelfReferences();
     }
 
     /**
@@ -118,6 +105,11 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
     public List<Service> getServices() {
         // CRUD implementations provide a single fixed CRUD service
         return Collections.singletonList(crudService);
+    }
+    
+    public List<Reference> getReferences() {
+        // CRUD implementations do not support properties
+        return Collections.emptyList();
     }
 
     public String getURI() {
@@ -155,31 +147,6 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
 
     public void setUnresolved(boolean unresolved) {
         // CRUD implementations are always resolved
-    }
-
-    public Interceptor createInterceptor(RuntimeComponent component,
-                                         ComponentService service,
-                                         Operation operation,
-                                         boolean isCallback) {
-        CRUDImplementation impl = (CRUDImplementation)component.getImplementation();
-        CRUDTargetInvoker invoker = new CRUDTargetInvoker(operation, new ResourceManager(impl.getDirectory()));
-        return invoker;
-    }
-
-    public InterfaceContract getImplementationInterfaceContract(ComponentService service) {
-        return service.getInterfaceContract();
-    }
-
-    public void start(RuntimeComponent component) {
-        System.out.println("Starting " + component.getName());
-    }
-
-    public void stop(RuntimeComponent component) {
-        System.out.println("Stopping " + component.getName());
-    }
-
-    public void configure(RuntimeComponent component) {
-        System.out.println("Configuring " + component.getName());
     }
 
 }
