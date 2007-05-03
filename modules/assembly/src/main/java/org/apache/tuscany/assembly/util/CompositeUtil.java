@@ -187,7 +187,9 @@ public class CompositeUtil {
             if (reference != null) {
                 componentReference.setReference(reference);
             } else {
-                problems.add(componentReference);
+                if (!componentReference.getName().startsWith("$self$.")) {
+                    problems.add(componentReference);
+                }
             }
         }
 
