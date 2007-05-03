@@ -9,6 +9,9 @@ in a manner consistent with other successful ASF projects. While incubation
 status is not necessarily a reflection of the completeness or stability of the
 code, it does indicate that the project has yet to be fully endorsed by the ASF.
 
-This product includes software developed by
-The Apache Software Foundation (http://www.apache.org/).
+This product includes software developed by The Apache Software Foundation (http://www.apache.org/).
 
+COPYRIGHT NOTICES
+  Tuscany Script Implementation contains modified copy of source from com.sun.script.ruby.JRubyScriptEngine.
+  	- Copyright (c) 2006, Sun Microsystems, Inc.  All rights reserved.
+    See License.txt file for more details.

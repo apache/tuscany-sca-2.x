@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.implementation.script.itests.properties;
 
-public class JRubyHelloWorldTestCaseFIXME extends AbstractHelloWorldTestCase {
+public class JRubyHelloWorldTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
     
     // this doesn't work as the property doesn't seem to get set in the JRuby

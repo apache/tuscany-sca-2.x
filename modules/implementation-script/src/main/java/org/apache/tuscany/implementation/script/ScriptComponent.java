@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -34,6 +35,7 @@ import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.implementation.script.engines.TuscanyJRubyScriptEngine;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -56,6 +58,7 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
     
     private ScriptPropertyValueObjectFactory propertyValueObjectFactory = null;
     private DataBindingExtensionPoint dataBindingRegistry;
+    private static ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 
     public ScriptComponent(URI uri, URI groupId, ScriptImplementation impl) {
         super(uri, null, null, groupId, 50);
@@ -85,25 +88,29 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
     public Object createInstance() throws ObjectCreationException {
         try {
             ObjectFactory<?> propertyValueFactory = null;
-            ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = getScriptEngineByExtension(impl.getScriptLanguage());
+            if (engine == null) {
+                throw new ObjectCreationException("no script engine found for language: " + impl.getScriptLanguage());
+            }
             
             for (String referenceName : references.keySet()) {
                 Object reference = references.get(referenceName);
-                manager.put(referenceName, reference);
+                //manager.put(referenceName, reference);
+                engine.getContext().setAttribute(referenceName, 
+                                                 reference, 
+                                                 ScriptContext.ENGINE_SCOPE);
             }
             
             for (String propertyName : propertyValueFactories.keySet()) {
                 propertyValueFactory = propertyValueFactories.get(propertyName);
                 if ( propertyValueFactory != null) {
-                    manager.put(propertyName, propertyValueFactory.getInstance());
+                    //manager.put(propertyName, propertyValueFactory.getInstance());
+                    engine.getContext().setAttribute(propertyName, 
+                                                     propertyValueFactory.getInstance(), 
+                                                     ScriptContext.ENGINE_SCOPE);
                 }
             }
             
-            ScriptEngine engine = manager.getEngineByExtension(impl.getScriptLanguage());
-            if (engine == null) {
-                throw new ObjectCreationException("no script engine found for language: " + impl.getScriptLanguage());
-            }
-           
             engine.eval(new StringReader(impl.getScriptSrc()));
            
             return engine;
@@ -178,6 +185,14 @@ public class ScriptComponent extends AtomicComponentExtension implements Compone
                 propertyObjectFactory = propertyValueObjectFactory.createValueFactory(aProperty);
                 propertyValueFactories.put(aProperty.getName(), propertyObjectFactory);
             }
+        }
+    }
+    
+    private ScriptEngine getScriptEngineByExtension(String scriptExtn) {
+        if ("rb".equals(scriptExtn)) {
+            return new TuscanyJRubyScriptEngine();
+        } else {
+            return scriptEngineManager.getEngineByExtension(scriptExtn);
         }
     }
 }
