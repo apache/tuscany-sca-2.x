@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Base;
+import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.ComponentReference;
@@ -162,7 +163,13 @@ public class CompositeUtil {
                 } else {
                     componentService.setInterfaceContract(service.getInterfaceContract());
                 }
+
+                // Reconcile bindings
+                if (componentService.getBindings().isEmpty()) {
+                    componentService.getBindings().addAll(service.getBindings());
+                }
             }
+            
         }
     }
 
@@ -230,6 +237,11 @@ public class CompositeUtil {
                     }
                 } else {
                     componentReference.setInterfaceContract(reference.getInterfaceContract());
+                }
+                
+                // Reconcile bindings
+                if (componentReference.getBindings().isEmpty()) {
+                    componentReference.getBindings().addAll(reference.getBindings());
                 }
                 
                 // Propagate autowire setting from the component
@@ -374,6 +386,22 @@ public class CompositeUtil {
             }
         }
         
+        // Set default binding names
+        for (Service service: composite.getServices()) {
+            for (Binding binding: service.getBindings()) {
+                if (binding.getName() == null) {
+                    binding.setName(service.getName());
+                }
+            }
+        }
+        for (Reference reference: composite.getReferences()) {
+            for (Binding binding: reference.getBindings()) {
+                if (binding.getName() == null) {
+                    binding.setName(reference.getName());
+                }
+            }
+        }
+        
         // Initialize all component services and references
         Map<String, Component> components = new HashMap<String, Component>();
         for (Component component : composite.getComponents()) {
@@ -442,12 +470,26 @@ public class CompositeUtil {
                 } else {
                     componentServices.put(componentService.getName(), componentService);
                 }
+                
+                // Initialize binding names
+                for (Binding binding: componentService.getBindings()) {
+                    if (binding.getName() == null) {
+                        binding.setName(componentService.getName());
+                    }
+                }
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 if (componentReferences.containsKey(componentReference.getName())) {
                     problems.add(componentReference);
                 } else {
                     componentReferences.put(componentReference.getName(), componentReference);
+                }
+
+                // Initialize binding names
+                for (Binding binding: componentReference.getBindings()) {
+                    if (binding.getName() == null) {
+                        binding.setName(componentReference.getName());
+                    }
                 }
             }
             for (ComponentProperty componentProperty : component.getProperties()) {
@@ -497,6 +539,7 @@ public class CompositeUtil {
                 SCABinding scaBinding = componentService.getBinding(SCABinding.class);
                 if (scaBinding == null) {
                     scaBinding = assemblyFactory.createSCABinding();
+                    scaBinding.setName(componentService.getName());
                     componentService.getBindings().add(scaBinding);
                 }
                 scaBinding.setURI(uri);
@@ -510,6 +553,7 @@ public class CompositeUtil {
                 SCABinding scaBinding = componentReference.getBinding(SCABinding.class);
                 if (scaBinding == null) {
                     scaBinding = assemblyFactory.createSCABinding();
+                    scaBinding.setName(componentReference.getName());
                     componentReference.getBindings().add(scaBinding);
                 }
                 scaBinding.setURI(uri);
@@ -855,6 +899,7 @@ public class CompositeUtil {
                 Component component = scaBinding.getComponent();
                 component.getServices().add(newComponentService);
                 newComponentService.getBindings().add(scaBinding);
+                newComponentService.getBindings().addAll(compositeService.getBindings());
                 
                 // Change the composite service to now promote the newly created
                 // component service directly
