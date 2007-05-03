@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.contribution.service.ContributionReadException;
-import org.apache.tuscany.contribution.service.ContributionWriteException;
 
 /**
  * An artifact processor that can read models from an InputStream.
@@ -41,14 +40,6 @@ public interface URLArtifactProcessorExtension<M> extends ArtifactProcessorExten
      * @return a model representation of the input.
      */
     M read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException;
-    
-    /**
-     * Writes a model to an ouput source. Examples of output sources are: a URI, a
-     * DOM node, an XML writer.
-     * @param source
-     * @return a model representation of the source.
-     */
-    void write(M model, URL outputSource) throws ContributionWriteException;
     
     /**
      * Returns the type of artifact handled by this artifact processor. 

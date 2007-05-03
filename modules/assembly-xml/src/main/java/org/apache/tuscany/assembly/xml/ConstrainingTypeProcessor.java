@@ -37,7 +37,6 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -196,10 +195,6 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
         resolveAbstractContracts(constrainingType.getReferences(), resolver);
     }
     
-    public void wire(ConstrainingType model) throws ContributionWireException {
-        // TODO Auto-generated method stub
-    }
-
     public QName getArtifactType() {
         return CONSTRAINING_TYPE_QNAME;
     }

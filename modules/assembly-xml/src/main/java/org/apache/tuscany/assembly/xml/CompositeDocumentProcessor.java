@@ -34,7 +34,6 @@ import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWriteException;
 
 /**
  * A composite processor.
@@ -78,11 +77,6 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
                 //ignore
             }
         }
-    }
-    
-    public void write(Composite model, URL url) throws ContributionWriteException {
-        // Can't write to a URL
-        throw new UnsupportedOperationException();
     }
     
     public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {

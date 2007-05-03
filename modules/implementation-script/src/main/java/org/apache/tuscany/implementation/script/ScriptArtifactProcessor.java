@@ -42,7 +42,6 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
 public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<ScriptImplementation> {
@@ -142,10 +141,6 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<S
         scriptImplementation.setComponentType(componentType);
         
         scriptImplementation.setUnresolved(false);
-    }
-
-    public void wire(ScriptImplementation model) throws ContributionWireException {
-        // TODO Auto-generated method stub
     }
 
     public QName getArtifactType() {

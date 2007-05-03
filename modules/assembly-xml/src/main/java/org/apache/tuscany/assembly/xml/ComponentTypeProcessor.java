@@ -43,7 +43,6 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -260,10 +259,6 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         // Resolve component type services and references
         resolveContracts(componentType.getServices(), resolver);
         resolveContracts(componentType.getReferences(), resolver);
-    }
-    
-    public void wire(ComponentType model) throws ContributionWireException {
-        //TODO optimize the model 
     }
     
     public QName getArtifactType() {

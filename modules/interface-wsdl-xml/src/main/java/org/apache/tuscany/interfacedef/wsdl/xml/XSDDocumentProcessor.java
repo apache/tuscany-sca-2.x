@@ -29,8 +29,6 @@ import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
-import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
@@ -92,15 +90,7 @@ public class XSDDocumentProcessor implements URLArtifactProcessorExtension<XSDef
         }
     }
     
-    public void write(XSDefinition wsdlDefinition, URL url) throws ContributionWriteException {
-        // TODO Auto-generated method stub
-    }
-    
     public void resolve(XSDefinition model, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
-    }
-    
-    public void wire(XSDefinition model) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
     

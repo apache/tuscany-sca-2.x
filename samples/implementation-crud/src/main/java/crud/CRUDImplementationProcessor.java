@@ -30,7 +30,6 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
@@ -95,9 +94,6 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessorExtensi
     }
 
     public void resolve(CRUDImplementation impl, ArtifactResolver resolver) throws ContributionResolveException {
-    }
-
-    public void wire(CRUDImplementation model) throws ContributionWireException {
     }
 
     public void write(CRUDImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {

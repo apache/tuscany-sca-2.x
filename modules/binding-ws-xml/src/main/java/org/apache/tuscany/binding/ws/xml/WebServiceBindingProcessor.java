@@ -41,7 +41,6 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
@@ -267,10 +266,6 @@ public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
             portType = model.getBinding().getPortType();
         }
         return portType;
-    }
-
-    public void wire(WebServiceBinding model) throws ContributionWireException {
-        // TODO Auto-generated method stub
     }
 
     public QName getArtifactType() {
