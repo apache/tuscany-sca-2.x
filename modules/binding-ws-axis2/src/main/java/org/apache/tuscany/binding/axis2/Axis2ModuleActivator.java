@@ -42,21 +42,21 @@ public class Axis2ModuleActivator implements ModuleActivator {
 
     private Axis2BindingBuilder builder;
 
-    public void start(ExtensionPointRegistry extensionPointRegistry) {
+    public void start(ExtensionPointRegistry registry) {
 
-        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
         WSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
-        artifactProcessorRegistry.addExtension(new WebServiceBindingProcessor(
+        processors.addExtension(new WebServiceBindingProcessor(
                                                                               assemblyFactory, policyFactory, wsFactory,
                                                                               wsdlFactory, introspector));
 
-        ServletHostExtensionPoint servletHost = extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
+        ServletHostExtensionPoint servletHost = registry.getExtensionPoint(ServletHostExtensionPoint.class);
         
-        BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);
+        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
         builder = new Axis2BindingBuilder();
         builder.setBuilderRegistry(builderRegistry);
         builder.setServletHost(servletHost);
@@ -65,6 +65,7 @@ public class Axis2ModuleActivator implements ModuleActivator {
     }
 
     public void stop(ExtensionPointRegistry registry) {
+        //FIXME
         // release resources held by bindings
         // needed because the stop methods in ReferenceImpl and ServiceImpl aren't being called
         // TODO: revisit this as part of the lifecycle work

@@ -51,15 +51,12 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
         return map;
     }
 
-    /**
-     * @see org.apache.tuscany.core.ModuleActivator#start(org.apache.tuscany.core.ExtensionPointRegistry)
-     */
-    public void start(ExtensionPointRegistry extensionPointRegistry) {
+    public void start(ExtensionPointRegistry registry) {
         
         // Register <interface.java> processor
-        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         JavaInterfaceProcessor javaInterfaceProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
-        staxProcessors.addExtension(javaInterfaceProcessor);
+        processors.addExtension(javaInterfaceProcessor);
         
     }
 

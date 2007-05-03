@@ -111,7 +111,6 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
 
         extensionPointRegistry.addExtensionPoint(AssemblyFactory.class, assemblyFactory);
         extensionPointRegistry.addExtensionPoint(PolicyFactory.class, policyFactory);
-        extensionPointRegistry.addExtensionPoint(InterfaceContractMapper.class, interfaceContractMapper);
         extensionPointRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
 
         // Create a work context

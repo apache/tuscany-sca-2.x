@@ -30,7 +30,6 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
-import org.apache.tuscany.rmi.DefaultRMIHostExtensionPoint;
 import org.apache.tuscany.rmi.RMIHostExtensionPoint;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 
@@ -38,23 +37,18 @@ public class RMIModuleActivator implements ModuleActivator {
 
     private RMIBindingBuilder builder;
 
-    public void start(ExtensionPointRegistry extensionPointRegistry) {
+    public void start(ExtensionPointRegistry registry) {
 
-        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = 
-            extensionPointRegistry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint processors = 
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         RMIBindingFactory rmiFactory = new DefaultRMIBindingFactory();
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        artifactProcessorRegistry.addExtension(
-                                               new RMIBindingProcessor(assemblyFactory, policyFactory, rmiFactory));
+        processors.addExtension(new RMIBindingProcessor(assemblyFactory, policyFactory, rmiFactory));
 
-        RMIHostExtensionPoint rmiHost = 
-            extensionPointRegistry.getExtensionPoint(RMIHostExtensionPoint.class);
-        if (rmiHost == null) {
-            rmiHost = new DefaultRMIHostExtensionPoint();
-        }
+        RMIHostExtensionPoint rmiHost = registry.getExtensionPoint(RMIHostExtensionPoint.class);
         
-        BuilderRegistry builderRegistry = extensionPointRegistry.getExtensionPoint(BuilderRegistry.class);
+        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
         builder = new RMIBindingBuilder();
         builder.setBuilderRegistry(builderRegistry);
         builder.setRmiHost(rmiHost);
@@ -62,6 +56,7 @@ public class RMIModuleActivator implements ModuleActivator {
     }
 
     public void stop(ExtensionPointRegistry registry) {
+        //FIXME
         // release resources held by bindings
         // needed because the stop methods in ReferenceImpl and ServiceImpl aren't being called
         // TODO: revisit this as part of the lifecycle work
