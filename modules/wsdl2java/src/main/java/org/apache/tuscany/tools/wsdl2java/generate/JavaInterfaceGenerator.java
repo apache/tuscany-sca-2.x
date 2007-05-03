@@ -101,12 +101,17 @@ public class JavaInterfaceGenerator {
                 for (Map.Entry<QName, SDODataBindingTypeMappingEntry> e : typeMapping.entrySet()) {
                     typeMapper.addTypeMappingObject(e.getKey(), e.getValue());
                 }
+
+                WSDL11ToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, serviceQname, port.getName());
+                builder.setCodegen(true);
+
                 AxisService axisService;
                 try {
-                    axisService = new WSDL11ToAxisServiceBuilder(definition, serviceQname, port.getName()).populateService();
+                    axisService = builder.populateService();
                 } catch (AxisFault e) {
                     throw new CodeGenerationException(e);
                 }
+
                 axisService.setName(port.getBinding().getPortType().getQName().getLocalPart());
                 CodeGenConfiguration codegenConfiguration = new CodeGenConfiguration(Collections.EMPTY_MAP);
                 codegenConfigurations.add(codegenConfiguration);
