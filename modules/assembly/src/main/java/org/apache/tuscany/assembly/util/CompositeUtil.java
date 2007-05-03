@@ -900,6 +900,8 @@ public class CompositeUtil {
                 component.getServices().add(newComponentService);
                 newComponentService.getBindings().add(scaBinding);
                 newComponentService.getBindings().addAll(compositeService.getBindings());
+                newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
+                newComponentService.setCallback(compositeService.getCallback());
                 
                 // Change the composite service to now promote the newly created
                 // component service directly
