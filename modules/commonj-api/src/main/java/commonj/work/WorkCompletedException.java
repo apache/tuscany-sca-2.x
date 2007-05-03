@@ -36,6 +36,7 @@ import java.util.Collections;
  * @version $Rev$ $Date$
  */
 public class WorkCompletedException extends WorkException {
+    private static final long serialVersionUID = 1L;
 
     private final List exceptionList;
 

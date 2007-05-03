@@ -28,8 +28,6 @@
 
 package commonj.work;
 
-import java.util.Collection;
-
 /**
  * @version $Rev$ $Date$
  */

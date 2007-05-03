@@ -32,7 +32,7 @@ package commonj.work;
  * @version $Rev$ $Date$
  */
 public class WorkRejectedException extends WorkException {
-
+    private static final long serialVersionUID = 1L;
 
     public WorkRejectedException() {
         super();
