@@ -36,8 +36,7 @@ public class WSDL2JavaGeneratorTestCase extends TestCase {
                 "-javaPackage", "org.apache.tuscany.tools.wsdl2java.generate.account",
                 basedir + "/src/test/resources/AccountService.wsdl"};
 
-// TODO: broken with Axis2 1.2
-//        WSDL2JavaGenerator.main(args);
+        WSDL2JavaGenerator.main(args);
         
     }
     
