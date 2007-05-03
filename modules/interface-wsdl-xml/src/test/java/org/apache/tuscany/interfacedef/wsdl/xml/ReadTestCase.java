@@ -65,7 +65,7 @@ public class ReadTestCase extends TestCase {
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
 
         WSDLInterfaceProcessor wsdlProcessor = new WSDLInterfaceProcessor(new DefaultWSDLFactory(), null);
-        staxProcessors.addExtension(wsdlProcessor);
+        staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
 
     public void tearDown() throws Exception {

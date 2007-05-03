@@ -27,7 +27,6 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Callback;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -42,7 +41,7 @@ import org.osoa.sca.annotations.Requires;
  * 
  * @version $Rev:
  */
-public class PolicyProcessor extends BaseJavaClassIntrospectorExtension {
+public class PolicyProcessor extends BaseJavaClassVisitor {
     
     private PolicyFactory policyFactory;
 

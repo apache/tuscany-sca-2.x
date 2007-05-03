@@ -87,12 +87,12 @@ public class DefaultURLArtifactProcessorExtensionPoint
         }
     }
     
-    public void addExtension(URLArtifactProcessor artifactProcessor) {
+    public void addArtifactProcessor(URLArtifactProcessor artifactProcessor) {
         processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
-    public void removeExtension(URLArtifactProcessor artifactProcessor) {
+    public void removeArtifactProcessor(URLArtifactProcessor artifactProcessor) {
         processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
         processorsByModelType.remove(artifactProcessor.getModelType());        
     }

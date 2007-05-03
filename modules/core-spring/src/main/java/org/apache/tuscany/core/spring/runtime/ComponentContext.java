@@ -37,11 +37,11 @@ import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
-import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
+import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.BaseJavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.impl.ConstructorProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ContextProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ConversationProcessor;
@@ -91,7 +91,7 @@ public class ComponentContext {
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
         JavaClassIntrospectorExtensionPoint classIntrospector = new DefaultJavaClassIntrospector();
         
-        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {
+        BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
             new AllowsPassByReferenceProcessor(assemblyFactory),
             new ContextProcessor(assemblyFactory),
@@ -107,19 +107,19 @@ public class ComponentContext {
             new HeuristicPojoProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
-        for (JavaClassIntrospectorExtension e : extensions) {
-            classIntrospector.addExtension(e);
+        for (JavaClassVisitor e : extensions) {
+            classIntrospector.addClassVisitor(e);
         }
 
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         CompositeProcessor compositeProcessor = new CompositeProcessor(assemblyFactory, policyFactory,
                                                                        interfaceContractMapper, staxProcessors);
-        staxProcessors.addExtension(compositeProcessor);
-        staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new JavaInterfaceProcessor(javaFactory, interfaceIntrospector));
-        staxProcessors.addExtension(new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector));
+        staxProcessors.addArtifactProcessor(compositeProcessor);
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new JavaInterfaceProcessor(javaFactory, interfaceIntrospector));
+        staxProcessors.addArtifactProcessor(new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector));
         
         // Create a resolver
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

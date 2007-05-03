@@ -56,7 +56,7 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
         // Register <interface.java> processor
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         JavaInterfaceProcessor javaInterfaceProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
-        processors.addExtension(javaInterfaceProcessor);
+        processors.addArtifactProcessor(javaInterfaceProcessor);
         
     }
 

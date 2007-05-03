@@ -44,7 +44,7 @@ public class RMIModuleActivator implements ModuleActivator {
         RMIBindingFactory rmiFactory = new DefaultRMIBindingFactory();
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        processors.addExtension(new RMIBindingProcessor(assemblyFactory, policyFactory, rmiFactory));
+        processors.addArtifactProcessor(new RMIBindingProcessor(assemblyFactory, policyFactory, rmiFactory));
 
         RMIHostExtensionPoint rmiHost = registry.getExtensionPoint(RMIHostExtensionPoint.class);
         

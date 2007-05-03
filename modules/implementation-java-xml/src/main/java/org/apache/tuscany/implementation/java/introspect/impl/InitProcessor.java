@@ -23,7 +23,6 @@ import java.lang.reflect.Modifier;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.Init;
 
@@ -33,7 +32,7 @@ import org.osoa.sca.annotations.Init;
  * 
  * @version $Rev$ $Date$
  */
-public class InitProcessor extends BaseJavaClassIntrospectorExtension {
+public class InitProcessor extends BaseJavaClassVisitor {
     
     public InitProcessor(AssemblyFactory factory) {
         super(factory);

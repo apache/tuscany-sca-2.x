@@ -64,7 +64,7 @@ public class CRUDModuleActivator implements ModuleActivator {
             .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         implementationArtifactProcessor = new CRUDImplementationProcessor(assemblyFactory, javaFactory,
                                                                           introspectorExtensionPoint);
-        artifactProcessors.addExtension(implementationArtifactProcessor);
+        artifactProcessors.addArtifactProcessor(implementationArtifactProcessor);
     }
 
     public Map<Class, Object> getExtensionPoints() {
@@ -78,6 +78,6 @@ public class CRUDModuleActivator implements ModuleActivator {
         // Remove the contributed extensions
         StAXArtifactProcessorExtensionPoint artifactProcessors = registry
             .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessors.removeExtension(implementationArtifactProcessor);
+        artifactProcessors.removeArtifactProcessor(implementationArtifactProcessor);
     }
 }

@@ -47,7 +47,6 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
@@ -74,7 +73,7 @@ import org.osoa.sca.annotations.Service;
  * 
  * @version $Rev$ $Date$
  */
-public class HeuristicPojoProcessor extends BaseJavaClassIntrospectorExtension {
+public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     private JavaFactory javaFactory;
     private JavaInterfaceIntrospector interfaceIntrospector;
 

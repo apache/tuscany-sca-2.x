@@ -27,7 +27,7 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
  * 
  * @version $Rev$ $Date$
  */
-public interface JavaInterfaceIntrospectorExtension {
+public interface JavaInterfaceVisitor {
 
     /**
      * Visit a java interface

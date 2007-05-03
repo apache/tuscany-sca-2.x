@@ -66,13 +66,13 @@ public class WriteTestCase extends TestCase {
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         javaFactory = new DefaultJavaFactory();
 
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
 
         JavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
         JavaInterfaceProcessor javaProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
-        staxProcessors.addExtension(javaProcessor);
+        staxProcessors.addArtifactProcessor(javaProcessor);
     }
 
     public void tearDown() throws Exception {

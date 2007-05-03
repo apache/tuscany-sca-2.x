@@ -40,7 +40,7 @@ public class ScriptModuleActivator implements ModuleActivator {
         BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
         
         scriptArtifactProcessor = new ScriptArtifactProcessor(new DefaultAssemblyFactory());
-        processors.addExtension(scriptArtifactProcessor);
+        processors.addArtifactProcessor(scriptArtifactProcessor);
 
         builder = new ScriptComponentBuilder();
         builder.setBuilderRegistry(builderRegistry);

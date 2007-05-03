@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
 
 /**
  * Implementations process class-level metadata, typically parsing annotations
@@ -37,7 +36,7 @@ import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
  * 
  * @version $Rev$ $Date$
  */
-public interface JavaClassIntrospectorExtension {
+public interface JavaClassVisitor {
 
     /**
      * A callback received when the component implementation class is first

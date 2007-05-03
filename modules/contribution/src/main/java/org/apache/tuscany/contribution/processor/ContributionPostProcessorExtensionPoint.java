@@ -25,14 +25,16 @@ package org.apache.tuscany.contribution.processor;
  * @version $Rev$ $Date$
  */
 public interface ContributionPostProcessorExtensionPoint {
+    
     /**
      * Add a ContributionPostProcessor
      * @param processor
      */
-    void addExtension(ContributionPostProcessor processor);
+    void addPostProcessor(ContributionPostProcessor processor);
+    
     /**
      * Remove a ContributionPostProcessor
      * @param processor
      */
-    void removeExtension(ContributionPostProcessor processor);
+    void removePostProcessor(ContributionPostProcessor processor);
 }

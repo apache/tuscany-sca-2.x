@@ -36,7 +36,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.easymock.EasyMock;
 
 /**
@@ -72,13 +72,13 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     }
 
     public void testUnregister() throws Exception {
-        JavaInterfaceIntrospectorExtension extension = createMock(JavaInterfaceIntrospectorExtension.class);
+        JavaInterfaceVisitor extension = createMock(JavaInterfaceVisitor.class);
         extension.visitInterface(EasyMock.isA(JavaInterface.class));
         expectLastCall().once();
         replay(extension);
-        impl.addExtension(extension);
+        impl.addInterfaceVisitor(extension);
         impl.introspect(Base.class);
-        impl.removeExtension(extension);
+        impl.removeInterfaceVisitor(extension);
         impl.introspect(Base.class);
         verify(extension);
     }

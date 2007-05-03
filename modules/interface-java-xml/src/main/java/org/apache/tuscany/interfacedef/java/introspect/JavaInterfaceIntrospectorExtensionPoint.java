@@ -19,7 +19,7 @@
 package org.apache.tuscany.interfacedef.java.introspect;
 
 /**
- * A registry of {@link JavaInterfaceIntrospectorExtension}s. Interface processors update a
+ * A registry of {@link JavaInterfaceVisitor}s. Interface processors update a
  * service contract definition based on a Java interface
  * 
  * @version $Rev$ $Date$
@@ -29,11 +29,11 @@ public interface JavaInterfaceIntrospectorExtensionPoint extends JavaInterfaceIn
     /**
      * Registers the given extension.
      */
-    void addExtension(JavaInterfaceIntrospectorExtension visitor);
+    void addInterfaceVisitor(JavaInterfaceVisitor visitor);
 
     /**
      * Deregisters the given extension.
      */
-    void removeExtension(JavaInterfaceIntrospectorExtension visitor);
+    void removeInterfaceVisitor(JavaInterfaceVisitor visitor);
 
 }

@@ -61,12 +61,12 @@ public class WriteTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
 
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
 
         WSDLInterfaceProcessor wsdlProcessor = new WSDLInterfaceProcessor(new DefaultWSDLFactory(), null);
-        staxProcessors.addExtension(wsdlProcessor);
+        staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
 
     public void tearDown() throws Exception {

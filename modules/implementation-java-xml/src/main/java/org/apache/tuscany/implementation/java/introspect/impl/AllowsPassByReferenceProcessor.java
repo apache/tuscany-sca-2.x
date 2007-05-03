@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.AllowsPassByReference;
 
@@ -31,7 +30,7 @@ import org.osoa.sca.annotations.AllowsPassByReference;
  * 
  * @version $Rev$ $Date$
  */
-public class AllowsPassByReferenceProcessor extends BaseJavaClassIntrospectorExtension {
+public class AllowsPassByReferenceProcessor extends BaseJavaClassVisitor {
     
     public AllowsPassByReferenceProcessor(AssemblyFactory factory) {
         super(factory);

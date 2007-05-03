@@ -98,7 +98,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(exception2ExceptionTransformer);
 
         JavaInterfaceIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        introspectors.addExtension(new DataBindingJavaInterfaceProcessor(dataBindings));
+        introspectors.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
 
         WirePostProcessorRegistry postProcessors = registry.getExtensionPoint(WirePostProcessorRegistry.class);
         ComponentManager componentManager = registry.getExtensionPoint(ComponentManager.class);

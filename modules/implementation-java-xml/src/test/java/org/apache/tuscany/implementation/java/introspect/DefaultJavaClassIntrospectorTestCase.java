@@ -39,21 +39,21 @@ public class DefaultJavaClassIntrospectorTestCase extends TestCase {
 
     public void testRegister() throws Exception {
         DefaultJavaClassIntrospector introspector = new DefaultJavaClassIntrospector();
-        JavaClassIntrospectorExtension extension = EasyMock.createNiceMock(JavaClassIntrospectorExtension.class);
-        introspector.addExtension(extension);
+        JavaClassVisitor extension = EasyMock.createNiceMock(JavaClassVisitor.class);
+        introspector.addClassVisitor(extension);
     }
 
     public void testUnegister() throws Exception {
         DefaultJavaClassIntrospector introspector = new DefaultJavaClassIntrospector();
-        JavaClassIntrospectorExtension extension = EasyMock.createNiceMock(JavaClassIntrospectorExtension.class);
-        introspector.addExtension(extension);
-        introspector.removeExtension(extension);
+        JavaClassVisitor extension = EasyMock.createNiceMock(JavaClassVisitor.class);
+        introspector.addClassVisitor(extension);
+        introspector.removeClassVisitor(extension);
     }
 
     @SuppressWarnings("unchecked")
     public void testWalk() throws Exception {
         DefaultJavaClassIntrospector introspector = new DefaultJavaClassIntrospector();
-        JavaClassIntrospectorExtension extension = EasyMock.createMock(JavaClassIntrospectorExtension.class);
+        JavaClassVisitor extension = EasyMock.createMock(JavaClassVisitor.class);
         extension.visitClass(EasyMock.eq(Bar.class), EasyMock.isA(JavaImplementation.class));
         extension.visitConstructor(EasyMock.isA(Constructor.class), EasyMock.isA(JavaImplementation.class));
         extension.visitMethod(EasyMock.isA(Method.class), EasyMock.isA(JavaImplementation.class));
@@ -68,7 +68,7 @@ public class DefaultJavaClassIntrospectorTestCase extends TestCase {
         // mock.expects(once()).method("visitSuperClass");
         // mock.expects(once()).method("visitEnd");
         EasyMock.replay(extension);
-        introspector.addExtension(extension);
+        introspector.addClassVisitor(extension);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(assemblyFactory);
         introspector.introspect(Bar.class, javaImplementationFactory.createJavaImplementation());

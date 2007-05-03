@@ -23,7 +23,6 @@ import java.lang.reflect.Modifier;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.Destroy;
 
@@ -33,7 +32,7 @@ import org.osoa.sca.annotations.Destroy;
  * 
  * @version $Rev$ $Date$
  */
-public class DestroyProcessor extends BaseJavaClassIntrospectorExtension {
+public class DestroyProcessor extends BaseJavaClassVisitor {
     
     public DestroyProcessor(AssemblyFactory factory) {
         super(factory);

@@ -27,8 +27,8 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.implementation.java.introspect.impl.BaseJavaClassVisitor;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 
@@ -41,7 +41,7 @@ import commonj.sdo.helper.HelperContext;
  * 
  * @version $Rev$ $Date$
  */
-public class HelperContextProcessor extends BaseJavaClassIntrospectorExtension {
+public class HelperContextProcessor extends BaseJavaClassVisitor {
     private HelperContextRegistry registry;
     
     /**

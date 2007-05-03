@@ -71,7 +71,7 @@ public class ReadTestCase extends TestCase {
 
         JavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
         JavaInterfaceProcessor javaProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
-        staxProcessors.addExtension(javaProcessor);
+        staxProcessors.addArtifactProcessor(javaProcessor);
     }
 
     public void tearDown() throws Exception {

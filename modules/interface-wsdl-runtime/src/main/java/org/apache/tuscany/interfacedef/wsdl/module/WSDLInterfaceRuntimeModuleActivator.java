@@ -48,11 +48,11 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
         
         // Register <interface.wsdl> processor
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        processors.addExtension(new WSDLInterfaceProcessor(wsdlFactory, interfaceIntrospector));
+        processors.addArtifactProcessor(new WSDLInterfaceProcessor(wsdlFactory, interfaceIntrospector));
         
         // Register .wsdl document processor 
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessors.addExtension(new WSDLDocumentProcessor(wsdlFactory, null));
+        documentProcessors.addArtifactProcessor(new WSDLDocumentProcessor(wsdlFactory, null));
     }
 
     public void stop(ExtensionPointRegistry registry) {

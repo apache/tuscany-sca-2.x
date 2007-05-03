@@ -71,14 +71,14 @@ public class WriteTestCase extends TestCase {
         introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
         wsdlFactory = new DefaultWSDLFactory();
 
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
 
         WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor(
                                                                                   factory, policyFactory, wsFactory,
                                                                                   wsdlFactory, introspector);
-        staxProcessors.addExtension(wsdlProcessor);
+        staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
 
     public void tearDown() throws Exception {

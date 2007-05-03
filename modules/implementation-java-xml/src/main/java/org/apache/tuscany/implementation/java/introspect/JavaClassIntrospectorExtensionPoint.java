@@ -19,7 +19,7 @@
 package org.apache.tuscany.implementation.java.introspect;
 
 /**
- * A system service which tracks {@link JavaClassIntrospectorExtension}s
+ * A system service which tracks {@link JavaClassVisitor}s
  *
  * @version $Rev$ $Date$
  */
@@ -28,11 +28,11 @@ public interface JavaClassIntrospectorExtensionPoint extends JavaClassIntrospect
     /**
      * Registers the given extension.
      */
-    void addExtension(JavaClassIntrospectorExtension extension);
+    void addClassVisitor(JavaClassVisitor extension);
 
     /**
      * Deregisters the given extension.
      */
-    void removeExtension(JavaClassIntrospectorExtension extension);
+    void removeClassVisitor(JavaClassVisitor extension);
 
 }

@@ -45,7 +45,7 @@ public class WSDLTestCase extends TestCase {
         documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
 
         WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
-        documentProcessors.addExtension(wsdlProcessor);
+        documentProcessors.addArtifactProcessor(wsdlProcessor);
     }
 
     public void tearDown() throws Exception {
