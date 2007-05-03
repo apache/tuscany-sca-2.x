@@ -411,24 +411,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 return super.add(o);
             }
         };
-
-        // Collect and fuse includes
-        compositeUtil.fuseIncludes(composite, problems);
-
-        // Expand nested composites
-        compositeUtil.expandComposites(composite, problems);
-
-        // Configure all components
-        compositeUtil.configureComponents(composite, problems);
-
-        // Wire the composite
-        compositeUtil.wireComposite(composite, problems);
-
-        // Activate composite services
-        compositeUtil.activateCompositeServices(composite, problems);
-
-        // Wire composite references
-        compositeUtil.wireCompositeReferences(composite, problems);
+        
+        compositeUtil.configureAndWire(composite, problems);
 
         // if (!problems.isEmpty()) {
         // throw new VariantRuntimeException(new RuntimeException("Problems in

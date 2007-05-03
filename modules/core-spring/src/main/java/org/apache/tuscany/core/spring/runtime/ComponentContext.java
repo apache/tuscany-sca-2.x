@@ -171,24 +171,9 @@ public class ComponentContext {
         };
         
 
-        // Collect and fuse includes
-        compositeUtil.fuseIncludes(composite, problems);
+        // Configure and wire the composite
+        compositeUtil.configureAndWire(composite, problems);
 
-        // Expand nested composites
-        compositeUtil.expandComposites(composite, problems);
-        
-        // Configure all components
-        compositeUtil.configureComponents(composite, problems);
-        
-        // Wire the composite
-        compositeUtil.wireComposite(composite, problems);
-        
-        // Activate composite services
-        compositeUtil.activateCompositeServices(composite, problems);
-        
-        // Wire composite references
-        compositeUtil.wireCompositeReferences(composite, problems);
-       
 //        if (!problems.isEmpty()) {
 //            throw new VariantRuntimeException(new RuntimeException("Problems in the composite..."));
 //        }

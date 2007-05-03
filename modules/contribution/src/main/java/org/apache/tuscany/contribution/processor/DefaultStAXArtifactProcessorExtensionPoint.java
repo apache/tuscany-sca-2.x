@@ -43,7 +43,7 @@ import org.apache.tuscany.contribution.service.UnrecognizedElementException;
  */
 public class DefaultStAXArtifactProcessorExtensionPoint
     extends DefaultArtifactProcessorExtensionPoint
-    implements StAXArtifactProcessorExtensionPoint, StAXArtifactProcessorExtension<Object> {
+    implements StAXArtifactProcessorExtensionPoint, StAXArtifactProcessor<Object> {
 
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
@@ -69,7 +69,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         
         // Delegate to the processor associated with the element qname
         QName name = source.getName();
-        StAXArtifactProcessorExtension<?> processor = (StAXArtifactProcessorExtension<?>)this.getProcessor(name);
+        StAXArtifactProcessor<?> processor = (StAXArtifactProcessor<?>)this.getProcessor(name);
         if (processor == null) {
             return null;
         }
@@ -81,8 +81,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         
         // Delegate to the processor associated with the model type
         if (model != null) {
-            StAXArtifactProcessorExtension<Object> processor = 
-                (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            StAXArtifactProcessor<Object> processor = 
+                (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.write(model, outputSource);
             }
@@ -94,8 +94,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
 
         // Delegate to the processor associated with the model type
         if (model != null) {
-            StAXArtifactProcessorExtension<Object> processor = 
-                (StAXArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            StAXArtifactProcessor<Object> processor = 
+                (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.resolve(model, resolver);
             }
@@ -166,12 +166,12 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         }
     }
 
-    public void addExtension(StAXArtifactProcessorExtension artifactProcessor) {
+    public void addExtension(StAXArtifactProcessor artifactProcessor) {
         processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
-    public void removeExtension(StAXArtifactProcessorExtension artifactProcessor) {
+    public void removeExtension(StAXArtifactProcessor artifactProcessor) {
         processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
         processorsByModelType.remove(artifactProcessor.getModelType());        
     }

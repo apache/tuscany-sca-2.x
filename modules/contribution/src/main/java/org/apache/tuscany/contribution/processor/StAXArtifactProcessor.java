@@ -31,7 +31,7 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
  * 
  * @version $Rev$ $Date$
  */
-public interface StAXArtifactProcessorExtension<M> extends ArtifactProcessorExtension<M> {
+public interface StAXArtifactProcessor<M> extends ArtifactProcessor<M> {
 
     /**
      * Reads a model from an input source. Examples of input sources are: a URI, a

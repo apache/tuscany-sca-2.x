@@ -37,7 +37,7 @@ import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -51,7 +51,7 @@ import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector
 import org.apache.tuscany.policy.PolicyFactory;
 
 public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
-    StAXArtifactProcessorExtension<WebServiceBinding>, WebServiceConstants {
+    StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
     private WSDLFactory wsdlFactory;
     private WSDLInterfaceIntrospector introspector;

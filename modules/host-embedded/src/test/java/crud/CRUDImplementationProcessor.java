@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -44,7 +44,7 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
  *
  * @version $Rev$ $Date$
  */
-public class CRUDImplementationProcessor implements StAXArtifactProcessorExtension<CRUDImplementation> {
+public class CRUDImplementationProcessor implements StAXArtifactProcessor<CRUDImplementation> {
     private static final QName IMPLEMENTATION_CRUD = new QName("http://crud", "implementation.crud");
     
     private AssemblyFactory assemblyFactory;

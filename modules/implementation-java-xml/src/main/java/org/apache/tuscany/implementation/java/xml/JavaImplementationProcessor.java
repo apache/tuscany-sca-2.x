@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.resolver.ClassReference;
 import org.apache.tuscany.contribution.service.ContributionReadException;
@@ -42,7 +42,7 @@ import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.policy.PolicyFactory;
 
 public class JavaImplementationProcessor extends BaseArtifactProcessor implements
-    StAXArtifactProcessorExtension<JavaImplementation>, JavaImplementationConstants {
+    StAXArtifactProcessor<JavaImplementation>, JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
     private JavaClassIntrospector introspector;

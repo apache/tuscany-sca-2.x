@@ -91,9 +91,7 @@ public class ReadTestCase extends TestCase {
         assertNotNull(composite);
 
         CompositeUtil compositeUtil = new CompositeUtil(factory, mapper);
-        compositeUtil.fuseIncludes(composite, new ArrayList<Base>());
-        compositeUtil.configureComponents(composite, new ArrayList<Base>());
-        compositeUtil.wireComposite(composite, new ArrayList<Base>());
+        compositeUtil.configureAndWire(composite, new ArrayList<Base>());
 
         //new PrintUtil(System.out).print(composite);
     }
@@ -109,9 +107,7 @@ public class ReadTestCase extends TestCase {
         staxProcessors.resolve(composite, resolver);
 
         CompositeUtil compositeUtil = new CompositeUtil(factory, mapper);
-        compositeUtil.fuseIncludes(composite, new ArrayList<Base>());
-        compositeUtil.configureComponents(composite, new ArrayList<Base>());
-        compositeUtil.wireComposite(composite, new ArrayList<Base>());
+        compositeUtil.configureAndWire(composite, new ArrayList<Base>());
 
         //new PrintUtil(System.out).print(composite);
     }

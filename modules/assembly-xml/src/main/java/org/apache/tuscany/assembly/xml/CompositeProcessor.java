@@ -51,7 +51,7 @@ import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.util.CompositeUtil;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -67,7 +67,7 @@ import org.apache.tuscany.policy.PolicyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessorExtension<Composite> {
+public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Composite> {
     
     private InterfaceContractMapper interfaceContractMapper;
 
@@ -79,7 +79,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      */
     public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory,
                               InterfaceContractMapper interfaceContractMapper,
-                              StAXArtifactProcessorExtension extensionProcessor) {
+                              StAXArtifactProcessor extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
         this.interfaceContractMapper = interfaceContractMapper;
     }
@@ -481,57 +481,6 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         // Resolve composite services and references
         resolveContracts(composite.getServices(), resolver);
         resolveContracts(composite.getReferences(), resolver);
-    }
-
-    /**
-     * FIXME temporarily here, needs to move to CompositeUtil.
-     * @param composite
-     * @throws ContributionWireException
-     */
-    public void configureAndWire(Composite composite) throws ContributionWireException {
-        
-        // Process the composite configuration
-        CompositeUtil compositeUtil = new CompositeUtil(assemblyFactory, interfaceContractMapper);
-
-        List<Base> problems = new ArrayList<Base>() {
-            private static final long serialVersionUID = 4819831446590718923L;
-
-            
-            @Override
-            public boolean add(Base o) {
-                //TODO Use a monitor to report configuration problems
-                
-                // Uncommenting the following two lines can be useful to detect
-                // and troubleshoot SCA assembly XML composite configuration
-                // problems.
-                
-//                System.err.println("Composite configuration problem:");
-//                new PrintUtil(System.err).print(o);
-                return super.add(o);
-            }
-        };
-        
-
-        // Collect and fuse includes
-        compositeUtil.fuseIncludes(composite, problems);
-
-        // Configure all components
-        compositeUtil.configureComponents(composite, problems);
-        
-        //FIXME this should only be done on top level deployable composites
-
-        // Expand nested composites
-        //compositeUtil.expandComposites(composite, problems);
-        
-        // Wire the composite
-        compositeUtil.wireComposite(composite, problems);
-       
-        // Uncommenting the following three lines can be useful to detect
-        // and troubleshoot SCA assembly XML composite configuration
-        // problems.
-//        if (!problems.isEmpty()) {
-//            throw new ContributionWireException("Problems in the composite...");
-//        }
     }
 
     public QName getArtifactType() {

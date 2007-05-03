@@ -24,6 +24,6 @@ package org.apache.tuscany.contribution.processor;
  * @version $Rev$ $Date$
  */
 public interface StAXArtifactProcessorExtensionPoint extends 
-    ArtifactProcessorExtensionPoint<StAXArtifactProcessorExtension> {
+    ArtifactProcessorExtensionPoint<StAXArtifactProcessor> {
 
 }

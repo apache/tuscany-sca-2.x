@@ -32,7 +32,7 @@ import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.binding.rmi.RMIBinding;
 import org.apache.tuscany.binding.rmi.RMIBindingConstants;
 import org.apache.tuscany.binding.rmi.RMIBindingFactory;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -40,7 +40,7 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.policy.PolicyFactory;
 
 public class RMIBindingProcessor extends BaseArtifactProcessor implements
-    StAXArtifactProcessorExtension<RMIBinding>, RMIBindingConstants {
+    StAXArtifactProcessor<RMIBinding>, RMIBindingConstants {
 
     private RMIBindingFactory rmiBindingFactory;
 

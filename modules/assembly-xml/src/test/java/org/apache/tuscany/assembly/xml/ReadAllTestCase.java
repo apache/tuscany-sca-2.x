@@ -37,7 +37,6 @@ import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.PolicyFactory;
@@ -52,8 +51,6 @@ import org.w3c.dom.Element;
  */
 public class ReadAllTestCase extends TestCase {
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    private DefaultArtifactResolver resolver; 
-    private CompositeProcessor compositeProcessor;
 
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
@@ -61,17 +58,13 @@ public class ReadAllTestCase extends TestCase {
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
         
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
-        staxProcessors.addExtension(compositeProcessor);
+        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
         staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
         staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
-
-        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
         staxProcessors = null;
-        resolver = null;
     }
 
     public void testReadComposite() throws Exception {
@@ -155,34 +148,6 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(calcCompositeReference.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
         assertNotNull(calcCallback);
         // TODO test operations
-
-        //new PrintUtil(System.out).print(composite);
-    }
-
-    public void testReadCompositeAndWireIt() throws Exception {
-
-        InputStream is = getClass().getResourceAsStream("TestAllDivide.composite");
-        Composite included = staxProcessors.read(is, Composite.class);
-        assertNotNull(included);
-        resolver.add(included);
-        
-        is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = staxProcessors.read(is, Composite.class);
-        assertNotNull(composite);
-        staxProcessors.resolve(composite, resolver);
-        compositeProcessor.configureAndWire(composite);
-
-        Component calcComponent = composite.getComponents().get(0);
-        CompositeService calcCompositeService = (CompositeService)composite.getServices().get(0);
-        assertEquals(calcComponent.getServices().get(0), calcCompositeService.getPromotedService());
-
-        ComponentReference multiplyReference = calcComponent.getReferences().get(2);
-        CompositeReference calcCompositeReference = (CompositeReference)composite.getReferences().get(0);
-        assertEquals(multiplyReference, calcCompositeReference.getPromotedReferences().get(0));
-
-        Component addComponent = composite.getComponents().get(1);
-        ComponentReference addReference = calcComponent.getReferences().get(0);
-        assertEquals(addReference.getTargets().get(0), addComponent.getServices().get(0));
 
         //new PrintUtil(System.out).print(composite);
     }

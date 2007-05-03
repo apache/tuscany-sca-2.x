@@ -38,8 +38,8 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.processor.PackageProcessorExtension;
-import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.PackageProcessor;
+import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
@@ -60,13 +60,13 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * Registry of available package processors.
      */
-    protected PackageProcessorExtension packageProcessor;
+    protected PackageProcessor packageProcessor;
 
     /**
      * Registry of available artifact processors
      */
 
-    protected URLArtifactProcessorExtension artifactProcessor;
+    protected URLArtifactProcessor artifactProcessor;
 
     /**
      * Artifact Resolver
@@ -95,8 +95,8 @@ public class ContributionServiceImpl implements ContributionService {
     
     
     public ContributionServiceImpl(ContributionRepository repository,
-                                   PackageProcessorExtension packageProcessor,
-                                   URLArtifactProcessorExtension artifactProcessor,
+                                   PackageProcessor packageProcessor,
+                                   URLArtifactProcessor artifactProcessor,
                                    ArtifactResolver artifactResolver,
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory) {

@@ -33,7 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -49,7 +49,7 @@ import commonj.sdo.impl.HelperProvider;
  * 
  * @version $Rev$ $Date$
  */
-public class ImportSDOProcessor implements StAXArtifactProcessorExtension<ImportSDO> {
+public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     private HelperContextRegistry helperContextRegistry;
 
     public ImportSDOProcessor(HelperContextRegistry helperContextRegistry) {
