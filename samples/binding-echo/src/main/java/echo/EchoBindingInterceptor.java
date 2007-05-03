@@ -25,19 +25,21 @@ import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 
 /**
+ * Interceptor for the sample echo binding.
+ * 
  * @version $Rev$ $Date$
  */
 public class EchoBindingInterceptor implements Interceptor {
     private Interceptor next;
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    private Object echo(Object[] args) throws InvocationTargetException {
         // echo back the result, a real binding would invoke some API for flowing the request
-        return ((Object[])payload)[0];
+        return args[0];
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = echo((Object[])msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());

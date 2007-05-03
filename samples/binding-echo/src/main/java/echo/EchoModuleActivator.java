@@ -25,7 +25,11 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 
-
+/**
+ * A module activator for the sample Echo binding extension.
+ *
+ * @version $Rev$ $Date$
+ */
 public class EchoModuleActivator implements ModuleActivator {
     private final EchoBindingProcessor echoBindingProcessor = new EchoBindingProcessor();
 
@@ -36,16 +40,17 @@ public class EchoModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
-        // Add the EchoProcessor to the proper registry
-        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessorRegistry.addExtension(echoBindingProcessor);
+        // Add the EchoProcessor extension
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.addExtension(echoBindingProcessor);
        
         // Start the Echo server
         EchoServer.start();
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        // Remove the EchoProcessor from the proper registry
+        
+        // Remove the EchoProcessor from the registry
         StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         artifactProcessorRegistry.removeExtension(echoBindingProcessor);
 

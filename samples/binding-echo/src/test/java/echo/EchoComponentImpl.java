@@ -23,6 +23,8 @@ import org.osoa.sca.annotations.Reference;
 
 
 /**
+ * A simple client component that uses a reference with an Echo binding.
+ * 
  * @version $Rev$ $Date$
  */
 public class EchoComponentImpl implements Echo {
@@ -34,8 +36,8 @@ public class EchoComponentImpl implements Echo {
         this.echoReference = echoReference;
     }
 
-    public String invoke(String msg) {
-        String result = echoReference.invoke(msg);
+    public String echo(String msg) {
+        String result = echoReference.echo(msg);
         System.out.println("Returned message: "+ result);
         return result;
     }

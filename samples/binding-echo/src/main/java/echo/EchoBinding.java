@@ -21,6 +21,11 @@ package echo;
 
 import org.apache.tuscany.assembly.Binding;
 
+/**
+ * A model for the sample Echo binding.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface EchoBinding extends Binding {
 
 }

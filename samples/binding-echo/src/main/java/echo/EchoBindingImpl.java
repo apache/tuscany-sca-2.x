@@ -33,6 +33,11 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
 
+/**
+ * Implementation of the Echo binding model.
+ *
+ * @version $Rev$ $Date$
+ */
 public class EchoBindingImpl extends BindingImpl implements EchoBinding, ReferenceBindingActivator,
     ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider {
 

@@ -30,6 +30,11 @@ import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
+/**
+ * A processor for <binding.echo> elements.
+ *
+ * @version $Rev$ $Date$
+ */
 public class EchoBindingProcessor implements StAXArtifactProcessorExtension<EchoBinding> {
     private final EchoBindingFactory factory;
 

@@ -19,8 +19,11 @@
 package echo;
 
 /**
+ * Interface of our sample Echo service.
+ * 
  * @version $Rev$ $Date$
  */
 public interface Echo {
-    String invoke(String msg);
+    
+    String echo(String msg);
 }

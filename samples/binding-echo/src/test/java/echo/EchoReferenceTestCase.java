@@ -43,7 +43,7 @@ public class EchoReferenceTestCase extends TestCase {
     }
 
     public void testEchoBinding() {
-        String result = service.invoke("foo");
+        String result = service.echo("foo");
         assertEquals(result, "foo");
     }
 
