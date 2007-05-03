@@ -31,7 +31,7 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 
 /**
  * A processor for <binding.echo> elements.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class EchoBindingProcessor implements StAXArtifactProcessorExtension<EchoBinding> {
@@ -46,7 +46,7 @@ public class EchoBindingProcessor implements StAXArtifactProcessorExtension<Echo
     }
 
     public QName getArtifactType() {
-        return EchoConstants.BINDING_ECHO;
+        return EchoBinding.BINDING_ECHO;
     }
 
     public Class<EchoBinding> getModelType() {
