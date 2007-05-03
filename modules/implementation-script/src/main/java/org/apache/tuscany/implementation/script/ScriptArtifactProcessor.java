@@ -38,13 +38,13 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
-public class ScriptArtifactProcessor implements StAXArtifactProcessorExtension<ScriptImplementation> {
+public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImplementation> {
 
     private static final String SCRIPT = "script";
     private static final String LANGUAGE = "language";

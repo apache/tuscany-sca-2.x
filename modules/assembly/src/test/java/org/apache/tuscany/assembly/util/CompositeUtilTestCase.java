@@ -17,18 +17,23 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly;
+package org.apache.tuscany.assembly.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.util.CompositeUtil;
-import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Base;
+import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 
 public class CompositeUtilTestCase extends TestCase {
     

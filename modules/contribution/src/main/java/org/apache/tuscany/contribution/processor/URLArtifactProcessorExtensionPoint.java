@@ -26,6 +26,6 @@ package org.apache.tuscany.contribution.processor;
  * @version $Rev$ $Date$
  */
 public interface URLArtifactProcessorExtensionPoint extends
-    ArtifactProcessorExtensionPoint<URLArtifactProcessorExtension> {
+    ArtifactProcessorExtensionPoint<URLArtifactProcessor> {
     
 }

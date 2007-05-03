@@ -32,7 +32,7 @@ import org.apache.tuscany.contribution.service.ContributionException;
  * 
  * @version $Rev$ $Date$
  */
-public interface PackageProcessorExtension {
+public interface PackageProcessor {
     // /**
     // * Returns the type of package handled by this package processor.
     // * @return the type of package handled by this package processor

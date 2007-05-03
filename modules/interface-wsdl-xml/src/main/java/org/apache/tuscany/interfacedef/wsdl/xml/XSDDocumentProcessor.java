@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
+import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  *
  * @version $Rev$ $Date$
  */
-public class XSDDocumentProcessor implements URLArtifactProcessorExtension<XSDefinition> {
+public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> {
 
     private WSDLFactory factory;
 

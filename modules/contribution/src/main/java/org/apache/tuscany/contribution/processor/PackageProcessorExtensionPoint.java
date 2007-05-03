@@ -21,12 +21,12 @@ package org.apache.tuscany.contribution.processor;
 /**
  * @version $Rev$ $Date$
  */
-public interface PackageProcessorExtensionPoint extends PackageProcessorExtension {
+public interface PackageProcessorExtensionPoint extends PackageProcessor {
     /**
      * Register a ContributionPackageProcessor using the package type as the key
      * @param processor
      */
-    void register(String packageType, PackageProcessorExtension processor);
+    void register(String packageType, PackageProcessor processor);
     
     /**
      * Unregister a ContributionProcessor by package type

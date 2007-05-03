@@ -19,32 +19,13 @@
 
 package org.apache.tuscany.contribution.processor;
 
-import java.net.URI;
-import java.net.URL;
-
-import org.apache.tuscany.contribution.service.ContributionReadException;
+import org.apache.tuscany.contribution.Contribution;
 
 /**
- * An artifact processor that can read models from an InputStream.
+ * A processor invoked after the contribution is loaded 
  * 
  * @version $Rev$ $Date$
  */
-public interface URLArtifactProcessorExtension<M> extends ArtifactProcessorExtension<M> {
-
-    /**
-     * Reads a model from an input source. Examples of input 
-     * sources are: a URI, a DOM node, an XML reader.
-     * @param contributionURL
-     * @param artifactURI
-     * @param artifactURL
-     * @return a model representation of the input.
-     */
-    M read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException;
-    
-    /**
-     * Returns the type of artifact handled by this artifact processor. 
-     * @return the type of artifact handled by this artifact processor
-     */
-    String getArtifactType();
-
+public interface ContributionPostProcessor {
+    void visit(Contribution contribution);
 }

@@ -33,7 +33,7 @@ import org.apache.tuscany.contribution.service.UnrecognizedElementException;
  */
 public class DefaultURLArtifactProcessorExtensionPoint
     extends DefaultArtifactProcessorExtensionPoint
-    implements URLArtifactProcessorExtensionPoint, URLArtifactProcessorExtension<Object> {
+    implements URLArtifactProcessorExtensionPoint, URLArtifactProcessor<Object> {
 
     /**
      * Constructs a new loader registry.
@@ -46,7 +46,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
 
     @SuppressWarnings("unchecked")
     public Object read(URL contributionURL, URI sourceURI, URL sourceURL) throws ContributionReadException {
-        URLArtifactProcessorExtension<Object> processor = null;
+        URLArtifactProcessor<Object> processor = null;
         
         // Delegate to the processor associated with file extension
         String extension = sourceURL.getFile();
@@ -54,7 +54,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
         //handle files without extension (e.g NOTICE)
         if (extensionStart > 0) {
             extension = extension.substring(extensionStart);
-            processor = (URLArtifactProcessorExtension<Object>)this.getProcessor(extension);            
+            processor = (URLArtifactProcessor<Object>)this.getProcessor(extension);            
         }
         if (processor == null) {
             return null;
@@ -67,8 +67,8 @@ public class DefaultURLArtifactProcessorExtensionPoint
 
         // Delegate to the processor associated with the model type
         if (model != null) {
-            URLArtifactProcessorExtension<Object> processor = 
-                (URLArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
+            URLArtifactProcessor<Object> processor = 
+                (URLArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
                 processor.resolve(model, resolver);
             }
@@ -87,12 +87,12 @@ public class DefaultURLArtifactProcessorExtensionPoint
         }
     }
     
-    public void addExtension(URLArtifactProcessorExtension artifactProcessor) {
+    public void addExtension(URLArtifactProcessor artifactProcessor) {
         processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
-    public void removeExtension(URLArtifactProcessorExtension artifactProcessor) {
+    public void removeExtension(URLArtifactProcessor artifactProcessor) {
         processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
         processorsByModelType.remove(artifactProcessor.getModelType());        
     }

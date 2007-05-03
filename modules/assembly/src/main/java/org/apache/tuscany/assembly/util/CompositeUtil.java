@@ -64,6 +64,54 @@ public class CompositeUtil {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
     }
+    
+    /**
+     * Configure and wire a composite.
+     * 
+     * @param composite
+     * @param problems
+     */
+    public void configureAndWire(Composite composite, List<Base> problems) {
+        
+        // Collect and fuse includes
+        fuseIncludes(composite, problems);
+
+        // Expand nested composites
+        expandComposites(composite, problems);
+
+        // Configure all components
+        configureComponents(composite, problems);
+
+        // Wire the composite
+        wireComposite(composite, problems);
+
+        // Activate composite services
+        activateCompositeServices(composite, problems);
+
+        // Wire composite references
+        wireCompositeReferences(composite, problems);
+    }
+
+    /**
+     * Configure and wire a composite.
+     * 
+     * @param composite
+     * @param problems
+     * 
+     * @deprecated
+     */
+    public void oldConfigureAndWire(Composite composite, List<Base> problems) {
+        
+        // Collect and fuse includes
+        fuseIncludes(composite, problems);
+
+        // Configure all components
+        configureComponents(composite, problems);
+
+        // Wire the composite
+        wireComposite(composite, problems);
+
+    }
 
     /**
      * Collect all includes in a graph of includes.
@@ -84,7 +132,7 @@ public class CompositeUtil {
      * @param composite
      * @param includes
      */
-    public void fuseIncludes(Composite composite, List<Base> problems) {
+    protected void fuseIncludes(Composite composite, List<Base> problems) {
         
         // First collect all includes
         List<Composite> includes = new ArrayList<Composite>();
@@ -353,7 +401,7 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    public void configureComponents(Composite composite, List<Base> problems) {
+    protected void configureComponents(Composite composite, List<Base> problems) {
         configureComponents(composite, null, problems);
     }
 
@@ -856,7 +904,7 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    public void activateCompositeServices(Composite composite, List<Base> problems)  {
+    protected void activateCompositeServices(Composite composite, List<Base> problems)  {
         
         // Process nested composites recursively
         for (Component component: composite.getComponents()) {
@@ -876,8 +924,12 @@ public class CompositeUtil {
                             
                             // Add the component service to the innermost promoted component
                             SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
-                            Component promotedComponent = scaBinding.getComponent();
-                            promotedComponent.getServices().add(componentService);
+                            if (scaBinding != null) {
+                                Component promotedComponent = scaBinding.getComponent();
+                                promotedComponent.getServices().add(componentService);
+                            } else {
+                                problems.add(promotedService);
+                            }
                         }
                     }
                 }
@@ -892,20 +944,24 @@ public class CompositeUtil {
 
                 // Create a new component service to represent this composite service
                 // on the promoted component
-                ComponentService newComponentService = assemblyFactory.createComponentService();
-                newComponentService.setName(null);
-                newComponentService.setService(compositeService);
                 SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
-                Component component = scaBinding.getComponent();
-                component.getServices().add(newComponentService);
-                newComponentService.getBindings().add(scaBinding);
-                newComponentService.getBindings().addAll(compositeService.getBindings());
-                newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                newComponentService.setCallback(compositeService.getCallback());
-                
-                // Change the composite service to now promote the newly created
-                // component service directly
-                compositeService.setPromotedService(newComponentService);
+                if (scaBinding != null) {
+                    Component component = scaBinding.getComponent();
+                    ComponentService newComponentService = assemblyFactory.createComponentService();
+                    newComponentService.setName(null);
+                    newComponentService.setService(compositeService);
+                    component.getServices().add(newComponentService);
+                    newComponentService.getBindings().add(scaBinding);
+                    newComponentService.getBindings().addAll(compositeService.getBindings());
+                    newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
+                    newComponentService.setCallback(compositeService.getCallback());
+                    
+                    // Change the composite service to now promote the newly created
+                    // component service directly
+                    compositeService.setPromotedService(newComponentService);
+                } else {
+                    problems.add(promotedService);
+                }
             }
         }
     }
@@ -915,7 +971,7 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    public void wireCompositeReferences(Composite composite, List<Base> problems)  {
+    protected void wireCompositeReferences(Composite composite, List<Base> problems)  {
         
         // Process nested composites recursively
         for (Component component: composite.getComponents()) {
@@ -990,7 +1046,7 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    public void wireComposite(Composite composite, List<Base> problems) {
+    protected void wireComposite(Composite composite, List<Base> problems) {
         
         // Wire nested composites recursively
         for (Component component: composite.getComponents()) {
@@ -1035,7 +1091,7 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    public void expandComposites(Composite composite, List<Base> problems) {
+    protected void expandComposites(Composite composite, List<Base> problems) {
         for (Component component: composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {

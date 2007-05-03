@@ -241,20 +241,9 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         };
         
 
-        // Collect and fuse includes
-        compositeUtil.fuseIncludes(composite, problems);
+        // Configure and wire the composite
+        compositeUtil.oldConfigureAndWire(composite, problems);
 
-        // Configure all components
-        compositeUtil.configureComponents(composite, problems);
-        
-        //FIXME this should only be done on top level deployable composites
-
-        // Expand nested composites
-        //compositeUtil.expandComposites(composite, problems);
-        
-        // Wire the composite
-        compositeUtil.wireComposite(composite, problems);
-       
         // Uncommenting the following three lines can be useful to detect
         // and troubleshoot SCA assembly XML composite configuration
         // problems.
