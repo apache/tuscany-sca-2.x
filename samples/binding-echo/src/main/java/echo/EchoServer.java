@@ -68,9 +68,8 @@ public class EchoServer {
      * @param input
      * @return
      */
-    public String sendReceive(String composite, String service, String input) throws InvocationTargetException {
-        URI uri = URI.create("/" + composite + "/#" + service);
-        return services.get(uri).sendReceive(input);
+    public String sendReceive(String uri, String input) throws InvocationTargetException {
+        return services.get(URI.create(uri)).sendReceive(input);
     }
 
 }
