@@ -38,6 +38,8 @@
             <modules>
                 <module>binding-echo</module>
                 <module>calculator</module>
+		<module>calculator-rmi-reference</module>
+		<module>calculator-rmi-service</module>
                 <module>calculator-web</module>
                 <!--
                 <module>das-service</module>
