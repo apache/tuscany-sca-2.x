@@ -25,6 +25,7 @@ package echo;
  * @version $Rev$ $Date$
  */
 public interface EchoBindingFactory {
+    
     /**
      * Creates a new Echo binding.
      * 

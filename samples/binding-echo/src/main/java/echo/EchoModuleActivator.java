@@ -51,8 +51,8 @@ public class EchoModuleActivator implements ModuleActivator {
     public void stop(ExtensionPointRegistry registry) {
         
         // Remove the EchoProcessor from the registry
-        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessorRegistry.removeExtension(echoBindingProcessor);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.removeExtension(echoBindingProcessor);
 
         EchoServer.stop();
     }
