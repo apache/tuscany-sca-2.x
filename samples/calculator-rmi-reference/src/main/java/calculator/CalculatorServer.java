@@ -22,10 +22,6 @@ package calculator;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-
 /**
  * @version $Rev: 529177 $ $Date: 2007-04-16 14:34:39 +0530 (Mon, 16 Apr 2007) $
  */

@@ -21,8 +21,6 @@ package calculator;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCARuntimeActivator;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
 
 /**
  * This shows how to test the Calculator service component.

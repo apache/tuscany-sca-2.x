@@ -19,23 +19,19 @@
 package supplychain;
 
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
 
 /**
  * This class implements the Customer service component.
  */
-@Service(Retailer.class)
-@Scope("COMPOSITE")
 public class RetailerComponentImpl implements Retailer {
-    
+
     private Warehouse warehouse;
-    
+
     @Reference
     public void setWarehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
     }
-    
+
     public void submitOrder(String order) {
         warehouse.fulfillOrder(order + ", submitted");
     }

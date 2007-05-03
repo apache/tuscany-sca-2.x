@@ -18,13 +18,7 @@
  */
 package calculator;
 
-import java.util.List;
-
-import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
 
 /**
  * An implementation of the Calculator service.

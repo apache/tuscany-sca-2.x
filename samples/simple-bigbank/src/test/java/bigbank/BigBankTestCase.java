@@ -21,8 +21,8 @@ package bigbank;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 import bigbank.account.AccountService;
 
@@ -33,8 +33,9 @@ public class BigBankTestCase extends TestCase {
     protected void setUp() throws Exception {
     	SCARuntime.start("BigBank.composite");
 
-        CompositeContext context = CurrentCompositeContext.getContext();
-        accountService = context.locateService(AccountService.class, "AccountServiceComponent");
+        ComponentContext context = SCARuntime.getComponentContext("AccountServiceComponent");
+        ServiceReference<AccountService> service = context.createSelfReference(AccountService.class);
+        accountService = service.getService();
     }
     
     protected void tearDown() throws Exception {

@@ -18,13 +18,9 @@
  */
 package helloworld;
 
-import org.osoa.sca.annotations.Scope;
-
 /**
- * This client program shows how to create an SCA runtime, start it,
- * locate the HelloWorld service and invoke it.
+ * The HelloWorld component implementation
  */
-@Scope("COMPOSITE")
 public class HelloWorldServiceComponent implements HelloWorldService {
    
     HelloWorldService helloWorldService;

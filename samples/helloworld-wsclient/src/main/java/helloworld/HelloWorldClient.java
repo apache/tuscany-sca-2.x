@@ -19,8 +19,8 @@
 package helloworld;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -30,12 +30,14 @@ public class HelloWorldClient {
 
     public  final static void main(String[] args) throws Exception {
     	SCARuntime.start("helloworldwsclient.composite");
-    	
-        CompositeContext compositeContext = CurrentCompositeContext.getContext();
-        HelloWorldService helloWorldService= compositeContext.locateService(HelloWorldService.class, "HelloWorldServiceComponent");
+
+        ComponentContext context = SCARuntime.getComponentContext("HelloWorldServiceComponent");
+        ServiceReference<HelloWorldService> service = context.createSelfReference(HelloWorldService.class);
+        HelloWorldService helloWorldService = service.getService();
+
         String value = helloWorldService.getGreetings("World");
         System.out.println(value);
-        
+
         SCARuntime.stop();
     }
 }
