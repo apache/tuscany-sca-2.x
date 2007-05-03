@@ -24,15 +24,16 @@ import java.net.URI;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.ReferenceBindingActivator;
 import org.apache.tuscany.core.ReferenceBindingProvider;
-import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentService;
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
 
 /**
  * Implementation of the Echo binding provider.
@@ -70,11 +71,11 @@ public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBin
     public void start(Component component, ComponentService service) {
         URI uri = URI.create(component.getURI() + "/" + getName());
         setURI(uri.toString());
-        ImplementationProvider impl = (ImplementationProvider)component.getImplementation();
-        Interceptor interceptor = impl.createInterceptor((RuntimeComponent)component, service, service
-            .getInterfaceContract().getInterface().getOperations().get(0), false);
+        RuntimeComponentService componentService = (RuntimeComponentService) service;
+        RuntimeWire wire = componentService.getRuntimeWires().get(0);
+        InvocationChain chain = wire.getInvocationChains().get(0);
         // Register with the hosting server
-        EchoServer.getServer().register(new EchoService(interceptor), uri);
+        EchoServer.getServer().register(new EchoService(chain.getHeadInterceptor()), uri);
     }
 
     public void stop(Component component, ComponentService service) {
