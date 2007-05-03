@@ -22,10 +22,10 @@ package crud;
 import java.util.Map;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
@@ -42,42 +42,31 @@ public class CRUDModuleActivator implements ModuleActivator {
 
     private CRUDImplementationProcessor implementationArtifactProcessor;
 
-    public void start(ExtensionPointRegistry registry) {
-
-        // Add the CRUD implementation extension to the StAXArtifactProcessor
-        // extension point
-        StAXArtifactProcessorExtensionPoint artifactProcessors = registry
-            .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-
-        // FIXME: How to pass the assembly factory from the core to extensions?
-        AssemblyFactory assemblyFactory = registry.getExtensionPoint(AssemblyFactory.class);
-        if (assemblyFactory == null) {
-            assemblyFactory = new DefaultAssemblyFactory();
-        }
-
-        JavaFactory javaFactory = registry.getExtensionPoint(JavaFactory.class);
-        if (javaFactory == null) {
-            javaFactory = new DefaultJavaFactory();
-        }
-
-        JavaInterfaceIntrospectorExtensionPoint introspectorExtensionPoint = registry
-            .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        implementationArtifactProcessor = new CRUDImplementationProcessor(assemblyFactory, javaFactory,
-                                                                          introspectorExtensionPoint);
-        artifactProcessors.addExtension(implementationArtifactProcessor);
-    }
-
     public Map<Class, Object> getExtensionPoints() {
         // This module extension does not contribute any new
         // extension point
         return null;
     }
 
+    public void start(ExtensionPointRegistry registry) {
+
+        // Create the CRUD implementation factory
+        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory();
+        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceIntrospectorExtensionPoint introspector = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        CRUDImplementationFactory crudFactory = new DefaultCRUDImplementationFactory(assemblyFactory, javaFactory, introspector);
+
+        // Add the CRUD implementation extension to the StAXArtifactProcessor
+        // extension point
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        implementationArtifactProcessor = new CRUDImplementationProcessor(crudFactory);
+        processors.addExtension(implementationArtifactProcessor);
+    }
+
     public void stop(ExtensionPointRegistry registry) {
 
         // Remove the contributed extensions
-        StAXArtifactProcessorExtensionPoint artifactProcessors = registry
-            .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessors.removeExtension(implementationArtifactProcessor);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.removeExtension(implementationArtifactProcessor);
     }
 }

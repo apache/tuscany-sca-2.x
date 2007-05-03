@@ -41,7 +41,7 @@ import org.apache.tuscany.spi.wire.Interceptor;
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public class CRUDImplementationProvider extends CRUDImplementation implements ImplementationProvider,
+public class CRUDImplementationProvider extends CRUDImplementationImpl implements ImplementationProvider,
     ImplementationActivator {
 
     /**
