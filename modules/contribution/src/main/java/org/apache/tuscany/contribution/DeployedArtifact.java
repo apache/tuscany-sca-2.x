@@ -26,28 +26,17 @@ package org.apache.tuscany.contribution;
  * @version $Rev$ $Date$
  */
 public interface DeployedArtifact extends Artifact {
-    /**
-     * Get the contribution that this artifact belongs to
-     * @return
-     */
-    Contribution getContribution();
-
-    /**
-     * Set te contribution that this artifact belongs to
-     * @param contribution
-     */
-    void setContribution(Contribution contribution);
     
     /**
-     * Get the Assembly Model Object associated with this artifact
+     * Get the model associated with this artifact
      * @return
      */
-    Object getModelObject();
+    Object getModel();
     
     /**
-     * Set the Assembly Model Object associated with this artifact
+     * Set the model associated with this artifact
      * @param modelObject
      */
-    void setModelObject(Object modelObject);
+    void setModel(Object modelObject);
     
 }

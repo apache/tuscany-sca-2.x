@@ -19,12 +19,8 @@
 
 package org.apache.tuscany.contribution.impl;
 
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
@@ -37,14 +33,14 @@ import org.apache.tuscany.contribution.DeployedArtifact;
  * @version $Rev: 531146 $ $Date: 2007-04-21 22:40:50 -0700 (Sat, 21 Apr 2007) $
  */
 public class ContributionImpl extends ArtifactImpl implements Contribution {
-    protected List<String> exports = new ArrayList<String>();
-    protected List<ContributionImport> imports = new ArrayList<ContributionImport>();
-    protected List<Composite> deployables = new ArrayList<Composite>();
+    private List<String> exports = new ArrayList<String>();
+    private List<ContributionImport> imports = new ArrayList<ContributionImport>();
+    private List<Composite> deployables = new ArrayList<Composite>();
     
     /**
      * A list of artifacts in the contribution
      */
-    protected Map<URI, DeployedArtifact> artifacts = new HashMap<URI, DeployedArtifact>();
+    private List<DeployedArtifact> artifacts = new ArrayList<DeployedArtifact>();
 
     protected ContributionImpl() {
     }
@@ -61,16 +57,8 @@ public class ContributionImpl extends ArtifactImpl implements Contribution {
         return deployables;
     }
 
-    public Map<URI, DeployedArtifact> getArtifacts() {
-        return Collections.unmodifiableMap(artifacts);
+    public List<DeployedArtifact> getArtifacts() {
+        return artifacts;
     }
     
-    public void addArtifact(DeployedArtifact artifact) {
-        artifact.setContribution(this);
-        artifacts.put(artifact.getUri(), artifact);
-    }
-    
-    public DeployedArtifact getArtifact(URI uri) {
-        return artifacts.get(uri);
-    }
 }

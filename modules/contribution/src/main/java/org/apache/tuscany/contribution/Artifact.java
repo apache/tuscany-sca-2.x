@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.contribution;
 
-import java.net.URI;
-import java.net.URL;
 
 /**
  * Base Artifact interface to accomodate common properties between Contribution and Deployed Artifact
@@ -32,24 +30,24 @@ public interface Artifact {
      * Get the URI that unique identifies the artifact
      * @return
      */
-    URI getUri();
+    String getURI();
     
     /**
      * Set the URI that unique identifies the artifact
      * @param uri
      */
-    void setURI(URI uri);
+    void setURI(String uri);
 
     /**
      * Get the URL location for the artifact
      * @return
      */
-    URL getLocation();
+    String getLocation();
     
     /**
      * Set the URL location for the artifact
      * @param location
      */
-    void setLocation(URL location);
+    void setLocation(String location);
 
 }

@@ -19,14 +19,13 @@
 
 package org.apache.tuscany.contribution.impl;
 
-import java.net.URI;
-
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.DeployedArtifact;
 
 public class DefaultContributionFactory implements ContributionFactory {
+    
     public DefaultContributionFactory() {
         
     }
@@ -35,24 +34,10 @@ public class DefaultContributionFactory implements ContributionFactory {
         return new ContributionImpl();
     }
 
-    public Contribution createContribution(URI uri) {
-        Contribution contribution = new ContributionImpl();
-        contribution.setURI(uri);
-
-        return contribution;
-    }
-
     public DeployedArtifact createDeplyedArtifact() {
         return new DeployedArtifactImpl();
     }
 
-    public DeployedArtifact createDeplyedArtifact(URI uri) {
-        DeployedArtifact deployedArtifact = new DeployedArtifactImpl();
-        deployedArtifact.setURI(uri);
-        
-        return deployedArtifact;
-    }
-    
     public ContributionImport createContributionImport() {
         return new ContributionImportImpl();
     }
