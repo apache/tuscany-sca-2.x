@@ -135,11 +135,14 @@ public class JettyServer implements ServletHost {
         }
     }
 
-    public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
+    public void addServletMapping(String uriStr, Servlet servlet) throws ServletMappingException {
+        URI uri = URI.create(uriStr);
         if (state == STARTING) {
 
-            // TODO: use the port from the uri, but thats a bit harder to do 
-            int port = DEFAULT_PORT;
+            int port = uri.getPort();
+            if (port == -1) {
+                port = DEFAULT_PORT;
+            }
             
             try {
                 server = new Server();
@@ -189,7 +192,7 @@ public class JettyServer implements ServletHost {
         servletHandler.addServlet(holder);
         ServletMapping mapping = new ServletMapping();
         mapping.setServletName(holder.getName());
-        String path = URI.create(uri).getPath();
+        String path = uri.getPath();
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
     }
