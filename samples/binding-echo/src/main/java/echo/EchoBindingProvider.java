@@ -24,7 +24,6 @@ import java.net.URI;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.ReferenceBindingActivator;
 import org.apache.tuscany.core.ReferenceBindingProvider;
@@ -71,8 +70,7 @@ public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBin
     public void start(Component component, ComponentService service) {
         URI uri = URI.create(component.getURI() + "/" + getName());
         setURI(uri.toString());
-        SCABinding binding = service.getBinding(SCABinding.class);
-        ImplementationProvider impl = (ImplementationProvider)binding.getComponent().getImplementation();
+        ImplementationProvider impl = (ImplementationProvider)component.getImplementation();
         Interceptor interceptor = impl.createInterceptor((RuntimeComponent)component, service, service
             .getInterfaceContract().getInterface().getOperations().get(0), false);
         // Register with the hosting server
