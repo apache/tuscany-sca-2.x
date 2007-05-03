@@ -19,6 +19,10 @@
 
 package echo;
 
+import static org.osoa.sca.Constants.SCA_NS;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.assembly.Binding;
 
 /**
@@ -27,5 +31,5 @@ import org.apache.tuscany.assembly.Binding;
  * @version $Rev$ $Date$
  */
 public interface EchoBinding extends Binding {
-
+    QName BINDING_ECHO = new QName(SCA_NS, "binding.echo");
 }
