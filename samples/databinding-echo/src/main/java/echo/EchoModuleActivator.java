@@ -24,12 +24,14 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 
-
+/**
+ * A module activator for the sample Echo binding extension.
+ *
+ * @version $Rev$ $Date$
+ */
 public class EchoModuleActivator implements ModuleActivator {
     private final EchoBindingProcessor echoBindingProcessor = new EchoBindingProcessor();
-    private final EchoBindingBuilder echoBindingBuilder = new EchoBindingBuilder();
 
     public Map<Class, Object> getExtensionPoints() {
         // No extensionPoints being contributed here
@@ -38,24 +40,19 @@ public class EchoModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
-        // Add the EchoProcessor to the proper registry
-        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessorRegistry.addArtifactProcessor(echoBindingProcessor);
-        
-        // Add the EchoBuilder to the proper registry
-        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
-        echoBindingBuilder.setBuilderRegistry(builderRegistry);
-        echoBindingBuilder.init();
-        builderRegistry.register(EchoBinding.class, echoBindingBuilder);
-        
+        // Add the EchoProcessor extension
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.addArtifactProcessor(echoBindingProcessor);
+       
         // Start the Echo server
         EchoServer.start();
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        // Remove the EchoProcessor from the proper registry
-        StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessorRegistry.removeArtifactProcessor(echoBindingProcessor);
+        
+        // Remove the EchoProcessor from the registry
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.removeArtifactProcessor(echoBindingProcessor);
 
         EchoServer.stop();
     }

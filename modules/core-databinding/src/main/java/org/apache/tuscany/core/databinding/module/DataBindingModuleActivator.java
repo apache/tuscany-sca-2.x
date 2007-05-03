@@ -24,11 +24,14 @@ import java.util.Map;
 
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.core.WireProcessorExtensionPoint;
 import org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTransformer;
 import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
 import org.apache.tuscany.core.databinding.transformers.Output2OutputTransformer;
+import org.apache.tuscany.core.databinding.wire.DataBindingRuntimeWireProcessor;
 import org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor;
+import org.apache.tuscany.core.databinding.wire.DataTransformationInteceptor;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
@@ -69,7 +72,7 @@ import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
  * @version $Rev$ $Date$
  */
 public class DataBindingModuleActivator implements ModuleActivator {
-    
+
     private DataBindingExtensionPoint dataBindings;
     private TransformerExtensionPoint transformers;
 
@@ -97,13 +100,23 @@ public class DataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(output2OutputTransformer);
         transformers.addTransformer(exception2ExceptionTransformer);
 
-        JavaInterfaceIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        JavaInterfaceIntrospectorExtensionPoint introspectors = registry
+            .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         introspectors.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
 
+        // To be removed
         WirePostProcessorRegistry postProcessors = registry.getExtensionPoint(WirePostProcessorRegistry.class);
-        ComponentManager componentManager = registry.getExtensionPoint(ComponentManager.class);
-        postProcessors.register(new DataBindingWirePostProcessor(componentManager, mediator));
-        
+        if (postProcessors != null) {
+            ComponentManager componentManager = registry.getExtensionPoint(ComponentManager.class);
+            postProcessors.register(new DataBindingWirePostProcessor(componentManager, mediator));
+        }
+
+        WireProcessorExtensionPoint wireProcessorExtensionPoint = registry
+            .getExtensionPoint(WireProcessorExtensionPoint.class);
+        if (wireProcessorExtensionPoint != null) {
+            wireProcessorExtensionPoint.register(new DataBindingRuntimeWireProcessor(mediator));
+        }
+
         DOMDataBinding domDataBinding = new DOMDataBinding();
         domDataBinding.setDataBindingRegistry(dataBindings);
         dataBindings.addDataBinding(domDataBinding);
@@ -117,10 +130,10 @@ public class DataBindingModuleActivator implements ModuleActivator {
         javaBeansDataBinding.setDataBindingRegistry(dataBindings);
         dataBindings.addDataBinding(javaBeansDataBinding);
 
-        Group2GroupTransformer group2GroupTransformer= new Group2GroupTransformer();
+        Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer();
         group2GroupTransformer.setMediator(mediator);
         transformers.addTransformer(group2GroupTransformer);
-        
+
         transformers.addTransformer(new InputSource2Node());
         transformers.addTransformer(new InputSource2SAX());
         transformers.addTransformer(new InputStream2Node());
@@ -137,7 +150,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
         transformers.addTransformer(new Reader2SAX());
         transformers.addTransformer(new SAX2DOMPipe());
-        
+
         transformers.addTransformer(new Source2ResultTransformer());
         transformers.addTransformer(new StreamDataPipe());
         transformers.addTransformer(new String2Node());
@@ -149,7 +162,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(new XMLStreamReader2SAX());
         transformers.addTransformer(new XMLStreamReader2String());
     }
-    
+
     public void stop(ExtensionPointRegistry registry) {
     }
 }

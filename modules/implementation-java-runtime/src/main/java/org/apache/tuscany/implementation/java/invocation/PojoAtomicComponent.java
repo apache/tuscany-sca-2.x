@@ -157,7 +157,7 @@ public abstract class PojoAtomicComponent implements ComponentContextProvider {
     }
 
     public void attachWire(RuntimeWire wire) {
-        String referenceName = wire.getSource().getName();
+        String referenceName = wire.getSource().getComponentReference().getName();
         List<RuntimeWire> wireList = wires.get(referenceName);
         if (wireList == null) {
             wireList = new ArrayList<RuntimeWire>();
@@ -178,7 +178,7 @@ public abstract class PojoAtomicComponent implements ComponentContextProvider {
 
     public void attachWires(List<RuntimeWire> attachWires) {
         assert attachWires.size() > 0;
-        String referenceName = attachWires.get(0).getSource().getName();
+        String referenceName = attachWires.get(0).getSource().getComponentReference().getName();
         List<RuntimeWire> wireList = wires.get(referenceName);
         if (wireList == null) {
             wireList = new ArrayList<RuntimeWire>();

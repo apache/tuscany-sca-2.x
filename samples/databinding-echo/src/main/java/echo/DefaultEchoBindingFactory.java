@@ -19,10 +19,15 @@
 
 package echo;
 
+/**
+ * A factory for the sample Echo binding model.
+ *
+ * @version $Rev$ $Date$
+ */
 public class DefaultEchoBindingFactory implements EchoBindingFactory {
 
     public EchoBinding createEchoBinding() {
-        return new EchoBindingImpl();
+        return new EchoBindingProvider();
     }
 
 }

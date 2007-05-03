@@ -44,6 +44,7 @@ import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
+import org.apache.tuscany.core.WireProcessorExtensionPoint;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.NonBlockingInterceptor;
@@ -69,7 +70,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
     private InterfaceContractMapper interfaceContractMapper;
     private WorkContext workContext = new WorkContextImpl();
     private WorkScheduler workScheduler = new Jsr237WorkScheduler(new ThreadPoolWorkManager(10));
-    private WirePostProcessorRegistry wirePostProcessorRegistry;
+    private WireProcessorExtensionPoint wireProcessorExtensionPoint;
 
     /**
      * @param assemblyFactory
@@ -82,13 +83,13 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                      InterfaceContractMapper interfaceContractMapper,
                                      WorkContext workContext,
                                      WorkScheduler workScheduler,
-                                     WirePostProcessorRegistry wirePostProcessorRegistry) {
+                                     WireProcessorExtensionPoint wireProcessorExtensionPoint) {
         super();
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.workContext = workContext;
         this.workScheduler = workScheduler;
-        this.wirePostProcessorRegistry = wirePostProcessorRegistry;
+        this.wireProcessorExtensionPoint = wireProcessorExtensionPoint;
     }
 
     /**
@@ -232,13 +233,22 @@ public class DefaultCompositeActivator implements CompositeActivator {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-        RuntimeComponentReference wireSource = (RuntimeComponentReference)reference;
-        InterfaceContract sourceContract = getInterfaceContract(reference, binding);
+        RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
+        InterfaceContract bindingContract = getInterfaceContract(reference, binding);
 
         if (!(binding instanceof SCABinding)) {
-            RuntimeWire wire = new RuntimeWireImpl(reference, binding);
+            InterfaceContract sourceContract = reference.getInterfaceContract();
+            
+            // Component Reference --> External Service
+            RuntimeWire.Source wireSource = new RuntimeWireImpl.SourceImpl((RuntimeComponent)component,
+                                                                           (RuntimeComponentReference)reference,
+                                                                           binding, sourceContract);
+
+            RuntimeWire.Target wireTarget = new RuntimeWireImpl.TargetImpl(null, null, binding, bindingContract);
+            RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
+
             for (Operation operation : sourceContract.getInterface().getOperations()) {
-                Operation targetOperation = operation;
+                Operation targetOperation = interfaceContractMapper.map(bindingContract.getInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                 if (operation.isNonBlocking()) {
                     chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
@@ -248,7 +258,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
             if (sourceContract.getCallbackInterface() != null) {
                 for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
-                    Operation targetOperation = operation;
+                    Operation targetOperation = interfaceContractMapper.map(bindingContract.getCallbackInterface(), operation);
                     InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                     if (operation.isNonBlocking()) {
                         chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
@@ -257,7 +267,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                     wire.getCallbackInvocationChains().add(chain);
                 }
             }
-            wireSource.addRuntimeWire(wire);
+            runtimeRef.addRuntimeWire(wire);
+            wireProcessorExtensionPoint.process(wire);
         }
         for (ComponentService service : reference.getTargets()) {
             Component target = null;
@@ -266,9 +277,19 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 target = scaBinding.getComponent();
             }
 
-            RuntimeWire wire = new RuntimeWireImpl(reference, service);
             InterfaceContract targetContract = service.getInterfaceContract();
-            for (Operation operation : sourceContract.getInterface().getOperations()) {
+
+            RuntimeWire.Source wireSource = new RuntimeWireImpl.SourceImpl((RuntimeComponent)component,
+                                                                           (RuntimeComponentReference)reference,
+                                                                           binding, bindingContract);
+
+            RuntimeWire.Target wireTarget = new RuntimeWireImpl.TargetImpl((RuntimeComponent)target,
+                                                                           (RuntimeComponentService)service, binding,
+                                                                           targetContract);
+
+            RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
+
+            for (Operation operation : bindingContract.getInterface().getOperations()) {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                 if (operation.isNonBlocking()) {
@@ -280,8 +301,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 }
                 wire.getInvocationChains().add(chain);
             }
-            if (sourceContract.getCallbackInterface() != null) {
-                for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
+            if (bindingContract.getCallbackInterface() != null) {
+                for (Operation operation : bindingContract.getCallbackInterface().getOperations()) {
                     Operation targetOperation = interfaceContractMapper.map(targetContract.getCallbackInterface(),
                                                                             operation);
                     InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
@@ -294,7 +315,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 }
             }
 
-            wireSource.addRuntimeWire(wire);
+            runtimeRef.addRuntimeWire(wire);
+            wireProcessorExtensionPoint.process(wire);
         }
     }
 
@@ -329,12 +351,18 @@ public class DefaultCompositeActivator implements CompositeActivator {
         if (!(service instanceof RuntimeComponentService)) {
             return;
         }
-        RuntimeComponentService wireSource = (RuntimeComponentService)service;
+        RuntimeComponentService runtimeService = (RuntimeComponentService)service;
 
         InterfaceContract targetContract = service.getInterfaceContract();
         InterfaceContract sourceContract = getInterfaceContract(service, binding);
 
-        RuntimeWire wire = new RuntimeWireImpl(null, service);
+        RuntimeWire.Source wireSource = new RuntimeWireImpl.SourceImpl(null, null, binding, sourceContract);
+
+        RuntimeWire.Target wireTarget = new RuntimeWireImpl.TargetImpl((RuntimeComponent)component,
+                                                                       (RuntimeComponentService)service, binding,
+                                                                       targetContract);
+
+        RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
 
         for (Operation operation : sourceContract.getInterface().getOperations()) {
             Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
@@ -361,7 +389,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
         }
 
-        wireSource.addRuntimeWire(wire);
+        runtimeService.addRuntimeWire(wire);
+        wireProcessorExtensionPoint.process(wire);
     }
 
     /**

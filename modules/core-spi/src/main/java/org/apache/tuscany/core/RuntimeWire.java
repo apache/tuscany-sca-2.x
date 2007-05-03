@@ -22,8 +22,7 @@ package org.apache.tuscany.core;
 import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
-import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.spi.wire.InvocationChain;
 
 /**
@@ -33,31 +32,36 @@ import org.apache.tuscany.spi.wire.InvocationChain;
  * @version $Rev$ $Date$
  */
 public interface RuntimeWire {
-    /**
-     * Get the source of the wire
-     * 
-     * @return
-     */
-    ComponentReference getSource();
 
     /**
-     * Get the reference binding
-     * 
-     * @return
+     * The source metadata for a runtime wire
      */
-    Binding getSourceBinding();
+    public interface Source {
+        RuntimeComponent getComponent();
+
+        RuntimeComponentReference getComponentReference();
+
+        Binding getBinding();
+
+        InterfaceContract getInterfaceContract();
+    }
 
     /**
-     * Get the target of the wire. It will be null if the binding is
-     * 
-     * @return
+     * The target metadata for a runtime wire
      */
-    ComponentService getTarget();
+    public interface Target {
+        RuntimeComponent getComponent();
 
-    /**
-     * @return
-     */
-    Binding getTargetBinding();
+        RuntimeComponentService getComponentService();
+
+        Binding getBinding();
+
+        InterfaceContract getInterfaceContract();
+    }
+
+    Source getSource();
+
+    Target getTarget();
 
     /**
      * Returns the invocation chains for service operations associated with the
