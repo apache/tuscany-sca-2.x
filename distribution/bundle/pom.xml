@@ -144,7 +144,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-http</artifactId>
+            <artifactId>tuscany-host-http</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -219,7 +219,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-rmi</artifactId>
+            <artifactId>tuscany-host-rmi</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>

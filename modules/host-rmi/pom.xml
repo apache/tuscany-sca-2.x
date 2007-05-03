@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-rmi</artifactId>
+    <artifactId>tuscany-host-rmi</artifactId>
     <name>Apache Tuscany Java RMI Host Extension Point</name>
 
     <dependencies>

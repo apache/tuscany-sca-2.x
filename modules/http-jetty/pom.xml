@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-http</artifactId>
+            <artifactId>tuscany-host-http</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
         
