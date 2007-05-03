@@ -27,7 +27,7 @@ package echo;
 public class DefaultEchoBindingFactory implements EchoBindingFactory {
 
     public EchoBinding createEchoBinding() {
-        return new EchoBindingImpl();
+        return new EchoBindingProvider();
     }
 
 }

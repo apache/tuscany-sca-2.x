@@ -19,65 +19,59 @@
 
 package echo;
 
-import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.impl.BindingImpl;
-import org.apache.tuscany.core.ReferenceBindingActivator;
-import org.apache.tuscany.core.ReferenceBindingProvider;
-import org.apache.tuscany.core.ServiceBindingActivator;
-import org.apache.tuscany.core.ServiceBindingProvider;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.policy.PolicySet;
 
 /**
  * Implementation of the Echo binding model.
  *
  * @version $Rev$ $Date$
  */
-public class EchoBindingImpl extends BindingImpl implements EchoBinding, ReferenceBindingActivator,
-    ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider {
+public class EchoBindingImpl implements EchoBinding {
+    
+    private String name;
+    private String uri;
 
-    public Interceptor createInterceptor(Component component,
-                                         ComponentReference reference,
-                                         Operation operation,
-                                         boolean isCallback) {
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        } else {
-            return new EchoBindingInterceptor();
-        }
+    public String getName() {
+        return name;
     }
 
-    public InterfaceContract getBindingInterfaceContract(ComponentReference reference) {
-        return reference.getInterfaceContract();
+    public String getURI() {
+        return uri;
     }
 
-    public void start(Component component, ComponentReference reference) {
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void stop(Component component, ComponentReference reference) {
+    public void setURI(String uri) {
+        this.uri = uri;
     }
 
-    public InterfaceContract getBindingInterfaceContract(ComponentService service) {
-        return service.getInterfaceContract();
+    public List<PolicySet> getPolicySets() {
+        // The sample binding does not support policies
+        return Collections.emptyList();
     }
 
-    public void start(Component component, ComponentService service) {
-        URI uri = URI.create(component.getURI() + "#" + service.getName());
-        // Register with the hosting server
-        EchoServer.getServer().register(new EchoService(uri), uri);
+    public List<Intent> getRequiredIntents() {
+        // The sample binding does not support policies
+        return Collections.emptyList();
+    }
+    
+    public List<Object> getExtensions() {
+        // The sample binding does not support extensions
+        return Collections.emptyList();
     }
 
-    public void stop(Component component, ComponentService service) {
-        // Register with the hosting server
-        EchoServer.getServer().unregister(URI.create(component.getURI() + "#" + service.getName()));
+    public boolean isUnresolved() {
+        return false;
     }
 
-    public Object clone() {
-        return this;
+    public void setUnresolved(boolean unresolved) {
+        // The sample binding is always resolved
     }
+
 }
