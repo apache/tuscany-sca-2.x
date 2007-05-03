@@ -20,7 +20,6 @@ package org.apache.tuscany.contribution.processor;
 
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 
 
 
@@ -39,14 +38,6 @@ public interface ArtifactProcessorExtension <M> {
      * @param the resolver to use to resolve referenced models
      */
     void resolve(M model, ArtifactResolver resolver) throws ContributionResolveException;
-    
-    /**
-     * Wire and optimize a model for consumption by an SCA runtime. In addition to wiring references
-     * to services, this can include applying policies at different levels, or determining the configuration
-     * of services, references and properties in nested compositions for example.
-     * @param model the model to optimize
-     */
-    void wire(M model) throws ContributionWireException;
     
     /**
      * Returns the type of model handled by this artifact processor.

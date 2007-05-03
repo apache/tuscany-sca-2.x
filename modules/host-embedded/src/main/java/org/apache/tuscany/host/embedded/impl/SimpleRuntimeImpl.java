@@ -23,13 +23,17 @@ import static org.apache.tuscany.host.embedded.impl.SimpleRuntimeInfo.DEFAULT_CO
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeDocumentProcessor;
@@ -180,6 +184,9 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
 
         // Start all components
         Composite composite = (Composite)artifact.getModelObject();
+        
+        wire(composite);
+        
         Collection<Component> components = getDeployer().deploy(composite);
         for (Component component : components) {
             component.start();
@@ -207,4 +214,53 @@ public class SimpleRuntimeImpl extends AbstractRuntime<SimpleRuntimeInfo> implem
         super.destroy();
     }
 
+    /**
+     * FIXME This is temporary until we move over to use the new CompositeActivator.
+     * @param composite
+     */
+    private void wire(Composite composite) {
+        // Process the composite configuration
+        CompositeUtil compositeUtil = new CompositeUtil(new DefaultAssemblyFactory(), new DefaultInterfaceContractMapper());
+
+        List<Base> problems = new ArrayList<Base>() {
+            private static final long serialVersionUID = 4819831446590718923L;
+
+            
+            @Override
+            public boolean add(Base o) {
+                //TODO Use a monitor to report configuration problems
+                
+                // Uncommenting the following two lines can be useful to detect
+                // and troubleshoot SCA assembly XML composite configuration
+                // problems.
+                
+//                System.err.println("Composite configuration problem:");
+//                new PrintUtil(System.err).print(o);
+                return super.add(o);
+            }
+        };
+        
+
+        // Collect and fuse includes
+        compositeUtil.fuseIncludes(composite, problems);
+
+        // Configure all components
+        compositeUtil.configureComponents(composite, problems);
+        
+        //FIXME this should only be done on top level deployable composites
+
+        // Expand nested composites
+        //compositeUtil.expandComposites(composite, problems);
+        
+        // Wire the composite
+        compositeUtil.wireComposite(composite, problems);
+       
+        // Uncommenting the following three lines can be useful to detect
+        // and troubleshoot SCA assembly XML composite configuration
+        // problems.
+//        if (!problems.isEmpty()) {
+//            throw new ContributionWireException("Problems in the composite...");
+//        }
+        
+    }
 }

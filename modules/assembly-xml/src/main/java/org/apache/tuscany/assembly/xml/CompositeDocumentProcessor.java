@@ -34,7 +34,6 @@ import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
 /**
@@ -88,10 +87,6 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
     
     public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {
         extensionProcessor.resolve(composite, resolver);
-    }
-
-    public void wire(Composite composite) throws ContributionWireException {
-        extensionProcessor.wire(composite);
     }
 
     public String getArtifactType() {

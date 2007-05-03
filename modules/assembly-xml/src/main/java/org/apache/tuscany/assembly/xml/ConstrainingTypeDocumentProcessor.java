@@ -34,7 +34,6 @@ import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
 /**
@@ -90,10 +89,6 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
         extensionProcessor.resolve(constrainingType, resolver);
     }
     
-    public void wire(ConstrainingType constrainingType) throws ContributionWireException {
-        extensionProcessor.wire(constrainingType);
-    }
-
     public String getArtifactType() {
         return ".constrainingType";
     }
