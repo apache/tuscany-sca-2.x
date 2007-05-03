@@ -26,8 +26,8 @@ import org.apache.tuscany.host.embedded.SCATestCaseRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
  * Test case for helloworld web service client 
@@ -43,11 +43,13 @@ public class HelloWorldClientTestCase {
         try {
             SCARuntime.start("helloworldwsclient.composite");
             
-            CompositeContext compositeContext = CurrentCompositeContext.getContext();
-            helloWorldService = compositeContext.locateService(HelloWorldService.class, "HelloWorldServiceComponent");
+            ComponentContext context = SCARuntime.getComponentContext("HelloWorldServiceComponent");
+            ServiceReference<HelloWorldService> service = context.createSelfReference(HelloWorldService.class);
+            helloWorldService = service.getService();
     
             server =  new SCATestCaseRunner(HelloWorldServerTest.class);
             server.before();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

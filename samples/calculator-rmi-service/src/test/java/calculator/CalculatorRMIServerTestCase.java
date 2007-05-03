@@ -18,21 +18,11 @@
  */
 package calculator;
 
-import java.io.StringWriter;
 import java.rmi.Naming;
-import java.rmi.Remote;
-import java.util.List;
-
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-import org.w3c.dom.Node;
 
 /**
  * This shows how to test the Calculator service component.

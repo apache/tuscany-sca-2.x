@@ -21,8 +21,8 @@ package simplecallback;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
  * A testcase that demonstrates resolving the client service and initiating the callback sequence
@@ -34,8 +34,9 @@ public class SimpleCallbackTestCase extends TestCase {
     protected void setUp() throws Exception {
         SCARuntime.start("simplecallback.composite");
 
-        CompositeContext context = CurrentCompositeContext.getContext();
-        myClient = context.locateService(MyClient.class, "MyClientComponent");
+        ComponentContext context = SCARuntime.getComponentContext("MyClientComponent");
+        ServiceReference<MyClient> service = context.createSelfReference(MyClient.class);
+        myClient = service.getService();
     }
     
     protected void tearDown() throws Exception {

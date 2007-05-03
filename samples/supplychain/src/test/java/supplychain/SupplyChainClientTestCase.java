@@ -21,12 +21,12 @@ package supplychain;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 /**
- * This client program shows how to create an SCA runtime, start it, locate a simple HelloWorld service component and
- * invoke it.
+ * This client program shows how to create an SCA runtime, start it,
+ * locate a the Customer service component and invoke it.
  */
 public class SupplyChainClientTestCase extends TestCase {
 
@@ -35,8 +35,9 @@ public class SupplyChainClientTestCase extends TestCase {
     protected void setUp() throws Exception {
     	SCARuntime.start("supplychain.composite");
 
-        CompositeContext context = CurrentCompositeContext.getContext();
-        customer = context.locateService(Customer.class, "CustomerComponent");
+        ComponentContext context = SCARuntime.getComponentContext("CustomerComponent");
+        ServiceReference<Customer> service = context.createSelfReference(Customer.class);
+        customer = service.getService();
     }
 
     protected void tearDown() throws Exception {

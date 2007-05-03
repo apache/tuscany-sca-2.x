@@ -22,10 +22,10 @@
 
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
-		<reference name="addService"></reference>
-        <reference name="subtractService"></reference>
-        <reference name="multiplyService"></reference>
-        <reference name="divideService"></reference>
+		<reference name="addService" />
+        <reference name="subtractService" />
+        <reference name="multiplyService" />
+        <reference name="divideService" />
     </component>
     
     <reference name="AddReference" promote="CalculatorServiceComponent/addService">

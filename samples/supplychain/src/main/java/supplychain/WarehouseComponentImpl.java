@@ -19,14 +19,10 @@
 package supplychain;
 
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
 
 /**
  * This class implements the Warehouse service component.
  */
-@Service(Warehouse.class)
-@Scope("COMPOSITE")
 public class WarehouseComponentImpl implements Warehouse {
     
     private Shipper shipper;
