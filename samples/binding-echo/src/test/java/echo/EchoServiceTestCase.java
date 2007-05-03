@@ -35,11 +35,9 @@ public class EchoServiceTestCase extends TestCase {
     	SCARuntimeActivator.stop();
     }
 
-    // FIXME: [rfeng] To be fixed
     public void testEchoBinding() throws Exception {
-            
-//        String result = EchoServer.getServer().sendReceive("EchoBinding", "EchoService", "foo");
-//        assertEquals(result, "foo");
+        String result = EchoServer.getServer().sendReceive("EchoComponent/EchoService", "foo");
+        assertEquals(result, "foo");
     }
 
 

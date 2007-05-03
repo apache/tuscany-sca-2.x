@@ -24,8 +24,11 @@ import java.net.URI;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.SCABinding;
+import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.ReferenceBindingActivator;
 import org.apache.tuscany.core.ReferenceBindingProvider;
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -34,7 +37,7 @@ import org.apache.tuscany.spi.wire.Interceptor;
 
 /**
  * Implementation of the Echo binding provider.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBindingActivator,
@@ -66,14 +69,18 @@ public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBin
     }
 
     public void start(Component component, ComponentService service) {
-        URI uri = URI.create(component.getURI() + "#" + service.getName());
+        URI uri = URI.create(component.getURI() + "/" + getName());
+        SCABinding binding = service.getBinding(SCABinding.class);
+        ImplementationProvider impl = (ImplementationProvider)binding.getComponent().getImplementation();
+        Interceptor interceptor = impl.createInterceptor((RuntimeComponent)component, service, service
+            .getInterfaceContract().getInterface().getOperations().get(0), false);
         // Register with the hosting server
-        EchoServer.getServer().register(new EchoService(uri), uri);
+        EchoServer.getServer().register(new EchoService(uri, interceptor), uri);
     }
 
     public void stop(Component component, ComponentService service) {
         // Register with the hosting server
-        EchoServer.getServer().unregister(URI.create(component.getURI() + "#" + service.getName()));
+        EchoServer.getServer().unregister(URI.create(getURI()));
     }
 
     public Object clone() {
