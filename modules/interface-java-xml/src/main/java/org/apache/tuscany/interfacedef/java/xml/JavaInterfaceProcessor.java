@@ -32,7 +32,6 @@ import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.resolver.ClassReference;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
@@ -146,10 +145,6 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessorExtension<Ja
         
         JavaInterface javaCallbackInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getCallbackInterface(), resolver);
         javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
-    }
-    
-    public void wire(JavaInterfaceContract model) throws ContributionWireException {
-        // TODO Auto-generated method stub
     }
     
     public QName getArtifactType() {

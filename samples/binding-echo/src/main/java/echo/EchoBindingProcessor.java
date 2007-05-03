@@ -71,8 +71,4 @@ public class EchoBindingProcessor implements StAXArtifactProcessorExtension<Echo
         // TODO Auto-generated method stub
     }
 
-    public void wire(EchoBinding echoBinding) throws ContributionWireException {
-        // TODO Auto-generated method stub
-    }
-
 }

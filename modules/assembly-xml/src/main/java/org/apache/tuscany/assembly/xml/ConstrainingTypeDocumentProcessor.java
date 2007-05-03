@@ -34,7 +34,6 @@ import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWriteException;
 
 /**
  * A contrainingType content handler.
@@ -78,11 +77,6 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
                 //ignore
             }
         }
-    }
-    
-    public void write(ConstrainingType model, URL outputSource) throws ContributionWriteException {
-        // Can't write to a URL
-        throw new UnsupportedOperationException();
     }
     
     public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {

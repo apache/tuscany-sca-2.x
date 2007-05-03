@@ -76,6 +76,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         return processor.read(source);
     }
     
+    @SuppressWarnings("unchecked")
     public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException {
         
         // Delegate to the processor associated with the model type
@@ -88,6 +89,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         }
     }
     
+    @SuppressWarnings("unchecked")
     public void resolve(Object model, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Delegate to the processor associated with the model type

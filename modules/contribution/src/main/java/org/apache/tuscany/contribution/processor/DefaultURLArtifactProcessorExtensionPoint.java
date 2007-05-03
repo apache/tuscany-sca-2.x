@@ -24,7 +24,6 @@ import java.net.URL;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.contribution.service.UnrecognizedElementException;
 
 /**
@@ -45,6 +44,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
     public DefaultURLArtifactProcessorExtensionPoint() {
     }
 
+    @SuppressWarnings("unchecked")
     public Object read(URL contributionURL, URI sourceURI, URL sourceURL) throws ContributionReadException {
         URLArtifactProcessorExtension<Object> processor = null;
         
@@ -62,20 +62,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
         return processor.read(contributionURL, sourceURI, sourceURL);
     }
 
-    public void write(Object model, URL outputSource) throws ContributionWriteException {
-        
-        // Delegate to the processor associated with the particular model type
-        if (model != null) {
-            URLArtifactProcessorExtension<Object> processor = 
-                (URLArtifactProcessorExtension<Object>)this.getProcessor((Class<Object>)model.getClass());
-            if (processor != null) {
-                processor.write(model, outputSource);
-            }
-        }
-    }
-    
-    
-    
+    @SuppressWarnings("unchecked")
     public void resolve(Object model, ArtifactResolver resolver) throws ContributionResolveException {
 
         // Delegate to the processor associated with the model type

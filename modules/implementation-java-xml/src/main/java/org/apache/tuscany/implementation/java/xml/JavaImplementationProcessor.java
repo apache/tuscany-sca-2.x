@@ -34,7 +34,6 @@ import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.resolver.ClassReference;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -118,9 +117,6 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
         if (javaImplementation.getServices().isEmpty()) {
             javaImplementation.getServices().add(assemblyFactory.createService());
         }
-    }
-
-    public void wire(JavaImplementation model) throws ContributionWireException {
     }
 
     public QName getArtifactType() {

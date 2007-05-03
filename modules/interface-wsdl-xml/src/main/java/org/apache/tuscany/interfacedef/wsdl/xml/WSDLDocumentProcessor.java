@@ -37,8 +37,6 @@ import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionRuntimeException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
-import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
@@ -179,15 +177,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessorExtension<WSDL
         }
     }
     
-    public void write(WSDLDefinition wsdlDefinition, URL url) throws ContributionWriteException {
-        // TODO Auto-generated method stub
-    }
-    
     public void resolve(WSDLDefinition model, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
-    }
-    
-    public void wire(WSDLDefinition model) throws ContributionWireException {
         // TODO Auto-generated method stub
     }
     

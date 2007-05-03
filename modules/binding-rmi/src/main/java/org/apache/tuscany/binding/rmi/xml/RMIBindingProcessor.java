@@ -36,7 +36,6 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtension;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.policy.PolicyFactory;
 
@@ -102,9 +101,6 @@ public class RMIBindingProcessor extends BaseArtifactProcessor implements
     }
 
     public void resolve(RMIBinding model, ArtifactResolver resolver) throws ContributionResolveException {
-    }
-
-    public void wire(RMIBinding model) throws ContributionWireException {
     }
 
     public QName getArtifactType() {
