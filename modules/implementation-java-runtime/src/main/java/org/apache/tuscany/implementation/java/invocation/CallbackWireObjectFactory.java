@@ -16,36 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
+package org.apache.tuscany.implementation.java.invocation;
 
-import junit.framework.TestCase;
+import java.util.List;
 
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.invocation.ProxyFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
+ * Returns proxy instance for a wire callback
+ *
  * @version $Rev$ $Date$
  */
-public class EchoReferenceTestCase extends TestCase {
+public class CallbackWireObjectFactory implements ObjectFactory {
+    private ProxyFactory proxyFactory;
+    private Class<?> interfaze;
+    private List<RuntimeWire> wires;
 
-    private Echo service;
-
-    protected void setUp() throws Exception {
-        SCARuntimeActivator.start("EchoBinding.composite");
-        ComponentContext context = SCARuntimeActivator.getComponentContext("EchoComponent");
-        ServiceReference<Echo> serviceReference = context.createSelfReference(Echo.class);
-        service = serviceReference.getService();
-    }
-    
-    protected void tearDown() throws Exception {
-    	SCARuntimeActivator.stop();
+    public CallbackWireObjectFactory(Class<?> interfaze, ProxyFactory proxyService, List<RuntimeWire> wires) {
+        this.interfaze = interfaze;
+        this.proxyFactory = proxyService;
+        this.wires = wires;
     }
 
-    public void testEchoBinding() {
-        String result = service.invoke("foo");
-        assertEquals(result, "foo");
+    public Object getInstance() throws ObjectCreationException {
+        return proxyFactory.createCallbackProxy(interfaze, wires);
     }
-
 
 }

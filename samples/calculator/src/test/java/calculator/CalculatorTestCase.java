@@ -20,7 +20,7 @@ package calculator;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
@@ -32,14 +32,12 @@ public class CalculatorTestCase extends TestCase {
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        SCARuntime.start("Calculator.composite");
-        ComponentContext context = SCARuntime.getComponentContext("CalculatorServiceComponent");
-        ServiceReference<CalculatorService> service = context.createSelfReference(CalculatorService.class);
-        calculatorService = service.getService();
+        SCARuntimeActivator.start("Calculator.composite");
+        calculatorService = SCARuntimeActivator.locateService(CalculatorService.class, "CalculatorServiceComponent");
     }
-    
+
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+        SCARuntimeActivator.stop();
     }
 
     public void testCalculator() throws Exception {

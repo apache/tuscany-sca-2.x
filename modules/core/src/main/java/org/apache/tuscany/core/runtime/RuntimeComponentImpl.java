@@ -28,6 +28,7 @@ import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.core.invocation.WireObjectFactory;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
@@ -73,7 +74,7 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
             if (ref.getName().equals(referenceName)) {
                 RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
                 RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
-                return new JDKProxyService(null, new DefaultInterfaceContractMapper()).createProxy(businessInterface,
+                return new JDKProxyService(new WorkContextImpl(), new DefaultInterfaceContractMapper()).createProxy(businessInterface,
                                                                                                    wire);
             }
         }
@@ -87,7 +88,7 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
                 && ref.getName().startsWith(referenceName)) {
                 RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
                 RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
-                JDKProxyService proxyService = new JDKProxyService(null, new DefaultInterfaceContractMapper());
+                JDKProxyService proxyService = new JDKProxyService(new WorkContextImpl(), new DefaultInterfaceContractMapper());
                 WireObjectFactory<B> factory = new WireObjectFactory<B>(businessInterface, wire, proxyService);
                 return new ServiceReferenceImpl<B>(businessInterface, factory);
             }

@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,11 +41,12 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.AbstractScopeContainer;
-import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
-import org.apache.tuscany.core.component.scope.RequestScopeContainer;
-import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
+import org.apache.tuscany.core.invocation.JDKProxyService;
+import org.apache.tuscany.core.scope.AbstractScopeContainer;
+import org.apache.tuscany.core.scope.CompositeScopeContainer;
+import org.apache.tuscany.core.scope.RequestScopeContainer;
+import org.apache.tuscany.core.scope.ScopeRegistryImpl;
+import org.apache.tuscany.core.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.util.IOHelper;
 import org.apache.tuscany.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.core.work.ThreadPoolWorkManager;
@@ -54,17 +54,16 @@ import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
-import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;
-
-import commonj.work.WorkManager;
 
 /**
  * @version $Rev$ $Date$
@@ -119,7 +118,10 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         // WorkContext workContext = new SimpleWorkContext();
         WorkContext workContext = new WorkContextImpl();
         extensionPointRegistry.addExtensionPoint(WorkContext.class, workContext);
+
         WorkContextTunnel.setThreadWorkContext(workContext);
+        
+        extensionPointRegistry.addExtensionPoint(ProxyFactory.class, new JDKProxyService(workContext, interfaceContractMapper));
 
         workManager = new ThreadPoolWorkManager(10);
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
@@ -136,7 +138,15 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         domain.setName(new QName(Constants.SCA_NS, "sca.domain"));
         domain.setURI("sca://local/");
     }
+    
+    public <B> B locateService(Class<B> businessInterface, String componentName, String serviceName) {
+        return getComponentContext(componentName).createSelfReference(businessInterface, serviceName).getService();
+    }
 
+    public <B> B locateService(Class<B> businessInterface, String componentName) {
+        return getComponentContext(componentName).createSelfReference(businessInterface).getService();
+    }
+    
     public void start() throws ActivationException {
         activators = getInstances(hostClassLoader, ModuleActivator.class);
         for (ModuleActivator activator : activators) {

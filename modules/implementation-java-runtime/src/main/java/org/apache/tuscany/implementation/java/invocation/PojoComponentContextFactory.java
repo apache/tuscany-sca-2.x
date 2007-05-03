@@ -16,24 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.implementation.java.invocation;
 
-package org.apache.tuscany.spi.component;
+import org.osoa.sca.ComponentContext;
 
-import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
- * Represents a component implementation that supports scopes
- * 
  * @version $Rev$ $Date$
  */
-public interface Scopeable {
-    /**
-     * @param scope
-     */
-    void setScope(Scope scope);
+public class PojoComponentContextFactory implements ObjectFactory<ComponentContext> {
+    private final PojoAtomicComponent component;
 
-    /**
-     * @return
-     */
-    Scope getScope();
+
+    public PojoComponentContextFactory(PojoAtomicComponent component) {
+        this.component = component;
+    }
+
+
+    public ComponentContext getInstance() throws ObjectCreationException {
+        return component.getComponentContext();
+    }
 }

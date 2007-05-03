@@ -30,8 +30,10 @@ import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Multiplicity;
+import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.util.PrintUtil;
@@ -42,6 +44,7 @@ import org.apache.tuscany.core.ReferenceBindingProvider;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -110,16 +113,16 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
             for (ComponentService service : component.getServices()) {
                 for (Binding binding : service.getBindings()) {
-                    if(binding instanceof ServiceBindingActivator) {
-                        ServiceBindingActivator bindingActivator = (ServiceBindingActivator) binding;
+                    if (binding instanceof ServiceBindingActivator) {
+                        ServiceBindingActivator bindingActivator = (ServiceBindingActivator)binding;
                         bindingActivator.start(component, service);
                     }
                 }
             }
             for (ComponentReference reference : component.getReferences()) {
                 for (Binding binding : reference.getBindings()) {
-                    if(binding instanceof ReferenceBindingActivator) {
-                        ReferenceBindingActivator bindingActivator = (ReferenceBindingActivator) binding;
+                    if (binding instanceof ReferenceBindingActivator) {
+                        ReferenceBindingActivator bindingActivator = (ReferenceBindingActivator)binding;
                         bindingActivator.start(component, reference);
                     }
                 }
@@ -127,8 +130,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
                 start((Composite)implementation);
-            } else if(implementation instanceof ImplementationActivator) {
-                ((ImplementationActivator) implementation).start((RuntimeComponent) component); 
+            } else if (implementation instanceof ImplementationActivator) {
+                ((ImplementationActivator)implementation).start((RuntimeComponent)component);
             }
         }
 
@@ -140,29 +143,28 @@ public class DefaultCompositeActivator implements CompositeActivator {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
                 configure((Composite)implementation);
-            } else if(implementation instanceof ImplementationProvider) {
-                ((ImplementationProvider) implementation).configure((RuntimeComponent) component); 
+            } else if (implementation instanceof ImplementationProvider) {
+                ((ImplementationProvider)implementation).configure((RuntimeComponent)component);
             }
         }
 
     }
-    
-    
+
     public void stop(Composite composite) {
         for (Component component : composite.getComponents()) {
 
             for (ComponentService service : component.getServices()) {
                 for (Binding binding : service.getBindings()) {
-                    if(binding instanceof ServiceBindingActivator) {
-                        ServiceBindingActivator bindingActivator = (ServiceBindingActivator) binding;
+                    if (binding instanceof ServiceBindingActivator) {
+                        ServiceBindingActivator bindingActivator = (ServiceBindingActivator)binding;
                         bindingActivator.stop(component, service);
                     }
                 }
             }
             for (ComponentReference reference : component.getReferences()) {
                 for (Binding binding : reference.getBindings()) {
-                    if(binding instanceof ReferenceBindingActivator) {
-                        ReferenceBindingActivator bindingActivator = (ReferenceBindingActivator) binding;
+                    if (binding instanceof ReferenceBindingActivator) {
+                        ReferenceBindingActivator bindingActivator = (ReferenceBindingActivator)binding;
                         bindingActivator.stop(component, reference);
                     }
                 }
@@ -170,12 +172,13 @@ public class DefaultCompositeActivator implements CompositeActivator {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
                 start((Composite)implementation);
-            } else if(implementation instanceof ImplementationActivator) {
-                ((ImplementationActivator) implementation).stop((RuntimeComponent) component); 
+            } else if (implementation instanceof ImplementationActivator) {
+                ((ImplementationActivator)implementation).stop((RuntimeComponent)component);
             }
         }
 
-    }    
+    }
+
     public void createRuntimeWires(Composite composite) throws IncompatibleInterfaceContractException {
         for (Component component : composite.getComponents()) {
 
@@ -185,7 +188,9 @@ public class DefaultCompositeActivator implements CompositeActivator {
             } else {
                 // createSelfReferences(component);
                 for (ComponentReference reference : component.getReferences()) {
-                    for (Binding binding : reference.getBindings()) {
+                    // FIXME: ComponentReference.getBindings() should return the effective bindings
+//                    for (Binding binding : reference.getBindings()) {
+                for (Binding binding : getBindings(reference)) {
                         createWires(component, reference, binding);
                     }
                 }
@@ -206,6 +211,16 @@ public class DefaultCompositeActivator implements CompositeActivator {
             component.getReferences().add(ref);
         }
     }
+    
+    private List<Binding> getBindings(ComponentReference reference) {
+        List<CompositeReference> list = reference.promotedAs();
+        if(!list.isEmpty()) {
+            CompositeReference compositeReference = list.get(0);
+            return compositeReference.getBindings();
+        } else {
+            return reference.getBindings();
+        }
+    }
 
     private void createWires(Component component, ComponentReference reference, Binding binding) {
         if (!(binding instanceof ReferenceBindingProvider)) {
@@ -214,6 +229,38 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
         RuntimeComponentReference wireSource = (RuntimeComponentReference)reference;
         ReferenceBindingProvider provider = (ReferenceBindingProvider)binding;
+
+        if (!(binding instanceof SCABinding)) {
+            RuntimeWire wire = new RuntimeWireImpl(reference, binding);
+
+            InterfaceContract sourceContract = provider.getBindingInterfaceContract(reference);
+            for (Operation operation : sourceContract.getInterface().getOperations()) {
+                Operation targetOperation = operation;
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+                /* lresende */
+                if (operation.isNonBlocking()) {
+                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                }
+
+                addBindingIntercepor(component, reference, binding, chain, operation, false);
+
+                wire.getInvocationChains().add(chain);
+            }
+            if (sourceContract.getCallbackInterface() != null) {
+                for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
+                    Operation targetOperation = operation;
+                    InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+                    /* lresende */
+                    if (operation.isNonBlocking()) {
+                        chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                    }
+                    addBindingIntercepor(component, reference, binding, chain, operation, true);
+                    wire.getCallbackInvocationChains().add(chain);
+                }
+            }
+
+            wireSource.addRuntimeWire(wire);
+        }
         for (ComponentService service : reference.getTargets()) {
             // FIXME: Need a way to find the owning component of a component
             // service
@@ -293,8 +340,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
     private Scope getScope(Component component) {
         Implementation impl = component.getImplementation();
-        if (impl instanceof ImplementationProvider) {
-            ImplementationProvider provider = (ImplementationProvider)impl;
+        if (impl instanceof ScopedImplementationProvider) {
+            ScopedImplementationProvider provider = (ScopedImplementationProvider)impl;
             Scope scope = provider.getScope();
             if (scope == null) {
                 return Scope.STATELESS;

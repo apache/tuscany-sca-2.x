@@ -19,40 +19,55 @@
 
 package org.apache.tuscany.implementation.java.invocation;
 
+import java.net.URI;
+
 import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.core.ImplementationActivator;
-import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.ScopedImplementationProvider;
+import org.apache.tuscany.core.builder.NoConversationalContractException;
+import org.apache.tuscany.core.scope.CompositeScopeContainer;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.context.JavaAtomicComponent;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.implementation.java.context.PojoConfiguration;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
+import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.invocation.TargetInvokerInterceptor;
+import org.apache.tuscany.scope.ScopeContainer;
+import org.apache.tuscany.scope.ScopeRegistry;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.builder.ScopeNotFoundException;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.ProxyService;
+import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JavaImplementationProvider extends JavaImplementationImpl implements JavaImplementation, ImplementationProvider,
-    ImplementationActivator {
+public class JavaImplementationProvider extends JavaImplementationImpl implements JavaImplementation,
+    ScopedImplementationProvider, ImplementationActivator {
     private JavaPropertyValueObjectFactory propertyValueObjectFactory;
     private DataBindingExtensionPoint dataBindingRegistry;
-    private ProxyService proxyService;
+    private ProxyFactory proxyService;
     private WorkContext workContext;
+    private ScopeRegistry scopeRegistry;
 
-    public JavaImplementationProvider(ProxyService proxyService,
+    public JavaImplementationProvider(ScopeRegistry scopeRegistry,
+                                      ProxyFactory proxyService,
                                       WorkContext workContext,
                                       DataBindingExtensionPoint dataBindingRegistry,
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
+        this.scopeRegistry = scopeRegistry;
         this.proxyService = proxyService;
         this.workContext = workContext;
         this.dataBindingRegistry = dataBindingRegistry;
@@ -60,19 +75,85 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     }
 
     public void configure(RuntimeComponent component) {
-        PojoConfiguration configuration = new PojoConfiguration(this);
-        configuration.setProxyService(proxyService);
-        configuration.setWorkContext(workContext);
-        JavaAtomicComponent atomicComponent = new JavaAtomicComponent(configuration);
-        atomicComponent.setDataBindingRegistry(dataBindingRegistry);
-        atomicComponent.setPropertyValueFactory(propertyValueObjectFactory);
-        component.setImplementationConfiguration(atomicComponent);
+        try {
+            PojoConfiguration configuration = new PojoConfiguration(this);
+            configuration.setProxyService(proxyService);
+            configuration.setWorkContext(workContext);
+            // FIXME: Group id to be removed
+            configuration.setGroupId(URI.create("/"));
+            configuration.setName(URI.create(component.getURI()));
+            JavaAtomicComponent atomicComponent = new JavaAtomicComponent(component, configuration);
+            atomicComponent.setDataBindingRegistry(dataBindingRegistry);
+            atomicComponent.setPropertyValueFactory(propertyValueObjectFactory);
+
+            Scope scope = getScope();
+
+            if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
+                // FIXME:
+                atomicComponent.setScopeContainer(new CompositeScopeContainer());
+            } else {
+                // Check for conversational contract if conversational scope
+                if (scope == Scope.CONVERSATION) {
+                    boolean hasConversationalContract = false;
+                    for (Service serviceDef : getServices()) {
+                        if (serviceDef.getInterfaceContract().getInterface().isConversational()) {
+                            hasConversationalContract = true;
+                            break;
+                        }
+                    }
+                    if (!hasConversationalContract) {
+                        String name = getJavaClass().getName();
+                        throw new NoConversationalContractException(
+                                                                    "No conversational contract for conversational implementation",
+                                                                    name);
+                    }
+                }
+                // Now it's ok to set the scope container
+                ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
+                if (scopeContainer == null) {
+                    throw new ScopeNotFoundException(scope.toString());
+                }
+                atomicComponent.setScopeContainer(scopeContainer);
+            }
+            component.setImplementationConfiguration(atomicComponent);
+
+            if (getConversationIDMember() != null) {
+                atomicComponent.addConversationIDFactory(getConversationIDMember());
+            }
+
+            atomicComponent.configureProperties(component.getProperties());
+            handleResources(this, atomicComponent);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+
     }
 
-    /**
-     * @see org.apache.tuscany.core.ImplementationProvider#createInstance(org.apache.tuscany.core.RuntimeComponent,
-     *      org.apache.tuscany.assembly.ComponentService)
-     */
+    private void handleResources(JavaImplementation componentType, JavaAtomicComponent component) {
+        for (JavaResourceImpl resource : componentType.getResources().values()) {
+            String name = resource.getName();
+
+            ObjectFactory<?> objectFactory = (ObjectFactory<?>)component.getConfiguration().getFactories().get(resource
+                .getElement());
+            Class<?> type = resource.getElement().getType();
+            if (ComponentContext.class.equals(type)) {
+                objectFactory = new PojoComponentContextFactory(component);
+            } else {
+                boolean optional = resource.isOptional();
+                String mappedName = resource.getMappedName();
+                objectFactory = createResourceObjectFactory(type, mappedName, optional, null);
+            }
+            component.addResourceFactory(name, objectFactory);
+        }
+    }
+
+    private <T> ResourceObjectFactory<T> createResourceObjectFactory(Class<T> type,
+                                                                     String mappedName,
+                                                                     boolean optional,
+                                                                     ResourceHost host) {
+        return new ResourceObjectFactory<T>(type, mappedName, optional, host);
+    }
+
     public Object createInstance(RuntimeComponent component, ComponentService service) {
         JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
         return atomicComponent.createInstance();
@@ -109,6 +190,15 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     public void stop(RuntimeComponent component) {
         JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
         atomicComponent.stop();
+    }
+
+    public InstanceWrapper createInstanceWrapper(RuntimeComponent component) {
+        JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
+        return atomicComponent.createInstanceWrapper();
+    }
+
+    public boolean isEagerInit(RuntimeComponent component) {
+        return isEagerInit();
     }
 
 }

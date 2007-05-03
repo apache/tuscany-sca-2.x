@@ -57,4 +57,16 @@ public class DefaultSCARuntimeActivator extends SCARuntimeActivator {
         return runtime.getComponentContext(componentName);
     }
 
+    protected <B> B locate(Class<B> businessInterface, String componentName, String serviceName) {
+        if (serviceName != null) {
+            return runtime.locateService(businessInterface, componentName, serviceName);
+        } else {
+            return locate(businessInterface, componentName);
+        }
+    }
+
+    protected <B> B locate(Class<B> businessInterface, String componentName) {
+        return runtime.locateService(businessInterface, componentName);
+    }
+
 }

@@ -22,7 +22,6 @@ package org.apache.tuscany.core;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.wire.Interceptor;
 
 /**
@@ -54,22 +53,7 @@ public interface ImplementationProvider {
      * for the component service will be used
      */
     InterfaceContract getImplementationInterfaceContract(ComponentService service);
-
-    /**
-     * Get the scope for the component implementation
-     * @return The scope for the component implementation, if null is returned, STATELESS
-     * will be used
-     */
-    Scope getScope();
-    
-    /**
-     * Create a local instance to represent the component service
-     * @param component The component
-     * @param service The component service
-     * @return A new instance to represent the component service
-     */
-    Object createInstance(RuntimeComponent component, ComponentService service);
-    
+  
     /**
      * Configure the component by adding additional metadata for the component
      * @param component The runtime component
