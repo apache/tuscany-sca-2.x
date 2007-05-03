@@ -35,11 +35,11 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
-import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
+import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
+import org.apache.tuscany.implementation.java.introspect.impl.BaseJavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.impl.ConstructorProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ContextProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ConversationProcessor;
@@ -99,7 +99,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
 
         JavaClassIntrospectorExtensionPoint classIntrospector = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
-        BaseJavaClassIntrospectorExtension[] extensions = new BaseJavaClassIntrospectorExtension[] {
+        BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
             new AllowsPassByReferenceProcessor(assemblyFactory),
             new ContextProcessor(assemblyFactory),
@@ -115,8 +115,8 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             new HeuristicPojoProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
-        for (JavaClassIntrospectorExtension extension : extensions) {
-            classIntrospector.addExtension(extension);
+        for (JavaClassVisitor extension : extensions) {
+            classIntrospector.addClassVisitor(extension);
         }
         
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
@@ -134,7 +134,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
                                                  workContext, dataBindings, factory);
         JavaImplementationProcessor javaImplementationProcessor =
             new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
-        processors.addExtension(javaImplementationProcessor);
+        processors.addArtifactProcessor(javaImplementationProcessor);
 
         // FIXME: To be removed
         org.apache.tuscany.implementation.java.proxy.JDKProxyService proxyService =

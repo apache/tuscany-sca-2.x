@@ -32,7 +32,7 @@ import javax.xml.ws.ResponseWrapper;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.interfacedef.util.ElementInfo;
 import org.apache.tuscany.interfacedef.util.WrapperInfo;
 
@@ -41,7 +41,7 @@ import org.apache.tuscany.interfacedef.util.WrapperInfo;
  * 
  * @version $Rev$ $Date$
  */
-public class JAXWSJavaInterfaceProcessor implements JavaInterfaceIntrospectorExtension {
+public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
     public JAXWSJavaInterfaceProcessor() {
         super();

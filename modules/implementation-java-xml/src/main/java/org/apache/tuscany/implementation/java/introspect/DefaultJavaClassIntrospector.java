@@ -37,16 +37,16 @@ import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionH
  */
 public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtensionPoint {
 
-    private List<JavaClassIntrospectorExtension> extensions = new ArrayList<JavaClassIntrospectorExtension>();
+    private List<JavaClassVisitor> extensions = new ArrayList<JavaClassVisitor>();
 
     public DefaultJavaClassIntrospector() {
     }
 
-    public void addExtension(JavaClassIntrospectorExtension extension) {
+    public void addClassVisitor(JavaClassVisitor extension) {
         extensions.add(extension);
     }
 
-    public void removeExtension(JavaClassIntrospectorExtension extension) {
+    public void removeClassVisitor(JavaClassVisitor extension) {
         extensions.remove(extension);
     }
 
@@ -76,12 +76,12 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
      */
     public JavaImplementation introspect(Class<?> clazz, JavaImplementation type)
         throws IntrospectionException {
-        for (JavaClassIntrospectorExtension extension : extensions) {
+        for (JavaClassVisitor extension : extensions) {
             extension.visitClass(clazz, type);
         }
 
         for (Constructor<?> constructor : clazz.getConstructors()) {
-            for (JavaClassIntrospectorExtension extension : extensions) {
+            for (JavaClassVisitor extension : extensions) {
                 extension.visitConstructor(constructor, type);
                 // Assuming the visitClass or visitConstructor will populate the
                 // type.getConstructors
@@ -96,14 +96,14 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
 
         Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz);
         for (Method method : methods) {
-            for (JavaClassIntrospectorExtension processor : extensions) {
+            for (JavaClassVisitor processor : extensions) {
                 processor.visitMethod(method, type);
             }
         }
 
         Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz);
         for (Field field : fields) {
-            for (JavaClassIntrospectorExtension extension : extensions) {
+            for (JavaClassVisitor extension : extensions) {
                 extension.visitField(field, type);
             }
         }
@@ -113,7 +113,7 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
             visitSuperClass(superClass, type);
         }
 
-        for (JavaClassIntrospectorExtension extension : extensions) {
+        for (JavaClassVisitor extension : extensions) {
             extension.visitEnd(clazz, type);
         }
         return type;
@@ -121,7 +121,7 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
 
     private void visitSuperClass(Class<?> clazz, JavaImplementation type) throws IntrospectionException {
         if (!Object.class.equals(clazz)) {
-            for (JavaClassIntrospectorExtension extension : extensions) {
+            for (JavaClassVisitor extension : extensions) {
                 extension.visitSuperClass(clazz, type);
             }
             clazz = clazz.getSuperclass();

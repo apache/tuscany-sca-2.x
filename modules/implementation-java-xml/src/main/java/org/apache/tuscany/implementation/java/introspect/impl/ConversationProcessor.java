@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
@@ -32,7 +31,7 @@ import org.osoa.sca.annotations.Scope;
 /**
  * @version $Rev$ $Date$
  */
-public class ConversationProcessor extends BaseJavaClassIntrospectorExtension {
+public class ConversationProcessor extends BaseJavaClassVisitor {
     private static final String SECONDS = " SECONDS";
     private static final String MINUTES = " MINUTES";
     private static final String HOURS = " HOURS";

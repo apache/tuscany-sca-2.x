@@ -40,7 +40,7 @@ public class EchoModuleActivator implements ModuleActivator {
 
         // Add the EchoProcessor to the proper registry
         StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessorRegistry.addExtension(echoBindingProcessor);
+        artifactProcessorRegistry.addArtifactProcessor(echoBindingProcessor);
         
         // Add the EchoBuilder to the proper registry
         BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
@@ -55,7 +55,7 @@ public class EchoModuleActivator implements ModuleActivator {
     public void stop(ExtensionPointRegistry registry) {
         // Remove the EchoProcessor from the proper registry
         StAXArtifactProcessorExtensionPoint artifactProcessorRegistry = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessorRegistry.removeExtension(echoBindingProcessor);
+        artifactProcessorRegistry.removeArtifactProcessor(echoBindingProcessor);
 
         EchoServer.stop();
     }

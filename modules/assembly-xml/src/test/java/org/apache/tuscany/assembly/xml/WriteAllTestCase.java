@@ -59,9 +59,9 @@ public class WriteAllTestCase extends TestCase {
         mapper = new DefaultInterfaceContractMapper();
         compositeUtil = new CompositeUtil(factory, mapper);
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 

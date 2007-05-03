@@ -25,7 +25,6 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
@@ -38,7 +37,7 @@ import org.osoa.sca.annotations.Context;
  * 
  * @version $Rev$ $Date$
  */
-public class ContextProcessor extends BaseJavaClassIntrospectorExtension {
+public class ContextProcessor extends BaseJavaClassVisitor {
     
     public ContextProcessor(AssemblyFactory factory) {
         super(factory);

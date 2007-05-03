@@ -27,7 +27,6 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
@@ -36,7 +35,7 @@ import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
  * 
  * @version $Rev$ $Date$
  */
-public class ResourceProcessor extends BaseJavaClassIntrospectorExtension {
+public class ResourceProcessor extends BaseJavaClassVisitor {
     
     public ResourceProcessor(AssemblyFactory factory) {
         super(factory);

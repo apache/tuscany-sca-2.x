@@ -30,7 +30,6 @@ import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.java.JavaFactory;
@@ -46,7 +45,7 @@ import org.osoa.sca.annotations.Reference;
  * 
  * @version $Rev$ $Date$
  */
-public class ReferenceProcessor extends BaseJavaClassIntrospectorExtension {
+public class ReferenceProcessor extends BaseJavaClassVisitor {
     private JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
     private JavaFactory javaFactory;
     

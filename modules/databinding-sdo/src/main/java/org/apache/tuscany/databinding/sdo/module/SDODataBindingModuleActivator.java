@@ -57,7 +57,7 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
 
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         HelperContextRegistry contextRegistry = new HelperContextRegistryImpl();
-        processors.addExtension(new ImportSDOProcessor(contextRegistry));
+        processors.addArtifactProcessor(new ImportSDOProcessor(contextRegistry));
 
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
         transformers.addTransformer(new DataObject2String());
@@ -70,7 +70,7 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         
         JavaClassIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        introspectors.addExtension(new HelperContextProcessor(assemblyFactory, contextRegistry));
+        introspectors.addClassVisitor(new HelperContextProcessor(assemblyFactory, contextRegistry));
 
     }
 

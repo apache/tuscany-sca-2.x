@@ -55,7 +55,7 @@ public class JAXBDataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(new XMLStreamReader2JAXB());
 
         JavaInterfaceIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        introspectors.addExtension(new JAXWSJavaInterfaceProcessor());
+        introspectors.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor());
         
     }
 

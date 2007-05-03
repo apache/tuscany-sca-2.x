@@ -50,7 +50,7 @@ public class Axis2ModuleActivator implements ModuleActivator {
         WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
         WSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
-        processors.addExtension(new WebServiceBindingProcessor(
+        processors.addArtifactProcessor(new WebServiceBindingProcessor(
                                                                               assemblyFactory, policyFactory, wsFactory,
                                                                               wsdlFactory, introspector));
 

@@ -60,13 +60,13 @@ public class CRUDModuleActivator implements ModuleActivator {
         // extension point
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         implementationArtifactProcessor = new CRUDImplementationProcessor(crudFactory);
-        processors.addExtension(implementationArtifactProcessor);
+        processors.addArtifactProcessor(implementationArtifactProcessor);
     }
 
     public void stop(ExtensionPointRegistry registry) {
 
         // Remove the contributed extensions
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        processors.removeExtension(implementationArtifactProcessor);
+        processors.removeArtifactProcessor(implementationArtifactProcessor);
     }
 }

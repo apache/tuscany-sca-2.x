@@ -45,7 +45,7 @@ public class JettyRuntimeModuleActivator implements ModuleActivator {
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
         WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
         server = new JettyServer(workScheduler);
-        servletHosts.addExtension(server);
+        servletHosts.addServletHost(server);
         server.init();
     }
 

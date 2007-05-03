@@ -77,7 +77,7 @@ public class ReadTestCase extends TestCase {
         WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor(
                                                                                   factory, policyFactory, wsFactory,
                                                                                   wsdlFactory, introspector);
-        staxProcessors.addExtension(wsdlProcessor);
+        staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
 
     public void tearDown() throws Exception {

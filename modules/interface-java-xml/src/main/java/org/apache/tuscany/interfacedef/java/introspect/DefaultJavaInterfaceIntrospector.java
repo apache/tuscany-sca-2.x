@@ -50,17 +50,17 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
     private static final String UNKNOWN_DATABINDING = null;
 
     private JavaFactory javaFactory;
-    private List<JavaInterfaceIntrospectorExtension> extensions = new ArrayList<JavaInterfaceIntrospectorExtension>();
+    private List<JavaInterfaceVisitor> extensions = new ArrayList<JavaInterfaceVisitor>();
 
     public DefaultJavaInterfaceIntrospector(JavaFactory javaFactory) {
         this.javaFactory = javaFactory;
     }
 
-    public void addExtension(JavaInterfaceIntrospectorExtension extension) {
+    public void addInterfaceVisitor(JavaInterfaceVisitor extension) {
         extensions.add(extension);
     }
 
-    public void removeExtension(JavaInterfaceIntrospectorExtension extension) {
+    public void removeInterfaceVisitor(JavaInterfaceVisitor extension) {
         extensions.remove(extension);
     }
 
@@ -85,7 +85,7 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
         
         javaInterface.getOperations().addAll(getOperations(type, remotable, conversational));
 
-        for (JavaInterfaceIntrospectorExtension extension : extensions) {
+        for (JavaInterfaceVisitor extension : extensions) {
             extension.visitInterface(javaInterface);
         }
         return javaInterface;

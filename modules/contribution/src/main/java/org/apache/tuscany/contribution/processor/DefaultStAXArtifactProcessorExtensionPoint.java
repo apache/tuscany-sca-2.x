@@ -166,12 +166,12 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         }
     }
 
-    public void addExtension(StAXArtifactProcessor artifactProcessor) {
+    public void addArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
         processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
     
-    public void removeExtension(StAXArtifactProcessor artifactProcessor) {
+    public void removeArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
         processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
         processorsByModelType.remove(artifactProcessor.getModelType());        
     }

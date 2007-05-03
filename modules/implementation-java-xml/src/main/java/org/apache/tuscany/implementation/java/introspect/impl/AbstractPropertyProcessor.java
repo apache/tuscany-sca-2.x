@@ -29,7 +29,6 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
@@ -41,7 +40,7 @@ import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractPropertyProcessor<A extends Annotation> extends BaseJavaClassIntrospectorExtension {
+public abstract class AbstractPropertyProcessor<A extends Annotation> extends BaseJavaClassVisitor {
     private final Class<A> annotationClass;
     
     protected AbstractPropertyProcessor(AssemblyFactory assemblyFactory, Class<A> annotationClass) {

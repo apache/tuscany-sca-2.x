@@ -118,16 +118,16 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         extensionPointRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
 
         // Register base artifact processors
-        staxProcessors.addExtension(new CompositeProcessor(assemblyFactory, policyFactory, interfaceContractMapper,
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, interfaceContractMapper,
                                                            staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
 
         XMLInputFactory inputFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass()
             .getClassLoader());
-        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors, inputFactory));
-        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
-        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
 
         // Create package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();

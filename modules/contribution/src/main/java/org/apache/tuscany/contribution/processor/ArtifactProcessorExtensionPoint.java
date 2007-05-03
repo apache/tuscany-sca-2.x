@@ -30,13 +30,13 @@ public interface ArtifactProcessorExtensionPoint<P> {
      * 
      * @param artifactProcessor the artifact processor to add
      */
-    void addExtension(P artifactProcessor);
+    void addArtifactProcessor(P artifactProcessor);
 
     /**
      * Remove an artifact processor.
      * 
      * @param artifactProcessor the artifact processor to remove
      */
-    void removeExtension(P artifactProcessor);
+    void removeArtifactProcessor(P artifactProcessor);
 
 }

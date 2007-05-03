@@ -37,7 +37,7 @@ import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;
-import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtension;
+import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
 
 
 /**
@@ -45,7 +45,7 @@ import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorEx
  */
 public class AbstractPropertyProcessorTestCase extends TestCase {
 
-    private JavaClassIntrospectorExtension extension;
+    private JavaClassVisitor extension;
     private JavaImplementationFactory javaImplementationFactory;
 
     public void testVisitMethod() throws Exception {

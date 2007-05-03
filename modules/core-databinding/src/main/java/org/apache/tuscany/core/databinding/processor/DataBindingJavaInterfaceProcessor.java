@@ -30,7 +30,7 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtension;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -38,7 +38,7 @@ import org.osoa.sca.annotations.Reference;
  * 
  * @version $Rev$ $Date$
  */
-public class DataBindingJavaInterfaceProcessor implements JavaInterfaceIntrospectorExtension {
+public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private DataBindingExtensionPoint dataBindingRegistry;
 
     public DataBindingJavaInterfaceProcessor(@Reference

@@ -56,15 +56,15 @@ public class ReadDocumentTestCase extends TestCase {
         
         // Create Stax processors
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessors.addExtension(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addExtension(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addExtension(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
         
         // Create document processors
         XMLInputFactory inputFactory = XMLInputFactory.newInstance(); 
-        documentProcessors.addExtension(new CompositeDocumentProcessor(staxProcessors, inputFactory));
-        documentProcessors.addExtension(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
-        documentProcessors.addExtension(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
 
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }

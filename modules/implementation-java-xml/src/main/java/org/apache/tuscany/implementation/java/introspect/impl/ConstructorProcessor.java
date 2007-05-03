@@ -24,7 +24,6 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.implementation.java.introspect.BaseJavaClassIntrospectorExtension;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 
 /**
@@ -34,7 +33,7 @@ import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("unchecked")
-public class ConstructorProcessor extends BaseJavaClassIntrospectorExtension {
+public class ConstructorProcessor extends BaseJavaClassVisitor {
     
     public ConstructorProcessor(AssemblyFactory factory) {
         super(factory);

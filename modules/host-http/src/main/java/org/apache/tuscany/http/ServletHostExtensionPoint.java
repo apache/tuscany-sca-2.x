@@ -23,20 +23,20 @@ package org.apache.tuscany.http;
  * 
  * @version $Rev$ $Date$
  */
-public interface ServletHostExtensionPoint extends ServletHostExtension {
+public interface ServletHostExtensionPoint extends ServletHost {
 
     /**
      * Adds a servlet host extension.
      * 
      * @param servletHost
      */
-    void addExtension(ServletHostExtension servletHost);
+    void addServletHost(ServletHost servletHost);
 
     /**
      * Removes a servlet host extension.
      * 
      * @param servletHost
      */
-    void removeExtension(ServletHostExtension servletHost);
+    void removeServletHost(ServletHost servletHost);
 
 }

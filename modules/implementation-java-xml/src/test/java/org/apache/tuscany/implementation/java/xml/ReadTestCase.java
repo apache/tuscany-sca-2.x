@@ -69,10 +69,10 @@ public class ReadTestCase extends TestCase {
         JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector();
         
         CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
-        staxProcessors.addExtension(compositeProcessor);
+        staxProcessors.addArtifactProcessor(compositeProcessor);
 
         JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(factory, policyFactory, javaImplementationFactory, classIntrospector);
-        staxProcessors.addExtension(javaProcessor);
+        staxProcessors.addArtifactProcessor(javaProcessor);
     }
 
     public void tearDown() throws Exception {
