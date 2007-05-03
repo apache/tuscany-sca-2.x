@@ -70,12 +70,13 @@ public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBin
 
     public void start(Component component, ComponentService service) {
         URI uri = URI.create(component.getURI() + "/" + getName());
+        setURI(uri.toString());
         SCABinding binding = service.getBinding(SCABinding.class);
         ImplementationProvider impl = (ImplementationProvider)binding.getComponent().getImplementation();
         Interceptor interceptor = impl.createInterceptor((RuntimeComponent)component, service, service
             .getInterfaceContract().getInterface().getOperations().get(0), false);
         // Register with the hosting server
-        EchoServer.getServer().register(new EchoService(uri, interceptor), uri);
+        EchoServer.getServer().register(new EchoService(interceptor), uri);
     }
 
     public void stop(Component component, ComponentService service) {

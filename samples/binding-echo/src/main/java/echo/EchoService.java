@@ -21,19 +21,11 @@ package echo;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ServiceBindingExtension;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $Rev$ $Date$
@@ -41,16 +33,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class EchoService {
     private Interceptor interceptor;
 
-    public EchoService(URI name, Interceptor interceptor) throws CoreRuntimeException {
+    public EchoService(Interceptor interceptor) {
         super();
         this.interceptor = interceptor;
     }
 
-    public QName getBindingType() {
-        return EchoConstants.BINDING_ECHO;
-    }
-
-    String sendReceive(String input) throws InvocationTargetException {
+    public String sendReceive(String input) throws InvocationTargetException {
 
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
 
