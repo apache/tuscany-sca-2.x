@@ -39,7 +39,6 @@ import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.core.builder.ComponentNotFoundException;
 import org.apache.tuscany.core.builder.IncompatibleInterfacesException;
 import org.apache.tuscany.core.builder.WireCreationException;
-import org.apache.tuscany.core.runtime.DefaultCompositeActivator;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.NonBlockingInterceptor;
@@ -72,7 +71,6 @@ import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.resolver.ResolutionException;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
@@ -141,7 +139,7 @@ public class DeployerImpl implements Deployer {
         return componentDef;
     }
 
-    public Collection<Component> deploy(Composite composite) throws BuilderException, ResolutionException {
+    public Collection<Component> deploy(Composite composite) throws BuilderException {
         @SuppressWarnings("unchecked")
         // Create a deployment context
         ScopeContainer<URI> scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);

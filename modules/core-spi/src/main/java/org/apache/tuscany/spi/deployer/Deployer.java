@@ -24,7 +24,6 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.resolver.ResolutionException;
 
 /**
  * Interface that can be used to deploy SCA bundles to a runtime.
@@ -44,5 +43,5 @@ public interface Deployer {
      *            assembly
      * @return the newly deployed component
      */
-    Collection<Component> deploy(Composite composite) throws BuilderException, ComponentException, ResolutionException;
+    Collection<Component> deploy(Composite composite) throws BuilderException, ComponentException;
 }
