@@ -71,8 +71,9 @@ import org.jruby.runtime.builtin.IRubyObject;
 import com.sun.script.jruby.JRubyScriptEngineFactory;
 
 /* 
- * This class is a copy of the class com.sun.script.ruby.JRubyScriptEngine with some minor modifications.
- * */
+ * This class is a copy of the class com.sun.script.ruby.JRubyScriptEngine with some minor modifications
+ * to work around problems with Tuscany setting SCA properties and references as global variable in JRuby
+ */
 
 public class TuscanyJRubyScriptEngine extends AbstractScriptEngine 
         implements Compilable, Invocable { 
