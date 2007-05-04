@@ -34,7 +34,7 @@ import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
@@ -66,7 +66,7 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
      * Constructs a new CRUD implementation.
      */
     public CRUDImplementation(AssemblyFactory assemblyFactory,
-                              JavaFactory javaFactory,
+                              JavaInterfaceFactory javaFactory,
                               JavaInterfaceIntrospector introspector) {
 
         // CRUD implementation always provide a single service exposing

@@ -32,7 +32,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
@@ -40,28 +40,21 @@ import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * Default implementation of an InterfaceJavaIntrospector.
+ * Default implementation of a Java interface introspector.
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospectorExtensionPoint {
+public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospector {
     public static final String IDL_INPUT = "idl:input";
 
     private static final String UNKNOWN_DATABINDING = null;
 
-    private JavaFactory javaFactory;
-    private List<JavaInterfaceVisitor> extensions = new ArrayList<JavaInterfaceVisitor>();
+    private JavaInterfaceFactory javaFactory;
+    private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
 
-    public DefaultJavaInterfaceIntrospector(JavaFactory javaFactory) {
+    public DefaultJavaInterfaceIntrospector(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
         this.javaFactory = javaFactory;
-    }
-
-    public void addInterfaceVisitor(JavaInterfaceVisitor extension) {
-        extensions.add(extension);
-    }
-
-    public void removeInterfaceVisitor(JavaInterfaceVisitor extension) {
-        extensions.remove(extension);
+        this.visitors = visitors.getInterfaceVisitors();
     }
 
     public JavaInterface introspect(Class<?> type) throws InvalidInterfaceException {
@@ -85,7 +78,7 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
         
         javaInterface.getOperations().addAll(getOperations(type, remotable, conversational));
 
-        for (JavaInterfaceVisitor extension : extensions) {
+        for (JavaInterfaceVisitor extension : visitors) {
             extension.visitInterface(javaInterface);
         }
         return javaInterface;

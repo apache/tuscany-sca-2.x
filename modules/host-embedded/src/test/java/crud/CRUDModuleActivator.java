@@ -26,8 +26,10 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
@@ -55,15 +57,14 @@ public class CRUDModuleActivator implements ModuleActivator {
             assemblyFactory = new DefaultAssemblyFactory();
         }
 
-        JavaFactory javaFactory = registry.getExtensionPoint(JavaFactory.class);
+        JavaInterfaceFactory javaFactory = registry.getExtensionPoint(JavaInterfaceFactory.class);
         if (javaFactory == null) {
-            javaFactory = new DefaultJavaFactory();
+            javaFactory = new DefaultJavaInterfaceFactory();
         }
 
-        JavaInterfaceIntrospectorExtensionPoint introspectorExtensionPoint = registry
-            .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        implementationArtifactProcessor = new CRUDImplementationProcessor(assemblyFactory, javaFactory,
-                                                                          introspectorExtensionPoint);
+        JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        JavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory, visitors);
+        implementationArtifactProcessor = new CRUDImplementationProcessor(assemblyFactory, javaFactory, introspector);
         artifactProcessors.addArtifactProcessor(implementationArtifactProcessor);
     }
 

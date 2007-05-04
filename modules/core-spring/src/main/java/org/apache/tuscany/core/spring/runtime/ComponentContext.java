@@ -38,6 +38,8 @@ import org.apache.tuscany.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
@@ -58,9 +60,11 @@ import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.policy.PolicyFactory;
@@ -86,10 +90,12 @@ public class ComponentContext {
         AssemblyFactory assemblyFactory = new BeanAssemblyFactory(new DefaultAssemblyFactory(), beanFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper interfaceContractMapper = new DefaultInterfaceContractMapper();
-        JavaFactory javaFactory = new DefaultJavaFactory();
-        JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = new DefaultJavaInterfaceIntrospector(javaFactory);
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
-        JavaClassIntrospectorExtensionPoint classIntrospector = new DefaultJavaClassIntrospector();
+        JavaClassIntrospectorExtensionPoint classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
+        
+        JavaInterfaceIntrospector interfaceIntrospector = new DefaultJavaInterfaceIntrospector(javaFactory, interfaceVisitors);
         
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
@@ -108,8 +114,9 @@ public class ComponentContext {
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
         for (JavaClassVisitor e : extensions) {
-            classIntrospector.addClassVisitor(e);
+            classVisitors.addClassVisitor(e);
         }
+        JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector(classVisitors);
 
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();

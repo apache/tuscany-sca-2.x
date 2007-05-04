@@ -31,10 +31,10 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
@@ -46,10 +46,10 @@ import org.osoa.sca.annotations.Remotable;
  * @version $Rev$ $Date$
  */
 public class ServiceProcessor extends BaseJavaClassVisitor {
-    private JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector;
-    private JavaFactory javaFactory;
+    private JavaInterfaceIntrospector interfaceIntrospector;
+    private JavaInterfaceFactory javaFactory;
     
-    public ServiceProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector) {
+    public ServiceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector interfaceIntrospector) {
         super(assemblyFactory);
         this.javaFactory = javaFactory;
         this.interfaceIntrospector = interfaceIntrospector;

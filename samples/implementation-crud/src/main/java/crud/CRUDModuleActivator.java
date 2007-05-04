@@ -26,8 +26,10 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.runtime.RuntimeAssemblyFactory;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
@@ -52,8 +54,9 @@ public class CRUDModuleActivator implements ModuleActivator {
 
         // Create the CRUD implementation factory
         AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory();
-        JavaFactory javaFactory = new DefaultJavaFactory();
-        JavaInterfaceIntrospectorExtensionPoint introspector = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        JavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory, visitors);
         CRUDImplementationFactory crudFactory = new DefaultCRUDImplementationFactory(assemblyFactory, javaFactory, introspector);
 
         // Add the CRUD implementation extension to the StAXArtifactProcessor

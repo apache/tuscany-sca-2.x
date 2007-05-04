@@ -23,15 +23,15 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.MessageImpl;
@@ -43,7 +43,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class JDKInvocationHandlerProxyTestCase extends TestCase {
-    private JavaInterfaceIntrospectorExtensionPoint introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
+    private JavaInterfaceIntrospector introspector;
     private Method clientHello;
 
     /**
@@ -53,7 +53,7 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
     public void testDifferentInterface() throws Throwable {
         Wire wire = new WireImpl();
         
-        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         interfaceContract.setInterface(introspector.introspect(Target.class));
         for (Operation operation : interfaceContract.getInterface().getOperations()) {
@@ -77,6 +77,8 @@ public class JDKInvocationHandlerProxyTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         clientHello = Client.class.getMethod("hello");
+        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
     }
 
     private interface Target {

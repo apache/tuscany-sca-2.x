@@ -35,9 +35,11 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -90,8 +92,9 @@ public class ConstructorProcessorTestCase extends TestCase {
         processor.visitConstructor(ctor1, type);
 
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaFactory javaFactory = new DefaultJavaFactory();
-        ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory));
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory, visitors));
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();
         for (int i = 0; i < parameters.length; i++) {
@@ -164,8 +167,9 @@ public class ConstructorProcessorTestCase extends TestCase {
                                                                     String[].class);
         processor.visitConstructor(ctor1, type);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaFactory javaFactory = new DefaultJavaFactory();
-        ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory));
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory, visitors));
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();
         for (int i = 0; i < parameters.length; i++) {

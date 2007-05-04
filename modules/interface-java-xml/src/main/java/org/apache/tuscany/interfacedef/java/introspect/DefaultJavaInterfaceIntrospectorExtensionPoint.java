@@ -16,34 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspect;
+package org.apache.tuscany.interfacedef.java.introspect;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An extension point for Java class visitors.
- *
+ * Default implementation of an extension point for Java interface visitors.
+ * 
  * @version $Rev$ $Date$
  */
-public interface JavaClassIntrospectorExtensionPoint {
+public class DefaultJavaInterfaceIntrospectorExtensionPoint implements JavaInterfaceIntrospectorExtensionPoint {
 
-    /**
-     * Registers the given visitor.
-     * 
-     * @param visitor
-     */
-    void addClassVisitor(JavaClassVisitor visitor);
+    private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
 
-    /**
-     * Deregisters the given visitor.
-     */
-    void removeClassVisitor(JavaClassVisitor visitor);
-    
-    /**
-     * Returns the list of visitors.
-     * 
-     * @return
-     */
-    List<JavaClassVisitor> getClassVisitors();
+    public DefaultJavaInterfaceIntrospectorExtensionPoint() {
+    }
 
+    public void addInterfaceVisitor(JavaInterfaceVisitor extension) {
+        visitors.add(extension);
+    }
+
+    public void removeInterfaceVisitor(JavaInterfaceVisitor extension) {
+        visitors.remove(extension);
+    }
+
+    public List<JavaInterfaceVisitor> getInterfaceVisitors() {
+        return visitors;
+    }
 }

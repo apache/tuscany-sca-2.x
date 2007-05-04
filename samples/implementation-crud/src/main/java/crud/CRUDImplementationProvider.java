@@ -25,7 +25,7 @@ import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.spi.wire.Interceptor;
 
@@ -48,7 +48,7 @@ public class CRUDImplementationProvider extends CRUDImplementationImpl implement
      * Constructs a new CRUD implementation.
      */
     public CRUDImplementationProvider(AssemblyFactory assemblyFactory,
-                              JavaFactory javaFactory,
+                              JavaInterfaceFactory javaFactory,
                               JavaInterfaceIntrospector introspector) {
         super(assemblyFactory, javaFactory, introspector);
     }

@@ -36,10 +36,11 @@ import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentManager;
 import org.apache.tuscany.spi.component.ReferenceBinding;
@@ -139,9 +140,10 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
     }
 
     private Wire createWire(URI sourceUri, URI targetUri) throws InvalidInterfaceException {
-        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
+        DefaultJavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
         JavaInterface interface1 = introspector.introspect(TestInterface1.class);
-        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         InterfaceContract contract1 = javaFactory.createJavaInterfaceContract();
         contract1.setInterface(interface1);
         // contract1.setDataBinding(DOMDataBinding.NAME);

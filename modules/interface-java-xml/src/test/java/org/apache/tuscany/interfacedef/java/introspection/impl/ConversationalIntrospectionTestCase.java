@@ -20,14 +20,14 @@ package org.apache.tuscany.interfacedef.java.introspection.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidOperationException;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 
@@ -35,14 +35,13 @@ import org.osoa.sca.annotations.EndsConversation;
  * @version $Rev$ $Date$
  */
 public class ConversationalIntrospectionTestCase extends TestCase {
-    private AssemblyFactory factory;
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     private DefaultJavaInterfaceIntrospector introspector;
     
     protected void setUp() throws Exception {
-        factory =  new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaFactory();
-        introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
+        javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        introspector = new DefaultJavaInterfaceIntrospector(javaFactory, visitors);
     }
 
     private Operation getOperation(Interface i, String name) {

@@ -39,8 +39,8 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -56,11 +56,11 @@ import org.apache.tuscany.spi.wire.Wire;
 public class JDKInvocationHandlerTestCase extends TestCase {
 
     private AssemblyFactory assemblyFactory;
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     
     protected void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaFactory();
+        javaFactory = new DefaultJavaInterfaceFactory();
     }
 
     public void testToString() {

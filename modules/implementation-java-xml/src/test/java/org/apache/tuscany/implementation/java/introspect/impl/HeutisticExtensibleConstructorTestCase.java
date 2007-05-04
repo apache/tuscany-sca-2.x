@@ -28,8 +28,10 @@ import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFact
 import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
  * Verifies constructors that have extensible annotation types, i.e. that have
@@ -44,8 +46,9 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
     private JavaImplementationFactory javaImplementationFactory;
 
     public HeutisticExtensibleConstructorTestCase() {
-        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
-        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), introspector);
+        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
+        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), introspector);
         javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
     }
 

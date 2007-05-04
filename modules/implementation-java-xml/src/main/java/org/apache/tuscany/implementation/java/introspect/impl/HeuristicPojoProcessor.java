@@ -50,7 +50,7 @@ import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
@@ -74,10 +74,10 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev$ $Date$
  */
 public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     private JavaInterfaceIntrospector interfaceIntrospector;
 
-    public HeuristicPojoProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory, JavaInterfaceIntrospector interfaceIntrospector) {
+    public HeuristicPojoProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector interfaceIntrospector) {
         super(assemblyFactory);
         this.interfaceIntrospector = interfaceIntrospector;
         this.javaFactory = javaFactory;

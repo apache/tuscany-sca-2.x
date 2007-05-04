@@ -28,9 +28,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.ProxyService;
 import org.apache.tuscany.spi.wire.Wire;
@@ -45,7 +45,7 @@ public class WireObjectFactoryTestCase extends TestCase {
     @SuppressWarnings( {"unchecked"})
     public void testCreateInstance() throws Exception {
         Operation op = new OperationImpl("hello");
-        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         op.setInterface(javaFactory.createJavaInterface());
         InvocationChain chain = new InvocationChainImpl(op);
         Wire wire = EasyMock.createMock(Wire.class);
@@ -89,7 +89,7 @@ public class WireObjectFactoryTestCase extends TestCase {
     }
 
     private InterfaceContract createContract(Class cls) {
-        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterface jInterface = javaFactory.createJavaInterface();
         jInterface.setJavaClass(cls);
         InterfaceContract service = javaFactory.createJavaInterfaceContract();

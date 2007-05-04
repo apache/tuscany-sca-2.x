@@ -34,17 +34,17 @@ import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
 
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     private JavaInterfaceIntrospector introspector;
 
-    public JavaInterfaceProcessor(JavaFactory javaFactory, JavaInterfaceIntrospector introspector) {
+    public JavaInterfaceProcessor(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector introspector) {
         this.javaFactory = javaFactory;
         this.introspector = introspector;
     }

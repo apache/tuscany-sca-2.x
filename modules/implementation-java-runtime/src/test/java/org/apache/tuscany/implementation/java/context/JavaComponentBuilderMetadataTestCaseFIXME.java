@@ -36,8 +36,8 @@ import org.apache.tuscany.implementation.java.impl.JavaScopeImpl;
 import org.apache.tuscany.implementation.java.mock.Source;
 import org.apache.tuscany.implementation.java.mock.SourceImpl;
 import org.apache.tuscany.implementation.java.mock.Target;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -58,7 +58,7 @@ public class JavaComponentBuilderMetadataTestCaseFIXME extends TestCase {
     private org.apache.tuscany.assembly.Component definition;
     private ScopeContainer scopeContainer;
     private AssemblyFactory factory = new DefaultAssemblyFactory();
-    private JavaFactory javaFactory = new DefaultJavaFactory();
+    private JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
 
     public void testMaxAge() throws Exception {
         type.setMaxAge(100);

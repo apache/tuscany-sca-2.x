@@ -39,8 +39,8 @@ import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.implementation.java.context.ModelHelper;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -61,7 +61,7 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
     private TargetInvoker invoker;
 
     private AssemblyFactory assemblyFactory;
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     
     public void testSerializeDeserialize() throws Throwable {
         JDKInvocationHandler handler =
@@ -88,7 +88,7 @@ public class JDKInvocationHandlerSerializationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaFactory();
+        javaFactory = new DefaultJavaInterfaceFactory();
         
         SCAObject container = EasyMock.createMock(SCAObject.class);
         Contract contract = ModelHelper.createReference(assemblyFactory, javaFactory, "foo", Foo.class);

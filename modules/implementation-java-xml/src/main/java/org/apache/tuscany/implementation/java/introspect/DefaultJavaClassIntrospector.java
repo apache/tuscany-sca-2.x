@@ -21,7 +21,6 @@ package org.apache.tuscany.implementation.java.introspect;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,23 +30,16 @@ import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
 /**
- * Default implementation of the <code>IntrospectionRegistry</code>
+ * Default Java class introspector implementation.
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtensionPoint {
+public class DefaultJavaClassIntrospector implements JavaClassIntrospector {
+    
+    private List<JavaClassVisitor> visitors;
 
-    private List<JavaClassVisitor> extensions = new ArrayList<JavaClassVisitor>();
-
-    public DefaultJavaClassIntrospector() {
-    }
-
-    public void addClassVisitor(JavaClassVisitor extension) {
-        extensions.add(extension);
-    }
-
-    public void removeClassVisitor(JavaClassVisitor extension) {
-        extensions.remove(extension);
+    public DefaultJavaClassIntrospector(JavaClassIntrospectorExtensionPoint visitors) {
+        this.visitors = visitors.getClassVisitors();
     }
 
     /**
@@ -76,12 +68,12 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
      */
     public JavaImplementation introspect(Class<?> clazz, JavaImplementation type)
         throws IntrospectionException {
-        for (JavaClassVisitor extension : extensions) {
+        for (JavaClassVisitor extension : visitors) {
             extension.visitClass(clazz, type);
         }
 
         for (Constructor<?> constructor : clazz.getConstructors()) {
-            for (JavaClassVisitor extension : extensions) {
+            for (JavaClassVisitor extension : visitors) {
                 extension.visitConstructor(constructor, type);
                 // Assuming the visitClass or visitConstructor will populate the
                 // type.getConstructors
@@ -96,14 +88,14 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
 
         Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz);
         for (Method method : methods) {
-            for (JavaClassVisitor processor : extensions) {
+            for (JavaClassVisitor processor : visitors) {
                 processor.visitMethod(method, type);
             }
         }
 
         Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz);
         for (Field field : fields) {
-            for (JavaClassVisitor extension : extensions) {
+            for (JavaClassVisitor extension : visitors) {
                 extension.visitField(field, type);
             }
         }
@@ -113,7 +105,7 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
             visitSuperClass(superClass, type);
         }
 
-        for (JavaClassVisitor extension : extensions) {
+        for (JavaClassVisitor extension : visitors) {
             extension.visitEnd(clazz, type);
         }
         return type;
@@ -121,7 +113,7 @@ public class DefaultJavaClassIntrospector implements JavaClassIntrospectorExtens
 
     private void visitSuperClass(Class<?> clazz, JavaImplementation type) throws IntrospectionException {
         if (!Object.class.equals(clazz)) {
-            for (JavaClassVisitor extension : extensions) {
+            for (JavaClassVisitor extension : visitors) {
                 extension.visitSuperClass(clazz, type);
             }
             clazz = clazz.getSuperclass();

@@ -20,7 +20,7 @@
 package crud;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 /**
@@ -31,11 +31,11 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
 public class DefaultCRUDImplementationFactory implements CRUDImplementationFactory {
     
     private AssemblyFactory assemblyFactory;
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     private JavaInterfaceIntrospector introspector;
     
     public DefaultCRUDImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaFactory javaFactory,
+                                            JavaInterfaceFactory javaFactory,
                                             JavaInterfaceIntrospector introspector) {
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;

@@ -25,8 +25,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.spi.wire.ChainHolder;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Wire;
@@ -41,7 +41,7 @@ public class WireUtilsTestCase extends TestCase {
         Wire wire = new WireImpl();
         Operation op = new OperationImpl();
         op.setName("hello");
-        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         op.setInterface(javaFactory.createJavaInterface());
         InvocationChain chain = new InvocationChainImpl(op);
         wire.getInvocationChains().add(chain);
@@ -54,7 +54,7 @@ public class WireUtilsTestCase extends TestCase {
         Wire wire = new WireImpl();
         Operation op = new OperationImpl();
         op.setName("goodbye");
-        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         op.setInterface(javaFactory.createJavaInterface());
         InvocationChain chain = new InvocationChainImpl(op);
         wire.getInvocationChains().add(chain);
