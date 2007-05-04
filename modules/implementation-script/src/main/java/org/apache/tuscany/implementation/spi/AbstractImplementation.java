@@ -121,6 +121,7 @@ public abstract class AbstractImplementation implements Implementation, Implemen
 
     /**
      * TODO: yuk yuk yuk
+     * Maybe RuntimeComponentReference could have a createProxy method?
      */
     protected Object createReferenceProxy(String name, RuntimeComponent component) {
         for (ComponentReference reference : component.getReferences()) {
