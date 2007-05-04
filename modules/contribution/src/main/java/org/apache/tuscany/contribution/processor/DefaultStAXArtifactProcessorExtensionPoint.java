@@ -73,7 +73,11 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         if (processor == null) {
             return null;
         }
-        return processor.read(source);
+        try {
+            return processor.read(source);
+        } catch (XMLStreamException e) {
+            throw new ContributionReadException(e);
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -84,7 +88,11 @@ public class DefaultStAXArtifactProcessorExtensionPoint
             StAXArtifactProcessor<Object> processor = 
                 (StAXArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
             if (processor != null) {
-                processor.write(model, outputSource);
+                try {
+                    processor.write(model, outputSource);
+                } catch (XMLStreamException e) {
+                    throw new ContributionWriteException(e);
+                }
             }
         }
     }
