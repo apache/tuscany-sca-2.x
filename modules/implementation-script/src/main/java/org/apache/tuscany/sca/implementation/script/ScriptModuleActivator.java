@@ -35,20 +35,22 @@ public class ScriptModuleActivator implements ModuleActivator {
     protected ScriptArtifactProcessor scriptArtifactProcessor;
     
     public void start(ExtensionPointRegistry registry) {
-        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
+        // TODO: could the runtime have a default PropertyValueObjectFactory in the registry
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
         DefaultMediator mediator = new DefaultMediator(dataBindings, transformers);
         PropertyValueObjectFactory propertyFactory = new PropertyValueObjectFactory(mediator);
 
         scriptArtifactProcessor = new ScriptArtifactProcessor(new DefaultAssemblyFactory(), propertyFactory);
-        processors.addArtifactProcessor(scriptArtifactProcessor);
+
+        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessors.addArtifactProcessor(scriptArtifactProcessor);
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        processors.removeArtifactProcessor(scriptArtifactProcessor);
+        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessors.removeArtifactProcessor(scriptArtifactProcessor);
     }
 
     public Map<Class, Object> getExtensionPoints() {
