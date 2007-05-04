@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.test.spec;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,11 +29,12 @@ import org.junit.Test;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
-public class ServiceLocateTest {
+public class ServiceLocateTestCase {
 
     ComponentContext context;
     BasicService basicService;
 
+    @Ignore
     @Test
     public void negate() {
 
@@ -48,18 +50,35 @@ public class ServiceLocateTest {
 
     }
 
+    @Ignore
+    @Test
+    public void locateService() {
+       
+        
+ //       SCARuntime.start("BasicService.composite");
+        SCARuntimeActivator.start("BasicService.composite");
+        BasicService localBasicService = SCARuntimeActivator.locateService(BasicService.class, "BasicServiceComponent");
+
+        assertEquals(-99, localBasicService.delegateNegate(99));
+        
+        SCARuntimeActivator.stop();
+
+    }
+    
+    
+    
     @Before
     public void init() throws Exception {
 
-        SCARuntime.start("BasicService.composite");
+/*        SCARuntime.start("BasicService.composite");
         context = SCARuntime.getComponentContext("BasicServiceComponent");
         ServiceReference<BasicService> service = context.createSelfReference(BasicService.class);
-        basicService = service.getService();
+        basicService = service.getService();*/
 
     }
 
     @After
     public void destroy() throws Exception {
-        SCARuntime.stop();
+//        SCARuntime.stop();
     }
 }
