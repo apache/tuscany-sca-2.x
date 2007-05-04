@@ -20,11 +20,11 @@
 <componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance">
 
   <service name="HelloWorldService">
-      <interface.java interface="org.apache.tuscany.implementation.script.itests.helloworld.HelloWorld" />
+      <interface.java interface="org.apache.tuscany.sca.implementation.script.itests.helloworld.HelloWorld" />
   </service>
 
   <reference name="ref">
-      <interface.java interface="org.apache.tuscany.implementation.script.itests.helloworld.HelloWorld" />
+      <interface.java interface="org.apache.tuscany.sca.implementation.script.itests.helloworld.HelloWorld" />
   </reference>
 
 </componentType>              
