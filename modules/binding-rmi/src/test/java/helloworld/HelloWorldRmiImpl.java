@@ -40,5 +40,9 @@ public class HelloWorldRmiImpl implements HelloWorldRmiService {
     public String sayRmiHello(String name) {
         return extService.sayHello(name) + " thro the RMI Reference";
     }
+    
+    public String sayRmiHi(String name, String greeter) {
+        return extService.sayHi(name, greeter) + " thro the RMI Reference";
+    }
 
 }

@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.rmi.impl;
+package org.apache.tuscany.binding.rmi;
 
-import org.apache.tuscany.binding.rmi.RMIBinding;
-import org.apache.tuscany.binding.rmi.RMIBindingFactory;
+import org.apache.tuscany.rmi.RMIHostExtensionPoint;
 
 /**
  * A factory for the WSDL model.
@@ -27,9 +26,14 @@ import org.apache.tuscany.binding.rmi.RMIBindingFactory;
  * @version $Rev: 526508 $ $Date: 2007-04-08 07:42:42 +0530 (Sun, 08 Apr 2007) $
  */
 public class DefaultRMIBindingFactory implements RMIBindingFactory {
-
-    public RMIBinding createWebServiceBinding() {
-        return new RMIBindingImpl();
+    private RMIHostExtensionPoint rmiHost = null;
+    
+    public DefaultRMIBindingFactory(RMIHostExtensionPoint rmiHost) {
+        this.rmiHost = rmiHost;
+    }
+    
+    public RMIBinding createRMIBinding() {
+        return new RMIBindingProvider(rmiHost);
     }
 
 }

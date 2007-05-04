@@ -28,6 +28,6 @@ public interface RMIBindingFactory {
      * 
      * @return a new RMI binding
      */
-    RMIBinding createWebServiceBinding();
+    RMIBinding createRMIBinding();
 
 }

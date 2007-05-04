@@ -24,5 +24,6 @@ package helloworld;
 public interface HelloWorldService {
 
     String sayHello(String name);
+    String sayHi(String name, String greeter);
 
 }
