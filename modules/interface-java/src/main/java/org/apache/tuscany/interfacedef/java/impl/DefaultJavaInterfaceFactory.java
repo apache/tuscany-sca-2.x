@@ -18,16 +18,16 @@
  */
 package org.apache.tuscany.interfacedef.java.impl;
 
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 
 /**
  * A factory for the Java model.
  */
-public class DefaultJavaFactory implements JavaFactory {
+public class DefaultJavaInterfaceFactory implements JavaInterfaceFactory {
 
-    public DefaultJavaFactory() {
+    public DefaultJavaInterfaceFactory() {
     }
 
     public JavaInterface createJavaInterface() {

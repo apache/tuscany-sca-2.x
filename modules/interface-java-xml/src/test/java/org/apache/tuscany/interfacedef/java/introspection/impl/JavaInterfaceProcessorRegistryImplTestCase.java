@@ -19,7 +19,6 @@
 package org.apache.tuscany.interfacedef.java.introspection.impl;
 
 import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -34,8 +33,9 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.easymock.EasyMock;
 
@@ -44,6 +44,7 @@ import org.easymock.EasyMock;
  */
 public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     private DefaultJavaInterfaceIntrospector impl;
+    private DefaultJavaInterfaceIntrospectorExtensionPoint visitors;
 
     public void testSimpleInterface() throws InvalidInterfaceException {
         JavaInterface intf = (JavaInterface)impl.introspect(Simple.class);
@@ -76,16 +77,17 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         extension.visitInterface(EasyMock.isA(JavaInterface.class));
         expectLastCall().once();
         replay(extension);
-        impl.addInterfaceVisitor(extension);
+        visitors.addInterfaceVisitor(extension);
         impl.introspect(Base.class);
-        impl.removeInterfaceVisitor(extension);
+        visitors.removeInterfaceVisitor(extension);
         impl.introspect(Base.class);
         verify(extension);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        impl = new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory());
+        visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        impl = new DefaultJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
 
     }
 

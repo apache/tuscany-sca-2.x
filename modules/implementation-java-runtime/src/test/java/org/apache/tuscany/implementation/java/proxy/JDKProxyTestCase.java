@@ -27,8 +27,8 @@ import org.apache.tuscany.assembly.Contract;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
@@ -42,7 +42,7 @@ public class JDKProxyTestCase extends TestCase {
         Wire wire = new WireImpl();
         wire.setSourceUri(uri);
         Contract contract = new DefaultAssemblyFactory().createComponentReference();
-        JavaFactory javaFactory = new DefaultJavaFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         InterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         interfaceContract.setInterface(javaFactory.createJavaInterface());
         contract.setInterfaceContract(interfaceContract);

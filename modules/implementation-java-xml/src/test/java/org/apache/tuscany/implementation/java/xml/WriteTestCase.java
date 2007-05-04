@@ -36,6 +36,7 @@ import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExt
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
@@ -63,7 +64,7 @@ public class WriteTestCase extends TestCase {
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
-        JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector();
+        JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector(new DefaultJavaClassIntrospectorExtensionPoint());
 
         staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));

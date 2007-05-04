@@ -29,9 +29,11 @@ import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
@@ -42,15 +44,16 @@ import org.osoa.sca.annotations.Remotable;
 public class HeuristicConstructorTestCase extends AbstractProcessorTest {
 
     private AssemblyFactory factory;
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     private HeuristicPojoProcessor processor;
     private JavaImplementationFactory javaImplementationFactory;
 
     public HeuristicConstructorTestCase() {
         factory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaFactory();
+        javaFactory = new DefaultJavaInterfaceFactory();
         javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
-        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
+        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        DefaultJavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory, visitors);
         processor = new HeuristicPojoProcessor(factory, javaFactory, introspector);
     }
 

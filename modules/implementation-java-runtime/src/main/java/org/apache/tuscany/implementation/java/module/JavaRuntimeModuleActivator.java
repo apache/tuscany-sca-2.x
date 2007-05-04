@@ -36,8 +36,10 @@ import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
-import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
+import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.BaseJavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.impl.ConstructorProcessor;
@@ -57,9 +59,11 @@ import org.apache.tuscany.implementation.java.invocation.RuntimeJavaImplementati
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
@@ -75,30 +79,30 @@ import org.apache.tuscany.spi.wire.ProxyService;
 public class JavaRuntimeModuleActivator implements ModuleActivator {
     
     private AssemblyFactory assemblyFactory;
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     private PolicyFactory policyFactory;
+    private JavaClassIntrospectorExtensionPoint classVisitors;
     
     public JavaRuntimeModuleActivator() {
         assemblyFactory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaFactory();
+        javaFactory = new DefaultJavaInterfaceFactory();
         policyFactory = new DefaultPolicyFactory();
+        classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
     }
      
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
         map.put(ProxyService.class, new org.apache.tuscany.implementation.java.proxy.JDKProxyService());
-        map.put(JavaClassIntrospectorExtensionPoint.class, new DefaultJavaClassIntrospector());
-        map.put(JavaInterfaceIntrospectorExtensionPoint.class, new DefaultJavaInterfaceIntrospector(javaFactory));
+        map.put(JavaClassIntrospectorExtensionPoint.class, classVisitors);
         return map;
     }
 
     public void start(ExtensionPointRegistry registry) {
         JDKProxyService proxyFactory = (JDKProxyService) registry.getExtensionPoint(ProxyFactory.class);
         
-        JavaInterfaceIntrospectorExtensionPoint interfaceIntrospector = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-
-        JavaClassIntrospectorExtensionPoint classIntrospector = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
+        JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        JavaInterfaceIntrospector interfaceIntrospector = new DefaultJavaInterfaceIntrospector(javaFactory, interfaceVisitors);
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
             new AllowsPassByReferenceProcessor(assemblyFactory),
@@ -116,8 +120,9 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
         for (JavaClassVisitor extension : extensions) {
-            classIntrospector.addClassVisitor(extension);
+            classVisitors.addClassVisitor(extension);
         }
+        JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector(classVisitors);
         
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);

@@ -19,11 +19,11 @@
 package org.apache.tuscany.interfacedef.java;
 
 /**
- * Factory for the Java model
+ * Factory for the Java interface model
  * 
  * @version $Rev$ $Date$
  */
-public interface JavaFactory {
+public interface JavaInterfaceFactory {
 
     /**
      * Creates a new Java interface.

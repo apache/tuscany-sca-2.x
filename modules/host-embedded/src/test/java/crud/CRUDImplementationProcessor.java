@@ -31,7 +31,7 @@ import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 /**
@@ -48,10 +48,10 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessor<CRUDIm
     private static final QName IMPLEMENTATION_CRUD = new QName("http://crud", "implementation.crud");
     
     private AssemblyFactory assemblyFactory;
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     private JavaInterfaceIntrospector introspector;
     
-    public CRUDImplementationProcessor(AssemblyFactory assemblyFactory, JavaFactory javaFactory, JavaInterfaceIntrospector introspector) {
+    public CRUDImplementationProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector introspector) {
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
         this.introspector = introspector;

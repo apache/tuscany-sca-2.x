@@ -31,8 +31,8 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.wire.WireImpl;
 import org.apache.tuscany.implementation.java.context.ModelHelper;
 import org.apache.tuscany.implementation.java.proxy.JDKCallbackInvocationHandler;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.spi.wire.Wire;
 
 /**
@@ -41,11 +41,11 @@ import org.apache.tuscany.spi.wire.Wire;
 public class JDKCallbackInvocationHandlerTestCase extends TestCase {
     
     private AssemblyFactory assemblyFactory;
-    private JavaFactory javaFactory;
+    private JavaInterfaceFactory javaFactory;
     
     protected void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaFactory();
+        javaFactory = new DefaultJavaInterfaceFactory();
     }
 
     public void testToString() {

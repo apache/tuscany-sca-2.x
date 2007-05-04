@@ -28,9 +28,11 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 
 /**
@@ -40,7 +42,7 @@ import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntro
  */
 public class AbstractProcessorTest extends TestCase {
     protected AssemblyFactory factory;
-    protected JavaFactory javaFactory;
+    protected JavaInterfaceFactory javaFactory;
     protected ConstructorProcessor constructorProcessor;
     private ReferenceProcessor referenceProcessor;
     private PropertyProcessor propertyProcessor;
@@ -49,12 +51,13 @@ public class AbstractProcessorTest extends TestCase {
 
     protected AbstractProcessorTest() {
         factory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaFactory();
-        referenceProcessor = new ReferenceProcessor(factory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory));
+        javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        referenceProcessor = new ReferenceProcessor(factory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory, visitors));
         propertyProcessor = new PropertyProcessor(factory);
         resourceProcessor = new ResourceProcessor(factory);
         constructorProcessor = new ConstructorProcessor(factory);
-        referenceProcessor = new ReferenceProcessor(factory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory));
+        referenceProcessor = new ReferenceProcessor(factory, javaFactory, new DefaultJavaInterfaceIntrospector(javaFactory, visitors));
         propertyProcessor = new PropertyProcessor(factory);
     }
 

@@ -16,29 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.spring.implementation.java.impl;
+package org.apache.tuscany.implementation.java.introspect;
 
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * An alternate implementation of the SCA Java assembly model factory that creates SCA
- * Java assembly model objects backed by Spring bean definitions.
- *
- *  @version $Rev$ $Date$
+ * Default implementation of the <code>IntrospectionRegistry</code>
+ * 
+ * @version $Rev$ $Date$
  */
-public class BeanJavaFactory implements JavaFactory {
-	
-	public BeanJavaFactory() {
-	}
+public class DefaultJavaClassIntrospectorExtensionPoint implements JavaClassIntrospectorExtensionPoint {
 
-	public JavaInterface createJavaInterface() {
-		return new BeanJavaInterfaceImpl();
-	}
-        
-        public JavaInterfaceContract createJavaInterfaceContract() {
-            return new BeanJavaInterfaceContractImpl();
-        }
+    private List<JavaClassVisitor> visitors = new ArrayList<JavaClassVisitor>();
+
+    public DefaultJavaClassIntrospectorExtensionPoint() {
+    }
+
+    public void addClassVisitor(JavaClassVisitor visitor) {
+        visitors.add(visitor);
+    }
+
+    public void removeClassVisitor(JavaClassVisitor visitor) {
+        visitors.remove(visitor);
+    }
+    
+    public List<JavaClassVisitor> getClassVisitors() {
+        return visitors;
+    }
 
 }

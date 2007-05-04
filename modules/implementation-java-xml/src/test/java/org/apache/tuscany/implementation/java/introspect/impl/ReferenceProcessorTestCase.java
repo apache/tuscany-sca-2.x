@@ -31,8 +31,10 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -114,7 +116,8 @@ public class ReferenceProcessorTestCase extends TestCase {
         super.setUp();
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
         type = javaImplementationFactory.createJavaImplementation();
-        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaFactory(), new DefaultJavaInterfaceIntrospector(new DefaultJavaFactory()));
+        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), new DefaultJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors));
     }
 
     private interface Ref {

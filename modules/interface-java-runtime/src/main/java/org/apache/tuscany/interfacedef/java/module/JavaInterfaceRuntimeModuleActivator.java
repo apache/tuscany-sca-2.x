@@ -25,9 +25,10 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.interfacedef.java.JavaFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaFactory;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
@@ -37,17 +38,17 @@ import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
  */
 public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
     
-    private JavaFactory javaFactory;
-    private JavaInterfaceIntrospector introspector;
+    private JavaInterfaceFactory javaFactory;
+    private JavaInterfaceIntrospectorExtensionPoint visitors;
     
     public JavaInterfaceRuntimeModuleActivator() {
-        javaFactory = new DefaultJavaFactory();
-        introspector = new DefaultJavaInterfaceIntrospector(javaFactory);
+        javaFactory = new DefaultJavaInterfaceFactory();
+        visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
     }
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(JavaInterfaceIntrospectorExtensionPoint.class, introspector);
+        map.put(JavaInterfaceIntrospectorExtensionPoint.class, visitors);
         return map;
     }
 
@@ -55,6 +56,7 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
         
         // Register <interface.java> processor
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        JavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory, visitors);
         JavaInterfaceProcessor javaInterfaceProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
         processors.addArtifactProcessor(javaInterfaceProcessor);
         
