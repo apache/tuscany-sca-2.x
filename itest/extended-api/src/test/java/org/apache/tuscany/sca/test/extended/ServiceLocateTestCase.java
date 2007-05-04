@@ -36,7 +36,7 @@ public class ServiceLocateTestCase {
         assertEquals(-99, service.negate(99));
 
     }
-    
+
     @Test
     public void managedLocateService() {
 
@@ -46,20 +46,13 @@ public class ServiceLocateTestCase {
 
     }
 
-    @Ignore
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void badComponentName() {
 
-        BasicService service = SCARuntimeActivator.locateService(BasicService.class, "IvalidComponentName");
-
-        assertEquals(-99, service.delegateNegate(99));
+        SCARuntimeActivator.locateService(BasicService.class, "IvalidComponentName");
 
     }
 
-    
-    
-    
-    
     @Before
     public void init() throws Exception {
 
