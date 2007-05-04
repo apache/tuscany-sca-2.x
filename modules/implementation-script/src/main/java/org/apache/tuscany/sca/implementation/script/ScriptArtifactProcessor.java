@@ -36,7 +36,6 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.implementation.spi.ResourceHelper;
 
@@ -60,51 +59,39 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
         return ScriptImplementation.class;
     }
 
-    public ScriptImplementation read(XMLStreamReader reader) throws ContributionReadException {
+    public ScriptImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        String scriptName = reader.getAttributeValue(null, "script");
 
-        try {
-
-            String scriptName = reader.getAttributeValue(null, "script");
-
-            String scriptLanguage = reader.getAttributeValue(null, "language");
-            if (scriptLanguage == null || scriptLanguage.length() < 1) {
-                int i = scriptName.lastIndexOf('.');
-                scriptLanguage = scriptName.substring(i+1);
-            }
-
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && IMPLEMENTATION_SCRIPT_QNAME.equals(reader.getName())) {
-                    break;
-                }
-            }
-
-            String scriptSrc = ResourceHelper.readResource(scriptName);
-
-            return new ScriptImplementation(scriptName, scriptLanguage, scriptSrc, propertyFactory);
-
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+        String scriptLanguage = reader.getAttributeValue(null, "language");
+        if (scriptLanguage == null || scriptLanguage.length() < 1) {
+            int i = scriptName.lastIndexOf('.');
+            scriptLanguage = scriptName.substring(i+1);
         }
+
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && IMPLEMENTATION_SCRIPT_QNAME.equals(reader.getName())) {
+                break;
+            }
+        }
+
+        String scriptSrc = ResourceHelper.readResource(scriptName);
+
+        return new ScriptImplementation(scriptName, scriptLanguage, scriptSrc, propertyFactory);
     }
 
-    public void write(ScriptImplementation scriptImplementation, XMLStreamWriter writer) throws ContributionWriteException {
-        try {
+    public void write(ScriptImplementation scriptImplementation, XMLStreamWriter writer) throws XMLStreamException {
 
-            writer.writeStartElement(Constants.SCA10_NS, "implementation.script");
+        writer.writeStartElement(Constants.SCA10_NS, "implementation.script");
 
-            if (scriptImplementation.getScriptName() != null) {
-                writer.writeAttribute("script", scriptImplementation.getScriptName());
-            }
-
-            if (scriptImplementation.getScriptLanguage() != null) {
-                writer.writeAttribute("language", scriptImplementation.getScriptLanguage());
-            }
-
-            writer.writeEndElement();
-
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
+        if (scriptImplementation.getScriptName() != null) {
+            writer.writeAttribute("script", scriptImplementation.getScriptName());
         }
+
+        if (scriptImplementation.getScriptLanguage() != null) {
+            writer.writeAttribute("language", scriptImplementation.getScriptLanguage());
+        }
+
+        writer.writeEndElement();
     }
 
 //  TODO: I hate all the following, why has this to mess about with the .componentType side file, 
