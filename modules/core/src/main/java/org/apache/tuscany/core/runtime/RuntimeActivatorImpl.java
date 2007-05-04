@@ -272,7 +272,7 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
                 return (ComponentContext)component;
             }
         }
-        return null;
+        throw new IllegalArgumentException("ComponentContext for component named: " + componentName + " not found in this domain");
     }
 
     public void start(Contribution contribution) throws ActivationException {
