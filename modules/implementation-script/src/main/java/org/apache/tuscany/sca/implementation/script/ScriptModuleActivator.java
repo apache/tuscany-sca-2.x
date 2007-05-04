@@ -28,7 +28,7 @@ import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.impl.DefaultMediator;
-import org.apache.tuscany.implementation.spi.ScriptPropertyValueObjectFactory;
+import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 
 public class ScriptModuleActivator implements ModuleActivator {
 
@@ -40,7 +40,7 @@ public class ScriptModuleActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
         DefaultMediator mediator = new DefaultMediator(dataBindings, transformers);
-        ScriptPropertyValueObjectFactory propertyFactory = new ScriptPropertyValueObjectFactory(mediator);
+        PropertyValueObjectFactory propertyFactory = new PropertyValueObjectFactory(mediator);
 
         scriptArtifactProcessor = new ScriptArtifactProcessor(new DefaultAssemblyFactory(), propertyFactory);
         processors.addArtifactProcessor(scriptArtifactProcessor);

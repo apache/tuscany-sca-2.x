@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.implementation.spi;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -35,13 +34,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class ScriptPropertyValueObjectFactory {
+/**
+ * TODO: Shouldn't this class be provided by the runtime?
+ */
+public class PropertyValueObjectFactory {
     // protected DataBindingRegistry dbRegistry = new DataBindingRegistryImpl();
     protected Mediator mediator = null;
     protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
     boolean isSimpleType;
     
-    public ScriptPropertyValueObjectFactory(Mediator mediator) {
+    public PropertyValueObjectFactory(Mediator mediator) {
         this.mediator = mediator;
     }
     

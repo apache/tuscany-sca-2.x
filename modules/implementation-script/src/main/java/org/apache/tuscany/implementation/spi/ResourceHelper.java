@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.script;
+package org.apache.tuscany.implementation.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,25 +25,25 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.service.ContributionResolveException;
+import org.apache.tuscany.contribution.service.ContributionReadException;
 
 /**
  * TODO: Shouldn't this be using the contrabution service?
  */
 public class ResourceHelper {
 
-    public static String readResource(String scriptName) throws ContributionResolveException {
+    public static String readResource(String scriptName) throws ContributionReadException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL scriptSrcUrl = cl.getResource(scriptName);
         if (scriptSrcUrl == null) {
-            throw new ContributionResolveException("No script: " + scriptName);
+            throw new ContributionReadException("No script: " + scriptName);
         }
 
         InputStream is;
         try {
             is = scriptSrcUrl.openStream();
         } catch (IOException e) {
-            throw new ContributionResolveException(e);
+            throw new ContributionReadException(e);
         }
 
         try {
@@ -59,7 +59,7 @@ public class ResourceHelper {
             return source.toString();
 
         } catch (IOException e) {
-            throw new ContributionResolveException(e);
+            throw new ContributionReadException(e);
         } finally {
             try {
                 is.close();

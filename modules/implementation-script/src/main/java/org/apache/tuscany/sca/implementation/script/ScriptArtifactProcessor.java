@@ -37,7 +37,8 @@ import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.implementation.spi.ScriptPropertyValueObjectFactory;
+import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
+import org.apache.tuscany.implementation.spi.ResourceHelper;
 
 // TODO: I hate the way this has to mess about with the .componentType side file, 
 //       the runtime should do that for me
@@ -47,9 +48,9 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
     private static final QName IMPLEMENTATION_SCRIPT_QNAME = new QName(Constants.SCA10_NS, "implementation.script");
     
     private AssemblyFactory assemblyFactory;
-    private ScriptPropertyValueObjectFactory propertyFactory;
+    private PropertyValueObjectFactory propertyFactory;
 
-    public ScriptArtifactProcessor(AssemblyFactory assemblyFactory, ScriptPropertyValueObjectFactory propertyFactory) {
+    public ScriptArtifactProcessor(AssemblyFactory assemblyFactory, PropertyValueObjectFactory propertyFactory) {
         this.assemblyFactory = assemblyFactory;
         this.propertyFactory = propertyFactory;
     }
@@ -71,6 +72,9 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
                     break;
                 }
             }
+
+            String scriptSrc = ResourceHelper.readResource(scriptImplementation.getScriptName());
+            scriptImplementation.setScriptSrc(scriptSrc);
 
             processComponentType(scriptImplementation);
 
@@ -118,9 +122,6 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
     }
 
     public void resolve(ScriptImplementation scriptImplementation, ArtifactResolver resolver) throws ContributionResolveException {
-
-        String scriptSrc = ResourceHelper.readResource(scriptImplementation.getScriptName());
-        scriptImplementation.setScriptSrc(scriptSrc);
 
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         String scriptURI = cl.getResource(scriptImplementation.getScriptName()).toString();
