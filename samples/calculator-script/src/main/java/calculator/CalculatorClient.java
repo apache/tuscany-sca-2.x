@@ -19,10 +19,7 @@
 
 package calculator;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
 import org.apache.tuscany.host.embedded.SCARuntimeActivator;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -31,10 +28,9 @@ import org.osoa.sca.ServiceReference;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        SCARuntime.start("Calculator.composite");
-        ComponentContext context = SCARuntime.getComponentContext("CalculatorServiceComponent");
-        ServiceReference<CalculatorService> service = context.createSelfReference(CalculatorService.class);
-        CalculatorService calculatorService = service.getService();
+        SCARuntimeActivator.start("Calculator.composite");
+        CalculatorService calculatorService = 
+            SCARuntimeActivator.locateService(CalculatorService.class, "CalculatorServiceComponent");
 
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));

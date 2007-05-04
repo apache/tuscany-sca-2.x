@@ -33,19 +33,19 @@
     </component>
 
     <component name="AddServiceComponent">
-        <implementation.script script="calculator.AddServiceImpl.js"/>
+        <implementation.script script="calculator/AddServiceImpl.js"/>
     </component>
 
     <component name="SubtractServiceComponent">
-        <implementation.script script="calculator.SubtractServiceImpl.rb"/>
+        <implementation.script script="calculator/SubtractServiceImpl.rb"/>
     </component>
 
     <component name="MultiplyServiceComponent">
-        <implementation.script script="calculator.MultiplyServiceImpl.py"/>
+        <implementation.script script="calculator/MultiplyServiceImpl.py"/>
     </component>
 
     <component name="DivideServiceComponent">
-        <implementation.script script="calculator.DivideServiceImpl.groovy"/>
+        <implementation.script script="calculator/DivideServiceImpl.groovy"/>
     </component>
 
 </composite>
