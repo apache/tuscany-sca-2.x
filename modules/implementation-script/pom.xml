@@ -50,6 +50,19 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.bsf</groupId>
             <artifactId>bsf-all</artifactId>
             <version>3.0-beta1</version>
@@ -73,13 +86,6 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
             <version>2.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
