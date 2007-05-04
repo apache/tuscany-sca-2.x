@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.sca.test.extended;
 
-public interface BasicService {
+public interface MathService {
 
     int negate(int theInt);
-    int delegateNegate(int theInt);
 
 }
