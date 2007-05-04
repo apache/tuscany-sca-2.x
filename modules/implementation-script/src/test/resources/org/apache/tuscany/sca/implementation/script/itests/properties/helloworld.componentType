@@ -23,7 +23,7 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
   <service name="HelloWorldService">
-        <interface.java interface="org.apache.tuscany.implementation.script.itests.helloworld.HelloWorld" />
+        <interface.java interface="org.apache.tuscany.sca.implementation.script.itests.helloworld.HelloWorld" />
   </service>
 
   <property name="greeter" type="xsd:string">Tuscany</property>
