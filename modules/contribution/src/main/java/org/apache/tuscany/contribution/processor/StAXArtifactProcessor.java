@@ -20,6 +20,7 @@
 package org.apache.tuscany.contribution.processor;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -39,7 +40,7 @@ public interface StAXArtifactProcessor<M> extends ArtifactProcessor<M> {
      * @param source
      * @return a model representation of the input.
      */
-    M read(XMLStreamReader inputSource) throws ContributionReadException;
+    M read(XMLStreamReader inputSource) throws ContributionReadException, XMLStreamException;
     
     /**
      * Writes a model to an ouput source. Examples of output sources are: a URI, a
@@ -47,7 +48,7 @@ public interface StAXArtifactProcessor<M> extends ArtifactProcessor<M> {
      * @param source
      * @return a model representation of the source.
      */
-    void write(M model, XMLStreamWriter outputSource) throws ContributionWriteException;
+    void write(M model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException;
     
     /**
      * Returns the type of artifact handled by this artifact processor. 
