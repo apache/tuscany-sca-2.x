@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script;
+package org.apache.tuscany.sca.implementation.script;
 
 import java.util.Map;
 

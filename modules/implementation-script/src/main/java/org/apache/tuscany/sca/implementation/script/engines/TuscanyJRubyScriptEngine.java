@@ -32,7 +32,7 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH 
 * DAMAGE. 
 */
-package org.apache.tuscany.implementation.script.engines;
+package org.apache.tuscany.sca.implementation.script.engines;
 
 import java.io.File;
 import java.io.Reader;

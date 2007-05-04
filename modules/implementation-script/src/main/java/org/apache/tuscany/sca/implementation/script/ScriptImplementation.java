@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.script;
+package org.apache.tuscany.sca.implementation.script;
 
 import java.io.StringReader;
 
@@ -28,9 +28,9 @@ import javax.script.ScriptException;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.implementation.script.engines.TuscanyJRubyScriptEngine;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.wire.Interceptor;
 
