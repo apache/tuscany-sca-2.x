@@ -21,13 +21,13 @@ package org.apache.tuscany.sca.implementation.script;
 import java.io.StringReader;
 
 import javax.script.Invocable;
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Property;
+import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
@@ -90,27 +90,15 @@ public class ScriptImplementation extends AbstractImplementation {
                 throw new ObjectCreationException("script engine does not support Invocable: " + scriptEngine);
             }
             
-//            for (Reference reference : getReferences()) {
-//                engine.getContext().setAttribute(reference.getName(), 
-//                                                 reference., 
-//                                                 ScriptContext.ENGINE_SCOPE);
-//            }
-//            
-//            for (String referenceName : references.keySet()) {
-//                Object reference = references.get(referenceName);
-//                //manager.put(referenceName, reference);
-//                engine.getContext().setAttribute(referenceName, 
-//                                                 reference, 
-//                                                 ScriptContext.ENGINE_SCOPE);
-//            }
-//            
+            for (Reference reference : getReferences()) {
+                Object referenceProxy = createReferenceProxy(reference.getName(), component);
+                scriptEngine.put(reference.getName(), referenceProxy);
+            }
 
             for (Property property : getProperties()) {
                 ObjectFactory<?> propertyValueFactory = propertyFactory.createValueFactory(property);
                 if ( propertyValueFactory != null) {
-                    scriptEngine.getContext().setAttribute(property.getName(), 
-                                                     propertyValueFactory.getInstance(), 
-                                                     ScriptContext.ENGINE_SCOPE);
+                    scriptEngine.put(property.getName(), propertyValueFactory.getInstance());
                 }
             }
             

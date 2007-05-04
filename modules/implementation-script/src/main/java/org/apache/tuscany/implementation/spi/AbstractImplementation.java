@@ -22,6 +22,7 @@ package org.apache.tuscany.implementation.spi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
@@ -31,9 +32,15 @@ import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.core.invocation.JDKProxyService;
+import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 public abstract class AbstractImplementation implements Implementation, ImplementationProvider, ImplementationActivator {
 
@@ -110,6 +117,22 @@ public abstract class AbstractImplementation implements Implementation, Implemen
     }
 
     public void stop(RuntimeComponent component) {
+    }
+
+    /**
+     * TODO: yuk yuk yuk
+     */
+    protected Object createReferenceProxy(String name, RuntimeComponent component) {
+        for (ComponentReference reference : component.getReferences()) {
+            if (reference.getName().equals(name)) {
+                List<RuntimeWire> wireList = ((RuntimeComponentReference)reference).getRuntimeWires();
+                RuntimeWire wire = wireList.get(0);
+                JDKProxyService ps = new JDKProxyService(WorkContextTunnel.getThreadWorkContext(), null);
+                Interface iface = reference.getInterfaceContract().getInterface();
+                return ps.createProxy(((JavaInterface)iface).getJavaClass(), wire);
+            }
+        }
+        throw new IllegalStateException("reference " + name + " not found on component: " + component);
     }
 
 }
