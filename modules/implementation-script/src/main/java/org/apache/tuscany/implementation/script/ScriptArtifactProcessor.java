@@ -21,12 +21,6 @@ package org.apache.tuscany.implementation.script;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -43,33 +37,35 @@ import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
+import org.apache.tuscany.implementation.spi.ScriptPropertyValueObjectFactory;
+
+// TODO: I hate the way this has to mess about with the .componentType side file, 
+//       the runtime should do that for me
 
 public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImplementation> {
 
-    private static final String SCRIPT = "script";
-    private static final String LANGUAGE = "language";
-    private static final String IMPLEMENTATION_SCRIPT = "implementation.script";
-    private static final QName IMPLEMENTATION_SCRIPT_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_SCRIPT);
+    private static final QName IMPLEMENTATION_SCRIPT_QNAME = new QName(Constants.SCA10_NS, "implementation.script");
     
     private AssemblyFactory assemblyFactory;
+    private ScriptPropertyValueObjectFactory propertyFactory;
 
-    public ScriptArtifactProcessor(AssemblyFactory assemblyFactory) {
+    public ScriptArtifactProcessor(AssemblyFactory assemblyFactory, ScriptPropertyValueObjectFactory propertyFactory) {
         this.assemblyFactory = assemblyFactory;
+        this.propertyFactory = propertyFactory;
     }
 
     public ScriptImplementation read(XMLStreamReader reader) throws ContributionReadException {
 
         try {
 
-            String scriptName = reader.getAttributeValue(null, SCRIPT);
-            String scriptLanguage = reader.getAttributeValue(null, LANGUAGE);
+            String scriptName = reader.getAttributeValue(null, "script");
+            String scriptLanguage = reader.getAttributeValue(null, "language");
             if (scriptLanguage == null || scriptLanguage.length() < 1) {
                 int i = scriptName.lastIndexOf('.');
                 scriptLanguage = scriptName.substring(i+1);
             }
             ScriptImplementation scriptImplementation = new ScriptImplementation(scriptName, scriptLanguage);
 
-            // Skip to end element
             while (reader.hasNext()) {
                 if (reader.next() == END_ELEMENT && IMPLEMENTATION_SCRIPT_QNAME.equals(reader.getName())) {
                     break;
@@ -104,10 +100,16 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
     public void write(ScriptImplementation scriptImplementation, XMLStreamWriter writer) throws ContributionWriteException {
         try {
 
-            writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_SCRIPT);
+            writer.writeStartElement(Constants.SCA10_NS, "implementation.script");
+
             if (scriptImplementation.getScriptName() != null) {
-                writer.writeAttribute(SCRIPT, scriptImplementation.getScriptName());
+                writer.writeAttribute("script", scriptImplementation.getScriptName());
             }
+
+            if (scriptImplementation.getScriptLanguage() != null) {
+                writer.writeAttribute("language", scriptImplementation.getScriptLanguage());
+            }
+
             writer.writeEndElement();
 
         } catch (XMLStreamException e) {
@@ -117,7 +119,8 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
 
     public void resolve(ScriptImplementation scriptImplementation, ArtifactResolver resolver) throws ContributionResolveException {
 
-        scriptImplementation.setScriptSrc(readScript(scriptImplementation.getScriptName()));
+        String scriptSrc = ResourceHelper.readResource(scriptImplementation.getScriptName());
+        scriptImplementation.setScriptSrc(scriptSrc);
 
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         String scriptURI = cl.getResource(scriptImplementation.getScriptName()).toString();
@@ -149,43 +152,6 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
 
     public Class<ScriptImplementation> getModelType() {
         return ScriptImplementation.class;
-    }
-
-    protected String readScript(String scriptName) throws ContributionResolveException {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL scriptSrcUrl = cl.getResource(scriptName);
-        if (scriptSrcUrl == null) {
-            throw new ContributionResolveException("No script: " + scriptName);
-        }
-
-        InputStream is;
-        try {
-            is = scriptSrcUrl.openStream();
-        } catch (IOException e) {
-            throw new ContributionResolveException(e);
-        }
-
-        try {
-
-            Reader reader = new InputStreamReader(is, "UTF-8");
-            char[] buffer = new char[1024];
-            StringBuilder source = new StringBuilder();
-            int count;
-            while ((count = reader.read(buffer)) > 0) {
-                source.append(buffer, 0, count);
-            }
-
-            return source.toString();
-
-        } catch (IOException e) {
-            throw new ContributionResolveException(e);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
     }
 
 }

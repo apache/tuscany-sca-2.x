@@ -28,34 +28,27 @@ import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.impl.DefaultMediator;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.implementation.spi.ScriptPropertyValueObjectFactory;
 
 public class ScriptModuleActivator implements ModuleActivator {
 
-    private ScriptArtifactProcessor scriptArtifactProcessor;
-    private ScriptComponentBuilder builder;
+    protected ScriptArtifactProcessor scriptArtifactProcessor;
     
     public void start(ExtensionPointRegistry registry) {
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
-        
-        scriptArtifactProcessor = new ScriptArtifactProcessor(new DefaultAssemblyFactory());
-        processors.addArtifactProcessor(scriptArtifactProcessor);
 
-        builder = new ScriptComponentBuilder();
-        builder.setBuilderRegistry(builderRegistry);
-        
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
         DefaultMediator mediator = new DefaultMediator(dataBindings, transformers);
-        ScriptPropertyValueObjectFactory factory = new ScriptPropertyValueObjectFactory(mediator);
-        builder.setPropertyValueObjectFactory(factory);
-        builder.setDataBindingRegistry(dataBindings);
-        
-        builder.init();
+        ScriptPropertyValueObjectFactory propertyFactory = new ScriptPropertyValueObjectFactory(mediator);
+
+        scriptArtifactProcessor = new ScriptArtifactProcessor(new DefaultAssemblyFactory(), propertyFactory);
+        processors.addArtifactProcessor(scriptArtifactProcessor);
     }
 
-    public void stop(ExtensionPointRegistry arg0) {
+    public void stop(ExtensionPointRegistry registry) {
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.removeArtifactProcessor(scriptArtifactProcessor);
     }
 
     public Map<Class, Object> getExtensionPoints() {
