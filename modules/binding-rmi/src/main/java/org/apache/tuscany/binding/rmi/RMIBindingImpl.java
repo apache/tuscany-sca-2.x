@@ -14,11 +14,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.rmi.impl;
+package org.apache.tuscany.binding.rmi;
 
 import org.apache.tuscany.assembly.impl.BindingImpl;
-import org.apache.tuscany.binding.rmi.RMIBinding;
-import org.apache.tuscany.binding.rmi.RMIBindingConstants;
 
 /**
  * Represents a binding to an RMI service.

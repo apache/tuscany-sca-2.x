@@ -21,11 +21,12 @@ package org.apache.tuscany.binding.rmi;
 import helloworld.HelloWorldRmiService;
 import junit.framework.Assert;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.CurrentCompositeContext;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 
 public class BindingTestCase {
     private static HelloWorldRmiService helloWorldRmiService;
@@ -35,22 +36,26 @@ public class BindingTestCase {
         System.out.println(helloWorldRmiService.sayRmiHello("Tuscany World!"));
         Assert.assertEquals("Hello from the RMI Service to - Tuscany World! thro the RMI Reference",
                 helloWorldRmiService.sayRmiHello("Tuscany World!"));
+        
+        System.out.println(helloWorldRmiService.sayRmiHi("Tuscany World!", "Apache World"));
+        
+        Assert.assertEquals("Hi from Apache World in RMI Service to - Tuscany World! thro the RMI Reference",
+                            helloWorldRmiService.sayRmiHi("Tuscany World!", "Apache World"));
     }
 
 
     
     @BeforeClass
     public static void init() throws Exception {
-        SCARuntime.start("META-INF/sca/RMIBindingTest.composite");
-        helloWorldRmiService = 
-            CurrentCompositeContext.getContext().locateService(HelloWorldRmiService.class,
-                                                                "HelloWorldRmiServiceComponent");
-       
-    }
+        SCARuntimeActivator.start("META-INF/sca/RMIBindingTest.composite");
+        ComponentContext context = SCARuntimeActivator.getComponentContext("HelloWorldRmiServiceComponent");
+        ServiceReference<HelloWorldRmiService> serviceReference = context.createSelfReference(HelloWorldRmiService.class);
+        helloWorldRmiService = serviceReference.getService();
+  }
     
     @AfterClass
     public static void destroy() throws Exception {
-        SCARuntime.stop();
+        SCARuntimeActivator.stop();
     }
 
 }

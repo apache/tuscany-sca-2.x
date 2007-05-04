@@ -30,4 +30,8 @@ public class HelloWorldImpl implements HelloWorldService {
     public String sayHello(String name) {
         return "Hello from the RMI Service to - " + name;
     }
+    
+    public String sayHi(String name, String greeter) {
+        return "Hi from " + greeter + " in RMI Service to - " + name;
+    }
 }
