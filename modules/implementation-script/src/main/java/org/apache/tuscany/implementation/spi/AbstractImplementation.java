@@ -42,6 +42,9 @@ import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
+/**
+ * TODO: couldn't something like this class be provided by the runtime?
+ */
 public abstract class AbstractImplementation implements Implementation, ImplementationProvider, ImplementationActivator {
 
     private List<Service> services = new ArrayList<Service>();

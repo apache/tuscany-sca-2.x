@@ -25,6 +25,11 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 
+/**
+ * TODO: couldn't something like this class be provided by the runtime?
+ *   or even better, how about a new "Invoker" interface that just 
+ *   has an invoke method and not the next an optimizable stuff
+ */
 public abstract class AbstractInterceptor implements Interceptor {
 
     private Interceptor next;
