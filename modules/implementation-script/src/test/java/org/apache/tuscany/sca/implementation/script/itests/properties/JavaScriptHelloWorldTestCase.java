@@ -17,14 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests.references;
+package org.apache.tuscany.sca.implementation.script.itests.properties;
 
-import org.apache.tuscany.implementation.script.itests.helloworld.HelloWorld;
 
-public class HelloWorldTarget implements HelloWorld {
-
-    public String sayHello(String s) {
-        return "Hello " + s;
-    }
-
+public class JavaScriptHelloWorldTestCase extends AbstractHelloWorldTestCase {
+    // super class does it all getting composite based on this class name
 }

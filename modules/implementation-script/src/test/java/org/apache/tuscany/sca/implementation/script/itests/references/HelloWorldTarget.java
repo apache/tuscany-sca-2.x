@@ -17,10 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests.helloworld;
+package org.apache.tuscany.sca.implementation.script.itests.references;
 
-public interface HelloWorld {
-    
-    public String sayHello(String s);
+import org.apache.tuscany.sca.implementation.script.itests.helloworld.HelloWorld;
+
+public class HelloWorldTarget implements HelloWorld {
+
+    public String sayHello(String s) {
+        return "Hello " + s;
+    }
 
 }

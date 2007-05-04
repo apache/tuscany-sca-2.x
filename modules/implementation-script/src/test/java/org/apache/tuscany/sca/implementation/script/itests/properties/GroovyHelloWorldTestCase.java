@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests.properties;
+package org.apache.tuscany.sca.implementation.script.itests.properties;
 
 
 public class GroovyHelloWorldTestCase extends AbstractHelloWorldTestCase {
