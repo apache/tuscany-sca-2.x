@@ -21,17 +21,20 @@ package org.apache.tuscany.sca.implementation.script;
 import java.io.StringReader;
 
 import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.ComponentType;
+import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
+import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.wire.Interceptor;
 
 /**
@@ -39,16 +42,20 @@ import org.apache.tuscany.spi.wire.Interceptor;
  */
 public class ScriptImplementation extends AbstractImplementation {
 
-    private String scriptName;
-    private String scriptSrc;
-    private String scriptLanguage;
-    private ComponentType componentType;
-    
+    protected String scriptName;
+    protected String scriptSrc;
+    protected String scriptLanguage;
+
+    protected PropertyValueObjectFactory propertyFactory;
+
     protected ScriptEngine scriptEngine;
 
-    protected ScriptImplementation(String scriptName, String scriptLanguage) {
+    public ScriptImplementation(String scriptName, String scriptLanguage, String scriptSrc, PropertyValueObjectFactory propertyFactory) {
         this.scriptName = scriptName;
         this.scriptLanguage = scriptLanguage;
+        this.scriptSrc = scriptSrc;
+        this.propertyFactory = propertyFactory;
+        
         setURI(scriptName);
         setUnresolved(true);
     }
@@ -69,14 +76,6 @@ public class ScriptImplementation extends AbstractImplementation {
         this.scriptSrc = scriptSrc;
     }
 
-    public ComponentType getComponentType() {
-        return componentType;
-    }
-
-    public void setComponentType(ComponentType componentType) {
-        this.componentType = componentType;
-    }
-
     public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation, boolean isCallback) {
         return new ScriptInvoker(this, operation.getName());
     }
@@ -91,7 +90,6 @@ public class ScriptImplementation extends AbstractImplementation {
                 throw new ObjectCreationException("script engine does not support Invocable: " + scriptEngine);
             }
             
-//            ObjectFactory<?> propertyValueFactory = null;
 //            for (Reference reference : getReferences()) {
 //                engine.getContext().setAttribute(reference.getName(), 
 //                                                 reference., 
@@ -106,15 +104,15 @@ public class ScriptImplementation extends AbstractImplementation {
 //                                                 ScriptContext.ENGINE_SCOPE);
 //            }
 //            
-//            for (String propertyName : propertyValueFactories.keySet()) {
-//                propertyValueFactory = propertyValueFactories.get(propertyName);
-//                if ( propertyValueFactory != null) {
-//                    //manager.put(propertyName, propertyValueFactory.getInstance());
-//                    engine.getContext().setAttribute(propertyName, 
-//                                                     propertyValueFactory.getInstance(), 
-//                                                     ScriptContext.ENGINE_SCOPE);
-//                }
-//            }
+
+            for (Property property : getProperties()) {
+                ObjectFactory<?> propertyValueFactory = propertyFactory.createValueFactory(property);
+                if ( propertyValueFactory != null) {
+                    scriptEngine.getContext().setAttribute(property.getName(), 
+                                                     propertyValueFactory.getInstance(), 
+                                                     ScriptContext.ENGINE_SCOPE);
+                }
+            }
             
             scriptEngine.eval(new StringReader(getScriptSrc()));
 
