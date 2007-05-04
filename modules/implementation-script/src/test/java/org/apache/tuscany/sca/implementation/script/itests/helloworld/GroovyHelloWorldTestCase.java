@@ -17,18 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests.properties;
+package org.apache.tuscany.sca.implementation.script.itests.helloworld;
 
-import org.apache.tuscany.implementation.script.itests.AbstractSCATestCase;
 
-public abstract class AbstractHelloWorldTestCase extends AbstractSCATestCase<HelloWorld> {
-
-    public void testCalculator() throws Exception {
-        assertEquals("Hello petra from Tuscany", service.sayHello("petra"));
-    }
-    
-    @Override
-    protected Class<HelloWorld> getServiceClass() {
-        return HelloWorld.class;
-    }
+public class GroovyHelloWorldTestCase extends AbstractHelloWorldTestCase {
+    // super class does it all getting composite based on this class name
 }

@@ -16,19 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.implementation.script.itests.references;
 
-package org.apache.tuscany.implementation.script.itests.helloworld;
+import org.apache.tuscany.sca.implementation.script.itests.helloworld.AbstractHelloWorldTestCase;
 
-import org.apache.tuscany.implementation.script.itests.AbstractSCATestCase;
-
-public abstract class AbstractHelloWorldTestCase extends AbstractSCATestCase<HelloWorld> {
-
-    public void testCalculator() throws Exception {
-        assertEquals("Hello petra", service.sayHello("petra"));
-    }
-    
-    @Override
-    protected Class<HelloWorld> getServiceClass() {
-        return HelloWorld.class;
-    }
+public class JavaScriptReferenceTestCase extends AbstractHelloWorldTestCase {
+    // super class does it all getting composite based on this class name
 }

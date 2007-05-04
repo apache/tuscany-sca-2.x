@@ -17,9 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests.helloworld;
+package org.apache.tuscany.sca.implementation.script.itests.properties;
 
+public interface HelloWorld {
+    
+    public String sayHello(String s);
 
-public class JRubyHelloWorldTestCase extends AbstractHelloWorldTestCase {
-    // super class does it all getting composite based on this class name
 }

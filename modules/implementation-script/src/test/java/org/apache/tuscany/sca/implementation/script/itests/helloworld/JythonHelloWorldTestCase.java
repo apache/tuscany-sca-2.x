@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.script.itests.references;
 
-import org.apache.tuscany.implementation.script.itests.helloworld.AbstractHelloWorldTestCase;
+package org.apache.tuscany.sca.implementation.script.itests.helloworld;
 
-public class JythonReferenceTestCase extends AbstractHelloWorldTestCase {
+
+public class JythonHelloWorldTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
 }

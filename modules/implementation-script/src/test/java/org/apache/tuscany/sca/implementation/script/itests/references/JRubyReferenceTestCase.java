@@ -16,18 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.implementation.script.itests.references;
 
-package org.apache.tuscany.implementation.script.itests.properties;
+import org.apache.tuscany.sca.implementation.script.itests.helloworld.AbstractHelloWorldTestCase;
 
-import org.osoa.sca.annotations.Reference;
-
-public class HelloWorldProxy implements HelloWorld {
-
-    @Reference
-    public HelloWorld delegate;
-    
-    public String sayHello(String s) {
-        return delegate.sayHello(s);
-    }
-
+public class JRubyReferenceTestCase extends AbstractHelloWorldTestCase {
+    // super class does it all getting composite based on this class name
 }

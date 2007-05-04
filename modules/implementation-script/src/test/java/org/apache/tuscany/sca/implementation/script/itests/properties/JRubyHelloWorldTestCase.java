@@ -17,17 +17,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests.helloworld;
+package org.apache.tuscany.sca.implementation.script.itests.properties;
 
-import org.osoa.sca.annotations.Reference;
-
-public class HelloWorldProxy implements HelloWorld {
-
-    @Reference
-    public HelloWorld delegate;
-    
-    public String sayHello(String s) {
-        return delegate.sayHello(s);
-    }
-
+public class JRubyHelloWorldTestCase extends AbstractHelloWorldTestCase {
+    // super class does it all getting composite based on this class name
 }

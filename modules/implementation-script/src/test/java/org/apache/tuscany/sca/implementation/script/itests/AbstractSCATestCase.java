@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.script.itests;
+package org.apache.tuscany.sca.implementation.script.itests;
 
 import junit.framework.TestCase;
 
