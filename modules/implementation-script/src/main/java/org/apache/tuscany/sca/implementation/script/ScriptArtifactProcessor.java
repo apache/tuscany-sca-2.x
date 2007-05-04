@@ -40,9 +40,6 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.implementation.spi.ResourceHelper;
 
-// TODO: I hate the way this has to mess about with the .componentType side file, 
-//       the runtime should do that for me
-
 public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImplementation> {
 
     private static final QName IMPLEMENTATION_SCRIPT_QNAME = new QName(Constants.SCA10_NS, "implementation.script");
@@ -55,17 +52,25 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
         this.propertyFactory = propertyFactory;
     }
 
+    public QName getArtifactType() {
+        return IMPLEMENTATION_SCRIPT_QNAME;
+    }
+
+    public Class<ScriptImplementation> getModelType() {
+        return ScriptImplementation.class;
+    }
+
     public ScriptImplementation read(XMLStreamReader reader) throws ContributionReadException {
 
         try {
 
             String scriptName = reader.getAttributeValue(null, "script");
+
             String scriptLanguage = reader.getAttributeValue(null, "language");
             if (scriptLanguage == null || scriptLanguage.length() < 1) {
                 int i = scriptName.lastIndexOf('.');
                 scriptLanguage = scriptName.substring(i+1);
             }
-            ScriptImplementation scriptImplementation = new ScriptImplementation(scriptName, scriptLanguage);
 
             while (reader.hasNext()) {
                 if (reader.next() == END_ELEMENT && IMPLEMENTATION_SCRIPT_QNAME.equals(reader.getName())) {
@@ -73,32 +78,13 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
                 }
             }
 
-            String scriptSrc = ResourceHelper.readResource(scriptImplementation.getScriptName());
-            scriptImplementation.setScriptSrc(scriptSrc);
+            String scriptSrc = ResourceHelper.readResource(scriptName);
 
-            processComponentType(scriptImplementation);
-
-            return scriptImplementation;
+            return new ScriptImplementation(scriptName, scriptLanguage, scriptSrc, propertyFactory);
 
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
-    }
-
-    private void processComponentType(ScriptImplementation scriptImplementation) {
-        // Form the URI of the expected .componentType file;
-
-        String ctName = scriptImplementation.getScriptName();
-        int lastDot = ctName.lastIndexOf('.');
-        ctName = ctName.substring(0, lastDot) + ".componentType";
-        
-        String uri = ctName;
-
-        // Create a ComponentType and mark it unresolved
-        ComponentType componentType = assemblyFactory.createComponentType();
-        componentType.setURI(uri);
-        componentType.setUnresolved(true);
-        scriptImplementation.setComponentType(componentType);
     }
 
     public void write(ScriptImplementation scriptImplementation, XMLStreamWriter writer) throws ContributionWriteException {
@@ -121,13 +107,18 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
         }
     }
 
+//  TODO: I hate all the following, why has this to mess about with the .componentType side file, 
+//  the runtime should do that for me
+
     public void resolve(ScriptImplementation scriptImplementation, ArtifactResolver resolver) throws ContributionResolveException {
+
+        processComponentType(scriptImplementation);
 
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         String scriptURI = cl.getResource(scriptImplementation.getScriptName()).toString();
         int lastDot = scriptURI.lastIndexOf('.');
         String ctURI = scriptURI.substring(0, lastDot) + ".componentType";
-        ComponentType ct = scriptImplementation.getComponentType();
+        ComponentType ct = processComponentType(scriptImplementation);
         ct.setURI(ctURI);
         ComponentType componentType = resolver.resolve(ComponentType.class, ct);
         if (componentType.isUnresolved()) {
@@ -142,17 +133,27 @@ public class ScriptArtifactProcessor implements StAXArtifactProcessor<ScriptImpl
         for (Property property : componentType.getProperties()) {
             scriptImplementation.getProperties().add(property);
         }
-        scriptImplementation.setComponentType(componentType);
+//        scriptImplementation.setComponentType(componentType);
         
         scriptImplementation.setUnresolved(false);
     }
 
-    public QName getArtifactType() {
-        return IMPLEMENTATION_SCRIPT_QNAME;
-    }
+    private ComponentType processComponentType(ScriptImplementation scriptImplementation) {
 
-    public Class<ScriptImplementation> getModelType() {
-        return ScriptImplementation.class;
+        // Form the URI of the expected .componentType file;
+
+        String ctName = scriptImplementation.getScriptName();
+        int lastDot = ctName.lastIndexOf('.');
+        ctName = ctName.substring(0, lastDot) + ".componentType";
+        
+        String uri = ctName;
+
+        // Create a ComponentType and mark it unresolved
+        ComponentType componentType = assemblyFactory.createComponentType();
+        componentType.setURI(uri);
+        componentType.setUnresolved(true);
+
+        return componentType;
     }
 
 }
