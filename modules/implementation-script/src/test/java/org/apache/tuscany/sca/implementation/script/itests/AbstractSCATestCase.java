@@ -30,16 +30,16 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     protected T service;
 
     protected void setUp() throws Exception {
-        SCARuntimeActivator.start(getCompositeName());
-        ComponentContext context = SCARuntimeActivator.getComponentContext("ClientComponent");
-        ServiceReference<T> serviceReference = context.createSelfReference(getServiceClass());
-        service = serviceReference.getService();
+//        SCARuntimeActivator.start(getCompositeName());
+//        ComponentContext context = SCARuntimeActivator.getComponentContext("ClientComponent");
+//        ServiceReference<T> serviceReference = context.createSelfReference(getServiceClass());
+//        service = serviceReference.getService();
     }
     
     abstract protected Class getServiceClass();
 
     protected void tearDown() throws Exception {
-        SCARuntimeActivator.stop();
+//        SCARuntimeActivator.stop();
     }
 
     protected String getCompositeName() {

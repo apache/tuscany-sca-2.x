@@ -21,12 +21,12 @@
            name="JythonHelloWorld">
 
     <component name="ClientComponent">
-		<implementation.java class="org.apache.tuscany.implementation.script.itests.helloworld.HelloWorldProxy"/>
+		<implementation.java class="org.apache.tuscany.sca.implementation.script.itests.helloworld.HelloWorldProxy"/>
         <reference name="delegate" target="HelloWorldComponent"></reference>
     </component>
 
     <component name="HelloWorldComponent">
-        <implementation.script script="org/apache/tuscany/implementation/script/itests/helloworld/helloworld.py"/>
+        <implementation.script script="org/apache/tuscany/sca/implementation/script/itests/helloworld/helloworld.py"/>
     </component>
 
 </composite>
