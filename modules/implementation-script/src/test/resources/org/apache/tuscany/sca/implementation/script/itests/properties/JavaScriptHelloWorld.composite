@@ -21,12 +21,12 @@
            name="JavaScriptProperties">
 
     <component name="ClientComponent">
-		<implementation.java class="org.apache.tuscany.implementation.script.itests.properties.HelloWorldProxy"/>
+		<implementation.java class="org.apache.tuscany.sca.implementation.script.itests.properties.HelloWorldProxy"/>
         <reference name="delegate" target="HelloWorldComponent"></reference>
     </component>
 
     <component name="HelloWorldComponent">
-        <implementation.script script="org/apache/tuscany/implementation/script/itests/properties/helloworld.js"/>
+        <implementation.script script="org/apache/tuscany/sca/implementation/script/itests/properties/helloworld.js"/>
     </component>
 
 </composite>
