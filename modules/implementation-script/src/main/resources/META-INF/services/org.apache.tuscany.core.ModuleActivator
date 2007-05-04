@@ -1,2 +1,2 @@
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.implementation.script.ScriptModuleActivator
+org.apache.tuscany.sca.implementation.script.ScriptModuleActivator
