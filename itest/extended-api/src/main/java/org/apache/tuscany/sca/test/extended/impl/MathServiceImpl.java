@@ -16,11 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.test.extended;
+package org.apache.tuscany.sca.test.extended.impl;
 
-public interface BasicService {
+import org.apache.tuscany.sca.test.extended.MathService;
+import org.osoa.sca.annotations.Service;
 
-    int negate(int theInt);
-    int delegateNegate(int theInt);
+@Service(MathService.class)
+public class MathServiceImpl implements MathService {
+
+    public int negate(int theInt) {
+        return -theInt;
+    }
 
 }

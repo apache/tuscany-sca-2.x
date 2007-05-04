@@ -18,11 +18,9 @@
  */
 package org.apache.tuscany.sca.test.extended.impl;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 import org.apache.tuscany.sca.test.extended.BasicService;
-
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.sca.test.extended.MathService;
 import org.osoa.sca.annotations.Service;
 
 @Service(BasicService.class)
@@ -30,6 +28,14 @@ public class BasicServiceImpl implements BasicService {
 
     public int negate(int theInt) {
         return -theInt;
+    }
+
+    public int delegateNegate(int theInt) {
+
+        MathService service = SCARuntimeActivator.locateService(MathService.class, "MathServiceComponent");
+
+        return service.negate(theInt);       
+
     }
 
 

@@ -23,19 +23,43 @@ import static org.junit.Assert.assertEquals;
 import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServiceLocateTestCase {
 
     @Test
-    public void locateService() {
+    public void unmanagedLocateService() {
 
         BasicService service = SCARuntimeActivator.locateService(BasicService.class, "BasicServiceComponent");
 
         assertEquals(-99, service.negate(99));
 
     }
+    
+    @Test
+    public void managedLocateService() {
 
+        BasicService service = SCARuntimeActivator.locateService(BasicService.class, "BasicServiceComponent");
+
+        assertEquals(-99, service.delegateNegate(99));
+
+    }
+
+    @Ignore
+    @Test
+    public void badComponentName() {
+
+        BasicService service = SCARuntimeActivator.locateService(BasicService.class, "IvalidComponentName");
+
+        assertEquals(-99, service.delegateNegate(99));
+
+    }
+
+    
+    
+    
+    
     @Before
     public void init() throws Exception {
 
