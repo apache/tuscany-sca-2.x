@@ -25,6 +25,7 @@ import java.beans.PropertyDescriptor;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -78,7 +79,11 @@ public class PrintUtil {
                     try {
 
                         // Get the value of each property
-                        Object value = propertyDescriptor.getReadMethod().invoke(object);
+                        Method getter = propertyDescriptor.getReadMethod();
+                        if (getter == null) {
+                            continue;
+                        }
+                        Object value = getter.invoke(object);
                         if (value != null) {
 
                             // Convert array value into a list
