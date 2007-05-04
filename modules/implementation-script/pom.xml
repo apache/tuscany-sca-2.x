@@ -42,39 +42,10 @@
     </repositories>
 
     <dependencies>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution-impl</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
+            <artifactId>tuscany-host-embedded</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
@@ -82,14 +53,6 @@
             <groupId>org.apache.bsf</groupId>
             <artifactId>bsf-all</artifactId>
             <version>3.0-beta1</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>2.2</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -114,8 +77,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
@@ -125,11 +88,6 @@
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
 <!-- TODO: big hack to add script engine dependencies till extension dependencies fixed -->

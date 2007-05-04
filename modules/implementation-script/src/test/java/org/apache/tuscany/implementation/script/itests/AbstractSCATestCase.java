@@ -22,6 +22,7 @@ package org.apache.tuscany.implementation.script.itests;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
@@ -30,8 +31,8 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     protected T service;
 
     protected void setUp() throws Exception {
-        SCARuntime.start(getCompositeName());
-        ComponentContext context = SCARuntime.getComponentContext("ClientComponent");
+        SCARuntimeActivator.start(getCompositeName());
+        ComponentContext context = SCARuntimeActivator.getComponentContext("ClientComponent");
         ServiceReference<T> serviceReference = context.createSelfReference(getServiceClass());
         service = serviceReference.getService();
     }
@@ -39,7 +40,7 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     abstract protected Class getServiceClass();
 
     protected void tearDown() throws Exception {
-        SCARuntime.stop();
+        SCARuntimeActivator.stop();
     }
 
     protected String getCompositeName() {

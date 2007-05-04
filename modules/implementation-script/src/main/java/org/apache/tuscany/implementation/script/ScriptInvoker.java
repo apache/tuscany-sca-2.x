@@ -24,109 +24,34 @@ import java.lang.reflect.InvocationTargetException;
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
-import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.TargetInvokerExtension;
+import org.apache.tuscany.implementation.spi.AbstractInterceptor;
 
 /**
  * Perform the actual script invocation
- * TODO: move vertually all of this to SPI TargetInvokerExtension
  */
-@SuppressWarnings("deprecation")
-public class ScriptInvoker<T> extends TargetInvokerExtension {
+public class ScriptInvoker extends AbstractInterceptor {
 
-    protected Object clazz;
+    protected ScriptImplementation impl;
     protected String operationName;
 
-    private final ScriptComponent component;
-    private final ScopeContainer scopeContainer;
-    protected InstanceWrapper<T> target;
-    protected boolean stateless;
-
-    public ScriptInvoker(String operationName,
-                         ScriptComponent component,
-                         ScopeContainer scopeContainer,
-                         WorkContext workContext) {
-
+    /**
+     * TODO: pasing in the impl is a hack to get at scriptEngine as thats all this uses
+     * but its not created till the start method which is called after the invokers are created 
+     */
+    public ScriptInvoker(ScriptImplementation impl, String operationName) {
+        this.impl = impl;
         this.operationName = operationName;
-        this.component = component;
-        this.scopeContainer = scopeContainer;
-        stateless = Scope.STATELESS == scopeContainer.getScope();
-
-        // TODO: support script classes
     }
 
-    @SuppressWarnings("unchecked")
-    public Object invokeTarget(Object payload, short sequence, WorkContext workContext) throws InvocationTargetException {
-        Object contextId = workContext.getIdentifier(scopeContainer.getScope());
+    @Override
+    public Object doInvoke(Object[] objects) throws InvocationTargetException {
         try {
 
-            InstanceWrapper<T> wrapper = getInstance(sequence, contextId);
-            Invocable scriptEngine = (Invocable)wrapper.getInstance();
-
-            Object ret;
-            if (clazz == null) {
-                ret = scriptEngine.invokeFunction(operationName, (Object[])payload);
-            } else {
-                ret =  scriptEngine.invokeMethod(clazz, operationName, (Object[])payload);
-            }
-
-            scopeContainer.returnWrapper(component, wrapper, contextId);
-            if (sequence == END) {
-                // if end conversation, remove resource
-                scopeContainer.remove(component);
-            }
-
-            return ret;
+            return ((Invocable)impl.scriptEngine).invokeFunction(operationName, objects);
 
         } catch (ScriptException e) {
             throw new InvocationTargetException(e);
-        } catch (ComponentException e) {
-            throw new InvocationTargetException(e);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public ScriptInvoker clone() throws CloneNotSupportedException {
-        try {
-            ScriptInvoker invoker = (ScriptInvoker)super.clone();
-            invoker.target = null;
-            return invoker;
-        } catch (CloneNotSupportedException e) {
-            return null; // will not happen
-        }
-    }
-
-    /**
-     * Resolves the target service instance or returns a cached one
-     */
-    @SuppressWarnings("unchecked")
-    protected InstanceWrapper<T> getInstance(short sequence, Object contextId) throws TargetException {
-        switch (sequence) {
-        case NONE:
-            if (cacheable) {
-                if (target == null) {
-                    target = scopeContainer.getWrapper(component, contextId);
-                }
-                return target;
-            } else {
-                return scopeContainer.getWrapper(component, contextId);
-            }
-        case START:
-            assert !cacheable;
-            return scopeContainer.getWrapper(component, contextId);
-        case CONTINUE:
-        case END:
-            assert !cacheable;
-            return scopeContainer.getAssociatedWrapper(component, contextId);
-        default:
-            throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
-        }
-    }
 }

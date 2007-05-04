@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.script;
+package org.apache.tuscany.implementation.spi;
 
 
 import java.util.ArrayList;
