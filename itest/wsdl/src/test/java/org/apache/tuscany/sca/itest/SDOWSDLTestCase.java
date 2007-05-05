@@ -23,8 +23,7 @@ import java.rmi.RemoteException;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 import bigbank.account.services.accountdata.AccountDataService;
 
@@ -42,6 +41,8 @@ import com.bigbank.account.CustomerProfileData;
  */
 public class SDOWSDLTestCase extends TestCase {
 
+    private SCADomain domain;
+    
     public void testClient1a2a3a4a() throws RemoteException  {
         
         doit("Client1a2a3a4a");
@@ -65,7 +66,7 @@ public class SDOWSDLTestCase extends TestCase {
     }
 
     private void doit(String compName) throws RemoteException {
-        AccountDataService client = CurrentCompositeContext.getContext().locateService(AccountDataService.class, compName);
+        AccountDataService client = domain.getService(AccountDataService.class, compName);
         CustomerProfileData dataIn = AccountFactory.INSTANCE.createCustomerProfileData();
         dataIn.setAddress("home");
         dataIn.setEmail("petra@home");
@@ -87,11 +88,11 @@ public class SDOWSDLTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("SDOWSDLTest.composite");
+    	domain = SCADomain.newInstance("SDOWSDLTest.composite");
     }
 
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 
 }

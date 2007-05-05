@@ -32,7 +32,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.axis2.transport.http.server.HttpUtils;
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * TODO: This doesn't work right now as it seems to cause hangs when running 
@@ -41,6 +41,8 @@ import org.apache.tuscany.host.embedded.SCARuntime;
  */
 public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
 
+    private SCADomain domain;
+    
     /**
      * Tests ?wsdl works and returns the correct port endpoint from the WSDL 
      */
@@ -88,11 +90,11 @@ public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        SCARuntime.start("org/apache/tuscany/binding/axis2/itests/questionmark-wsdl.composite");
+        domain = SCADomain.newInstance("org/apache/tuscany/binding/axis2/itests/questionmark-wsdl.composite");
     }
     
     protected void tearDown() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
 
 }

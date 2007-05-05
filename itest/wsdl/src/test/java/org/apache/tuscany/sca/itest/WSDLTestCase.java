@@ -22,90 +22,104 @@ package org.apache.tuscany.sca.itest;
 import helloworld.HelloWorldService;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * Tests all the combinations of wiring services, components, and references
- * which use either interface.java or interface.wsdl.
- * 
- * The tests use a service (1) wired to a components (2) wired to another 
- * component (3) wired to a reference (4). Each of those uses either 
- * interface.java (a) or interface.wsdl (b). This results in 16 different
- * combinations 1a2a3a4a thru 1b2b3b4b.
+ * which use either interface.java or interface.wsdl. The tests use a service
+ * (1) wired to a components (2) wired to another component (3) wired to a
+ * reference (4). Each of those uses either interface.java (a) or interface.wsdl
+ * (b). This results in 16 different combinations 1a2a3a4a thru 1b2b3b4b.
  */
 public class WSDLTestCase extends TestCase {
 
-    public void testClient1a2a3a4a()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3a4a");
+    private SCADomain domain;
+
+    public void testClient1a2a3a4a() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2a3a4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1a2a3a4b()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3a4b");
+
+    public void testClient1a2a3a4b() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2a3a4b");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1a2a3b4a()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3b4a");
+
+    public void testClient1a2a3b4a() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2a3b4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1a2a3b4b()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2a3b4b");
+
+    public void testClient1a2a3b4b() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2a3b4b");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1a2b3a4a()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3a4a");
+
+    public void testClient1a2b3a4a() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2b3a4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1a2b3a4b()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3a4b");
+
+    public void testClient1a2b3a4b() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2b3a4b");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1a2b3b4a()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3b4a");
+
+    public void testClient1a2b3b4a() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2b3b4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1a2b3b4b()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1a2b3b4b");
+
+    public void testClient1a2b3b4b() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2b3b4b");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1b2a3a4a()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3a4a");
+
+    public void testClient1b2a3a4a() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1b2a3a4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1b2a3a4b()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3a4b");
+
+    public void testClient1b2a3a4b() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1b2a3a4b");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1b2a3b4a()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3b4a");
+
+    public void testClient1b2a3b4a() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1b2a3b4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1b2a3b4b()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2a3b4b");
+
+    public void testClient1b2a3b4b() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1b2a3b4b");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1b2b3a4a()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3a4a");
+
+    public void testClient1b2b3a4a() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1b2b3a4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1b2b3a4b()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3a4b");
+
+    public void testClient1b2b3a4b() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1b2b3a4b");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1b2b3b4a()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3b4a");
+
+    public void testClient1b2b3b4a() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1b2b3b4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
-    public void testClient1b2b3b4b()  {
-        HelloWorldService client = CurrentCompositeContext.getContext().locateService(HelloWorldService.class, "Client1b2b3b4b");
+
+    public void testClient1b2b3b4b() {
+        HelloWorldService client = domain.getService(HelloWorldService.class, "Client1b2b3b4b");
         assertEquals("Hi petra", client.getGreetings("petra"));
     }
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("WSDLTest.composite");
+        domain = SCADomain.newInstance("WSDLTest.composite");
     }
 
     protected void tearDown() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
 }

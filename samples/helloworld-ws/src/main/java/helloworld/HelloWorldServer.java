@@ -20,7 +20,7 @@ package helloworld;
 
 import java.io.IOException;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * This server program shows how to create an SCA runtime, and start it which
@@ -30,7 +30,7 @@ public class HelloWorldServer {
 
     public static void main(String[] args) {
 
-        SCARuntime.start("helloworldws.composite");
+        SCADomain domain = SCADomain.newInstance("helloworldws.composite");
 
         try {
             System.out.println("HelloWorld server started");
@@ -39,7 +39,7 @@ public class HelloWorldServer {
             e.printStackTrace();
         }
 
-        SCARuntime.stop();
+        domain.close();
         System.out.println("HelloWorld server stopped");
     }
 

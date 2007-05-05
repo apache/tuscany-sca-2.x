@@ -20,26 +20,23 @@ package calculator;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * This shows how to test the Calculator service component.
  */
 public class CalculatorTestCase extends TestCase {
 
+    private SCADomain domain;
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        SCARuntime.start("Calculator.composite");
-        ComponentContext context = SCARuntime.getComponentContext("CalculatorServiceComponent");
-        ServiceReference<CalculatorService> service = context.createSelfReference(CalculatorService.class);
-        calculatorService = service.getService();
+        domain = SCADomain.newInstance("Calculator.composite");
+        calculatorService = domain.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
     
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 
     public void testCalculator() throws Exception {

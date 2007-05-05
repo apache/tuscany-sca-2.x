@@ -20,26 +20,22 @@ package bigbank;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 import bigbank.account.AccountService;
 
 public class BigBankTestCase extends TestCase {
 
+    private SCADomain domain;
     AccountService accountService;
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("BigBank.composite");
-
-        ComponentContext context = SCARuntime.getComponentContext("AccountServiceComponent");
-        ServiceReference<AccountService> service = context.createSelfReference(AccountService.class);
-        accountService = service.getService();
+    	domain = SCADomain.newInstance("BigBank.composite");
+        accountService = domain.getService(AccountService.class, "AccountServiceComponent");
     }
     
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 
     public void test() throws Exception {

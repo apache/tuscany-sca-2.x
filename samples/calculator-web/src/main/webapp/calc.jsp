@@ -17,19 +17,14 @@
  * under the License.
 --%>
 
+<%@ page import="org.apache.tuscany.host.embedded.SCADomain"%>
 <%@ page import="calculator.CalculatorService" %>
-<%@ page import="org.apache.tuscany.host.embedded.SCARuntime"%>
-<%@ page import="org.osoa.sca.ComponentContext" %>
-<%@ page import="org.osoa.sca.ServiceReference" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
 
-   SCARuntime.start("Calculator.composite");
-   
-   ComponentContext context = SCARuntime.getComponentContext("CalculatorServiceComponent");
-   ServiceReference<CalculatorService> service = context.createSelfReference(CalculatorService.class);
-   CalculatorService calculatorService = service.getService();
+   SCADomain domain = SCADomain.newInstance("Calculator.composite");
+   CalculatorService calculatorService = domain.getService(CalculatorService.class, "CalculatorServiceComponent");
 %>
 <html>
 <head><title>Calculator sample</title></head>
@@ -56,5 +51,5 @@
 </html>
 
 <%
-   SCARuntime.stop();
+   domain.close();
 %>

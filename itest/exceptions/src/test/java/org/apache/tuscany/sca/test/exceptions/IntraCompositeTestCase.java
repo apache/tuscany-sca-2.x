@@ -20,14 +20,12 @@ package org.apache.tuscany.sca.test.exceptions;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class IntraCompositeTestCase extends TestCase {
-    private ExceptionHandler exceptionHandler;
 
-    private CompositeContext context;
+    private SCADomain domain;
+    private ExceptionHandler exceptionHandler;
 
     public void testALL() {
         exceptionHandler.testing();
@@ -41,17 +39,13 @@ public class IntraCompositeTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-    	SCARuntime.start("ExceptionTest.composite");
-
-        context = CurrentCompositeContext.getContext();
-        assertNotNull(context);
-        exceptionHandler = context.locateService(ExceptionHandler.class, "main");
-        assertNotNull(context);
+    	domain = SCADomain.newInstance("ExceptionTest.composite");
+        exceptionHandler = domain.getService(ExceptionHandler.class, "main");
     }
     
     @Override
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
     
 }

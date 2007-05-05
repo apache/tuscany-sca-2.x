@@ -21,12 +21,11 @@ package org.apache.tuscany.binding.axis2.itests;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class HelloWorldTestCase extends TestCase {
 
+    private SCADomain domain;
     private HelloWorld helloWorld;
 
     public void testCalculator() throws Exception {
@@ -34,14 +33,12 @@ public class HelloWorldTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        SCARuntime.start("org/apache/tuscany/binding/axis2/itests/HelloWorld.composite");
-        ComponentContext context = SCARuntime.getComponentContext("HelloWorldComponent");
-        ServiceReference<HelloWorld> service = context.createSelfReference(HelloWorld.class);
-        helloWorld = service.getService();
+        domain = SCADomain.newInstance("org/apache/tuscany/binding/axis2/itests/HelloWorld.composite");
+        helloWorld = domain.getService(HelloWorld.class, "HelloWorldComponent");
     }
     
     protected void tearDown() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
 
 }
