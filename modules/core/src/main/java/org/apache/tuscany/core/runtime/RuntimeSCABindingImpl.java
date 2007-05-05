@@ -32,7 +32,7 @@ import org.apache.tuscany.core.ReferenceBindingProvider;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.invocation.Interceptor;
 
 /**
  * @version $Rev$ $Date$

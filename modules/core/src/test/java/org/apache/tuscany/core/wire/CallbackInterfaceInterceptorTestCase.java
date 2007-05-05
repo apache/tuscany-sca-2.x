@@ -20,9 +20,9 @@ package org.apache.tuscany.core.wire;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.invocation.MessageImpl;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

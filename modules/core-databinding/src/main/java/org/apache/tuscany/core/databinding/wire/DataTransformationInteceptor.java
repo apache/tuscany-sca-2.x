@@ -32,8 +32,8 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.util.FaultException;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Message;
 
 /**
  * An interceptor to transform data accross databindings on the wire
@@ -58,7 +58,7 @@ public class DataTransformationInteceptor implements Interceptor {
     }
 
     /**
-     * @see org.apache.tuscany.spi.wire.Interceptor#getNext()
+     * @see org.apache.tuscany.invocation.Interceptor#getNext()
      */
     public Interceptor getNext() {
         return next;
@@ -213,14 +213,14 @@ public class DataTransformationInteceptor implements Interceptor {
     }
 
     /**
-     * @see org.apache.tuscany.spi.wire.Interceptor#isOptimizable()
+     * @see org.apache.tuscany.invocation.Interceptor#isOptimizable()
      */
     public boolean isOptimizable() {
         return false;
     }
 
     /**
-     * @see org.apache.tuscany.spi.wire.Interceptor#setNext(org.apache.tuscany.spi.wire.Interceptor)
+     * @see org.apache.tuscany.invocation.Interceptor#setNext(org.apache.tuscany.invocation.Interceptor)
      */
     public void setNext(Interceptor next) {
         this.next = next;

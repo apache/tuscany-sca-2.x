@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.invocation.ProxyCreationException;
 
 /**
  * Thrown when an {@link org.apache.tuscany.spi.model.Operation} cannot be mapped to a method on an interface 

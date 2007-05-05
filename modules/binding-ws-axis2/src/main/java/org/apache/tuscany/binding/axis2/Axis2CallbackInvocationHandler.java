@@ -22,8 +22,8 @@ import java.net.URI;
 import java.util.LinkedList;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
-import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.invocation.AbstractInvocationHandler;
+import org.apache.tuscany.invocation.Wire;
 
 public class Axis2CallbackInvocationHandler extends AbstractInvocationHandler {
 

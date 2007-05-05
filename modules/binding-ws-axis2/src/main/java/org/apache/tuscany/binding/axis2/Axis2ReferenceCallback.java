@@ -24,8 +24,8 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.client.async.AsyncResult;
 import org.apache.axis2.client.async.Callback;
 import org.apache.axis2.context.MessageContext;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.invocation.InvocationRuntimeException;
+import org.apache.tuscany.invocation.TargetInvoker;
 
 public class Axis2ReferenceCallback extends Callback {
 

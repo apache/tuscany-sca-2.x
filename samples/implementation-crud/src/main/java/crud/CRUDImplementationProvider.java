@@ -27,7 +27,7 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
-import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.invocation.Interceptor;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.

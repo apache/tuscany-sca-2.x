@@ -43,9 +43,9 @@ import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.xml.WebServiceConstants;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Axis2Reference uses Axis2 to invoke a remote web service

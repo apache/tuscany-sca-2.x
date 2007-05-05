@@ -25,7 +25,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.MessageId;
+import org.apache.tuscany.invocation.MessageId;
 
 public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiver {
 

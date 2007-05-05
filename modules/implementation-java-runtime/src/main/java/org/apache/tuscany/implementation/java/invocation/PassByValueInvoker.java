@@ -28,8 +28,8 @@ import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.spi.wire.Message;
 
 /**
  * An interceptor to enforce pass-by-value semantics for remotable interfaces

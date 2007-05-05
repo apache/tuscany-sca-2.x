@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.invocation;
 
 /**
  * Synchronous, around-style mediation associated with a client- or target- side wire.

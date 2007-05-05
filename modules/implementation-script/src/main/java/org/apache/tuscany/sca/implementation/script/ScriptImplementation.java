@@ -32,10 +32,10 @@ import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.Interceptor;
 
 /**
  * Represents a Script implementation.

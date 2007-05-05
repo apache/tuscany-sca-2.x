@@ -27,7 +27,7 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.invocation.InvocationRuntimeException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
 

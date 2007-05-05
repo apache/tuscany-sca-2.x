@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.implementation.java.mock;
 
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Message;
 
 public class MockSyncInterceptor implements Interceptor {
 

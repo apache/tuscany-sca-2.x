@@ -24,11 +24,11 @@ import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.InvocationRuntimeException;
+import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.invocation.TargetInvoker;
+import org.apache.tuscany.invocation.Wire;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Wire;
 
 public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
 

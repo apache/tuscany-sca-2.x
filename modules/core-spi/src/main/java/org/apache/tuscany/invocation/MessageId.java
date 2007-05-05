@@ -16,31 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.wire;
-
-import org.osoa.sca.ServiceRuntimeException;
+package org.apache.tuscany.invocation;
 
 /**
- * Denotes a runtime exception thrown during an invocation over a wire
- *
- * @version $Rev$ $Date$
+ * A unique identifier for a message flowing on a wire, potentially end-to-end (ie, through more than one SCAObject to
+ * SCAObject hop).
  */
-public class InvocationRuntimeException extends ServiceRuntimeException {
+public class MessageId {
 
-    public InvocationRuntimeException() {
-        super();
+    private long timestamp;
+
+    public MessageId() {
+        this.timestamp = System.currentTimeMillis();
     }
 
-    public InvocationRuntimeException(String message) {
-        super(message);
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public InvocationRuntimeException(String message, Throwable cause) {
-        super(message, cause);
+    public String toString() {
+        return "MsgId[" + timestamp + "]";
     }
 
-    public InvocationRuntimeException(Throwable cause) {
-        super(cause);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final MessageId messageId = (MessageId) o;
+        return timestamp == messageId.timestamp;
     }
 
+    public int hashCode() {
+        return (int) (timestamp ^ (timestamp >>> 32));
+    }
 }
