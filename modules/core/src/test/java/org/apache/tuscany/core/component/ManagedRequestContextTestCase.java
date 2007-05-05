@@ -16,29 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.wire;
+package org.apache.tuscany.core.component;
 
-import org.apache.tuscany.invocation.ProxyCreationException;
+import org.osoa.sca.RequestContext;
+
+import org.apache.tuscany.core.component.RequestContextImpl;
+import org.apache.tuscany.spi.component.WorkContext;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
- * Thrown when an {@link org.apache.tuscany.spi.model.Operation} cannot be mapped to a method on an interface 
  * @version $Rev$ $Date$
  */
-public class NoMethodForOperationException extends ProxyCreationException {
-    private static final long serialVersionUID = 5116536602309483679L;
+public class ManagedRequestContextTestCase extends TestCase {
 
-    public NoMethodForOperationException() {
+    public void testGetServiceName() {
+        WorkContext workContext = EasyMock.createMock(WorkContext.class);
+        EasyMock.expect(workContext.getCurrentServiceName()).andReturn("foo");
+        EasyMock.replay(workContext);
+        RequestContext context = new RequestContextImpl(workContext);
+        assertEquals("foo", context.getServiceName());
+        EasyMock.verify(workContext);
     }
 
-    public NoMethodForOperationException(String message) {
-        super(message);
-    }
-
-    public NoMethodForOperationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMethodForOperationException(Throwable cause) {
-        super(cause);
-    }
 }

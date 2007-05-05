@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.invocation;
 
 import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.core.wire.NoMethodForOperationException;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
