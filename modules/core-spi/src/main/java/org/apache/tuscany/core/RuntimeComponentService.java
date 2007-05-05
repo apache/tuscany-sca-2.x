@@ -21,6 +21,7 @@ package org.apache.tuscany.core;
 
 import java.util.List;
 
+import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.ComponentService;
 
 /**
@@ -40,7 +41,13 @@ public interface RuntimeComponentService extends ComponentService {
      * @return
      */
     List<RuntimeWire> getRuntimeWires();
-
+    /**
+     * Get the runtime wire for the given binding
+     * @param binding
+     * @return
+     */
+    RuntimeWire getRuntimeWire(Binding binding);
+    
     /**
      * Add a callback wire if the service has a callabck interface
      * 

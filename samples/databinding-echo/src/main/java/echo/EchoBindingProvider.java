@@ -72,7 +72,7 @@ public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBin
         URI uri = URI.create(component.getURI() + "/" + getName());
         setURI(uri.toString());
         RuntimeComponentService componentService = (RuntimeComponentService) service;
-        RuntimeWire wire = componentService.getRuntimeWires().get(0);
+        RuntimeWire wire = componentService.getRuntimeWire(this);
         InvocationChain chain = wire.getInvocationChains().get(0);
         // Register with the hosting server
         EchoServer.getServer().register(new EchoService(chain.getHeadInterceptor()), uri);
