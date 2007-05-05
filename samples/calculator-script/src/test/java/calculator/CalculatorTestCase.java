@@ -20,22 +20,23 @@ package calculator;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * This shows how to test the Calculator service component.
  */
 public class CalculatorTestCase extends TestCase {
 
+    private SCADomain domain;
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        SCARuntimeActivator.start("Calculator.composite");
-        calculatorService = SCARuntimeActivator.locateService(CalculatorService.class, "CalculatorServiceComponent");
+        domain = SCADomain.newInstance("Calculator.composite");
+        calculatorService = domain.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     protected void tearDown() throws Exception {
-        SCARuntimeActivator.stop();
+        domain.close();
     }
 
     public void testCalculator() throws Exception {
