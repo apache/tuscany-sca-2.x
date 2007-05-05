@@ -19,7 +19,7 @@
 
 package calculator;
 
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -28,8 +28,9 @@ import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        SCARuntimeActivator.start("Calculator.composite");
-        CalculatorService calculatorService = SCARuntimeActivator.locateService(CalculatorService.class,
+        SCADomain domain = SCADomain.newInstance("http://calc", ".", "Calculator.composite");
+        
+        CalculatorService calculatorService = domain.getService(CalculatorService.class,
                                                                                 "CalculatorServiceComponent");
 
         // Calculate
@@ -38,7 +39,7 @@ public class CalculatorClient {
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
 
-        SCARuntimeActivator.stop();
+        domain.close();
 
     }
 
