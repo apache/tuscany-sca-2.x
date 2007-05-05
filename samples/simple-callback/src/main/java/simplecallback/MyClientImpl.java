@@ -30,6 +30,7 @@ import org.osoa.sca.annotations.Service;
 public class MyClientImpl implements MyClient, MyServiceCallback {
 
     private MyService myService;
+    static String result;
 
     @Reference
     public void setMyService(MyService myService) {
@@ -43,5 +44,6 @@ public class MyClientImpl implements MyClient, MyServiceCallback {
     public void receiveResult(String result) {
         System.out.println("Work thread " + Thread.currentThread());
         System.out.println("Result: " + result);
+        MyClientImpl.result = result;
     }
 }
