@@ -24,6 +24,7 @@ package org.apache.tuscany.spi.services.store;
  * @version $Rev$ $Date$
  */
 public class StoreReadException extends StoreException {
+    private static final long serialVersionUID = -8624542082121467271L;
 
     public StoreReadException(Throwable cause) {
         super(cause);

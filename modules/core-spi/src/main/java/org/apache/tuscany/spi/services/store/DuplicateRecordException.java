@@ -24,6 +24,7 @@ package org.apache.tuscany.spi.services.store;
  * @version $Rev$ $Date$
  */
 public class DuplicateRecordException extends StoreWriteException {
+    private static final long serialVersionUID = 3116253222569378447L;
 
     public DuplicateRecordException(String owner, String identifier) {
         super(null, owner, identifier);

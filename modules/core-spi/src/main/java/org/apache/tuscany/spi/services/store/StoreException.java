@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.TuscanyException;
  * @version $Rev$ $Date$
  */
 public class StoreException extends TuscanyException {
+    private static final long serialVersionUID = -319152147419962709L;
     private final String owner;
 
     public StoreException(String message, String owner, String identifier) {

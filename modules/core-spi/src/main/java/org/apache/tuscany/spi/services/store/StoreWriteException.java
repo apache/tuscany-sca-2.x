@@ -24,6 +24,7 @@ package org.apache.tuscany.spi.services.store;
  * @version $Rev$ $Date$
  */
 public class StoreWriteException extends StoreException {
+    private static final long serialVersionUID = 5539070473942048555L;
 
     public StoreWriteException(String message, String owner, String identifier) {
         super(message, owner, identifier);
