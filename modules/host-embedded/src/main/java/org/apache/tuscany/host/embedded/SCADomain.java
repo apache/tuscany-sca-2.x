@@ -53,6 +53,27 @@ public abstract class SCADomain {
     }
     
     /**
+     * Returns an SCADomain representing a remote SCA domain.
+     * 
+     * @param domainURI the URI of the SCA domain
+     * @return
+     */
+    public static SCADomain connect(String domainURI) {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * Returns a new instance of a local SCA domain. The specified deployable composite will
+     * be included in the SCA domain.
+     * 
+     * @param composite the deployable composite to include in the SCA domain.
+     * @return
+     */
+    public static SCADomain newInstance(String composite) {
+        return newInstance(SCADomain.class.getClassLoader(), "http://localhost", ".", composite);
+    }
+    
+    /**
      * Close the SCA domain.
      */
     public abstract void close();

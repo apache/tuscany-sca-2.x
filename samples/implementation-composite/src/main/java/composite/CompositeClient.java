@@ -1,8 +1,6 @@
 package composite;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * Simple client program that invokes the components that we wired together.
@@ -12,17 +10,14 @@ import org.osoa.sca.ServiceReference;
 public class CompositeClient {
 
     public static void main(String[] args) throws Exception {
-    	SCARuntime.start("OuterComposite.composite");
+    	SCADomain domain = SCADomain.newInstance("http://localhost", ".", "OuterComposite.composite");
     	
-        SCARuntime.start("OuterComposite.composite");
-        ComponentContext context = SCARuntime.getComponentContext("SourceComponent/InnerSourceComponent");
-        ServiceReference<Source> service = context.createSelfReference(Source.class);
-        Source source = service.getService();   
+        Source source = domain.getService(Source.class, "SourceComponent");
         
         System.out.println("Main thread " + Thread.currentThread());
         source.clientMethod("Client.main");
         Thread.sleep(500);
         
-        SCARuntime.stop();
+        domain.close();
     }
 }
