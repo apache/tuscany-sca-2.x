@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.implementation.script.itests.AbstractSCATestCase;
 public abstract class AbstractHelloWorldTestCase extends AbstractSCATestCase<HelloWorld> {
 
     public void testCalculator() throws Exception {
-//        assertEquals("Hello petra", service.sayHello("petra"));
+        assertEquals("Hello petra", service.sayHello("petra"));
     }
     
     @Override
